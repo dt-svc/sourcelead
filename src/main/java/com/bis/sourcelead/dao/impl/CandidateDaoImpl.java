@@ -2311,7 +2311,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(Long orgId, String searchValue) {
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue, Long orgId, String candidateLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2323,9 +2323,13 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
 		}
-			
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id <> :currentOrgLocId)";
-		queryList = session.createQuery(listQuery+query1).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
+		StringBuilder query2 = new StringBuilder("");
+		if(candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
+			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
+		}
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id =:currentOrgLocId";
+		queryList = session.createQuery(listQuery+query1+query2).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
+		System.out.println(listQuery+query1+query2);
 		return queryList;
 	}
 	
@@ -2341,15 +2345,16 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void addCandidateToMarketCart(CandidateMarketCart marketcart) throws Exception {
+	public Boolean addCandidateToMarketCart(CandidateMarketCart marketcart) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.save(marketcart);
+			return true;
 		}catch(Exception e){
 			e.printStackTrace();
+			return false;
 		}
 		}
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId) {
@@ -2366,4 +2371,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "delete from CandidateMarketCart marketplaceCart where marketplaceCart.marketplaceUUID = :marketUUID";
 		session.createQuery(query).setParameter("marketUUID", candidatgeMarketUUID).executeUpdate();
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Object[] updateMarketplaceCartCountAndPrice(Long targetOrgLocationId){
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select COUNT(marketplaceId) AS count, SUM(amount) AS SUM from CandidateMarketCart marketcart where marketcart.targetOrgLocationId =:targetOrgLocationId and marketcart.cartStatus IN (:cartStatus)";
+		Object[] result= (Object[]) session.createQuery(query).setLong("targetOrgLocationId", targetOrgLocationId).setParameterList("cartStatus", new ArrayList<String>(Arrays.asList(Constants.ADDED_CART))).uniqueResult();
+		return result;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}}
 }

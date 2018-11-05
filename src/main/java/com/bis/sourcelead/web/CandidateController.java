@@ -168,13 +168,16 @@ public class CandidateController {
 	}
 	
 	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
-	public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(HttpServletRequest request) {
-		List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(null,orgLocations);
-		return candidateMarketPlaceDTOs;
-	}
+			@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
+			public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(
+					@RequestParam(value = "searchValue", required = true)String searchValue,
+					@RequestParam(value = "candidateLocation", required = true)String candidateLocation, 
+					HttpServletRequest request) {
+				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchValue, orgLocations, candidateLocation);
+				return candidateMarketPlaceDTOs;
+			}
 	
 	
 	
