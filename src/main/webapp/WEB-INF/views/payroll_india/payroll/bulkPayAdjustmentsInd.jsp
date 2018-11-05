@@ -25,11 +25,9 @@
 						<div class="col-md-6">
 							<div class="clearfix">
 							<select class="chosen-select" multiple data-placeholder="Select Employees" id="selectEmployees">
-								<option>Employee1</option>
-								<option>Employee2</option>
-								<option>Employee3</option>
-								<option>Employee4</option>
-								<option>Employee5</option>
+								<c:forEach var="payFrequencyEmployee" items="${payFrequencyEmployeeList}">
+									<option>${payFrequencyEmployee.empName}</option>
+								</c:forEach>
 							</select>
 							</div>
 						</div>
@@ -37,36 +35,36 @@
 					<div class="clearfix"></div>
 					<hr>
 					<div class="clearfix mt25 minDivHeight">
-						<div class="mb clearfix">
-							<label class="col-md-3 textBold text-right">Bonus</label>
-							<div class="col-md-6">
-							<input type="text" value="" class="form-control input-sm">
+						<c:forEach var="variablePayhead" items="${variablePayheadsList}">
+							<div class="mb clearfix">
+								<label class="col-md-3 textBold text-right">${variablePayhead.name}</label>
+								<div class="col-md-6">
+									<input type="text" value="" class="form-control input-sm">
+								</div>
 							</div>
-						</div>
-						<div class="mb clearfix">
-							<label class="col-md-3 textBold text-right">Bonus</label>
-							<div class="col-md-6">
-							<input type="text" value="" class="form-control">
-							</div>
-						</div>
-						<div class="mb clearfix">
-							<label class="col-md-3 textBold text-right">Bonus</label>
-							<div class="col-md-6">
-							<input type="text" value="" class="form-control">
-							</div>
-						</div>
+						</c:forEach>
 					</div>
 				</div>
 			
-	<div class="modal-footer clearfix">
-		<button type="button" class="btn btn-primary" onclick="bulkAdjustmentSaving();">Save</button>
-        <button type="button" class="btn btn-default" onclick="bulkAdjustmentClose();">Cancel</button>
-     </div>
+		 <div class="modal-footer clearfix">
+			<button type="button" class="btn btn-primary" onclick="bulkAdjustmentSaving();">Save</button>
+	        <button type="button" class="btn btn-default" onclick="bulkAdjustmentClose();">Cancel</button>
+	     </div>
      </div>
      </div>
 </div>
  
 <script src="/resources/js/chosen.jquery.min.js"></script>
+<script>
+$('#sae').change(function () {
+    if (this.checked) {
+        $('#selectEmployees').prop('disabled', true).trigger("chosen:updated");
+    }else{
+    	$('#selectEmployees').prop('disabled', false).trigger("chosen:updated");
+    }
+});
+</script>
+
 <script type="text/javascript">
     var staticTime='${staticTime}';
     var config = {

@@ -201,6 +201,14 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	}
 	
 	@Override
+	public ResponseList<PayrollPayheadDTO> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception{
+		List<PayrollPayhead> payrollPayheadList = payrollPayheadDao.getPayrollPayheadListByPayheadComponentType(orgLocations, component);
+		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
+		payrollPayheadDTOList.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
+		return payrollPayheadDTOList;
+	}
+	
+	@Override
 	public ResponseList<PayrollPayheadDTO> getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,
 			OrgLocations orgLocations) throws Exception {
 		return payrollPayheadDao.getPayrollPayheadListWithPagination(payrollPayheadDTO,orgLocations);
