@@ -46,15 +46,15 @@
         </div>
         <div class="clearfix"></div>
       </div>
-      <div class="col-md-3 mb">
+      <%-- <div class="col-md-3 mb">
         <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
         <div class="pull-left">
           <h4 class="text-muted">Pay Schedule</h4>
           <small class="text-muted">Configure Pay Schedule</small>
-          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/paySchedule'/>" class="btn btn-info btn-sm mr10" title="Add">Add</a></div>
+          <div class="clearfix mt10"> <a href="<c:url value='${appPath}/payrollScheduleList'/>" class="btn btn-info btn-sm mr10" title="Add">View</a></div>
         </div>
         <div class="clearfix"></div>
-      </div>
+      </div> --%>
       
        <div class="col-md-3 mb">
         <div class="pull-left mr10"> <i class="fa fa-gears fa-2x text-muted"></i> </div>

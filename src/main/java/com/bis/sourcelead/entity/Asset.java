@@ -49,11 +49,8 @@ public class Asset implements Serializable{
 	@Column(name = "NAME")
 	private String name;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
-	@JsonBackReference
-	@JsonProperty
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")

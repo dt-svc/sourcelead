@@ -631,6 +631,20 @@ public class AssetDaoImpl implements AssetDao{
 		return response;
 		
 	}
+
+	@Override
+	@Transactional
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign aa where aa.asset.id = :assetId and aa.shift.id =:shiftId and aa.userRole.id =:userRoleId ";
+		List<Asset> assetList = session.createQuery(query).setLong("assetId", assetId).setLong("shiftId", shiftId).setLong("userRoleId", userRoleId).list();
+		if (assetList.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
 	
 	
 }

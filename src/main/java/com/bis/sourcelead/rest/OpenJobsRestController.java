@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -81,7 +83,7 @@ public class OpenJobsRestController {
 	RequirementLocationsService requirementLocationsService;
 
 	@RequestMapping(value = { "/app/ws/getOpenJobsELK", "/app/getOpenJobsELK" })
-	public @ResponseBody String getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
+	public @ResponseBody ResponseList<RequirementIndex> getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
 			@RequestParam(value = "openJobsExperience", required = false) String openJobsExperience,
@@ -95,7 +97,8 @@ public class OpenJobsRestController {
 
 		boolean isELKSearchEnable = true;
 
-		String resultJson;
+//		String resultJson;
+		ResponseList<RequirementIndex> response = new ResponseList<>();
 		List<RequirementIndex> requirementList = new ArrayList<RequirementIndex>();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -320,8 +323,9 @@ public class OpenJobsRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		resultJson = commonUtil.toJSON(requirementList);
-		return resultJson;
+		response.setData(requirementList);
+//		resultJson = commonUtil.toJSON(requirementList);
+		return response;
 
 	}
 
@@ -684,8 +688,9 @@ public class OpenJobsRestController {
 	}
 
 	@RequestMapping(value = { "/app/ws/openRequirementsSummary", "/app/openRequirementsSummary" })
-	public @ResponseBody String openRequirementsSummary(
+	public @ResponseBody Response<Requirement> openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
+		Response<Requirement> reponse = new Response<>();
 		Requirement requirementDeatils = requirementService.getRequirementByRequirementUUID(requirementsUUID);
 		Requirement requirementDeatilsSummary = requirementService.getRequirementByRequirementId(requirementDeatils.getId());
 		requirementDeatilsSummary.setRequirementOrgName(requirementDeatilsSummary.getOrgLocationId().getOrgLocationName());
@@ -699,8 +704,8 @@ public class OpenJobsRestController {
 			}
 		}
 		requirementDeatilsSummary.setLocationsList(requirementLocationsList);
-		
-		return commonUtil.toJSON(requirementDeatilsSummary);
+		reponse.setObject(requirementDeatilsSummary);
+		return reponse;
 
 	}
 

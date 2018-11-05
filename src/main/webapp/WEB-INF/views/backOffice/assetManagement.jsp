@@ -32,7 +32,6 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 	function columPop(){
-		alert("hjjjj")
 		$(".colPop").show();
 	}
 	function columClose(){
@@ -86,8 +85,6 @@ $(document).ready(function(){
      </ul>
 </div>
 <div class="timesheet_out">
-  
-  
 	 <div class="colPop">
 		<div class="colPopMid coldropdown-parent">
 		<div class="clearfix">
