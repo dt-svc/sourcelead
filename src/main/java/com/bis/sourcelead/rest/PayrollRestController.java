@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
@@ -44,6 +46,7 @@ import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
@@ -89,6 +92,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	
+	@Autowired
+	PayrollPayheadService payrollPayheadService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -289,7 +295,7 @@ public class PayrollRestController {
 	}
 	
 	
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	@RequestMapping(value = { "/bulkPayAdjustmentsForFrequencyInd","/rest/bulkPayAdjustmentsForFrequencyInd" })
 	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
 	{
@@ -297,16 +303,31 @@ public class PayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	try {
+	 		if(loginUser != null){
+			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
+			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+			 	if(sessionObj != null) {
+				    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+				    	modelAndView.addObject("payFrequencyEmployeeList", indPaysheetFrequencyDTO.getIndPayrollDTO());
+			   	}else {
+			   			List<INDPayrollDTO> indPayrollDTOList = new ArrayList<>();
+			   			ResponseList<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+			   			for(INDPayrollDTO indPayrollDTO : iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(new HashSet<IndEmployeePayroll> (indEmployeePayrollResponse.getData()), orgLocation)) {
+			   				indPayrollDTOList.add(indPayrollDTO);
+			   			}
+			   			modelAndView.addObject("payFrequencyEmployeeList", indPayrollDTOList);
+			   	}
+			 	
+			 	ResponseList<PayrollPayheadDTO> payrollPayheadResponseList = payrollPayheadService.getPayrollPayheadListByPayheadComponentType(orgLocation, Constants.IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE);
+		 		modelAndView.addObject("variablePayheadsList", payrollPayheadResponseList.getData());
+		 		
+				commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
+				modelAndView.addObject("activeTaxTab", "runPayrollInd");
+				modelAndView.setViewName("payroll_india/payroll/bulkPayAdjustmentsInd");
+			}else {
+				modelAndView.setViewName("errorPage");
+			}
 	 		
-	 		
-	 		
-	 		
-	 		
-	 		
-	 		
-			commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
-			modelAndView.addObject("activeTaxTab", "runPayrollInd");
-			modelAndView.setViewName("payroll_india/payroll/bulkPayAdjustmentsInd");
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
