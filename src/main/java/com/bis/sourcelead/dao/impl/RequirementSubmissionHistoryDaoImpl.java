@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.RecruiterReportView;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
@@ -255,10 +256,10 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			stageQuery = " rsh.toStage = 'BACKOUT'";
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.createdBy =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
 		queryObj = session.createQuery(query);
 		
-		String countQuery = "from RequirementSubmissionHistory rsh where rsh.createdBy =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
+		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
 		
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
@@ -301,6 +302,37 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		response.setData(submissionHistoryList);
 		
 		return response;
+	}
+
+	@Override
+	@Transactional
+	public int updateSourceUserCodeForSubmissionHistory() {
+		int count = 0;
+		try {
+			System.out.println("-------------hi Start of updateSourceUserCodeForSubmissionHistory()-------------");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select rsh.submissionId.id, rsh.createdBy from RequirementSubmissionHistory rsh group by rsh.submissionId.id order by rsh.id asc";
+			List<Object[]> queryList = session.createQuery(query).list();
+			if(queryList != null && !queryList.isEmpty()) {
+				for(Object[] obj : queryList) {
+					System.out.println("RSH ID : " + obj[0] + " MASTER USER CODE : " + obj[1]);
+					RequirementSubmission requirementSubmission = session.get(RequirementSubmission.class, Long.valueOf(obj[0].toString()));
+					
+					String query2 = "from RequirementSubmissionHistory rsh where rsh.submissionId.id = " + obj[0];
+					Query queryObj2 = session.createQuery(query2);
+					List<RequirementSubmissionHistory> rshList = queryObj2.list();
+					for(RequirementSubmissionHistory rsh : rshList) {
+						rsh.setMasterUserCode(requirementSubmission.getCreatedBy());
+						session.saveOrUpdate(rsh);
+						count++;
+					}
+				}
+			}
+			System.out.println("-------------End of updateSourceUserCodeForSubmissionHistory()-------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 }

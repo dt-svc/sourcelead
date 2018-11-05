@@ -56,7 +56,7 @@ function getDayWiseReports(){
 	          <option ${timePeriod == 'Last_Year' ? 'selected' : ''} value="Last_Year">Last Year</option>
 			  <option ${timePeriod == 'custom' ? 'selected' : ''} value="custom">Custom</option> 
 			</select>
-		<div id="runButtonDivJobs" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="jobsDataTableList();">Run</button></div> 
+		<div id="runButtonDivJobs" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="applicantsAllStageList();">Run</button></div> 
           
           <div class="clearfix customLeaves repCustomDate" id="customSearchJobs">
               <div class="repCustomDateInn">
@@ -69,13 +69,13 @@ function getDayWiseReports(){
 				 <p id="reportsEndDateJobs"></p>
               </div>
               
-              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="jobsDataTableList();"><i class="fa fa-search"></i></button></div>
+              <div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="applicantsAllStageList();"><i class="fa fa-search"></i></button></div>
           </div>
           
         </div>    		
     		</li>
     		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPopJobs();"><i class="fa fa-filter faFilter"></i></a></li>
-    		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='jobsDataTableSearch'/><span class="repSearchIcon" onClick="jobsDataTableList();"></span></li>
+    		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='jobsDataTableSearch'/><span class="repSearchIcon" onClick="applicantsAllStageList();"></span></li>
     	</ul>
     </div>
     
@@ -380,8 +380,8 @@ function associateCandidateListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    
 	            		 result = result +"<td>";
-	  	    	  	   if(opt.toStage !=null && opt.toStage !="" && opt.toStage !="undefined"){
-	  	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.toStage+"'>"+opt.toStage+"</div>"; 
+	  	    	  	   if(opt.submissionId !=null && opt.submissionId.submissionStatus !="" && opt.submissionId.submissionStatus !="undefined"){
+	  	    	  	   	result = result +"<div class='tbldata-dotdot-me' title='"+opt.submissionId.submissionStatus+"'>"+opt.submissionId.submissionStatus+"</div>"; 
 	  	    	  	   	 }else{
 	  	    	  	   	result = result +"<div class='tbldata-dotdot'> <span>---</span></div>"; 	 
 	  	    	  	   	 }
@@ -416,7 +416,7 @@ function associateCandidateListPagination(url,sourceleadUrl){
    	    	var searchData = $('#jobsDataTableSearch').val();
    	    	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
-   	    		jobsDataTableList();
+   	    		applicantsAllStageList();
    	    	}else{
    	    		$("#jobsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
    	    	}

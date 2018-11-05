@@ -66,6 +66,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
+		requirementSubmissionHistory.setMasterUserCode(requirementSubmission.getCreatedBy());
 		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
@@ -193,6 +194,11 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode, String stage,Date[] searchDates) throws Exception {
 		
 		return requirementSubmissionHistoryDao.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,stage,searchDates);
+	}
+
+	@Override
+	public int updateSourceUserCodeForSubmissionHistory() {
+		return requirementSubmissionHistoryDao.updateSourceUserCodeForSubmissionHistory();
 	}
 
 }

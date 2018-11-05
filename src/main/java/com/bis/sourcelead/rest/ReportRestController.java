@@ -205,6 +205,11 @@ public class ReportRestController {
 	@Autowired 
 	OrgLocationService orgLocationService;
 	
+	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
+	public String updateSourceUserCodeForSubmissionHistory() {
+		int count = requirementSubmissionHistoryService.updateSourceUserCodeForSubmissionHistory();
+		return count + " Records updated";
+	}
 	
 	/**
 	 * To get All the Users by filtering

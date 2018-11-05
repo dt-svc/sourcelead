@@ -114,7 +114,24 @@ function getDayWiseReports(){
 											</c:forEach>
 										</ul>
 									 </div> 
+									 
 								</div>
+								
+								<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a Roles">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+											<c:forEach var="roles" items="${rolesList}">
+												<li class="checkBox positionRelative"><input  type="checkbox" name="orgRoles" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+										</c:forEach>
+										</ul>
+									 </div> 
+									 
+								</div>
+								
 							</div>
 							</div>
 							<div class="clearfix advancedsearch-footer">
@@ -133,7 +150,6 @@ function getDayWiseReports(){
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 }
- 
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
 	    input = document.getElementById("myTeamsInput");
@@ -150,6 +166,25 @@ function getDayWiseReports(){
 	        }
 	    }
 	}
+ 
+ 
+ function myRolesFunction() {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById("myRolesInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myRolesUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+	}
+ 
  function openFilterPop(){
 		$("div.cand-advsrch-popup").toggle();
 		 $(".advancedsearch-mask").fadeIn();

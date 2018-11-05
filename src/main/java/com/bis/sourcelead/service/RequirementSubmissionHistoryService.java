@@ -46,4 +46,6 @@ public interface RequirementSubmissionHistoryService {
 	
 	List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId, List<String> userCodeList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 
+	public int updateSourceUserCodeForSubmissionHistory();
+
 }

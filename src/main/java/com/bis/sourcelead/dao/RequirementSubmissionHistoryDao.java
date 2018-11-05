@@ -35,4 +35,6 @@ public interface RequirementSubmissionHistoryDao {
 	List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId, List<String> userCodeList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 
 	ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO, String userCode, String stage,Date[] searchDates) throws Exception;
+
+	public int updateSourceUserCodeForSubmissionHistory();
 }
