@@ -888,7 +888,7 @@ function getAccontDeductions(){
 										}
 					        		    if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
 						        		    //result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'">'+opt.dedAmount+'<small class="fa fa-pencil ml10 pull-right" onClick="showEdit('+opt.id+','+opt.dedAmount+')"></small></div>';
-											result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>'+opt.dedAmount+'</div>';
+											result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar paddingRight text-muted"></small>'+opt.dedAmount+'</div>';
 						        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
 											result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"></div></td>';
 					        		    }
@@ -978,7 +978,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
-			        success: function(data) {
+			        success: function(json) {
 					var result = "";				        	
 					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -989,7 +989,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
+// 					var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];
@@ -1197,7 +1197,7 @@ function getHrDeductionDetails(hrDedId,empName){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
-			        success: function(data) {
+			        success: function(json) {
 					var result = "";				        	
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -1208,7 +1208,7 @@ function getHrDeductionDetails(hrDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
+// 					var json = JSON.parse(data);
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];

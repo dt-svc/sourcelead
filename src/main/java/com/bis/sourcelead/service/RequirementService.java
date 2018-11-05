@@ -231,9 +231,9 @@ public interface RequirementService {
 
 	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
 
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag);
 
-	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag);
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 	
