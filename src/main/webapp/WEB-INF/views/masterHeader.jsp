@@ -609,6 +609,8 @@ function preventTabkey(e){
 					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
 					  	</sec:authorize>
 						 
+						 <li><a href="<c:url value="/app/pojrctAttributes" />"><i class="fa fa-bar-chart" aria-hidden="true"></i>Project</a></li>
+						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">

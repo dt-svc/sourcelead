@@ -597,6 +597,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
 			associatePayrollPayheadHistoryDTO.setPayrollPayhead(payHeadHistoryDTO.getPayrollPayhead());
 		}
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
 		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
 		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
 		associatePayrollPayheadHistoryDTO.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
