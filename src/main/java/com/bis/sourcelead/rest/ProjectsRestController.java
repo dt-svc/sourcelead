@@ -308,7 +308,7 @@ public class ProjectsRestController {
 							OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 						    projectAdditionalDetailsDTO.setSaveType(saveType);
 						    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
+						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "New project successfully created");
 							response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 						}else {

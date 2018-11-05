@@ -467,7 +467,7 @@ function openAssetFilterPop(){
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="workStatusFilter">
 				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
-                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out Of Service</label></li>
+                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
                                     <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
 		                        </ul>
 							 </div>

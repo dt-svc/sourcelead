@@ -844,7 +844,7 @@ function preventTabkey(e){
 			            <h4>Add Task</h4>
 			            <div class="row">
 			              <div class="col-md-6" >
-			                <label>Assign To<span class="text-danger">*</span></label>
+			                <label>Assign to<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>
