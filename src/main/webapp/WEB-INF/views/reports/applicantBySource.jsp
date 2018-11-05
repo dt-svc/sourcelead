@@ -369,7 +369,7 @@ function getCustomDates(){
 			"titles": [],
 		   "graphs": [
 				{
-					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]",
+					"balloonText": "[[title]] count of<br> [[category]]:[[applicantsCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#90CAF9",
@@ -383,7 +383,7 @@ function getCustomDates(){
 					"valueField": "column2"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[shortlistedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#F48FB1",
@@ -396,7 +396,7 @@ function getCustomDates(){
 					"valueField": "column3"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[submitToClientCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FF8A54",
@@ -409,7 +409,7 @@ function getCustomDates(){
 					"valueField": "column4"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[interviewsCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#FFCC80",
@@ -422,7 +422,7 @@ function getCustomDates(){
 					"valueField": "column5"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[rejectedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#B39DDB",
@@ -435,7 +435,7 @@ function getCustomDates(){
 					"valueField": "column6"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offeredCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#81C784",
@@ -448,7 +448,7 @@ function getCustomDates(){
 					"valueField": "column7"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerAcceptedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#E57373",
@@ -461,7 +461,7 @@ function getCustomDates(){
 					"valueField": "column8"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[offerRejectedCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#D84315",
@@ -474,7 +474,7 @@ function getCustomDates(){
 					"valueField": "column9"
 				},
 				{
-					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]",
+					"balloonText": "[[title]] count of<br>[[category]]:[[backoutCount]]<br> Percentage:[[value]] %",
 					"columnWidth": 0.3,
 					"fillAlphas": 1,
 					"fillColors": "#BCAAA4",

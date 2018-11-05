@@ -65,7 +65,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
+								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -150,6 +150,7 @@ var uploadflag= true;
 	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
 	
 	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>	  

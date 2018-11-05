@@ -1292,4 +1292,9 @@ public class Constants {
 			"Total Offer", "Total Joiners"};
 	
 
+	public static final String CONTRIBUTION = "contribution";
+	public static final String DEDUCTION = "deduction";
+	
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
 }

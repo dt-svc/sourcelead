@@ -1156,14 +1156,22 @@ $(document).ready(function () {
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
 					    		 <c:if test="${!empty clientContactList}">
+					    		 	<c:set var="found" value="0" scope="page"/>
 					    		 	<c:forEach var="report" items="${clientContactList}">
 				         				<c:if test="${report.id  == requirement.spocId.id}">
-				         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
+				         					<c:set var="found" value="${found + 1}" scope="page"/>
+				         					<option value="${report.id}" selected >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
+				         				<c:if test="${report.id  != requirement.spocId.id}">
+				         					<option value="${report.id}" >${report.spocName} (${report.ownerName})</option>
 				         				</c:if>
 						    		 </c:forEach>
+						    		 <c:if test="${found == 0}">
+							    		 	<option value="${requirement.spocId.id}" selected>${requirement.spocName} (${requirement.spocOwnerName})</option>
+							    	 </c:if>
 					    		 </c:if>
 					    		 <c:if test="${empty clientContactList}">
-					    		 	<option value="${requirement.spocId.id}" >${requirement.spocId.spocName} (${requirement.spocId.ownerName})</option>
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName} (${requirement.spocOwnerName})</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
