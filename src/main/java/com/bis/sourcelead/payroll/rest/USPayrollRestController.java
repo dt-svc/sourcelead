@@ -1265,7 +1265,7 @@ public class USPayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		System.out.println("------------------------------");
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 		Date date = sdf.parse(payrollScheduleDTO.getPayPeriodStartDate());
 		Calendar now = Calendar.getInstance();
 		now.setTime(date);
@@ -1273,9 +1273,12 @@ public class USPayrollRestController {
 		System.out.println("*********************"+now.getTime());
 		int year = now.get(Calendar.YEAR);
 		int month = now.get(Calendar.MONTH);
-		System.out.println("^^^^^^^^^^^^^^^^^^^Month"+month);
-		List<String> s  = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
-		System.out.println(s);
+		int dateInt = now.get(Calendar.DATE);
+		System.out.println("^^^^^^^^^^^^^^^^^^^Month "+month);
+		System.out.println("^^^^^^^^^^^^^^^^^^^Date "+dateInt);
+		System.out.println("^^^^^^^^^^^^^^^^^^");
+		List<String> s  = payrollUtil.getPayScheduleWeeksByDate(year, month, dateInt,orgLocation);
+		System.out.println(""+s);
 		return null;
 //		return payrollScheduleService.findAllPayrollScheduleList(orgLocation.getId(),orgLocation.getDateFormat());
 	}

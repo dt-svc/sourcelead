@@ -449,7 +449,11 @@ function preventTabkey(e){
                 </sec:authorize>
                 </sec:authorize>			
 				
+				<sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
+				<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">				
 				<li><a href="javascript:void(0)" class="icon-addTask" title="Add Task">Add Task</a></li>
+				</c:if>
+				</sec:authorize>	
 				
  				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
 				<li><a href="/app/sourceleadTicketList" title="Report Issue">Report Issue</a></li>
@@ -488,7 +492,6 @@ function preventTabkey(e){
 					              		<a class="sopcSwith noPad">
 					              </c:if>
 					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith noPad">
-					              		
 						                <div class="clearfix  ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'orgAct' : ''}">
 						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
 										<div class="orgDetails">
@@ -530,6 +533,7 @@ function preventTabkey(e){
 		              </li>
 	              </c:forEach>
 	              </ul>
+	              <div class="noDate noDateSm" style="display: none;"></div>
 	            </div>
 	            </div>
 	          </li>
@@ -540,11 +544,11 @@ function preventTabkey(e){
          </c:if>		
 		
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i>  <span style="display: none;" class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <li> 
-          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <span style="display: none;" class="label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>		
 
@@ -634,6 +638,8 @@ function preventTabkey(e){
                        </sec:authorize>
 	                   
 	              </ul>
+	              
+	              <div class="noDate noDateSm" style="display: none;"></div>
 	            </div>
 	            </div>
 	          </li>
@@ -655,6 +661,7 @@ function preventTabkey(e){
 		            	
 		            	<li title="Alerts"><a class="logColor" href="<c:url value="/app/jobAlertList" />">Alerts</a></li>
 		            	</ul>
+		            	<div class="noDate noDateSm" style="display: none;"></div>
 	            	</div>
             	</div>
             	
@@ -788,17 +795,21 @@ function preventTabkey(e){
 	  <sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
 		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> 
+		 
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
-		    <i class="fa fa-close close-div taskpop-close"></i>  
+		    <i class="proj_close taskpop-close"></i>  
 		      <!-- Assign Task Widget tabs -->
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
-		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
-		        <ul class="nav nav-tabs">
+		        
+		        <div class="addtsk-btn"> <a href="javascript:void(0)" class="newAdBtn" onClick="showtaskdiv()">+ Task</a> </div>
+		       
+		        <ul class="nav nav-tabs themeTabs">
 		          <li id="myTaskDivId"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
 		          <li id="assignedTasksDivId"><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
 		          <li id="closedTasksDivId"><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
+		        
 		        </ul>
-				        <div class="tab-content clearfix">
+				        <div class="tab-content noPad clearfix positionRelative">
 				          <div id="my-task" class="tab-pane fade in active">
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
@@ -807,8 +818,7 @@ function preventTabkey(e){
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
-				               <div id="myTasksId" class="datatable_filter"></div>
-				              
+				               <div id="myTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 				            </div>
 				          </div>
 				          
@@ -819,7 +829,7 @@ function preventTabkey(e){
 								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId" class="datatable_filter"></div>
+					              <div id="assignedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 					            </div>
 				          </div>
 				          
@@ -830,7 +840,7 @@ function preventTabkey(e){
 									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
-				               <div id="closedTasksId" class="datatable_filter"></div>
+				               <div id="closedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 				            </div>
 				          </div>
 				        </div>
@@ -840,10 +850,12 @@ function preventTabkey(e){
 		      <!-- Add New Task Widget -->
 			      <div class="newTask-widget clearfix">
 			      <form id="task_form" name="task_form" method="post">
-			        <div class="col-md-12"> <a class="pull-right text-danger" onClick="taskwidget();"><i class="fa fa-times"></i></a>
+			        <div class="col-md-12 noPad">
 			          <form class="form-horizontal clearfix">
-			            <h4>Add Task</h4>
-			            <div class="row">
+			          
+			          <div class="popupHead"><span>Add Task</span><i class="closePop pull-right"  onClick="taskwidget();"></i></div>
+
+			            <div class="row popupContent">
 			              <div class="col-md-6" >
 			                <label>Assign To<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
@@ -912,13 +924,13 @@ function preventTabkey(e){
 			                </label> -->
 			              </div>
 			              <div class="clearfix"></div>
-			              <div class="clearfix mt col-md-12">
-			                <div class="pull-right">
-			                  <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="saveTask();">
-			                  <input type="button" class="btn btn-default btn-sm ml10" value="Cancel"  onclick="taskwidget();">
-			                </div>
-			              </div>
 			            </div>
+			            
+						<div class="popupFoot text-right">
+				          <button type="button" class="slBtn md colorBtn" onclick="saveTask();">Submit</button>
+				          <button type="button" class="slBtn md" onclick="taskwidget();"> Cancel</button>
+				        </div>			            
+			            
 			          </form>
 			        </div>
 			       </form>
@@ -928,7 +940,6 @@ function preventTabkey(e){
 		  </div>
 		  </c:if>
 
-<div class="addtAsk_popmask"></div>
 </sec:authorize>
 
 <!--  Theme Switcher div  Commented By Mahesh  -->
@@ -1077,7 +1088,7 @@ $(".collpase-div").click(function(){
 
 //Add Task Div
  $(".icon-addTask").click(function(){
-	$('.addtAsk_popmask').toggle();
+	$('.mask').fadeIn(150);
 	$(".addTask-widget").toggleClass("addTask-widget-active");
 	$(".newTask-widget").hide();
 	$("#myTask").show();
@@ -1503,14 +1514,9 @@ $(".nav-tabs").click(function(){
 </script>
 
 <script type="text/javascript">
-/* function closePop(){
-	alert('naaistam');
-	 $(".addTask-widget").removeClass("addTask-widget-active");
-	$(".addtAsk_popmask").fadeOut();
-} */
 $('.taskpop-close').click(function (){
 	$(".addTask-widget").removeClass("addTask-widget-active");
-	$(".addtAsk_popmask").fadeOut();
+	$(".mask").fadeOut(150);
 });
 </script>
 
@@ -1891,6 +1897,12 @@ $(document).ready(function(){
                 count++;
             }
         });
+        
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        }  
     });
     
     // Orgs popup search
@@ -1904,6 +1916,13 @@ $(document).ready(function(){
                 count++;
             }
         });
+
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        } 
+    
     });
 });
 </script>

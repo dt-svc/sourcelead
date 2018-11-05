@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.service.InvoiceDataService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -50,6 +52,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 	
 	@Autowired
 	InvoiceDataDao invoiceDataDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public Integer saveInvoiceData(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj) throws EncryptedDocumentException, InvalidFormatException {
@@ -291,7 +296,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 
 	@Override
 	public ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception {
-		return invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
+		ResponseList<InvoiceData> list = invoiceDataDao.getInvoiceDetails(invoiceDetailsDTO, orgLocation);
+		for (InvoiceData invoiceData : list.getData()) {
+			if(invoiceData.getDate() != null)
+			invoiceData.setDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getDate()));
+			if(invoiceData.getLastmodified() != null)
+			invoiceData.setLastModifiedStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getLastmodified()));
+			if(invoiceData.getDueDate() != null)
+			invoiceData.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoiceData.getDueDate()));
+		}
+		return list;
 
 		// TODO do not delete @Rajashekar
 		/*List<InvoiceData> invoiceDataList = invoiceDataDao.getInvoiceDetails(userId, orgLocationId);

@@ -92,6 +92,10 @@ public class InvoicePayment {
 	@Transient
 	@JsonProperty
 	private String createdByName;
+	
+	@Transient
+	@JsonProperty
+	private Double paidAmount;
 
 	public Long getId() {
 		return id;
@@ -247,6 +251,16 @@ public class InvoicePayment {
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public Double getPaidAmount()
+	{
+		return paidAmount;
+	}
+
+	public void setPaidAmount(Double paidAmount)
+	{
+		this.paidAmount = paidAmount;
 	}
 	
 }

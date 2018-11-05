@@ -302,13 +302,13 @@ function employeesPagination(url){
     } );
     $("#employeesListTablePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#employeesDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   getEmployeeList();
-    	   }
-    	});
+   
 }
-
+$("#employeesDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   getEmployeeList();
+	   }
+	});
 </script>
 
 <!--  TODO do not delete @Rajashekar -->

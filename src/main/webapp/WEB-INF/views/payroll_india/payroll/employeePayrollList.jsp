@@ -47,6 +47,10 @@
 								<option selected>Salary</option>
 							</select>
 						</div>
+						
+						<div class="col-md-4">
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+						</div>
 						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
 								onclick="runIndPayroll();">Run Payroll</a>
@@ -310,14 +314,32 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
     });
 });
 
-
 $('#reviewTab').click(function(){
 	 $("#reviewTab").addClass("current");
 	 $("#approveTab").removeClass("current");
 	 $("#reviewDiv").show();
 	 $("#approveDiv").remove();
-	 
 });
 </script>
+
+ <div class="modal" style="display: none;" id="bulkimportPOP"></div>
+ <script>
+ function bulkAdjustment(){
+	 $("#bulkimportPOP, .mask").fadeIn();
+	 var feqUUID = $("#paySheetFrequency").val();
+	 $.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+	         success :function(result) {
+	        	 $("#bulkimportPOP").empty();
+	             $("#bulkimportPOP").append(result);
+	         },
+	    });
+ };
+ function bulkAdjustmentClose(){
+	 $("#bulkimportPOP, .mask").fadeOut();
+	 $("#bulkimportPOP").empty();
+ }
+ </script>
   
 <jsp:include page="../../masterFooter.jsp" />
