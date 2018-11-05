@@ -253,13 +253,13 @@ public interface CandidateService {
 
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
+	public Boolean addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
 	
-
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations);
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations, String candidateLocation);
 
 	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
 	
 	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
 
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception;
 }

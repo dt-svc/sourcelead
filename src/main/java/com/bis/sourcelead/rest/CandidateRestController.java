@@ -1113,15 +1113,19 @@ public class CandidateRestController {
 
 	
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
-	public String addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
+	public Object[] addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByUUId(uuid);
+		Boolean flag = false;
+		Object[] countAndSum = null;
 		if (null != marketplace) {
-			candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
-		}	
-		return "success";
-		
+			flag = candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+			}
+		if(flag == true && countAndSum == null){
+			countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
+			}
+		return countAndSum;
 	}
 	
 	

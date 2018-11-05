@@ -35,10 +35,14 @@
             </select>
           </div>
           <div class="col-md-4 col-xs-12 padding_right">
-            <input type="text" class="form-control" placeholder="Location" name="pwd">
+            <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "" onkeydown = "getGloblaMarketPlaceCandidates('listModel')">
           </div>
-          <div class="col-md-1 col-xs-12 padding_left"> <a class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
+          <div class="col-md-1 col-xs-12 padding_left"> <a onclick = "getGloblaMarketPlaceCandidates('listModel')" class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
           <div class="clearfix"></div>
+              <div class="tbldata-dotdot-100 mt">
+		   	  	   <a href="#" onclick="initMarketplacePayment()">Pay</a>
+		   </div>
+          
           <div class="col-md-12 mt10"> <a href="#" class="pull-right small advancedSearch" title="Advanced Search" onClick=" openPop()">Advanced Search</a> </div>
         </div>
       </div>
@@ -47,7 +51,7 @@
           <div class="profileDetails">
             <div class="profileDetails-header row">
               <div class="col-md-3 mt5">
-                <h5 class="clearfix pull-left small mb0 text-muted mt5">Showing 4 results</h5>
+               <h5 id = "profileCount" class="clearfix pull-left small mb0 text-muted mt5">Showing  0  results</h5>
                 <div class="pull-left headerItems">
                   <ul class="list-unstyled list-inline ml mb0 mt2">
                     <li><a title="List Model" href="javascript:void(0)" onclick="getGloblaMarketPlaceCandidates('listModel');" id="listModel"><i class="fa fa-th-list text-primary"></i></a></li>
@@ -55,12 +59,17 @@
                   </ul>
                 </div>
               </div>
-              <div class="col-md-9">
-                <ul class="pull-right mb0 list-unstyled list-inline">
-                  <li> <span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
+              
+                <div class="col-md-9">
+				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
+				  <li id ="cartCount"><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li id ="totalPrice"><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
+					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
                 </ul>
               </div>
+           
+            
             </div>
             <div class="clearfix"></div>
 			  <div class="scrollContent">
@@ -586,12 +595,18 @@
 	}
   $(document).ready(function () {
 	 getGloblaMarketPlaceCandidates('listModel'); 
+	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
+	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
   });
 
 function getGloblaMarketPlaceCandidates(divType){
-	 $.ajax({
+	var searchValue = $("#globalMarketSearh").val();
+	searchValue = searchValue ? searchValue : "";
+	var candidateLocation = $("#candidateLocation").val();
+	candidateLocation = (candidateLocation.length > 1) ? candidateLocation : "" ;
+	$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getGlobalMarketplaceListGridCard",
+			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation,
 			success : function(object) {
 				if(object != null){
 					var result = "";
@@ -744,6 +759,7 @@ function getGloblaMarketPlaceCandidates(divType){
 						$("#cardView").find("i").addClass("text-muted text-primary");
 						$("#listModel").find("i").removeClass("text-primary text-muted");
 					}
+					$("#profileCount").html("Showing "+object.length+" results ");
 				}
 			}
 		});
@@ -775,25 +791,29 @@ function deleteCandidateMarketCart(candidateMarketUUID, viewModel){
 <script type="text/javascript">
 
 function addCandidateToMarketCart(UUID, viewModel) {
-   $.ajax({
-        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
-        type: "GET",
-        success: function (response) {
-        	if(response=="success"){
-        		if(viewModel=="ListModel"){
-	        		$("#addCartListModel"+UUID).hide();
-	        		$("#addCartListModelDiv"+UUID).empty().append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-	        		$("#deleteIconListModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\',\''+viewModel+'\')"><i class="fa fa-trash-o"></i></a>');
-        		}
-        		if(viewModel=="CardModel"){
-	        		$("#addCartCardModel"+UUID).hide();
-	        		$("#addCartCardModelDiv"+UUID).empty().append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-	        		$("#deleteIconCardModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\',\''+viewModel+'\')"><i class="fa fa-trash-o"></i></a>');
-        		}
-        	}
-        }
-    });
-}
+	  $.ajax({
+	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
+	        type:'GET',
+	        success: function (object) {
+	        	if(object != null){
+	        		if(viewModel=="ListModel"){
+		        		$("#addCartListModel"+UUID).hide();
+		        		$("#addCartListModelDiv"+UUID).append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+		        		$("#deleteIconListModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+	        		}
+	        		if(viewModel=="CardModel"){
+		        		$("#addCartCardModel"+UUID).hide();
+		        		$("#addCartCardModelDiv"+UUID).append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+		        		$("#deleteIconCardModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+	        		}
+	        		sessionStorage.setItem("dynamicCartCount", object[0]);
+	        		sessionStorage.setItem("dynamicTotalPrice",object[1]);
+	        		$("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
+	        		$("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
+	        	}
+	        }
+	    });
+	}
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);
@@ -839,4 +859,18 @@ $("#profileAdSearch, .advancedsearch-mask").fadeIn();
 function filterPop() {
 $(".advancedsearch-mask, #filterSearchMarket").fadeIn();
 }
+</script>
+<script type="text/javascript">
+    function initMarketplacePayment() {
+         $.ajax({
+	      type: "POST",
+    	   url: "/app/init-marketplace-payment?cartId=1234",
+      	success: function(data) {
+      		 if (data) {
+	                location.href = data;
+	            }
+	        	
+	        },  
+  		 }); 
+    }
 </script>

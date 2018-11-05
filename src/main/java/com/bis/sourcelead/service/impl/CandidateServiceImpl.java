@@ -2806,10 +2806,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public Boolean addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
-		//marketplace.setCandidateMarketStatus(Constants.ADDED_CART);
 		newMarketCart.setMarketplaceId(marketplace);
 		newMarketCart.setCandidateId(marketplace.getCandidateId());
 		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
@@ -2822,19 +2821,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
 		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
 		newMarketCart.setStatus(marketplace.getStatus());
+		newMarketCart.setCartStatus(Constants.ADDED_CART);
 		newMarketCart.setCreatedDate(new Date());
 		newMarketCart.setCreatedBy(user);
 		newMarketCart.setUpdatedDate(new Date());
 		newMarketCart.setUpdatedBy(user);
-		//candidateDao.saveMarketPlace(marketplace);
-		candidateDao.addCandidateToMarketCart(newMarketCart);
+		return candidateDao.addCandidateToMarketCart(newMarketCart);
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations, String candidateLocation) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(orgLocations.getId(), searchValue);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchValue, orgLocations.getId(), candidateLocation);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
@@ -2857,6 +2856,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
 		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
+	}
+
+	@Override
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception {
+		// TODO Auto-generated method stub
+		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId);
+		
 	}
 
 }
