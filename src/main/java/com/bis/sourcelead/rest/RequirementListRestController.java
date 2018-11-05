@@ -2091,8 +2091,42 @@ public class RequirementListRestController {
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 							Requirement	requirement = getData(requirementIndex,user,orgLocation);
 			            	if(requirement !=null){
-			            		RequirementSubmissionsCountDTO applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+			            		RequirementSubmissionsCountDTO applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "ALL");
 			            		requirement.setTotalApplicants(applicantsCount.getApplicantsCount());
+			            		if(applicantsCount.getShortlistCount() != null){
+				            		requirement.setShortlistCount(applicantsCount.getShortlistCount().toString());
+			            		}
+			            		if(applicantsCount.getSubmitToClientCount() != null){
+				            		requirement.setSubmitToClientCount(applicantsCount.getSubmitToClientCount().toString());
+			            		}
+			            		if(applicantsCount.getInterviewCount() != null){
+				            		requirement.setInterviewCount(applicantsCount.getInterviewCount().toString());
+			            		}
+			            		if(applicantsCount.getOffersCount() != null){
+				            		requirement.setOffersCount(applicantsCount.getOffersCount().toString());
+			            		}
+			            		if(applicantsCount.getOnHoldCount() != null){
+				            		requirement.setOnHoldCount(applicantsCount.getOnHoldCount().toString());
+			            		}
+			            		if(applicantsCount.getNoResponseCount() != null){
+				            		requirement.setNoResponseCount(applicantsCount.getNoResponseCount().toString());
+			            		}
+			            		if(applicantsCount.getJoinedCount() != null){
+				            		requirement.setJoinedCount(applicantsCount.getJoinedCount().toString());
+			            		}
+			            		
+			            		if(applicantsCount.getBackoutCount() != null){
+				            		requirement.setBackoutCount(applicantsCount.getBackoutCount().toString());
+			            		}
+			            		
+			            		if(applicantsCount.getRejectedCount() != null){
+				            		requirement.setRejectedCount(applicantsCount.getRejectedCount().toString());
+			            		}
+			            		
+			            		if(requirementIndex.getIndustryName() != null){
+				            		requirement.setIndustryName(requirementIndex.getIndustryName());
+			            		}
+			            		
 			            		
 			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
 			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));

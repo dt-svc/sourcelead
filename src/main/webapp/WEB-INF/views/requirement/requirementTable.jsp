@@ -213,7 +213,19 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Bill Rate</th>";
    result = result +"    <th>Type</th>"; 
    result = result +"    <th>Location</th>"; 
-   result = result +"    <th>Applicants</th>"; 
+   result = result +"    <th>Applicants</th>";
+   result = result +"    <th>Shortlisted</th>";
+   result = result +"    <th>Submit to Client</th>";
+   result = result +"    <th>Interview</th>";
+   result = result +"    <th>Offer</th>";
+   result = result +"    <th>Onhold</th>";
+   result = result +"    <th>No Response</th>";
+   result = result +"    <th>Joined</th>";
+   result = result +"    <th>Backout</th>";
+   result = result +"    <th>Rejected</th>";
+   result = result +"    <th>Experience</th>";
+   result = result +"    <th>noOfpositions</th>";
+   result = result +"    <th>Industry Name</th>";
    result = result +"    <th>Owner</th>"; 
    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
    result = result +"    <th>Status</th>"; 
@@ -290,6 +302,18 @@ function jpagination(url,sourceleadUrl){
            { "data": "jobType" },
            { "data": "country"},
            { "data": "totalApplicants" },
+           { "data": "shortListApplicantsCount" },
+           { "data": "submitToClientsCount" },
+           { "data": "interviewCount" },
+           { "data": "offerCount" },
+           { "data": "onHoldCount" },
+           { "data": "onResponseCount" },
+           { "data": "joinedCount" },
+           { "data": "backOutCount" },
+           { "data": "rejectedCount" },
+           { "data": "experience" },
+           { "data": "positions" },
+           { "data": "industryName" },
            { "data": "manager" },
            { "data": "createdDate"},
            { "data": "requirementSubmissionStatus" }
@@ -582,6 +606,192 @@ function jpagination(url,sourceleadUrl){
 		         		}
 		         		else{
 		         			result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "shortListApplicantsCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined'){
+		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "submitToClientsCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined'){
+		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "interviewCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined'){
+		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		  	{
+		         "targets": colIndex++,
+		         "data": "offerCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined'){
+		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			  	{
+		         "targets": colIndex++,
+		         "data": "onHoldCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.onHoldCount!=null && opt.onHoldCount!='' && opt.onHoldCount!='undefined'){
+		         			result = result +"<td><div>"+opt.onHoldCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "onResponseCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.noResponseCount!=null && opt.noResponseCount!='' && opt.noResponseCount!='undefined'){
+		         			result = result +"<td><div>"+opt.noResponseCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "joinedCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined'){
+		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "backOutCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined'){
+		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "rejectedCount",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined'){
+		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "experience",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.minExp!=null && opt.minExp!='' && opt.minExp!='undefined' && opt.maxExp == null){
+		         			result = result +"<td><div>min Exp - "+opt.minExp+"</div></td>";
+		         		}
+		         		else if(opt.maxExp!=null && opt.maxExp!='' && opt.maxExp!='undefined' && opt.maxExp == null){
+		         			result = result +"<td><div>max Exp - "+opt.maxExp+"</div></td>";
+		         		}
+		         		else if((opt.maxExp!=null && opt.maxExp!='' && opt.maxExp!='undefined') && (opt.minExp!=null && opt.minExp!='' && opt.minExp!='undefined')){
+		         			result = result +"<td><div>min Exp- "+opt.minExp+"- max Exp - "+opt.maxExp+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "positions",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.positions!=null && opt.positions!='' && opt.positions!='undefined'){
+		         			result = result +"<td><div>"+opt.positions+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "industryName",
+		     	 "sortable": false,
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.industryName!=null && opt.industryName!='' && opt.industryName!='undefined'){
+		         			result = result +"<td><div>"+opt.industryName+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>--</div></td>";
 		         		}
 			            return result;
 		          }

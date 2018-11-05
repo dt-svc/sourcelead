@@ -714,6 +714,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	 statusList.add("BACKOUT");
         	 statusList.add("OFFERED");
         	 statusList.add("JOINED");
+        	 statusList.add("ONHOLD");
+        	 statusList.add("NORESPONSE");
         	 
          }else {
         	 statusList.add(submissionStatus);
@@ -740,6 +742,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                          + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
              }else if(ss.equalsIgnoreCase("JOINED")){
                  submissionStages = "and (reqSub.submissionStatus = 'JOINED')";
+             }
+             else if(ss.equalsIgnoreCase("ONHOLD")){
+                 submissionStages = "and (reqSub.submissionStatus = 'ONHOLD')";
+             }
+             else if(ss.equalsIgnoreCase("NORESPONSE")){
+                 submissionStages = "and (reqSub.submissionStatus = 'NORESPONSE')";
              }
              
              ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
@@ -859,6 +867,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                         		break;
                         case "JOINED":  rsc.setJoinedCount(listDistinct.size());
                         		break;
+                        case "ONHOLD":  rsc.setOnHoldCount(listDistinct.size());
+                		break;
+                        case "NORESPONSE":  rsc.setNoResponseCount(listDistinct.size());
+                		break;
                     }
         	 
          }
