@@ -76,6 +76,8 @@
 				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
 				
+				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				
 				</ul>
 			</div>
                  <!-- Dropdown -->
@@ -175,7 +177,7 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu3" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 
-				<%-- <li><a href="${appPath}/dailyTimeSheetReports">Daily Timesheet Report</a></li> --%>
+				<li><a href="${appPath}/projectReport">Project Report</a></li>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
 				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
@@ -295,18 +297,20 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/payrollRegisterReport">Payroll Register Reports</a></li>
+				<li><a href="${appPath}/payrollRegisterReport">Payroll Register</a></li>
 				<li><a href="${appPath}/payrollComparison">Comparsion</a></li>
 				<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
-				<li><a href="${appPath}/checkRegisterReport">Check Register Report</a></li>
-				<!-- <li><a href="employeePayroll.html">Employee Report</a></li>
-				<li><a href="companysnapshot.html">Employee Hours Paid</a></li>
+				<li><a href="${appPath}/checkRegisterReport">Check Register</a></li>
+				<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
+				<li><a href="${appPath}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+				<!-- <li><a href="companysnapshot.html">Employee Hours Paid</a></li>
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
+				<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
 				</sec:authorize>
 				</ul>
 			</div>
@@ -332,6 +336,11 @@
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Performance Reports</a></h2>
                 <ul class="repSearchList">
+                
+                <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
+				</sec:authorize>
+				
  				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
@@ -375,6 +384,9 @@
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
 				<li><a href="${appPath}/requirementStagesListForReports">Job(s) Stage</a></li>
 				</sec:authorize>
+				
+				<li><a href="${appPath}/jobsPerformanceReport">Jobs Report</a></li>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -422,15 +434,21 @@
 				    </c:if>
 				</sec:authorize>
 				
+				<li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+            
+            
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">HR Reports</a></h2>
                 <ul class="repSearchList">
-                   <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+                
+                <li><a href="${appPath}/projectReport">Project Report</a></li>
+                
+                <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
+					<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
@@ -463,7 +481,7 @@
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
             
-            
+            <div class="clearfix mt mb"></div>
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">Associate Report</a></h2>
                 <ul class="repSearchList">
@@ -494,9 +512,46 @@
             </div>
             
             
+            <c:if test="${SourceLeadWeb_loginCountryName == 'United States'}">
+            	<div class="newRepListCta">
+                <h2><a href="javascript:void(0)">US Payroll Reports</a></h2>
+	                <ul class="repSearchList">
+		                <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/payrollRegisterReport">Payroll Register</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/payrollComparison">Comparison</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/payrollListSummaryReport">Payroll Summary</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/checkRegisterReport">Check Register</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/associateWithholding">Associate Withholding</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/payrollTaxesAndWagesReport">Taxable Wages Report</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+	                </ul>
+                <div class="noDate noDateSm" style="display: none;"></div>
+            </div>
+            </c:if>
             
-            
-            
+            <div class="clearfix mt mb"></div>
             
             
                                    

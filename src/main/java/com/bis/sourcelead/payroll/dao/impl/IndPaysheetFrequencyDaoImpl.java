@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.IndPaysheetFrequencyDao;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
@@ -75,7 +78,19 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				}
 			}
 		}
-		Query queryObj = session.createQuery(qry + query1.toString());
+		
+		//List shorting order
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(indPaysheetFrequencyDTO.getSortColumn())) {
+			if(indPaysheetFrequencyDTO.getSortColumn().equalsIgnoreCase("groupName")) {
+				sortingQry = " order by ipf.userGroup."+ indPaysheetFrequencyDTO.getSortColumn() +" "+indPaysheetFrequencyDTO.getSortOrder();
+			}else {
+				sortingQry = " order by ipf."+ indPaysheetFrequencyDTO.getSortColumn() +" "+indPaysheetFrequencyDTO.getSortOrder();
+			}
+			
+		}
+				
+		Query queryObj = session.createQuery(qry + query1.toString()+sortingQry);
 		frequencyList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		response.setData(frequencyList);
 		return response;
@@ -146,6 +161,110 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		}
 		
 		response.setObject(empPay);
+		return response;
+	}
+	
+	
+	@Override
+	@Transactional
+	public ResponseList<IndEmployeePayroll> getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(String paysheetFrequencyUuid, String empApproveStatus) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from IndEmployeePayroll iep where iep.indPaysheetFrequency.paySheetFrequencyUUID =:paysheetFrequencyUuid and iep.submitForAproverStatus =:empApproveStatus and iep.status = '1'";
+		List<IndEmployeePayroll> empList = null;
+		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
+		Query queryObj = session.createQuery(qry);
+		empList = queryObj.setString("paysheetFrequencyUuid", paysheetFrequencyUuid).setString("empApproveStatus", empApproveStatus).list();
+		response.setData(empList);
+		return response;
+	}
+	
+	
+	
+	@Override
+	@Transactional
+	public ResponseList<IndEmployeePayroll> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		int filterCount = 0;
+		String qry = "from IndEmployeePayroll iep where iep.candidate.consultantUser.id =:userId and iep.indPaysheetFrequency.orgLocation.id =:orgLocationId and iep.submitForAproverStatus = 'APPROVED' and iep.status = '1'";
+		List<IndEmployeePayroll> frequencyList = null;
+		ResponseList<IndEmployeePayroll> response = new ResponseList<>();
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(indEmployeePayrollDTO.getSearchValue())) {
+			if (indEmployeePayrollDTO.getSearchValue().contains("/")
+					|| indEmployeePayrollDTO.getSearchValue().contains("-")) {
+				String convertedDate = indEmployeePayrollDTO.getSearchValue();
+				if (indEmployeePayrollDTO.getSearchValue().contains("/")) {
+					convertedDate = indEmployeePayrollDTO.getSearchValue().replaceAll("/", "-");
+				}
+				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
+				LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+				DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				String newDate = parsedDate.format(f2);
+				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+				String queryDate = "from IndEmployeePayroll iep where iep.candidate.consultantUser.id =:userId and iep.indPaysheetFrequency.orgLocation.id =:orgLocationId and iep.submitForAproverStatus = 'APPROVED' and ( iep.frequencyStartDate =:sqlDate or iep.frequencyEndDate =:sqlDate or iep.payCheckDate =:sqlDate)";
+				Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId()).setLong("userId",user.getId());
+				
+				/*countlist = session.createQuery("SELECT COUNT(*) " + queryDate).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId()).setLong("userId",user.getId()).list();
+				filterCount = countlist.iterator().next().intValue();
+				
+				int totalCount = 0;
+				if (indEmployeePayrollDTO != null) {
+					if(countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.iterator().next().intValue();
+					}
+				} 
+				response.setRecordsTotal(totalCount);
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					response.setRecordsFiltered(filterCount);
+				}else {
+					response.setRecordsFiltered(totalCount);
+				}*/
+				
+				response.setData(queryObjDate.list());
+				return response;
+			}
+			else {
+				if (indEmployeePayrollDTO.getSearchValue() != null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
+					query1.append(" and (iep.noOfDays like '%"
+						+ indEmployeePayrollDTO.getSearchValue()
+						+ "%' ").append("OR iep.noOfLeaves like '%"
+						+ indEmployeePayrollDTO.getSearchValue()
+						+ "%' ").append("OR iep.grossPay like '%"
+						+ indEmployeePayrollDTO.getSearchValue()
+						+ "%' ").append("OR iep.netPay like '%"
+						+ indEmployeePayrollDTO.getSearchValue()
+						+ "%' ").append("OR iep.tds like '%"
+						+ indEmployeePayrollDTO.getSearchValue()
+						+ "%' )");
+				}
+			}
+		}
+		Query queryObj = session.createQuery(qry + query1.toString());
+		frequencyList = queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("userId",user.getId()).list();
+		
+		/*countlist = session.createQuery("SELECT COUNT(*) "+qry + query1.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId",user.getId()).list();
+		filterCount = frequencyList.size();*/
+		
+		
+		/*int totalCount = 0;
+		if (indEmployeePayrollDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}*/
+		
+		response.setData(frequencyList);
 		return response;
 	}
 

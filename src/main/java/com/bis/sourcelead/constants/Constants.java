@@ -176,6 +176,14 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
+	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
+	
+	public static final String ASSET_ASSIGN_EMAIL = "AssigneAssetEmail";
+	public static final String ASSET_ASSIGN_NOTIFICATION = "AssigneAssetNotification";
+	
+	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
+	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	
@@ -463,6 +471,7 @@ public class Constants {
 	public static final String TimeSheetApproval = "TimeSheetApproval";
 	public static final String OrgSettings = "OrgSettings";
 	public static final String Blogs = "Blogs";
+	public static final String ReleaseNote = "Release Note";
 	public static final String UserManuals = "UserManuals";
 	public static final String Support = "Support";
 	public static final String BackOffice = "BackOffice";
@@ -926,6 +935,11 @@ public class Constants {
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
 			"Amount" , "Status"  , "Approved by"};
 	
+	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
+		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
+	
+	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
+	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
 
     public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
@@ -1274,5 +1288,13 @@ public class Constants {
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
+	public static final String[] APPLICANTS_JOINED_LIST_REPORT_HEADERS = { "Recruiter Name", "Date", "No Of Jobs",
+			"Total Offer", "Total Joiners"};
+	
 
+	public static final String CONTRIBUTION = "contribution";
+	public static final String DEDUCTION = "deduction";
+	
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
 }

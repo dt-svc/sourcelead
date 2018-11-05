@@ -80,7 +80,7 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#rejectedLeavesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED";
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=REJECTED&searchValue="+searchValue;
 		prepareRejectedEmployeesList(url);
 }
 </script> 

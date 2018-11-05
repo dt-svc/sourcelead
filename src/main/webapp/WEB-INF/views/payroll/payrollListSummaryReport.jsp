@@ -16,7 +16,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll List Summary</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payroll List Summary</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Payroll List Summary
+		</div>
     </section>
     <div class="clearfix"></div>
     <div class="timesheet_out">
@@ -244,7 +246,7 @@ $(document).ready(function(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result
-													+ ' <td><div class="tblminwidth-75">'+ opt.empPayRate+ '</div></td>';
+													+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.empPayRate+ '</div></td>';
 											return result;
 
 										}
@@ -274,7 +276,7 @@ $(document).ready(function(){
 										"data" : "grossPay",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-												result = result + ' <td><div class="tbldata-dotdot-sm">'+ opt.grossPay+ '</div></td>';
+												result = result + ' <td><div class="tbldata-dotdot-sm"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.grossPay+ '</div></td>';
 											return result;
 										}
 									},
@@ -283,7 +285,7 @@ $(document).ready(function(){
 										"data" : "preTaxDeduction",
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tblminwidth-50">'+ opt.preTaxDeduction+ '</div></td>';
+											result = result+ '<td><div class="tblminwidth-50"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.preTaxDeduction+ '</div></td>';
 											return result;
 										}
 									},
@@ -308,6 +310,7 @@ $(document).ready(function(){
 									{
 										"targets" : colIndex++,
 										"data" : "netpay",
+										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+ opt.netPay + '</div></td>';
@@ -320,7 +323,7 @@ $(document).ready(function(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>xxxx</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> xxxx</div></td>';
 											return result;
 										}
 									},
@@ -330,7 +333,7 @@ $(document).ready(function(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i>'+opt.ytdNet +'</div></td>';
+											result = result+ '<td><div class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet +'</div></td>';
 											return result;
 										}
 									},

@@ -279,7 +279,7 @@
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOffboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -372,7 +372,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due before:</strong><span class="text-danger">*</span></label>
+                                      <label><strong>Due date:</strong><span class="text-danger">*</span></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -380,7 +380,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due date" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<option value="1">1</option>
 														<option value="2">2</option>

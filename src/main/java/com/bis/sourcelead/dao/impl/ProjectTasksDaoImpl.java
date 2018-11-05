@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
@@ -408,17 +409,29 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		 
 		StringBuilder query1 = new StringBuilder("");
 		if(projectTasksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectTasksDTO.getSearchValue())) {
-		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
-		       .append("OR (pt.generatedId like '%" + projectTasksDTO.getSearchValue() + "%' )")
-		       .append("OR (concat(pt.generatedId,pt.taskName) like '%" + projectTasksDTO.getSearchValue().replace("-", "").replaceAll("[\\s]+", "").trim() + "%' )")
-		       .append("OR (pt.priority IS NOT NULL and pt.priority.id IN(Select ld.id from LookUpData ld where ld.name like '%" + projectTasksDTO.getSearchValue() + "%' ))")
-			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
-			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
+		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (pt.generatedId like '%" + projectTasksDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (concat(pt.generatedId,pt.taskName) like '%" + projectTasksDTO.getSearchValue().replace("'", "").replace("-", "").replaceAll("[\\s]+", "").trim() + "%' )")
+		       .append("OR (pt.priority IS NOT NULL and pt.priority.id IN(Select ld.id from LookUpData ld where ld.name like '%" + projectTasksDTO.getSearchValue().replace("'", "") + "%' ))")
+			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue().replace("'", "") + "%' ")
+			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue().replace("'", "") + "%' )");
 					
 		}
 		 //concat(userRole.user.firstName,userRole.user.lastName) like
-		 String queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and pt.status ='1'" ;
-		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
+		 String queryStr = "";
+		 String queryStrForCount = "";
+		 if(projectTasksDTO.getTasksFilter().equalsIgnoreCase("all")) {
+			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and pt.status ='1'" ;
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
+
+		 }else {
+			 String myAssign = "pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.projectMemberCandidteId.id IN ("+projectTasksDTO.getCandidateId()+"))";
+			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+")  and pt.status ='1'" ;
+			  
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+") and pt.status ='1' " ;
+
+		 }
+		 
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {
 			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
@@ -427,7 +440,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 subQueryStr = subQueryStr+" and pt.taskStatus.id IN ("+taskStatus+") ";
 		 }
 		 if(StringUtils.isNotEmpty(assignedMembers)) {
-			 subQueryStr = subQueryStr+"  and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
+			 subQueryStr = subQueryStr+" and pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.id IN ("+assignedMembers+")) ";
+		 } 
+		 
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getCreatedByFilter())) {
+			 subQueryStr = subQueryStr+"  and pt.createdBy IN(select pm.projectMemberCandidteId.consultantUser.userCode from ProjectMembers pm where pm.id IN ("+projectTasksDTO.getCreatedByFilter()+")) ";
+		 }
+		 
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getPriorityFilter())) {
+			 subQueryStr = subQueryStr+" and pt.priority.id IN ("+projectTasksDTO.getPriorityFilter()+") ";
+		 }
+		 
+		 if(StringUtils.isNotEmpty(projectTasksDTO.getSeverityFilter())) {
+			 subQueryStr = subQueryStr+" and pt.severity.id IN ("+projectTasksDTO.getSeverityFilter()+") ";
 		 }
 		 
 		 List<String> tagsList = new ArrayList<>();
@@ -529,6 +554,25 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query = "from ProjectTasks pt where pt.leaveType.id = :levaTypeId ";
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("levaTypeId", levaTypeId).list(); 
 		return projectTasksList; 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String quey = "";
+		if(taskType.equalsIgnoreCase(Constants.TASKTYPE)) {
+			quey = "pt.taskType.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSEVERITY)) {
+			quey = "pt.severity.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			quey = "pt.priority.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			quey = "pt.taskStatus.id =:lookupId";
+		} 
+		String query = "from ProjectTasks pt where "+quey+" ";
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("lookupId", lookupId).list(); 
+		return projectTasksList;
 	}
 	 
 }

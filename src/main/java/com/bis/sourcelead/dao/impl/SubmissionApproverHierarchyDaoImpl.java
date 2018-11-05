@@ -455,13 +455,30 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long masterCandidateId,Long projectId)
-	{
+	{ 
 		Boolean flag = true;
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
 		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.masterCandidateId.id = :masterCandidateId  and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate) OR (submission.startDate = :sqlStartDate and submission.endDate = :sqlEndDate))");
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("masterCandidateId", masterCandidateId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
+		if (null != submissionApproverHierarchyList && !submissionApproverHierarchyList.isEmpty()) {
+			flag = false;
+		}
+		return flag;
+	}
+	
+	@SuppressWarnings("unchecked")   
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(Date frequencyStartDate, Date frequencyEndDate, Long masterCandidateId,Long projectId)
+	{ 
+		Boolean flag = true;
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission left join fetch submission.projects proj  left join fetch submission.projectMembers pm where proj.id = :projectId and pm.masterCandidateId.id = :masterCandidateId  and (sah.submissionStatus = 'SUBMITTED' OR sah.submissionStatus = 'APPROVED')  and  ((sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate) OR (submission.startDate = :sqlStartDate and submission.endDate = :sqlEndDate))");
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
 		if (null != submissionApproverHierarchyList && !submissionApproverHierarchyList.isEmpty()) {
 			flag = false;
 		}
@@ -2119,21 +2136,34 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean isReopenButtonVisible(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long locationId)
+	public Boolean isReopenButtonVisible(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long locationId,Long orgId,String isGlobalAccess)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+		String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " and pc.orgLocationsId.org.id = :orgId ";
+	    }else {
+	    	globalUserQuery = " and pc.orgLocationsId.id = :locationId ";
+	    }
+	    
 		Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy "
 				+ " left join fetch hierarchy.projectClientsId pc left join fetch sah.submissionId submission  "
 				+ "   left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc  "
 				+ "  where pj.id = :projectId and mc.id = :masterCandidateId and sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate"
-				+ "  and pc.orgLocationsId.id = :locationId and (pc.level IN(select max(subpc.level) from ProjectClients subpc where subpc.projectId.id = :projectId and subpc.orgLocationsId.org.orgType <> '"
+				+globalUserQuery+" and  (pc.level IN(select max(subpc.level) from ProjectClients subpc where subpc.projectId.id = :projectId and subpc.orgLocationsId.org.orgType <> '"
 				+ Constants.GUEST
 				+ "') OR pc.level IN(select min(subpc.level) from ProjectClients subpc where subpc.projectId.id = :projectId and subpc.orgLocationsId.org.orgType <> '"
 				+ Constants.GUEST + "'))" + " ");
-		List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setLong("locationId", locationId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
-		boolean flag = false;
+		Query queryObj = submissionApproverHierarchyListQuery.setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate);
+		 if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+			 queryObj .setLong("orgId", orgId);
+		 }else {
+			 queryObj.setLong("locationId", locationId);
+		 }
+		 List<SubmissionApproverHierarchy> sahList = queryObj.list();
+		 boolean flag = false;
 		if (sahList != null && !sahList.isEmpty()) {
 			flag = true;
 		}

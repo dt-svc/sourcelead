@@ -61,7 +61,6 @@ public class AssetAssign {
 	@Column(name = "STATUS")
 	private int status;
 
-	
 	@Transient
     @JsonProperty
     private String assignedOnStr;
@@ -69,6 +68,34 @@ public class AssetAssign {
 	@Transient
     @JsonProperty
     private String returnedOnStr;
+	
+	@Transient
+    @JsonProperty
+    private String employeeId;
+	
+	@Transient
+    @JsonProperty
+    private String employeeName;
+	
+	@Transient
+    @JsonProperty
+    private String shiftName;
+	
+	@Transient 
+	@JsonProperty
+	private String categoryName;
+	
+	@Transient
+    @JsonProperty
+    private String assetName;
+	
+	@Transient
+    @JsonProperty
+    private String serialNumber;
+	
+	@Transient
+    @JsonProperty
+    private String assetUUID;
 	
 	public Long getId() {
 		return id;
@@ -164,5 +191,61 @@ public class AssetAssign {
 
 	public void setReturnedOnStr(String returnedOnStr) {
 		this.returnedOnStr = returnedOnStr;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public String getAssetName() {
+		return assetName;
+	}
+
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
+	}
+
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+
+	public String getAssetUUID() {
+		return assetUUID;
+	}
+
+	public void setAssetUUID(String assetUUID) {
+		this.assetUUID = assetUUID;
 	}
 }

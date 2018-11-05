@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
 import com.bis.sourcelead.payroll.dto.PayrollApproverDTO;
@@ -39,5 +40,11 @@ public interface PaysheetFrequencyService {
 	YTDPayrollDTO getDeductionYTD(EmployeePayroll payroll, Long deductionId, OrgLocations orgLocation, String reportType);
 
 	YTDPayrollDTO getPayrollTaxesYTD(EmployeePayroll payroll, OrgLocations orgLocation);
+
+	ResponseList<PayrollReportDTO> getpayrollTaxAndWagesReport(PayrollReportDTO payrollReportDTO, OrgLocations orgLocations);
+
+	ResponseList<AssociateReportDTO> getEmployeePayrollListByPayCheckDate(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation);
+
+	ResponseList<PayrollReportDTO> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation);
 	
 }

@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.payroll.dao.AssociatePayrollPayheadHistoryDao;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
-import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -71,6 +70,24 @@ public class AssociatePayrollPayheadHistoryServiceImpl  implements AssociatePayr
 		res.setData(totalList);
 		
 		return res;
+	}
+	
+	
+	@Override
+	public List<AssociatePayrollPayheadHistory> getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(String paySheetFrequencyUUID)throws Exception {
+		
+		return associatePayrollPayheadHistoryDao.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(paySheetFrequencyUUID);
+	}
+
+	@Override
+	public List<AssociatePayrollPayheadHistory> getLatestAssociatePayrollPayheadByEmpPayrollId(Long empPayrollId)
+			throws Exception {
+		return associatePayrollPayheadHistoryDao.getLatestAssociatePayrollPayheadByEmpPayrollId(empPayrollId);
+	}
+
+	@Override
+	public IndEmployeePayroll saveIndEmployeePayroll(IndEmployeePayroll indEmployeePayroll) throws Exception {
+		return associatePayrollPayheadHistoryDao.saveIndEmployeePayroll(indEmployeePayroll);
 	}
 	
 }

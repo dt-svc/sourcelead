@@ -1,12 +1,18 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -22,6 +28,9 @@ import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.AssetServices;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
@@ -35,10 +44,14 @@ import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -61,6 +74,24 @@ public class AssetServiceImpl implements AssetService{
 		return assetDao.saveAsset(asset);
 	}
 	
+	
+	@Autowired
+	HttpServletRequest request;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+		
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -349,6 +380,7 @@ public class AssetServiceImpl implements AssetService{
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
 		 }
 		 
+		 
 		 Set<AssetAssign> assetAssignDBList = new HashSet<>();
 		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
 			 AssetAssign aa = null;
@@ -420,8 +452,19 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
-		 Asset savedAsset = assetDao.saveAsset(asset);		
+		 
 
+		 //send assign asset email
+		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
+			 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+				 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
+					     Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(asset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
+					      if(flag == false)
+							assignAssetEmail(aad,asset,user,orgLocations);
+					 }
+			 }
+		 }
+		 Asset savedAsset = assetDao.saveAsset(asset);
 			if(assetDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
 					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
@@ -446,6 +489,60 @@ public class AssetServiceImpl implements AssetService{
 
 
 	
+	private void assignAssetEmail(AssetAssignDTO aad, Asset savedAsset, User loginUser, OrgLocations orgLocations) throws Exception {
+		UserRole userRole = userRoleService.getUserRoleById(Long.valueOf(aad.getShiftEmp()));
+		if(userRole.getUser() != loginUser) {
+			AssetCategory cat = assetCategoryService.getAssetCategoryByCategoryId(savedAsset.getAssetCategory().getId());
+			StringBuilder fromNameBuilder = new StringBuilder();
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			emailMessage.setToEmail(userRole.getUser().getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			if(savedAsset.getName() != null) {
+				globalVarsMap.put("assetName", savedAsset.getName());
+			}else {
+				globalVarsMap.put("assetName", "--");
+			}
+			globalVarsMap.put("assignMemberName", userRole.getUser().getFullName());
+			
+			globalVarsMap.put("category", cat.getCategoryName());
+
+			
+			if(aad.getAssignedOn() != null) {
+				globalVarsMap.put("assignedOn", aad.getAssignedOn());
+			}else {
+				globalVarsMap.put("assignedOn", "--");
+			}
+			if(!aad.getReturnedOn().isEmpty()) {
+				globalVarsMap.put("returnedOn", aad.getReturnedOn());
+			}else {
+				globalVarsMap.put("returnedOn", "--");
+			}
+			globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
+			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+			if (null != orgLocations.getId())
+				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.ASSET_ASSIGN_EMAIL,new ArrayList<EmailAttachment>());
+			// calling the sendNotification method of emailScenerioUtil
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSET_ASSIGN_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			String actionLink = null;
+			if(userRole.getUser() != null) {
+				emailScenerioUtil.sendNotification(actionLink, loginUser, userRole.getUser(), orgLocations, notificationScenario, new HashMap<String, String>());
+			}	
+		}
+	}
+
+
 	@Override
 	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception {
 		AssetServices assetService = new AssetServices();
@@ -471,5 +568,16 @@ public class AssetServiceImpl implements AssetService{
 	@Override
 	public List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId, AssetGrowthDTO assetGrowthDTO,Date[] searchDates) throws Exception {
 		return assetDao.getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(orgLocationId, assetGrowthDTO,searchDates);
+	}
+
+
+	@Override
+	public ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
+		return assetDao.getDynamicAssignAssetFilterListByLocationId(orgLocationId, assetDTO);
+	}
+
+	@Override
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception {
+		return assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(assetId, shiftId, userRoleId);
 	}
 }

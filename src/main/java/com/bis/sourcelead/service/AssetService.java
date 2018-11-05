@@ -53,6 +53,8 @@ public interface AssetService {
 	
 	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
 	
+	ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
 	public Asset saveAssetDetails(AssetDTO assetDTO,User user,OrgLocations orgLocations) throws Exception;
@@ -80,5 +82,8 @@ public interface AssetService {
 	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception;
 	
 	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
+	
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception;
+	
 
 }

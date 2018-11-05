@@ -12,12 +12,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollReportDao;
+import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
 import com.bis.sourcelead.payroll.dto.CompareDataDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
@@ -34,6 +37,7 @@ import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.PayrollReportService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -58,6 +62,9 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 	@Override
 	public ResponseList<PayrollReportDTO> getPayrollSummaryByPayPeriodAndPayCheckDate(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
@@ -112,6 +119,34 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 	public ResponseList<CheckRegisterReportDTO> getCheckRegisterReports(OrgLocations orgLocation, PayrollReportDTO payrollReportDTO)
 	{
 			ResponseList<CheckRegisterReportDTO> res = payrollReportDao.getCheckRegisterReports(orgLocation,payrollReportDTO);
+			List<CheckRegisterReportDTO> list = new ArrayList<>();
+			
+			for (CheckRegisterReportDTO data : res.getData()) {
+				CheckRegisterReportDTO resDTO = new CheckRegisterReportDTO();
+				try {
+//					Candidate candidate = candidateService.getCandidateByCandidateId(data.getCandidateId().longValue());
+					Candidate candidate = new Candidate();
+					candidate.setId(data.getCandidateId().longValue());
+					YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(candidate, orgLocation, Constants.APPROVED);
+					resDTO.setYtdNet(ytdDTO.getYtdNet());
+					resDTO.setEmpId(data.getEmpId());
+					
+					if(StringUtils.isNoneBlank(data.getLastName())) {
+						resDTO.setLastName(data.getLastName());
+					}else {
+						resDTO.setLastName(" ");
+					}
+					
+					resDTO.setFirstName(data.getFirstName());
+					resDTO.setDepartmentId(data.getDepartmentId());
+					resDTO.setNetPay(data.getNetPay());
+					resDTO.setTotalChecks(data.getTotalChecks());
+					list.add(resDTO);
+					res.setData(list);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		    return res;
 	}
 
@@ -486,6 +521,13 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public ResponseList<AssociateWithHoldingDTO> getAssociateWithHoldingReports(OrgLocations orgLocation, AssociateWithHoldingDTO associateWithHoldingDTO)
+	{
+		ResponseList<AssociateWithHoldingDTO> response = payrollReportDao.getAssociateWithHoldingReport(orgLocation,associateWithHoldingDTO);
+		return response;
 	}
 
 

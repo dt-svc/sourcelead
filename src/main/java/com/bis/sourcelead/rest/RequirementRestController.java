@@ -1,7 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Writer;
 import java.math.BigInteger;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,6 +99,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.common.base.Joiner;
@@ -194,6 +202,9 @@ public class RequirementRestController {
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
 	 
+	@Autowired
+	private PdfUtil pdfUtil;
+	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
 			throws Exception {
@@ -228,8 +239,9 @@ public class RequirementRestController {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				boolean result = requirementService.changeJobFairStatus(jobFairId, status);
+				boolean result = requirementService.changeJobFairStatus(jobFairId, status, user, orgLocation);
 				response.setObject(result);
 				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
 				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
@@ -251,15 +263,27 @@ public class RequirementRestController {
 		ResponseList<String> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			if(user !=null) {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-				/*Timezone timezone = null;
-				if(loginOrgLocations.getTimezone() != null){
-					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;	
+				}
+				/*Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if ((loginOrgLocations.getId().longValue() == userRole.getOrgLocations().getId().longValue()) && (user.getId().longValue() == userRole.getUser().getId().longValue()) 
+								&& !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
 				}*/
-				
-				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -279,6 +303,7 @@ public class RequirementRestController {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
@@ -287,7 +312,26 @@ public class RequirementRestController {
 				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
 				String selectedDate  = formatter.format(startTime);
 				
-				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;
+				}
+				/*Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if (loginOrgLocations.getId().longValue() == userRole.getOrgLocations().getId().longValue() &&
+								user.getId().longValue() == userRole.getUser().getId().longValue()
+								&& !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
+				}*/
+				
+				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date, adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
 			} else {
@@ -1616,5 +1660,50 @@ public class RequirementRestController {
 		  
 
     }
+	
+	@RequestMapping(value = {"/pdfExportForJobfair", "/excelExportForJobfair"})
+	public File jobFairExcelExport(HttpServletRequest request, HttpServletResponse response, JobFairDTO jobFairDTO,
+			@RequestParam(defaultValue = "false") boolean includeInactive) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			File file = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String[] tableColumns = { "generatedId", "name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id" };
+
+			int sortColumnIndex = 9; // by default sorting using id
+			boolean sortColumnOrder = false; // by default descending order
+			jobFairDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+			jobFairDTO.setUserId(user.getId());
+			jobFairDTO.setOrgLocationId(orgLocations.getId());
+			ResponseList<JobFairDTO> responseList = requirementService.getJobFairsList(jobFairDTO, includeInactive);
+			if (responseList != null && responseList.getData() != null && !responseList.getData().isEmpty()) {
+				if (request.getRequestURI().contains("excelExportForJobfair"))
+					file = requirementService.getJobFairListOfExcel(responseList.getData(), user, orgLocations);
+				else
+					file = pdfUtil.getJobFairListOfPdf(responseList.getData(), user, orgLocations);
+			}
+			if(file != null) {
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileName = new StringBuilder();
+				response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				if (file != null) {
+					file.delete();
+				}
+			}
+			return file;
+		}
+		return null;
+	}
 	
 }

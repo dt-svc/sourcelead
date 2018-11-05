@@ -225,14 +225,14 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	}
 
 	@Override
-	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date fromDate, Date endDate, Long orgLocationId,
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,
 			List<Long> excludeIds) throws Exception {
 		if(excludeIds == null || excludeIds.isEmpty()) {
 			excludeIds.add(0l);
 		}
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
-		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
 		if (holiday.size() > 0) {
 			return holiday;
 		}

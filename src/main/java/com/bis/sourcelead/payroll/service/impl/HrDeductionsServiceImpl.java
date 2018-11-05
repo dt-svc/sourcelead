@@ -99,7 +99,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			version = getHrDeductionsVersionByLocationId(orgLocation.getId());
 			version += 1;
 			
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				

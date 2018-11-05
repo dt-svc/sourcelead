@@ -2100,7 +2100,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 			
 //			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(), emp,orgLocations, leave.getUser());
-			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());
+			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId(),orgLocations.getOrg().getId());
 			
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
@@ -2117,7 +2117,7 @@ public class LeaveManagementRestController {
 //			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
-			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			 float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 			 if(!(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus()) || Constants.LEAVE_REJECTED.equalsIgnoreCase(leave.getStatus()))){
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
 						try {
@@ -2125,7 +2125,7 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = tot - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
 						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}
@@ -2136,7 +2136,7 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = tot - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
 						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}

@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 
 public interface RequirementDao {
 
@@ -52,6 +53,8 @@ public interface RequirementDao {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 	
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
+	
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId, String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception;
 	
 	public List<Requirement> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
 	
@@ -219,9 +222,9 @@ public interface RequirementDao {
 
 	public long saveJobFairRequirements(JobFairRequirements jobFairRequirements);
 	
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag);
 
-	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String date);
+	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag);
 	
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId);
 	
@@ -238,5 +241,7 @@ public interface RequirementDao {
 	public List<RequirementIncentive> getRequirementIncentiveListByRequirementId(long requirementId) throws Exception;
 	
 	void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
+	
+	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
 
 }

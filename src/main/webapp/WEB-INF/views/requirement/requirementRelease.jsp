@@ -27,6 +27,10 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
 <!-- Content Area Starts -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    	<div class="pull-left">
+	      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
+	      <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
+	    </div>
     	<c:if test="${!empty msg}">
 			<div class="success_pop" id="selectorReleaseMsg" style="display: block;">
 				<i class="fa fa-check-circle"></i><span>${msg}</span>
@@ -36,6 +40,7 @@ border-radius:3px; cursor: pointer; padding:6px 0px 0px 0px;
       <div class="success_pop" id="selector" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
      </div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
     </section>
     
     <div class="newPrDetails newPrDetailsPMO"> 

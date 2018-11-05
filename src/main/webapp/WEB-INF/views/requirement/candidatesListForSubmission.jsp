@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
 <script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="/resources/js/slead-common.js" type="text/javascript" ></script> <!-- form generator -->
 
 <style>
 .refresh-icon.refreshIcon {
@@ -22,7 +23,7 @@
 
 <div class="advancedsearch-mask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup" id="candidateFilterPopup">
-				<h5 class="headerAdsrch">Advanced Search
+				<h5 class="headerAdsrch">Advance Search
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
@@ -122,7 +123,7 @@
 								<label>Selected Cities</label>
 								<div class="clearfix">
 								   <select class="chosen-select form-control input-sm" multiple
-										data-placeholder="sletected cites" id="city" name="city">
+										data-placeholder="selected cites" id="city" name="city">
 									</select>
 								</div>
 							</div>
@@ -143,19 +144,7 @@
 			</div>
 	
 	
-<script>
-  $(function() { 
-	       //Adding Customized Job Title list this method is slead-common.js
-		   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
-	       
-		 //Adding Customized Job Skills list this method is slead-common.js
-		   tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
-
-		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
-
-		   
-  });
-  </script>
+ 
   
   <script>
   
@@ -184,6 +173,14 @@ function clearCandAdvSearch(){
 		 getcites('apiLocation','city','recommendation');
 	     $("#candidateFilterPopup").toggle();
 		 $(".advancedsearch-mask").fadeIn();
+		 
+		 //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
+		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','selected cites');
  
 	}
 </script>

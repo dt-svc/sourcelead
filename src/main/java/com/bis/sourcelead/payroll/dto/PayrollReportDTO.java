@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.SearchDTO;
-import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 
+@SuppressWarnings("serial")
 public class PayrollReportDTO extends SearchDTO{
 	
 	private String empId;
@@ -141,6 +141,40 @@ public class PayrollReportDTO extends SearchDTO{
 	private Set<EmployeePayrollTax> taxHistory;
 	
 	private YTDPayrollDTO ytdPayrollDTO;
+	
+	private BigDecimal federalTax;
+	
+	private BigDecimal socialSecTax;
+	
+	private BigDecimal medicare;
+	
+	private BigDecimal futa;
+	
+	private BigDecimal stateTax;
+	
+	private BigDecimal localTax;
+	
+	private BigDecimal suta;
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private String employees;
+	
+	private String payrollDepartment;
+	
+	private String exportType;
+	
+	private String assAmount;
+	
+	private String totalVendorAmount;
+	
+	private String vendorName;
+	
+	private String invoiceId;
+	
+	private String invPaidAmount;
 
 	public String getEmpId()
 	{
@@ -790,6 +824,166 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setYtdPayrollDTO(YTDPayrollDTO ytdPayrollDTO)
 	{
 		this.ytdPayrollDTO = ytdPayrollDTO;
+	}
+
+	public BigDecimal getFederalTax()
+	{
+		return federalTax;
+	}
+
+	public void setFederalTax(BigDecimal federalTax)
+	{
+		this.federalTax = federalTax;
+	}
+
+	public BigDecimal getSocialSecTax()
+	{
+		return socialSecTax;
+	}
+
+	public void setSocialSecTax(BigDecimal socialSecTax)
+	{
+		this.socialSecTax = socialSecTax;
+	}
+
+	public BigDecimal getMedicare()
+	{
+		return medicare;
+	}
+
+	public void setMedicare(BigDecimal medicare)
+	{
+		this.medicare = medicare;
+	}
+
+	public BigDecimal getFuta()
+	{
+		return futa;
+	}
+
+	public void setFuta(BigDecimal futa)
+	{
+		this.futa = futa;
+	}
+
+	public BigDecimal getStateTax()
+	{
+		return stateTax;
+	}
+
+	public void setStateTax(BigDecimal stateTax)
+	{
+		this.stateTax = stateTax;
+	}
+
+	public BigDecimal getLocalTax()
+	{
+		return localTax;
+	}
+
+	public void setLocalTax(BigDecimal localTax)
+	{
+		this.localTax = localTax;
+	}
+
+	public BigDecimal getSuta()
+	{
+		return suta;
+	}
+
+	public void setSuta(BigDecimal suta)
+	{
+		this.suta = suta;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(String employees) {
+		this.employees = employees;
+	}
+
+	public String getPayrollDepartment() {
+		return payrollDepartment;
+	}
+
+	public void setPayrollDepartment(String payrollDepartment) {
+		this.payrollDepartment = payrollDepartment;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+
+	public String getAssAmount()
+	{
+		return assAmount;
+	}
+
+	public void setAssAmount(String assAmount)
+	{
+		this.assAmount = assAmount;
+	}
+
+	public String getTotalVendorAmount()
+	{
+		return totalVendorAmount;
+	}
+
+	public void setTotalVendorAmount(String totalVendorAmount)
+	{
+		this.totalVendorAmount = totalVendorAmount;
+	}
+
+	public String getVendorName()
+	{
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName)
+	{
+		this.vendorName = vendorName;
+	}
+
+	public String getInvoiceId()
+	{
+		return invoiceId;
+	}
+
+	public void setInvoiceId(String invoiceId)
+	{
+		this.invoiceId = invoiceId;
+	}
+
+	public String getInvPaidAmount()
+	{
+		return invPaidAmount;
+	}
+
+	public void setInvPaidAmount(String invPaidAmount)
+	{
+		this.invPaidAmount = invPaidAmount;
 	}
 
 }

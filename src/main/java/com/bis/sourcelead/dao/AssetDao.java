@@ -33,6 +33,8 @@ public interface AssetDao {
 	
 	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
 	
+	ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+
 	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
 	
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
@@ -62,5 +64,7 @@ public interface AssetDao {
 	AssetServices saveAssetService(AssetServices assetServices) throws Exception;
 
 	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
+
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception;
 
 }

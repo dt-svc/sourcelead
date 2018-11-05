@@ -238,6 +238,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
+					paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+					paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
 					paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
 				}
 		}
@@ -421,22 +423,57 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	   String isTerminated = "NO";
 	   int noOfDays = 0;
 	   try {
+		   SalaryDTO salaryDto = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
-				List<SalaryDTO> terminatedEmpData = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
-				if(terminatedEmpData != null && terminatedEmpData.size() >0) {
-					SalaryDTO sal = terminatedEmpData.get(0);
-					noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,sal.getTerminatedDate());
-				}else {
-					isTerminated = "YES";
-					
+				if(salaryDto != null) {
+					if(salaryDto.getTerminatedDate() !=null) {
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						if(terminated) {
+							noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+						}else {
+							isTerminated = "YES";	
+						}
+					}
 				}
-			}   
+			} else {
+					if(salaryDto.getJoiningDate() != null) {
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	if(terminated) {
+								noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+					    	}else {
+					    		if(salaryDto.getJoiningDate().before(freqStartDate)) {
+					    			isTerminated = "NO";
+					    		}else{
+					    			if(salaryDto.getJoiningDate().after(freqStartDate)) {
+					    				isTerminated = "YES";
+					    			}
+					    		}
+					    	}
+					}
+			}
 		   salary.setIsTerminated(isTerminated);
 		   salary.setNoOfDays(noOfDays);
 	   }catch (Exception e) {
 		   e.printStackTrace();
 	    }
 	return salary;
+	}
+
+   
+   /**
+    * Check employee terminated or not 
+    * @param slaryDto
+    * @param freqStartDate
+    * @param freqEndDate
+    * @return boolean
+    */
+   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+	{
+	   boolean isTerminated = false;
+	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+		   isTerminated = true;
+		}
+		return isTerminated;
 	}
 
 private Set<AssociateTaxHistory> getAssociateTaxHistory(AssociateTaxDedContriView associateTaxView,
@@ -1323,11 +1360,11 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			List<ContributionDTO> postContribution = null;
 			if(payAdjustmentDTO.getPreDeduction() != null && payAdjustmentDTO.getPreDeduction().size() >0) {
 				preDedList = payAdjustmentDTO.getPreDeduction();
-				preTaxDed = payAdjustmentDTO.getPreDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();
+				preTaxDed = payAdjustmentDTO.getPreDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();
 			}
 			if(payAdjustmentDTO.getPostDeduction() != null && payAdjustmentDTO.getPostDeduction().size() >0) {
 				postDedList =  payAdjustmentDTO.getPostDeduction();
-				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
+				postTaxDed = payAdjustmentDTO.getPostDeduction().stream().filter(pre->pre.getAmount() != null).mapToDouble(pre->pre.getAmount().doubleValue()).sum();	
 			}
 			payAdjHistory.setRegularHours(String.valueOf(regHrs));
 			payAdjHistory.setOvertimeHours(String.valueOf(otHrs));
@@ -1342,8 +1379,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			if(payAdjustmentDTO.getContribution() != null && payAdjustmentDTO.getContribution().size()>0) {
 				preContribution = payAdjustmentDTO.getContribution().stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());
 				postContribution = payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).collect(Collectors.toList());;
-				preTaxContriSum = payAdjustmentDTO.getContribution().stream().filter(con->"pretax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
-				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con->"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+				preTaxContriSum = payAdjustmentDTO.getContribution().stream().filter(con-> con.getContributionAmount() != null && "pretax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
+				postTaxContriSum= payAdjustmentDTO.getContribution().stream().filter(con-> con.getContributionAmount() != null &&"posttax".equalsIgnoreCase(con.getTaxType())).mapToDouble(con->con.getContributionAmount().doubleValue()).sum();
 			}
 			
 			
@@ -1375,8 +1412,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			BigDecimal totPay = totalPay.subtract(BigDecimal.valueOf(postTaxDed)).add(BigDecimal.valueOf(postTaxContriSum));
 			double payItemSum = 0;
 			// PayItems 
-			if(payAdjustmentDTO.getPayItem() != null) {
-		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+			if(payAdjustmentDTO.getPayItem() != null && payAdjustmentDTO.getPayItem().size()>0) {
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getAmount() != null).mapToDouble(p->p.getAmount().doubleValue()).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
@@ -1444,7 +1481,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Long dtoPayItemId = assPayItemDTO.getPayItemId().longValue();
 			for(PayitemHistory paiHis : payItemHis) {
 				if(dtoPayItemId.longValue() == paiHis.getId().longValue()) {
-					paiHis.setAmount(new BigDecimal(assPayItemDTO.getPayItemAmount()));
+					paiHis.setAmount(assPayItemDTO.getAmount());
 					if(assPayItemDTO.getPayItemCheck() != null) {
 						paiHis.setIsBlocked(PayrollConstant.YES);
 					}else {
@@ -1553,7 +1590,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				payItemHis.setPayitemId(dto.getPayItemId().longValue());
 				payItemHis.setPrePayItemAmt(new BigDecimal(dto.getPrePayItemAmt()));
 				payItemHis.setPrePayItemName(dto.getPrePayItemName());
-				payItemHis.setPayItemAmt(new BigDecimal(dto.getPayItemAmount()));
+				payItemHis.setPayItemAmt(dto.getAmount());
 				payItemHis.setPayItemName(dto.getPrePayItemName());
 				payItemHis.setPayAdjustmentHistory(payAdjHistory);
 				if(dto.getPayItemCheck() != null) {

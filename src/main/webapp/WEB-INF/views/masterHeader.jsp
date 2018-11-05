@@ -317,6 +317,9 @@ function preventTabkey(e){
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
+  
+ <div class="menuIcon"></div>  
+  
   <span class="logo"> 
   <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
   <a href="dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">
@@ -360,207 +363,216 @@ function preventTabkey(e){
  	
   </i>
     </a> </span>
-    <nav class="header-nav navbar">
-    <a class="side-menu"> <i class="fa fa-bars pull-left"></i> </a>
-      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="search-area searchArea_mrgn">
+    
+    
+  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+      <div class="search-area searchArea_mrgn newHeadSea">
            <form:form name ="search_form" id="search_form">
 			<div class="uasrch-selectpicker">
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
-			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
+			<option ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 		       <c:if test="${userTabs.tabName == 'Associates'}">
-	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
+	                 <option  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
-	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
+	                <option ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
-	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
+	                <option ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
 	           <c:if test="${userTabs.tabName == 'Clients'}">
-                 	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
+                 	  <option ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
                </c:if>
 	           <c:if test="${userTabs.tabName == 'Vendors'}">
-	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
+	                  <option ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
 	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
-	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
+	             <option ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if> --%>
 	           
 	           <c:if test="${userTabs.tabName == 'Associates List'}">
-	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
+	           <option ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 	           </c:if>
 			</c:forEach>
 	             
 		</select>
 			</div>
 			
-			
-			
 			<div class="pull-left universalSrch">
 			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
-			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ><i class="fa fa-search"></i></button>
+			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ></button>
 			</div>
 			</form:form>
 			</div> 
      </c:if>
-<div class="custom-navbar">
-        <!-- login User details -->
-        <div class="login-user">
-        <span class="image">
-        <img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span>
-          <div class="user-details">
-            <div class="user-media">
-              <div class="logn-image">
-              <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
-              <div class="user-media-body">
-                <p><span>${SourceLeadWeb_userName}</span></p>
-                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</p>
-                 </c:if>
-                 
-                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Freelance Recruiter'}</p>
-                 </c:if>
-                 
-                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-                    <p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : SourceLeadWeb_displayName}</p>
-                 </c:if>
-              </div>
-            </div>
-            <ul class="list-unstyled">
-              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-              <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              </c:if>
-              
-              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-              <li><a href="<c:url value='${appPath}/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
-              </c:if>
-              
-              <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
-            </ul>
-          </div>
-        </div>
-        <!-- login User details -->
-        <ul class="list-inline list-unstyled pull-left custom-navbar-inner">
-          <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
+     
+
+
+<div class="headProfile">
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headPop" id="profilePop">
+		<div class="headPopInn">
+				<a href="<c:url value='${appPath}/userProfile'/>">
+				<div class="headPopUser clearfix">
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></div>
+					<div class="pull-right">
+						<p>${SourceLeadWeb_userName}</p>
+		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+		                 	<b>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</b>
+		                 </c:if>
+		                 
+		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+		                 	<b>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Freelance Recruiter'}</b>
+		                 </c:if>
+		                 
+		                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+		                    <b>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : SourceLeadWeb_displayName}</b>
+		                 </c:if>						
+					</div>
+				</div>
+				</a>
+			<ul>
+				<li>
+				<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections">Connections <span class="label label-warning pull-right">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+				</li>
+				
+				<li><a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>">Contacts</a></li>
+				
+				<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
+           		<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
+                <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+		       		<li><a title="Invite Company" data-toggle="modal" id="invitePop">Invite Company</a></li>
+                 </c:if>	
+                </sec:authorize>
+                </sec:authorize>			
+				
+				<sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
+				<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">				
+				<li><a href="javascript:void(0)" class="icon-addTask" title="Add Task">Add Task</a></li>
+				</c:if>
+				</sec:authorize>	
+				
+ 				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
+				<li><a href="/app/sourceleadTicketList" title="Report Issue">Report Issue</a></li>
+				</sec:authorize>
+				
+	              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile">Profile</a></li>
+	              </c:if>
+	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
+	              </c:if>				
+				 <li><a class="logColor" href="javascript:logoutFormSubmit()" title="Log Out">Log Out</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+    
+<div class="headNav">
+	<ul>
+	
+	
+<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
+
+            <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
             
-             
-            <li class="reportsH">
-					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
-	        </li>
-            
-            <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
-	        </li>
-            
-            <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
-	            <li class="reportsH">
-					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
-	            </li>
-             </c:if>
-            
-            
-            <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span style="display: none;" class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
-            </sec:authorize>
-            <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
+			<div class="headPop headPopnoti" id="orgPopView">
+				<div class="headPopInn">
+					<div class="headPopSear"><input type="text" class="" id="orgsSearch" placeholder="Search"></div>
+					
+					<ul>
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              
 				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-					              
 					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
-					              		<a class="sopcSwith">
+					              		<a class="sopcSwith noPad">
 					              </c:if>
-					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-						                     </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : links.roles.displayName}</p>
-						                   </div>
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith noPad">
+						                <div class="clearfix  ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'orgAct' : ''}">
+						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+										<div class="orgDetails">
+											<h3>${links.orgLocations.orgLocationName}</h3>
+											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</h4>
+											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.roles.displayName}</h4>
+										</div>						                   
 						                </div>
+						                
 					                </a>
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                       </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Job Seeker'}</p>
-						                   </div>
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
+						                   
+						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+											<div class="orgDetails">
+												<h3>${links.orgLocations.orgLocationName}</h3>
+												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Job Seeker'}</h4>
+											</div>						                   
 						                </div>
 					                </a>
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                       </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Freelance Recruiter'}</p>
-						                   </div>
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
+						                   
+						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
+											<div class="orgDetails">
+												<h3>${links.orgLocations.orgLocationName}</h3>
+												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Freelance Recruiter'}</h4>
+											</div>							                   
 						                </div>
 					                </a>
 				              </c:if>
-				              
-
 			              
 		              </li>
 	              </c:forEach>
 	              </ul>
+	              <div class="noDate noDateSm" style="display: none;"></div>
+	            </div>
 	            </div>
 	          </li>
-	          </c:if>
-         
-          <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
-          <li class="notiClick"> 
-          <a href="#" title="Alerts" onclick="getNotificationsByuserId()"> <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
-           <div id="ndiv"></div>
-          </li>
- 
-          
-          <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
+	          </c:if>	
+		
+        <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
+        	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
+         </c:if>		
+		
+         <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
+         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         </sec:authorize>		
+		
+          <li> 
+          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
+          <div class="headPop headPopnoti" id="notificationPopup"></div>
+          </li>		
+
+
+		  <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
-	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
-	            <div class="setting-area">
-	              <ul class="list-unstyled">
-	                     
-	                     
+	            
+	            <li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>
+
+				<div class="headPop" id="settingPopup">
+					<div class="headPopInn">
+						<div class="headPopSear"><input type="text" class="" id="settingSearch" placeholder="Search"></div>
+						<ul>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
+	                     <li title="Schedule Maintenance"><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup">Schedule Maintenance</a></li>
 	                     </sec:authorize>
 	                     
 	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-rocket" aria-hidden="true"></i>License Upgrade</a></li>
+	                        <li title="License Upgrade"><a href="<c:url value="/app/orgLicenseSubscriptionList" />">License Upgrade</a></li>
 	                     </c:if>
 	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+	                      <li title="Bulk Import"><a id="subMenu" href="javascript:void(0)">Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
 		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
@@ -570,39 +582,40 @@ function preventTabkey(e){
                        </sec:authorize>
 	                     
 
-	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
+	                     <li title="Org Chart"><a href="<c:url value="/app/orgChart" />">Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
+	                        <li title="Role Configuration"><a href="<c:url value="/app/orgRolesList" />">Role Configuration</a></li>
 	                     </sec:authorize>
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li><a href="<c:url value="/app/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		      <li title="Org Settings"><a href="<c:url value="/app/orgSettings" />">Org Settings</a></li>
 	               		 </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li><a href="<c:url value="/app/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     <li title="Templates"><a href="<c:url value="/app/orgTemplates" />">Templates</a></li>
 						 </sec:authorize>
 
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li><a href="<c:url value="/app/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  	<li title="Expense Category"><a href="<c:url value="/app/expenseCategory" />">Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Bank Accounts</a></li>
+						  <li title="Bank Accounts"><a href="<c:url value="/app/bankAccountDetails" />">Bank Accounts</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
+						  	<li title="Leave Configuration"><a href="<c:url value="/app/leaveConfiguration" />">Leave Configuration</a></li>
 						  </sec:authorize>
 						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-briefcase" aria-hidden="true"></i>Job Board Configuration</a></li>
-                                                 </sec:authorize>
+                              <li title="Job Board Configuration"><a href="<c:url value="/app/job-boards" />">Job Board Configuration</a></li>
+                           </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
+					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
 					  	</sec:authorize>
 						 
+						 <li><a href="<c:url value="/app/pojrctAttributes" />"><i class="fa fa-bar-chart" aria-hidden="true"></i>Project</a></li>
+						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
-							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">
-				
-				                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
-									<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
+				                    <a title="Senders" href="<c:url value='${appPath}/campaignSendersList'/>">Senders</a>
+									<a title="Recipients" href="<c:url value='${appPath}/recipientsList'/>">Recipients</a>
 									
 								</div>
 							 </li> 	
@@ -610,65 +623,62 @@ function preventTabkey(e){
 						   
 					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
 						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-						  		<li><a href="<c:url value="/app/payrollConfiguration" />"><i class="fa fa-usd" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  		<li title="Payroll Configuration"><a href="<c:url value="/app/payrollConfiguration" />">Payroll Configuration</a></li>
 						  	</c:if>
 						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-						  		<li><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
+						  		<li title="Payroll Configuration"><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" >Payroll Configuration</a></li>
 						  	</c:if>
                       </sec:authorize>
                          
-                       <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop"><i class="fa fa-tags"></i>Tags</a></li>
+                       <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop">Tags</a></li>
 					  
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
+	                     <li title="Guest Action Roles"><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" >Guest Action Roles</a></li>
                        </sec:authorize>
                        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
+	                     <li title="Email Templates"><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" >Email Templates</a></li>
                        </sec:authorize>
-                        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
-	                   </c:if>
+	                   
 	              </ul>
+	              
+	              <div class="noDate noDateSm" style="display: none;"></div>
+	            </div>
 	            </div>
 	          </li>
           </sec:authorize>
          </sec:authorize>
          
          <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
-            	<li id="settingArea"><a href="#" title="Settings" class="settings"><i class="fa fa-cog fa-spin fa-fw"></i></a>
-            	<div class="setting-area">
-            	<ul class="list-unstyled">
-            	
-            	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-            	<li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
-            	</c:if> 
-            	
-            	<li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
-            	
-            	<li><a href="<c:url value="/app/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
-            	</ul>
+            	<li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>
+				<div class="headPop" id="settingPopup">
+					<div class="headPopInn">
+						<div class="headPopSear"><input type="text" class="" placeholder="Search"></div>
+						<ul>
+	            	
+		            	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
+		            	<li title="Bulk Import"><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a></li>
+		            	</c:if> 
+		            	
+		            	<li title="Account"><a href="<c:url value="/app/bankAccountDetails" />">Account</a></li>
+		            	
+		            	<li title="Alerts"><a class="logColor" href="<c:url value="/app/jobAlertList" />">Alerts</a></li>
+		            	</ul>
+		            	<div class="noDate noDateSm" style="display: none;"></div>
+	            	</div>
             	</div>
+            	
             	</li>
-         </sec:authorize>
-         
-          <%-- <c:if test="${SourceLeadWeb_orgSettingsVisible == 'Y' && SourceLeadWeb_enrollOrgVisible != 'Y'}">
-	          <li> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
-	            <div class="setting-area">
-	              <ul class="list-unstyled">
-                     <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
-                     <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Enroll Roles</a></li>
-                     <li><a href="<c:url value="/orgSubmissionTemplate" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
-	                     
-	              </ul>
-	            </div>
-	          </li>
-          </c:if> --%>
-          
-          <li class="flag-image"><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+         </sec:authorize>		
+		
+	</ul>
+</div>    
 
-        </ul>
-      </div>
-    </nav>
+
+<ul class="responIcons clearfix">
+	<li><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+	<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
+</ul>
+    
   </header>
   
   <div class="authenticationMask" >
@@ -760,7 +770,7 @@ function preventTabkey(e){
 	})
   </script>
   
-  <script>
+<!--   <script>
   function navtoggle(elementRef){
 	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
 		 document.getElementById("spockLinksList").removeAttribute("class")
@@ -775,7 +785,7 @@ function preventTabkey(e){
   $('html').click(function(){
 	  $('#spockLinksList').hide();
   });
-  </script>
+  </script> -->
 
 
   <!-- Header Area --> 
@@ -786,18 +796,22 @@ function preventTabkey(e){
   <!-- Add Task Div -->
 	  <sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
 		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
+		 <div class="addTask"> 
+		 
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
-		    <i class="fa fa-close close-div taskpop-close"></i>  
+		    <i class="proj_close taskpop-close"></i>  
 		      <!-- Assign Task Widget tabs -->
 		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
-		        <div class="addtsk-btn"> <span class="btn btn-success btn-sm" onClick="showtaskdiv()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add Task</span> </div>
-		        <ul class="nav nav-tabs">
+		        
+		        <div class="addtsk-btn"> <a href="javascript:void(0)" class="newAdBtn" onClick="showtaskdiv()">+ Task</a> </div>
+		       
+		        <ul class="nav nav-tabs themeTabs">
 		          <li id="myTaskDivId"><a data-toggle="tab" href="#my-task" onclick="tasksList('myTask');">My Tasks</a></li>
 		          <li id="assignedTasksDivId"><a data-toggle="tab" href="#other-task" onclick="assignedTasksList('assignedTasks');">Assigned Tasks</a></li>
 		          <li id="closedTasksDivId"><a data-toggle="tab" href="#closed-task" onclick="closedTasksList('closedTasks');">Closed Task</a></li>
+		        
 		        </ul>
-				        <div class="tab-content clearfix">
+				        <div class="tab-content noPad clearfix positionRelative">
 				          <div id="my-task" class="tab-pane fade in active">
 				               <div class="col-md-6 clearfix newdate">
 				                    <i class="fa fa-filter"></i>
@@ -806,8 +820,7 @@ function preventTabkey(e){
 				               </div>	
 				          
 				            <div class="clearfix require_wrap_table">
-				               <div id="myTasksId" class="datatable_filter"></div>
-				              
+				               <div id="myTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 				            </div>
 				          </div>
 				          
@@ -818,7 +831,7 @@ function preventTabkey(e){
 								<i class="fa fa-calendar mr"></i></span>
 				               </div>								
 					            <div class="clearfix require_wrap_table">
-					              <div id="assignedTasksId" class="datatable_filter"></div>
+					              <div id="assignedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 					            </div>
 				          </div>
 				          
@@ -829,7 +842,7 @@ function preventTabkey(e){
 									<i class="fa fa-calendar mr"></i></span>
 				               </div>
 				            <div class="clearfix require_wrap_table">
-				               <div id="closedTasksId" class="datatable_filter"></div>
+				               <div id="closedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
 				            </div>
 				          </div>
 				        </div>
@@ -839,12 +852,14 @@ function preventTabkey(e){
 		      <!-- Add New Task Widget -->
 			      <div class="newTask-widget clearfix">
 			      <form id="task_form" name="task_form" method="post">
-			        <div class="col-md-12"> <a class="pull-right text-danger" onClick="taskwidget();"><i class="fa fa-times"></i></a>
+			        <div class="col-md-12 noPad">
 			          <form class="form-horizontal clearfix">
-			            <h4>Add Task</h4>
-			            <div class="row">
+			          
+			          <div class="popupHead"><span>Add Task</span><i class="closePop pull-right"  onClick="taskwidget();"></i></div>
+
+			            <div class="row popupContent">
 			              <div class="col-md-6" >
-			                <label>Assign To<span class="text-danger">*</span></label>
+			                <label>Assign to<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>
@@ -911,13 +926,13 @@ function preventTabkey(e){
 			                </label> -->
 			              </div>
 			              <div class="clearfix"></div>
-			              <div class="clearfix mt col-md-12">
-			                <div class="pull-right">
-			                  <input type="button" class="btn btn-primary btn-sm" value="Submit" onclick="saveTask();">
-			                  <input type="button" class="btn btn-default btn-sm ml10" value="Cancel"  onclick="taskwidget();">
-			                </div>
-			              </div>
 			            </div>
+			            
+						<div class="popupFoot text-right">
+				          <button type="button" class="slBtn md colorBtn" onclick="saveTask();">Submit</button>
+				          <button type="button" class="slBtn md" onclick="taskwidget();"> Cancel</button>
+				        </div>			            
+			            
 			          </form>
 			        </div>
 			       </form>
@@ -927,7 +942,6 @@ function preventTabkey(e){
 		  </div>
 		  </c:if>
 
-<div class="addtAsk_popmask"></div>
 </sec:authorize>
 
 <!--  Theme Switcher div  Commented By Mahesh  -->
@@ -951,12 +965,7 @@ function preventTabkey(e){
 <!--  Theme Swithcer div ends Commented By Mahesh -->
 
 <!--  Support div -->
- <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
-  <div id="mySidenav" class="sidenav">
-	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
-<!--   <a href="add-ticket.html">Support</a> -->
-</div>
-</sec:authorize>
+
 <!--  Support div ends  -->
 
 
@@ -1081,7 +1090,7 @@ $(".collpase-div").click(function(){
 
 //Add Task Div
  $(".icon-addTask").click(function(){
-	$('.addtAsk_popmask').toggle();
+	$('.mask').fadeIn(150);
 	$(".addTask-widget").toggleClass("addTask-widget-active");
 	$(".newTask-widget").hide();
 	$("#myTask").show();
@@ -1507,14 +1516,9 @@ $(".nav-tabs").click(function(){
 </script>
 
 <script type="text/javascript">
-/* function closePop(){
-	alert('naaistam');
-	 $(".addTask-widget").removeClass("addTask-widget-active");
-	$(".addtAsk_popmask").fadeOut();
-} */
 $('.taskpop-close').click(function (){
 	$(".addTask-widget").removeClass("addTask-widget-active");
-	$(".addtAsk_popmask").fadeOut();
+	$(".mask").fadeOut(150);
 });
 </script>
 
@@ -1880,3 +1884,48 @@ document.onkeydown = function(evt) {
     }
 };
 </script>
+
+<!-- Header Popup search  --> 
+<script>
+$(document).ready(function(){
+	// Settings popup search
+    $("#settingSearch").keyup(function(){
+        var filter = $(this).val(), count = 0;
+        $(".headPopInn ul li").each(function(){
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                count++;
+            }
+        });
+        
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        }  
+    });
+    
+    // Orgs popup search
+    $("#orgsSearch").keyup(function(){
+        var filter = $(this).val(), count = 0;
+        $(".headPopInn ul li").each(function(){
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                count++;
+            }
+        });
+
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        } 
+    
+    });
+});
+</script>
+

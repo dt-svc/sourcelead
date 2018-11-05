@@ -58,7 +58,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadDataImportTemplateForAssociate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
+								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -70,7 +70,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadProjectTasks?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'">
 								</div>
 							</div>
 						</div>
@@ -137,6 +137,7 @@ var uploadflag= true;
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>	 	
