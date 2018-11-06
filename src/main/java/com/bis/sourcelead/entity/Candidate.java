@@ -586,6 +586,11 @@ public class Candidate implements Serializable {
      @Transient
 	 @JsonProperty
 	 private Set<String> candidateTagsList;
+     
+     
+     @Transient
+ 	@JsonProperty
+ 	private String candidateAssignedJobsCount;
 	 
 	public int getProfilePercentage()
 	{
@@ -1869,6 +1874,14 @@ public class Candidate implements Serializable {
 
 	public void setCreatedDateStr(String createdDateStr) {
 		this.createdDateStr = createdDateStr;
+	}
+
+	public String getCandidateAssignedJobsCount() {
+		return candidateAssignedJobsCount;
+	}
+
+	public void setCandidateAssignedJobsCount(String candidateAssignedJobsCount) {
+		this.candidateAssignedJobsCount = candidateAssignedJobsCount;
 	}
 
 	

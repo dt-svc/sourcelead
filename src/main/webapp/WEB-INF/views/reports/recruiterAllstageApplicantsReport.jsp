@@ -244,7 +244,7 @@ function custDatesJobs(){
 		result = result +"<th><div class='small'>Candidate Name</div></th>";
         result = result +"<th><div class='small'>Email Id</div></th>";
         result = result +"<th><div class='small'>Job Title</div></th>";
-        result = result +"<th><div class='small'>Org Name</div></th>";
+        result = result +"<th><div class='small'>Client Name</div></th>";
         result = result +"<th><div class='small'>Stage</div></th>";
 		result = result + '</tr>';
 		result = result + '</thead>	';

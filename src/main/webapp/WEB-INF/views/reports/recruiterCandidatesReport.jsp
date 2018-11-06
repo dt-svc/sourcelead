@@ -433,9 +433,13 @@ function associateCandidateListPagination(url,sourceleadUrl){
 	              "data": "noOfJobs",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	            	    
+	            	    result = result +"<td>";
+	            	    if(opt.candidateAssignedJobsCount != null && opt.candidateAssignedJobsCount !='' && opt.candidateAssignedJobsCount !='undefined'){
+	            	    	result = result +"<div class='tbldata-dotdot-me'> <span>"+opt.candidateAssignedJobsCount+"</span></div>"; 
+	            	    }else{
+	            	    	result = result +"<div class='tbldata-dotdot-me'> <span>0</span></div>"; 
+	            	    }
+	            	    result = result +"</td>";
 	            	    return result;
 	              }
 		     },{

@@ -342,9 +342,14 @@ function userDataTableList(){
 			    {
 			orgTeams.push($(this).val());
 	     });
+		var userRoleName = [];
+		$('input:checkbox[name=orgRoles]:checked').each(function() 
+			    {
+			userRoleName.push($(this).val());
+	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName;
 		 usersListPagination(url,sourceleadUrl);
 	 }
 	

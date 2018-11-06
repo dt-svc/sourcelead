@@ -261,6 +261,14 @@ public class ReportRestController {
 						teamsList.add(Long.parseLong(orgTeams[i]));
 					}
 				}
+				//Roles List
+				List<Long> rolesList = new ArrayList<>();
+				if(userRoleDto.getUserRoleName() != null && !userRoleDto.getUserRoleName().isEmpty()) {
+					String[] roleNames = userRoleDto.getUserRoleName().split(",");
+					for(int i=0; i < roleNames.length; i++) {
+						rolesList.add(Long.parseLong(roleNames[i]));
+					}
+				}
 				String type=null;
 			if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
 				type=userRoleDto.getType();
@@ -274,7 +282,7 @@ public class ReportRestController {
 			}
 			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			userDTO.setSortOrder(sortColumnOrder);
-			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
 			return userDTOList;
 		}
 	

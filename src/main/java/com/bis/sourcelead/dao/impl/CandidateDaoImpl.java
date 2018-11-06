@@ -15,7 +15,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +27,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
-import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -75,6 +73,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -469,6 +470,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		for(Candidate c: candidateList){
 			try {
 				CandidateResumes canResume = candidateResumesDao.getCandidateResumeByCandidateId(c.getId());
+				Integer submittedJobCount = requirementSubmissionDao.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(c.getId(), orgLocations.getId());
+				if(submittedJobCount>0){
+				c.setCandidateAssignedJobsCount(submittedJobCount.toString());
+				}
 				if(canResume !=null){
 				c.setCandidateResume(canResume.getFileURL());
 				}
