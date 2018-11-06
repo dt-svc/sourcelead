@@ -47,10 +47,8 @@
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
             <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a onclick="exportPayrollRegisterReportExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
@@ -79,14 +77,23 @@ function resetForm(){
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
 </script>
-
+<script>
+function exportPayrollRegisterReportExcel(){
+	var searchValue = $("#payrollRegisterSearch").val();
+	var freqStartDate = $('#fromDate').val();
+	var freqEndDate = $('#toDate').val();
+	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
+	}
+}
+</script>
 <script>
 function exportPayrollRegisterReportPdf(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
 	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = sourceleadUrl+ "/getContractEmployeeReportListExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
 	}
 }
 </script>

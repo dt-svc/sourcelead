@@ -931,6 +931,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
 		try {
 			payrollReportDTO.setOrgLocationid(orgLocation.getId());
+			payrollReportDTO.setOrgDateFormat(orgLocation.getDateFormat());
 			List<InvoicePayment> invoicePayItemList = paysheetFrequencyDao.getContractEmployeeReportList(payrollReportDTO);
 			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
 			Map<Long,PayrollReportDTO> userMap = new HashMap<>();

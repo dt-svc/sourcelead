@@ -510,8 +510,14 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	public List<InvoicePayment> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
-		java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+		
+		Date fDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqStartDate());
+		Date tDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqEndDate());
+		java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+		java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
+		
+//		java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
+//		java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
 		String subQuery = "";
 		if(StringUtils.isNotBlank(payrollReportDTO.getSearchValue())) {
 			StringBuilder sb = new StringBuilder();
