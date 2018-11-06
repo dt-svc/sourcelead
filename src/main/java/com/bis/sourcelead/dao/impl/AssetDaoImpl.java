@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,14 +28,19 @@ import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -529,7 +535,7 @@ public class AssetDaoImpl implements AssetDao{
 			}
 		}
 		
-		
+		 
 		
 		if(assetDTO.getCategoryIds() != null){
 			category = assetDTO.getCategoryIds().split(",");
@@ -646,5 +652,74 @@ public class AssetDaoImpl implements AssetDao{
 		
 	}
 	
+	@Override
+	@Transactional
+	public List<Asset> getAllAssetByOrgId(Long orgLocationsId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Asset asset where asset.orgLocations.id = :orgLocationsId "; 
+		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
+		return assetList;
+	}
+
+	@Override
+	@Transactional
+	public List<Asset> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId) {
+
+		
+		try {
+			
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(assetsReportDTO.getConvertedFromDate().getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(assetsReportDTO.getConvertedToDate().getTime());
+			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select asset from Asset asset join asset.assetAssign assetAssign ";
+			if(assetsReportDTO.getCategories()!= null && !assetsReportDTO.getCategories().isEmpty()) {
+				query += " join asset.assetCategory assetCategory";
+			}
+			
+			if(assetsReportDTO.getDateType() == 1) {
+				query += " where DATE_FORMAT(assetAssign.assignedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate + "'";
+			} else {
+				query += " where DATE_FORMAT(assetAssign.returnedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate + "'";
+			}
+			if(assetsReportDTO.getCategories()!= null && !assetsReportDTO.getCategories().isEmpty()) {
+				String catIdString = "";
+				for(long catId : assetsReportDTO.getCategories()) {
+					catIdString += (catIdString.isEmpty() ? "" : ",") + catId;
+				}
+				query += " and assetCategory.id in (" + catIdString + ")";
+			}
+			if(assetsReportDTO.getShiftsIds() != null && !assetsReportDTO.getShiftsIds().isEmpty()) {
+				String shiftIds = "";
+				for(long shiftid : assetsReportDTO.getShiftsIds()) {
+					shiftIds += (shiftIds.isEmpty() ? "" :",") + shiftid;
+				}
+				query += " and assetAssign.shift.id in (" + shiftIds + ")";
+			}
+			if(assetsReportDTO.getAssetNames()!= null && !assetsReportDTO.getAssetNames().isEmpty()) {
+				String assetid = "";
+				for(long assetsId : assetsReportDTO.getAssetNames()) {
+					assetid += (assetid.isEmpty() ? "" :",") + assetsId;
+				}
+				query += " and asset.id in (" + assetid + ")";
+			}
+			
+			Query queryObj = session.createQuery(query);
+			
+			List<Asset> assetList = queryObj.list();
+			
+			if(assetList!= null && !assetList.isEmpty()) {
+				return assetList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+
 	
 }
