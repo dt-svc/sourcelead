@@ -70,6 +70,10 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private List<AssociatePayrollPayheadHistoryDTO> associateSalaryPayheadIndDeductionList;
 	
 	private String paySheetFrequencyUUID;
+	
+	private List<String> indEmpPayrollUUIDList;
+	 
+	private String allEmployees;
 
 	public Long getId() {
 		return id;
@@ -311,5 +315,21 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID) {
 		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
+	}
+
+	public List<String> getIndEmpPayrollUUIDList() {
+		return indEmpPayrollUUIDList;
+	}
+
+	public void setIndEmpPayrollUUIDList(List<String> indEmpPayrollUUIDList) {
+		this.indEmpPayrollUUIDList = indEmpPayrollUUIDList;
+	}
+
+	public String getAllEmployees() {
+		return allEmployees;
+	}
+
+	public void setAllEmployees(String allEmployees) {
+		this.allEmployees = allEmployees;
 	}
 }
