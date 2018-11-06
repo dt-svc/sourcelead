@@ -227,13 +227,13 @@ public interface RequirementService {
     
     public JobFairDTO getJobFairByUUID(String uuid);
     
-    public boolean changeJobFairStatus(Long jobFairId, int status);
+    public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation);
 
 	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
 
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag);
 
-	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag);
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 	

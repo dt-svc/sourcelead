@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -238,8 +239,9 @@ public class RequirementRestController {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				boolean result = requirementService.changeJobFairStatus(jobFairId, status);
+				boolean result = requirementService.changeJobFairStatus(jobFairId, status, user, orgLocation);
 				response.setObject(result);
 				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
 				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
@@ -261,15 +263,27 @@ public class RequirementRestController {
 		ResponseList<String> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			if(user !=null) {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				
-				/*Timezone timezone = null;
-				if(loginOrgLocations.getTimezone() != null){
-					timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;	
+				}
+				/*Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if ((loginOrgLocations.getId().longValue() == userRole.getOrgLocations().getId().longValue()) && (user.getId().longValue() == userRole.getUser().getId().longValue()) 
+								&& !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
 				}*/
-				
-				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat()));
+				responseList.setData(requirementService.getJobFairDatesForCalendar(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -289,6 +303,7 @@ public class RequirementRestController {
 		ResponseList<Requirement> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), date);
@@ -297,7 +312,26 @@ public class RequirementRestController {
 				SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy");
 				String selectedDate  = formatter.format(startTime);
 				
-				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date));
+				boolean adminFlag = false;
+				if("Admin".equalsIgnoreCase(roleName)) {
+					adminFlag = true;
+				}
+				/*Set<UserRole> userRoleSet = user.getUserRole();
+				if (userRoleSet != null && !userRoleSet.isEmpty()) {
+					for (UserRole userRole : userRoleSet) {
+						if (loginOrgLocations.getId().longValue() == userRole.getOrgLocations().getId().longValue() &&
+								user.getId().longValue() == userRole.getUser().getId().longValue()
+								&& !userRole.getUser().getUserRole().isEmpty()) {
+							for (UserRole uRole : userRole.getUser().getUserRole()) {
+								if (uRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+									adminFlag = true;
+								}
+							}
+						}
+					}
+				}*/
+				
+				responseList.setData(requirementService.getJobFairRequirementsByDate(user.getId(), loginOrgLocations.getId(), loginOrgLocations.getDateFormat(), date, adminFlag));
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(dayOfweek + "<>" + selectedDate);
 			} else {

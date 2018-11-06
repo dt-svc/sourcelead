@@ -26,6 +26,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -155,8 +156,8 @@ public class User implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LINK_USER_ID")
-	@JsonProperty
-    private User linkUserId;
+	@JsonIgnore
+	private User linkUserId;
 	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
