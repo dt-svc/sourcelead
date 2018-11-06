@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dao.ProjectTaskActivityDao;
@@ -69,6 +70,22 @@ public class ProjectTaskActivityDaoImpl implements ProjectTaskActivityDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ProjectTaskActivity activity  where projectTaskId.id =:projectTaskId ORDER BY activity.createdDate DESC"; 
 		List<ProjectTaskActivity> activityList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
+		return activityList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<ProjectTaskActivity> getTasksActitivtyListByLookupIdAndCategoryType(Long lookupId, String taskType)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<ProjectTaskActivity> activityList = null;
+		if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			query = "from ProjectTaskActivity activity  where activity.priority.id =:lookupId "; 
+			activityList = session.createQuery(query).setLong("lookupId", lookupId).list();
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			query = "from ProjectTaskActivity activity  where activity.taskStatus.id =:lookupId";
+			activityList = session.createQuery(query).setLong("lookupId", lookupId).list();
+		}
 		return activityList;
 	}
 	

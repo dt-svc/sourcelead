@@ -59,4 +59,6 @@ public interface ProjectTasksDao {
 	
 	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
     
+	List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId,String taskType)throws Exception;;
+
 }
