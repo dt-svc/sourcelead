@@ -148,8 +148,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		
 		
 		try {
-			java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
-			java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+			
+			Date fDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date tDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
