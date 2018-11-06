@@ -66,8 +66,12 @@ public interface AssetDao {
 
 	List<AssetGrowthDTO> getAssetGrowthListByOrgloationIdAndAssetGrowthDTO(Long orgLocationId,AssetGrowthDTO assetGrowthDTO,Date[] searchDates)throws Exception;
 
+
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception;
+
 	List<Asset> getAllAssetByOrgId(Long orgLocationsId);
 
 	List<Asset> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId);
+
 
 }

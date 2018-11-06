@@ -3,6 +3,8 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
+import com.bis.sourcelead.dto.TaskDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTaskComments;
 
 public interface ProjectTaskCommentsService {
@@ -11,6 +13,6 @@ public interface ProjectTaskCommentsService {
 
 	List<ProjectTaskComments>  getProjectTaskCommentsByProjectTaskId(Long projectTaskId) throws Exception;
 
-	void storeprojectComments(ProjectTaskDocumentDTO projectTaskDocumentDTO)throws Exception;
+	void storeprojectComments(ProjectTaskDocumentDTO projectTaskDocumentDTO, TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 	
 }

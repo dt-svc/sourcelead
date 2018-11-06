@@ -17,7 +17,6 @@ $(function() {
 <script>
 function validateReleaseNoteName(releaseUUID){
 	var ReleaseNoteName = document.getElementById("releaseNoteName").value.trim();
-// 	$('#ProjectIdDiv').find('p.jquery_form_error_message').remove();
 	if (ReleaseNoteName != null && ReleaseNoteName != "") {
 		$.ajax({
 					type : "POST",

@@ -326,7 +326,20 @@
                      
           <%--     </sec:authorize>  --%>
               
-              
+              <div class="col-md-4 reportNewCta">
+                  <!-- DropDown Petition Report -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+					<li><a href="${appPath}/petitionReport">Petition Report</a></li>
+					<li><a href="${appPath}/lcaReport">LCA Report</a></li>
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="${appPath}/immigration/petitionReport" class="block">
+                  <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
+                  <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
+                  </div>  
               
               
                   

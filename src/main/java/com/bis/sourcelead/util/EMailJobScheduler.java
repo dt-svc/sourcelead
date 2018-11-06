@@ -441,15 +441,16 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
 		logger.info("******************  updating All LCA  Deatails Started..! **********");
 		//System.out.println("******************  updating All LCA  Deatails Started..! **********");
 		try {
-			String fromUser = "donotreply@sourcelead.com";
+			String fromUser = "";
+			User configUser=null;
 			Date currentDate = new Date();
 			Date daysFilter = null;
 			Calendar cal = Calendar.getInstance();
@@ -509,8 +510,8 @@ public class EMailJobScheduler {
 					User toUser = (User) entry.getKey();
 					List<Lca> mapLcaList = entry.getValue();
 					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // getting org loaction id from the first
-																			// object.
-					sendEmailReminderToLcaManagerExpired(toUser, fromUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
+					User fromNotificationUser =userService.getUserByEmail(fromUser);														// object.
+					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
 			}
 			
@@ -522,13 +523,39 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	private void sendEmailReminderToLcaManagerExpired(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
+	private void sendEmailReminderToLcaManagerExpired(User toUserObj, User fromUser, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		
 		 emailMessage.setFirstName(toUserObj.getFirstName());
 		 emailMessage.setLastName(toUserObj.getLastName());
 		 emailMessage.setToEmail(toUserObj.getEmail());
-		 emailMessage.setFromEmail(fromEmail);
+		//configured Email
+			
+			String configuredFromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(ol.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int i=0; i<jobIds.length; i++) {
+								if(Long.valueOf(jobIds[i]) == 39l ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail != null){
+					 configuredFromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(configuredFromEmail)){
+				 emailMessage.setFromEmail(configuredFromEmail);
+			 }else {
+				 emailMessage.setFromEmail(fromUser.toString());
+			 }
 		
 	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 		 StringBuilder sb = new StringBuilder();
@@ -610,7 +637,17 @@ public class EMailJobScheduler {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		
+		 
+		// LCA manager Expired Notification 
+		EmailScenario notificationScenario = null;
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("")
+				.append(sourceleadUrl).append("/immigration").append("/viewLCAList").toString();
+		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
 	

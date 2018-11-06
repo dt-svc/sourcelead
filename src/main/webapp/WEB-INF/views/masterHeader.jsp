@@ -544,11 +544,11 @@ function preventTabkey(e){
          </c:if>		
 		
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i>  <span style="display: none;" class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <li> 
-          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <span style="display: none;" class="label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>		
 
@@ -608,6 +608,8 @@ function preventTabkey(e){
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
 					  	</sec:authorize>
+						 
+						 <li><a href="<c:url value="/app/pojrctAttributes" />"><i class="fa fa-bar-chart" aria-hidden="true"></i>Project</a></li>
 						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
@@ -857,7 +859,7 @@ function preventTabkey(e){
 
 			            <div class="row popupContent">
 			              <div class="col-md-6" >
-			                <label>Assign To<span class="text-danger">*</span></label>
+			                <label>Assign to<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>

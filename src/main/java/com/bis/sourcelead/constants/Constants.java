@@ -176,10 +176,14 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
+	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String ASSET_ASSIGN_EMAIL = "AssigneAssetEmail";
+	public static final String ASSET_ASSIGN_NOTIFICATION = "AssigneAssetNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
+	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
@@ -1290,4 +1294,11 @@ public class Constants {
 
 	public static final String CONTRIBUTION = "contribution";
 	public static final String DEDUCTION = "deduction";
+	
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 }
