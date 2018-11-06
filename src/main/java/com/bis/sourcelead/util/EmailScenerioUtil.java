@@ -142,7 +142,6 @@ public EmailScenario validateEmailscenerioExists(String uniqueScenarioName,Strin
 
 
 public void sendNotification(String actionLink,User loginUser,User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario,HashMap<String,String> parameterList) throws Exception{
-	
 	//new Notification logic
 	Notifications notification = new Notifications();
 	
@@ -157,25 +156,26 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	}
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
+	
+	if(loginUser != null) {
 	notification.setNotificationFrom(loginUser);
+	notification.setCreatedBy(loginUser.getCreatedBy());
+	}
 	notification.setNotificationTo(toUser);
 	notification.setNotificationScenarioId(emailScenario);
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
-	notification.setCreatedBy(loginUser.getUserCode());
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
 	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
-	
 	if(parameterList != null && !parameterList.isEmpty()) {
+		System.out.println("parameterList != null");
 		 Gson gsonObj = new Gson();
 		 String str = gsonObj.toJson(parameterList);
 		notification.setParameterList(str);
 	}
-	
 	 notificationsService.saveNotification(notification);
-	
 	}
 
 public void sendNotificationToClientOrVendor(String actionLink,String rejectActionLink, User loginUser,User fromUser, User toUser, OrgLocations loginOrgLocation, EmailScenario emailScenario, String spocUUID) throws Exception{

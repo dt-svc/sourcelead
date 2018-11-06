@@ -16,6 +16,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 
 /**
  * @author Srinivas.Sabbu
@@ -200,4 +202,11 @@ public interface ImmigrationCommonService {
     
     List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
  //   void deleteLcaPlaceOfEmpmntDetails(Long remaininglpoeIds[]);
+    
+    // for Immigration reports
+    
+    ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations);
+ // for LCA reports
+    ResponseList<LcaReportViewDTO> getLcaReportsList(LcaReportViewDTO lcaReportViewDTO, String status,String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,String filterByDays,String positionsAvaialble) throws Exception;
+    
 }
