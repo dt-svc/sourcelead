@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,12 +40,9 @@ import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.AssetServices;
-
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.Employees;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.Shift;
@@ -54,15 +50,13 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
 import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
-
 import com.bis.sourcelead.service.UserRoleService;
-
 import com.bis.sourcelead.service.UserService;
-
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
