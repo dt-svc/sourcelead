@@ -256,7 +256,7 @@
 						<div class="col-md-9">
 						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
-						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorced</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
 						</div>
 					</div>
@@ -454,7 +454,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isGlobalAccess" id="isGlobalAccess">
-		                    Is Global Manager</label>
+		                     Global Manager</label>
 		                </div>
 		                 </div>
                </div>

@@ -1640,11 +1640,12 @@ function Immigration() {
 		$("select[id^=documentCategory]").each(	function() {
 
 					var dropRowId = this.id.slice(-1);
+					console.log("dropRowId "+dropRowId)
 					var docCat = $(this).val();
+					console.log("docCat "+docCat);
 
 					docId = $('#candidateEducation' + dropRowId).val();
-					docName = $('#candidateEducation' + dropRowId + ' :selected').text()
-
+					docName = $('#candidateEducation' + dropRowId + ' :selected').text();
 					if (docCat == 'PetitionerCategory') {
 						if (petitionArr.indexOf(docId) == -1) {
 							petitionArr.push(docId)
@@ -1681,7 +1682,7 @@ function Immigration() {
 				result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a padEv'>";
 				result = result +" <b>"+message+"</b>";
 				result = result + ' <div id="reasonForTemplateDiv"/>';
-				result = result +"		<b href='javascript:void(0)'><button id='confirm-id' class='btn btn-primary btn-block mt' type='button' value='Ok' onclick='hidePopupMessage();'>OK</button></b>";
+				result = result +"		<b href='javascript:void(0)'><button id='confirm-id' class='btn btn-primary btn-block mt' type='button' value='Ok' onclick='immigration.hidePopupMessage();'>OK</button></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#remove_immigration_pop").slideDown(200);
