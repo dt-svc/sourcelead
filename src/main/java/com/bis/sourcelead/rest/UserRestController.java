@@ -296,7 +296,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			}
 			
 		}
-		
+		if(candidate.getDateOfBirth() != null) {
+			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getDateOfBirth()));
+		}
 		
 		return commonUtil.toJSON(candidate);
 		}
