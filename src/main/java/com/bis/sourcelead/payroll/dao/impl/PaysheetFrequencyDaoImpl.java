@@ -141,15 +141,18 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO)
+	public ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payrollReportDTO,OrgLocations orgLocations)
 	{
 		ResponseList<EmployeePayroll> response = new ResponseList<>();
 //		List<PaysheetFrequency> payrollList = null;
 		
 		
 		try {
-			java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
-			java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+			
+			Date fDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date tDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
