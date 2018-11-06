@@ -22,7 +22,7 @@ public interface PaysheetFrequencyDao {
 
 	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus);
 
-	ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO, OrgLocations orgLocations);
+	ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
 
 	PaysheetFrequency getPaySheetFrequencyByGroupIdAndFrequencyStartEnddate(String date,
 			OrgLocations orgLocation, Long groupId);
