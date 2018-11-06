@@ -185,10 +185,6 @@ public class Constants {
 	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
 	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
-	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
-	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -1297,4 +1293,8 @@ public class Constants {
 	
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 }
