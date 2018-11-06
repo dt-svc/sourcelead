@@ -617,10 +617,14 @@ function getGloblaMarketPlaceCandidates(divType){
 						for(var i=0;i<object.length;i++){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
+								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
+								'</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
+								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\', \'ListModel\')"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartListModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
+								'</sec:authorize>';
 							}
 							if(object[i].profilePercentage == null){
 								profilePercentage = 0;
@@ -694,10 +698,14 @@ function getGloblaMarketPlaceCandidates(divType){
 						for(var i=0;i<object.length;i++){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
+								'<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
+								 '</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
+								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 								marketDelelIcon = '	<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+object[i].marketplaceUUID+'\', \'CardModel\')"><i class="fa fa-trash-o"></i></a>';
 								marketAddStatus = '<a type="button" id="addedCartCardModel'+object[i].marketplaceUUID+'" class="anchorHighlight anchorHighlightActive">Added</a>';
+								 '</sec:authorize>';
 							}
 							if(object[i].profilePercentage == null){
 								profilePercentage = 0;

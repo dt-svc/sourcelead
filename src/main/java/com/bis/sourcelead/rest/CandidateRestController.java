@@ -1057,7 +1057,7 @@ public class CandidateRestController {
 	}
 
 	// Note this method is Global marketplace Candidate method
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/globalMarketplacePage")
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
@@ -1069,7 +1069,7 @@ public class CandidateRestController {
 	}
 
 	// Note this method is Global marketplace Candidate method
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/OrgMarketplace")
 	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
@@ -1079,7 +1079,8 @@ public class CandidateRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
-
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(
 			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
@@ -1091,6 +1092,7 @@ public class CandidateRestController {
 		return candidateIds;
 	}
 
+	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')")
 	@RequestMapping(value = "/app/updateMarketPlacePrice", method = RequestMethod.POST)
 	public String updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
 			@RequestParam(value = "priceValType", required = false) String priceValType,
@@ -1100,6 +1102,7 @@ public class CandidateRestController {
 		return "success";
 	}
 
+	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
 	@RequestMapping(value = "/app/withdrawCandidateFromMarketPlace")
 	public void withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
@@ -1111,7 +1114,7 @@ public class CandidateRestController {
 		}
 	}	
 
-	
+	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
 	public Object[] addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1128,7 +1131,7 @@ public class CandidateRestController {
 		return countAndSum;
 	}
 	
-	
+	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/deleteCandidateMarketCart")
 	public String deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
