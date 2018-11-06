@@ -797,14 +797,14 @@ function addCandidateToMarketCart(UUID, viewModel) {
 	        success: function (object) {
 	        	if(object != null){
 	        		if(viewModel=="ListModel"){
-		        		$("#addCartListModel"+UUID).hide();
-		        		$("#addCartListModelDiv"+UUID).append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-		        		$("#deleteIconListModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+		        		$("#addCartListModel"+UUID).empty();
+		        		$("#addCartListModelDiv"+UUID).empty().append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+		        		$("#deleteIconListModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\', \'ListModel\')"><i class="fa fa-trash-o"></i></a>');
 	        		}
 	        		if(viewModel=="CardModel"){
-		        		$("#addCartCardModel"+UUID).hide();
-		        		$("#addCartCardModelDiv"+UUID).append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
-		        		$("#deleteIconCardModel"+UUID).append('<a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>');
+		        		$("#addCartCardModel"+UUID).empty();
+		        		$("#addCartCardModelDiv"+UUID).empty().append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
+		        		$("#deleteIconCardModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\', \'CardModel\')"><i class="fa fa-trash-o"></i></a>');
 	        		}
 	        		sessionStorage.setItem("dynamicCartCount", object[0]);
 	        		sessionStorage.setItem("dynamicTotalPrice",object[1]);
