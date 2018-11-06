@@ -1067,7 +1067,6 @@ function getAssociateUserDetails(){
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
-// 	        		  $("#RatePer").val(json['currentRateType']);
 	        		  $("select[name=RatePer]").val(json['currentRateType']);
 		        	  $("#RatePer").selectpicker('refresh');
 		        	  
@@ -1078,8 +1077,14 @@ function getAssociateUserDetails(){
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
 		        	  
-		        	  
-// 	        		  $("#currentCurrency").val(json['currentRateCurrency']);
+		        	  if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
+				    	 
+				    	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != "undefined"){
+				    		 $("#dateofBirth").val(json['dateofBirthString']); 
+				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);
