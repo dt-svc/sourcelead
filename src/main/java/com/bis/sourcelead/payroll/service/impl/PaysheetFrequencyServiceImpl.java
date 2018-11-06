@@ -599,6 +599,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payPeriodDTO.setOrgLocationid(orgLocations.getId());
+		payPeriodDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
 		for(EmployeePayroll emp : list.getData()) {
 //			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
@@ -753,6 +754,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payrollReportDTO.setOrgLocationid(orgLocations.getId());
+		payrollReportDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payrollReportDTO);
 		Map<Long, PayrollReportDTO> userMap = new HashMap<>();
 		for(EmployeePayroll emp : list.getData()) {
