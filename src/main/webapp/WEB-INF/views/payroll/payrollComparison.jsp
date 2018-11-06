@@ -30,7 +30,7 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>  
 				<div class="col-md-12">
 					<select class="form-control sel" id="payGroup" name="payGroup" field-name="Pay Group" onchange="getPayPeriodByGroupId('payGroup','payPeriod','payPeriod2');" data-validation="required">
 					</select>
@@ -51,6 +51,7 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Compare Between</label>
               <div class="col-md-12">
+               <label >Frequency1<span class="text-danger">&nbsp;*</span></label>
                <div class="row">
                		<div class="col-md-6">
                			<select class="form-control sel" id="payPeriod" name="payPeriod" field-name="Frequency1" data-validation="required">
@@ -61,6 +62,7 @@ $(document).ready(function(){
 					</select>
                		</div>
                		<div class="col-md-6">
+               		 <label >Frequency2<span class="text-danger">&nbsp;*</span></label>
                			<select class="form-control sel" id="payPeriod2" name="payPeriod2" field-name="Frequency2" data-validation="required">
 					   <!--  <option>Select Pay Period</option>
 						<option>01-02-2018 28-02-2018</option>
