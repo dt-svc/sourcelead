@@ -314,10 +314,13 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
      ResponseList<DeductionHistory> response = new ResponseList<>();
 		
 		try {
-			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
-			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			
+			
+			Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			List<Long> deductionIds = Stream.of(payrollReportDTO.getDeductionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
