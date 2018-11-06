@@ -3,14 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script src="/resources/js/payrollReports.js"></script>
-
-<script>
-$(document).ready(function(){
-   getPayGroupList("payGroup");
-   getDepartments("payrollDepartment");
-});
-</script>
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -55,14 +47,12 @@ $(document).ready(function(){
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
             <ul class="pull-right list-unstyled list-inline">
-              <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li>
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a onclick="exportPayrollRegisterReportExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
               <li class="">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
+                <span class="repSearchIcon" onclick="getContractEmployeeReport();"></span></li>
             </ul>
           </div>
           <div class="require_wrap_table tableFirstSecond clearfix datatable_filter">
@@ -87,16 +77,24 @@ function resetForm(){
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
 </script>
-
+<script>
+function exportPayrollRegisterReportExcel(){
+	var searchValue = $("#payrollRegisterSearch").val();
+	var freqStartDate = $('#fromDate').val();
+	var freqEndDate = $('#toDate').val();
+	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
+	}
+}
+</script>
 <script>
 function exportPayrollRegisterReportPdf(){
 	var searchValue = $("#payrollRegisterSearch").val();
-	var payGroup = $('#payGroup').val();
-	var department = $('#payrollDepartment').val();
-	var payRollType = $('#payRollType').val();
-	var freqStartDate = $('#freqStartDate').val();
-	var freqEndDate = $('#freqEndDate').val();
-    window.location.href = sourceleadUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+	var freqStartDate = $('#fromDate').val();
+	var freqEndDate = $('#toDate').val();
+	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+		window.location.href = sourceleadUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
+	}
 }
 </script>
 <script type="text/javascript">
@@ -255,13 +253,18 @@ function conEmpReportPagination(url){
 //     	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
-    	    	"ordering": true,
+    	    	"ordering": false,
     	    	"oLanguage": {
     	     		"sSearch": "",
     	     		 "sZeroRecords": "", "sEmptyTable": "", 
     	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
     	     }
                 });
+    	$("#payrollRegisterSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getContractEmployeeReport();
+    	   }
+    	});
        $("#conEmpReportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>

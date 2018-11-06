@@ -11,7 +11,6 @@ $(document).ready(function(){
 	getcontributionList();
 });
 </script>
-
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -33,6 +32,7 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group</label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
+					<input type="hidden" id="emptyContributionId" name="emptyContributionId"/>
 					</select>
 				</div>
             </div>
@@ -206,7 +206,7 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 
-
+<div id="popUp"></div>
 <script type="text/javascript">
 function contributionReport(){
 	 if ($('#contribution_report_form').validate(false, validationSettings)){ 
@@ -300,7 +300,7 @@ function getContributionReports(){
 									"data" : "type",
 									"sortable": true,
 									"render" : function(data, type, opt,meta) {
-										
+										$("#emptyContributionId").val(1);
 										     var result = "";
 											result = result+ ' <td><div class="tblminwidth-75">'+opt.contributionType+'</div></td>';
 										
@@ -433,16 +433,34 @@ function exportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var contributionId = $("#contributionId").val();
+	var emptyExport = $('#emptyContributionId').val();
 	/* alert("groupId = "+groupId);
 	alert("freqStartDate = "+freqStartDate);
 	alert("freqEndDate = "+freqEndDate);
 	alert("contributionId = "+freqEndDate);
 	alert("searchValue = "+searchValue); */
-	
+	if(emptyExport > 0){
 	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
+}else{
+	 var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Report List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+}
 }
 </script>
-
+<script type="text/javascript">
+function cancelExport(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
