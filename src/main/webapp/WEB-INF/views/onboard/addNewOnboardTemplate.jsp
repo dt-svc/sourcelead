@@ -233,7 +233,7 @@ width : 6% !important;
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:<span class="text-danger">*</span></strong></label>
+                                      <label><strong>Due date:<span class="text-danger">*</span></strong></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -241,7 +241,7 @@ width : 6% !important;
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due date" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<c:forEach begin="1" end="12" varStatus="loop">
 															<option>${loop.index}</option>
