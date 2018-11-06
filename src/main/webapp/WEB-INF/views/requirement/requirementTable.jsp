@@ -185,6 +185,7 @@ function requirementList(searchType,sourceleadUrl){
  } 
 
 function prepareRequirementData(url,sourceleadUrl){
+	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  var canEduDatePattern = 'YYYY-MM-DD';
@@ -223,11 +224,11 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Joined</th>";
    result = result +"    <th>Backout</th>";
    result = result +"    <th>Rejected</th>";
+   result = result +"    <th>Owner</th>"; 
+   result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
    result = result +"    <th>Experience</th>";
    result = result +"    <th>noOfpositions</th>";
    result = result +"    <th>Industry Name</th>";
-   result = result +"    <th>Owner</th>"; 
-   result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
    result = result +"    <th>Status</th>"; 
 //    result = result +"<th>Actions</th>";
    result = result +"  </tr>"; 
@@ -279,6 +280,10 @@ function clearAlldata(){
 	$('#jobId').val('').trigger('chosen:updated');
 } */
 function jpagination(url,sourceleadUrl){ 
+	var selectedColumns = "";
+	$("#jobCustomColumns").each(function () {
+		
+	});
 	var colIndex = 0;
     $('#requirementPagination').DataTable( { 
    		"processing": true,
@@ -307,15 +312,15 @@ function jpagination(url,sourceleadUrl){
            { "data": "interviewCount" },
            { "data": "offerCount" },
            { "data": "onHoldCount" },
-           { "data": "onResponseCount" },
+           { "data": "noResponseCount" },
            { "data": "joinedCount" },
            { "data": "backOutCount" },
            { "data": "rejectedCount" },
+           { "data": "manager" },
+           { "data": "createdDate"},
            { "data": "experience" },
            { "data": "positions" },
            { "data": "industryName" },
-           { "data": "manager" },
-           { "data": "createdDate"},
            { "data": "requirementSubmissionStatus" }
           
        ],
@@ -410,6 +415,7 @@ function jpagination(url,sourceleadUrl){
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
 		  	"sortable": true,
+		  	"visible": $("input[data-name='generatedId']").is(":checked"),
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";
@@ -451,6 +457,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "process",
 	            "sortable": false,
+	            "visible": $("input[data-name='process']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	       		       	result = result +"<td><div class='tbldata-dotdot_140' " + (opt.process != null && opt.process != "" ? "title='" + opt.process + "'" : "") + ">" + (opt.process != null && opt.process != "" ? opt.process : "------") + "</div></td>";
@@ -460,6 +467,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
+	            "visible": $("input[data-name='clientName']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
@@ -490,6 +498,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "rate",
 	            "sortable": false,
+	            "visible": $("input[data-name='payRate']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
@@ -514,6 +523,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "billRate",
 	            "sortable": false,
+	            "visible": $("input[data-name='billRate']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
@@ -537,6 +547,7 @@ function jpagination(url,sourceleadUrl){
        	{
 	            "targets": colIndex++,
 	            "data": "jobType",
+	            "visible": $("input[data-name='jobType']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		 if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
@@ -555,6 +566,7 @@ function jpagination(url,sourceleadUrl){
         	{
 	            "targets": colIndex++,
 	            "data": "country",
+	            "visible": $("input[data-name='location']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		
@@ -599,6 +611,7 @@ function jpagination(url,sourceleadUrl){
 		         "targets": colIndex++,
 		         "data": "totalApplicants",
 		     	 "sortable": false,
+		     	"visible": $("input[data-name='totalApplicants']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.totalApplicants!=null && opt.totalApplicants!='' && opt.totalApplicants!='undefined' && opt.totalApplicants > 0){
@@ -610,10 +623,11 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		 	{
+			 	{
 		         "targets": colIndex++,
 		         "data": "shortListApplicantsCount",
 		     	 "sortable": false,
+		     	"visible": $("input[data-name='Shortlisted']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined'){
@@ -625,10 +639,11 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		 	{
+			 	{
 		         "targets": colIndex++,
 		         "data": "submitToClientsCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='submitToClient']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined'){
@@ -640,10 +655,11 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		 	{
+			 	{
 		         "targets": colIndex++,
 		         "data": "interviewCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='interview']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined'){
@@ -655,10 +671,11 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		  	{
+			  	{
 		         "targets": colIndex++,
 		         "data": "offerCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='offer']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined'){
@@ -670,10 +687,12 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
+		 	 
 			  	{
 		         "targets": colIndex++,
 		         "data": "onHoldCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='onHold']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.onHoldCount!=null && opt.onHoldCount!='' && opt.onHoldCount!='undefined'){
@@ -685,10 +704,12 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		 	{
+		 	 
+			 	{
 		         "targets": colIndex++,
-		         "data": "onResponseCount",
+		         "data": "noResponseCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='noResponse']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.noResponseCount!=null && opt.noResponseCount!='' && opt.noResponseCount!='undefined'){
@@ -700,10 +721,12 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-		 	{
+		 	 
+			 	{
 		         "targets": colIndex++,
 		         "data": "joinedCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='joined']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined'){
@@ -715,10 +738,12 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
+		 	 
 			 	{
 		         "targets": colIndex++,
 		         "data": "backOutCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='backOut']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined'){
@@ -734,6 +759,7 @@ function jpagination(url,sourceleadUrl){
 		         "targets": colIndex++,
 		         "data": "rejectedCount",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='rejected']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined'){
@@ -745,10 +771,40 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
+		 	 
+			 {
+		         "targets": colIndex++,
+		         "data": "manager",
+		         "visible": $("input[data-name='owner']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+		         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
+	         	        }else{
+	         	      	 result = result +"<td><div>----</div></td>";
+	         	        }
+			            return result;
+		          }
+		 },
+		 {
+	         "targets": colIndex++,
+	         "data": "createdDate",
+	         "visible": $("input[data-name='postedOn']").is(":checked"),
+	         "render": function (data, type, opt, meta ) {
+         		   var result = "";
+         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
+                  	 result = result +"<td><div class='tblminwidth-125'>"+opt.postedOnStr+"</div></td>";
+                   }else{
+                  	 result = result +"<td><div class='tblminwidth-125'>----</div></td>";
+                   }
+	               return result;
+	          }
+	 },
 			 	{
 		         "targets": colIndex++,
 		         "data": "experience",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='experience']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.minExp!=null && opt.minExp!='' && opt.minExp!='undefined' && opt.maxExp == null){
@@ -770,6 +826,7 @@ function jpagination(url,sourceleadUrl){
 		         "targets": colIndex++,
 		         "data": "positions",
 		     	 "sortable": false,
+		     	 "visible": $("input[data-name='noOfPositions']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.positions!=null && opt.positions!='' && opt.positions!='undefined'){
@@ -784,7 +841,8 @@ function jpagination(url,sourceleadUrl){
 		 	{
 		         "targets": colIndex++,
 		         "data": "industryName",
-		     	 "sortable": false,
+		     	 "sortable": true,
+		     	 "visible": $("input[data-name='industryName']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.industryName!=null && opt.industryName!='' && opt.industryName!='undefined'){
@@ -796,32 +854,6 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
-			 {
-			         "targets": colIndex++,
-			         "data": "manager",
-			         "render": function ( data, type, opt, meta ) {
-			         		var result = "";
-			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
-		         	        }else{
-		         	      	 result = result +"<td><div>----</div></td>";
-		         	        }
-				            return result;
-			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "data": "createdDate",
-			         "render": function (data, type, opt, meta ) {
-		         		   var result = "";
-		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
-		                  	 result = result +"<td><div class='tblminwidth-125'>"+opt.postedOnStr+"</div></td>";
-		                   }else{
-		                  	 result = result +"<td><div class='tblminwidth-125'>----</div></td>";
-		                   }
-			               return result;
-			          }
-			 },
 			 {
 			         "targets": colIndex++,
 			         "sortable": false,
@@ -1022,6 +1054,9 @@ function jpagination(url,sourceleadUrl){
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
    		jobSearchHighlight();
+   	 for (var i=0; i<hideColumns.length; i++) {
+		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+		}
    	   }
    	});
  }

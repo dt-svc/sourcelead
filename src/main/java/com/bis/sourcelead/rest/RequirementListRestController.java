@@ -1716,7 +1716,11 @@ public class RequirementListRestController {
 				/*
 				 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 				 */
-				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
+//				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
+				
+				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "shortListApplicantsCount" ,"submitToClientsCount","interviewCount","offerCount","onHoldCount","onResponseCount","joinedCount","backOutCount","rejectedCount","manager.keyword", "createdDate","experience","positions","industryName.keyword",""};
+
+				
 				int sortColumnIndex = 10; //by default sorting using updated date
 				boolean sortColumnOrder = false; //by default descending order
 				if(search.getOrder() != null && !search.getOrder().isEmpty()) {
@@ -2186,6 +2190,7 @@ public class RequirementListRestController {
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("industryName", keywd));
 			//Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(StringUtils.isNumeric(keywd)){
 //				Float expYears = Float.valueOf(matcher.group());
