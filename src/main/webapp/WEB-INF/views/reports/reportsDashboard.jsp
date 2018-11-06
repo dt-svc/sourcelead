@@ -202,7 +202,7 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
-
+        
 				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
 				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
 				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
@@ -307,6 +307,8 @@
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" >UsDeductionSummaryReport</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" >UsContributionSummaryReport</a></li>
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
@@ -553,6 +555,8 @@
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
+						<li><a href="${appPath}/usDeductionSummaryReport" >UsDeductionSummaryReport</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" >UsContributionSummaryReport</a></li>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 						</sec:authorize>
