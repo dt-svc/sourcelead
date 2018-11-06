@@ -71,7 +71,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		String query = "from InvoiceData ind where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		
-		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
+		if(invoiceDetailsDTO.getSearchValue().contains("/")){
 			String convertedDate=invoiceDetailsDTO.getSearchValue();
 			if(invoiceDetailsDTO.getSearchValue().contains("/")){
 				convertedDate = invoiceDetailsDTO.getSearchValue().replaceAll("/", "-");

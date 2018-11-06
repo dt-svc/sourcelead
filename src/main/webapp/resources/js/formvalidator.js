@@ -1434,7 +1434,7 @@ jQueryFormUtils.LANG =  {
     errorTitle : 'Form submission failed!',
     requiredFields : ' is required',
     badTime : 'You have not given a correct time',
-    badEmail : 'You have not given a correct e-mail address',
+    badEmail : 'Incorrect email ID/ Please enter a valid email ID',
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',

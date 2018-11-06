@@ -71,7 +71,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 			qry = " order by wts."+ wagesTaxSummaryDTO.getSortColumn() +" "+wagesTaxSummaryDTO.getSortOrder();
 		}
 		
-		String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
+		String query = "from WageTaxSummary wts where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 		String countQuery = "from WageTaxSummary wts  where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 		
 		if(wagesTaxSummaryDTO.getSearchValue().contains("/") || wagesTaxSummaryDTO.getSearchValue().contains("-")){
@@ -93,7 +93,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 		StringBuilder query1 = new StringBuilder("");
 			if(wagesTaxSummaryDTO.getSearchValue() !=null && !"".equalsIgnoreCase(wagesTaxSummaryDTO.getSearchValue())) {
 //				query1 = " and wts.employeeId like %%";
-			query1.append(" and wts.employeeId like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
+			query1.append(" and (wts.employeeId like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
 					.append("OR wts.employeeName like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
 					.append("OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
 					.append("OR wts.ssnNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
@@ -103,7 +103,7 @@ public class WageTaxSummaryDaoImpl implements WageTaxSummaryDao {
 					.append("OR wts.ssec like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
 					.append("OR wts.batchNumber like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
 					.append("OR wts.fromDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ")
-					.append("OR wts.toDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%' ");
+					.append("OR wts.toDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%') ");
 						/*+ "OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%'";*/
 			}
 		Query queryObj = session.createQuery(query + query1.toString()+qry);

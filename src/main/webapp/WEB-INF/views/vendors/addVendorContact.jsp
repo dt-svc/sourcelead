@@ -384,7 +384,7 @@ function getOrgDetails()
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
-		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="	">
 		  var sectionId = '${section.id}';
 		  getCustomVendorContactDependentField(sectionId);
 		</c:forEach>
