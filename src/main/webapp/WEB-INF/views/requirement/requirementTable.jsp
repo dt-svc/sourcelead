@@ -630,8 +630,9 @@ function jpagination(url,sourceleadUrl){
 		     	"visible": $("input[data-name='Shortlisted']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined'){
-		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
+		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined' && opt.shortlistCount > 0){
+		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+// 		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -646,8 +647,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='submitToClient']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined'){
-		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
+		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined' && opt.submitToClientCount > 0){
+		              
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.submitToClientCount+"</div></a></td>";
+
+		         			// 		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -662,8 +666,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='interview']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined'){
-		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
+		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined' && opt.interviewCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.interviewCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -678,8 +685,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='offer']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined'){
-		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
+		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined' && opt.offersCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.offersCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -729,8 +739,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='joined']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined'){
-		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
+		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined' && opt.joinedCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.joinedCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -746,8 +759,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='backOut']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined'){
-		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
+		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined' && opt.backoutCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.backoutCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
@@ -762,8 +778,11 @@ function jpagination(url,sourceleadUrl){
 		     	 "visible": $("input[data-name='rejected']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
-		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined'){
-		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
+		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined' && opt.joinedCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.rejectedCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
 		         		}
 		         		else{
 		         			result = result +"<td><div>0</div></td>";
