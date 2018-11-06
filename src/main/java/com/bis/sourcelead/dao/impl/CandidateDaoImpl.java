@@ -2327,7 +2327,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
 			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
 		}
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id =:currentOrgLocId";
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id <> :currentOrgLocId";
 		queryList = session.createQuery(listQuery+query1+query2).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
 		System.out.println(listQuery+query1+query2);
 		return queryList;
