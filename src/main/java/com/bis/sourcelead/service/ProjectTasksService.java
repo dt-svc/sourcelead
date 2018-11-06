@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -56,11 +57,11 @@ public interface ProjectTasksService {
     
     public List<ProjectTasks> getAllTasksByProjectIdAndParentTaskId(Long projectId,Long parentTaskId)throws Exception;
 
-	public void updateTaskPriority(Long taskpriorityId, String taskId, Long userId)throws Exception;
+	public void updateTaskPriority(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 
-	public void updateTaskSeverity(Long taskSeverityId, String taskId, Long userId)throws Exception;
+	public void updateTaskSeverity(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 
-	public void updateTaskStatus(Long taskStatusId, String taskId, Long userId)throws Exception;
+	public void updateTaskStatus(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 	
 	public void updateTaskName(String taskName, String taskId, Long userId)throws Exception;
 	
@@ -68,9 +69,9 @@ public interface ProjectTasksService {
 	
 	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
 	
-	public void updateDueDate(String dueDate, String taskId, Long userId)throws Exception;
+	public void updateDueDate(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 	
-	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId)throws Exception;
+	public void updateEstimatedTime(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 	
 	public void updateOwner(Long ownerId, String taskId, Long userId)throws Exception;
 	
@@ -99,5 +100,7 @@ public interface ProjectTasksService {
 	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
 	
 	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
+	
+	List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId,String taskType)throws Exception;;
  	 
 }

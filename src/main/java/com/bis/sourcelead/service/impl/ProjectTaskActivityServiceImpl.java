@@ -87,6 +87,11 @@ public class ProjectTaskActivityServiceImpl implements ProjectTaskActivityServic
 		 projectTaskActivityDao.saveProjectTaskActivity(projectTaskActivity);
 		
 	}
+
+	@Override
+	public List<ProjectTaskActivity> getTasksActitivtyListByLookupIdAndCategoryType(Long lookupId, String taskType)throws Exception {
+		return projectTaskActivityDao.getTasksActitivtyListByLookupIdAndCategoryType(lookupId, taskType);
+	}
 	
 	
 }
