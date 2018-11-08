@@ -51,9 +51,10 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Compare Between</label>
               <div class="col-md-12">
-               <label >Frequency1<span class="text-danger">&nbsp;*</span></label>
+               
                <div class="row">
                		<div class="col-md-6">
+               		<label >Frequency1<span class="text-danger">&nbsp;*</span></label>
                			<select class="form-control sel" id="payPeriod" name="payPeriod" field-name="Frequency1" data-validation="required">
 					   <!--  <option>Select Pay Period</option>
 						<option>01-02-2018 28-02-2018</option>
@@ -75,8 +76,9 @@ $(document).ready(function(){
               </div>
             </div>
              <div class="form-group">
-              <label class="col-md-12">Department</label>
+              <label class="col-md-12">Department <span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
+              
                 <select class="form-control chosen-select" id="payrollDepartment" name="payrollDepartment" field-name="Department" data-validation="required">
 					   <!--  <option>Select Department</option>
 						<option>Department-1</option>
