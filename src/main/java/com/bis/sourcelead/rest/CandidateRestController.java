@@ -1045,15 +1045,32 @@ public class CandidateRestController {
 
 	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
-	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
+	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
 		// System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
-		// ModelAndView model = new ModelAndView();
-		// model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		// model.addObject("sourceleadUrl", sourceleadUrl);
-		// return model;
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (marketPlaceList != null && marketPlaceList.size() > 0) {
+					candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+		
 	}
 
 	// Note this method is Global marketplace Candidate method
