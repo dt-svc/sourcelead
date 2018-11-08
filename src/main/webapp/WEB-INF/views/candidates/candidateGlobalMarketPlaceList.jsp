@@ -595,9 +595,9 @@
 	}
   $(document).ready(function () {
 	 getGloblaMarketPlaceCandidates('listModel'); 
-	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
-	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
-  });
+	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+localStorage.getItem("dynamicCartCount")+"</a>");
+	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+localStorage.getItem("dynamicTotalPrice")+"</a>");
+ });
 
 function getGloblaMarketPlaceCandidates(divType){
 	var searchValue = $("#globalMarketSearh").val();
@@ -814,11 +814,11 @@ function addCandidateToMarketCart(UUID, viewModel) {
 		        		$("#addCartCardModelDiv"+UUID).empty().append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
 		        		$("#deleteIconCardModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\', \'CardModel\')"><i class="fa fa-trash-o"></i></a>');
 	        		}
-	        		sessionStorage.setItem("dynamicCartCount", object[0]);
-	        		sessionStorage.setItem("dynamicTotalPrice",object[1]);
-	        		$("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
-	        		$("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
-	        	}
+	        		localStorage.setItem("dynamicCartCount", object[0]);
+	        		localStorage.setItem("dynamicTotalPrice",object[1]);
+	        		$("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+localStorage.getItem("dynamicCartCount")+"</a>");
+	        		$("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+localStorage.getItem("dynamicTotalPrice")+"</a>");
+  	}
 	        }
 	    });
 	}

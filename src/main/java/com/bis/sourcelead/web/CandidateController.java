@@ -519,6 +519,15 @@ public class CandidateController {
 		
 	 }	 
 	 
+	 @RequestMapping(value = "/candidateMarketplaceCheckout")
+	 public ModelAndView candidateMarketplaceCheckout()throws Exception
+	 { 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("candidates/candidateMarketplaceCheckout");
+		 return model;
+	 }
+	 
 	
 	 @RequestMapping(value = "/viewProfessionalCandidateResume/{title}", method = RequestMethod.GET)
 	    public void viewProfessionalCandidateResume(@RequestParam(value="resumeUUID", required=false) String resumeUUID,
