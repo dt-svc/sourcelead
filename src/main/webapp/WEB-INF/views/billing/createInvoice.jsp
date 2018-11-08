@@ -1276,9 +1276,9 @@ function pagination(){
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+"  exists. Please choose a different invoice id.</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
-						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+'  exists. Please choose a different invoice id.'); 
 						  $("#saveButtonId").attr("disabled", "disabled");
 						  $("#sendButtonId").attr("disabled", "disabled");
 		        	}

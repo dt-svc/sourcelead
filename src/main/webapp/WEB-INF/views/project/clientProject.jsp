@@ -280,8 +280,6 @@ function getLevel2Approvers(level1ApproverUser){
 	
 } 
 </script>
-
-
 <script type="text/javascript">
 function getLevel2ExpenseApprovers(level1ExpenseApprover){
 	var currentExpenseApproverId = '';

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2243,6 +2244,46 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
+				
+				
+				
+				/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("experience"))) {
+					if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
+						dataMigrationDTOJsonCopy.put("experience", "0");
+					//	candidateDTO.setExperienceYears("0");
+					//	candidateDTO.setExperienceMonths("0");
+					}else{
+						 String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
+						 if(exp.length >1){
+							 
+							 dataMigrationDTOJsonCopy.put("experience", exp[0]);
+							// candidateDTO.setExperienceYears(exp[0]);
+								if(!exp[1].matches("[a-zA-Z]+")){
+									if(!"years".equalsIgnoreCase(exp[1])){
+									int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+									candidateDTO.setExperienceMonths(String.valueOf(months));
+									}
+										
+								} 
+						 }else{
+							 if(exp[0].contains("years") || exp[0].contains("Years") ){
+								 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+								 
+								 dataMigrationDTOJsonCopy.put("experience", String.valueOf(years));
+								// candidateDTO.setExperienceYears(String.valueOf(years));
+								// candidateDTO.setExperienceMonths("0");
+							 }else{
+								// candidateDTO.setExperienceYears("");
+								// candidateDTO.setExperienceMonths("");
+								 dataMigrationDTOJsonCopy.put("experience", "");
+							 }
+							 
+						 }
+							
+							
+					}
+				}*/
+				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
 				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
 
@@ -3025,6 +3066,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	}
 
 		
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
 		
+	}	
 		
 	}
