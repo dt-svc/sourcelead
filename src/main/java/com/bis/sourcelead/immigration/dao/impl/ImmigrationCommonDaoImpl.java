@@ -35,6 +35,7 @@ import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationListView;
+import com.bis.sourcelead.entity.ImmigrationReportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.Lca;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaListExportView;
 import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
+import com.bis.sourcelead.entity.LcaReportView;
 import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.MyImmigrationView;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -68,6 +71,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
+import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -2193,6 +2197,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 					" l.PREVAILING_WAGE as prevailingWage, " + 
 					" l.LCA_STATUS as lcaStatus, " + 
 					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
+					" CAST(l.AVAILABLE_POSITIONS AS CHAR(5))as availablePositions, " + 
 					" CAST(l.STATUS AS CHAR(1))as status, " + 
 					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
 					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate, " + 
@@ -2416,6 +2421,339 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return count;
 	}
 
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+        ResponseList<ImmigrationReportViewDTO> responseList = new ResponseList<>();
+        List<ImmigrationReportView> immReportViewList = null;
+        Query hqlQuery = null;
+        Query hqlCountQuery = null;
+        
+       /* java.sql.Date startDate = new java.sql.Date(immigrationReportDTO.getFreqDates()[0].getTime());
+		java.sql.Date endDate = new java.sql.Date(immigrationReportDTO.getFreqDates()[1].getTime());*/
+		
+        Date startDate = new Date(immigrationReportDTO.getFreqDates()[0].getTime());
+		Date endDate = new Date(immigrationReportDTO.getFreqDates()[1].getTime());
+		startDate.setHours(00);
+		startDate.setMinutes(00);
+		startDate.setSeconds(00);
+		
+		endDate.setHours(23);
+		endDate.setMinutes(59);
+		endDate.setSeconds(59);
+		
+		List<Long> countlist = null;
+		List<String> petitionTypeList = immigrationReportDTO.getPetitionType();
+		List<String> statusList = immigrationReportDTO.getPetitionStatus();
+		List<String> attorneyList = immigrationReportDTO.getAttorneyId();
+		
+		StringBuilder query1 = new StringBuilder("");
+		if (StringUtils.isNotBlank(immigrationReportDTO.getSearchValue())) {
+			query1.append(" and ((immRepView.generatedId like '%" + immigrationReportDTO.getSearchValue() + "%' )");
+			query1.append(" or (immRepView.petitionType like '%" + immigrationReportDTO.getSearchValue() + "%' )");
+			query1.append(" or (immRepView.vendor like '%" + immigrationReportDTO.getSearchValue() + "%' )");
+			query1.append(" or (immRepView.firstName like '%" + immigrationReportDTO.getSearchValue() + "%' )");
+			query1.append(" or (immRepView.email like '%" + immigrationReportDTO.getSearchValue() + "%' )");
+			query1.append(" or (immRepView.phone like '%" + immigrationReportDTO.getSearchValue() + "%' ))");
+		}
+		
+		String query = null;
+		if(statusList.size() >0 && attorneyList.size()>0 && attorneyList.equals("0")) {
+			query = "from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.vendor IN (:attorneyList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+			
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else if (statusList !=null && statusList.size()>0) {
+			query = "from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+			
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else if (attorneyList.size()>0 && attorneyList.equals("0")) {
+			query = "from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.vendor IN (:attorneyList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else {
+			query = "from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.createdDate between :startDate and :endDate"+query1;
+
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}
+		String petitionQueryCount = null;
+		
+		if(statusList.size() >0 && attorneyList.size()>0 && attorneyList.equals("0")) {
+			petitionQueryCount = "select count(*) from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.vendor IN (:attorneyList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+			
+		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else if(statusList.size()>0){
+			petitionQueryCount = "select count(*) from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+			
+			hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else if(attorneyList.size()>0 && attorneyList.equals("0")){
+			petitionQueryCount = "select count(*) from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.vendor IN (:attorneyList) and immRepView.createdDate between :startDate and :endDate"+query1+"";	
+			
+		   hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}else {
+			petitionQueryCount = "select count(*) from ImmigrationReportView immRepView  where  immRepView.orgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.createdDate between :startDate and :endDate"+query1+"";
+			
+		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameter("startDate", startDate).setParameter("endDate",endDate);
+		}
+		immReportViewList = hqlQuery.setFirstResult(immigrationReportDTO.getStart()).setMaxResults(immigrationReportDTO.getLength()).list();
+        int count =0;
+		countlist=hqlCountQuery.list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		responseList.setRecordsTotal(count);
+		responseList.setRecordsFiltered(count);
+		
+		List<ImmigrationReportViewDTO> immRepViewDTOList = new ArrayList<ImmigrationReportViewDTO>();
+        for (ImmigrationReportView source : immReportViewList) {
+        	
+        	ImmigrationReportViewDTO target = new ImmigrationReportViewDTO();
+        	target.setId(source.getGeneratedId());
+        	
+        	target.setPetitionType(Arrays.asList(source.getPetitionType()));
+        	if(source.getCurrUscisStatus() != null) {
+        	target.setCurrUscisStatus(source.getCurrUscisStatus());
+        	}
+        	target.setPetitionTypeName(source.getPetitionType());
+        	target.setEmail(source.getEmail());
+        	target.setPhoneNumber(source.getPhone());
+        	target.setName(source.getFirstName());
+        	target.setCountry(source.getCountry());
+        	
+        	target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+			target.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
+			target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
+			
+			target.setOrgName(source.getVendor());
+			
+			if (orgLocations.getId().equals(source.getOrgLocationId())) {
+				target.setOrgName(source.getVendor());
+				target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
+				target.setSpocName(source.getSpocNameVendor());
+			}
+			
+            BeanUtils.copyProperties(source, target);
+            immRepViewDTOList.add(target);
+        }
+        responseList.setData(immRepViewDTOList);
+        return responseList;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<LcaReportViewDTO> getLcaReportList(LcaReportViewDTO lcaReportViewDTO, String status,
+			String lcaStatus, String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal,
+			String filterByDays,String positionsAvaialble) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+        List<Long> countlist = null;
+        Integer filterCount = 0;
+        List<LcaReportView> lcaRepViewList = null;
+        ResponseList<LcaReportViewDTO> responseList = new ResponseList<LcaReportViewDTO>();
+        String subQuery1 ="";
+        String subQuery2 = ""; 
+        String subQuery3 = "";
+        String subQuery4 = ""; 
+        
+        StringBuilder query1 = new StringBuilder("");
+        if (!searchValue.toLowerCase().contains("I-".toLowerCase()) && (searchValue.contains("-") || searchValue.contains("/"))) {
+			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
+					.toFormatter();
+			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
+			DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			String newDate = parsedDate.format(f2);
+			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
+			logger.debug("---test-----" + sqlDate1);
+			query1.append(" and ((lcaRepView.startDate like '%" + sqlDate1 + "%' )");
+			query1.append(" or (lcaRepView.endDate like '%" + sqlDate1 + "%' ))");
+		} else if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+			query1.append(" and ((lcaRepView.lcaNo like '%" + searchValue + "%' )");
+			query1.append(" or (lcaRepView.lcaTitle like '%" + searchValue + "%' )");
+			query1.append(" or (lcaRepView.lcaStatus like '%" + searchValue + "%' )");
+			query1.append(" or (lcaRepView.location like '%" + searchValue + "%' )");
+			query1.append(" or (lcaRepView.prevailingWage like '%" + searchValue + "%' )");
+			query1.append(" or (lcaRepView.status like '%" + searchValue + "%' ))");
+		}
+        
+        String sortingQry = "";
+		if (StringUtils.isNotBlank(lcaReportViewDTO.getSortColumn())) {
+			String sortColumnName = lcaReportViewDTO.getSortColumn();
+			sortingQry = "order by lcaRepView." + sortColumnName + " " + lcaReportViewDTO.getSortOrder();
+		} 
+		
+		if(status != null && !status.isEmpty()){
+			String[] statusFilter = status.split(",");
+			
+			if (Arrays.asList(statusFilter).contains("All")) {
+			//	subQuery1 = subQuery1 + "lcaRepView.status = '1' and lcaRepView.status = '0' ";
+				subQuery1 = subQuery1 +"lcaRepView.status = '1' or lcaRepView.status = '0' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Active")) {
+				subQuery1 = subQuery1 + "lcaRepView.status = '1' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Inactive")) {
+				subQuery1 = subQuery1 + "lcaRepView.status = '0' or ";
+			}
+			
+			subQuery1 = "and (" + subQuery1.substring(0, subQuery1.length() - 4) + ")";
+		}
+        
+		if(lcaStatus != null && !lcaStatus.isEmpty()){
+			String[] statusFilter = lcaStatus.split(",");
+			if (Arrays.asList(statusFilter).contains("Initiated")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Initiated' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("In progress")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'In progress' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Certified")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Certified' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Denied")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Denied' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Withdrawn")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Withdrawn' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Voided")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Voided' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Invalidated")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Invalidated' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Rejected")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Rejected' or ";
+			}
+			
+			if (Arrays.asList(statusFilter).contains("Expired")) {
+				subQuery2 = subQuery2 + "lcaRepView.lcaStatus = 'Expired' or ";
+			}
+			
+			subQuery2 = "and (" + subQuery2.substring(0, subQuery2.length() - 4) + ")";
+		}
+		
+		Date daysFilter = null;
+		boolean isDateFileterFound= false;
+		if(StringUtils.isNotBlank(filterByDays) && !filterByDays.equalsIgnoreCase("All")) {
+		
+			//String[] filterDaysOptions = filterByDays.split(",");      
+			isDateFileterFound = true;
+			Calendar cal = Calendar.getInstance();
+			/*for (String filteredByDays: filterDaysOptions) {   */
+			cal.add(Calendar.DATE, Integer.parseInt(filterByDays));
+			daysFilter = cal.getTime();
+			/*}*/
+			subQuery3 = "and lcaRepView.endDate <=:daysFilter"; 
+		}
+		
+		if(positionsAvaialble != null && !positionsAvaialble.equalsIgnoreCase("All")){
+			
+            String[] positionAvaiable = positionsAvaialble.split(",");
+			if (Arrays.asList(positionAvaiable).contains("Available")) {
+				subQuery4 = subQuery4 + "lcaRepView.availablePositions <=lcaRepView.noOfPositions or ";
+			}
+			if (Arrays.asList(positionAvaiable).contains("Not Available")) {
+				subQuery4 = subQuery4 + "lcaRepView.availablePositions = 0 or ";
+			}
+			subQuery4 = "and (" + subQuery4.substring(0, subQuery4.length() - 4) + ")";
+		}
+		
+		String query = "from LcaReportView lcaRepView  where  lcaRepView.orgLocationId =:orgLocationId "+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+subQuery4+" "+sortingQry+" ";
+		String listQueryCount = "select count(*) from LcaReportView lcaRepView  where  lcaRepView.orgLocationId =:orgLocationId "+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+subQuery4+" "+sortingQry+" ";
+		
+		System.out.println(listQueryCount);
+		Query hqlQuery1 = session.createQuery(listQueryCount);
+		hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
+		
+		// Filter By Date
+		if(isDateFileterFound) {
+			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+		}
+		
+		Query hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId());
+		
+		// Filter By Date
+		if(isDateFileterFound) {
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+		}
+		
+		lcaRepViewList = hqlQuery.setFirstResult(lcaReportViewDTO.getStart()).setMaxResults(lcaReportViewDTO.getLength()).list();
+        
+        countlist = hqlQuery1.list();
+		int totalCount = 0;
+		if (lcaReportViewDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+				filterCount = totalCount;
+			}
+		}
+		responseList.setRecordsTotal(totalCount);
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
+			responseList.setRecordsFiltered(filterCount);
+		} else {
+			responseList.setRecordsFiltered(totalCount);
+		}
+       
+        List<LcaReportViewDTO> tempalteDTOList = new ArrayList<LcaReportViewDTO>();
+        for (LcaReportView source : lcaRepViewList) {
+        	
+        	LcaReportViewDTO target = new LcaReportViewDTO();
+        	
+        	target.setLcaNo(source.getLcaNo());
+        	target.setLcaTitle(source.getLcaTitle());
+        	target.setNoOfPositions(source.getNoOfPositions());
+        	target.setSocCode(source.getSocCode());
+        	target.setSocOccupationTitle(source.getSocOccupationTitle());
+        	target.setJobTitle(source.getJobTitle());
+        	target.setPrevailingWage(source.getPrevailingWage());
+        	target.setWagesLevel(source.getWagesLevel());
+        	target.setLcaStatus(source.getLcaStatus());
+        	target.setPrivilingWageCurrency(source.getPrivilingWageCurrency());
+        	target.setPrivilingWageRateType(source.getPrivilingWageRateType());
+        	
+        	target.setLocationsList(Arrays.asList(source.getLocation().split("\n")));
+        	target.setLocation(source.getLocation().replaceAll("", ""));
+        	
+        	if(source.getStatus().equals(1)) {
+        	target.setStatus("Active");
+        	}else {
+        		target.setStatus("Inactive");
+        	}
+        	target.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),source.getStartDate()));
+        	target.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),source.getEndDate()));
+        	
+        	target.setLocationsList(Arrays.asList(source.getLocation()));
+        	target.setLocation(source.getLocation().replaceAll("", ""));
+            tempalteDTOList.add(target);
+        }
+        responseList.setData(tempalteDTOList);
+        return responseList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca updateAvailablePositionCountByLcaId(Long lcaId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.id =:lcaId";
+		List<Lca> lcaList = session.createQuery(query).setLong("lcaId", lcaId).list();
+		Lca lca = null;
+		if(lcaList != null && !lcaList.isEmpty())
+		{
+			
+			lca = (Lca) lcaList.iterator().next();
+		}
+		return lca;
+	}
 	
 }

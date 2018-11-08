@@ -237,7 +237,7 @@ public interface RequirementService {
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 	
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag);
 	
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 	
