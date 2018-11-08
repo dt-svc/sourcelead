@@ -134,4 +134,16 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 		
 	}
 
+	@Override
+	@Transactional
+	public List<RequirementLocations> getAllRequirementByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		List<RequirementLocations> location = new ArrayList<RequirementLocations>();
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("getRequirementLocationsByLocationUUID start");
+		List<RequirementLocations> locationlist= session.createQuery("from RequirementLocations rl left join fetch rl.requirementId r where r.id in(select id from Requirement req where req.orgLocationId = :orgLocationId)" ).setCacheable(true).setLong("orgLocationId", orgLocationId ).setCacheable(true).list();
+	
+			return locationlist;
+	}
+
 }

@@ -62,12 +62,11 @@ function getNotificationsByuserId(){
 				
 				result = result + ' </li>';
 			} 
-			
+			  result = result + '<a class="notiView" href="<c:url value="/app/notificationsList"/>">View All</a> ';
 		}else{
 			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
 		}
           result = result + '</ul>';
-         result = result + '<a class="notiView" href="<c:url value="/app/notificationsList"/>">View All</a> ';
           result = result + ' </div>';
 		
 		$("#notificationPopup").empty();

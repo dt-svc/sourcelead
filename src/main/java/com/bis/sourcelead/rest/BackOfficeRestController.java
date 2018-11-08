@@ -643,6 +643,10 @@ public class BackOfficeRestController {
 		
 		
 		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(asset.getId());
+		for(AssetAssign aa:assetAssignList) {
+			aa.setAssignedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getAssignedOn()));
+			aa.setReturnedOnStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),aa.getReturnedOn()));
+		}
 		assetDTO.setAssetAssignList(assetAssignList);
 		
 		assetDTO.setName(asset.getName());
