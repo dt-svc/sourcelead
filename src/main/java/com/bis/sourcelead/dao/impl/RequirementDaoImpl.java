@@ -844,6 +844,7 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 			}
 		}
+		if(!jobFilterDTO.getSearchValue().equals("'"))
 		if (jobFilterDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFilterDTO.getSearchValue())) {
 			query1.append(" and (requirement.jobTitle like '%" + jobFilterDTO.getSearchValue() + "%' ")
 					.append("OR requirement.jobId like '%" + jobFilterDTO.getSearchValue() + "%' ")
