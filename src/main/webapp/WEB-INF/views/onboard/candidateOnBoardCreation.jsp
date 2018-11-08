@@ -898,12 +898,22 @@ function validateUploadFile(id)
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
-				    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+				    	 if(json['mobilePhone'] != "" && json['mobilePhone'] != null && json['mobilePhone'] !="undefined"){
 				        		$("#mobileNumber").val(json['mobilePhone']);
 				        		$("#mobileNumber").attr("readonly","readonly");
 				        	}else{
-				        		$("#mobileNumber").remveAttr("readonly");
+				        		$("#mobileNumber").removeAttr("readonly");
 				        	}
+				    	 
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    		 
+				    	 }	 
+				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
 				    	 
 				    	 $("#personalEmail").val(json['email']);
 				    	 $("#offBoardLocation").val(json['location']);
@@ -951,9 +961,18 @@ function validateUploadFile(id)
 				        		$("#mobileNumber").val(json['mobilePhone']);
 				        		$("#mobileNumber").attr("readonly","readonly");
 				        	}else{
-				        		$("#mobileNumber").remveAttr("readonly");
+				        		$("#mobileNumber").removeAttr("readonly");
 				        	}
+				    	
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
 				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
+				    	
 				    	 $("#personalEmail").val(json['email']);
 				    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
 					    	 $("#country").val(json['country']);
@@ -2469,11 +2488,12 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="clearfix"></div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Gender</label>';
+	 result = result +'<label class="col-md-3 control-label">Gender <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" ><span class="mr5"></span>Male</label>';
-	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>';
-	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>';
+	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>';
+	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>';
+	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>';
+	 result = result +'<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
@@ -2723,6 +2743,22 @@ function addCandidateDetailsForOnboarding(){
 	});
 }
 </script>
+
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+
 
 <script>
   function getDatesScript(){
