@@ -63,6 +63,8 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String rejectedReason;
 	private String joinDate;
 	private String incentivizedType;
+	private String applicants;
+	
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus finalsSubmissionStatus;
 	
@@ -486,6 +488,14 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	}
 	public void setFinalsSubmissionStatus(ApplicantSubmissionStatus finalsSubmissionStatus) {
 		this.finalsSubmissionStatus = finalsSubmissionStatus;
+	}
+	public String getApplicants()
+	{
+		return applicants;
+	}
+	public void setApplicants(String applicants)
+	{
+		this.applicants = applicants;
 	}
 	
 }

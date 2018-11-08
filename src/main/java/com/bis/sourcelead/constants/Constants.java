@@ -621,6 +621,9 @@ public class Constants {
 	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source",
 			"Score", "Experience", "Status", "Submitted On", "Submitted By", "Client Contact" };
+	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED = {
+			"Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source", "Score", "Experience", "Status",
+			"Submitted On", "Submitted By", "Client Contact" };
 	public static final String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Rate", "Source", "Score", "Experience",
 			"Status", "ShortListed By", "ShortListed On" };
@@ -933,6 +936,10 @@ public class Constants {
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
+	
+
+	public static final String[] ASSETS_REPORT_EXPORT_HEADDERS = { "Employee Id", "Employee Name","Asset Name", "Category","Serial Number",
+			"Assigned On", "Returned On" ,"Shift", "Document", "Assigned By",};
 	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
