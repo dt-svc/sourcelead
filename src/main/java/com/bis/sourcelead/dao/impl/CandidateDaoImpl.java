@@ -1447,6 +1447,8 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(candidateDTO.getSearchValue() !=null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
 			 query1.append(" and ").append("(").append(" candidate.firstName like '%" + candidateDTO.getSearchValue() + "%' ")
 					.append("OR candidate.lastName like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR (candidate.consultantUser.id IN (select ur.user.id from UserRole ur where ur.roles.displayName like '%" + candidateDTO.getSearchValue() + "%' and ur.orgLocations.id = :orgLocationsId)) ")
+					.append("OR (candidate.consultantUser.id IN (select ur.user.id from UserRole ur where (( ur.reportingManager.firstName LIKE '" +  candidateDTO.getSearchValue() + "%') OR (ur.reportingManager.lastName LIKE '" + candidateDTO.getSearchValue() + "%')) and ur.orgLocations.id = :orgLocationsId))")
 					.append("OR candidate.email like '%" + candidateDTO.getSearchValue() + "%' ").append(")");
 						
 			}
