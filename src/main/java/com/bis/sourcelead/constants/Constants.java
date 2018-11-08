@@ -1240,6 +1240,8 @@ public class Constants {
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
+    
+    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";

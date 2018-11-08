@@ -34,7 +34,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -74,6 +76,9 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	DepartmentService departmentService;
+	
+	@Autowired
+	private AssetCategoryService assetCategoryService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -311,9 +316,11 @@ public class DataMigrationCommonController {
 	 @RequestMapping(value = "/downloadDataImportTemplateForAsset", method = RequestMethod.GET)
 		public void downloadDataImportTemplateForAsset(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			logger.debug("download Asset template is for Import downloadAssetDataImportTemplate method");
+	        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 	        @SuppressWarnings("resource")
-			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("AssetTemplate");
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("AssetTemplate");
 	        String[] tableColumns = Constants.IMPORT_ASSET_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
@@ -321,9 +328,19 @@ public class DataMigrationCommonController {
 	        for (String key : tableColumns) {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
+	            
+	            if(key.equalsIgnoreCase("Category")) {
+	            	List<String> categoryList = assetCategoryService.getAssetCategoryStringtByLocationId(orgLocation.getId());
+	            	if(categoryList != null && !categoryList.isEmpty()) {
+	            		String [] category = categoryList.toArray(new String[categoryList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(category, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Work Status")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.ASSET_WORKING_STATUS, cellnum-1, "xls"));
+	            }
 	        }
 	        try {
-	            File file = new File("Asset_Import_Template.xlsx");
+	            File file = new File("Asset_Import_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            
