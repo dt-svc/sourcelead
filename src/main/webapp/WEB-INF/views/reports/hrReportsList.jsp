@@ -15,6 +15,18 @@
     </section>
     
 <div class="reportNewDash">
+	
+		<a href="${appPath}/assetsReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-check-square-o"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Asset Assigned History</h2><b>View</b>
+		</div>
+	</div>	
+
+	</a>
+
+
     <a href="${appPath}/projectReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-bar-chart"></i></span>
@@ -115,6 +127,7 @@
 	</div>	
 
 	</a>
+	
 	
 	<a href="${appPath}/topLeaveTakenReports">
 	<div class="repDashCta">

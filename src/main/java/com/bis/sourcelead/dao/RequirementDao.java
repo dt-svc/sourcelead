@@ -230,7 +230,7 @@ public interface RequirementDao {
 	
 	public void deleteJobFairRequirement(long jobFairRequirementId);
 
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag);
 
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 

@@ -419,6 +419,27 @@ function getClientUniversalSearchList(searchValue,searchType){
 
 <!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
+
+<script>
+function search
+$("#dataTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		 //dataTableSearch
+	 	$('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+ 	var searchData = $('#dataTableSearch').val();
+			    	
+		 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+		    		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+		    	}else{
+		 		   getDynamciUserList();
+				   searchHighlight();
+		    	}
+	    	$('#dataTableSearch').val(searchData);		 	
+	 	   }
+	   } );
+
+</script>
+
 <script>
 function clearSearch(){
 	document.getElementById("clientlist_form").reset();

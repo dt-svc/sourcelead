@@ -64,6 +64,9 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "CREATED_USER")
 	private String createdUser;
 	
+	@Column(name = "MASTER_USER_CODE")
+	private String masterUserCode;
+	
 	@JsonProperty
     @Transient
     private String fileName;
@@ -620,6 +623,14 @@ public class RequirementSubmissionHistory implements Serializable{
 	public void setGenerateInvoice(String generateInvoice)
 	{
 		this.generateInvoice = generateInvoice;
+	}
+
+	public String getMasterUserCode() {
+		return masterUserCode;
+	}
+
+	public void setMasterUserCode(String masterUserCode) {
+		this.masterUserCode = masterUserCode;
 	}
 	
 
