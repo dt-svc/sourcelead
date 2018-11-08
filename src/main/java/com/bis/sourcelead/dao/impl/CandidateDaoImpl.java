@@ -2300,7 +2300,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace) throws Exception {
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(marketplace);
@@ -2344,14 +2344,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean addCandidateToMarketCart(CandidateMarketCart marketcart) throws Exception {
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.save(marketcart);
-			return true;
 		}catch(Exception e){
 			e.printStackTrace();
-			return false;
 		}
 		}
 	@Override
@@ -2366,10 +2364,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		try{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "delete from CandidateMarketCart marketplaceCart where marketplaceCart.marketplaceUUID = :marketUUID";
 		session.createQuery(query).setParameter("marketUUID", candidatgeMarketUUID).executeUpdate();
-	}
+		}catch(Exception e){
+			e.printStackTrace();
+		}}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

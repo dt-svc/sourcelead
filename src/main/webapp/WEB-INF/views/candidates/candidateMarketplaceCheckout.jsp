@@ -132,7 +132,7 @@
 							<tr>
 								<td><div class="text-left">Total</div></td>
 								<td><div id = 'cartCount' class="text-center">0</div></td>
-								<td><div id = 'totalPrice' class="text-right"><i class="fa fa-dollar mr5"></i><span>0.0</span></div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'totalPrice'>0.0</span></div></td>
 							</tr>
 							<tr>
 								<td><div class="text-left">Tax</div></td>
@@ -285,8 +285,7 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-	 $("#cartCount").html(localStorage.getItem("dynamicCartCount"));
-	 $("#totalPrice").html('<i class="fa fa-dollar mr5"></i><span>'+localStorage.getItem("dynamicTotalPrice")+'</span>');
+	updateMarketplaceCartCountAndPrice();
 
 });
 
@@ -321,6 +320,20 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
+
+function updateMarketplaceCartCountAndPrice(){
+	$.ajax({
+		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+	        type: 'GET',
+	        success: function (object) {
+	        	if(object != null){
+	        		$("#cartCount").html(object[0]);
+	        		$("#totalPrice").html(object[1]);
+	        		}
+	        	}
+	});
+}
+
 </script> 
 <script>
 //Window scroll fixed header

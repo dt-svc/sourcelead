@@ -62,8 +62,8 @@
               
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
-				  <li id ="cartCount"><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
-				  <li id ="totalPrice"><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)"></a></li>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
 					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
                 </ul>
@@ -594,10 +594,9 @@
 		location.href = "${appPath}/candidatesList";
 	}
   $(document).ready(function () {
-	 getGloblaMarketPlaceCandidates('listModel'); 
-	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+localStorage.getItem("dynamicCartCount")+"</a>");
-	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+localStorage.getItem("dynamicTotalPrice")+"</a>");
- });
+	 getGloblaMarketPlaceCandidates('listModel');
+	 updateMarketplaceCartCountAndPrice();
+});
 
 function getGloblaMarketPlaceCandidates(divType){
 	var searchValue = $("#globalMarketSearh").val();
@@ -780,7 +779,8 @@ function deleteCandidateMarketCart(candidateMarketUUID, viewModel){
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
-		success : function(object) {
+		success : function(response) {
+			if(response == "success"){
 			if(viewModel == "ListModel"){
 				$("#deleteIconListModel"+candidateMarketUUID).empty();
 				$("#addCartListModel"+candidateMarketUUID).empty()
@@ -791,19 +791,21 @@ function deleteCandidateMarketCart(candidateMarketUUID, viewModel){
 				$("#addCartCardModel"+candidateMarketUUID).empty()
 				$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateMarketUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>');
 			}
-		}
+			updateMarketplaceCartCountAndPrice();
+			}
+			}
 	}); 
 }
 </script>
- 
+
 <script type="text/javascript">
 
 function addCandidateToMarketCart(UUID, viewModel) {
 	  $.ajax({
 	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
 	        type:'GET',
-	        success: function (object) {
-	        	if(object != null){
+	        success: function (response) {
+	        	if(response == "success"){
 	        		if(viewModel=="ListModel"){
 		        		$("#addCartListModel"+UUID).empty();
 		        		$("#addCartListModelDiv"+UUID).empty().append('<a type="button" id="addedCartListModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
@@ -814,14 +816,30 @@ function addCandidateToMarketCart(UUID, viewModel) {
 		        		$("#addCartCardModelDiv"+UUID).empty().append('<a type="button" id="addedCartCardModel'+UUID+'" class="anchorHighlight anchorHighlightActive">Added</a>');
 		        		$("#deleteIconCardModel"+UUID).empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketCart(\''+UUID+'\', \'CardModel\')"><i class="fa fa-trash-o"></i></a>');
 	        		}
-	        		localStorage.setItem("dynamicCartCount", object[0]);
-	        		localStorage.setItem("dynamicTotalPrice",object[1]);
-	        		$("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+localStorage.getItem("dynamicCartCount")+"</a>");
-	        		$("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+localStorage.getItem("dynamicTotalPrice")+"</a>");
-  	}
+	        		updateMarketplaceCartCountAndPrice();
+	        	}
 	        }
 	    });
 	}
+		        		
+	function updateMarketplaceCartCountAndPrice(){
+		$.ajax({
+			 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+		        type: 'GET',
+		        success: function (object) {
+		        	if(object != null){
+		        	if(object[0] === 0){
+		        		$("#cartCount").bind("click", false);
+		        		}else{
+		        		$("#cartCount").unbind("click", false);
+			        	}
+		        	$("#cartCount").html(object[0]);
+	        		$("#totalPrice").html(object[1]);
+	        		}}
+		        });
+		}
+	
+	
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();
 	$(this).parents(".selectPriceli").find(".selectPrice").text(x);

@@ -1116,19 +1116,14 @@ public class CandidateRestController {
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
-	public Object[] addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
+	public String addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByUUId(uuid);
-		Boolean flag = false;
-		Object[] countAndSum = null;
 		if (null != marketplace) {
-			flag = candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+		candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
 			}
-		if(flag == true && countAndSum == null){
-			countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
-			}
-		return countAndSum;
+		return "success";
 	}
 	
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
@@ -1137,8 +1132,15 @@ public class CandidateRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateService.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
-		return "success";
-		
+		return "success";	
 	}
-	
+	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')") 
+	@RequestMapping(value = "/app/updateMarketplaceCartCountAndPrice")
+	public Object[] updateMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Object[] countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
+		return countAndSum;
+	}
+
 }
+

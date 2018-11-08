@@ -180,7 +180,7 @@ public interface CandidateDao {
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
-	public Boolean addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue, Long orgId, String candidateLocation);
 
