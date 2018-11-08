@@ -8382,7 +8382,10 @@ color: #666 !important; border: none;}
 
 
 
-
+.petitionReport {
+width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+background: url(../images/immi.svg); background-repeat: no-repeat; background-size: 70px; background-position: top;
+}
 
 .navIcons.assIconImport {
 background: url("../images/associates.svg"); background-size: 80px; opacity: 0.7;

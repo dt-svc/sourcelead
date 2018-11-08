@@ -49,7 +49,7 @@ $(document).ready(function(){
         <div class="clearfix footerstyelsNew">
           <div class="col-lg-12">
             <div class="pull-right">
-              <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getCheckRegisterReports();<!-- runPayrollregister(); -->">
+              <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getCheckRegisterReports();">
               <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
             </div>
           </div>
@@ -208,7 +208,8 @@ function getPariodDates(){
 <script type="text/javascript">
 function getCheckRegisterReports(){
 	 if ($('#check_register_report_form').validate(false, validationSettings)){ 
-		 runPayrollregister();     
+// 		 runPayrollregister();
+		 $("#payrollRegister").show();
 		 checkRegisterReports();
 		  /* 	var formData = $($('#check_register_report_form')[0]).serialize();
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
