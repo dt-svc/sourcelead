@@ -163,7 +163,8 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		private Sheet createXlsSheet(Workbook workbook,Sheet createExcelsheet,DateFormat DF_YMD,SimpleDateFormat WEEK_DAY,String weekDayName,String status, Row writeRow, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, Long totalBillable, Long totalNonbillable) throws Exception {
 				weekDayName = WEEK_DAY.format(dayEntries.getTimesheetDate());
 				if (dayEntries.getTimesheetDate() != null) {
-					writeRow.createCell(0).setCellValue(DF_YMD.format(dayEntries.getTimesheetDate()));
+					String timesheetDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate());
+					writeRow.createCell(0).setCellValue(timesheetDate);
 				}
 				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
 					writeRow.createCell(1).setCellValue(weekDayName);
@@ -256,13 +257,13 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}else {*/
 					if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
 						if(dayEntries.getSubmittedDate() != null)
-						 submittedDate = DF_YMD.format(dayEntries.getSubmittedDate());
-						//commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						 submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						
 					}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")){
 						if(dayEntries.getSubmittedDate() != null)
-						  submittedDate = DF_YMD.format(dayEntries.getSubmittedDate());
+						  submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 						if(dayEntries.getApprovedDate() != null)
-							approvedDate = DF_YMD.format(dayEntries.getApprovedDate());
+							approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 					}
 				//}
 				writeRow.createCell(12).setCellValue(submittedDate);

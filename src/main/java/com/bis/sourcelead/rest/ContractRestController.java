@@ -348,6 +348,7 @@ public class ContractRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		SourceLeadSessionManager.setSessionAttribute(request, "orgLocation","Success new contract is created");
 		// MultipartFile multiFile = null;
 		// Iterator<String> itrator = request.getFileNames();
 		// if(itrator.hasNext()){

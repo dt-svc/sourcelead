@@ -256,7 +256,7 @@
 						<div class="col-md-9">
 						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
-						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorced</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
 						</div>
 					</div>
@@ -454,7 +454,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isGlobalAccess" id="isGlobalAccess">
-		                    Is Global Manager</label>
+		                     Global Manager</label>
 		                </div>
 		                 </div>
                </div>
@@ -1067,7 +1067,6 @@ function getAssociateUserDetails(){
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
-// 	        		  $("#RatePer").val(json['currentRateType']);
 	        		  $("select[name=RatePer]").val(json['currentRateType']);
 		        	  $("#RatePer").selectpicker('refresh');
 		        	  
@@ -1078,8 +1077,14 @@ function getAssociateUserDetails(){
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
 		        	  
-		        	  
-// 	        		  $("#currentCurrency").val(json['currentRateCurrency']);
+		        	  if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
+				    	 
+				    	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != "undefined"){
+				    		 $("#dateofBirth").val(json['dateofBirthString']); 
+				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);

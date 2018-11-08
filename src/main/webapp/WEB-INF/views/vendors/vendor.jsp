@@ -596,7 +596,7 @@ function getVendorDetails(){
 		                  <label>
 		                   <input id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N" onclick = "allowIsLawFirm();">
 		                   <!--  <input type="checkbox" value="N" name="isLawFirm"> -->
-		                   Is law firm</label>
+		                  Law firm</label>
 		                </div>
 		                 </div>
 		                 </div>
@@ -608,7 +608,7 @@ function getVendorDetails(){
 		                  <label>
 		                 <input id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N" onclick = "allowIsAccountFirm();">
 		                  
-		                   Is Accounting Firm</label>
+		                   Accounting Firm</label>
 		                </div>
 		                 </div>
                		</div>
