@@ -45,6 +45,13 @@ public class RequirementLocationsServiceImpl implements RequirementLocationsServ
 		return requirementLocationsDao.getRequirementLocationsListByRequirementIdMap(reqIdsList);
 	}
 
+	@Override
+	public List<RequirementLocations> getAllRequirementByOrgLocationId(Long orgLocationId) throws Exception
+	{
+		return requirementLocationsDao.getAllRequirementByOrgLocationId(orgLocationId);
+
+	}
+
 	
 
 }

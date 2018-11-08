@@ -716,8 +716,8 @@ $(document).ready(function(){
     </form:form>
   </section>
 
-<div class="comMask"></div>
-<div class="modal validatePreexistingContact" id="validatePreexistingContact" style="display: none">
+<!--<div class="comMask"></div>
+ <div class="modal validatePreexistingContact" id="validatePreexistingContact" style="display: none">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -732,7 +732,7 @@ $(document).ready(function(){
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 
 <script>
 function closeVpec(){

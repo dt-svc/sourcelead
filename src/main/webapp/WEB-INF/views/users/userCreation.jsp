@@ -22,6 +22,10 @@
 			getResourceManagers();
 			maskme();
 			editMe(this);
+			var country = '${SourceLeadWeb_orgLocations.country}';
+			if(country == 'United States'){
+				 $('#ssnNumber').attr("data-validation","required"); 
+			}
 		 };
 	</script>
 <script>	
@@ -1067,7 +1071,6 @@ function getAssociateUserDetails(){
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
-// 	        		  $("#RatePer").val(json['currentRateType']);
 	        		  $("select[name=RatePer]").val(json['currentRateType']);
 		        	  $("#RatePer").selectpicker('refresh');
 		        	  
@@ -1078,8 +1081,22 @@ function getAssociateUserDetails(){
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
 		        	  
+		        	  if(json['designation'] != null && json['designation'] != "" && json['designation'] != "undefined"){
+		        		  $("#designation").val(json['designation']);
+		        	  }
 		        	  
-// 	        		  $("#currentCurrency").val(json['currentRateCurrency']);
+		        	  if(json['maritalStatus'] != null && json['maritalStatus'] != "" && json['maritalStatus'] != "undefined"){
+				    		 $("input[name='maritalStatus'][value='"+json['maritalStatus']+"']").prop('checked', true); 
+				    	 }
+		        	  
+		        	  if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
+				    	 
+				    	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != "undefined"){
+				    		 $("#dateofBirth").val(json['dateofBirthString']); 
+				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);
