@@ -338,7 +338,7 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/immigration/petitionReport" class="block">
+                  <a href="${appPath}/petitionReport" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
                   </div>  

@@ -1228,12 +1228,18 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				Map<Long, String> reqMap = new HashMap<>();
 				for (String dateString : requirementDTO.getJobFairDates()) {
-					reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					if (dateString.contains(":")) {
+						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					} else if (dateString.contains(",")) {
+						for (String id : dateString.split(",")) {
+							reqMap.put(Long.parseLong(id), "");
+						}
+					}
 				}
 				for (Long id : reqMap.keySet()) {
 					String dates = "";
 					for (String dateString : requirementDTO.getJobFairDates()) {
-						if ((Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
+						if (dateString.contains(":") && (Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
 							dates += (dates.isEmpty() ? "" : ",") + dateString.split(":")[1];
 						}
 					}
@@ -4366,9 +4372,9 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		try {
-			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
