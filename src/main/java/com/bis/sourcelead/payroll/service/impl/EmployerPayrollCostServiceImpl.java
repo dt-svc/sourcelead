@@ -114,7 +114,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			int version = 0;
 			version = getEmployerPayrollCostVersionByLocationId(orgLocation.getId());
 			version += 1;
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				if(i == 0){

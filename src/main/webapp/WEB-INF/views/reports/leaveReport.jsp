@@ -636,17 +636,14 @@ function resetValues(){
 function getAllUserListBasedOnOrgLocationId(){
 	var ReportsListEmpty = $("#noReports").val(0);
 	$.ajax({
-        url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
+        url: sourceleadUrl + "/getAllApprovers",
         type: "POST",
         success: function (obj) {
         	 var output = "";
         	 /*output = output + "<option>--select Associate--</option>"; */
         	if(obj != null && obj !='' && obj !='undefined'){
-        		$.each(obj, function(i, item) {
-        			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
-        				output = output + "<option value='" +item.userId+ "'>"+item.candidateName+"</option>";
-        			}
-            		
+        		$.each(obj.data, function(i, item) {
+       				output = output + "<option value='" +item.userId+ "'>"+item.userName+"</option>";
         		});
         	}
         	$("#associateList").empty();

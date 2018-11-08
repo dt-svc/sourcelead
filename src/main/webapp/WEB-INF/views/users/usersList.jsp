@@ -1209,6 +1209,8 @@ function getDynamciUserList(){
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);
+	
+	
 }
 </script>
 
@@ -1403,10 +1405,19 @@ function dynamicUserListPagination(url){
 
 $("#dynamicUserDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {
-		   getDynamciUserList();
-		   searchHighlight();
-	   }
-	});
+		 //dynamicUserDataTableSearch
+	 	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#dynamicUserDataTableSearch').val();
+			    	
+		 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
+		    		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+		    	}else{
+		 		   getDynamciUserList();
+				   searchHighlight();
+		    	}
+   	    	$('#dynamicUserDataTableSearch').val(searchData);		 	
+	 	   }
+	   } );
 </script> 
  <script>
  function searchHighlight(){
