@@ -481,7 +481,7 @@ public class ReportsPdfUtil {
             	expiredOn = lca.getExpiredOn();
             }
             
-			dataSource.add(lcaNo,lcaTitle,noOfPositions,location,socCode,privilingWageCurrency,prevailingWage,privilingWageRateType,socOccupationTitle,jobTitle,wagesLevel,startDateStr,endDateStr,lcaStatus,status,expiredOn);
+			dataSource.add(lcaNo,lcaTitle,noOfPositions,location,socCode,socOccupationTitle,jobTitle,wagesLevel,privilingWageCurrency,prevailingWage,privilingWageRateType,startDateStr,endDateStr,lcaStatus,status,expiredOn);
 		}
 		return dataSource;
 	}
