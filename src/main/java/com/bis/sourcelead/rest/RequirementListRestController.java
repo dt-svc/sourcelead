@@ -86,6 +86,7 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -1559,9 +1560,6 @@ public class RequirementListRestController {
 						candidateList.add(candidate);
 						requirementSubmission.setScore(requirementSubmission.getCandidateScore());
 				}
-				// file =
-				// requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrgLocationName(),exportType,requirementId,submissionType,
-				// requirementSubmissionCounts);
 			}
 			file = requirementPipelineExportService.getExportRequirementFile(requirementStatusList, loginOrgLocation, exportType, requirementId, submissionType, requirementSubmissionCounts);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -1634,6 +1632,7 @@ public class RequirementListRestController {
 		ResponseList<JobFairDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				String[] tableColumns = {"generatedId" ,"name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id"};
@@ -1651,6 +1650,11 @@ public class RequirementListRestController {
 				
 				jobFairDTO.setUserId(user.getId());
 				jobFairDTO.setOrgLocationId(orgLocation.getId());
+				
+				if("Admin".equalsIgnoreCase(roleName)) {
+					jobFairDTO.setAdminUser(true);
+				}
+				
 				response = requirementService.getJobFairsList(jobFairDTO, includeInactive);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

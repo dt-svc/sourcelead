@@ -140,7 +140,7 @@ public class EmployeePayrollRestController {
 			if(Constants.EMPLOYEE_PAYROLL.equalsIgnoreCase(payrollType)){
 				 isInserted = employerPayrollCostService.saveEmployerPayrollCost(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.WAGE_TAX_SUMMARY.equalsIgnoreCase(payrollType)){
-				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user);
+				isInserted = wageTaxSummaryService.saveWagesTaxSummaryBulk(multipartFile,orgLocation,user,jsonObj);
 //				isInserted = wageTaxSummaryService.saveWagesTaxSummary(multipartFile,orgLocation,user,jsonObj);
 			}else if(Constants.ACCOUNT_DEDUCTIONS.equalsIgnoreCase(payrollType)){
 				 isInserted = accountDeductionsService.saveAccountDeductions(multipartFile,orgLocation,user,jsonObj);
@@ -557,7 +557,7 @@ public class EmployeePayrollRestController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 
 		 String[] tableColumns = {"sku", "productService", "empName", "number", "memoDescription", "date","lastmodified","dueDate","rate","payRate","qty","amount","arPaid","oldNew"};
-	     int sortColumnIndex = 5; //by default sorting using updated date
+	     int sortColumnIndex = 1; //by default sorting using updated date
 		String sortColumnOrder = "asc"; //by default descending order
 		if(invoiceDetailsDTO.getOrder() != null && !invoiceDetailsDTO.getOrder().isEmpty()) {
 			sortColumnIndex = Integer.parseInt(invoiceDetailsDTO.getOrder().get(0).get("column"));
@@ -687,6 +687,8 @@ public class EmployeePayrollRestController {
 			ResponseList<WageTaxSummary> wagesAndTaxList = wageTaxSummaryService.getWagesAndTaxByEmpId(orgLocation,wagesTaxSummaryDTO);
 			  List<WageTaxSummary> data = getSortWageTaxList(wagesAndTaxList.getData(),orgLocation);
 			  responseList.setData(data);
+			  responseList.setRecordsFiltered(wagesAndTaxList.getRecordsFiltered());
+			  responseList.setRecordsTotal(wagesAndTaxList.getRecordsTotal());
 		}else {
 			responseList.setData(new ArrayList<WageTaxSummary>());
 		}
