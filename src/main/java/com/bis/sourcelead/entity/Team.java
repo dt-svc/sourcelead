@@ -86,6 +86,9 @@ public class Team implements Serializable{
 	@Transient
 	private String isTeamAssigned;
 	
+	@Transient
+	private Long ownerId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -212,5 +215,15 @@ public class Team implements Serializable{
 
 	public void setIsTeamAssigned(String isTeamAssigned) {
 		this.isTeamAssigned = isTeamAssigned;
+	}
+
+	public Long getOwnerId()
+	{
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId)
+	{
+		this.ownerId = ownerId;
 	}
 }

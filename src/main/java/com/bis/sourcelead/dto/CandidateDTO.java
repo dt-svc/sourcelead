@@ -248,6 +248,14 @@ public class CandidateDTO extends SearchDTO{
 	 private String candidateTags;
 	 
 	 private String uploadId;
+	 
+	private String userCode; 
+	
+	private String timePeriod;
+		
+	private String customStartDate;
+		
+	private String customEndDate;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1187,6 +1195,38 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setUploadId(String uploadId) {
 		this.uploadId = uploadId;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public String getTimePeriod() {
+		return timePeriod;
+	}
+
+	public void setTimePeriod(String timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+
+	public String getCustomStartDate() {
+		return customStartDate;
+	}
+
+	public void setCustomStartDate(String customStartDate) {
+		this.customStartDate = customStartDate;
+	}
+
+	public String getCustomEndDate() {
+		return customEndDate;
+	}
+
+	public void setCustomEndDate(String customEndDate) {
+		this.customEndDate = customEndDate;
 	}
 
 	

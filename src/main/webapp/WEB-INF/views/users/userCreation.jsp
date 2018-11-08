@@ -22,6 +22,10 @@
 			getResourceManagers();
 			maskme();
 			editMe(this);
+			var country = '${SourceLeadWeb_orgLocations.country}';
+			if(country == 'United States'){
+				 $('#ssnNumber').attr("data-validation","required"); 
+			}
 		 };
 	</script>
 <script>	
@@ -1076,6 +1080,14 @@ function getAssociateUserDetails(){
 	        		  
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
+		        	  
+		        	  if(json['designation'] != null && json['designation'] != "" && json['designation'] != "undefined"){
+		        		  $("#designation").val(json['designation']);
+		        	  }
+		        	  
+		        	  if(json['maritalStatus'] != null && json['maritalStatus'] != "" && json['maritalStatus'] != "undefined"){
+				    		 $("input[name='maritalStatus'][value='"+json['maritalStatus']+"']").prop('checked', true); 
+				    	 }
 		        	  
 		        	  if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
 				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
