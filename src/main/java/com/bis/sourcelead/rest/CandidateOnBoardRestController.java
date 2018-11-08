@@ -655,6 +655,7 @@ public class CandidateOnBoardRestController {
 	@RequestMapping(value = "/getOnBoardingCandidateDetails")
 	public Response<CandidateDTO> getOnBoardingCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<CandidateDTO> response = new Response<>();
 		try {
 			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
@@ -668,6 +669,10 @@ public class CandidateOnBoardRestController {
 			candidateDTO.setState(candidate.getState());
 			candidateDTO.setCity(candidate.getCity());
 			candidateDTO.setZipcode(candidate.getZipCode());
+			candidateDTO.setGender(candidate.getGender());
+			if(candidate.getDateOfBirth() != null) {
+				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidate.getDateOfBirth()));
+			}
 			if (candidate.getOrgRelationId() != null) {
 				candidateDTO.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
 			}
