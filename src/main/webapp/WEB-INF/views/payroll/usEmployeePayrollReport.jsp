@@ -334,9 +334,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.grossPay != null && opt.grossPay != '' && opt.grossPay != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.grossPay+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.grossPay+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 										
 										return result;
@@ -349,9 +349,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.preTaxDeduction+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.preTaxDeduction+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 										
 										return result;
@@ -364,9 +364,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.totalFederalWithholding != null && opt.totalFederalWithholding != '' && opt.totalFederalWithholding != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.totalFederalWithholding+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.totalFederalWithholding+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 										
 										return result;
@@ -379,9 +379,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.totalfica != null && opt.totalfica != '' && opt.totalfica != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.totalfica+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.totalfica+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 										
 										return result;
@@ -394,9 +394,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.totalMedicareWithholding != null && opt.totalMedicareWithholding != '' && opt.totalMedicareWithholding != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.totalMedicareWithholding+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.totalMedicareWithholding+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 									
 										return result;
@@ -409,9 +409,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.totalStateWithholding != null && opt.totalStateWithholding != '' && opt.totalStateWithholding != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.totalStateWithholding+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.totalStateWithholding+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 									
 										return result;
@@ -425,9 +425,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.totalSui != null && opt.totalSui != '' && opt.totalSui != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.totalSui+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.totalSui+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 										
 										return result;
@@ -440,9 +440,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.postTaxDeduction+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.postTaxDeduction+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 									
 										return result;
@@ -455,9 +455,9 @@ function runAssociatePayrollReport(){
 										var result = "";
 										
 										if(opt.netPay != null && opt.netPay != '' && opt.netPay != 'undefined'){
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.netPay+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ '+opt.netPay+'</div></td>';
 										}else{
-											result = result+ ' <td><div class="tblminwidth-75">--</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75">$ 0.0</div></td>';
 										}
 									
 										return result;

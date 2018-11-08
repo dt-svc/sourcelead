@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 //import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,12 +84,78 @@ public class PdfUtilPipelineHelper  {
 		    Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getNumOfSubmitToClient(),Constants.SUBMIT_TO_CLIENT_COUNT,file);
 
 		    try {
-		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
+		    	/** 
+		    	 * @author Mahaveer Manoj
+		    	 * @commentedBy Mahaveer Manoj
+		    	 * @purpose old logic for generating static fields
+		    	 * 
+		    	 **/
+		    	/*int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
 		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
 		        	requirements.add(prepareRequirementPipelineToArraySubmitClient(requirementsub,loginOrgLocation));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }*/
+		    	
+		    	/** 
+		    	 * @author Mahaveer Manoj
+		    	 * @purpose new logic for getting dynamic template fields Header & Values based upon Submission Template
+		    	 * 
+		    	 **/
+		    	String[] totalHeaders = null;
+				String[] templateHeaders = null;
+				String[] extraHeaders = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					JSONArray jsonArray = new JSONArray(requirementsub.getSubmissionTemplateJsonStringValue());
+					if (jsonArray != null && jsonArray.length() > 0) {
+						templateHeaders = new String[jsonArray.length()];
+
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							templateHeaders[i] = jsonObject.getString("name");
+						}
+						
+					}
+				}
+				totalHeaders = (String[]) ArrayUtils.addAll(templateHeaders, extraHeaders);
+		    	
+		    	
+//		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,3,5,5,5};
+		    	int[] width = new int[totalHeaders.length];
+		    	for(int i=0; i < totalHeaders.length; i++) {
+		    		width[i] = 1;
+		    	}
+		    	PdfPTable table = getPdfTable(totalHeaders,width,sbPipeHearder.toString(), totalHeaders.length);
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	String[] totalValues = new String[totalHeaders.length];
+		        	String[] templateValues = new String[templateHeaders.length];
+		        	String[] extraValues = new String[extraHeaders.length];
+		        	
+		        	JSONArray jsonArray = new JSONArray(requirementsub.getSubmissionTemplateJsonStringValue());
+					if (jsonArray != null && jsonArray.length() > 0) {
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							templateValues[i] = jsonObject.getString("value");
+						}
+					}
+		        	
+		        	extraValues = prepareRequirementPipelineToArraySubmitClient(requirementsub,loginOrgLocation, extraHeaders.length);
+		        	
+		        	totalValues = (String[]) ArrayUtils.addAll(templateValues, extraValues);
+		        	requirements.add(totalValues);
 		        }
 		        
 		        for (String[] reqArray: requirements) {
@@ -122,7 +191,7 @@ public class PdfUtilPipelineHelper  {
 
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -161,7 +230,7 @@ public class PdfUtilPipelineHelper  {
 
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,3};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -200,7 +269,7 @@ public class PdfUtilPipelineHelper  {
 	   
 		    try {
 		    	int [] width = new int[]{3,5,3,3,3,5,5};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -239,7 +308,7 @@ public class PdfUtilPipelineHelper  {
 
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -278,7 +347,7 @@ public class PdfUtilPipelineHelper  {
 
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -316,7 +385,7 @@ public class PdfUtilPipelineHelper  {
 	        Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getSubmittedCount(),Constants.SUBMITTED_APPLICANTS_COUNT,file);
 		    try {
 		    	int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5};
-		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString());
+		    	PdfPTable table = getPdfTable(headers,width,sbPipeHearder.toString(), 0);
 		        table.completeRow();
 		        java.util.List<String[]> requirements = new ArrayList<>();
 		        for(RequirementSubmission requirementsub : requirementStatusList){
@@ -347,12 +416,11 @@ public class PdfUtilPipelineHelper  {
 		}
 		
 	
-	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub,OrgLocations loginOrgLocation) {
-		String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS.length];
-		
-		
-		
-		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
+	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub,OrgLocations loginOrgLocation, int columnCount) {
+		/*String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS.length];*/
+		String requirementArray[] = new String[columnCount];
+		int count = 0;
+/*		if(requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())){
 			requirementArray[0] = requirementsub.getCandidateName();
 		}else{
 			requirementArray[0] = "--";
@@ -368,61 +436,61 @@ public class PdfUtilPipelineHelper  {
 
 		}else{
 			requirementArray[2] = "--";
-		}
+		}*/
 		if(requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())){
-			requirementArray[3] = requirementsub.getResumeName();
+			requirementArray[count++] = requirementsub.getResumeName();
 
 		}else{
-			requirementArray[3] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getCreatedDate() != null && !"".equalsIgnoreCase(requirementsub.getCreatedDate().toString())){
-			requirementArray[4] = requirementsub.getCreatedDate().toString();
+			requirementArray[count++] = requirementsub.getCreatedDate().toString();
 
 		}else{
-			requirementArray[4] = "--";
+			requirementArray[count++] = "--";
 		}
 		
 		if(requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())){
-			requirementArray[5] = requirementsub.getCandidate().getExpectedRate();
+			requirementArray[count++] = requirementsub.getCandidate().getExpectedRate();
 		}else{
-			requirementArray[5] = "--";
+			requirementArray[count++] = "--";
 		}
 //		proposedSubmissionRate
 		if(requirementsub.getProposedSubmissionRate() != null && !"".equalsIgnoreCase(requirementsub.getProposedSubmissionRate())){
-			requirementArray[6] = requirementsub.getProposedSubmissionRate();
+			requirementArray[count++] = requirementsub.getProposedSubmissionRate();
 		}else{
-			requirementArray[6] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())){
-			requirementArray[7] = requirementsub.getUserName();
+			requirementArray[count++] = requirementsub.getUserName();
 		}else{
-			requirementArray[7] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())){
-			requirementArray[8] = requirementsub.getScore();
+			requirementArray[count++] = requirementsub.getScore();
 		}else{
-			requirementArray[8] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())){
 			StringBuilder expSB = new StringBuilder();
-			requirementArray[9] = expSB.append(requirementsub.getWorkExperience()).append(" years").toString();
+			requirementArray[count++] = expSB.append(requirementsub.getWorkExperience()).append(" years").toString();
 		}else{
-			requirementArray[9] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getStatus() != null){
-			requirementArray[10] = requirementsub.getStatus().toString();
+			requirementArray[count++] = requirementsub.getStatus().toString();
 		}else{
-			requirementArray[10] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getSubmittedOn() != null){
-			requirementArray[11] = requirementsub.getSubmittedOn();
+			requirementArray[count++] = requirementsub.getSubmittedOn();
 		}else{
-			requirementArray[11] = "--";
+			requirementArray[count++] = "--";
 		}
 		if(requirementsub.getSubmittedBy() != null){
-			requirementArray[12] = requirementsub.getSubmittedBy();
+			requirementArray[count++] = requirementsub.getSubmittedBy();
 		}else{
-			requirementArray[12] = "--";
+			requirementArray[count++] = "--";
 		}
 		
 		//client contact name related code start
@@ -431,9 +499,9 @@ public class PdfUtilPipelineHelper  {
 				 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
 					 StringBuilder spocSB = new StringBuilder();
 					 if(requirementsub.getRequirement().getSpocId().getClientUser().getLastName() != null ){
-						 requirementArray[13] = spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString();
+						 requirementArray[count++] = spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString();
 					 }else{
-						 requirementArray[13] =spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString();
+						 requirementArray[count++] =spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString();
 					 }
 				 }
 			 }
@@ -554,12 +622,12 @@ public class PdfUtilPipelineHelper  {
 	 * @param title 
 	 * @return PdfPTable
 	 */
-	private PdfPTable getPdfTable(String[] headers, int[] width, String titleName) {
+	private PdfPTable getPdfTable(String[] headers, int[] width, String titleName, int columnCount) {
 		PdfPTable table = new PdfPTable(headers.length);
 		try{
 			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(titleName.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(columnCount > 0 ? columnCount : 14);
 	        headerCellStyle(cell1);
             table.addCell(cell1);
 			table.setWidthPercentage(100);
