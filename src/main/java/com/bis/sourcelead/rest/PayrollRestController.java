@@ -309,7 +309,13 @@ public class PayrollRestController {
 			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
 			 	if(sessionObj != null) {
 				    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-				    	List<INDPayrollDTO> payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO ->employeePayrollDTO.getIndEmpPayrollUUID().equalsIgnoreCase(indEmployeePayrollDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
+				    	List<INDPayrollDTO> payrollDTOList = null ;
+				    	if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees())) {
+				    		payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO -> indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(employeePayrollDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
+				    	}else {
+				    		payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO();
+				    	}
+				    	
 				    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
 				    		for(INDPayrollDTO indPayrollDTO : payrollDTOList) {
 				    			if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indPayrollDTO.getIndEmpPayrollUUID()) ) {
@@ -319,7 +325,19 @@ public class PayrollRestController {
 					    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
 					    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
 					    		
+					    		/*
+					    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					    		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = associatePayrollPayheadDTOList;
+					    		associatePayrollPayheadDTOList = associatePayrollPayheadDTOList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
+									try {
+										return sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+									return false;
+								}).count())<1).collect(Collectors.toList());
 					    		
+					    		*/
 					    		
 					    		indPayrollDTO.setGrossPay(indEmployeePayrollDTO.getGrossPay());
 					    		indPayrollDTO.setNetPay(indEmployeePayrollDTO.getNetPay());

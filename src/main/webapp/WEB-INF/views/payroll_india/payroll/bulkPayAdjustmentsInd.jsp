@@ -34,7 +34,7 @@
 							</div>
 						</div>
 					</div>
-					<input type="text" hidden name="paySheetFrequencyUUID" value="${indPaysheetFrequency.paySheetFrequencyUUID}">
+					<input type="text" hidden id="paySheetFrequencyUUID" name="paySheetFrequencyUUID" value="${indPaysheetFrequency.paySheetFrequencyUUID}">
 					<div class="clearfix"></div>
 					<hr>
 					<div class="clearfix mt25 minDivHeight">
@@ -42,8 +42,10 @@
 							<div class="mb clearfix">
 								<label class="col-md-3 textBold text-right">${variablePayhead.name}</label>
 								<div class="col-md-6">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadName" value="${variablePayhead.name}">
 									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].uuid" value="${variablePayhead.uuid}">
 									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayhead" value="${variablePayhead.id}">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadType" value="Earnings">
 									<input type="text" name="associateSalaryPayheadIndEarningList[${loop.index}].monthly" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control input-sm">
 								</div>
 							</div>
@@ -75,6 +77,7 @@ $('#sae').change(function () {
 
 function bulkAdjustmentSaving(){
 	if ($('#bulkPayheadAdjust_form').validate(false, validationSettings)) {
+		var psfUUID = $('#paySheetFrequencyUUID').val();
 		var formData = getFormData1("bulkPayheadAdjust_form");
 		$.ajax({
 			 type : "POST",
@@ -83,7 +86,8 @@ function bulkAdjustmentSaving(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveBulkPayheadAdjustInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
-			  		
+				 bulkAdjustmentClose();
+				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
 			 }
 		});
 	}
