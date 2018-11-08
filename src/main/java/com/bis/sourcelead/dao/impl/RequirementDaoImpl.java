@@ -3513,13 +3513,19 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			query += " where jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			if(!adminFlag) {
+				query += " and jobFair.user.id = :userId";
+			}
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
+			if(!adminFlag) {
+				queryObj.setLong("userId", userId);
+			}
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("jobFairId", jobFairId);
 			List<Long> idList = queryObj.list();
