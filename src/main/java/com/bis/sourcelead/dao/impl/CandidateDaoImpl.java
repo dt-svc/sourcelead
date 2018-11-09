@@ -2368,18 +2368,19 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation) {
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
-		/*if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
-		}*/
+			query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.summary like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+		}
 		StringBuilder query2 = new StringBuilder("");
 		if(candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
 			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
