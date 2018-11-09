@@ -199,7 +199,7 @@ function getConnectionsList(type){
 	 				}
 	 				result = result + "<div class='connCta'><div class='connCtaInn'><div class='connCtaInnText'>";
 	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+fileUrl+"' class='m-t-xs'   alt='image'>";
-	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
+	 				result = result + "</span><a href='javascript:void(0)'><h2>"+(user.userName == null ? "---" : user.userName)+"</h2>";       //  change
 	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + mutCountStatus;
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'">'+state+'</div></div></div>';
