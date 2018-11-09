@@ -641,6 +641,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
 			PayrollPayhead payrollPayhead = new PayrollPayhead();
 			payrollPayhead.setId(payHeadHistoryDTO.getPayrollPayhead());
+			payrollPayhead.setType(payHeadHistoryDTO.getPayrollPayheadType());
 			associatePayrollPayheadHistory.setPayrollPayhead(payrollPayhead);
 		}
 		associatePayrollPayheadHistory.setMonthly(payHeadHistoryDTO.getMonthly());

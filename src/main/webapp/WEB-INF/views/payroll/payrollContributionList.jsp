@@ -41,7 +41,7 @@ $(document).ready(function(){
       </ul>
     </div>
     
-<div class="styleTables datatable_filter">
+<div class="project_wrap_table datatable_filter">
      <div id="contributionTable"></div>
   </div>
 

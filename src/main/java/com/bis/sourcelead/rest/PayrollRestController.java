@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -321,11 +322,9 @@ public class PayrollRestController {
 				    			if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indPayrollDTO.getIndEmpPayrollUUID()) ) {
 			   						continue;
 			   					}
-				    			//indPayrollDTO = payrollDTOList.iterator().next();
 					    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
 					    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
 					    		
-					    		/*
 					    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					    		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = associatePayrollPayheadDTOList;
 					    		associatePayrollPayheadDTOList = associatePayrollPayheadDTOList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
@@ -337,10 +336,17 @@ public class PayrollRestController {
 									return false;
 								}).count())<1).collect(Collectors.toList());
 					    		
-					    		*/
-					    		
-					    		indPayrollDTO.setGrossPay(indEmployeePayrollDTO.getGrossPay());
-					    		indPayrollDTO.setNetPay(indEmployeePayrollDTO.getNetPay());
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistoryDTO apphDTO : associatePayrollPayheadDTOList) {
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Earnings"))
+					    				ePay = ePay.add(apphDTO.getMonthly());
+					    			
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Deduction"))
+					    				dPay = dPay.add(apphDTO.getMonthly());
+					    		}
+					    		indPayrollDTO.setGrossPay(ePay);
+					    		indPayrollDTO.setNetPay(ePay.subtract(dPay));
 					    		indPayrollDTO.setUpdatedBy(loginUser.getId());
 					    		indPayrollDTO.setUpdatedDate(new Date());
 				    		}
@@ -351,10 +357,32 @@ public class PayrollRestController {
 			   					if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indEmployeePayroll.getIndEmpPayrollUUID()) ) {
 			   						continue;
 			   					}
+			   					
+			   					//the phList is to collect all payheads and calculate gross and net pay
+			   					Set<AssociatePayrollPayheadHistory> phList = new HashSet<>();
+			   					phList.addAll(indEmployeePayroll.getAssociatePayrollPayheadHistory());
+			   					
 		   						Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndList(indEmployeePayroll, indEmployeePayrollDTO, loginUser);
 						   		indEmployeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
-						   		indEmployeePayroll.setGrossPay(indEmployeePayrollDTO.getGrossPay());
-						   		indEmployeePayroll.setNetPay(indEmployeePayrollDTO.getNetPay());
+						   		
+						   		
+						   		associatePayrollPayheadHistory.addAll(phList);
+					    		Set<AssociatePayrollPayheadHistory> dupAssociatePayrollPayheadHistoryList = associatePayrollPayheadHistory;
+					    		associatePayrollPayheadHistory = associatePayrollPayheadHistory.stream().filter(ml -> (dupAssociatePayrollPayheadHistoryList.stream().filter(sl -> {
+										return sl.getPayrollPayhead().getId().equals(ml.getPayrollPayhead().getId()) && sl.getUpdatedDate().after(ml.getUpdatedDate());
+								}).count())<1).collect(Collectors.toSet());
+					    		
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistory apph : associatePayrollPayheadHistory) {
+					    			if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Earnings")) {
+					    				ePay = ePay.add(apph.getMonthly());
+					    			}else if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Deduction")) {
+					    				dPay = dPay.add(apph.getMonthly());
+					    			}
+					    		}
+					    		indEmployeePayroll.setGrossPay(ePay);
+					    		indEmployeePayroll.setNetPay(ePay.subtract(dPay));
 						   		indEmployeePayroll.setUpdatedBy(loginUser.getId());
 						   		indEmployeePayroll.setUpdatedDate(new Date());
 						   		associatePayrollPayheadHistoryService.saveIndEmployeePayroll(indEmployeePayroll);

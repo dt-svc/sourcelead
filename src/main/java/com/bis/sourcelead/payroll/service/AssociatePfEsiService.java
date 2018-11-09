@@ -13,4 +13,5 @@ public interface AssociatePfEsiService {
 	AssociatePfEsiDetails findAssociatePfEsiByCandidateId(Long candidateId, OrgLocations orgLocation);
 	
 	AssociatePfEsiDetailsDTO getAssociatePfEsiDetailsDTOByCandidateId(Long candidateId, OrgLocations orgLocation);
+
 }

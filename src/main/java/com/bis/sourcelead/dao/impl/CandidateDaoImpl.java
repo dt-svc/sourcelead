@@ -469,7 +469,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		ResponseList<Candidate> response = new ResponseList<>();
 		Query queryObj = null;
 		List<Long> countlist = null;
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode  and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";  
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(candidateDTO.getSearchValue() != null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
+			 query1.append(" and (cnadidate.email like '%" + candidateDTO.getSearchValue() + "%' ")
+				.append("OR cnadidate.mobilePhone like '%" + candidateDTO.getSearchValue() + "%' ")
+			    .append("OR (concat(cnadidate.firstName,cnadidate.lastName) like '%" + candidateDTO.getSearchValue().trim() + "%')" )
+				.append("OR cnadidate.designationType like '%" + candidateDTO.getSearchValue() + "%' ")
+				.append("OR cnadidate.location like '%" + candidateDTO.getSearchValue() + "%' )");
+			 
+		}
+		
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode "+query1+" and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";  
 		queryObj = session.createQuery(query);
 		
 		queryObj.setFirstResult(candidateDTO.getStart());

@@ -402,6 +402,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append("payroll.TAXES as taxes,")
 			.append("payroll.GROSS_PAY as grossPay,")
 			.append("payroll.TYPE as type,")
+			.append("payroll.PAY_PERIOD_NUM as runNo,")
 			.append("payroll.CREATED_DATE as runDate,")
 			.append("sheet.FREQUENCY_START_DATE as freqStartDate,")
 			.append("sheet.FREQUENCY_END_DATE as freqEndDate,")
