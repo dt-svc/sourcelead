@@ -322,13 +322,15 @@ function goToOrgMarketPlaceList(){
 }
 
 function updateMarketplaceCartCountAndPrice(){
+	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
 	        		$("#cartCount").html(object[0]);
-	        		$("#totalPrice").html(object[1]);
+	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+	        		$("#totalPrice").html(totalPriceInCurrency);
 	        		}
 	        	}
 	});

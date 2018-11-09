@@ -63,7 +63,7 @@
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
 				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
-				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)"></a></li>
+				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
 					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
                 </ul>
@@ -821,21 +821,25 @@ function addCandidateToMarketCart(UUID, viewModel) {
 	        }
 	    });
 	}
-		        		
+	
+	//INR,AUD,USD,GBP,SGD,EUR
+	//style: 'currency', currency: 'INR'
 	function updateMarketplaceCartCountAndPrice(){
+		var totalPriceInCurrency;
 		$.ajax({
 			 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
 		        type: 'GET',
 		        success: function (object) {
 		        	if(object != null){
-		        	if(object[0] === 0){
-		        		$("#cartCount").bind("click", false);
-		        		}else{
-		        		$("#cartCount").unbind("click", false);
-			        	}
-		        	$("#cartCount").html(object[0]);
-	        		$("#totalPrice").html(object[1]);
-	        		}}
+		        		$("#cartCount").html(object[0]);
+		        		if(object[0] === 0){
+			        		$("#cartCount").bind("click", false);
+			        		}else{
+			        		$("#cartCount").unbind("click", false);
+				        	}
+		        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+		        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+		        	}}
 		        });
 		}
 	
