@@ -1228,11 +1228,18 @@ public class CandidateRestController {
 		return response;
 	 	}
 	 
-	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')") 
+	@PreAuthorize("hasRole('ROLE_VIEW_CART')") 
 	@RequestMapping(value = "/app/updateMarketplaceCartCountAndPrice")
 	public Object[] updateMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Object[] countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Object[] countAndSum = null;
+		if(user!= null) {
+			if(StringUtils.isNotBlank(userRoleName)) {
+				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId(), userRoleName, user);
+			}
+		}
 		return countAndSum;
 	}
 

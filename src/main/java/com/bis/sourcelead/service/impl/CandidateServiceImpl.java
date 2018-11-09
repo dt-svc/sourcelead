@@ -2865,8 +2865,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception {
-		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId);
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception {
+		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId, userRole, user);
 	}
 	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
 		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);

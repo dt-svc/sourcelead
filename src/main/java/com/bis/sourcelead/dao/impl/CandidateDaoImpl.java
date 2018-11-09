@@ -2444,11 +2444,21 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Object[] updateMarketplaceCartCountAndPrice(Long targetOrgLocationId){
+	public Object[] updateMarketplaceCartCountAndPrice(Long targetOrgLocationId, String userRole, User user){
 		try{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select COUNT(marketplaceId) AS count, SUM(amount) AS SUM from CandidateMarketCart marketcart where marketcart.targetOrgLocationId =:targetOrgLocationId and marketcart.cartStatus IN (:cartStatus)";
-		Object[] result= (Object[]) session.createQuery(query).setLong("targetOrgLocationId", targetOrgLocationId).setParameterList("cartStatus", new ArrayList<String>(Arrays.asList(Constants.ADDED_CART))).uniqueResult();
+		String query = "";
+		String createdByQuery =" ";
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			createdByQuery = " and marketcart.createdBy=:createdByuser";
+		}
+		query = "select COUNT(marketplaceId) AS count, SUM(amount) AS SUM from CandidateMarketCart marketcart where marketcart.targetOrgLocationId =:targetOrgLocationId and marketcart.cartStatus IN (:cartStatus) ";
+	
+		Query queryObj= session.createQuery(query+createdByQuery).setLong("targetOrgLocationId", targetOrgLocationId).setParameterList("cartStatus", new ArrayList<String>(Arrays.asList(Constants.ADDED_CART)));
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			queryObj.setLong("createdByuser", user.getId());
+		}
+		Object[] result= (Object[] )queryObj.uniqueResult();
 		return result;
 		}catch(Exception e){
 			e.printStackTrace();

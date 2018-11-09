@@ -192,6 +192,6 @@ public interface CandidateDao {
 	
 	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
 	
-	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception;
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
 
 }
