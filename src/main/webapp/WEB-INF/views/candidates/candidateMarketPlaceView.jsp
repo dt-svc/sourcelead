@@ -309,14 +309,18 @@ function saveEditMarketPriceFun(id, obj){
 	$.ajax({
    		type: "POST",
 	 	url : sourceleadUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,
-		success: function(json) {
-			if(json == "success"){
-				//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+		success: function(result) {
+			if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
+            	//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
 				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")				
 				//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
 				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")
 				getDynamicGlobalMarketCandidateList();
-			}
+			}else{
+            	 showError("Operation failed, please try again");
+            }
 		}
 	});
 }
@@ -372,10 +376,15 @@ function withdrawCandidate(id) {
         type: "GET",
         data: id,
         success: function (result) {
+        	if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
               	$("#remove_marketPlace_pop").fadeOut(200);
 	    		$(".project_inn_mask").fadeOut(200);
 	    		dynamicGlobalMarketCandidateListPagination(sourceleadUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
-	    }
+            }else{
+           	 showError("Operation failed, please try again");
+           }}
     });
     }else if (reason.length >= 251){
     	$("#reasonForMarketPlaceDiv").find('p.jquery_form_error_message').remove();
