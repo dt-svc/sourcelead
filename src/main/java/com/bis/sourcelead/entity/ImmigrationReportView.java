@@ -42,6 +42,9 @@ public class ImmigrationReportView implements Serializable {
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
 	
+	@Column(name = "ATTORNEY_LOCATION_ID")
+	private Long attorneyOrgLocationId;
+	
 	@Column(name = "STATUS")
 	private Integer status;
 	
@@ -75,9 +78,6 @@ public class ImmigrationReportView implements Serializable {
 	
 	@Column(name = "IMMIGRATION_UUID")
 	private String immigrationUUID;
-	
-	@Column(name = "SPOC_NAME_VENDOR")
-	private String spocNameVendor;
 
 	public Long getId() {
 		return id;
@@ -239,13 +239,12 @@ public class ImmigrationReportView implements Serializable {
 		this.currUscisStatus = currUscisStatus;
 	}
 
-	public String getSpocNameVendor() {
-		return spocNameVendor;
+	public Long getAttorneyOrgLocationId() {
+		return attorneyOrgLocationId;
 	}
 
-	public void setSpocNameVendor(String spocNameVendor) {
-		this.spocNameVendor = spocNameVendor;
+	public void setAttorneyOrgLocationId(Long attorneyOrgLocationId) {
+		this.attorneyOrgLocationId = attorneyOrgLocationId;
 	}
-	
 	
 }
