@@ -254,10 +254,18 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
-	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
+	    	  		result = result +"<div class='tblminwidth-75 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
-		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
+	    	  			result = result +"&nbsp;<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> "; 
+	    	  			if(full.isSharedInMarketplace == 'Y'){
+	  	    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr10' title='Shared in Marketplace'></i> "; 
+	  	    	  		}
 		             }
+	    	  		else if(full.isSharedInMarketplace == 'Y'){
+		    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr25' title='Shared in Marketplace'></i> "; 
+		    	  	}
+	    	  		
+	    	  		
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
 		              if(associateFlag)
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
