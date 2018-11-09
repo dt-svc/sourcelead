@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
@@ -418,14 +419,19 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		 //concat(userRole.user.firstName,userRole.user.lastName) like
 		 String queryStr = "";
+		 String queryStrForCount = "";
 		 if(projectTasksDTO.getTasksFilter().equalsIgnoreCase("all")) {
 			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and pt.status ='1'" ;
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
+
 		 }else {
 			 String myAssign = "pt.id IN(SELECT pat.projectTaskId.id from ProjectAssignTask pat where pat.projectMemberId.projectMemberCandidteId.id IN ("+projectTasksDTO.getCandidateId()+"))";
 			  queryStr = "from ProjectTasks pt left join fetch pt.priority priority  where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+")  and pt.status ='1'" ;
+			  
+			  queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and (pt.createdBy ='"+projectTasksDTO.getUserCode()+"' OR "+myAssign+") and pt.status ='1' " ;
+
 		 }
 		 
-		 String queryStrForCount = "Select count (*) from ProjectTasks pt where pt.projectId.id = :projectId and pt.status ='1' " ;
 		 String subQueryStr = "";
 		 if(StringUtils.isNotEmpty(taskType)) {
 			 subQueryStr = subQueryStr+" and pt.taskType.id IN ("+taskType+")";
@@ -548,6 +554,25 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query = "from ProjectTasks pt where pt.leaveType.id = :levaTypeId ";
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("levaTypeId", levaTypeId).list(); 
 		return projectTasksList; 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String quey = "";
+		if(taskType.equalsIgnoreCase(Constants.TASKTYPE)) {
+			quey = "pt.taskType.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSEVERITY)) {
+			quey = "pt.severity.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			quey = "pt.priority.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			quey = "pt.taskStatus.id =:lookupId";
+		} 
+		String query = "from ProjectTasks pt where "+quey+" ";
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("lookupId", lookupId).list(); 
+		return projectTasksList;
 	}
 	 
 }

@@ -101,17 +101,15 @@ height: 100%;
 }
 .main-header {
 background-size: 15%; min-height: 52px; box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
-background-position: 30px; background-color: #368ee0; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
+background-position: 30px; background-color: #fff; z-index: 9999; position: fixed; max-height: 55px; width: 100%; 
 }
 .main-header span.logo {
     background: #fff; padding: 0 15px; line-height: 54px; width: 190px; box-sizing: border-box; height: 55px; float: left;
-    text-align: center;
+    text-align: left;
 }
-.main-header span.logo img {
-	/*width:100%; width: 200px;*/ width: auto; max-height: 36px; display: block; margin: 8px auto;
-}
+.main-header span.logo img { width: auto; max-height: 44px; display: block; margin: 8px auto 0px;}
 .main-header span.logo .text-logo {
-font-size: 18px; font-weight: bold; text-align: center; line-height: 54px; overflow: hidden; text-overflow: ellipsis; width: 160px; 
+font-size: 18px; font-weight: bold; text-align: left; line-height: 54px; overflow: hidden; text-overflow: ellipsis; width: 160px; 
 white-space: nowrap; vertical-align: middle; font-style: normal; color: #375d81;
 }
 .main-header span.logo .text-logo .tbldata-dotdot {
@@ -194,7 +192,7 @@ float: left; padding: 0 15px; /*transition: all 0.5s ease-in-out 0s;*/ line-heig
     float: left; margin-top: 10px;
 }
 .search-area .btn {
-    height: 32px; border-radius: 3px 0 0 3px; width: 140px !important;
+    height: 34px; width: 141px !important; border-radius: 15px 0px 0px 15px; border: 1px solid #e4e4e4; background-color: #f2f2f2;
 }
 search-area .btn-default{
     color: #fff; background-color: #337ab7; border-color: #2e6da4;
@@ -203,14 +201,16 @@ search-area .btn-default:hover {
     color: #fff; background-color: #286090; border-color: #204d74;
 }
 .search-area .form-control {
-background:rgba(55,93,129, 0.7); margin: 0; color:#fff !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
-height: 32px; border-radius: 0 3px 3px 0; width: 275px; border: 1px solid rgba(55,93,129, 0.3) !important; border-left:none;
+background:#fff; margin: 0; color:#333 !important; box-shadow: none; padding-left: 15px; padding-right: 30px;
+height: 34px; border-radius: 0 15px 15px 0; width: 275px; border:1px solid #e4e4e4 !important; border-left:none;
 }
 .search-area .form-control::-moz-placeholder {
 color: #bdbdbd; opacity: 1;
 }
 .search-area .srcbutton {
-position: absolute; top: 0px; color:#fff; right: 0; padding-right: 10px; height: 34px; background: transparent; border: 0;
+position: absolute; top: 0px; color:#a7a7a7; right: 5px; height: 32px; background: transparent; border: 0; width: 30px;
+display: block; background-image:url(../images/search.svg); background-position:center; background-repeat:no-repeat; background-size:31px;
+
 }
 .main-header .header-nav .custom-navbar ul > li > a > .label {
 font-size: 9px; line-height: 0.9; padding: 2px 3px; position: absolute; right: 7px; text-align: center; top: 9px;
@@ -2169,7 +2169,7 @@ a.collpase-div .fa-angle-down:hover{
 	background-color:#DCDBDA; color:#333;
 }
 .addTask {
-	position:fixed; right: 0px; top: 90px; z-index: 1000;
+	position:fixed; right: 0px; top: 0px; z-index: 100000;
 }
 .addTask .icon-addTask{
 	background:-webkit-linear-gradient(#2bddb8,#17aa8c); background:-o-linear-gradient(#2bddb8,#17aa8c);
@@ -2208,15 +2208,9 @@ ul.addTasUl li .fa{
 }
 /* Add Task widget styles */
 .addTask-widget {
-background-color:#424242; background:#55688a; border-radius:4px 0px 0px 4px; position: absolute; right:-1100px; top:40px;
--webkit-transition: all 0.3s ease-in-out 0s; -ms-transition: all 0.3s ease-in-out 0s;
--moz-transition: all 0.3s ease-in-out 0s; transition: all 0.3s ease-in-out 0s; width:1000px !important;  padding:10px;
-z-index:0; box-shadow: 0 0 4px #000000;
-}
-.addTask-widget:after {
-	bottom: 100%; right:10px; border: solid transparent; content: " ";
-	height: 0; width: 0; position: absolute; pointer-events: none; border-color: rgba(255, 111, 0, 0);
-	border-bottom-color: #55688a; border-width:10px;
+background-color:#424242; background:#fff; position: fixed; right:-1300px; top:0px; box-shadow: 0 0 4px rgba(0,0,0,0.5);
+-webkit-transition: all 0.15s ease-in-out 0s; -ms-transition: all 0.15s ease-in-out 0s; height:100%;
+-moz-transition: all 0.15s ease-in-out 0s; transition: all 0.15s ease-in-out 0s; width:1100px !important;  padding:10px;
 }
 .addTask-widget.addTask-widget-active {
 	right:0px;
@@ -2260,11 +2254,10 @@ background: #fff; color:#333; border-bottom: 1px solid #ddd;
 	background:#fff; padding:10px; box-sizing:border-box;
 }
 .addtsk-btn {
-	position:absolute; top:10px; right:1%;
+	position:absolute; top:15px; right:20px;
 }
 .newTask-widget {
- background-color: #fff; border-radius: 3px; box-sizing: border-box; margin: 10px; padding: 10px;
- display:none;
+ background-color: #fff; border-radius: 3px; box-sizing: border-box;padding: 10px; display:none;
 }
 .newTask-widget h4{
 	color:#f60; font-size:18px;
@@ -3686,10 +3679,10 @@ position: relative; z-index: 99;
 	display: block;
 }
 .paddingLeft {
-    padding-left: 5px;
+    padding-left: 5px !important;
 }
 .paddingRight {
-    padding-right: 5px;
+    padding-right: 5px !important;
 }
 .padding_right {
 padding-right: 0!important;
@@ -9183,11 +9176,11 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .prfileImg {
 	width: 100px; height: 100px; background-color:#fff; padding-right: 0;
 }
-.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img {
+.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
 .grid-prfileImg {
-	width: 350px; height: auto; background-color:#fff; padding-right: 0;
+	width: 150px; height: auto; background-color:#fff; padding-right: 0; float: left;
 }
 .profilesummarywidgetImg {
 	width: 150px; height: 150px; border: 3px solid #fff;
@@ -9257,6 +9250,18 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/resigned.svg); background-repeat: no-repeat; width: 25px; height: 25px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.shopping-cart {
+	background-image: url(../images/shopping-cart.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.dollarSvg {
+	background-image: url(../images/price-tag.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.sortSvg {
+	background-image: url(../images/sortIcon.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9270,7 +9275,7 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	height: auto;
 }
 ul.listStyles {
-	margin-top: 47px; position: relative; right: -1px; z-index: 9;
+	margin-top: 7px; position: relative; right: -1px; z-index: 9;
 }
 ul.listStyles li a {
 	color: #909090;
@@ -9289,16 +9294,166 @@ ul.listStyles li.activeList a {
 	color: #368ee0;
 }
 a.removeSelected {
-	position: absolute; right: 15px; top: 0px; color: #fff;
-	width: 25px; height: 25px; text-align: center; display: block; background: #ff7979; line-height: 25px; z-index: 99;
+	position: absolute; right: 15px; top: 0px; color: #909090;
+	width: 25px; height: 25px; text-align: center; display: block; background: #ededed; line-height: 25px; z-index: 99;
 }
-a.removeSelected:hover {
-	background: #eb4d4b;
+a.removeSelected:hover, .removeSelectedAll  {
+	background: #eb4d4b; color: #fff;
 }
 .profileDetails-headerFixed {
-	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 9999; top: 55px;
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 99; top: 55px;
 	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
-	
+}
+.fontSmall {
+	font-size: 95%;
+}
+.progress.progressProfile {
+	border-radius: 1px; height: 18px;
+}
+.progress.progressProfile .progress-bar {
+	font-size: 11px; line-height: 18px;
+}
+.ulliBorder li:nth-last-of-type(n+3) {
+	border-right: 1px solid #ededed;
+}
+.cartInvoice {
+	background-color: #f9f9f9;
+	border-bottom: 1px solid #ccc; padding:15px 15px 0; -webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+	box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.cartInvoice .cartInvoiceHeader {
+	padding:0px 0px 5px 0;
+}
+.cartInvoice .cartInvoiceBody {
+	padding:0px 0px 15px 0; min-height: 150px;
+}
+.cartInvoiceBodyFooter {
+	border-top: 1px dotted #b5b5b5; padding: 15px 0px;
+}
+.cartImg {
+	width: 75px; height: 75px;
+}
+.skillCart li {
+	border-right: 1px solid #ddd; padding-right: 15px;
+}
+.skillCart li:last-child {
+	border-right: none;
+}
+.cartInvoice.cartInvoiceFixed {
+	position: fixed; top: 107px; right: 38px; width: 29%
+}
+.cartinnerFooter {
+	border-top: 1px solid #ededed; padding: 5px 5px 0px 5px; margin-top: 10px;
+}
+.cartInvoiceTable .table {
+	border: 1px solid #ededed;
+}
+.cartInvoiceTable .table > tbody > tr > td, .cartInvoiceTable .table > thead > tr > th {
+	border:none;
+}
+.cartInvoiceTable .table > thead > tr > th {
+	border-bottom: 1px solid #ededed; font-weight: 500;
+}
+.cartInvoiceTable table tfoot td {
+	padding: 15px 8px;
+}
+.faCart {
+	background-color: #f60; padding: 5px; color: #fff; position: absolute; right:-5px; top:-5px;
+}
+.bulkImport {
+	background: url("../images/bulkImport.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height:40px; margin: 8px auto 2px; opacity:0.9;
+}
+.upgradeLicese {
+	background: url("../images/updateLicense.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.orgChartSVG {
+	background: url("../images/hrrepicon.svg"); background-repeat: no-repeat; background-size: 52px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.roleconfigSVG {
+	background: url("../images/assrepicon.svg"); background-repeat: no-repeat; background-size: 52px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.controlsSVG {
+	background: url("../images/controlsSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.templateSVG {
+	background: url("../images/templateSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.expensesSVG {
+	background: url("../images/walletexpenses.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.sortingSVG {
+background: url("../images/sortfieldsSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.campaingingSVG {
+background: url("../images/campaigningSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.bankacountsSVG {
+background: url("../images/banrepicon.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.jobConfigureSVG {
+background: url("../images/jobConfigureSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.leaveConfiguration {
+background: url("../images/leaveConfigurationSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.inviteSVG {
+background: url("../images/invitationSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.tagSVG {
+background: url("../images/tagSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.settingConfigure .btn {
+	padding: 1px 8px; background: #fbfbfb;
+}
+.settingConfigure h4 {
+	font-size: 14px !important; 
+}
+.settingConfigure .reportNewCta a {
+	font-weight: normal;
+}
+.settingsRepList .col-md-2 ul {
+	min-height: 75px; max-height: 150px; overflow: auto;
+}
+.settingsRepList .col-md-2 {
+	min-height: 50px; margin-bottom: 5px;
+}
+.settingsRepList .col-md-2 ul li a  {
+	padding: 0 15px 0px 0; color: #368ee0; list-style-type: none; margin-bottom: 10px; display: block;
+}
+.settingsRepList .col-md-2 ul li a:hover {
+	color: #747474;
+}
+.settingsRepList h5 {
+	border-bottom: 1px solid #ededed; padding-bottom: 5px;
+}
+.minDivHeight {
+	min-height: 75px; max-height: 325px; overflow:auto;
+}
+.circular-chart {
+  display: block; margin:0 auto; max-width: 50%; max-height: 50px;
+}
+.circle-bg {
+  fill: none; stroke: #fff; stroke-width: 4;
+}
+.circle {
+  fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+}
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+.circular-chart.orange .circle {
+  stroke: #368ee0;
+}
+.percentage {
+  fill: #333; font-family: sans-serif; font-size: 0.5em; text-anchor: middle;
+}
+.colorBox {
+display:block; margin:0 auto; width:16px; height:16px; border-radius:50%;
+}
+.colorPosition{
+position: absolute; left:5px; top:7px;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

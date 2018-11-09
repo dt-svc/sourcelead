@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
@@ -147,8 +148,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		
 		
 		try {
-			java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
-			java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+			
+			Date fDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date tDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqEndDate());
+			java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+			java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
 			
 			Session session = this.sessionFactory.getCurrentSession();
 			List<EmployeePayroll> payrollList = null;
@@ -499,5 +503,34 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return payrollList;
+	}
+
+	@Override
+	@Transactional
+	public List<InvoicePayment> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Date fDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqStartDate());
+		Date tDate = commonUtil.orgLocationDateFormat(payrollReportDTO.getOrgDateFormat(), payrollReportDTO.getFreqEndDate());
+		java.sql.Date freqStartDate = new java.sql.Date(fDate.getTime());
+		java.sql.Date freqEndDate = new java.sql.Date(tDate.getTime());
+		
+//		java.sql.Date freqStartDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqStartDate()).getTime());
+//		java.sql.Date freqEndDate = new java.sql.Date(commonUtil.dateFromElk(payrollReportDTO.getFreqEndDate()).getTime());
+		String subQuery = "";
+		if(StringUtils.isNotBlank(payrollReportDTO.getSearchValue())) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(" and (invoice.orgLocation.orgLocationName like '%"+payrollReportDTO.getSearchValue()+"%' or invoice.responderLocationId.orgLocationName like '%"+payrollReportDTO.getSearchValue()+"%'");
+			sb.append(" or invoice.invoiceId like '%"+payrollReportDTO.getSearchValue()+"%' ) ");
+			subQuery = sb.toString();
+		}
+				
+		String query = "from InvoicePayment invoicePayment  left join fetch invoicePayment.invoiceId invoice  where (invoice.orgLocation.id  = :orgLocationId or invoice.responderLocationId.id  = :orgLocationId) and invoicePayment.paymentDate >= :startDate and invoicePayment.paymentDate <= :endDate "+subQuery;
+		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("orgLocationId", payrollReportDTO.getOrgLocationid()).setDate("startDate", freqStartDate).setDate("endDate", freqEndDate).list();
+		for(InvoicePayment p : invoicePaymentList) {
+			p.setPaidAmount(Double.valueOf(p.getPaymentAmount()));
+		}
+		return invoicePaymentList;
 	}
 }

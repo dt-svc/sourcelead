@@ -222,15 +222,15 @@ public interface RequirementDao {
 
 	public long saveJobFairRequirements(JobFairRequirements jobFairRequirements);
 	
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag);
 
-	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String date);
+	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag);
 	
 	public List<Long> getJobFairRequirementsIdListByRequirementId(long requirementId);
 	
 	public void deleteJobFairRequirement(long jobFairRequirementId);
 
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag);
 
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 

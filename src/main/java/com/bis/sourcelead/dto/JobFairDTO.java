@@ -26,6 +26,7 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private String startDateStr;
 	private String endDateStr;
 	private String postedFrom;
+	private String selectedClient;
 	private long requirementId;
 	// private List<String> requirementsList;
 	@Type(desc = "venue", maxLength = 200)
@@ -43,11 +44,20 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long jobFairRequirementId;
 	private long applicantCount;
 	private long offeredCount;
-	
+
 	private long createdByUserId;
 	private Date createdDate;
 	private long updatedByUserId;
 	private Date updatedDate;
+	private boolean adminUser;
+
+	public boolean isAdminUser() {
+		return adminUser;
+	}
+
+	public void setAdminUser(boolean adminUser) {
+		this.adminUser = adminUser;
+	}
 
 	public String getGeneratedId() {
 		return generatedId;
@@ -271,6 +281,14 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getSelectedClient() {
+		return selectedClient;
+	}
+
+	public void setSelectedClient(String selectedClient) {
+		this.selectedClient = selectedClient;
 	}
 
 }

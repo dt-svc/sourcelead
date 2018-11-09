@@ -1156,17 +1156,22 @@ $(document).ready(function () {
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
 					    		 <c:if test="${!empty clientContactList}">
+					    		 	<c:set var="found" value="0" scope="page"/>
 					    		 	<c:forEach var="report" items="${clientContactList}">
 				         				<c:if test="${report.id  == requirement.spocId.id}">
-				         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
+				         					<c:set var="found" value="${found + 1}" scope="page"/>
+				         					<option value="${report.id}" selected >${report.spocName} (${report.ownerName})</option>
 				         				</c:if>
-				         				<%-- <c:if test="${report.id  != requirement.spocId.id}">
-							    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
-							    		 </c:if> --%>
+				         				<c:if test="${report.id  != requirement.spocId.id}">
+				         					<option value="${report.id}" >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
 						    		 </c:forEach>
+						    		 <c:if test="${found == 0}">
+							    		 	<option value="${requirement.spocId.id}" selected>${requirement.spocName} (${requirement.spocOwnerName})</option>
+							    	 </c:if>
 					    		 </c:if>
 					    		 <c:if test="${empty clientContactList}">
-					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName}</option>
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName} (${requirement.spocOwnerName})</option>
 					    		 </c:if>
                     		</select>
 						 </c:when>
@@ -2304,7 +2309,7 @@ function validate_fileupload(fileName)
 								    			$("#msgJobDiv").html("Successfully job  submitted for approval");
 								    		}else if(saveType == 'saveAndContinue'){
 								    			if(result.object != 'MissingData'){
-								    				$("#msgJobDiv").html("Successfully job saved..");
+								    				$("#msgJobDiv").html("Job saved successfully");
 								    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
 								    			}
 								    		}
@@ -2811,8 +2816,12 @@ function removeApprovers(){
 	 
 	if(!$("#apprverReq").is(':checked')){
          $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#parallelapprovers").hide();
+         $("#seqentialApprovers").hide();
     }else{
 		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+		 $("#parallelapprovers").show();
+         $("#seqentialApprovers").show();
     } 
 }
 </script> 

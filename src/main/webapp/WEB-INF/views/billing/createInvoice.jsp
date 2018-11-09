@@ -119,8 +119,7 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Date<span
-								class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
 							<div class="input-group">
 								<input type="text" class="form-control calendar"
@@ -157,16 +156,15 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Address</label>
+							<label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Invoice Address"></textarea>
+								<textarea class="form-control" rows="2" id="billingAddress" data-validation="required" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
-			              <label class="col-md-3">Payment Account</label>
+			              <label class="col-md-3">Payment Account<span class="text-danger">&nbsp;*</span></label>
 			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+			                <select class="form-control" id="paymentAccountId" data-validation="required" field-name="paymentAccountId Name" name="paymentAccount">
 			                   <option value="">--Select Account--</option>
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -321,8 +319,8 @@ function errRemoveClientContact(){
          result = result +'  </div>';
          
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <label><strong>Message</strong></label>';
-         result = result +'  <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>';
+         result = result +'  <label><strong>Message<span class="text-danger">&nbsp;*</span></strong></label>';
+         result = result +'  <textarea class="form-control" rows="2" id="comment"  data-validation="required" field-name="Message" name="comment"></textarea>';
          result = result +'  </div>';
            
         
@@ -1276,9 +1274,9 @@ function pagination(){
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+"  exists. Please choose a different invoice id.</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
-						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+'  exists. Please choose a different invoice id.'); 
 						  $("#saveButtonId").attr("disabled", "disabled");
 						  $("#sendButtonId").attr("disabled", "disabled");
 		        	}

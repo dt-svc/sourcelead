@@ -604,5 +604,16 @@ public class InvoiceController {
 		          sos.close();
 
 		}*/ 
+	@RequestMapping(value = "/customizeInvoice")
+	public ModelAndView customizeInvoice(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+			modelAndView.setViewName("billing/customInvoice");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 	
 }

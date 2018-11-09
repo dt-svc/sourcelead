@@ -75,6 +75,10 @@ public class Lca implements Serializable {
 	@Column(name = "NO_OF_POSITIONS")
 	private Integer noOfPositions;
 	
+	@Column(name = "AVAILABLE_POSITIONS")
+	private Integer availablePositions;
+	
+	
 	@Column(name = "WAGES_LEVEL")
 	private String wagesLevel;
 	
@@ -390,6 +394,14 @@ public class Lca implements Serializable {
 
 	public void setLcaEndDateStr(String lcaEndDateStr) {
 		this.lcaEndDateStr = lcaEndDateStr;
+	}
+
+	public Integer getAvailablePositions() {
+		return availablePositions;
+	}
+
+	public void setAvailablePositions(Integer availablePositions) {
+		this.availablePositions = availablePositions;
 	}
 	
 	

@@ -338,7 +338,13 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUrl(jobTitle);
 			}
 		}
-		requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		
+		if(requirementDTO.getProfilePercentage() != null) {
+			requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		}else {
+			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
+		}
+		
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
@@ -1228,12 +1234,18 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				Map<Long, String> reqMap = new HashMap<>();
 				for (String dateString : requirementDTO.getJobFairDates()) {
-					reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					if (dateString.contains(":")) {
+						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					} else if (dateString.contains(",")) {
+						for (String id : dateString.split(",")) {
+							reqMap.put(Long.parseLong(id), "");
+						}
+					}
 				}
 				for (Long id : reqMap.keySet()) {
 					String dates = "";
 					for (String dateString : requirementDTO.getJobFairDates()) {
-						if ((Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
+						if (dateString.contains(":") && (Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
 							dates += (dates.isEmpty() ? "" : ",") + dateString.split(":")[1];
 						}
 					}
@@ -4124,6 +4136,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFair.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
 				jobFair.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
 				jobFair.setPostedFrom(jobFairDTO.getPostedFrom());
+				jobFair.setSelectedClient(jobFairDTO.getSelectedClient());
 				jobFair.setDateFormat(orgLocations.getDateFormat());
 				List<JobFairRequirements> jobFairRequirementList = new LinkedList<>();
 				JSONArray jsonArray = new JSONArray(jobFairDTO.getRequirementJSONData());
@@ -4240,6 +4253,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFairDTO.setEndDateStr(dateFormat.format(jobFair.getEndDate()));
 			}
 			jobFairDTO.setPostedFrom(jobFair.getPostedFrom());
+			jobFairDTO.setSelectedClient(jobFair.getSelectedClient());
 			jobFairDTO.setVenue(jobFair.getVenue());
 			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
 			jobFairDTO.setStatus(jobFair.getStatus());
@@ -4273,9 +4287,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public boolean changeJobFairStatus(Long jobFairId, int status) {
+	public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation) {
 		try {
-			return requirementDao.changeJobFairStatus(jobFairId, status);
+			JobFair jobFair = requirementDao.getJobFair(jobFairId);
+			jobFair.setStatus(status);
+			jobFair.setUpdatedBy(user);
+			jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+//			return requirementDao.changeJobFairStatus(jobFairId, status);
+			long result = requirementDao.saveJobFair(jobFair);
+			return result > 0; 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4319,13 +4339,13 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat) {
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag) {
 		List<String> jobFairDatesList = new LinkedList<>();
 		try {
 			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
 			SimpleDateFormat convertToFormatSDF = new SimpleDateFormat("yyyy/MM/dd");
 			Set<String> jobFairDatesSet = new SortedArraySet<>();
-			List<String> jobFairDates = requirementDao.getJobFairDatesForCalendar(userId, orgLocationId, dateFormat);
+			List<String> jobFairDates = requirementDao.getJobFairDatesForCalendar(userId, orgLocationId, dateFormat, adminFlag);
 			if (jobFairDates != null && !jobFairDates.isEmpty()) {
 				for (String fairDate : jobFairDates) {
 					for (String date : fairDate.split(",")) {
@@ -4346,10 +4366,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date) {
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
-			requirementList = requirementDao.getRequirementsByJobFairDate(userId, orgLocationId, dateFormat, date);
+			requirementList = requirementDao.getRequirementsByJobFairDate(userId, orgLocationId, dateFormat, date, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4358,9 +4378,9 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		try {
-			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
