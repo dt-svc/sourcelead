@@ -8411,4 +8411,27 @@ background-position: center top; width: 60px !important; height: 60px !important
 background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
+.connectionIC {
+	width: 20px; height: 20px; display: block; background: url("../images/connectionsSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.contactsIC {
+	width: 20px; height: 20px; display: block; background: url("../images/contactsSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.invitecompanyIC {
+	width: 20px; height: 20px; display: block; background: url("../images/invitecompanySVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.addtaskIC {
+	width: 20px; height: 20px; display: block; background: url("../images/addtaskSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.reporttaskIC {
+	width: 20px; height: 20px; display: block; background: url("../images/reportbugSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.logOutIC {
+	width: 20px; height: 20px; display: block; background: url("../images/logoutSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
