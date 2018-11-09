@@ -2172,7 +2172,10 @@ return responseList;
 		invoice.setInvoiceStatus(Constants.LINKED_STATUS);
 		invoice.setUpdatedDate(commonUtil.currentDate());
 		invoice.setUpdatedBy(user.getUserCode());
+		masterInvoice.setLinkInvoiceReferenceId(invoice.getId());
+		masterInvoice.setLinkInvoiceRefInvoiceId(invoice.getInvoiceId());
 		invoiceService.linkInvoice(invoice);
+		invoiceService.linkInvoice(masterInvoice);
 		invoiceService.saveInvoiceTimelineHistory(masterInvoice, user, invoice, null, null, null);
 		if (masterInvoice.getId() != null) {
 			Invoice childInvoice = invoiceService.getInvoicetByParentId(invoice.getId());

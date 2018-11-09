@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -52,15 +53,16 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
-import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -129,6 +131,9 @@ public class PdfUtil {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -541,7 +546,7 @@ public class PdfUtil {
 		return candidateArray;
 		
 	}
-	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) throws IOException {
+	public File getRequirementPdf(java.util.List<Requirement> requirementList, String orgName, TimeSheetSubmissionCount requirementSubCount) throws Exception {
 
 
 		String[] headers = Constants.REQUIREMENT_EXCEL_HEADERS;
@@ -629,9 +634,11 @@ public class PdfUtil {
 	
 	
 	}
-	private String[] prepareRequirementToArray(Requirement requirement) {
+	private String[] prepareRequirementToArray(Requirement requirement) throws Exception {
 		String requirementArray[] = new String[Constants.REQUIREMENT_EXCEL_HEADERS.length];
-		
+		 java.util.List<String> requirementLocationsList = new ArrayList<>();
+		 java.util.List<RequirementLocations> locationsList;
+		locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 		if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
 			requirementArray[0] = requirement.getJobId();
 		}else{
@@ -661,11 +668,26 @@ public class PdfUtil {
 		}else{
 			requirementArray[3] = "--";
 		}
-		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).append(" ").toString();
+							requirementArray[4] = location;
+						}else{
+							requirementArray[4] = "--";
+						}
+					}
+				}
+			
+		
+/*		if(requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())){
 			requirementArray[4] = requirement.getCountry();
 		}else{
 			requirementArray[4] = "--";
-		}
+		}*/
 		if(requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())){
 			requirementArray[5] = requirement.getSkills();  
 		}else{
