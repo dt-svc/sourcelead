@@ -1062,7 +1062,7 @@ public class CandidateRestController {
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} catch (Exception e) {
-				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
+				logger.error("Exception caugth in saveMarketPlaceData controller" + e.getMessage());
 				e.printStackTrace();
 			}
 		} else {
@@ -1111,46 +1111,122 @@ public class CandidateRestController {
 
 	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')")
 	@RequestMapping(value = "/app/updateMarketPlacePrice", method = RequestMethod.POST)
-	public String updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
+	public Response<String> updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
 			@RequestParam(value = "priceValType", required = false) String priceValType,
 			@RequestParam(value = "priceVal", required = false) String priceVal, HttpServletRequest request)
 			throws Exception {
-		candidateService.updateMarketPlacePrice(id, priceVal, priceValType);
-		return "success";
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(id !=null && priceValType != null && priceVal != null){
+				candidateService.updateMarketPlacePrice(id, priceVal, priceValType);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in updateMarketPlacePrice controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
 	}
 
 	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
 	@RequestMapping(value = "/app/withdrawCandidateFromMarketPlace")
-	public void withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
+	public Response<String> withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
 			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocation.getId());
-		if (null != marketplace) {
-			candidateService.withdrawCandidateFromMarketplace(marketplace, withdrawReason);
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (null != marketplace) {
+					candidateService.withdrawCandidateFromMarketplace(marketplace, withdrawReason);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in withdrawCandidateFromMarketPlace controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
+		return response;
 	}	
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
-	public String addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
+	public Response<String> addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByUUId(uuid);
-		if (null != marketplace) {
-		candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (null != marketplace) {
+					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in addCandidateToMarketCart controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-		return "success";
-	}
+		return response;
+	 }
 	
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/deleteCandidateMarketCart")
-	public String deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
+	public Response<String> deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		candidateService.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
-		return "success";	
-	}
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(candidatgeMarketUUID != null){	
+					candidateService.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in deleteCandidateMarketCart controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		return response;
+	 	}
+	 
 	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')") 
 	@RequestMapping(value = "/app/updateMarketplaceCartCountAndPrice")
 	public Object[] updateMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
