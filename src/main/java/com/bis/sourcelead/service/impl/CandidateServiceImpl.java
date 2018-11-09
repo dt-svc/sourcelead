@@ -395,7 +395,6 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCandidateResumes(candidateResumesList);
 				}
 			}
-		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
 		if(candidateDto.getCustomFormData() !=null) {
@@ -2728,6 +2727,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
 			//BeanUtils.copyProperties(candidate, marketPlace);
+			candidate.setIsSharedInMarketplace(Constants.YES);
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
@@ -2764,7 +2764,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCreatedBy(user);
 			marketPlace.setUpdatedDate(new Date());
 			marketPlace.setUpdatedBy(user);
+			saveOrUpdateCandidateElkDocument(candidate);
 			candidateDao.saveMarketPlace(marketPlace);
+			candidateDao.storeCandidate(candidate);
 		}
 	}
 
@@ -2830,10 +2832,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String searchValue, OrgLocations orgLocations, String candidateLocation) {
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue) {
 		List<CandidateMarketPlace> candidateMarketPlaces = null;
 		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchValue, orgLocations.getId(), candidateLocation);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();

@@ -171,11 +171,12 @@ public class CandidateController {
 			@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
 			public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(
 					@RequestParam(value = "searchValue", required = true)String searchValue,
-					@RequestParam(value = "candidateLocation", required = true)String candidateLocation, 
+					@RequestParam(value = "candidateLocation", required = true)String candidateLocation,
+					@RequestParam(value = "searchCandidateIds", required = true)String[] searchCandidateIds,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchValue, orgLocations, candidateLocation);
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue);
 				return candidateMarketPlaceDTOs;
 			}
 	
@@ -732,4 +733,35 @@ public class CandidateController {
 		return false;
 	}
 
+	// Note this method is Global marketplace Candidate method
+		// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+		@RequestMapping(value = "/globalMarketplacePage", method = RequestMethod.GET)
+		public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
+			logger.debug("inisde goToGlobalMarketplace  conroller =========>");
+			System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+			ModelAndView model = new ModelAndView();
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+			List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+			model.addObject("visaList", visaList);	
+			List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			model.addObject("skillsList", skillsList);
+			List<Countries> countryList = countriesService.getAllCountries();
+			model.addObject("countryList", countryList);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(null != orgLocations && StringUtils.isNotEmpty(orgLocations.getCountry())){
+			
+				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+				if(null != countries){
+				   model.addObject("loginCountryName", countries.getName());
+				   model.addObject("currency", countries.getCurrency());
+				   
+				}
+		        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
+		        model.addObject("statesList", statesList);
+			}
+			model.setViewName("candidates/candidateGlobalMarketPlaceList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 }

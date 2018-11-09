@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
     <!-- Content Area -->
     <section class="content-wraper">
     <section class="content-header clearfix">
@@ -25,17 +26,13 @@
     <div class="clearfix"></div>
       <div class="searchprofile-profile">
         <div class="row clearfix search-tools">
+        
           <div class="col-md-7 col-xs-12 reports-head">
-            <select class="form-control chosen-select" multiple data-placeholder="Search Profile">
-              <option>Profile1</option>
-              <option>Profile2</option>
-              <option>Profile3</option>
-              <option>Profile4</option>
-              <option>Profile5</option>
-            </select>
+            <input type="text" class="form-control" id="globalMarketSearh" value="" placeholder="Search Profile" id="" />
+            
           </div>
           <div class="col-md-4 col-xs-12 padding_right">
-            <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "" onkeydown = "getGloblaMarketPlaceCandidates('listModel')">
+            <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "">
           </div>
           <div class="col-md-1 col-xs-12 padding_left"> <a onclick = "getGloblaMarketPlaceCandidates('listModel')" class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
           <div class="clearfix"></div>
@@ -91,521 +88,474 @@
         </div>
   </section>
   <div class="advancedsearch-mask"></div>
-<div class="cand-advsrch-popup advancedsearch-popup" id="profileAdSearch" style="display: none;">
-  <div class="clearfix headerAdsrch">
-    <h5 class="col-md-8 mb0 mt5">Advanced Search</h5>
-    <a href="javascript:void(0)" class="closePop margin-top0" onclick="closePop();"></a> </div>
-  <div class="addInner"> 
-     <div class="candAdvsrchPop"> 
-    <div class="row">
-      <div class="col-md-4">
-        <label>Any of Keyword</label>
-        <div class="clearfix">
-          <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-          </select>
-          <!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> --> 
-        </div>
-      </div>
-      <div class="col-md-4">
-        <label>All Keywords</label>
-        <div class="clearfix">
-          <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-          </select>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <label>Exclude Keyword</label>
-        <div class="clearfix">
-          <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="clearfix">
-        <div class="col-md-8">
-          <label>Tags</label>
-          <div class="clearfix">
-            <select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
-            </select>
-          </div>
-        </div>
-        <div class="col-md-8">
-          <label>Immigration Status</label>
-          <div class="clearfix">
-            <select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
-              <c:forEach var="visa" items="${visaList}">
-                <option value="${visa.name}">${visa.name}</option>
-              </c:forEach>
-            </select>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-8 mt5">
-            <label>Skills</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
-                <c:forEach var="skill" items="${skillsList}">
-                  <option value="${skill.name}">${skill.name}</option>
-                </c:forEach>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Primary Skill</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
-              </select>
-            </div>
-          </div>
-        </div>
-        <c:set var="currency" value="">
-        </c:set>
-        <div class="col-md-8">
-          <div class="row">
-            <div class="col-md-6 payrate_p">
-              <label>Rate</label>
-              <div class="input-group error-field">
-                <div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
-                  <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
-                    <option value="">Currency</option>
-                    <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
-                    <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
-                    <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
-                    <option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
-                    <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
-                    <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
-                  </select>
-                </div>
-                <div id="minRateDiv">
-                  <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 payrate_p">
-              <label>&nbsp;</label>
-              <div class="input-group error-field">
-                <div id="maxRateDiv">
-                  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
-                </div>
-                <div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
-                  <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
-                    <option value="">Rate Type</option>
-                    <option value="Hourly">Hourly</option>
-                    <option value="Weekly">Weekly</option>
-                    <option value="Bi-weekly">Bi-weekly</option>
-                    <option value="Semi-Monthly">Semi-Monthly</option>
-                    <option value="Monthly">Monthly</option>
-                    <option value="Bi-Monthly">Bi-Monthly</option>
-                    <option value="Yearly">Yearly</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-4">
-            <label>Designation</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-4">
-            <label>Experience</label>
-            <div class="clearfix row">
-              <div class="col-md-6">
-                <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
-                  <option  selected value="">Min Years</option>
-                  <c:forEach begin="0" end="24" varStatus="loop">
-                    <option value="${loop.index}">${loop.index} Years</option>
-                  </c:forEach>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
-                  <option  value="">Max Years</option>
-                  <c:forEach begin="0" end="25" varStatus="loop">
-                    <option value="${loop.index}">${loop.index} Years</option>
-                  </c:forEach>
-                </select>
-              </div>
-            </div>
-            <div class="row" id="expId">
-              <input type="hidden" name="expValidation" id="expValidation">
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Notice Period</label>
-            <div class="clearfix">
-              <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
-                <option value="Immediately available">Immediately available</option>
-                <option value="15 Days">15 Days</option>
-                <option value="1 Month">1 Month</option>
-                <option value="2 Months">2 Months</option>
-                <option value="3 Months">3 Months</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Employment Type</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control" id="designationType" name="designationType">
-                <option value="">--Select--</option>
-                <option>C2C</option>
-                <option>W-2</option>
-                <option>C2H</option>
-                <option>Part Time</option>
-                <option>Full Time</option>
-                <option>Other</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-4">
-            <label>Country</label>
-            <div class="clearfix">
-              <select class="chosen-select" name="country" id="country" field-name="Country"  >
-                <option value="">--Select country--</option>
-                <c:forEach var="cntry" items="${countryList}">
-                  <option value="${cntry.name}">${cntry.name}</option>
-                </c:forEach>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>State</label>
-            <div class="clearfix">
-              <select  class="chosen-select" name="state" id="state" field-name="State"  >
-                <option value="">---select state---</option>
-                <%-- <c:forEach var="state" items="${statesList}">
+  
+  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
+				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
+				  <div class="cand-advsrch-popup advancedsearch-popup" id="candidateAdvanceSearchDiv">
+					  <h5 class="headerAdsrch">Advanced Search
+					  <a href="javascript:void(0)" class="close-div" onclick="closePop();clearCandidateSearchKeys();"><i class="fa fa-close"></i></a>
+					  </h5>
+					  <div class="addInner">
+					  <!-- <div class="candAdvsrchPop"> -->
+					  <div class="row">
+						  <div class="col-md-4">
+							  <label>Any of Keyword</label>
+							  <input type="hidden" name="isSharedInMarketplace" value="Y"/>
+							  <div class="clearfix">
+							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+                                    </select>
+							  	<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>All Keywords</label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Keyword</label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                                 </select>
+							  </div>
+						  </div>
+					  </div>
+					  <div class="row">
+					  <div class="clearfix">
+					  
+					  
+					  <div class="col-md-8">
+						<label>Tags</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
+								</select>
+							 </div>
+						</div>
+						
+						
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8 mt5">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						
+						<div class="col-md-4">
+						<label>Primary Skill</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
+                                 </select>
+							 </div>
+						</div>
+						
+						 
+					 </div>
+						<c:set var="currency" value=""></c:set>
+						<div class="col-md-8">
+							<div class="row">
+								<div class="col-md-6 payrate_p">
+									<label>Rate</label>
+									 <div class="input-group error-field">
+										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
+										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
+										        <option value="">Currency</option>
+										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
+								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
+								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
+								                 <option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
+								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
+								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                            </select>
+										</div>
+										 <div id="minRateDiv">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+								         </div>
+								    </div>
+								</div> 
+							<div class="col-md-6 payrate_p">
+								<label>&nbsp;</label> 
+								<div class="input-group error-field">
+								 <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+								</div>
+								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
+									            <option value="">Rate Type</option>
+										        <option value="Hourly">Hourly</option>
+												<option value="Weekly">Weekly</option>
+												<option value="Bi-weekly">Bi-weekly</option>
+												<option value="Semi-Monthly">Semi-Monthly</option>
+												<option value="Monthly">Monthly</option>
+												<option value="Bi-Monthly">Bi-Monthly</option>
+												<option value="Yearly">Yearly</option>
+				                            </select> 
+									</div>
+								</div>
+							</div>
+						 </div>
+						 </div>
+						 
+						 <div class="clearfix">
+						  <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+							</div>
+						 </div>
+						 
+						  <div class="clearfix">
+						  <div class="col-md-4">
+							  <label>Experience</label>
+							  <div class="clearfix row">
+							  <div class="col-md-6">
+								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
+									  <option  selected value="">Min Years</option>
+									 <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+								  </select>
+							  </div>
+							  <div class="col-md-6">
+								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
+									  <option  value="">Max Years</option>
+									  <c:forEach begin="0" end="25" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+								  </select>
+							  </div>
+							  </div>
+							  <div class="row" id="expId">
+				                  <input type="hidden" name="expValidation" id="expValidation">
+				              </div>
+						  </div>
+						  
+						  <div class="col-md-4">
+							  <label>Notice Period</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
+						                 <option value="Immediately available">Immediately available</option>
+						                 <option value="15 Days">15 Days</option>
+						                 <option value="1 Month">1 Month</option>
+						                 <option value="2 Months">2 Months</option>
+						                 <option value="3 Months">3 Months</option>
+				                </select>
+							  </div>
+						  </div>
+						    <div class="col-md-4">
+						    <label>Employment Type</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control" id="designationType" name="designationType">
+						                <option value="">--Select--</option>
+						                 <option>C2C</option>
+						                 <option>W-2</option>
+						                 <option>C2H</option>
+						                 <option>Part Time</option>
+						                 <option>Full Time</option>
+						                 <option>Other</option>
+						             </select>
+						    </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+						   <div class="col-md-4">
+							  <label>Country</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								    <option value="">--Select country--</option>
+								     <c:forEach var="cntry" items="${countryList}">
+							                      <option value="${cntry.name}">${cntry.name}</option>
+						              </c:forEach>
+				                 </select>
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <%-- <c:forEach var="state" items="${statesList}">
 							                     <option value="${state.stateName}">${state.stateName}</option>
 						                </c:forEach> --%>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>City</label>
-            <div class="clearfix">
-              <select  class="chosen-select" name="city" id="city" field-name="City"  >
-                <option value="">---select city---</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-4">
-            <label>Education</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
-                <c:forEach var="edu" items="${educationsList}">
-                  <option value="${edu.name}">${edu.name}</option>
-                </c:forEach>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Exclude Education</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
-                <c:forEach var="edu" items="${educationsList}">
-                  <option value="${edu.name}">${edu.name}</option>
-                </c:forEach>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Certification</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="clearfix">
-          <div class="col-md-4">
-            <label>Employers</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
-              </select>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <label>Exclude Employers</label>
-            <div class="clearfix">
-              <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="clearfix advancedsearch-footer">
-    <div class="pull-right mr">
-      <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
-      <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
-      <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> --> 
-    </div>
-  </div>
-</div>
-</div>
-<div class="cand-advsrch-popup advancedsearch-popup" id="filterSearchMarket" style="display: none;">
-  <div class="clearfix headerAdsrch">
-    <h5 class="col-md-8 mb0 mt5">Profile Filter Search</h5>
-    <a href="javascript:void(0)" class="closePop margin-top0" onclick="closePop();"></a> </div>
-  <div class="addInner">
-    <div class="row">
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>All Candidates</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Job Success</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Hourly Rate</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Hours billed</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Category</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>English level</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Freelancer Type</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-3 mb positionRelative">
-        <label><strong>Last Activity</strong></label>
-        <div class="clearfix"></div>
-        <div class="clearfix filterSearch-ul">
-          <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL1">
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>Any amount earned (1,710,407)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$1+ earned (143,386)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$100+ earned (125,894)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>$10k+ earned (51,776)</label>
-            </li>
-            <li class="radioIput positionRelative">
-              <input name="" value="" type="radio">
-              <label>No earnings yet (1,567,021)</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+					  	<div class="col-md-4">
+							  <label>Education</label>
+							  <div class="clearfix"> 
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                  </select>
+							  </div>
+						  </div> 
+						  <div class="col-md-4">
+							  <label>Exclude Education</label>
+							  <div class="clearfix">
+								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                   </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Certification</label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+						  <div class="col-md-4">
+							  <label>Employers</label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
+                                  </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Employers</label>
+							  <div class="clearfix">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select>
+							  </div>
+						  </div>
+						  
+						   <!-- <div class="col-md-4">
+							  <label>Applicant Type</label>
+							  <div class="clearfix">
+								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
+								      <option value="">---select Applicant Type---</option>
+								      <option value="candidate">Candidate</option>
+									  <option value="consultant">Consultant</option> 
+				                   </select>
+							  </div>
+						  </div> -->
+						  </div>
+					  </div>
+					  </div>
+				  </div>
+				  <div class="clearfix advancedsearch-footer">
+						  <div class="pull-right mr">
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList('gMarketPlace'); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
+						  </div>
+					  </div>
+				  </div>
+			  </form:form>
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filters
+		<a href="javascript:void(0)" class="close-div" onClick="closeFilterPopup()"><i
+			class="fa fa-close"></i></a>
+	</h5>
+	<div class="addInner">
+		<div class="row">
+			<div class="col-md-2">
+			<div class="row">
+			
+			<div class="col-md-12 mb">
+				<label><strong>All Candidates</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="AllTypeFilter">
+					    <li class="radioIput positionRelative"><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2"   ><label for="candidateAll">All</label></li>
+						<li class="radioIput positionRelative"><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  ><label for="candidateActive">Active</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateInActive" name="candidateStatus" type="radio" value ="0" ><label for="candidateInActive">In Active</label></li>
+                    </ul>
+				 </div>
+				 </div> 
+				 
+				 
+			    <div class="col-md-12 mb">
+				<label><strong>Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="TypeFilter">
+					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
+                    </ul>
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                   </c:if>
+                    </ul>
+				 </div>
+				 </div>  
+			  </div>
+			</div>
+			
+			<div class="col-md-2">
+				<div class="row">
+			       <div class="col-md-12 mb">
+				     <label><strong>Updated</strong></label>
+					 <div class="clearfix">
+						<ul class="list-unstyled" id="UpdatedFilter">
+						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
+	                    
+                        </ul>
+					 </div>
+				 </div>
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Created By</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="createdByTypeFilter">
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
+			 </div>
+			</div> 
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Employment Type</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C"  ><label>C2C</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C-1099" ><label>C2C-1099</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="W-2" ><label>W-2</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H"  ><label>C2H</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H -1099" ><label>C2H -1099</label></li>
+	               			    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Part Time" ><label>Part Time</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Full Time" ><label>Full Time</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Availability</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="availabilityFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+			
+		</div>
+		</div>
+		<div class="clearfix advancedsearch-footer">
+			<div class="pull-right mr">
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();candidateList('gMarketPlace');" class="btn btn-sm btn-success" />
+				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+			</div>
+		</div>
 </div>
 
 <!-- Footer Area --> 
 <script>
+function mySkillsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("mySkillsInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
 	}
   $(document).ready(function () {
-	 getGloblaMarketPlaceCandidates('listModel');
+	 getGloblaMarketPlaceCandidates('listModel'); 
 	 updateMarketplaceCartCountAndPrice();
-});
-
-function getGloblaMarketPlaceCandidates(divType){
+	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
+	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
+  });
+var globalMarketDivType = null;
+function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
+	globalMarketDivType = divType;
 	var searchValue = $("#globalMarketSearh").val();
 	searchValue = searchValue ? searchValue : "";
 	var candidateLocation = $("#candidateLocation").val();
 	candidateLocation = (candidateLocation.length > 1) ? candidateLocation : "" ;
 	$.ajax({
-			type : "GET",
-			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation,
+			type : "POST",
+			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
 			success : function(object) {
 				if(object != null){
 					var result = "";
@@ -890,12 +840,24 @@ $(window).scroll(function(){
 function closePop(){
 	$(".advancedsearch-mask, #profileAdSearch").fadeOut();
 	$(".advancedsearch-mask, #filterSearchMarket").fadeOut();
+	 $("div.cand-advsrch-popup").hide();
+	 $('#expId').find('p.jquery_form_error_message').remove();
 }
 function openPop(){
-$("#profileAdSearch, .advancedsearch-mask").fadeIn();
+//$("#profileAdSearch, .advancedsearch-mask").fadeIn();
+$("#candidateAdvanceSearchDiv").toggle();
+$(".advancedsearch-mask").fadeIn();
+//$("#candidateFilterPopup").toggle();
+}
+
+function closeFilterPopup(){
+	$("#candidateFilterPopup").hide();
+	$(".advancedsearch-mask").fadeOut();
 }
 function filterPop() {
-$(".advancedsearch-mask, #filterSearchMarket").fadeIn();
+	$("#candidateFilterPopup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+//$(".advancedsearch-mask, #filterSearchMarket").fadeIn();
 }
 </script>
 <script type="text/javascript">
@@ -911,4 +873,230 @@ $(".advancedsearch-mask, #filterSearchMarket").fadeIn();
 	        },  
   		 }); 
     }
+    
+    function minMaxExperience(){
+        var maxExpYears = ($('#maxExpYears').val());
+        var minExpYears = ($('#minExpYears').val());
+       
+       if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+           $('#expId').find('p.jquery_form_error_message').remove(); 
+   		$('input#expValidation').attr('class','error signin_fild');
+   		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+   		$('input#expValidation').attr('record-exist','yes');
+   		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+       }  else{
+       	$('#expId').find('p.jquery_form_error_message').remove(); 
+       	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+   		$('#expId').find('p.jquery_form_error_message').remove();
+       } 
+   }
+function clearCandidateSearchKeys(){
+		
+	    $("#anyOfKeyword").val('').trigger("chosen:updated");
+	    $("#allKeywords").val('').trigger("chosen:updated");
+	    $("#excludeKeyWord").val('').trigger("chosen:updated");
+	    $("#designation").val('').trigger("chosen:updated");
+	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#minExpYears").val('').trigger("chosen:updated");
+	    $("#maxExpYears").val('').trigger("chosen:updated");
+	 /*    $("#country").val('').trigger("chosen:updated"); */
+	    $("#state").val('').trigger("chosen:updated");
+	    $("#citySearch").val('').trigger("chosen:updated");
+	    $("#education").val('').trigger("chosen:updated");
+	    $("#excludeEducation").val('').trigger("chosen:updated");
+	    $("#certification").val('').trigger("chosen:updated");
+	    $("#employers").val('').trigger("chosen:updated");
+	    $("#excludeEmployers").val('').trigger("chosen:updated");
+	    $("#applicantType").val('').trigger("chosen:updated");
+	    $("#canSkills").val('').trigger("chosen:updated");
+	    $("#canVisa").val('').trigger("chosen:updated");
+	    $("#canTags").val('').trigger("chosen:updated");
+	    $("#primarySkill").val('').trigger("chosen:updated");
+	    
+	    $("#designationType").val('').trigger("chosen:updated");
+	    
+	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
+	    
+	     $("#anyOfKeyword").empty();
+	     $("#allKeywords").empty();
+	     $("#excludeKeyWord").empty();
+	     $("#designation").empty();
+	      $("#minRate").val(''); 
+	     
+	      
+	     $("#currency").val('');
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#maxRate").val(''); 
+	     
+	     $("#rateType").val(''); 
+	     $('.selectpicker').selectpicker('refresh');
+	     
+	     $("#minExpYears").val(''); 
+	     $("#maxExpYears").val(''); 
+	     $('#expId').find('p.jquery_form_error_message').remove();
+	     
+	     $("#noticePeriod").val(''); 
+	     
+	     $("#country").val(''); 
+	     $("#state").val(''); 
+	     $("#citySearch").val(''); 
+	     
+	     $("#designationType").val(''); 
+	     
+	     
+	     $("#education").val(''); 
+	     $("#excludeEducation").val('');
+	     $("#certification").val(''); 
+	     
+	     $("#employers").val(''); 
+	     $("#excludeEmployers").val(''); 
+	     $("#applicantType").val('');
+	     $("#canSkills").val('');
+	     $("#canVisa").val('');
+	     $("#canTags").val('');
+	     $("#primarySkill").val('');
+	    
+	}
+$(function() { 
+    //Adding Customized Any KeyWord Title list this method is slead-common.js
+	   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+    
+	   //Adding Customized All KeyWord Title list this method is slead-common.js
+	   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+	   
+	   //Adding Customized Exclude KeyWord Title list this method is slead-common.js
+	   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+	   
+	   //Adding Customized Designation list this method is slead-common.js
+	   tagIt("designation", 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:', 'tagItBykeyForSkills','skills','Designation');
+	   
+	  //Adding Customized Certification list this method is slead-common.js
+	   tagIt("certification", 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:', 'tagItBykeyForSkills','skills','Certification');
+	  
+	   //Adding Customized Employers list this method is slead-common.js
+	   tagIt("employers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Employers');
+	   
+	   //Adding Customized ExcludeEmployers list this method is slead-common.js
+	   tagIt("excludeEmployers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Exclude Employers');
+	   
+	   //Adding Customized PrimarySkill list this method is slead-common.js
+	   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Peimary Skills:', 'tagItBykeyForSkills','skills','Primary Skill');
+	   
+	 //Adding Customized Skill list this method is slead-common.js
+	   tagIt("canSkills", 'Press Enter-Key Or Comma(,) Or Tab To Add Skills:', 'tagItBykeyForSkills','skills','Skills');
+	 
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+	   
+	   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
+	   
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
+	   
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("excludeEducation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
+	 
+	   
+	   
+});
+
+function getStates(){
+	var countryName = $("#country").val();
+	if(countryName != null && countryName != "" && countryName !="undefined"){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#state').empty();
+	        	$('#state').append('<option value="">---select state---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#state').trigger("chosen:updated");
+	            
+	            $('#citySearch').empty();
+	            $('#citySearch').append('<option value="">---select city---</option>');
+	            $('#citySearch').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#state').empty();
+    	$('#state').append('<option value="">---select state---</option>');
+    	$('#state').trigger("chosen:updated");
+    	$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+        $('#citySearch').trigger("chosen:updated");
+	}
+}
+
+function getCities(){
+	var countryName = $("#country").val();
+	var stateName = $("#state").val();
+	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
+		$.ajax({
+	    	type: "POST",
+	    	dataType: "json",
+	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	$('#citySearch').empty();
+	        	$('#citySearch').append('<option value="">---select city---</option>');
+	            for(var i=0;i<json.length;i++){
+	            	$('#citySearch').append('<option value="'+json[i]+'">'+json[i]+'</option>');
+	            }
+	            $('#citySearch').trigger("chosen:updated");
+	        },
+	        error: function(e){
+	        }
+	    });
+	}else{
+		$('#citySearch').empty();
+    	$('#citySearch').append('<option value="">---select city---</option>');
+    	$('#citySearch').trigger("chosen:updated");
+	}
+}
+
+$("#country").on('change', function (e) {
+	   getStates();
+});
+$("#state").on('change', function (e) {
+	   getCities();
+});
+
+// here call experience validation
+$("#maxExpYears").on('change', function (e) {
+	   minMaxExperience();
+});
+
+$("#minExpYears").on('change', function (e) {
+	   minMaxExperience();
+});
+var isAssociate = 'N';
+var candidateIDsArr=[];
+var _csrfParam = '${_csrf.parameterName}';
+var _csrfToken = '${_csrf.token}';
+function resetCandidateFilter(){
+	clearCandidateSearchKeys();
+	$("ul#TypeFilter > li input:radio").prop("checked",false);
+	$("ul#AllTypeFilter > li input:radio").prop("checked",false);
+	$("ul#UpdatedFilter > li input:radio").prop("checked",false);
+	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
+	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
+	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	
+	
+	$("#dataTableSearch").val('');
+	document.getElementById("candidateTypeAll").checked = true;
+	document.getElementById("candidateAll").checked = true;
+	document.getElementById("candidateCheck").checked = true;
+	document.getElementById("myCandidatesRadio").checked = true;
+	candidateList('gMarketPlace');
+}
 </script>
