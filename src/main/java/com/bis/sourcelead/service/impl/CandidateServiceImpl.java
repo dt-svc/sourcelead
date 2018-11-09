@@ -2797,7 +2797,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
 		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
 		marketplace.setWithdrawReason(withdrawReason);
-		 candidateDao.withdrawCandidateFromMarketplace(marketplace);
+		Candidate candidate = candidateDao.getCandidateById(marketplace.getCandidateId().getId());
+		candidate.setIsSharedInMarketplace(Constants.NO);
+		saveOrUpdateCandidateElkDocument(candidate);
+		candidateDao.storeCandidate(candidate);
+		candidateDao.withdrawCandidateFromMarketplace(marketplace);
 		
 	}
 
