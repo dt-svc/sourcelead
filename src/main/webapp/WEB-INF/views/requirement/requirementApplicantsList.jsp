@@ -87,10 +87,12 @@
 	    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
 	     			    	clientNameById.push($(this).val());
 	     				}); 
-    				 } else {
+    				 } else if($("#myOwnerClinetListUL li").length > 0){
     					 $('input:checkbox[name=myClientNameById]').each(function() {
  	     			    	clientNameById.push($(this).val());
  	     				});
+    				 } else {
+    					 clientNameById.push("-1");
     				 }
     			 }
     		 
@@ -470,7 +472,7 @@ $(".overIcon, .newActPop").click(function(e){
 					  <div class="col-md-3">
 						<div class="row">
 						   <div class="col-md-12 mb">
-								<label><strong>Search for</strong></label>
+								<label><strong>Jobs</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="searchTypeFilter">
 									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>

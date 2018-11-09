@@ -690,10 +690,13 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
 			params.put("userId", userId);
+			
+			String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
+			params.put("approverUserId", userId);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "") {
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") ) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {
@@ -2840,9 +2843,9 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 		}
 		else {
-			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId  "
+			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId,REQ.RELEASE_JOB_TO_ALL_USERS AS releaseJobToAllUsers  "
 					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID LEFT JOIN REQUIREMENT_APPROVER_HIERARCHY RAH ON REQ.ID = RAH.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
-					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  FROM REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList))) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
+					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  FROM REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList)) OR REQ.RELEASE_JOB_TO_ALL_USERS = 'Y') AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
 		
 			
 		
