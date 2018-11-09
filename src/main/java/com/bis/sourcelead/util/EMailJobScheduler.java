@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
@@ -92,11 +95,27 @@ import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
+import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayrollScheduleService;
+import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -128,6 +147,7 @@ import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.docusign.esign.api.AuthenticationApi;
@@ -319,6 +339,28 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
+	
+	@Autowired
+	private ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	private UserGroupService userGroupService;
+	
+	@Autowired
+	private PayrollScheduleService payrollScheduleService;
+	
+	@Autowired
+	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	private AssociateSalaryService associateSalaryService;
+	
+	@Autowired
+	private GenerateUSPayrollService generateUSPayrollService;
+	
+	@Autowired
+	private USPaysheetService uSPaysheetService;
+	
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -3803,6 +3845,94 @@ public class EMailJobScheduler {
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
+		}
+	}
+	
+//	0 0 8 ? * MON-FRI *
+	@Scheduled(cron = "0 0 8 ? * MON-FRI")
+	@Async
+	public void autoMaticPayrollRunning() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			ConfigurePayrollApprover configurePayroll = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+			if("YES".equalsIgnoreCase(configurePayroll.getAutomaticPayroll())) {
+				List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+				for(UserGroup usrGroup : groupList) {
+					UsPayrollSchedule uSPayrollSchedule = payrollScheduleService.findScheduleByFrequency(usrGroup.getPayFrequency(), orgLocation.getId(), "");
+					List<PayrollScheduleCalenderDTO> scheduleList = payrollUtil.getPayScheduleWeeksByDate(uSPayrollSchedule,orgLocation);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());
+					for(PayrollScheduleCalenderDTO scheduleDto : scheduleList) {
+						Date nextPayRunDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), scheduleDto.getPayRunDate());
+						if(nextPayRunDate.equals(currentDate)) {
+							GenerateUSPayrollDTO generateUSPayrollDTO = new GenerateUSPayrollDTO();
+							String dates[] = scheduleDto.getPayPeriod().split(",");
+							Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+							Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+							PaysheetFrequencyDTO paysheetFrequencyDTO = null;
+							
+							generateUSPayrollDTO.setGroupId(usrGroup.getId().toString());
+							generateUSPayrollDTO.setPayPeriod(scheduleDto.getPayPeriod());
+							PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+							
+							List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,usrGroup.getId(),"All");
+							
+//							UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
+							
+							if (assSallist != null && assSallist.size() >0) {
+								PaysheetFrequency paySheetFreq = null;
+								if(existedData != null) {
+									 paySheetFreq = new PaysheetFrequency();
+									 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
+								}else {
+									 paySheetFreq = new PaysheetFrequency();
+								}
+								
+								paySheetFreq.setUserGroup(usrGroup);
+								paySheetFreq.setOrgLocation(orgLocation);
+								String[] payPeriod = scheduleDto.getPayPeriod().split(",");
+								Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[0]);
+								paySheetFreq.setFrequencyStartDate(startDate);
+								Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[1]);
+								paySheetFreq.setFrequencyEndDate(endDate);
+								paySheetFreq.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),generateUSPayrollDTO.getPayrollPayDate()));
+								paySheetFreq.setCreatedDate(new Date());
+								paySheetFreq.setUpdatedDate(new Date());
+								paySheetFreq.setCreatedBy(orgLocation.getUser().getId());
+								paySheetFreq.setUpdatedBy(orgLocation.getUser().getId());
+								paySheetFreq.setStatus(1);
+								paySheetFreq.setType(PayrollConstant.PAYROLL);
+								paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
+								paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+								Set<EmployeePayroll> payrollList = generateUSPayrollService.calculatePayroll(existedData,paySheetFreq, orgLocation.getUser(), orgLocation,assSallist,freqStartDate, freqEndDate,usrGroup);
+								if(payrollList !=null && payrollList.size() > 0) {
+									paySheetFreq.setEmployeepayroll(payrollList);
+									uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+								}
+									paysheetFrequencyDTO = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+									if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
+										List<USPayrollDTO> draftPayroll = null;
+										if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
+											draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+													.stream()
+													.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+													.collect(Collectors.toList());
+										}else {
+											draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+													.stream()
+													.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+													.collect(Collectors.toList());
+										}
+										paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+										paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
+										paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+									}
+							}
+//							return paysheetFrequencyDTO;
+						}
+					}
+				}
+ 			}
 		}
 	}
 	
