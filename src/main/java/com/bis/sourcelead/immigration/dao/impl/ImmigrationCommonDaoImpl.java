@@ -2530,7 +2530,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (orgLocations.getId().equals(source.getOrgLocationId())) {
 				target.setOrgName(source.getVendor());
 				target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
-				target.setSpocName(source.getSpocNameVendor());
+				//target.setSpocName(source.getSpocNameVendor());
 			}
 			
             BeanUtils.copyProperties(source, target);

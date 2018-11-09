@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.TeamDao;
@@ -81,6 +82,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
+	
+	@Autowired
+	RequirementApproverHierarchyDao requirementApproverHierarchyDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -545,7 +549,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
-		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
+		 Boolean approverFlag = requirementApproverHierarchyDao.getisRequirementApprover(user.getId(),requirement.getId());
+		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false && approverFlag == false ) {
 			 subQuery = " and ((rs.requirement.primaryRecruiterUserId.id = '"+user.getId()+"') OR (rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
@@ -2632,7 +2637,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		String subQuery4 = "";
 	    		String subQuery5 = "";
 	    		
-	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY") || (requirementSubmissionHistoryDTO.getApplicants() != null && requirementSubmissionHistoryDTO.getApplicants().equalsIgnoreCase("MYApplicants"))) {
 	    			subQuery1 = " (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}else {
