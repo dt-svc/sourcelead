@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateNomineeDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
+import com.bis.sourcelead.dto.AssociateNomineeDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
@@ -55,7 +58,10 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.entity.AssociateContribution;
+import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.service.AssociateNomineeService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -135,6 +141,12 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
+	AssociateNomineeService associateNomineeService;
+	
+	@Autowired
+	AssociateNomineeDao associateNomineeDao;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2172,5 +2184,66 @@ public class CandidateOnBoardRestController {
 		Response<AssociatePfEsiDetailsDTO>  resObj = associatePfEsiService.saveAssociatePfEsi(associatePfEsiDetailsDTO,orgLocation,loginUser);	
 		return resObj;
 	}
+	
+	@RequestMapping(value = "/saveNomineeDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<AssociateNomineeDTO> saveNomineeDetails(AssociateNomineeDTO associateNomineeDTO,
+			HttpServletRequest request) throws Exception {
 		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Candidate candidate = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
+				.getCandidateOnBoardingByUserIdAndLocationId(associateNomineeDTO.getUserId(), orgLocation.getId());
+		if(candidateOnBoarding == null) {
+			candidate = candidateService.getCandidateByConsultantUserId(associateNomineeDTO.getUserId(), orgLocation.getId());
+		}else {
+			candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		}
+		
+		Response<AssociateNomineeDTO>  resObj = associateNomineeService.saveAssociateNomineeDetails(associateNomineeDTO,orgLocation,candidate,user);
+		
+		return resObj;
+		
+	}
+	
+	
+	@RequestMapping(value = "/getNomineeDetails", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<AssociateNomineeDTO> getNomineeDetails(AssociateNomineeDTO associateNomineeDTO,
+			HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Candidate candidate = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
+				.getCandidateOnBoardingByUserIdAndLocationId(associateNomineeDTO.getUserId(), orgLocation.getId());
+		if(candidateOnBoarding == null) {
+			candidate = candidateService.getCandidateByConsultantUserId(associateNomineeDTO.getUserId(), orgLocation.getId());
+		}else {
+			candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		}
+		
+		ResponseList<AssociateNomineeDTO>  resList = associateNomineeService.getAssociateNomineeDetails(associateNomineeDTO,orgLocation,candidate,user);
+		
+				return resList;
+		
+	}
+	
+	
+	@RequestMapping(value = "/deleteNominee", method = RequestMethod.POST)
+	public AssociateNominee deleteNominee(AssociateNomineeDTO associateNomineeDTO,
+			HttpServletRequest request) throws Exception {
+		
+		AssociateNominee associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
+		associateNominee.setStatus(Constants.RECORD_INACTIVE);
+		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
+	}
+	
+	@RequestMapping(value = "/editNominee", method = RequestMethod.POST)
+	public AssociateNominee editNominee(AssociateNomineeDTO associateNomineeDTO,
+			HttpServletRequest request) throws Exception {
+		
+		AssociateNominee associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
+		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
+	}
+	
 }
