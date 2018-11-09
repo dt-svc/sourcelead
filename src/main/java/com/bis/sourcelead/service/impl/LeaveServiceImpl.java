@@ -656,8 +656,8 @@ public class LeaveServiceImpl implements LeaveService{
 				float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 				
 				float balLeaves = 0;
-				if(appliedLeavesCount >0) {
-					  balLeaves = totalLeaves - appliedLeavesCount;
+				if(totalLeaveCount >0) {
+					  balLeaves = totalLeaves - totalLeaveCount;
 				}else {
 					  balLeaves = totalLeaves;	
 				}

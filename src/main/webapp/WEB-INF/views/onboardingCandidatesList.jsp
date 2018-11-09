@@ -23,7 +23,7 @@
       <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
       
         	<div class="dashNewWrapHead noBor clearfix">
-				<h4 class="pull-left">Candidates for Onboarding</h4>
+				<h4 class="pull-left">Candidates on-boarding</h4>
         	</div>
         
         <div class="clearfix project_tabs_inn_table dashboard-data newDashPad dataSeaNew"> 
@@ -75,7 +75,7 @@ function onboardingCandidatesList(){
                     result = result +"    <th>DOJ<br>(<small class='custom-small'>"+onBoardListDate+"</small>)</th>"; 
                     result = result +"    <th>Rate</th>"; 
                     result = result +"    <th>Position Type</th>";
-                    result = result +"    <th>Onboard Status</th>";
+                    result = result +"    <th>On-board Status</th>";
                     '<sec:authorize access="hasRole(\'ROLE_CREATE_ON_BOARD_USER\')">'
                    	 result = result +"<th>Actions</th>";
                     '</sec:authorize>';

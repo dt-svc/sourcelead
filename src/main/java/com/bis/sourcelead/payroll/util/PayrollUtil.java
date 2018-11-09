@@ -904,6 +904,38 @@ public class PayrollUtil {
 		return list;
 	}
 
+	public List<String> getPayScheduleWeeksByDate(int year, int month, int dateInt, OrgLocations orgLocation)
+	{
+		List<String> payFrequency = new ArrayList<>();
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		List<List<String>> weekdates = new ArrayList<List<String>>();
+		List<String> dates;
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		for (int i =month; i <=11; i++) {
+			c.set(Calendar.MONTH, i);
+			c.set(Calendar.DAY_OF_MONTH, dateInt);
+			while (c.get(Calendar.MONTH) == i) {
+				dates = new ArrayList<String>();
+//				while (c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+//					c.add(Calendar.DAY_OF_MONTH, -1);
+//				}
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				c.add(Calendar.DAY_OF_MONTH, 6);
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				weekdates.add(dates);
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+		}
+		for (List<String> innerList : weekdates) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(innerList.get(0)).append(",").append(innerList.get(1));
+			payFrequency.add(innerList.get(0));
+			payFrequency.add(innerList.get(1));
+		}
+		return payFrequency;
+	}
+
 	
 
 }

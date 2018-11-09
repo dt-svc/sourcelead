@@ -2309,7 +2309,7 @@ function validate_fileupload(fileName)
 								    			$("#msgJobDiv").html("Successfully job  submitted for approval");
 								    		}else if(saveType == 'saveAndContinue'){
 								    			if(result.object != 'MissingData'){
-								    				$("#msgJobDiv").html("Successfully job saved..");
+								    				$("#msgJobDiv").html("Job saved successfully");
 								    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
 								    			}
 								    		}
@@ -2816,8 +2816,12 @@ function removeApprovers(){
 	 
 	if(!$("#apprverReq").is(':checked')){
          $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#parallelapprovers").hide();
+         $("#seqentialApprovers").hide();
     }else{
 		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+		 $("#parallelapprovers").show();
+         $("#seqentialApprovers").show();
     } 
 }
 </script> 

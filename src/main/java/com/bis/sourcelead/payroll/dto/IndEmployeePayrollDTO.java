@@ -2,7 +2,9 @@ package com.bis.sourcelead.payroll.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.SearchDTO;
 
 public class IndEmployeePayrollDTO  extends SearchDTO{
@@ -63,6 +65,15 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private String payCheckDateStr;
 	
+	private List<AssociatePayrollPayheadHistoryDTO> associateSalaryPayheadIndEarningList;
+	
+	private List<AssociatePayrollPayheadHistoryDTO> associateSalaryPayheadIndDeductionList;
+	
+	private String paySheetFrequencyUUID;
+	
+	private List<String> indEmpPayrollUUIDList;
+	 
+	private String allEmployees;
 
 	public Long getId() {
 		return id;
@@ -278,5 +289,47 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setPayCheckDateStr(String payCheckDateStr) {
 		this.payCheckDateStr = payCheckDateStr;
+	}
+
+	public List<AssociatePayrollPayheadHistoryDTO> getAssociateSalaryPayheadIndEarningList() {
+		return associateSalaryPayheadIndEarningList;
+	}
+
+	public void setAssociateSalaryPayheadIndEarningList(
+			List<AssociatePayrollPayheadHistoryDTO> associateSalaryPayheadIndEarningList) {
+		this.associateSalaryPayheadIndEarningList = associateSalaryPayheadIndEarningList;
+	}
+
+	public List<AssociatePayrollPayheadHistoryDTO> getAssociateSalaryPayheadIndDeductionList() {
+		return associateSalaryPayheadIndDeductionList;
+	}
+
+	public void setAssociateSalaryPayheadIndDeductionList(
+			List<AssociatePayrollPayheadHistoryDTO> associateSalaryPayheadIndDeductionList) {
+		this.associateSalaryPayheadIndDeductionList = associateSalaryPayheadIndDeductionList;
+	}
+
+	public String getPaySheetFrequencyUUID() {
+		return paySheetFrequencyUUID;
+	}
+
+	public void setPaySheetFrequencyUUID(String paySheetFrequencyUUID) {
+		this.paySheetFrequencyUUID = paySheetFrequencyUUID;
+	}
+
+	public List<String> getIndEmpPayrollUUIDList() {
+		return indEmpPayrollUUIDList;
+	}
+
+	public void setIndEmpPayrollUUIDList(List<String> indEmpPayrollUUIDList) {
+		this.indEmpPayrollUUIDList = indEmpPayrollUUIDList;
+	}
+
+	public String getAllEmployees() {
+		return allEmployees;
+	}
+
+	public void setAllEmployees(String allEmployees) {
+		this.allEmployees = allEmployees;
 	}
 }

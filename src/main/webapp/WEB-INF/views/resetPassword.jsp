@@ -32,6 +32,8 @@
 
 <body>
   
+  
+  
 <div class="regis_bg">
 	<div class="regis_logo"><img src="/resources/images/SourceLead-logo.png" alt=""/></div>
     <div class="regis_wrap">
