@@ -24,4 +24,6 @@ public interface AssetCategoryService {
 	Boolean validateCategoryName(String categoryName, Long orgLocationId);
 
 	AssetCategory addAssetCategory(AssetCategory assetCategory) throws Exception;
+
+	List<String> getAssetCategoryStringtByLocationId(Long orgLocationId)throws Exception;
 }

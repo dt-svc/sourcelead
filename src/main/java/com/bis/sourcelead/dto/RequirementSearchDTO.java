@@ -26,6 +26,7 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String filterSpecJobs;
 	private String filterProjectId;
     private List<String> jobsTags;
+    private String cityName; 
 
 	
 	public String getStatus() {
@@ -152,5 +153,12 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	public void setJobsTags(List<String> jobsTags) {
 		this.jobsTags = jobsTags;
 	}
-	
+	public String getCityName()
+	{
+		return cityName;
+	}
+	public void setCityName(String cityName)
+	{
+		this.cityName = cityName;
+	}
 }

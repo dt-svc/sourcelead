@@ -111,7 +111,7 @@
 		          <div class="col-md-5" id="routingNumberDiv">
 		                  <label>IFSC Code<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
-		                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_length length9-9" />
+		                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length9-9" />
 		                  </div>
 		          </div>
 		          
