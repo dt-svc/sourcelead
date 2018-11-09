@@ -177,6 +177,16 @@ public class PayrollReportDTO extends SearchDTO{
 	private String invPaidAmount;
 	
 	private String orgDateFormat;
+	
+	private BigDecimal current;
+	
+	public BigDecimal getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(BigDecimal current) {
+		this.current = current;
+	}
 
 	public String getEmpId()
 	{

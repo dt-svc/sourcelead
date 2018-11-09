@@ -454,6 +454,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setContributionMTD(ytd.getContributionMTD());
 					dto.setContributionQTD(ytd.getContributionQTD());
 					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
+					dto.setCurrent(dedHis.getPreContributionAmount().add(dedHis.getPostContributionAmount()));
 					list.add(dto);
 				}
 			}
@@ -513,7 +514,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setGroupFrequency(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getPayFrequency());
 					dto.setType(dedHis.getPayroll().getType());
 					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
-					
+					dto.setCurrent(dedHis.getPreDeductionAmount().add(dedHis.getPostDeductionAmount()));
 					list.add(dto);
 				}
 			}
