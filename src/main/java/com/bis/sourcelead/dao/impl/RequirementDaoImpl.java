@@ -690,10 +690,13 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
 			params.put("userId", userId);
+			
+			String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
+			params.put("approverUserId", userId);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "") {
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") ) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {

@@ -1481,8 +1481,8 @@ public class PayrollReportPdfUtil {
 			if(associate.getFederalTaxAllowances() != null) {
 				federalAllowances = associate.getFederalTaxAllowances();
 			}
-			if(associate.getState() != null) {
-				state = associate.getState();
+			if(associate.getResidenceStateCode() != null) {
+				state = associate.getResidenceStateCode();
 			}
 			if(associate.getStateFillingStatus() != null) {
 				stateStatus = associate.getStateFillingStatus();
