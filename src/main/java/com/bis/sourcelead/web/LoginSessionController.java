@@ -267,7 +267,7 @@ public class LoginSessionController {
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
-					
+					System.out.println(tabs.getTabName());
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
 					}
@@ -282,6 +282,8 @@ public class LoginSessionController {
 					
 					if(tabs.getTabName().equalsIgnoreCase("Reports")){
 						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+					}else {
+						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "N");
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
