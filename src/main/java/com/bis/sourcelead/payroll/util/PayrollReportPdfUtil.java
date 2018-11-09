@@ -1481,8 +1481,8 @@ public class PayrollReportPdfUtil {
 			if(associate.getFederalTaxAllowances() != null) {
 				federalAllowances = associate.getFederalTaxAllowances();
 			}
-			if(associate.getState() != null) {
-				state = associate.getState();
+			if(associate.getResidenceStateCode() != null) {
+				state = associate.getResidenceStateCode();
 			}
 			if(associate.getStateFillingStatus() != null) {
 				stateStatus = associate.getStateFillingStatus();
@@ -1536,7 +1536,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
@@ -1594,7 +1594,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
                     .setIgnorePageMargins(true)

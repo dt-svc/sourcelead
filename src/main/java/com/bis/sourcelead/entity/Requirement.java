@@ -687,6 +687,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private String rejectedCount;
 	
+	@Transient
+	@JsonProperty
+	private String onHoldCount;
+	
+	@Transient
+	@JsonProperty
+	private String noResponseCount;
+	
 	public String getJobFairDates() {
 		return jobFairDates;
 	}
@@ -2212,6 +2220,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setRepoenedDate(Date repoenedDate) {
 		this.repoenedDate = repoenedDate;
 
+	}
+
+	public String getOnHoldCount()
+	{
+		return onHoldCount;
+	}
+
+	public void setOnHoldCount(String onHoldCount)
+	{
+		this.onHoldCount = onHoldCount;
+	}
+
+	public String getNoResponseCount()
+	{
+		return noResponseCount;
+	}
+
+	public void setNoResponseCount(String noResponseCount)
+	{
+		this.noResponseCount = noResponseCount;
 	}
 	
 	

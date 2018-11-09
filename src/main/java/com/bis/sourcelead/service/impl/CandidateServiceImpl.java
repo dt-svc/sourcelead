@@ -2860,9 +2860,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 	@Override
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception {
-		// TODO Auto-generated method stub
 		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId);
-		
+	}
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
 
 }

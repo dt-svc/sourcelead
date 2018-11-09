@@ -247,10 +247,10 @@ public class SubmissionsRateRestController {
 			requirementRateSubmissionNegotiation.setUpdatedDate(commonUtil.currentDate());
 			requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 			
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+			/*if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			}
+			}*/
 			
 			 Requirement requirement = requirementSubmission.getRequirement();
 			 

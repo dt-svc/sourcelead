@@ -2816,8 +2816,12 @@ function removeApprovers(){
 	 
 	if(!$("#apprverReq").is(':checked')){
          $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#parallelapprovers").hide();
+         $("#seqentialApprovers").hide();
     }else{
 		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+		 $("#parallelapprovers").show();
+         $("#seqentialApprovers").show();
     } 
 }
 </script> 

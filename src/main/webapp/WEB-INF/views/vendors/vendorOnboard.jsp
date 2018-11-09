@@ -279,7 +279,7 @@
 							       <div class="form-group">
 							         <label class="col-md-3">Account Number<span class="text-danger">&nbsp;*</span></label>
 							        <div class="col-md-9 validLabel">
-							             <input type="text" id="accountNumber" name="accountNumber" field-name="Account Number"   data-validation="required validate_Space validate_length length1-100"  value="" class="form-control" >
+							             <input type="text" id="accountNumber" name="accountNumber" field-name="Account Number"   data-validation="required validate_Space validate_int validate_length length1-50"  value="" class="form-control" >
 							         </div>
 							       </div>
 							       
