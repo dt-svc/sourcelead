@@ -422,6 +422,10 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
 					}
 					dto.setEmpName(sb.toString());
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPayPeriodNum()))
+						dto.setRunNo(dedHis.getPayroll().getPayPeriodNum());
+					else
+						dto.setRunNo("0");
 					if(dedHis.getPayroll().getEmployee() != null) {
 						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
 					}
@@ -480,6 +484,10 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
 					}
 					dto.setEmpName(sb.toString());
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPayPeriodNum()))
+						dto.setRunNo(dedHis.getPayroll().getPayPeriodNum());
+					else
+						dto.setRunNo("0");
 					if(dedHis.getPayroll().getEmployee() != null) {
 						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
 					}

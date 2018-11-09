@@ -177,6 +177,8 @@ public class PayrollReportDTO extends SearchDTO{
 	private String invPaidAmount;
 	
 	private String orgDateFormat;
+	
+	private String runNo;
 
 	public String getEmpId()
 	{
@@ -994,6 +996,16 @@ public class PayrollReportDTO extends SearchDTO{
 
 	public void setOrgDateFormat(String orgDateFormat) {
 		this.orgDateFormat = orgDateFormat;
+	}
+
+	public String getRunNo()
+	{
+		return runNo;
+	}
+
+	public void setRunNo(String runNo)
+	{
+		this.runNo = runNo;
 	}
 
 }
