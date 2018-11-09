@@ -26,12 +26,13 @@
     <div class="clearfix"></div>
       <div class="searchprofile-profile">
         <div class="row clearfix search-tools">
+        
           <div class="col-md-7 col-xs-12 reports-head">
-            <select class="form-control chosen-select" multiple data-placeholder="Search Profile" name="anyOfKeyword">
-            </select>
+            <input type="text" class="form-control" id="globalMarketSearh" value="" placeholder="Search Profile" id="" />
+            
           </div>
           <div class="col-md-4 col-xs-12 padding_right">
-            <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "" onkeydown = "getGloblaMarketPlaceCandidates('listModel')">
+            <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "">
           </div>
           <div class="col-md-1 col-xs-12 padding_left"> <a onclick = "getGloblaMarketPlaceCandidates('listModel')" class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
           <div class="clearfix"></div>
