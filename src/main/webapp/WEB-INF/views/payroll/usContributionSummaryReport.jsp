@@ -19,17 +19,17 @@
      <div class="clearfix row">
 		  <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">From Date</label>
+              <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
-					<input type="text" class="form-control calendar" field-name="From Date" id="fromDate" data-validation="required">
+					<input type="text" class="form-control calendar" readonly field-name="From Date" id="fromDate" data-validation="required">
 				</div>
             </div>
             </div>
             <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12">To Date</label>
+              <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" field-name="To Date" id="toDate" data-validation="required">
+                <input type="text" class="form-control calendar" readonly field-name="To Date" id="toDate" data-validation="required">
               </div>
             </div>
 			</div>

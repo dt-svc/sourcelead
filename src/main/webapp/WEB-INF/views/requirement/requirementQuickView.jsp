@@ -136,12 +136,41 @@
           	   </c:if>
 			   <div id="rejectRequirementAlert" ></div>   
 		       <div class="clearfix"> 
-		           <div class="pull-right mt10"> 
-
+		           <div class="pull-right mt10">
+		           
+						<c:set var="contains" value="false"></c:set>
+						<c:set var="isAllow" value="false"></c:set>
+						<c:set var="approver" value="false"></c:set>
 
 						<c:if test="${requirement.requirementSubmissionStatus != ''}">
 							<div class="pull-left mr">
-								<select class="sel" name="changeStatusId${requirement.id}" onchange="changeStatus(${requirement.id});" id="changeStatusId${requirement.id}">
+							
+								<c:if test="${(requirement.level1ApproverUserId != null && requirement.level1ApproverUserId != '' && requirement.level1ApproverUserId != 'undefined') || (requirement.level2ApproverUserId != null && requirement.level2ApproverUserId !='' && requirement.level2ApproverUserId != 'undefined')}">
+									<c:if test="${requirement.level2ApproverUserId != null && requirement.level2ApproverUserId !=''}">
+											${SourceLeadWeb_user.id} ${requirement.level2ApproverUserId}
+										<c:choose>
+											<c:when test="${SourceLeadWeb_user.id == requirement.level2ApproverUserId}">
+												<c:set var="approver" value="true"></c:set>
+											</c:when>
+											<c:otherwise>
+												<c:forEach items="${requirement.level1ApproverUserId}" var="a">
+													<c:if test="${SourceLeadWeb_user.id == requirement.level1ApproverUserId[a]}">
+														<c:set var="approver" value="true"></c:set>
+													</c:if>
+												</c:forEach>
+											</c:otherwise>
+										</c:choose>
+									</c:if>
+								</c:if>
+								<c:if test="${requirement.managerUserId != null && requirement.managerUserId != ''}">
+									<c:if test="${requirement.managerUserId.id == SourceLeadWeb_user.id}">
+										<c:set var="contains" value="true"></c:set>
+									</c:if>
+								</c:if>
+								<c:if test="${approver == true || contains == true || SourceLeadWeb_loginUserRole == 'ROLE_ADMIN' || SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN' || requirement.isLoginUserAsApprover == true}">
+									<c:set var="isAllow" value="true"></c:set>
+								</c:if>
+								<select class="sel" name="changeStatusId${requirement.id}" ${isAllow ? "" : "disabled"} onchange="changeStatus(${requirement.id});" id="changeStatusId${requirement.id}">
 									<option disabled="disabled" selected="selected">${requirement.requirementSubmissionStatus}</option>
 									
 									<c:if test="${requirement.requirementSubmissionStatus == 'DRAFT'}">
@@ -210,6 +239,7 @@
 									</c:if>
 									
 									<c:if test="${requirement.requirementSubmissionStatus == 'ONHOLD'}">
+									onHOld : ${requirement.requirementSubmissionPreviousStatus}
 										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'OPEN'
 										 || requirement.requirementSubmissionPreviousStatus == null 
 										 || requirement.requirementSubmissionPreviousStatus == ''}">
@@ -261,16 +291,16 @@
 								</select>
 							</div>
 						</c:if>
-						
-
 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
 			            		  <a href="<c:url value="${appPath}/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
+
 			            <c:if test="${(isAdmin == 'true' || requirement.isLoginUserAsApprover == 'true') && requirement.requirementSubmissionStatus  != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'CLOSED'  && requirement.requirementSubmissionStatus != 'CANCEL' &&  requirement.requirementSubmissionStatus != 'APPROVED' &&  requirement.requirementSubmissionStatus != 'REJECTED'  &&  requirement.requirementSubmissionStatus != 'OPEN' && requirement.requirementSubmissionStatus  !='NEW' && requirement.requirementSubmissionStatus  != 'UNFILLEDCLOSED' && requirement.requirementSubmissionStatus  != 'FILLEDCLOSED'}">
-			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve${isPrimaryRecruiter}</button> 
+			            	  <button  class="btn btn-success mr ml btn-sm" type="button" id = "approverbut" onClick ="updateReuqirementStatus('APPROVED');hideButtonOnClick();"  >Approve</button> 
+
          		              <button  class="btn btn-danger btn-sm" id = "rejectedbut" type="button" onClick ="rejectRequirementAlertMessage('REJECTED');hideButtonOnClick();">Reject</button>
 			            </c:if>
 					</div></div>
