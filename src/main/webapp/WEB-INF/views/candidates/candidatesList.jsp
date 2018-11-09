@@ -1530,7 +1530,7 @@ function cancel(candidateId){
 		        data : {candidateIdsVal : candidateIdsMark},
 		        success: function(json) {
 		        	candidateIDsArr = [];
-		        	popupDisplay("message", json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace']);
+		        	popupDisplay(json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace'].length, json['candidatesNotInMarketplace'] );
 		        }
 	 	}); 
  }
@@ -1765,7 +1765,7 @@ function exportToPdf(){
 	  }
 }
 
-function popupDisplay(message, candidatesInMarketplace, ...candidatesNotInMarketplace){
+function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...candidatesNotInMarketplace){
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1775,10 +1775,11 @@ function popupDisplay(message, candidatesInMarketplace, ...candidatesNotInMarket
 	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup("+candidatesNotInMarketplace+");'></div>";
 	result = result +"	</div>";
 	$("#emptyPopup").empty().append(result);
-	$("#popupMsg").empty().append(message);
+	$("#popupMsg").empty().append(candidatesInMarketplace+" has already processed for the Marketplace, <br/> "+noCandidateNotInMarketplace+" will process for the marketplace.");
 	$("#remove_immigration_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
+
 function cancelMarketplacePopup(...candidatesNotInMarketplace){
 	$("#remove_immigration_pop").fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
