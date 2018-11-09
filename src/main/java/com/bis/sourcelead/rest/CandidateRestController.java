@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -1056,17 +1057,6 @@ public class CandidateRestController {
 		// return model;
 	}
 
-	// Note this method is Global marketplace Candidate method
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/globalMarketplacePage")
-	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
-		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
-		ModelAndView model = new ModelAndView();
-		model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-	}
 
 	// Note this method is Global marketplace Candidate method
 	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")

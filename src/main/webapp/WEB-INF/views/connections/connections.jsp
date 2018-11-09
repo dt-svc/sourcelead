@@ -74,21 +74,19 @@ window.onload = function () {
 
 <script>
 
-
-$(document).scroll(function(e){
+	$(window).scroll(function(){
     // grab the scroll amount and the window height
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
-    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+   	if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
     	var avilableCount = $("#orgOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	 getConnectionsList("scroll");
     }
-    
-});
+});  
 
 
 function inviteAllMutualSearch(){
