@@ -256,10 +256,20 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			stageQuery = " rsh.toStage = 'BACKOUT'";
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
+		StringBuilder query1 = new StringBuilder("");
+		if(sumissionHistoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(sumissionHistoryDTO.getSearchValue())) {
+			 query1.append(" and (rsh.submissionId.candidate.email like '%" + sumissionHistoryDTO.getSearchValue() + "%' ")
+				.append("OR rsh.submissionId.candidate.mobilePhone like '%" + sumissionHistoryDTO.getSearchValue() + "%' ")
+			    .append("OR (concat(rsh.submissionId.candidate.firstName,rsh.submissionId.candidate.lastName) like '%" + sumissionHistoryDTO.getSearchValue().trim() + "%')" )
+				.append("OR rsh.submissionId.submissionStatus like '%" + sumissionHistoryDTO.getSearchValue() + "%' ")
+				.append("OR rsh.submissionId.requirement.jobTitle like '%" + sumissionHistoryDTO.getSearchValue() + "%' )");
+			 
+		}
+		
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
 		queryObj = session.createQuery(query);
 		
-		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
+		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
 		
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());

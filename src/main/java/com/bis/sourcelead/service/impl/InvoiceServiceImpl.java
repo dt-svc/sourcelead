@@ -3215,7 +3215,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 				statusVal = "Linked to ";
 				timelineDTO.setInvoiceId(timelineHistory.getLinkedChildinvoice().getInvoiceId());
 				timelineDTO.setInvoiceUUID(timelineHistory.getLinkedChildinvoice().getInvoiceUUID());
-				statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
+				List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getLinkedChildinvoice().getOwnerUsers());
+				for(User u  :usersList){
+					statusValue = u.getFullName();	
+				}
+				//statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 				//statusValue = " to " + timelineHistory.getLinkedChildinvoice().getInvoiceId()+" by "+timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 			} else {
 				if (timelineHistory.getInvoicePaymentReminderStatus() != null) {
