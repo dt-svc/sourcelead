@@ -907,6 +907,7 @@ function jpagination(url,sourceleadUrl){
 			         		   if(approver == true || contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
 			         			  isAllow = true;
 			         		   }
+			         		  
 			         		   if(isAllow == true){
 			         			  result = result +"<select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
 			         		   }
@@ -979,7 +980,6 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-			         				
 			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='OPEN'>OPEN</option>";
