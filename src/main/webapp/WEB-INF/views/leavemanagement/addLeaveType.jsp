@@ -1147,13 +1147,13 @@
 							<div class="form-group">
 								<label class="col-md-4"></label>
 								<div class="col-md-6 checkBox">
-									<c:if test="${!empty leaveType.visibilityToAllUsers}">
+									<c:if test="${!empty leaveType.visibilityToAllUsers && leaveType.visibilityToAllUsers == 'Y'}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visiblity
+											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visibility
 										All Users
 									</c:if>
-									<c:if test="${empty leaveType.visibilityToAllUsers}">
-										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visiblity
+									<c:if test="${empty leaveType.visibilityToAllUsers || leaveType.visibilityToAllUsers == 'N'}">
+										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visibility
 										All Users
 									</c:if>
 								</div>
