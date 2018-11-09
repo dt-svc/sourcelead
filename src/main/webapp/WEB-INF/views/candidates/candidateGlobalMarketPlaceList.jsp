@@ -541,17 +541,13 @@ function mySkillsFunction() {
 	}
   $(document).ready(function () {
 	 getGloblaMarketPlaceCandidates('listModel'); 
+	 updateMarketplaceCartCountAndPrice();
 	 $("#cartCount").html("<i class='shopping-cart inlineBlock pull-left mr10' title='Cart'></i><a href='${appPath}/candidateMarketplaceCheckout' class='inlineBlock pull-left mt2 mr10'>"+sessionStorage.getItem("dynamicCartCount")+"</a>");
 	 $("#totalPrice").html("<i class='dollarSvg inlineBlock pull-left mr10' title='Cart'></i><a class='inlineBlock pull-left mt2 mr10' href='javascript:void(0)'>"+sessionStorage.getItem("dynamicTotalPrice")+"</a>");
   });
 var globalMarketDivType = null;
 function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	globalMarketDivType = divType;
-	 getGloblaMarketPlaceCandidates('listModel');
-	 updateMarketplaceCartCountAndPrice();
-});
-
-function getGloblaMarketPlaceCandidates(divType){
 	var searchValue = $("#globalMarketSearh").val();
 	searchValue = searchValue ? searchValue : "";
 	var candidateLocation = $("#candidateLocation").val();
