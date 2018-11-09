@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -2493,5 +2494,158 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		}
 		return arrayList;
 	}
+	public File getAssetsReportListOfPdf(java.util.List<AssetsReportDTO> assetsReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) {
+		
+		try {
+			long totalBillable = 0l;
+			long totalNonbillable = 0l;
+			String[] headers = Constants.ASSETS_REPORT_EXPORT_HEADDERS;
+			Document document = new Document(PageSize.LETTER.rotate());
 
+			StringBuilder sbUser = new StringBuilder();
+			sbUser.append("Assets Report")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+
+			StringBuilder fileSB = new StringBuilder();
+			File file = File.createTempFile(fileSB.append("Assets Report")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString(),
+					".pdf");
+
+			file.setReadable(true);
+
+			try {
+				// Get an instance of PdfWriter and create a Table.pdf file as an output.
+				PdfWriter.getInstance(document, new FileOutputStream(file));
+				document.open();
+
+				Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+				BaseColor myColor = WebColors.getRGBColor("#000000");
+				boldFont.setColor(myColor);
+				StringBuilder userStyle = new StringBuilder();
+				userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("- Assets Report");
+
+				// Create an instance of PdfPTable. After that we transform the header and
+				PdfPTable table = new PdfPTable(headers.length);
+				Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+				PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(), font));
+				cell1.setColspan(18);
+				headerCellStyle(cell1);
+				table.setWidthPercentage(100);
+				table.setWidths(new int[] { 5, 5, 5, 5, 5, 5, 5, 5,7,5 });
+				table.addCell(cell1);
+				for (int i = 0; i < headers.length; i++) {
+					String header = headers[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setGrayFill(0.9f);
+					cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+					BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+					cell.setBackgroundColor(myBorderColor);
+					table.addCell(cell);
+				}
+				table.completeRow();
+				java.util.List<String[]> reportList = prepareAssetsReportListStringArray(assetsReportDTO, headers,orgLocation, user, isGlobalAccess);
+				if (reportList != null && reportList.size() > 0) {
+					for (String[] reportArray : reportList) {
+						for (int i = 0; i < reportArray.length; i++) {
+							String datum = reportArray[i];
+							PdfPCell cell = new PdfPCell();
+							cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+							table.addCell(cell);
+						}
+						table.completeRow();
+					}
+				}
+				document.addTitle("Project Report Table");
+				table.setSpacingBefore(15f);
+				document.add(table);
+				logger.info("Pdf table created !!");
+			} catch (DocumentException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} catch (FileNotFoundException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} finally {
+				document.close();
+			}
+			return file;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return null;
+	}
+
+	private java.util.List<String[]> prepareAssetsReportListStringArray(java.util.List<AssetsReportDTO> assetsReportDTO,
+			String[] headers, OrgLocations orgLocation, User user, String isGlobalAccess) {
+	
+
+		java.util.List<String[]> arrayList = new ArrayList<>();
+
+		for (AssetsReportDTO report : assetsReportDTO) {
+			String reportArray[] = new String[headers.length];
+			if (report.getEmployeeId() != null) {
+				reportArray[0] = report.getEmployeeId();
+			} else {
+				reportArray[0] = "--";
+			}
+
+			if (report.getEmployeeName() != null) {
+				reportArray[1] = report.getEmployeeName();
+			} else {
+				reportArray[1] = "--";
+			}
+
+			if (report.getAssetName() != null) {
+				reportArray[2] = report.getAssetName();
+			} else {
+				reportArray[2] = "--";
+			}
+			
+			if (report.getCategory() != null) {
+				reportArray[3] = report.getCategory();
+			} else {
+				reportArray[3] = "--";
+			}
+
+			if (report.getSerialNo() != null) {
+				reportArray[4] = report.getSerialNo();
+			} else {
+				reportArray[4] = "--";
+			}
+
+			
+			if (report.getAssignedOn() != null) {
+				reportArray[5] = report.getAssignedOn();
+			} else {
+				reportArray[5] = "--";
+			}
+
+			if (report.getReturnedOn() != null) {
+				reportArray[6] = report.getReturnedOn();
+			} else {
+				reportArray[6] = "--";
+			}
+
+			if (report.getShift() != null) {
+				reportArray[7] = report.getShift();
+			} else {
+				reportArray[7] = "--";
+			}
+
+			if (report.getDocument() != null) {
+				reportArray[8] = report.getDocument();
+			} else {
+				reportArray[8] = "--";
+			}
+
+			if (report.getAssignBy()!= null) {
+				reportArray[9] = report.getAssignBy();
+			} else {
+				reportArray[9] = "--";
+			}
+
+		
+			arrayList.add(reportArray);
+		}
+		return arrayList;
+	}
 }

@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -80,7 +81,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 			int version;
 			version = getInvoiceDataVersionByOrgLocationId(orgLocation.getId());
 			version += 1;
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				
@@ -130,14 +131,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 							String qty = getCellValueAsString(row.getCell(9), fileName);
 							invoiceData.setQty(qty);
+						}else {
+							invoiceData.setQty("0");
 						}
 						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 							String amount = getCellValueAsString(row.getCell(10), fileName);
-							invoiceData.setAmount(amount);;
+							invoiceData.setAmount(amount);
+						}else {
+							invoiceData.setAmount("0");
 						}
 						if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 							String arPaid = getCellValueAsString(row.getCell(11), fileName);
 							invoiceData.setArPaid(arPaid);
+						}else {
+							invoiceData.setArPaid(Constants.NONE);
 						}
 						if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
 							String newOld = getCellValueAsString(row.getCell(12), fileName);

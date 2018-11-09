@@ -49,7 +49,7 @@
 						</div>
 						
 						<div class="col-md-4">
-								<a class="pull-right" onClick="bulkAdjustment();" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
 						</div>
 						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
@@ -205,6 +205,7 @@ function editNetpay(){
 	$(".saveNetpay").show();
 }
 function saveNetpay(){
+	calculateGrossSalary();
 	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
 	var x = document.getElementsByClassName("formControl"), i;
 	for (i=0; i<x.length; i++) {
@@ -223,6 +224,7 @@ function saveNetpay(){
 function saveAdjustedPayheads(){
 	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
 		var formData = getFormData1("associatePayheadAdjust_form");
+		var psfUUID = $('#paySheetFrequencyUUID').val();
 		$.ajax({
 			 type : "POST",
 			 data: formData,
@@ -230,7 +232,8 @@ function saveAdjustedPayheads(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
-			  		
+				 closeNetPay();
+				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
 			 }
 		});
 	}

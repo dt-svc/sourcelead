@@ -1304,15 +1304,15 @@ public class PayrollReportPdfUtil {
 				.columns(
 						col.column("Employee Id", "empId", type.stringType()),
 						col.column("Employee Name", "empName", type.stringType()),
-						col.column("Gross Pay", "grossPay", type.bigDecimalType()),
-						col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
-						col.column("Federal Tax", "federalTax", type.bigDecimalType()),
-						col.column("Social Security", "socialSec", type.bigDecimalType()),
-						col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
-						col.column("State Withholding", "state", type.bigDecimalType()),
-						col.column("SUI/SDI", "sui", type.bigDecimalType()),
-						col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
-						col.column("Net Pay", "netPay", type.bigDecimalType()))
+						col.column("Gross Pay", "grossPay", type.stringType()),
+						col.column("Pre Tax Deductions", "preTaxDed", type.stringType()),
+						col.column("Federal Tax", "federalTax", type.stringType()),
+						col.column("Social Security", "socialSec", type.stringType()),
+						col.column("Medicare Withholding", "medicare", type.stringType()),
+						col.column("State Withholding", "state", type.stringType()),
+						col.column("SUI/SDI", "sui", type.stringType()),
+						col.column("Post Tax Deductions", "postTaxDed", type.stringType()),
+						col.column("Net Pay", "netPay", type.stringType()))
 				.pageFooter(Templates.footerComponent)
 				.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toPdf(pdfExporter);
 		} catch (DRException e) {
@@ -1326,15 +1326,15 @@ public class PayrollReportPdfUtil {
 		for(AssociateReportDTO associate :responseList.getData()) {
 			String  employeeId= "--";
 			String employeeName = "--";
-			BigDecimal grossPay = BigDecimal.ZERO;
-			BigDecimal preTaxDed = BigDecimal.ZERO;
-			BigDecimal federalTax = BigDecimal.ZERO;
-			BigDecimal socialSec = BigDecimal.ZERO;
-			BigDecimal medicare = BigDecimal.ZERO;
-			BigDecimal state = BigDecimal.ZERO;
-			BigDecimal sui = BigDecimal.ZERO;
-			BigDecimal postTaxDed = BigDecimal.ZERO;
-			BigDecimal netPay = BigDecimal.ZERO;
+			String grossPay = "$ 0.0";
+			String preTaxDed = "$ 0.0";
+			String federalTax = "$ 0.0";
+			String socialSec = "$ 0.0";
+			String medicare = "$ 0.0";
+			String state = "$ 0.0";
+			String sui = "$ 0.0";
+			String postTaxDed = "$ 0.0";
+			String netPay = "$ 0.0";
 			if(associate != null && associate.getEmpId() != null) {
 				employeeId = associate.getEmpId();
 			}
@@ -1343,39 +1343,39 @@ public class PayrollReportPdfUtil {
 			}
 			
 			if(associate.getGrossPay() != null) {                   // usefull for 0  amount condition && !(BigDecimal.ZERO.compareTo(associate.getGrossPay()) == 0)
-				grossPay = associate.getGrossPay();
+				grossPay = "$ "+associate.getGrossPay().toString();
 			}
 			
 			if(associate.getPreTaxDeduction() != null ) {
-				preTaxDed = associate.getPreTaxDeduction();
+				preTaxDed = "$ "+associate.getPreTaxDeduction().toString();
 			}
 			
 			if(associate.getTotalFederalWithholding() != null) {
-				federalTax = associate.getTotalFederalWithholding();
+				federalTax = "$ "+associate.getTotalFederalWithholding().toString();
 			}
 			
 			if(associate.getTotalfica() != null) {
-				socialSec = associate.getTotalfica();
+				socialSec = "$ "+associate.getTotalfica().toString();
 			}
 			
 			if(associate.getTotalMedicareWithholding() != null) {
-				medicare = associate.getTotalMedicareWithholding();
+				medicare = "$ "+associate.getTotalMedicareWithholding().toString();
 			}
 			
 			if(associate.getTotalStateWithholding() != null) {
-				state = associate.getTotalStateWithholding();
+				state = "$ "+associate.getTotalStateWithholding().toString();
 			}
 			
 			if(associate.getTotalSui() != null) {
-				sui = associate.getTotalSui();
+				sui = "$ "+associate.getTotalSui().toString();
 			}
 			
 			if(associate.getPostTaxDeduction() != null) {
-				postTaxDed = associate.getPostTaxDeduction();
+				postTaxDed = "$ "+associate.getPostTaxDeduction().toString();
 			}
 			
 			if(associate.getNetPay() != null) {
-				netPay = associate.getNetPay();
+				netPay = "$ "+associate.getNetPay().toString();
 			}
 			
 
@@ -1403,15 +1403,15 @@ public class PayrollReportPdfUtil {
 					.columns(
 							col.column("Employee Id", "empId", type.stringType()),
 							col.column("Employee Name", "empName", type.stringType()),
-							col.column("Gross Pay", "grossPay", type.bigDecimalType()),
-							col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
-							col.column("Federal Tax", "federalTax", type.bigDecimalType()),
-							col.column("Social Security", "socialSec", type.bigDecimalType()),
-							col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
-							col.column("State Withholding", "state", type.bigDecimalType()),
-							col.column("SUI/SDI", "sui", type.bigDecimalType()),
-							col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
-							col.column("Net Pay", "netPay", type.bigDecimalType()))
+							col.column("Gross Pay", "grossPay", type.stringType()),
+							col.column("Pre Tax Deductions", "preTaxDed", type.stringType()),
+							col.column("Federal Tax", "federalTax", type.stringType()),
+							col.column("Social Security", "socialSec", type.stringType()),
+							col.column("Medicare Withholding", "medicare", type.stringType()),
+							col.column("State Withholding", "state", type.stringType()),
+							col.column("SUI/SDI", "sui", type.stringType()),
+							col.column("Post Tax Deductions", "postTaxDed", type.stringType()),
+							col.column("Net Pay", "netPay", type.stringType()))
 					.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
@@ -1481,8 +1481,8 @@ public class PayrollReportPdfUtil {
 			if(associate.getFederalTaxAllowances() != null) {
 				federalAllowances = associate.getFederalTaxAllowances();
 			}
-			if(associate.getState() != null) {
-				state = associate.getState();
+			if(associate.getResidenceStateCode() != null) {
+				state = associate.getResidenceStateCode();
 			}
 			if(associate.getStateFillingStatus() != null) {
 				stateStatus = associate.getStateFillingStatus();
@@ -1536,7 +1536,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
@@ -1594,7 +1594,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
                     .setIgnorePageMargins(true)
