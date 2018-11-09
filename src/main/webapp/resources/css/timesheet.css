@@ -8408,8 +8408,8 @@ background-position: center top; width: 60px !important; height: 60px !important
 }
 
 .navIcons.immIconImport {
-background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
-background-position: center top; width: 60px !important; height: 60px !important;
+	background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
+	background-position: center top; width: 60px !important; height: 60px !important;
 }
 .connectionIC {
 	width: 20px; height: 20px; display: block; background: url("../images/connectionsSVG.svg"); background-repeat: no-repeat;
