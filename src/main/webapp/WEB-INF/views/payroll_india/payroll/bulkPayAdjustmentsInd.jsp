@@ -45,7 +45,7 @@
 									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadName" value="${variablePayhead.name}">
 									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].uuid" value="${variablePayhead.uuid}">
 									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayhead" value="${variablePayhead.id}">
-									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadType" value="Earnings">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadType" value="${variablePayhead.type}">
 									<input type="text" name="associateSalaryPayheadIndEarningList[${loop.index}].monthly" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control input-sm">
 								</div>
 							</div>

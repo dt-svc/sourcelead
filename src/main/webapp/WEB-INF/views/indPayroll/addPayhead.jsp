@@ -412,6 +412,7 @@ function findPayheadByNameOrShortCode(name, shortCode, listType){
 	         }; 
 			 
 		     if ($('#payhead_form').validate(false, validationSettings)){
+		    	 $('#savePayheadBtn').prop('disabled', true);
       			var formData = getFormData1("payhead_form");
       			var uuid = '${uuid}';
 				$.ajax({
