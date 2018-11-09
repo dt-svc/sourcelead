@@ -179,6 +179,8 @@ public class PayrollReportDTO extends SearchDTO{
 	private String orgDateFormat;
 	
 	private String runNo;
+	
+	private BigDecimal current;
 
 	public String getEmpId()
 	{
@@ -1006,6 +1008,16 @@ public class PayrollReportDTO extends SearchDTO{
 	public void setRunNo(String runNo)
 	{
 		this.runNo = runNo;
+	}
+
+	public BigDecimal getCurrent()
+	{
+		return current;
+	}
+
+	public void setCurrent(BigDecimal current)
+	{
+		this.current = current;
 	}
 
 }

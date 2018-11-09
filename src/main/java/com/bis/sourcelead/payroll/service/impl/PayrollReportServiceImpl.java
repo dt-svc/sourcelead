@@ -521,7 +521,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setGroupFrequency(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getPayFrequency());
 					dto.setType(dedHis.getPayroll().getType());
 					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
-					
+					dto.setCurrent(dedHis.getPreDeductionAmount().add(dedHis.getPostDeductionAmount()));
 					list.add(dto);
 				}
 			}
