@@ -18,7 +18,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){
+  function candidateList(type){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -104,9 +104,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
-	  		prepareCandidateList(url);
-	  		// advanced search pop up close 
-//	  		closePop();
+	  		if(type == 'gMarketPlace'){
+	  			callMarketPlaceCandidates(url)
+	  		}else{
+	  			prepareCandidateList(url);
+	  		}
 			return true;
 		 }else{ 
 				return false;
@@ -116,7 +118,25 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	$('body').on('blur', '#candidatelist_form', function() {
 		$("#candidatelist_form").showHelpOnFocus();
 		$("#candidatelist_form").validateOnBlur(false, validationSettings);
-	}); 
+	});
+	
+	function callMarketPlaceCandidates(urlGlobal){
+		$.ajax({
+			type : "POST",
+			url : urlGlobal,
+			success : function(object) {
+				var candidateIdsArray = [];
+				if(object.data != null && object.data.length != 0){
+					for(var i=0;i<object.data.length;i++){
+						var objectArray = object.data[i]
+						candidateIdsArray.push(objectArray.candidateId)
+					}
+				}
+				getGloblaMarketPlaceCandidates(globalMarketDivType, candidateIdsArray);
+				candidateIdsArray = [];
+			}
+		});
+	}
 	
   function prepareCandidateList(url){
  	     $("#candidateList").removeAttr("style");

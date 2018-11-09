@@ -2368,24 +2368,36 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String searchValue, Long orgId, String candidateLocation) {
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
-		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+		/*if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
 			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
-		}
+		}*/
 		StringBuilder query2 = new StringBuilder("");
 		if(candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
 			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
 		}
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus IN (:candidateMarketStatus) and marketplace.orgLocationId.id <> :currentOrgLocId";
-		queryList = session.createQuery(listQuery+query1+query2).setParameterList("candidateMarketStatus",new ArrayList<String>(Arrays.asList(Constants.ACTIVE))).setParameter("currentOrgLocId", orgId).list();
+		List<Long> searchCandiIdsLong = new ArrayList<>();
+		if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")){
+			query2.append(" and marketplace.candidateId.id IN ( :searchCandidateIds ) ");
+			for(String s : searchCandidateIds){
+				searchCandiIdsLong.add(Long.valueOf(s));
+			}
+		}
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+		System.out.println(listQuery+query1+query2);
+		Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
+		if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
+			queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+		}
+		queryList = queryObject.list();
 		return queryList;
 	}
 	
