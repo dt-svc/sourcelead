@@ -21,7 +21,7 @@
             <div class="form-group">
               <label class="col-md-12 paddingRight">From Date</label>
 				<div class="col-md-12">
-					<input type="text" class="form-control calendar" field-name="From Date" id="fromDate" data-validation="required">
+					<input type="text" class="form-control calendar" readonly field-name="From Date" id="fromDate" data-validation="required">
 				</div>
             </div>
             </div>
@@ -29,7 +29,7 @@
             <div class="form-group">
               <label class="col-md-12">To Date</label>
               <div class="col-md-12">
-                <input type="text" class="form-control calendar" field-name="To Date" id="toDate" data-validation="required">
+                <input type="text" class="form-control calendar" readonly field-name="To Date" id="toDate" data-validation="required">
               </div>
             </div>
 			</div>
