@@ -241,7 +241,7 @@
 	</div>
 </div>
 
-<c:forEach var="shift" items="${shiftList}" varStatus="shiftOrder">
+<%-- <c:forEach var="shift" items="${shiftList}" varStatus="shiftOrder">
 <div class="form-group">
 <label class="col-md-4 text-right mt5">${shift.shiftName}</label>
 <div class="col-md-8 dropdown-select">
@@ -254,7 +254,7 @@
 		</select>
 	</div>
 </div>
-</c:forEach>
+</c:forEach> --%>
 
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Description</label>

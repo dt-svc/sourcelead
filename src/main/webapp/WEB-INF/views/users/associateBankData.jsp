@@ -152,6 +152,9 @@ function showHideAccountTypes(){
 		$('#routingNumberSpanId').attr('style',"display:inline-block");
 		
 	}else{
+		$("#bankName").val('');
+		$("#accountNumber").val('');
+		$("#routingNumber").val('');
 		$("#bankName").removeAttr('data-validation');
 		$('#bankName').attr('data-validation-optional',"true");
 		$("#accountNumber").removeAttr('data-validation');
