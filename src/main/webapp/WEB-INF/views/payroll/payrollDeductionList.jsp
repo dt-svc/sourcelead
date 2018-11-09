@@ -46,7 +46,7 @@ $(document).ready(function(){
       </ul>
     </div>
     
-<div class="styleTables datatable_filter">
+<div class="project_wrap_table datatable_filter">
 	<div id="deductionTable"></div>
   </div>
 
@@ -165,18 +165,20 @@ function deductionTypepagination(url){
 					          },{
             "targets": colIndex++,
             "data": "payrollDeductionMethod",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) { 
           			  var result = "";
-      	 			  if(opt.payrollDeductionMethod !=null && opt.payrollDeductionMethod !='' && opt.payrollDeductionMethod !='undefined'){
+      	 			   if(opt.payrollDeductionMethod !=null && opt.payrollDeductionMethod !='' && opt.payrollDeductionMethod !='undefined'){ 
 					 result = result + ' <td><div  class="tblminwidth-100">'+opt.payrollDeductionMethod+'</div></td>';
-				  }else{
+				   }  else{ 
 					 result = result + ' <td><div>--</div></td>';
-				}
+				   } 
             return result;
             }
           }, {
               "targets": colIndex++,
               "data": "deductionAmount",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.payrollDeductionMethod == "Fixed"){
