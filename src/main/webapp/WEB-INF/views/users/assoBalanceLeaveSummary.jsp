@@ -24,8 +24,7 @@ function assocBalanceLeaveSummary(userId){
            		result = result + '<input type="hidden" value='+opt.assoBalLeaveUUID+' />';
            		result = result + '<label  class="col-md-3"><th>'+opt.leaveTypeName+'</th></label>';
            		result = result + '<div class="col-md-2">';
-           		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" readonly name="'+i+'noofLeaves" class="form-control" onblur="editAssBalLeave(\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
-           		
+           		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" readonly name="'+i+'noofLeaves" class="form-control"  onblur="editAssBalLeave(this,\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
            		result = result + '<div id="'+i+'errorDiv" style="color:red;"></div>';
            		result = result + '</div>';
            		result = result + '<div class="col-md-1 paddingLeft">';
@@ -61,10 +60,17 @@ function editBalLeave(typeId){
 </script>
 
 <script>
-function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
+function editAssBalLeave(ele, assoBalLeaveUUID,rowId,userId){
+	var value = $(ele).val();
+ 	var splitValue = value.split(".");
+ 	var flag = true;
+ 	if(splitValue.length === 2 && splitValue[1].length > 2) {
+		flag = false;
+ 	}
+ 	
 	var totalLeaves = $("#"+rowId+"noofLeaves").val();
-	var valid = !isNaN(totalLeaves);
-	if(totalLeaves != "" && totalLeaves != null && totalLeaves != 'undefined' && valid){
+	var valid = !isNaN(totalLeaves) && flag;
+	if(totalLeaves != "" && totalLeaves != null && totalLeaves != 'undefined' && valid ){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
 	        type : "PUT",
@@ -77,7 +83,9 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	}else{
 		if(totalLeaves == "" || totalLeaves == null || totalLeaves == 'undefined'){
 			$("#"+rowId+"errorDiv").text("Total Leave Required");
-		}else if(!valid){
+		}else if(!flag){
+			$("#"+rowId+"errorDiv").text("Only 2 Decimals are allowed");
+		} else {
 			$("#"+rowId+"errorDiv").text("Incorrect float value");
 		}
 		
@@ -86,3 +94,5 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 }
 
 </script>
+
+
