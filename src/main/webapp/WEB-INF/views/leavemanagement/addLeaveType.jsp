@@ -537,13 +537,15 @@
 
 							
 								<div id="cp"
-									class="input-group colorpicker-component errorInptgroup">
+									class="input-group errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
 										value="${leaveType.colorCode}" class="form-control" id="colorCode" 
-										data-validation="required" > <span class="input-group-addon colPicBox" onclick="validateColor();"><i>
-										
-										</i></span>
+										data-validation="required"> 
+											<span class="input-group-addon colPicBox"><input type="color" class="" value="" id="favcolor" onclick="validateColor(); colorPicker();"></span>
+								</div>
+								<div>
+								
 								</div>
 							</div>
 						</div>
@@ -1531,10 +1533,17 @@ function leavepolicyDescription(){
 </script>
 <script>
 	//Color Picker
-	$(function() {
+	/* $(function() {
 		$('#cp').colorpicker();
-	});
-	
+	}); */
+	function colorPicker(){
+		var theInput = document.getElementById("favcolor");
+	    var theColor = theInput.value;
+	    
+	    theInput.addEventListener("input", function() {
+	    	document.getElementById("colorCode").value = theInput.value;
+	    }, false);
+	}
 </script>
 
 <script>

@@ -20,4 +20,7 @@ public interface AssetCategoryDao {
 	AssetCategory getAssetCategoryByCategoryId(Long categoryId);
 
 	Boolean validateCategoryName(String categoryName, Long orgLocationId);
+	
+	List<String> getAssetCategoryStringtByLocationId(Long orgLocationId)throws Exception;
+
 }

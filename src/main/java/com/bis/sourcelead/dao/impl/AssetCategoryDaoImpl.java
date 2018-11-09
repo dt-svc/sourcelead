@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -155,4 +156,20 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	}
 
 
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<String> getAssetCategoryStringtByLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" CAT.CATEGORY_NAME "
+				+" FROM ASSET_CATEGORY CAT "
+				+" WHERE "
+				+" CAT.ORG_LOCATION_ID = :orgLocationId AND CAT.STATUS = '1' OR (CAT.DEFAULT_CATEGORY = '1') ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);	
+		List<String> categoryList = (List<String>)queryObj.list();
+		return categoryList;
+	}
 }
