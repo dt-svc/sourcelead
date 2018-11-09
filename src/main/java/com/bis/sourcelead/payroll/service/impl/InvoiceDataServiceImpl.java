@@ -129,7 +129,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService{
 						}
 						if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 							String qty = getCellValueAsString(row.getCell(9), fileName);
-							invoiceData.setQty(qty);;
+							invoiceData.setQty(qty);
 						}
 						if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
 							String amount = getCellValueAsString(row.getCell(10), fileName);
