@@ -12,6 +12,8 @@ public class RequirementSubmissionsCountDTO {
 	private Integer joinedCount;
 	private Integer rejectedCount;
 	private Integer backoutCount;
+	private Integer onHoldCount;
+	private Integer noResponseCount;
 	
 	
 	public Integer getApplicantsCount() {
@@ -73,5 +75,21 @@ public class RequirementSubmissionsCountDTO {
 	}
 	public void setBackoutCount(Integer backoutCount) {
 		this.backoutCount = backoutCount;
+	}
+	public Integer getOnHoldCount()
+	{
+		return onHoldCount;
+	}
+	public void setOnHoldCount(Integer onHoldCount)
+	{
+		this.onHoldCount = onHoldCount;
+	}
+	public Integer getNoResponseCount()
+	{
+		return noResponseCount;
+	}
+	public void setNoResponseCount(Integer noResponseCount)
+	{
+		this.noResponseCount = noResponseCount;
 	}
 }

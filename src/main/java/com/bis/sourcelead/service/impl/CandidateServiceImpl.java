@@ -2808,7 +2808,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Boolean addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
 		newMarketCart.setMarketplaceId(marketplace);
@@ -2828,7 +2828,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setCreatedBy(user);
 		newMarketCart.setUpdatedDate(new Date());
 		newMarketCart.setUpdatedBy(user);
-		return candidateDao.addCandidateToMarketCart(newMarketCart);
+		candidateDao.addCandidateToMarketCart(newMarketCart);
 	}
 
 	@Override
@@ -2862,9 +2862,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 
 	@Override
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId)throws Exception {
-		// TODO Auto-generated method stub
 		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId);
-		
+	}
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
 
 }

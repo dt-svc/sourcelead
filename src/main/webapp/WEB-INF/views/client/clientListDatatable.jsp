@@ -22,8 +22,6 @@
 
 	}
 	
-	
-
 function getClientList(){
 	var responderType = "Client";
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -113,7 +111,7 @@ function getClientList(){
 		    	  		var result = "";
 		    	  		  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+escape(report.orgName)+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars"></i>';
+			   			result = result +'<div class="proj_show" onclick="clientSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+escape(report.orgName)+'\');"><span class="tbldata-dotdot-vsm" title="'+report.orgName+'"><a>'+report.orgName+'</a></span><i class="fa fa-binoculars"></i>';
 			   			result = result +'</div>';
 			   			result = result +'</td>';
 			   		   '</sec:authorize>';

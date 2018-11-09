@@ -342,7 +342,13 @@ function projectTaskPaginations(url){
                
               	var result = "";
               	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">';
-              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a>'; 
+	            '</sec:authorize>';
+	            
+              	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_TASK\')">'
+              		result = result	+ '<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	'</sec:authorize>';
               	result = result	+ '</div></td>';
   	              return result;
               }

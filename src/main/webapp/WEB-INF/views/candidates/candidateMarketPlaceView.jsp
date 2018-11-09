@@ -209,8 +209,10 @@
 	               /*   "data": "action", */
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
+	                     '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 	                    	 result = result + "<td><div class='tblminwidth-100' id='marketLinkDiv' ><a id='editMarketLink' onclick='editMarketPriceFun(\""+opt.id+"\",\""+opt.marketPrice+"\",\""+opt.marketRateCurrencey+"\", this);' title='Edit'>Edit</a> <a onclick = 'withdrawCandidateFromMarketPlace(\""+opt.id+"\")'>&nbsp;Withdraw</a></div></td>";
-	                     return result;
+	                     '</sec:authorize>'
+	                    return result;
 	                 }
 	             }
 	         ],
@@ -260,7 +262,9 @@ function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
 		result = result + ' <option '+(marketPriceCurrency == "EUR" ? "selected" : "")+' value="EUR">EUR</option>';
 		result = result + '</select></div></div>';
 	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append(result);
+	'<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
 	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='saveMarketLink' onclick='saveEditMarketPriceFun(\""+id+"\",this);' title='Save'>Save</a><a href='#' id='cancelMarketLink' onclick='cancelEditMarketPriceFun(\""+marketPrice+"\",\""+marketPriceCurrency+"\",\""+id+"\", this);' title='Cancel'>&nbsp;Cancel</a>");
+	'</sec:authorize>'
 }
 
 function isNumberKey(evt)
@@ -318,7 +322,9 @@ function saveEditMarketPriceFun(id, obj){
 }
 function cancelEditMarketPriceFun(marketPrice, marketPriceCurrency, id, obj){
 	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
+	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_PROFILE\',\'ROLE_WITHDRAW_PROFILE\')">'; 
 	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'withdrawCandidateFromMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")//
+	'</sec:authorize>'
 }
 $(".funPrice").on("click", "li", function(){
 	var x = $(this).text();

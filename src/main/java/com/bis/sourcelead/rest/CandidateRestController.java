@@ -1046,20 +1046,48 @@ public class CandidateRestController {
 
 	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
-	public void saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
+	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
 		// System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
-		// ModelAndView model = new ModelAndView();
-		// model.setViewName("candidates/candidateGlobalMarketPlaceList");
-		// model.addObject("sourceleadUrl", sourceleadUrl);
-		// return model;
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (marketPlaceList != null && marketPlaceList.size() > 0) {
+					candidateService.saveCandidateMarketPlaceList(marketPlaceList, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+		
 	}
 
+	// Note this method is Global marketplace Candidate method
+	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+	@RequestMapping(value = "/app/globalMarketplacePage")
+	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
+		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
+		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/candidateGlobalMarketPlaceList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 
 	// Note this method is Global marketplace Candidate method
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/OrgMarketplace")
 	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
@@ -1069,7 +1097,8 @@ public class CandidateRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
-
+	
+	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(
 			@RequestParam(value = "candidateIdsVal[]", required = false) List<Long> candidateIdsVal,
@@ -1081,6 +1110,7 @@ public class CandidateRestController {
 		return candidateIds;
 	}
 
+	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')")
 	@RequestMapping(value = "/app/updateMarketPlacePrice", method = RequestMethod.POST)
 	public String updateMarketPlacePrice(@RequestParam(value = "marketPlaceId", required = false) Long id,
 			@RequestParam(value = "priceValType", required = false) String priceValType,
@@ -1090,6 +1120,7 @@ public class CandidateRestController {
 		return "success";
 	}
 
+	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
 	@RequestMapping(value = "/app/withdrawCandidateFromMarketPlace")
 	public void withdrawCandidateFromMarketPlace(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
@@ -1101,31 +1132,33 @@ public class CandidateRestController {
 		}
 	}	
 
-	
+	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
-	public Object[] addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
+	public String addCandidateToMarketCart(@RequestParam(value = "id", required = true) String uuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		CandidateMarketPlace marketplace = candidateService.getCandidateMarketPlaceDetailsByUUId(uuid);
-		Boolean flag = false;
-		Object[] countAndSum = null;
 		if (null != marketplace) {
-			flag = candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+		candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
 			}
-		if(flag == true && countAndSum == null){
-			countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
-			}
-		return countAndSum;
+		return "success";
 	}
 	
-	
+	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/deleteCandidateMarketCart")
 	public String deleteCandidateMarketCart(@RequestParam(value = "marketUUID", required = true) String candidatgeMarketUUID, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateService.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
-		return "success";
-		
+		return "success";	
 	}
-	
+	@PreAuthorize("hasRole('ROLE_SHARE_PROFILE')") 
+	@RequestMapping(value = "/app/updateMarketplaceCartCountAndPrice")
+	public Object[] updateMarketplaceCartCountAndPrice( HttpServletRequest request)throws Exception{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Object[] countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId());
+		return countAndSum;
+	}
+
 }
+

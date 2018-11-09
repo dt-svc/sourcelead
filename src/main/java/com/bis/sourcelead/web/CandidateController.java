@@ -131,7 +131,7 @@ public class CandidateController {
 	 */
 	
 	//Note this method is Global Maarketplace to get all the all the candidate list.
-	@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/getGlobalMarketplaceList")
 	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getGlobalMarketplaceCandList(
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO,
@@ -167,7 +167,7 @@ public class CandidateController {
 		return candidateMarketPlaceDTOList;
 	}
 	
-	//@PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 			@RequestMapping(value = "/getGlobalMarketplaceListGridCard")
 			public @ResponseBody List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(
 					@RequestParam(value = "searchValue", required = true)String searchValue,
@@ -519,6 +519,15 @@ public class CandidateController {
 		 return model;
 		
 	 }	 
+	 
+	 @RequestMapping(value = "/candidateMarketplaceCheckout")
+	 public ModelAndView candidateMarketplaceCheckout()throws Exception
+	 { 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("candidates/candidateMarketplaceCheckout");
+		 return model;
+	 }
 	 
 	
 	 @RequestMapping(value = "/viewProfessionalCandidateResume/{title}", method = RequestMethod.GET)

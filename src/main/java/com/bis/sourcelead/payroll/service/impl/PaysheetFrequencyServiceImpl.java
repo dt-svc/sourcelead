@@ -599,6 +599,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payPeriodDTO.setOrgLocationid(orgLocations.getId());
+		payPeriodDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
 		for(EmployeePayroll emp : list.getData()) {
 //			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
@@ -753,6 +754,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payrollReportDTO.setOrgLocationid(orgLocations.getId());
+		payrollReportDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payrollReportDTO);
 		Map<Long, PayrollReportDTO> userMap = new HashMap<>();
 		for(EmployeePayroll emp : list.getData()) {
@@ -926,45 +928,49 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	@Override
 	public ResponseList<PayrollReportDTO> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation)
 	{
-		payrollReportDTO.setOrgLocationid(orgLocation.getId());
-		List<InvoicePayment> invoicePayItemList = paysheetFrequencyDao.getContractEmployeeReportList(payrollReportDTO);
 		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
-		List<PayrollReportDTO> payrollReportList = new ArrayList<>();
-		Map<Long,PayrollReportDTO> userMap = new HashMap<>();
-		for(InvoicePayment invoicePayment : invoicePayItemList) {
-			PayrollReportDTO dto = new PayrollReportDTO();
-			Invoice invoice = invoicePayment.getInvoiceId();
-			for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
-				StringBuilder nameSb = new StringBuilder();
-				if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
-					nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());
-				else
-					nameSb.append(invLine.getCandidate().getFirstName());
-				dto.setEmpName(nameSb.toString());
-				Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(invLine.getCandidate().getConsultantUser().getId(), orgLocation.getId());
-				if(StringUtils.isNotBlank(emp.getEmployeeId()))
-					dto.setEmpId(emp.getEmployeeId());
-				else
-					dto.setEmpId("");
-				if(orgLocation.getId().longValue() == invoice.getOrgRelationID().getLocationId().getId().longValue()) {
-					dto.setVendorName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
-				}else {
-					dto.setVendorName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+		try {
+			payrollReportDTO.setOrgLocationid(orgLocation.getId());
+			payrollReportDTO.setOrgDateFormat(orgLocation.getDateFormat());
+			List<InvoicePayment> invoicePayItemList = paysheetFrequencyDao.getContractEmployeeReportList(payrollReportDTO);
+			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
+			Map<Long,PayrollReportDTO> userMap = new HashMap<>();
+			for(InvoicePayment invoicePayment : invoicePayItemList) {
+				PayrollReportDTO dto = new PayrollReportDTO();
+				Invoice invoice = invoicePayment.getInvoiceId();
+				for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
+					StringBuilder nameSb = new StringBuilder();
+					if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
+						nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());
+					else
+						nameSb.append(invLine.getCandidate().getFirstName());
+					dto.setEmpName(nameSb.toString());
+					Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(invLine.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+					if(StringUtils.isNotBlank(emp.getEmployeeId()))
+						dto.setEmpId(emp.getEmployeeId());
+					else
+						dto.setEmpId("");
+					if(orgLocation.getId().longValue() == invoice.getOrgRelationID().getLocationId().getId().longValue()) {
+						dto.setVendorName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+					}else {
+						dto.setVendorName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					}
+					dto.setPayCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoicePayment.getPaymentDate()));
+					dto.setInvoiceId(invoice.getInvoiceId());
+					if(StringUtils.isNotBlank(invLine.getAmount()))
+						dto.setAssAmount(invLine.getAmount());
+					else
+						dto.setAssAmount("0");
+					Double totalPaid = invoicePayItemList.stream().mapToDouble(ip -> ip.getPaidAmount()).sum();
+					dto.setInvPaidAmount(totalPaid.toString());
+					userMap.put(invoice.getId(), dto);
+					payrollReportList.add(dto);
 				}
-				dto.setPayCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoicePayment.getPaymentDate()));
-				dto.setInvoiceId(invoice.getInvoiceId());
-				if(StringUtils.isNotBlank(invLine.getAmount()))
-					dto.setAssAmount(invLine.getAmount());
-				else
-					dto.setAssAmount("0");
-				Double totalPaid = invoicePayItemList.stream().mapToDouble(ip -> ip.getPaidAmount()).sum();
-				dto.setInvPaidAmount(totalPaid.toString());
-				userMap.put(invoice.getId(), dto);
-				payrollReportList.add(dto);
 			}
+			responseList.setData(payrollReportList);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		responseList.setData(payrollReportList);
 		return responseList;
 	}
-
 }

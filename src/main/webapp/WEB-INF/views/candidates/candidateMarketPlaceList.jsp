@@ -195,10 +195,13 @@ function callValidatePriceAmount(){
 	    'dataType': 'json',
 		data : JSON.stringify(marketCandidateObj),	
 		success : function(result) {
-			location.href = "/app/globalMarketplacePage";
-			//$('#candidatesInfoDiv').html(result);
-			//$('#brudCrumLbl').html("Global Marketplace");
-			//$('#headerLbl').html("Global Marketplace List");
+		 if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === 'SUCCESS') {
+            	location.href = "/app/globalMarketplacePage";
+            }else{
+            	 showError("Operation failed, please try again");
+            }
 		}
 	});
 	

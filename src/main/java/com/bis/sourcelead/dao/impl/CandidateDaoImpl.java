@@ -16,7 +16,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
@@ -83,6 +83,10 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Autowired
 	CandidateService candidateService;
 
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 
@@ -454,6 +458,57 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId ORDER BY cnadidate.id DESC";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		List<Candidate> candidateList = null;
+		ResponseList<Candidate> response = new ResponseList<>();
+		Query queryObj = null;
+		List<Long> countlist = null;
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode  and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";  
+		queryObj = session.createQuery(query);
+		
+		queryObj.setFirstResult(candidateDTO.getStart());
+		queryObj.setMaxResults(candidateDTO.getLength());
+
+		candidateList = queryObj.setLong("orgLocationId", orgLocations.getId()).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocations.getId()).setString("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		
+		int totalCount = 0;
+		if (candidateDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		response.setRecordsTotal(totalCount);
+		response.setRecordsFiltered(totalCount);
+		for(Candidate c: candidateList){
+			try {
+				CandidateResumes canResume = candidateResumesDao.getCandidateResumeByCandidateId(c.getId());
+				Integer submittedJobCount = requirementSubmissionDao.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(c.getId(), orgLocations.getId());
+				if(submittedJobCount>0){
+				c.setCandidateAssignedJobsCount(submittedJobCount.toString());
+				}
+				if(canResume !=null){
+				c.setCandidateResume(canResume.getFileURL());
+				}
+				c.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), c.getCreatedDate()));
+				//c.setCreatedDateStr(createdDateStr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		response.setData(candidateList);
+		
+		return  response;
 	}
 
 	@Override
@@ -1473,6 +1528,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" and ").append("(")
 					.append(" candidate.firstName like '%" + candidateDTO.getSearchValue() + "%' ")
 					.append("OR candidate.lastName like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR (candidate.consultantUser.id IN (select ur.user.id from UserRole ur where ur.roles.displayName like '%" + candidateDTO.getSearchValue() + "%' and ur.orgLocations.id = :orgLocationsId)) ")
+					.append("OR (candidate.consultantUser.id IN (select ur.user.id from UserRole ur where (( ur.reportingManager.firstName LIKE '" +  candidateDTO.getSearchValue() + "%') OR (ur.reportingManager.lastName LIKE '" + candidateDTO.getSearchValue() + "%')) and ur.orgLocations.id = :orgLocationsId))")
 					.append("OR candidate.email like '%" + candidateDTO.getSearchValue() + "%' ").append(")");
 
 		}
@@ -2300,7 +2357,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace) throws Exception {
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(marketplace);
@@ -2356,14 +2413,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Boolean addCandidateToMarketCart(CandidateMarketCart marketcart) throws Exception {
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.save(marketcart);
-			return true;
 		}catch(Exception e){
 			e.printStackTrace();
-			return false;
 		}
 		}
 	@Override
@@ -2378,10 +2433,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		try{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "delete from CandidateMarketCart marketplaceCart where marketplaceCart.marketplaceUUID = :marketUUID";
 		session.createQuery(query).setParameter("marketUUID", candidatgeMarketUUID).executeUpdate();
-	}
+		}catch(Exception e){
+			e.printStackTrace();
+		}}
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

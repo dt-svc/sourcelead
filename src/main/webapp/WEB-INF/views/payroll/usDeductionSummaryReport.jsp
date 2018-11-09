@@ -21,7 +21,7 @@
      <div class="clearfix row">
 		  <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">From Date</label>
+              <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<input type="text" id="fromDate" class="form-control calendar" field-name="From Date" data-validation="required">
 				</div>
@@ -29,7 +29,7 @@
             </div>
             <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12">To Date</label>
+              <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <input type="text" id="toDate" class="form-control calendar" field-name="To Date" data-validation="required">
               </div>
@@ -242,7 +242,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.currentAmt != null && opt.currentAmt != '' && opt.currentAmt != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><div>'+opt.currentAmt+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.currentAmt+'</div></td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -257,7 +257,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.qtd != null && opt.qtd != '' && opt.qtd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><div>'+opt.qtd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.qtd+'</div></td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -271,7 +271,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.ytd != null && opt.ytd != '' && opt.ytd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><div>'+opt.ytd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.ytd+'</div></td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}

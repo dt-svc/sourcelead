@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.LookupDataDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -60,8 +62,10 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
+import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReleaseNote;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
@@ -70,6 +74,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -79,6 +84,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
+import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -171,6 +177,11 @@ public class ProjectsRestController {
 	@Autowired
 	private TimesheetRestController timesheetRestController;
 
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTaskActivityService projectTaskActivityService;
 	/**
 	 * This method for save the project by json
 	 * 
@@ -308,7 +319,7 @@ public class ProjectsRestController {
 							OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 						    projectAdditionalDetailsDTO.setSaveType(saveType);
 						    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
+						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "New project successfully created");
 							response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 						}else {
@@ -1062,5 +1073,222 @@ public class ProjectsRestController {
 	    }
 	
 	
+	 //Project Attribute related code bellow written by Laxman Start
+	 
+	 /**
+	  * @author Laxman
+	  * @param lookupDataDTO
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	@RequestMapping(value = "/saveTaskLookupData", method = RequestMethod.POST)
+	public  String saveTaskLookupData(LookupDataDTO lookupDataDTO,HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    LookUpData lookupData = null;
+		    if(lookupDataDTO.getLookupId() != null) {
+		    	lookupData = lookUpDataService.getTasksById(lookupDataDTO.getLookupId());
+		    }else {
+		    	lookupData = new LookUpData();
+		    }
+	    	lookupData.setName(lookupDataDTO.getName());
+	    	lookupData.setDescription(lookupDataDTO.getDescription());
+	    	if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskType")) {
+	    		lookupData.setUniqueKey(lookupDataDTO.getName());
+		    	lookupData.setCategory(Constants.TASKTYPE);
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskStatus")){
+		    	lookupData.setCategory(Constants.TASKSTATUS);
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskPriority")){
+		    	lookupData.setCategory(Constants.TASKPRIORITY);
+		    	lookupData.setColorPic(lookupDataDTO.getColorPic());
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskSeverity")){
+		    	lookupData.setCategory(Constants.TASKSEVERITY);
+		    	lookupData.setColorPic(lookupDataDTO.getColorPic());
+	    	}
+	    	lookupData.setOrgLocationId(orgLocations.getId());
+	    	lookupData.setReferId(lookupDataDTO.getReferId());
+	    	lookUpDataService.saveLookupData(lookupData);
+	    	return "success";
+	    	
+	    }
 	
+	 
+		/**
+		 * @author Laxman
+		 * @param lookupId
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getLookupDataByLookupId", method = RequestMethod.POST)
+		public  LookUpData getLookupDataByLookupId(@RequestParam(value="lookupId", required=true) Long lookupId) throws Exception {
+			    LookUpData lookupData = lookUpDataService.getTasksById(lookupId);
+		    	return lookupData;
+		    }
+		
+		/**
+		 * @author Laxman
+		 * @param lookupId
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/deleteLookupDataByLookupId", method = RequestMethod.POST)
+		public  void deleteLookupDataByLookupId(@RequestParam(value="lookupId", required=true) Long lookupId,
+				@RequestParam(value="taskType", required=true) String taskType) throws Exception {
+			    LookUpData lookupData = lookUpDataService.getTasksById(lookupId);
+			    LookUpData referLookupData = lookUpDataService.getTasksById(lookupData.getReferId());
+			   
+			   //update task list in referid 
+			   List<ProjectTasks> taskList = projectTasksService.getTasksListByLookupIdAndCategoryType(lookupId, taskType);
+			   if(taskList != null) {
+		    	   for(ProjectTasks pt:taskList) {
+				    	if(taskType.equalsIgnoreCase(Constants.TASKTYPE)) {
+				    		pt.setTaskType(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKSEVERITY)) {
+							pt.setSeverity(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+							pt.setPriority(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+							pt.setTaskStatus(referLookupData);
+						} 
+				    	projectTasksService.updateTasks(pt);
+				    }
+			    }
+			 //update task activity list in referid
+		      List<ProjectTaskActivity> activityList = projectTaskActivityService.getTasksActitivtyListByLookupIdAndCategoryType(lookupId, taskType);
+		       if(activityList != null && !activityList.isEmpty()) {
+			    	for(ProjectTaskActivity pta:activityList) {
+			    		if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			    			pta.setPriority(referLookupData);
+			    		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			    			pta.setTaskStatus(referLookupData);
+			    		}
+			    		projectTaskActivityService.saveProjectTaskActivity(pta);
+			    	}
+			    }
+		       //delete referId in lookupdata
+			    lookUpDataService.deleteLookupDateByLookupId(lookupData);
+		    }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		
+		@RequestMapping(value = "/getTaskTypeList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskTypeList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskTypeList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskTypeList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskStatusList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskStatusList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskStatusList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskStatusList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskPriorityList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskPriorityList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskPriorityList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskPriorityList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskSeverityList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskSeverityList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskSeverityList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskSeverityList;
+		 }
+		
+		
+		
+	// to validate TaskType Name
+	 /**
+	  * @author Laxman
+	  * @param taskTypeName
+	  * @param lookupId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateTaskTypeName", method = RequestMethod.POST)
+	 public @ResponseBody Boolean validateTaskTypeName(
+			 @RequestParam(value = "taskTyePe", required = false) String taskTyepr,
+	 		@RequestParam(value = "taskTypeName", required = false) String taskTypeName,@RequestParam(value = "lookupId", required = false) Long lookupId,HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    LookUpData lookup = null;
+	 		if(lookupId != null) {
+	 			if(taskTyepr.equalsIgnoreCase("TaskType")) {
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKTYPE,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskStatus")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKSTATUS,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskPriority")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKPRIORITY,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskSeverity")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKSEVERITY,loginOrgLocations.getId());
+		    	}
+	 		}
+	 		 Boolean flag = false;
+	 		 if(lookup == null) {
+	 			if(taskTyepr.equalsIgnoreCase("TaskType")) {
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKTYPE,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskStatus")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKSTATUS,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskPriority")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKPRIORITY,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskSeverity")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKSEVERITY,loginOrgLocations.getId());
+	 			}
+	 			
+	 		 }
+	 		return flag;
+	 	}
+	 	
+		
+		
 }

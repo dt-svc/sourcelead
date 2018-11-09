@@ -1101,9 +1101,11 @@ function cancel(candidateId){
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
+         <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
          <div class="clearfix"></div>
+         </sec:authorize>
      </ul>
 </div>	
   		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >

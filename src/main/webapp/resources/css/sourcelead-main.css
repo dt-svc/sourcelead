@@ -9176,7 +9176,7 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .prfileImg {
 	width: 100px; height: 100px; background-color:#fff; padding-right: 0;
 }
-.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img {
+.prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
 .grid-prfileImg {
@@ -9258,7 +9258,10 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/price-tag.svg); background-repeat: no-repeat; width: 25px; height: 28px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
-
+.sortSvg {
+	background-image: url(../images/sortIcon.svg); background-repeat: no-repeat; width: 25px; height: 28px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9272,7 +9275,7 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	height: auto;
 }
 ul.listStyles {
-	margin-top: 47px; position: relative; right: -1px; z-index: 9;
+	margin-top: 7px; position: relative; right: -1px; z-index: 9;
 }
 ul.listStyles li a {
 	color: #909090;
@@ -9291,14 +9294,14 @@ ul.listStyles li.activeList a {
 	color: #368ee0;
 }
 a.removeSelected {
-	position: absolute; right: 15px; top: 0px; color: #fff;
-	width: 25px; height: 25px; text-align: center; display: block; background: #ff7979; line-height: 25px; z-index: 99;
+	position: absolute; right: 15px; top: 0px; color: #909090;
+	width: 25px; height: 25px; text-align: center; display: block; background: #ededed; line-height: 25px; z-index: 99;
 }
-a.removeSelected:hover {
-	background: #eb4d4b;
+a.removeSelected:hover, .removeSelectedAll  {
+	background: #eb4d4b; color: #fff;
 }
 .profileDetails-headerFixed {
-	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 9999; top: 55px;
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 99; top: 55px;
 	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
 }
 .fontSmall {
@@ -9312,6 +9315,145 @@ a.removeSelected:hover {
 }
 .ulliBorder li:nth-last-of-type(n+3) {
 	border-right: 1px solid #ededed;
+}
+.cartInvoice {
+	background-color: #f9f9f9;
+	border-bottom: 1px solid #ccc; padding:15px 15px 0; -webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+	box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.cartInvoice .cartInvoiceHeader {
+	padding:0px 0px 5px 0;
+}
+.cartInvoice .cartInvoiceBody {
+	padding:0px 0px 15px 0; min-height: 150px;
+}
+.cartInvoiceBodyFooter {
+	border-top: 1px dotted #b5b5b5; padding: 15px 0px;
+}
+.cartImg {
+	width: 75px; height: 75px;
+}
+.skillCart li {
+	border-right: 1px solid #ddd; padding-right: 15px;
+}
+.skillCart li:last-child {
+	border-right: none;
+}
+.cartInvoice.cartInvoiceFixed {
+	position: fixed; top: 107px; right: 38px; width: 29%
+}
+.cartinnerFooter {
+	border-top: 1px solid #ededed; padding: 5px 5px 0px 5px; margin-top: 10px;
+}
+.cartInvoiceTable .table {
+	border: 1px solid #ededed;
+}
+.cartInvoiceTable .table > tbody > tr > td, .cartInvoiceTable .table > thead > tr > th {
+	border:none;
+}
+.cartInvoiceTable .table > thead > tr > th {
+	border-bottom: 1px solid #ededed; font-weight: 500;
+}
+.cartInvoiceTable table tfoot td {
+	padding: 15px 8px;
+}
+.faCart {
+	background-color: #f60; padding: 5px; color: #fff; position: absolute; right:-5px; top:-5px;
+}
+.bulkImport {
+	background: url("../images/bulkImport.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height:40px; margin: 8px auto 2px; opacity:0.9;
+}
+.upgradeLicese {
+	background: url("../images/updateLicense.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.orgChartSVG {
+	background: url("../images/hrrepicon.svg"); background-repeat: no-repeat; background-size: 52px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.roleconfigSVG {
+	background: url("../images/assrepicon.svg"); background-repeat: no-repeat; background-size: 52px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.controlsSVG {
+	background: url("../images/controlsSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.templateSVG {
+	background: url("../images/templateSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.expensesSVG {
+	background: url("../images/walletexpenses.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.sortingSVG {
+background: url("../images/sortfieldsSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.campaingingSVG {
+background: url("../images/campaigningSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.bankacountsSVG {
+background: url("../images/banrepicon.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.jobConfigureSVG {
+background: url("../images/jobConfigureSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.leaveConfiguration {
+background: url("../images/leaveConfigurationSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.inviteSVG {
+background: url("../images/invitationSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.tagSVG {
+background: url("../images/tagSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.settingConfigure .btn {
+	padding: 1px 8px; background: #fbfbfb;
+}
+.settingConfigure h4 {
+	font-size: 14px !important; 
+}
+.settingConfigure .reportNewCta a {
+	font-weight: normal;
+}
+.settingsRepList .col-md-2 ul {
+	min-height: 75px; max-height: 150px; overflow: auto;
+}
+.settingsRepList .col-md-2 {
+	min-height: 50px; margin-bottom: 5px;
+}
+.settingsRepList .col-md-2 ul li a  {
+	padding: 0 15px 0px 0; color: #368ee0; list-style-type: none; margin-bottom: 10px; display: block;
+}
+.settingsRepList .col-md-2 ul li a:hover {
+	color: #747474;
+}
+.settingsRepList h5 {
+	border-bottom: 1px solid #ededed; padding-bottom: 5px;
+}
+.minDivHeight {
+	min-height: 75px; max-height: 325px; overflow:auto;
+}
+.circular-chart {
+  display: block; margin:0 auto; max-width: 50%; max-height: 50px;
+}
+.circle-bg {
+  fill: none; stroke: #fff; stroke-width: 4;
+}
+.circle {
+  fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+}
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+.circular-chart.orange .circle {
+  stroke: #368ee0;
+}
+.percentage {
+  fill: #333; font-family: sans-serif; font-size: 0.5em; text-anchor: middle;
+}
+.colorBox {
+display:block; margin:0 auto; width:16px; height:16px; border-radius:50%;
+}
+.colorPosition{
+position: absolute; left:5px; top:7px;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

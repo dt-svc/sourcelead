@@ -1022,13 +1022,17 @@ function cancelOrgImg(){
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
            <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
               <label class="noPad">Routing Number <b class="valStar">*</b></label>
+              <div class="clearfix">
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+           </div>
            </c:if>
            <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
               <label class="noPad">IFSC Code <b class="valStar">*</b></label>
-           </c:if>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code / Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+              <div class="clearfix">
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFSC Code" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
            </div>
+           </c:if>
+           
            </div>
            <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
            <label class="noPad">Email <b class="valStar">*</b></label>
@@ -1358,6 +1362,7 @@ function saveWhiteListIps(){
 
 <script>
     function savePaymentAccount() {
+    	var countryName = '${SourceLeadWeb_orgLocations.country}';
         var data =  {};
         var val = $("#paymentAccountType").val();
         var flag = false;
@@ -1371,21 +1376,36 @@ function saveWhiteListIps(){
                     flag = true;
                 }
             } else {
-                if(validate('paymentAccountBankName', "Bank Name")
-                        && validate('paymentAccountNumber', "Account Number")
-                        && validate('paymentBSRNumber', "BSR Number")
-                        && validate('paymentMICRCode', "MICR Code")
-                        && validate('paymentAccountRoutingNumber', "Routing Number")
-                        && validate('paymentAccountFirstName', "First Name")
-                        && validate('paymentAccountLastName', "Last Name")
-                        && validateSelect("paymentAccountLocation", 'Location')) {
-                	data["micrCode"] = $("#paymentMICRCode").val().trim();
-                	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
-                    data["accountNumber"] = $("#paymentAccountNumber").val().trim();
-                    data["bankName"] = $("#paymentAccountBankName").val().trim();
-                    data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
-                    flag = true;
-                }
+            	if( countryName =="India"){
+            		if(validate('paymentAccountBankName', "Bank Name")
+                            && validate('paymentAccountNumber', "Account Number")
+                            && validate('paymentBSRNumber', "BSR Number")
+                            && validate('paymentMICRCode', "MICR Code")
+                            && validate('paymentAccountRoutingNumber', "IFSC Code")
+                            && validate('paymentAccountFirstName', "First Name")
+                            && validate('paymentAccountLastName', "Last Name")
+                            && validateSelect("paymentAccountLocation", 'Location')) {
+                    	data["micrCode"] = $("#paymentMICRCode").val().trim();
+                    	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
+                        data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+                        data["bankName"] = $("#paymentAccountBankName").val().trim();
+                        data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+                        flag = true;
+                    }
+            	}else{
+            		if(validate('paymentAccountBankName', "Bank Name")
+                            && validate('paymentAccountNumber', "Account Number")
+                            && validate('paymentAccountRoutingNumber', "Routing Number")
+                            && validate('paymentAccountFirstName', "First Name")
+                            && validate('paymentAccountLastName', "Last Name")
+                            && validateSelect("paymentAccountLocation", 'Location')) {
+                        data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+                        data["bankName"] = $("#paymentAccountBankName").val().trim();
+                        data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+                        flag = true;
+                    }
+            	}
+                
             }
             data["firstName"] = $("#paymentAccountFirstName").val().trim();
             data["lastName"] = $("#paymentAccountLastName").val().trim();

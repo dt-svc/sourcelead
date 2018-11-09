@@ -1716,7 +1716,11 @@ public class RequirementListRestController {
 				/*
 				 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 				 */
-				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
+//				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "manager.keyword", "createdDate", ""};
+				
+				String[] tableColumns = {"requirementId","", "generatedId.keyword","jobTitle.keyword","process", "client.keyword","rate","billRate", "jobType.keyword", "country.keyword", "totalApplicants", "shortListApplicantsCount" ,"submitToClientsCount","interviewCount","offerCount","onHoldCount","onResponseCount","joinedCount","backOutCount","rejectedCount","manager.keyword", "createdDate","experience","positions","industryName.keyword",""};
+
+				
 				int sortColumnIndex = 10; //by default sorting using updated date
 				boolean sortColumnOrder = false; //by default descending order
 				if(search.getOrder() != null && !search.getOrder().isEmpty()) {
@@ -2079,8 +2083,42 @@ public class RequirementListRestController {
 							RequirementIndex requirementIndex = mapper.readValue(sourceAsString, RequirementIndex.class);
 							Requirement	requirement = getData(requirementIndex,user,orgLocation);
 			            	if(requirement !=null){
-			            		RequirementSubmissionsCountDTO applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "APPLICANTS");
+			            		RequirementSubmissionsCountDTO applicantsCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(), user, orgLocation, "ALL");
 			            		requirement.setTotalApplicants(applicantsCount.getApplicantsCount());
+			            		if(applicantsCount.getShortlistCount() != null){
+				            		requirement.setShortlistCount(applicantsCount.getShortlistCount().toString());
+			            		}
+			            		if(applicantsCount.getSubmitToClientCount() != null){
+				            		requirement.setSubmitToClientCount(applicantsCount.getSubmitToClientCount().toString());
+			            		}
+			            		if(applicantsCount.getInterviewCount() != null){
+				            		requirement.setInterviewCount(applicantsCount.getInterviewCount().toString());
+			            		}
+			            		if(applicantsCount.getOffersCount() != null){
+				            		requirement.setOffersCount(applicantsCount.getOffersCount().toString());
+			            		}
+			            		if(applicantsCount.getOnHoldCount() != null){
+				            		requirement.setOnHoldCount(applicantsCount.getOnHoldCount().toString());
+			            		}
+			            		if(applicantsCount.getNoResponseCount() != null){
+				            		requirement.setNoResponseCount(applicantsCount.getNoResponseCount().toString());
+			            		}
+			            		if(applicantsCount.getJoinedCount() != null){
+				            		requirement.setJoinedCount(applicantsCount.getJoinedCount().toString());
+			            		}
+			            		
+			            		if(applicantsCount.getBackoutCount() != null){
+				            		requirement.setBackoutCount(applicantsCount.getBackoutCount().toString());
+			            		}
+			            		
+			            		if(applicantsCount.getRejectedCount() != null){
+				            		requirement.setRejectedCount(applicantsCount.getRejectedCount().toString());
+			            		}
+			            		
+			            		if(requirementIndex.getIndustryName() != null){
+				            		requirement.setIndustryName(requirementIndex.getIndustryName());
+			            		}
+			            		
 			            		
 			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
 			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
@@ -2152,6 +2190,7 @@ public class RequirementListRestController {
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
+			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("industryName", keywd));
 			//Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
 			if(StringUtils.isNumeric(keywd)){
 //				Float expYears = Float.valueOf(matcher.group());
