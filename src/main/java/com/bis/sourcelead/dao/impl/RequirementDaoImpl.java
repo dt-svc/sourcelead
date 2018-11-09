@@ -690,10 +690,13 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
 			params.put("userId", userId);
+			
+			String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
+			params.put("approverUserId", userId);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "") {
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") ) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {
@@ -3513,13 +3516,19 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			query += " where jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			if(!adminFlag) {
+				query += " and jobFair.user.id = :userId";
+			}
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
+			if(!adminFlag) {
+				queryObj.setLong("userId", userId);
+			}
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("jobFairId", jobFairId);
 			List<Long> idList = queryObj.list();

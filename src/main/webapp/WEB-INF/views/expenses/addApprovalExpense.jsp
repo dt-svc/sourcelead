@@ -356,7 +356,7 @@ $(document).ready(function(){
 		
 		
 			<div class="pull-right">
-			 <input type="button" value="Save" class="btn btn-sm btn-primary"> 
+			<!--  <input type="button" value="Save" class="btn btn-sm btn-primary">  -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
 			<c:if test ="${!empty expenses.id}">

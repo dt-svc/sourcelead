@@ -96,4 +96,9 @@ public class AssetCategoryServiceImpl implements AssetCategoryService{
 		return assetCategoryDao.getAssetCategoryByCategoryIdAndLocationId(categoryName,categoryId,orglocationId);
 	}
 
+	@Override
+	public List<String> getAssetCategoryStringtByLocationId(Long orgLocationId) throws Exception {
+		return assetCategoryDao.getAssetCategoryStringtByLocationId(orgLocationId);
+	}
+
 }

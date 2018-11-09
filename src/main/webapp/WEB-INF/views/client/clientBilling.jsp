@@ -367,7 +367,10 @@ result = result + '</div>';
 						}else{
 							if(report.invoiceStatus == "Linked"){
 								result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-							}else{
+							}else if(report.invoiceStatus == "Void"){
+								result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+							}
+							else{
 								result = result +'           <span class="textSuccess pull-left">Accepted</span>';
 							}
 						}
@@ -384,7 +387,10 @@ result = result + '</div>';
 								result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
 							}else if(report.invoiceStatus == "Linked"){
 								result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-							}else{
+							}else if(report.invoiceStatus == "Void"){
+								result = result +'           <span class="colorRed pull-left">Void</span>   ';	
+							}
+							else{
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 
 							}                                                                         
