@@ -74,21 +74,19 @@ window.onload = function () {
 
 <script>
 
-
-$(document).scroll(function(e){
+	$(window).scroll(function(){
     // grab the scroll amount and the window height
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
-    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+   	if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
     	var avilableCount = $("#orgOffset").val();
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
     	$("#orgOffset").val(avilableCount);
     	 getConnectionsList("scroll");
     }
-    
-});
+});  
 
 
 function inviteAllMutualSearch(){
@@ -199,7 +197,7 @@ function getConnectionsList(type){
 	 				}
 	 				result = result + "<div class='connCta'><div class='connCtaInn'><div class='connCtaInnText'>";
 	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+fileUrl+"' class='m-t-xs'   alt='image'>";
-	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
+	 				result = result + "</span><a href='javascript:void(0)'><h2>"+(user.userName == null ? "---" : user.userName)+"</h2>";       //  change
 	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
 	 				result = result + mutCountStatus;
 	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'">'+state+'</div></div></div>';

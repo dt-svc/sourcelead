@@ -3034,7 +3034,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) throws Exception {
+		 java.util.List<String> requirementLocationsList = new ArrayList<>();
+		 java.util.List<RequirementLocations> locationsList;
+		locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 		if (requirement.getJobId() != null) {
 			writeRow.createCell(0).setCellValue(requirement.getJobId());
 		}
@@ -3065,9 +3068,23 @@ public class RequirementServiceImpl implements RequirementService {
 			writeRow.createCell(3).setCellValue(
 					sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
 		}
+		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).append(" ").toString();
+						writeRow.createCell(4).setCellValue(location);
+					}else{
+						writeRow.createCell(4).setCellValue("--");
+					}
+				}
+			}
+/*		
 		if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())) {
 			writeRow.createCell(4).setCellValue(requirement.getCountry());
-		}
+		}*/
 		if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
 			writeRow.createCell(5).setCellValue(requirement.getSkills());
 		}
