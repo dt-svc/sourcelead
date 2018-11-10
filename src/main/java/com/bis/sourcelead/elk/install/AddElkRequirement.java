@@ -345,6 +345,10 @@ public class AddElkRequirement {
 						}
 					}
 				}
+				if(null != rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")){
+					requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
+				}
+				
 				reqIndexList.add(requirementIndex);
 				
 			}

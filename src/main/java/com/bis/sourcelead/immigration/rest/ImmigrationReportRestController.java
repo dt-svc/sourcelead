@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
-import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.LookUpData;
@@ -334,8 +333,30 @@ public class ImmigrationReportRestController {
 			
 	
       }
-			
 }
-	
+
+	/**
+	 * Returning Petition Attorney Report Report Jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/petitionAttorneyReport")
+	public ModelAndView immigAttorneyReportJsp(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/petitionAttorneyReport");
+		
+		List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.VISA);
+		model.addObject("petitionTypeList", petitionTypeList);
+		 
+		List<LookUpData> petitionStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
+		model.addObject("petitionStatusList", petitionStatusList);
+		
+		return model;
+	}
 	
 }	
