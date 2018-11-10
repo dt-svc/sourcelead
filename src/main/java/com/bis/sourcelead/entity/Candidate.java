@@ -238,6 +238,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "IS_ASSOCIATE")
 	private String isAssociate;
+	
+	@Column(name = "IS_SHARED_IN_MARKETPLACE")
+	private String isSharedInMarketplace;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
@@ -1295,6 +1298,14 @@ public class Candidate implements Serializable {
 
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
+	}
+	
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
 	}
 
 	public OrgRelations getOrgRelationId() {

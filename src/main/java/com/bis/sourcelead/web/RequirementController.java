@@ -847,7 +847,7 @@ public class RequirementController {
 			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 			
 			Boolean isPrimaryRecruiter = false;
-			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId()) {
+			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().longValue() == loginUser.getId().longValue()) {
 				isPrimaryRecruiter = true;
 				model.addObject("isPrimaryRecruiter",isPrimaryRecruiter);
 			}

@@ -2211,7 +2211,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2219,9 +2219,8 @@ public class UserDaoImpl implements UserDao {
 						}*/
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
-					
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")){
 						primaryUserjobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2245,6 +2244,15 @@ public class UserDaoImpl implements UserDao {
 						if(userDTO != null){
 							jobIds.add(reportDTO.getRequirementId());
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}
+					
+					if(reportDTO.getReleaseJobToAllUsers() != null && reportDTO.getReleaseJobToAllUsers().equalsIgnoreCase("Y")){
+						for(User user:usersList){
+							 userDTO = userListMap.get(user.getUserCode());
+							 if(reportDTO.getManagerUserId().longValue() != user.getId()){
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+							 }
 						}
 					}
 					
