@@ -3848,90 +3848,98 @@ public class EMailJobScheduler {
 		}
 	}
 	
-//	0 0 8 ? * MON-FRI *
+    //	0 0 8 ? * MON-FRI  Every Day at * AM 
 	@Scheduled(cron = "0 0 8 ? * MON-FRI")
-	@Async
+//	@Scheduled(cron = "0 0/5 * 1/1 * ?") Every 5 min for testing purpose
 	public void autoMaticPayrollRunning() throws Exception
 	{
 		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
 		for(OrgLocations orgLocation : orglocationsList){
 			ConfigurePayrollApprover configurePayroll = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-			if("YES".equalsIgnoreCase(configurePayroll.getAutomaticPayroll())) {
+			if(configurePayroll != null && "YES".equalsIgnoreCase(configurePayroll.getAutomaticPayroll())) {
 				List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 				for(UserGroup usrGroup : groupList) {
 					UsPayrollSchedule uSPayrollSchedule = payrollScheduleService.findScheduleByFrequency(usrGroup.getPayFrequency(), orgLocation.getId(), "");
-					List<PayrollScheduleCalenderDTO> scheduleList = payrollUtil.getPayScheduleWeeksByDate(uSPayrollSchedule,orgLocation);
-					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());
-					for(PayrollScheduleCalenderDTO scheduleDto : scheduleList) {
-						Date nextPayRunDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), scheduleDto.getPayRunDate());
-						if(nextPayRunDate.equals(currentDate)) {
-							GenerateUSPayrollDTO generateUSPayrollDTO = new GenerateUSPayrollDTO();
-							String dates[] = scheduleDto.getPayPeriod().split(",");
-							Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
-							Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
-							PaysheetFrequencyDTO paysheetFrequencyDTO = null;
-							
-							generateUSPayrollDTO.setGroupId(usrGroup.getId().toString());
-							generateUSPayrollDTO.setPayPeriod(scheduleDto.getPayPeriod());
-							PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
-							
-							List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,usrGroup.getId(),"All");
-							
-//							UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
-							
-							if (assSallist != null && assSallist.size() >0) {
-								PaysheetFrequency paySheetFreq = null;
-								if(existedData != null) {
-									 paySheetFreq = new PaysheetFrequency();
-									 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
-								}else {
-									 paySheetFreq = new PaysheetFrequency();
-								}
+					if(uSPayrollSchedule != null) {
+						List<PayrollScheduleCalenderDTO> scheduleList = payrollUtil.getPayScheduleWeeksByDate(uSPayrollSchedule,orgLocation);
+						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//11-10-2018
+//						Calendar cal = Calendar.getInstance();
+//						cal.set(Calendar.MONTH, 10);
+//						cal.set(Calendar.DATE,10);
+//						cal.set(Calendar.YEAR,2018);
+//						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//cal.getTime();
+						for(PayrollScheduleCalenderDTO scheduleDto : scheduleList) {
+							Date nextPayRunDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), scheduleDto.getPayRunDate());
+							if(nextPayRunDate.equals(currentDate)) {
+								GenerateUSPayrollDTO generateUSPayrollDTO = new GenerateUSPayrollDTO();
+								String dates[] = scheduleDto.getPayPeriod().split(",");
+								Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+								Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+								PaysheetFrequencyDTO paysheetFrequencyDTO = null;
 								
-								paySheetFreq.setUserGroup(usrGroup);
-								paySheetFreq.setOrgLocation(orgLocation);
-								String[] payPeriod = scheduleDto.getPayPeriod().split(",");
-								Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[0]);
-								paySheetFreq.setFrequencyStartDate(startDate);
-								Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[1]);
-								paySheetFreq.setFrequencyEndDate(endDate);
-								paySheetFreq.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),generateUSPayrollDTO.getPayrollPayDate()));
-								paySheetFreq.setCreatedDate(new Date());
-								paySheetFreq.setUpdatedDate(new Date());
-								paySheetFreq.setCreatedBy(orgLocation.getUser().getId());
-								paySheetFreq.setUpdatedBy(orgLocation.getUser().getId());
-								paySheetFreq.setStatus(1);
-								paySheetFreq.setType(PayrollConstant.PAYROLL);
-								paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
-								paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-								Set<EmployeePayroll> payrollList = generateUSPayrollService.calculatePayroll(existedData,paySheetFreq, orgLocation.getUser(), orgLocation,assSallist,freqStartDate, freqEndDate,usrGroup);
-								if(payrollList !=null && payrollList.size() > 0) {
-									paySheetFreq.setEmployeepayroll(payrollList);
-									uSPaysheetService.addPaysheetFrequency(paySheetFreq);
-								}
-									paysheetFrequencyDTO = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
-									if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
-										List<USPayrollDTO> draftPayroll = null;
-										if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
-											draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
-													.stream()
-													.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
-													.collect(Collectors.toList());
-										}else {
-											draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
-													.stream()
-													.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
-													.collect(Collectors.toList());
-										}
-										paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
-										paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
-										paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+								generateUSPayrollDTO.setGroupId(usrGroup.getGroupUUID());
+								generateUSPayrollDTO.setPayPeriod(scheduleDto.getPayPeriod());
+								PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+								
+								List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,usrGroup.getId(),"All");
+								
+//								UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
+								
+								if (assSallist != null && assSallist.size() >0) {
+									PaysheetFrequency paySheetFreq = null;
+									if(existedData != null) {
+										 paySheetFreq = new PaysheetFrequency();
+										 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
+									}else {
+										 paySheetFreq = new PaysheetFrequency();
 									}
+									
+									paySheetFreq.setUserGroup(usrGroup);
+									paySheetFreq.setOrgLocation(orgLocation);
+									String[] payPeriod = scheduleDto.getPayPeriod().split(",");
+									Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[0]);
+									paySheetFreq.setFrequencyStartDate(startDate);
+									Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[1]);
+									paySheetFreq.setFrequencyEndDate(endDate);
+									paySheetFreq.setPayCheckDate(uSPayrollSchedule.getPayCheckDate());
+									paySheetFreq.setCreatedDate(new Date());
+									paySheetFreq.setUpdatedDate(new Date());
+									paySheetFreq.setCreatedBy(orgLocation.getUser().getId());
+									paySheetFreq.setUpdatedBy(orgLocation.getUser().getId());
+									paySheetFreq.setStatus(1);
+									paySheetFreq.setType(PayrollConstant.PAYROLL);
+									paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
+									paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+									Set<EmployeePayroll> payrollList = generateUSPayrollService.calculatePayroll(existedData,paySheetFreq, orgLocation.getUser(), orgLocation,assSallist,freqStartDate, freqEndDate,usrGroup);
+									if(payrollList !=null && payrollList.size() > 0) {
+										paySheetFreq.setEmployeepayroll(payrollList);
+										uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+									}
+										/*paysheetFrequencyDTO = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+										if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
+											List<USPayrollDTO> draftPayroll = null;
+											if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
+												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+														.stream()
+														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+														.collect(Collectors.toList());
+											}else {
+												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+														.stream()
+														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+														.collect(Collectors.toList());
+											}
+											paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+											paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
+											paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+										}*/
+								}
+//								return paysheetFrequencyDTO;
 							}
-//							return paysheetFrequencyDTO;
 						}
+					}	
 					}
-				}
+					
  			}
 		}
 	}

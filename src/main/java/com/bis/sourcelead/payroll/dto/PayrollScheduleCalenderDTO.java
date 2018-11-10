@@ -7,6 +7,8 @@ public class PayrollScheduleCalenderDTO {
 	private String payCheckDate;
 	
 	private String payRunDate;
+	
+	private String payFrequency;
 
 	public String getPayPeriod()
 	{
@@ -36,6 +38,16 @@ public class PayrollScheduleCalenderDTO {
 	public void setPayRunDate(String payRunDate)
 	{
 		this.payRunDate = payRunDate;
+	}
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
 	}
 	
 	

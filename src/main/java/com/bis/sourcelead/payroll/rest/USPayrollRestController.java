@@ -809,31 +809,40 @@ public class USPayrollRestController {
 		 * @throws Exception
 		 */
 	@RequestMapping(value = { "/getGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
-	public List<String> getGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<PayrollScheduleCalenderDTO> getGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		List<String> listDates = null;
+		List<PayrollScheduleCalenderDTO> listDates = null;
+		UsPayrollSchedule usPayrollSchedule = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
 		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
-			Calendar now = Calendar.getInstance(); // Gets the current date and
-			int year = now.get(Calendar.YEAR);
-			int month = now.get(Calendar.MONTH);
-			listDates = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
+			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_WEEKLY, orgLocation.getId(), "");
+//			List<String> list = new ArrayList<>();
+//			for(PayrollScheduleCalenderDTO ) {
+//				
+//			}
+//			Calendar now = Calendar.getInstance(); // Gets the current date and
+//			int year = now.get(Calendar.YEAR);
+//			int month = now.get(Calendar.MONTH);
+//			listDates = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
 		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
-			Calendar now = Calendar.getInstance(); // Gets the current date and
-			int month = now.get(Calendar.MONTH);
-			listDates = payrollUtil.getNumberOfMonths(month, orgLocation);
+			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_MONTHLY, orgLocation.getId(), "");
+//			Calendar now = Calendar.getInstance(); // Gets the current date and
+//			int month = now.get(Calendar.MONTH);
+//			listDates = payrollUtil.getNumberOfMonths(month, orgLocation);
 			
 			
 		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
-			Calendar now = Calendar.getInstance();
-			int month = now.get(Calendar.MONTH);
-			listDates = payrollUtil.getNumberOfBiWeeks(orgLocation);
+			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_BI_WEEKLY, orgLocation.getId(), "");
+			//			Calendar now = Calendar.getInstance();
+//			int month = now.get(Calendar.MONTH);
+//			listDates = payrollUtil.getNumberOfBiWeeks(orgLocation);
 		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); 
-			listDates = payrollUtil.getAnnuallyDates(orgLocation);
+//			listDates = payrollUtil.getAnnuallyDates(orgLocation);
 		}
+		listDates = payrollUtil.getPayScheduleWeeksByDate(usPayrollSchedule, orgLocation);
 		return listDates;
 	}
 	

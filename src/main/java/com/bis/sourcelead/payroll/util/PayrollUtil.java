@@ -926,6 +926,8 @@ public class PayrollUtil {
 					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
 					cal.set(Calendar.MONTH, i);
 //					cal.set(Calendar.DATE,1);
+					cal.set(Calendar.DATE, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+					Date monthStartDate = cal.getTime();
 					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 					Date monthEndDate = cal.getTime();
 					int checkDateDiff = commonUtil.diffBtwTowDates(monthEndDate,paySchedule.getPayCheckDate());
@@ -942,6 +944,7 @@ public class PayrollUtil {
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
 					
 					calenderDTO.setPayPeriod(sds.format(cal.getTime()).toUpperCase());
+					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
 					payFrequency.add(calenderDTO);
@@ -992,6 +995,7 @@ public class PayrollUtil {
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
 					
 					calenderDTO.setPayPeriod(sb.toString());
+					calenderDTO.setPayFrequency(sb.toString());
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
 					payFrequency.add(calenderDTO);

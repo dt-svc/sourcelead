@@ -44,6 +44,7 @@ public class ConfigurePayrollApproverDaoImpl implements ConfigurePayrollApprover
 	@Transactional(rollbackFor = { Exception.class })
 	public ConfigurePayrollApprover getConfigurePayrollApproverByLoc(OrgLocations orgLocation)
 	{
+		System.out.println(orgLocation.getId());
 		Session session = this.sessionFactory.getCurrentSession();
 		ConfigurePayrollApprover configurePayrollApprover = null;
 		try {
