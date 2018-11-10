@@ -18,7 +18,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){
+  function candidateList(type){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -104,9 +104,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
-	  		prepareCandidateList(url);
-	  		// advanced search pop up close 
-//	  		closePop();
+	  		if(type == 'gMarketPlace'){
+	  			callMarketPlaceCandidates(url)
+	  		}else{
+	  			prepareCandidateList(url);
+	  		}
 			return true;
 		 }else{ 
 				return false;
@@ -116,7 +118,25 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	$('body').on('blur', '#candidatelist_form', function() {
 		$("#candidatelist_form").showHelpOnFocus();
 		$("#candidatelist_form").validateOnBlur(false, validationSettings);
-	}); 
+	});
+	
+	function callMarketPlaceCandidates(urlGlobal){
+		$.ajax({
+			type : "POST",
+			url : urlGlobal,
+			success : function(object) {
+				var candidateIdsArray = [];
+				if(object.data != null && object.data.length != 0){
+					for(var i=0;i<object.data.length;i++){
+						var objectArray = object.data[i]
+						candidateIdsArray.push(objectArray.candidateId)
+					}
+				}
+				getGloblaMarketPlaceCandidates(globalMarketDivType, candidateIdsArray);
+				candidateIdsArray = [];
+			}
+		});
+	}
 	
   function prepareCandidateList(url){
  	     $("#candidateList").removeAttr("style");
@@ -213,8 +233,7 @@ function cpagination(url){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-   	        		 
-	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareCandidates(this)"/></td>';
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onclick="appendIdsToMarketPlace(this);" data-uuid="'+report.candidateUUID+'" onchange="checkShareCandidates(this)"/></td>';
     	  		 return result; 
     	  	}
         	},{
@@ -235,10 +254,18 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
-	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
+	    	  		result = result +"<div class='tblminwidth-75 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
-		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
+	    	  			result = result +"&nbsp;<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> "; 
+	    	  			if(full.isSharedInMarketplace == 'Y'){
+	  	    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr10' title='Shared in Marketplace'></i> "; 
+	  	    	  		}
 		             }
+	    	  		else if(full.isSharedInMarketplace == 'Y'){
+		    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr25' title='Shared in Marketplace'></i> "; 
+		    	  	}
+	    	  		
+	    	  		
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
 		              if(associateFlag)
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
