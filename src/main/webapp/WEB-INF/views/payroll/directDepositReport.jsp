@@ -27,7 +27,7 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="groupId" field-name="Pay Group" data-validation="required" onchange="getPariodDates();">
                 	</select>
@@ -36,7 +36,7 @@ $(document).ready(function(){
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Pay Period</label>
+              <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Period" data-validation="required">
                 </select>

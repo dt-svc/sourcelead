@@ -710,6 +710,7 @@ function remove(){
 				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -719,6 +720,7 @@ function remove(){
 				      dateFormat : finalDateFormatpayableEdit,
 				      minDate: 0  ,
 					  onSelect : function(selected) {
+						  getEstimatedHours(maxRowNum);
 				 	  }
 				    });
 				
@@ -1240,7 +1242,6 @@ function pagination(){
 		 var hours3 = hours.charAt(2);
 		 var min1 = minute.charAt(0);
 		 var min2 = minute.charAt(1);
-		 
 
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(hours3)){
 			 if(isNaN(min1) && isNaN(min2)){

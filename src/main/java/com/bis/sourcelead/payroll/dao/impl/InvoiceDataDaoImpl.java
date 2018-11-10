@@ -71,7 +71,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		String query = "from InvoiceData ind where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId and (ind.status IS NULL or ind.status <> '0')";
 		
-		if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
+		if(invoiceDetailsDTO.getSearchValue().contains("/")){
 			String convertedDate=invoiceDetailsDTO.getSearchValue();
 			if(invoiceDetailsDTO.getSearchValue().contains("/")){
 				convertedDate = invoiceDetailsDTO.getSearchValue().replaceAll("/", "-");
@@ -197,7 +197,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 //			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
 			String countQuery = "from InvoiceData iData  where iData.orgLocationId.id =:orgLocationId and iData.sku = :empId  and (iData.status IS NULL or iData.status <> '0')";
 			
-			if(invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-")){
+			if(StringUtils.isNoneBlank(invoiceDetailsDTO.getSearchValue()) && (invoiceDetailsDTO.getSearchValue().contains("/") || invoiceDetailsDTO.getSearchValue().contains("-"))){
 				String convertedDate=invoiceDetailsDTO.getSearchValue();
 				if(invoiceDetailsDTO.getSearchValue().contains("/")){
 					convertedDate = invoiceDetailsDTO.getSearchValue().replaceAll("/", "-");
@@ -235,9 +235,8 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 			if (invoiceDetailsDTO != null && invoiceDetailsDTO.getLength() > 0) {
 				queryObj.setFirstResult(invoiceDetailsDTO.getStart());
 				queryObj.setMaxResults(invoiceDetailsDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations.getId())
-				.setLong("empId", Long.parseLong(invoiceDetailsDTO.getEmpId()));
 			}
+			queryObj.setLong("orgLocationId", orgLocations.getId()).setLong("empId", Long.parseLong(invoiceDetailsDTO.getEmpId()));
 			invoiceDataList = queryObj.list();
 			int count = 0;
 			int filteredCount = 0;

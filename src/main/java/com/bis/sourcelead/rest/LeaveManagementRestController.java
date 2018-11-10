@@ -2117,7 +2117,7 @@ public class LeaveManagementRestController {
 //			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
-			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			 float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 			 if(!(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus()) || Constants.LEAVE_REJECTED.equalsIgnoreCase(leave.getStatus()))){
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
 						try {
@@ -2125,9 +2125,9 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
@@ -2136,9 +2136,9 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = totalLeavesperYear - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }
 			

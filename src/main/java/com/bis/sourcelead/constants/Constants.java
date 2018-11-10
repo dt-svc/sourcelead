@@ -176,10 +176,14 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
+	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String ASSET_ASSIGN_EMAIL = "AssigneAssetEmail";
+	public static final String ASSET_ASSIGN_NOTIFICATION = "AssigneAssetNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
+	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
@@ -237,10 +241,12 @@ public class Constants {
 	public static final int CANDIDATE_ALL = 2;
 	public static final int CANDIDATE_ACTIVE = 1;
 	public static final int CANDIDATE_IN_ACTIVE = 0;
+	public static final String STATUS_WITHDRAWN = "WITHDRAWN";
 	/** Candidate Skill constants **/
 	public static final int CANDIDATE_SKILL_ACTIVE = 1;
 	public static final int CANDIDATE_SKILL_IN_ACTIVE = 0;
 	public static final String ACTIVE = "Active";
+	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -617,6 +623,9 @@ public class Constants {
 	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source",
 			"Score", "Experience", "Status", "Submitted On", "Submitted By", "Client Contact" };
+	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED = {
+			"Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source", "Score", "Experience", "Status",
+			"Submitted On", "Submitted By", "Client Contact" };
 	public static final String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Rate", "Source", "Score", "Experience",
 			"Status", "ShortListed By", "ShortListed On" };
@@ -1236,6 +1245,8 @@ public class Constants {
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
+    
+    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1290,4 +1301,11 @@ public class Constants {
 
 	public static final String CONTRIBUTION = "contribution";
 	public static final String DEDUCTION = "deduction";
+	
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 }

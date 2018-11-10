@@ -950,4 +950,75 @@ public class USPayrollReportRestController {
 		}
 	}
 	
+	/**
+	 * @author pavan jampana
+	 * this method is is used to return Contract Employee Payreport Jsp page 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/contractEmployeePayreport")
+	public ModelAndView contractEmployeePayreport(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("payroll/contractEmployeePayreport");
+		return model;
+	}
+	
+	
+	/**
+	 * @author pavan jampana
+	 * this method is is used to return Contract Employee Payreport List 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getContractEmployeeReportList","/rest/getContractEmployeeReportList" }, method = RequestMethod.GET)
+	public ResponseList<PayrollReportDTO> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return paysheetFrequencyService.getContractEmployeeReportList(payrollReportDTO,orgLocation);
+	}
+	
+	/**
+	 * @author pavan jampana
+	 * this method is is used to export Contract Employee Payreport 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getContractEmployeeReportExport","/rest/getContractEmployeeReportExport" }, method = RequestMethod.GET)
+	public void getContractEmployeeReportExport(PayrollReportDTO payrollReportDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayrollReportDTO>  responseList = paysheetFrequencyService.getContractEmployeeReportList(payrollReportDTO,orgLocations);
+		
+		File file = null;
+	    if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.contractEmployeeReportPDFExport(responseList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.contractEmployeeReportExcelExport(responseList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		 
+	}
 }

@@ -12,6 +12,20 @@
      1.usage     : onclick on requirementList() ; 
      
 --%>
+ <script type="text/javascript">
+ var hideColumns = [];
+ var table = "";
+ $(document).ready(function () {
+     $('label.toggle-vis').on('click', function (e) {
+         e.preventDefault();
+         // Get the column API object
+         var column = table.column($(this).attr('data-column'));
+         $(this).toggleClass("active");
+         // Toggle the visibility
+         column.visible(!column.visible());
+     });
+});
+</script>
 <script>
 function clearList(){
 	location.reload();
@@ -422,7 +436,193 @@ function statusvalidating(id){
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="filtersDiv">
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearList();"></a>
+      		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
       		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+    
+    
+    
+    <div class="colPop">
+	<div class="colPopMid coldropdown-parent">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+<!-- 				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerUnCheckAll" class="checkbox-custom-label">Uncheck All</label>
+				</span> -->
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerCheckAll" class="checkbox-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul id="jobCustomColumns">
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="" data-name="generatedId">
+					<label for="a" class="checkbox-custom-label" >Generated ID</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="" data-name="process">
+					<label for="c" class="checkbox-custom-label" >Process</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="" data-name="clientName">
+					<label for="d" class="checkbox-custom-label" >Client</label>
+				</span>
+			</li>
+
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="" data-name="payRate">
+					<label for="e" class="checkbox-custom-label" >Pay Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="" data-name="billRate">
+					<label for="f" class="checkbox-custom-label" >Bill Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" checked="" data-name="jobType">
+					<label for="g" class="checkbox-custom-label" >Type</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="location">
+					<label for="h" class="checkbox-custom-label" >Location</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox" checked="" data-name="totalApplicants">
+					<label for="i" class="checkbox-custom-label" >Applicants</label>
+				</span>
+			</li>
+				
+							
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="s" class="checkbox-custom toggle-vis" name="paidComponent" data-column="20" type="checkbox" checked="" data-name="owner">
+					<label for="s" class="checkbox-custom-label" >Owner</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="t" class="checkbox-custom toggle-vis"  name="paidComponent" data-column="21" type="checkbox" checked="" data-name="postedOn">
+					<label for="t" class="checkbox-custom-label" >PostedOn</label>
+					</span>
+					</li>
+					
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="11" type="checkbox" data-name="Shortlisted">
+					<label for="j" class="checkbox-custom-label" >Shortlisted</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="12" type="checkbox" data-name="submitToClient">
+					<label for="k" class="checkbox-custom-label" >SubmitToClient</label>
+				</span>
+			</li>
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="l" class="checkbox-custom toggle-vis" name="paidComponent" data-column="13" type="checkbox" data-name="interview">
+					<label for="l" class="checkbox-custom-label" >Interview</label>
+				</span>
+			</li>
+			
+								<li>
+				<span class="checkbox-new clearfix">
+					<input id="m" class="checkbox-custom toggle-vis" name="paidComponent" data-column="14" type="checkbox" data-name="offer">
+					<label for="m" class="checkbox-custom-label" >Offer</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="n" class="checkbox-custom toggle-vis" name="paidComponent" data-column="15" type="checkbox" data-name="onHold">
+					<label for="n" class="checkbox-custom-label" >OnHold</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="o" class="checkbox-custom toggle-vis" name="paidComponent" data-column="16" type="checkbox" data-name="noResponse">
+					<label for="o" class="checkbox-custom-label" >NoResponse</label>
+				</span>
+			</li>
+						
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="p" class="checkbox-custom toggle-vis" name="paidComponent" data-column="17" type="checkbox" data-name="joined">
+					<label for="p" class="checkbox-custom-label" >Joined</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="q" class="checkbox-custom toggle-vis" name="paidComponent" data-column="18" type="checkbox" data-name="backOut">
+					<label for="q" class="checkbox-custom-label" >BackOut</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="r" class="checkbox-custom toggle-vis" name="paidComponent" data-column="19" type="checkbox" data-name="rejected">
+					<label for="r" class="checkbox-custom-label" >Rejected</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="u" class="checkbox-custom toggle-vis" name="paidComponent" data-column="22" type="checkbox" data-name="experience">
+					<label for="u" class="checkbox-custom-label" >Experience</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="v" class="checkbox-custom toggle-vis" name="paidComponent" data-column="23" type="checkbox" data-name="noOfPositions">
+					<label for="v" class="checkbox-custom-label" >NoOfPositions</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="w" class="checkbox-custom toggle-vis" name="paidComponent" data-column="24" type="checkbox" data-name="industryName">
+					<label for="w" class="checkbox-custom-label" >IndustryName</label>
+				</span>
+			</li>
+		</div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+			</div> 
+    
       </span>
       <span class="pull-left refreIcon">
       		<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
@@ -541,6 +741,58 @@ function closeFilter(){
 
 }
 </script>
+<script type="text/javascript">
+
+	function columPop(){
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+	$("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".refreIcon, .colPop").click(function(e){
+	 	e.stopPropagation();
+	});		
+		
+	function columHide(){
+		hideColumns=[]; // reset the array object.
+		$(".toggle-vis").each(function() {
+			columClose();// 
+		   var chkdVal= $(this).prop('checked');
+// 		alert("chkdVal "+chkdVal);
+		   var column = table.column($(this).attr('data-column'));
+// 		   alert("column "+column);
+			  if(chkdVal == true){
+// 				  alert("1");
+			         column.visible(true);
+			    }
+			    else{
+// 			    	 alert("2");
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+			  }
+	    });
+		$(".colPop").hide();
+	   
+	}
+	function checkAllColumns(obj){
+		var id = obj.id;
+		var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+		if(chkdVal == true){
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',true);
+		}
+		}
+		else{
+			if(id =='columnsPickerCheckAll'){
+				$('.toggle-vis:input:checkbox').prop('checked',false);
+			}
+		} 
+			
+	}
+	</script>
 <!-- 
 
 <script type="text/javascript">

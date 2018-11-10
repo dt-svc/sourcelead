@@ -415,7 +415,7 @@ function preventTabkey(e){
 	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
-				<a href="<c:url value='${appPath}/userProfile'/>">
+				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
 					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></div>
 					<div class="pull-right">
@@ -436,36 +436,36 @@ function preventTabkey(e){
 				</a>
 			<ul>
 				<li>
-				<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections">Connections <span class="label label-warning pull-right">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
+				<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 				</li>
 				
-				<li><a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>">Contacts</a></li>
+				<li><a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="contactsIC"></i>Contacts</a></li>
 				
 				<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            		<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
                 <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-		       		<li><a title="Invite Company" data-toggle="modal" id="invitePop">Invite Company</a></li>
+		       		<li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="invitecompanyIC"></i>Invite Company</a></li>
                  </c:if>	
                 </sec:authorize>
                 </sec:authorize>			
 				
 				<sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
 				<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">				
-				<li><a href="javascript:void(0)" class="icon-addTask" title="Add Task">Add Task</a></li>
+				<li><a href="javascript:void(0)" class="icon-addTask" title="Add Task"><i class="addtaskIC"></i>Add Task</a></li>
 				</c:if>
 				</sec:authorize>	
 				
  				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
-				<li><a href="/app/sourceleadTicketList" title="Report Issue">Report Issue</a></li>
+				<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
 				</sec:authorize>
 				
-	              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	             <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 	              <li><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile">Profile</a></li>
 	              </c:if>
 	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
-	              </c:if>				
-				 <li><a class="logColor" href="javascript:logoutFormSubmit()" title="Log Out">Log Out</a></li>
+	              </c:if> --%>				
+				 <li><a class="logColor" href="javascript:logoutFormSubmit()" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
 	</div>
@@ -544,11 +544,11 @@ function preventTabkey(e){
          </c:if>		
 		
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i>  <span style="display: none;" class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <li> 
-          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <span style="display: none;" class="label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>		
 
@@ -608,6 +608,8 @@ function preventTabkey(e){
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
 					  	</sec:authorize>
+						 
+						 <li><a href="<c:url value="/app/pojrctAttributes" />"><i class="fa fa-bar-chart" aria-hidden="true"></i>Project</a></li>
 						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
@@ -857,7 +859,7 @@ function preventTabkey(e){
 
 			            <div class="row popupContent">
 			              <div class="col-md-6" >
-			                <label>Assign To<span class="text-danger">*</span></label>
+			                <label>Assign to<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>

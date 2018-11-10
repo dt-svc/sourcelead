@@ -356,7 +356,21 @@ public class CommonUtil {
 		return dateStr;
 	}
 	
-	
+	public  Date stringToDate(String dateString){
+
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name

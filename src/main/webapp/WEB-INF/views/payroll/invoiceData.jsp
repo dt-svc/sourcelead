@@ -101,6 +101,7 @@ function invoiceDetailsPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "sku",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 		    	  		if(opt.sku !=null && opt.sku !='' && opt.sku !='undefined'){
@@ -138,6 +139,7 @@ function invoiceDetailsPagination(url){
           }, {
               "targets": colIndex++,
               "data": "number",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	var result = "";
             	var numberTotal = opt.number
@@ -152,6 +154,7 @@ function invoiceDetailsPagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "memoDescription",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
 	                		if(opt.memoDescription !=null && opt.memoDescription !='' && opt.memoDescription !='undefined'){
@@ -164,6 +167,7 @@ function invoiceDetailsPagination(url){
           },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "date",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 		    	  		if(opt.dateStr !=null && opt.dateStr !='' && opt.dateStr !='undefined'){
@@ -176,6 +180,7 @@ function invoiceDetailsPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "lastmodified",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.lastModifiedStr !=null && opt.lastModifiedStr !='' && opt.lastModifiedStr !='undefined'){
@@ -188,6 +193,7 @@ function invoiceDetailsPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "dueDate",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  var result = "";
                 	  if(opt.dueDateStr !=null && opt.dueDateStr !='' && opt.dueDateStr !='undefined'){
@@ -200,6 +206,7 @@ function invoiceDetailsPagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "rate",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
                     	var rateTotal = opt.rate;
@@ -214,6 +221,7 @@ function invoiceDetailsPagination(url){
                   },{
                       "targets": colIndex++,
                       "data": "payRate",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                       	var result = "";
                       	if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined' && !isNaN(opt.payRate)){
@@ -228,6 +236,7 @@ function invoiceDetailsPagination(url){
                     },{
                       "targets": colIndex++,
                       "data": "qty",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
                     	  var qtytotal = opt.qty;
@@ -242,6 +251,7 @@ function invoiceDetailsPagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "amount",
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                         	var result = "";
                         	var amountTotal = opt.amount;
@@ -256,6 +266,7 @@ function invoiceDetailsPagination(url){
                       },{
                           "targets": colIndex++,
                           "data": "arPaid",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                         	  var result = "";
                         	  if(opt.arPaid !=null && opt.arPaid !='' && opt.arPaid !='undefined'){
@@ -268,6 +279,7 @@ function invoiceDetailsPagination(url){
                         },{
                             "targets": colIndex++,
                             "data": "oldNew",
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                             	var result = "";
                             	if(opt.oldNew !=null && opt.oldNew !='' && opt.oldNew !='undefined'){
@@ -281,6 +293,7 @@ function invoiceDetailsPagination(url){
 						{
 							"targets" : colIndex++,
 							"data" : "action",
+							"sortable": false,
 							"render" : function(data, type, opt, meta) {
 								var result = "";
 								result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'InvoiceData\')"></i></div></td>';
@@ -289,7 +302,7 @@ function invoiceDetailsPagination(url){
 						} ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[4,'desc']],
+	    	"aaSorting": [[2,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -301,12 +314,13 @@ function invoiceDetailsPagination(url){
     } );
     $("#invoiceDetailsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#invoiceDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		 getInvoiceDetails();
-    	   }
-    	});
 }
+
+$("#invoiceDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		 getInvoiceDetails();
+	   }
+	});
 function invoiceDataTableSearch(){
 	getInvoiceDetails();
 }

@@ -2265,14 +2265,21 @@ public class InvoiceServiceImpl implements InvoiceService {
 						.longValue()) {
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 				}
-				StringBuilder contactName = new StringBuilder();
-				if (null != invoice.getContactUser()) {
-					if (invoice.getContactUser().getLastName() != null) {
-						invoice.setClientContactName(contactName.append(invoice.getContactUser().getFirstName())
-								.append(" ").append(invoice.getContactUser().getLastName()).toString());
-					} else {
-						invoice.setClientContactName(
-								contactName.append(invoice.getContactUser().getFirstName()).toString());
+				
+				if(null != invoice.getContactUsers()){
+					String[] contactUsers = invoice.getContactUsers().split(",");
+					if(contactUsers.length != 0){
+						StringBuilder contactUserName = new StringBuilder();
+						for(String contactUserId : contactUsers){
+							User contactUser = userService.getUserById(Long.parseLong(contactUserId.trim()));
+							if(contactUser.getLastName() != null){
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(" ").append(contactUser.getLastName()).append(", ");
+							}else{
+								contactUserName = contactUserName.append(contactUser.getFirstName()).append(", ");
+							}
+						}
+						
+						invoice.setClientContactName(contactUserName.toString().substring(0, contactUserName.toString().length() - 2));
 					}
 				}
 				if (null != invoice.getInvoiceDate()) {
@@ -3208,7 +3215,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 				statusVal = "Linked to ";
 				timelineDTO.setInvoiceId(timelineHistory.getLinkedChildinvoice().getInvoiceId());
 				timelineDTO.setInvoiceUUID(timelineHistory.getLinkedChildinvoice().getInvoiceUUID());
-				statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
+				List<User> usersList = userDao.getUsersListUsingMultipleStringIds(timelineHistory.getLinkedChildinvoice().getOwnerUsers());
+				for(User u  :usersList){
+					statusValue = u.getFullName();	
+				}
+				//statusValue = timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 				//statusValue = " to " + timelineHistory.getLinkedChildinvoice().getInvoiceId()+" by "+timelineHistory.getLinkedChildinvoice().getOwnerUserId().getFullName();
 			} else {
 				if (timelineHistory.getInvoicePaymentReminderStatus() != null) {

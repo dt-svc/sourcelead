@@ -46,6 +46,8 @@ public class LcaDTO extends SearchDTO {
 	
 	private String noOfPositions;
 	
+	private String availablePositions;
+	
 	/*@Required(desc = "location")*/
 	private String location;
 	
@@ -609,6 +611,14 @@ public class LcaDTO extends SearchDTO {
 
 	public void setVisaClsfId(String visaClsfId) {
 		this.visaClsfId = visaClsfId;
+	}
+
+	public String getAvailablePositions() {
+		return availablePositions;
+	}
+
+	public void setAvailablePositions(String availablePositions) {
+		this.availablePositions = availablePositions;
 	}
 	
 }

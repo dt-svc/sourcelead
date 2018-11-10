@@ -656,8 +656,8 @@ public class LeaveServiceImpl implements LeaveService{
 				float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 				
 				float balLeaves = 0;
-				if(appliedLeavesCount >0) {
-					  balLeaves = totalLeaves - appliedLeavesCount;
+				if(totalLeaveCount >0) {
+					  balLeaves = totalLeaves - totalLeaveCount;
 				}else {
 					  balLeaves = totalLeaves;	
 				}
@@ -1062,14 +1062,16 @@ public class LeaveServiceImpl implements LeaveService{
 			for(LeaveApproveHierarchy laph : leave.getApproverHierarchyList()){
 				StringBuilder sb = new StringBuilder();
 				UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph.getApproverUserId().getId(), orgLocationId);
+				String userType = "";
 				if(role != null){
-					if(StringUtils.isNotBlank(laph.getApproverUserId().getLastName())){
-						aphlist.add(sb.append(role.getUserType()).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" ").append(laph.getApproverUserId().getLastName()).append(" )").toString());					
-					}else{
-						aphlist.add(sb.append(role.getUserType()).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" )").toString());
-					}
-					approverUserIds.add(String.valueOf(laph.getApproverUserId().getId()));
+					userType = role.getUserType();
 				}
+				if(StringUtils.isNotBlank(laph.getApproverUserId().getLastName())){
+					aphlist.add(sb.append(userType).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" ").append(laph.getApproverUserId().getLastName()).append(" )").toString());					
+				}else{
+					aphlist.add(sb.append(userType).append(" ( ").append(laph.getApproverUserId().getFirstName()).append(" )").toString());
+				}
+				approverUserIds.add(String.valueOf(laph.getApproverUserId().getId()));
 			}
 			leaveDto.setOtherApproverUser(approverUserIds);
 			leaveDto.setApproverUsers(String.join(",", aphlist));
