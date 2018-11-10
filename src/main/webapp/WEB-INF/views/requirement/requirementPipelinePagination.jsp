@@ -467,7 +467,9 @@
 															+ '" onChange="rejectApplicant(' + opt.id + ',' + requirementId + ',\'' + submissionType + '\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
 													if (opt.submissionStatus == 'SUBMISSION'){
+														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
 														result = result + "<option value='shortlist'>Shortlist</option>";
+														'</sec:authorize>';
 													} 
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
 														result = result + "<option value='Joined'>Joined</option>";
@@ -476,7 +478,9 @@
 														result = result + "<option value='Status'>Submission</option>";
 													}
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST'){
+														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
 														result = result + "<option value='shortlist'>Shortlist</option>";
+														'</sec:authorize>';
 													}
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'OFFERMADE' && opt.submissionStatus != 'OFFERACCEPTED'){
 														result = result + "<option value='Interview'>INTERVIEW</option>";

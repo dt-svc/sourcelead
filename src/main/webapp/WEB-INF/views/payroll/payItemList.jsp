@@ -47,7 +47,7 @@ $(document).ready(function(){
 </div>
 
 <div id="loading"></div>
-<div class="styleTables datatable_filter" >
+<div class="project_wrap_table datatable_filter" >
 <div id="payItemDiv"></div>
 </div>
 </div>

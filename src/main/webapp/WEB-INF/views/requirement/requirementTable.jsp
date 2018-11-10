@@ -139,6 +139,11 @@ function requirementList(searchType,sourceleadUrl){
 				filterProjects.push($(this).val());
 		    });
 			
+			var city = [];
+			$('input:checkbox[name=cityName]:checked').each(function() 
+		    {
+				city.push($(this).val());
+		    });
 			
 			var frm = $('#requirement_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
@@ -150,7 +155,7 @@ function requirementList(searchType,sourceleadUrl){
 	  		searchValue = searchValue ? searchValue : "";
 	  		$("#requirementList").empty();
 			$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects;
+	  		 url = sourceleadUrl+"/searchRequirement?searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 	  		 url += "&"+$($('#requirement_form')[0]).serialize();
 			
 			
@@ -180,6 +185,7 @@ function requirementList(searchType,sourceleadUrl){
  } 
 
 function prepareRequirementData(url,sourceleadUrl){
+	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  var canEduDatePattern = 'YYYY-MM-DD';
@@ -208,9 +214,21 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Bill Rate</th>";
    result = result +"    <th>Type</th>"; 
    result = result +"    <th>Location</th>"; 
-   result = result +"    <th>Applicants</th>"; 
+   result = result +"    <th>Applicants</th>";
+   result = result +"    <th>Shortlisted</th>";
+   result = result +"    <th>Submit to Client</th>";
+   result = result +"    <th>Interview</th>";
+   result = result +"    <th>Offer</th>";
+   result = result +"    <th>Onhold</th>";
+   result = result +"    <th>No Response</th>";
+   result = result +"    <th>Joined</th>";
+   result = result +"    <th>Backout</th>";
+   result = result +"    <th>Rejected</th>";
    result = result +"    <th>Owner</th>"; 
    result = result +"    <th>Posted On<br>(<small class='custom-small'>"+canEduDatePattern+"</small>)</th>";
+   result = result +"    <th>Experience</th>";
+   result = result +"    <th>noOfpositions</th>";
+   result = result +"    <th>Industry Name</th>";
    result = result +"    <th>Status</th>"; 
 //    result = result +"<th>Actions</th>";
    result = result +"  </tr>"; 
@@ -262,6 +280,10 @@ function clearAlldata(){
 	$('#jobId').val('').trigger('chosen:updated');
 } */
 function jpagination(url,sourceleadUrl){ 
+	var selectedColumns = "";
+	$("#jobCustomColumns").each(function () {
+		
+	});
 	var colIndex = 0;
     $('#requirementPagination').DataTable( { 
    		"processing": true,
@@ -285,8 +307,20 @@ function jpagination(url,sourceleadUrl){
            { "data": "jobType" },
            { "data": "country"},
            { "data": "totalApplicants" },
+           { "data": "shortListApplicantsCount" },
+           { "data": "submitToClientsCount" },
+           { "data": "interviewCount" },
+           { "data": "offerCount" },
+           { "data": "onHoldCount" },
+           { "data": "noResponseCount" },
+           { "data": "joinedCount" },
+           { "data": "backOutCount" },
+           { "data": "rejectedCount" },
            { "data": "manager" },
            { "data": "createdDate"},
+           { "data": "experience" },
+           { "data": "positions" },
+           { "data": "industryName" },
            { "data": "requirementSubmissionStatus" }
           
        ],
@@ -381,6 +415,7 @@ function jpagination(url,sourceleadUrl){
 	   	  	"targets": colIndex++,
 		  	"data": "generatedId",
 		  	"sortable": true,
+		  	"visible": $("input[data-name='generatedId']").is(":checked"),
 		  	"render": function(data, type, opt, meta) {
 		  		 var result = "";
 		  		 result = result +"<td>";
@@ -422,6 +457,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "process",
 	            "sortable": false,
+	            "visible": $("input[data-name='process']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	       		       	result = result +"<td><div class='tbldata-dotdot_140' " + (opt.process != null && opt.process != "" ? "title='" + opt.process + "'" : "") + ">" + (opt.process != null && opt.process != "" ? opt.process : "------") + "</div></td>";
@@ -431,6 +467,7 @@ function jpagination(url,sourceleadUrl){
 	        {
 	            "targets": colIndex++,
 	            "data": "clientName",
+	            "visible": $("input[data-name='clientName']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
@@ -461,6 +498,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "rate",
 	            "sortable": false,
+	            "visible": $("input[data-name='payRate']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if((opt.rate != null && opt.rate != '' && opt.rate != 'undefined') || (opt.maxRate != null && opt.maxRate != '' && opt.maxRate != 'undefined')){
@@ -485,6 +523,7 @@ function jpagination(url,sourceleadUrl){
 	            "targets": colIndex++,
 	            "data": "billRate",
 	            "sortable": false,
+	            "visible": $("input[data-name='billRate']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		if((opt.clientRate != null && opt.clientRate != '' && opt.clientRate != 'undefined') || (opt.clientMaxRate != null && opt.clientMaxRate != '' && opt.clientMaxRate != 'undefined')){
@@ -508,6 +547,7 @@ function jpagination(url,sourceleadUrl){
        	{
 	            "targets": colIndex++,
 	            "data": "jobType",
+	            "visible": $("input[data-name='jobType']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		 if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
@@ -526,6 +566,7 @@ function jpagination(url,sourceleadUrl){
         	{
 	            "targets": colIndex++,
 	            "data": "country",
+	            "visible": $("input[data-name='location']").is(":checked"),
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
 	            		
@@ -570,6 +611,7 @@ function jpagination(url,sourceleadUrl){
 		         "targets": colIndex++,
 		         "data": "totalApplicants",
 		     	 "sortable": false,
+		     	"visible": $("input[data-name='totalApplicants']").is(":checked"),
 		         "render": function ( data, type, opt, meta ) {
 		         		var result = "";
 		         		if(opt.totalApplicants!=null && opt.totalApplicants!='' && opt.totalApplicants!='undefined' && opt.totalApplicants > 0){
@@ -581,32 +623,256 @@ function jpagination(url,sourceleadUrl){
 			            return result;
 		          }
 		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "shortListApplicantsCount",
+		     	 "sortable": false,
+		     	"visible": $("input[data-name='Shortlisted']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.shortlistCount!=null && opt.shortlistCount!='' && opt.shortlistCount!='undefined' && opt.shortlistCount > 0){
+		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SHORTLIST&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.totalApplicants+"</div></a></td>";
+// 		         			result = result +"<td><div>"+opt.shortlistCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "submitToClientsCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='submitToClient']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.submitToClientCount!=null && opt.submitToClientCount!='' && opt.submitToClientCount!='undefined' && opt.submitToClientCount > 0){
+		              
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=SUBMIT_TO_CLIENT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.submitToClientCount+"</div></a></td>";
+
+		         			// 		         			result = result +"<td><div>"+opt.submitToClientCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "interviewCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='interview']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.interviewCount!=null && opt.interviewCount!='' && opt.interviewCount!='undefined' && opt.interviewCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=INTERVIEW&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.interviewCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.interviewCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			  	{
+		         "targets": colIndex++,
+		         "data": "offerCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='offer']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.offersCount!=null && opt.offersCount!='' && opt.offersCount!='undefined' && opt.offersCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.offersCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.offersCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	 
+			  	{
+		         "targets": colIndex++,
+		         "data": "onHoldCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='onHold']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.onHoldCount!=null && opt.onHoldCount!='' && opt.onHoldCount!='undefined'){
+		         			result = result +"<td><div>"+opt.onHoldCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	 
+			 	{
+		         "targets": colIndex++,
+		         "data": "noResponseCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='noResponse']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.noResponseCount!=null && opt.noResponseCount!='' && opt.noResponseCount!='undefined'){
+		         			result = result +"<td><div>"+opt.noResponseCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	 
+			 	{
+		         "targets": colIndex++,
+		         "data": "joinedCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='joined']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.joinedCount!=null && opt.joinedCount!='' && opt.joinedCount!='undefined' && opt.joinedCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.joinedCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.joinedCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	 
+			 	{
+		         "targets": colIndex++,
+		         "data": "backOutCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='backOut']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.backoutCount!=null && opt.backoutCount!='' && opt.backoutCount!='undefined' && opt.backoutCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=BACKOUT&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.backoutCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.backoutCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "rejectedCount",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='rejected']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.rejectedCount!=null && opt.rejectedCount!='' && opt.rejectedCount!='undefined' && opt.joinedCount > 0){
+		         			
+		         			result = result +"<td><a href='<c:url value='/app/requirementSummary?type=REJECTED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.rejectedCount+"</div></a></td>";
+
+// 		         			result = result +"<td><div>"+opt.rejectedCount+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	 
 			 {
-			         "targets": colIndex++,
-			         "data": "manager",
-			         "render": function ( data, type, opt, meta ) {
-			         		var result = "";
-			         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
-		         	        }else{
-		         	      	 result = result +"<td><div>----</div></td>";
-		         	        }
-				            return result;
-			          }
-			 },
-			 {
-			         "targets": colIndex++,
-			         "data": "createdDate",
-			         "render": function (data, type, opt, meta ) {
-		         		   var result = "";
-		         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
-		                  	 result = result +"<td><div class='tblminwidth-125'>"+opt.postedOnStr+"</div></td>";
-		                   }else{
-		                  	 result = result +"<td><div class='tblminwidth-125'>----</div></td>";
-		                   }
-			               return result;
-			          }
-			 },
+		         "targets": colIndex++,
+		         "data": "manager",
+		         "visible": $("input[data-name='owner']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
+		         	      	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
+	         	        }else{
+	         	      	 result = result +"<td><div>----</div></td>";
+	         	        }
+			            return result;
+		          }
+		 },
+		 {
+	         "targets": colIndex++,
+	         "data": "createdDate",
+	         "visible": $("input[data-name='postedOn']").is(":checked"),
+	         "render": function (data, type, opt, meta ) {
+         		   var result = "";
+         		   if(opt.postedOnStr!=null && opt.postedOnStr !='' && opt.postedOnStr !='undefined'){
+                  	 result = result +"<td><div class='tblminwidth-125'>"+opt.postedOnStr+"</div></td>";
+                   }else{
+                  	 result = result +"<td><div class='tblminwidth-125'>----</div></td>";
+                   }
+	               return result;
+	          }
+	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "experience",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='experience']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.minExp!=null && opt.minExp!='' && opt.minExp!='undefined' && opt.maxExp == null){
+		         			result = result +"<td><div>min Exp - "+opt.minExp+"</div></td>";
+		         		}
+		         		else if(opt.maxExp!=null && opt.maxExp!='' && opt.maxExp!='undefined' && opt.maxExp == null){
+		         			result = result +"<td><div>max Exp - "+opt.maxExp+"</div></td>";
+		         		}
+		         		else if((opt.maxExp!=null && opt.maxExp!='' && opt.maxExp!='undefined') && (opt.minExp!=null && opt.minExp!='' && opt.minExp!='undefined')){
+		         			result = result +"<td><div>min Exp- "+opt.minExp+"- max Exp - "+opt.maxExp+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+			 	{
+		         "targets": colIndex++,
+		         "data": "positions",
+		     	 "sortable": false,
+		     	 "visible": $("input[data-name='noOfPositions']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.positions!=null && opt.positions!='' && opt.positions!='undefined'){
+		         			result = result +"<td><div>"+opt.positions+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>0</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
+		 	{
+		         "targets": colIndex++,
+		         "data": "industryName",
+		     	 "sortable": true,
+		     	 "visible": $("input[data-name='industryName']").is(":checked"),
+		         "render": function ( data, type, opt, meta ) {
+		         		var result = "";
+		         		if(opt.industryName!=null && opt.industryName!='' && opt.industryName!='undefined'){
+		         			result = result +"<td><div>"+opt.industryName+"</div></td>";
+		         		}
+		         		else{
+		         			result = result +"<td><div>--</div></td>";
+		         		}
+			            return result;
+		          }
+		 	 },
 			 {
 			         "targets": colIndex++,
 			         "sortable": false,
@@ -641,6 +907,7 @@ function jpagination(url,sourceleadUrl){
 			         		   if(approver == true || contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN' || opt.isLoginUserAsApprover == true){   
 			         			  isAllow = true;
 			         		   }
+			         		  
 			         		   if(isAllow == true){
 			         			  result = result +"<select name='changeStatusId"+opt.id+"' value= '' onchange='changeStatus("+opt.id+");'  id='changeStatusId"+opt.id+"'>";
 			         		   }
@@ -713,7 +980,6 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-			         				
 			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='OPEN'>OPEN</option>";
@@ -807,6 +1073,9 @@ function jpagination(url,sourceleadUrl){
    	   if(e.which === 13) {
    		 requirementList('list',sourceleadUrl);
    		jobSearchHighlight();
+   	 for (var i=0; i<hideColumns.length; i++) {
+		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+		}
    	   }
    	});
  }

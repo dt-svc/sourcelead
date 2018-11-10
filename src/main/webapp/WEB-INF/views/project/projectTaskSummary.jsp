@@ -358,7 +358,7 @@ function severityColorPic(){
 			          
 			          <c:if test="${taskStatus == 'Bug'}">
 			          <div class="row mb">
-		                  <label class="col-md-12">UserStroy</label>
+		                  <label class="col-md-12">UserStory</label>
 		              <div class="col-md-12 dropdown-select">
 		                   <select class="chosen-select form-control" id="editUserStroyId"  onchange="inlineEditUserStory(${projectTask.id});"></select>
 		              </div>

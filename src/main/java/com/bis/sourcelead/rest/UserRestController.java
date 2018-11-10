@@ -296,7 +296,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			}
 			
 		}
-		
+		if(candidate.getDateOfBirth() != null) {
+			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getDateOfBirth()));
+		}
 		
 		return commonUtil.toJSON(candidate);
 		}
@@ -581,13 +583,23 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/getAllApprovers")
-		public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			String resultJson = null;
-			List<User> userList = userService.getUsersByUserRolesAndOrgLocationId(orgLocations.getId());
-			resultJson = toJSON(userList);
-			return resultJson;
+		public @ResponseBody ResponseList<UserRole> getAllApprovers(HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			ResponseList<UserRole> responseList = new ResponseList<>();
+			List<UserRole> userList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
+			userList.forEach( ul -> {
+			    if(StringUtils.isNotBlank(ul.getUser().getLastName())) {
+			    	StringBuilder sb = new StringBuilder();
+			    	sb.append(ul.getUser().getFirstName()).append(" ").append(ul.getUser().getLastName());
+			    	ul.setUserName(sb.toString());
+			    }else {
+			    	ul.setUserName(ul.getUser().getFirstName());
+			    }
+			    ul.setUserId(ul.getUser().getId());
+			});
+			
+			responseList.setData(userList);
+			return responseList;
 
 		}	 
 		

@@ -379,9 +379,79 @@ public class DynamicReport {
 	}
 
 
-	
-	
-	
-	
+	public File contractEmployeeReportPDFExport(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocations) throws IOException
+	{
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("ContractEmployeeReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Associate Id", "assId", type.stringType()),
+							col.column("Associate Name", "assName", type.stringType()),
+							col.column("Vendor", "vendor", type.stringType()),
+							col.column("Pay Date", "payDate", type.stringType()),
+							col.column("InvoiceId", "invoiceId", type.stringType()),
+							col.column("Amount", "amount", type.stringType()),
+							col.column("Paid Amount", "paidAmount", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createContractEmployeeDataSource(responseList)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+
+	private DRDataSource createContractEmployeeDataSource(ResponseList<PayrollReportDTO> responseList)
+	{
+		DRDataSource dataSource = new DRDataSource("assId","assName", "vendor", "payDate", "invoiceId", "amount", "paidAmount");
+		for(PayrollReportDTO pr:responseList.getData()) {
+			  String assId = "--";
+			  if(StringUtils.isNotBlank(pr.getEmpId())) {
+				  assId = pr.getEmpId();
+			  }
+			dataSource.add(assId,pr.getEmpName(),pr.getVendorName(),pr.getPayCheckDate(),pr.getInvoiceId(),pr.getAssAmount(),pr.getInvPaidAmount());
+		}
+		return dataSource;
+	}
+
+
+	public File contractEmployeeReportExcelExport(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocations) throws IOException
+	{
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("ContractEmployeeReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							col.column("Associate Id", "assId", type.stringType()),
+							col.column("Associate Name", "assName", type.stringType()),
+							col.column("Vendor", "vendor", type.stringType()),
+							col.column("Pay Date", "payDate", type.stringType()),
+							col.column("InvoiceId", "invoiceId", type.stringType()),
+							col.column("Amount", "amount", type.stringType()),
+							col.column("Paid Amount", "paidAmount", type.stringType()))
+					
+					.setDataSource(createContractEmployeeDataSource(responseList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
   
 }
