@@ -1820,7 +1820,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="row">';
 					
-					result = result + ' <div class="col-md-7 posSta phoneErrorvalid">';
+					result = result + ' <div class="col-md-7 posSta phoneErrorvalid phoneValidator">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
@@ -2109,14 +2109,14 @@ $("#editRoleDetailsList").empty();
 					 */
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Date of join</label>';
+					result = result + ' <label>Date of join <span class="text-danger">*</span></label>';
 					result = result + '<div class="input-group">';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}else{
-						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}

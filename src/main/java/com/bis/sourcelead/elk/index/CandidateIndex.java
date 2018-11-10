@@ -182,6 +182,8 @@ public class CandidateIndex implements Serializable {
 		
 	private String isAssociate;
 	
+	private String isSharedInMarketplace;
+	
 	private int profilePercentage;
 	
 	private String currentResumeUUID;
@@ -864,6 +866,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
+	}
+	
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
 	}
 
 	public Integer getIsFavouriteAssociate() {
