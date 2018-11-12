@@ -29,6 +29,12 @@ width: 100%;
 .timesheet_week_comm span input, .commentFile span input {
 width: 80%;
 }
+ul.tagit li.tagit-choice .tagit-close .text-icon {
+visibility: hidden;
+}
+ul.tagit li.tagit-choice .tagit-close:before {
+content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
+}
 </style>
 <script>
 function submitToClient(requirementId){
