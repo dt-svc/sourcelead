@@ -71,7 +71,8 @@ $(document).scroll(function(e){
     offset = $("#orgOffset").val();
     var UsersCount = $("#totalUsersCount").val(); 
     // calculate the percentage the user has scrolled down the page
-    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+   // if($(window).scrollTop() == $(document).height() - $(window).height()) {
+	if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
     	var avilableCount = $("#orgOffset").val();
     	
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
