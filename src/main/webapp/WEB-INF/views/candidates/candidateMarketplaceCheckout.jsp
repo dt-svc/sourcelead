@@ -41,9 +41,9 @@
 				  <a class="pull-left mt2 mr10" href="javascript:void(0)" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete</small></a>
 				</li>
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
-				  <a class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">10000</a></li>
+				  <a id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">0</a></li>
               <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i>
-				  <a class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">2000000</a></li>
+				  <a id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
               <li> <a href="javascript:void(0)" class="sortSvg mr10" title="Sorting"></a> </li>
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
               <li class="mr">
@@ -59,58 +59,7 @@
           <div class="col-md-8">
             <div class="scrollContent">
               <div id="gridView">
-                <div class="mt"></div>
-                <div class="media profileDetails-Widget positionRelative"> <a class="removeSelected mt" title="Remove Selected"><i class="fa fa-trash-o"></i></a>
-                  <div class="media-left">
-                    <div class="cartImg positionRelative">
-							<img src="images/sunset.jpg" class="media-object" alt="Image">
-							<i class="fa fa-shopping-cart faCart"></i>
-                      <div class="clearfix"></div>
-						<h4 class="text-center"><span class="label label-default">100%</span></h4>
-                    </div>
-                  </div>
-                  <div class="media-body">
-                    <div class="col-md-9">
-                      <h4 class="media-heading mb0"><a href="javascript:void(0)">Rajkumar Santoshi Alapati</a></h4>
-                      <h6 class="text-muted mb5 fontSmall mt5">Software Development Engineer</h6>
-                      <div class="clearfix"></div>
-                      <ul class="list-unstyled list-inline mt5 mb0 skillCart">
-                    
-						  <li class="mb5" title="Current Rate"><i class="fa fa-location-arrow mr text-info"></i> : <span class="paddingRight"><i class="fa fa-usd"></i></span>550<small class="paddingLeft">/ hr</small></li>
-                    
-						  <li class="mb5" title="Expected Rate">
-						<i class="fa fa-check mr textDanger"></i> : <span class="paddingRight"><i class="fa fa-usd"></i></span>900<small class="paddingLeft">/ hr</small></li>
-                    
-						  <li class="mb5" title="Total Experience"><i class="fa fa-object-group mr text-warning"></i> : <span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>6.5<small class="text-muted paddingLeft">(Yrs)</small></li>
-                    
-						  <li class="mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span> : Dallas</li>
-                      </ul>
-                      <div class="clearfix"></div>
-                      <ul class="list-unstyled list-inline mb0 mt5">
-                        <li>React.Js,</li>
-                        <li>Redux for JavaScript,</li>
-                        <li>Node.Js,</li>
-                        <li>GraphQL.</li>
-                      </ul>
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="col-md-3 text-center">
-                      <div class="clearfix mt25"></div>
-						<h4><span class="label label-primary">Price:<i class="fa fa-dollar ml mr5"></i>20000</span></h4>
-                    </div>
-					  <div class="clearfix"></div>
-					  <div class="cartinnerFooter">
-						<div class="clearfix">
-							<div class="col-md-6">
-								<label class="mr text-muted">Added by :</label><span>James Robertjessi</span>
-							</div>	
-							<div class="col-md-6">
-								<label class="mr text-muted">Added on :</label><span>26/12/2018</span>
-							</div>	
-						</div>
-						</div>
-                  </div>
-                </div>
+                <!-- Dynamic gridView here... -->
 				</div>
             </div>
           </div>
@@ -131,29 +80,29 @@
 						<tbody>
 							<tr>
 								<td><div class="text-left">Total</div></td>
-								<td><div id = 'cartCount' class="text-center">0</div></td>
-								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'totalPrice'>0.0</span></div></td>
+								<td><div id = 'invoiceCartCount' class="text-center">0</div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'invoiceCartTotal'>0.00</span></div></td>
 							</tr>
 							<tr>
 								<td><div class="text-left">Tax</div></td>
 								<td><div class="text-center"></div></td>
-								<td><div class="text-right"><i class="fa fa-dollar mr5"></i> <span>500.00</span></div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'invoiceTax'>0.00</span></div></td>
 							</tr>
 							<tr>
 								<td><div class="text-left">Other</div></td>
 								<td><div class="text-center"></div></td>
-								<td><div class="text-right"><i class="fa fa-dollar mr5"></i> <span>500.00</span></div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'invoiceOther'>0.00</span></div></td>
 							</tr>
 							<tr>
 								<td><div class="text-left">Discount</div></td>
 								<td><div class="text-center"></div></td>
-								<td><div class="text-right"><i class="fa fa-dollar mr5"></i> <span>1500.00</span></div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id = 'invoiceDiscount'>0.00</span></div></td>
 							</tr>
 						</tbody>
 						<tfoot>
 							<tr>
 								<td colspan="2"><div class="text-left">Total Amount</div></td>
-								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span>201500.00</span></div></td>
+								<td><div class="text-right"><i class="fa fa-dollar mr5"></i><span id= 'invoiceTotalAmount'>0.00</span></div></td>
 							</tr>
 						</tfoot>
 					</table>
@@ -285,7 +234,8 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-	updateMarketplaceCartCountAndPrice();
+	getCandidatesFromMarketplaceForCheckOut();
+	updateInvoiceAndCart();
 
 });
 
@@ -321,7 +271,71 @@ function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
 
-function updateMarketplaceCartCountAndPrice(){
+function getCandidatesFromMarketplaceForCheckOut(){
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl +"/getCandidatesFromMarketplaceForCheckOut",
+		success : function(object) {
+			if(object != null){
+			var result ="";
+				for(var i=0;i<object.length;i++){
+				result = result + "<div class='mt'></div>";
+				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected'><i class='fa fa-trash-o'></i></a>";
+				result = result + "<div class='media-left'>";
+				result = result + "<div class='cartImg positionRelative'>";
+				result = result + "<img src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
+				result = result + "<i class='fa fa-shopping-cart faCart'></i>";
+				result = result + "<div class='clearfix'></div>";
+				result = result + "<h4 class='text-center'><span class='label label-default'>100%</span></h4>";
+				result = result + "</div></div>";
+				result = result + "<div class='media-body'>";
+				result = result + "<div class='col-md-9'>";
+				result = result + "<h4 class='media-heading mb0'><a href='javascript:void(0)'>"+(object[i].fullName == null ? "---" : object[i].fullName)+"</a></h4>";
+				result = result + "<h6 class='text-muted mb5 fontSmall mt5'>"+(object[i].designation == null ? "---" : object[i].designation)+"</h6>";
+				result = result + "<div class='clearfix'></div>";
+				result = result + "<ul class='list-unstyled list-inline mt5 mb0 skillCart'>";
+				result = result + "<li class='mb5' title='Current Rate'><i class='fa fa-location-arrow mr text-info'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].currentRate == null ? "---" : object[i].currentRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<li class='mb5' title='Expected Rate'>";
+				result = result + "<i class='fa fa-check mr textDanger'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<li class='mb5' title='Total Experience'><i class='fa fa-object-group mr text-warning'></i> : <span class='paddingRight'><i class='fa fa-briefcase text-muted' aria-hidden='true'></i></span>"+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+"<small class='text-muted paddingLeft'>(Yrs)</small></li>";
+				result = result + "<li class='mb5' title='Location'><span class='paddingRight'><i class='fa fa-map-marker text-muted'></i></span> : "+(object[i].location == null ? "---" : object[i].location)+"</li>";
+				result = result + "</ul> <div class='clearfix'></div>";
+				if(object[i].skillsName != null){
+					var skills = object[i].skillsName.split(',');
+					result = result + '<ul class="list-unstyled list-inline mb0 mt5">';
+					var count = 0;
+					for(var entry of skills) {
+						result = result + '<li>'+entry+'</li>';
+						if(count == 6){
+							result = result + '<li> <span class="text-success" title="'+object[i].skillsName+'">more</span> </li>';
+							break;
+						}
+						count++;
+					}
+					result = result + ' </ul>';
+				}
+				result = result + "<div class='clearfix'></div></div>"
+				result = result + "<div class='col-md-3 text-center'>";
+				result = result + "<div class='clearfix mt25'></div>";
+				result = result + "<h4><span class='label label-primary'>Price:<i class='fa fa-dollar ml mr5'></i>"+object[i].marketPrice+"</span></h4>";
+				result = result + "</div>";
+				result = result + "<div class='clearfix'></div>";
+				result = result + "<div class='cartinnerFooter'>";
+				result = result + "<div class='clearfix'>";
+				result = result + "<div class='col-md-6'>";
+				result = result + "<label class='mr text-muted'>Added by :</label><span>James Robertjessi</span>";
+				result = result + "</div>";	
+				result = result + "<div class='col-md-6'>";
+				result = result + "<label class='mr text-muted'>Added on :</label><span>26/12/2018</span>";
+				result = result + "</div></div></div></div></div>";
+         		}
+			$("#gridView").empty().append(result);
+			}
+		}
+		});
+	}
+
+function updateInvoiceAndCart(){
 	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
@@ -330,9 +344,11 @@ function updateMarketplaceCartCountAndPrice(){
 	        	if(object != null){
 	        		$("#cartCount").html(object[0]);
 	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
-	        		$("#totalPrice").html(totalPriceInCurrency);
-	        		}
-	        	}
+	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+		        	$("#invoiceCartCount").html(object[0]);
+	        		$("#invoiceCartTotal").html(totalPriceInCurrency);
+	        		$("#invoiceTotalAmount").html(totalPriceInCurrency);
+	        		}}
 	});
 }
 
