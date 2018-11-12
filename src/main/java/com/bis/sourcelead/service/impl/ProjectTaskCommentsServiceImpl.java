@@ -130,7 +130,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 			   
 			//Project Task createby Email
 			   if(projectTask.getCreatedBy() != null) {
-				   if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
+				   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
 					   sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"createdByEmail");
 				   }
 			   }
