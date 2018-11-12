@@ -1016,6 +1016,15 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				 }
 			 }
 		ProjectAssignTask  assignTasks = null;
+		
+		 //project Task ownerEmail
+		   if(projectTasks.getOwnerUserId() != null) {
+			   if(user.getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
+					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"ownerEmail");
+			   }
+		   }
+		   
+		   
 	   if(assignUserids.size() > 0) {
 		   for (Long assignedMemeber :assignUserids) {
 				  assignTasks = new ProjectAssignTask();
@@ -1026,18 +1035,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 						 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
 					 }
 				 }
-				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue() && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
 					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
 				 }
 			 }
 	   }
 	   
-	   //project Task ownerEmail
-	   if(projectTasks.getOwnerUserId() != null) {
-		   if(user.getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
-				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"ownerEmail");
-		   }
-	   }
+	  
 	   
 	//Project Task createby Email
 	   if(projectTask.getCreatedBy() != null) {
