@@ -177,11 +177,17 @@
 		<div class="clearfix footerstyelsNew">
 			<div class="col-lg-12">
 				<div class="pull-right">
-					<input value="Save" class="btn btn-success btnSuccess"
-						type="button" id="saveStateTax"> <input value="Cancel"
-						class="btn btn-default ml10" type="button">
+					<input value="Save" class="btn btn-success btnSuccess"type="button" id="saveStateTax"> 
+					<input value="Cancel" class="btn btn-default ml10" type="button" id ="cancel" onclick = "cancel();" >
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+function cancel(){
+	window.location.href =  sourceleadUrl+"/stateTax/list";
+}
+
+</script>
