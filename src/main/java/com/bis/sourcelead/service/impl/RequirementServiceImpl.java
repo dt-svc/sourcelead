@@ -338,7 +338,13 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUrl(jobTitle);
 			}
 		}
-		requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		
+		if(requirementDTO.getProfilePercentage() != null) {
+			requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		}else {
+			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
+		}
+		
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
@@ -1228,12 +1234,18 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				Map<Long, String> reqMap = new HashMap<>();
 				for (String dateString : requirementDTO.getJobFairDates()) {
-					reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					if (dateString.contains(":")) {
+						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					} else if (dateString.contains(",")) {
+						for (String id : dateString.split(",")) {
+							reqMap.put(Long.parseLong(id), "");
+						}
+					}
 				}
 				for (Long id : reqMap.keySet()) {
 					String dates = "";
 					for (String dateString : requirementDTO.getJobFairDates()) {
-						if ((Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
+						if (dateString.contains(":") && (Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
 							dates += (dates.isEmpty() ? "" : ",") + dateString.split(":")[1];
 						}
 					}
@@ -3022,7 +3034,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) throws Exception {
+		 java.util.List<String> requirementLocationsList = new ArrayList<>();
+		 java.util.List<RequirementLocations> locationsList;
+		locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 		if (requirement.getJobId() != null) {
 			writeRow.createCell(0).setCellValue(requirement.getJobId());
 		}
@@ -3053,9 +3068,23 @@ public class RequirementServiceImpl implements RequirementService {
 			writeRow.createCell(3).setCellValue(
 					sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
 		}
+		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).append(" ").toString();
+						writeRow.createCell(4).setCellValue(location);
+					}else{
+						writeRow.createCell(4).setCellValue("--");
+					}
+				}
+			}
+/*		
 		if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())) {
 			writeRow.createCell(4).setCellValue(requirement.getCountry());
-		}
+		}*/
 		if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
 			writeRow.createCell(5).setCellValue(requirement.getSkills());
 		}
@@ -4366,9 +4395,9 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		try {
-			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

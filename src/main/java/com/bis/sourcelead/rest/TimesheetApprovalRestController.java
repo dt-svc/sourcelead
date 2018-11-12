@@ -630,20 +630,25 @@ public class TimesheetApprovalRestController {
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId(),orgLocations.getId(),actualStartDate,actualEndDate,isglobalUser);
 			if(timesheetApprovalDTO.getDisplayWeekList() != null && !timesheetApprovalDTO.getDisplayWeekList().isEmpty()){
 				 List<String> weekTotalList = new ArrayList<String>();
-				 List<String> submissionTotalList = new ArrayList<String>();
+				 List<String> submissionTotalList = new ArrayList<String>();   
+				 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+                 if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					 avgWorkingHoursPerDay = 8; 
+				  }
 				    for (Map.Entry<Date,Date> entry : timesheetApprovalDTO.getDisplayWeekList().entrySet()) { 
+				    		    	
 				    	 long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
 				    	 Float weekTotal = 0f;
 				    	 if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
-				    		  weekTotal = (float) ((diff)*8);
+				    		  weekTotal = (float) ((diff)*avgWorkingHoursPerDay);
 				    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 				    	 }
 				    	 else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
-				    		  weekTotal = (float) ((diff-1)*8);
+				    		  weekTotal = (float) ((diff-1)*avgWorkingHoursPerDay);
 				    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 				    	 }
 				    	 else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
-				    		  weekTotal = (float) ((diff+1)*8);
+				    		  weekTotal = (float) ((diff+1)*avgWorkingHoursPerDay);
 				    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 				    	 }
 				    	 float leaveTotal = 0f;

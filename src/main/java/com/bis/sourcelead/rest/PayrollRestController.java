@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -295,6 +296,118 @@ public class PayrollRestController {
 	}
 	
 	
+	
+	@SuppressWarnings("unused")
+	@RequestMapping(value = { "/saveBulkPayheadAdjustInd","/rest/saveBulkPayheadAdjustInd" })
+	public Response<String> saveBulkPayheadAdjustInd(IndEmployeePayrollDTO indEmployeePayrollDTO, HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if(loginUser != null){
+			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
+			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
+			 	if(sessionObj != null) {
+				    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+				    	List<INDPayrollDTO> payrollDTOList = null ;
+				    	if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees())) {
+				    		payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO -> indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(employeePayrollDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
+				    	}else {
+				    		payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO();
+				    	}
+				    	
+				    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
+				    		for(INDPayrollDTO indPayrollDTO : payrollDTOList) {
+				    			if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indPayrollDTO.getIndEmpPayrollUUID()) ) {
+			   						continue;
+			   					}
+					    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
+					    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
+					    		
+					    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					    		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = associatePayrollPayheadDTOList;
+					    		associatePayrollPayheadDTOList = associatePayrollPayheadDTOList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
+									try {
+										return sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
+									} catch (ParseException e) {
+										e.printStackTrace();
+									}
+									return false;
+								}).count())<1).collect(Collectors.toList());
+					    		
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistoryDTO apphDTO : associatePayrollPayheadDTOList) {
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Earnings"))
+					    				ePay = ePay.add(apphDTO.getMonthly());
+					    			
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Deduction"))
+					    				dPay = dPay.add(apphDTO.getMonthly());
+					    		}
+					    		indPayrollDTO.setGrossPay(ePay);
+					    		indPayrollDTO.setNetPay(ePay.subtract(dPay));
+					    		indPayrollDTO.setUpdatedBy(loginUser.getId());
+					    		indPayrollDTO.setUpdatedDate(new Date());
+				    		}
+				    	}
+			   	}else {
+			   			List<IndEmployeePayroll> indEmployeePayrollList = indPaysheetFrequencyService.getIndEmployeePayrollListByPaysheetFrequencyUuid(indEmployeePayrollDTO.getPaySheetFrequencyUUID()).getData();
+			   				for(IndEmployeePayroll indEmployeePayroll : indEmployeePayrollList) {
+			   					if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indEmployeePayroll.getIndEmpPayrollUUID()) ) {
+			   						continue;
+			   					}
+			   					
+			   					//the phList is to collect all payheads and calculate gross and net pay
+			   					Set<AssociatePayrollPayheadHistory> phList = new HashSet<>();
+			   					phList.addAll(indEmployeePayroll.getAssociatePayrollPayheadHistory());
+			   					
+		   						Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndList(indEmployeePayroll, indEmployeePayrollDTO, loginUser);
+						   		indEmployeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
+						   		
+						   		
+						   		associatePayrollPayheadHistory.addAll(phList);
+					    		Set<AssociatePayrollPayheadHistory> dupAssociatePayrollPayheadHistoryList = associatePayrollPayheadHistory;
+					    		associatePayrollPayheadHistory = associatePayrollPayheadHistory.stream().filter(ml -> (dupAssociatePayrollPayheadHistoryList.stream().filter(sl -> {
+										return sl.getPayrollPayhead().getId().equals(ml.getPayrollPayhead().getId()) && sl.getUpdatedDate().after(ml.getUpdatedDate());
+								}).count())<1).collect(Collectors.toSet());
+					    		
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistory apph : associatePayrollPayheadHistory) {
+					    			if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Earnings")) {
+					    				ePay = ePay.add(apph.getMonthly());
+					    			}else if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Deduction")) {
+					    				dPay = dPay.add(apph.getMonthly());
+					    			}
+					    		}
+					    		indEmployeePayroll.setGrossPay(ePay);
+					    		indEmployeePayroll.setNetPay(ePay.subtract(dPay));
+						   		indEmployeePayroll.setUpdatedBy(loginUser.getId());
+						   		indEmployeePayroll.setUpdatedDate(new Date());
+						   		associatePayrollPayheadHistoryService.saveIndEmployeePayroll(indEmployeePayroll);
+			   				}
+			   		
+			   	}
+			 	response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}else if (loginUser == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
 	@SuppressWarnings({ "unused", "unchecked" })
 	@RequestMapping(value = { "/bulkPayAdjustmentsForFrequencyInd","/rest/bulkPayAdjustmentsForFrequencyInd" })
 	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
@@ -320,6 +433,8 @@ public class PayrollRestController {
 			 	
 			 	ResponseList<PayrollPayheadDTO> payrollPayheadResponseList = payrollPayheadService.getPayrollPayheadListByPayheadComponentType(orgLocation, Constants.IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE);
 		 		modelAndView.addObject("variablePayheadsList", payrollPayheadResponseList.getData());
+		 		
+		 		modelAndView.addObject("indPaysheetFrequency", indPaysheetFrequencyDTO);
 		 		
 				commonUtil.highLightMenu(Constants.RUNPAYROLL, request);
 				modelAndView.addObject("activeTaxTab", "runPayrollInd");

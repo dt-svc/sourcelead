@@ -50,7 +50,7 @@ import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
-import com.bis.sourcelead.dto.LcaVisaClarificationDTO;
+import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -91,6 +91,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -216,6 +217,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				if(StringUtils.isNotBlank(immigrationDTO.getLcaNumber())) {
 					saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
 				}
+				 
+				// This block of code for no of positions available for LCA Number once LCA Assigned To candidate
+				    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				    Lca updateLca=	immigrationCommonDao.getLcaByLcaId(Long.parseLong(immigrationDTO.getLcaId()));
+				    updateLca.setAvailablePositions(updateLca.getNoOfPositions()-1);
+				    updateLca.setUpdatedDate(currentDate);
+					immigrationCommonDao.saveLcaDetails(updateLca, null, null);
+				
 				
 			}
 			if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaId())) {
@@ -227,6 +236,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				}
 				
 			}
+			
+			
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
@@ -2492,7 +2503,9 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		}
 		if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
 		lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
 		}
+		
 		lca.setLcaUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		lca.setLcaNo(lcaDTO.getLcaNo());
 		lca.setLcaTitle(lcaDTO.getLcaTitle());
@@ -2881,6 +2894,24 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
 		return immigrationCommonDao.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 	}
+
+	/*
+	 * immigration reports
+	 */
+	@Override
+	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO,
+			OrgLocations orgLocations) {
+		return immigrationCommonDao.getImmigrationReports(immigrationReportDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<LcaReportViewDTO> getLcaReportsList(LcaReportViewDTO lcaReportViewDTO, String status, String lcaStatus,
+			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String filterByDays,String positionsAvaialble)
+			throws Exception {
+		return immigrationCommonDao.getLcaReportList(lcaReportViewDTO, status, lcaStatus, searchValue, orgLocations, filterVal, filterByDays,positionsAvaialble);
+	}
+
+	
 
 	/*
 	 * LCA Code Ends Here

@@ -104,7 +104,7 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
-		    	headerDTO.setRunNumber(0);
+		    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
 		    	
@@ -354,7 +354,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
     	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
     	headerDTO.setRunDate(registerDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
     	
     	createHeaderTable(document,headerDTO,orgLocation);
 		
@@ -576,7 +576,7 @@ public class PayrollReportPdfUtil {
 	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
 	    	headerDTO.setReportType("CONTRIBUTION REPORTS");
 	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-	    	headerDTO.setRunNumber(0);
+	    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
 	    	createHeaderTable(document, headerDTO, orgLocation);
 	    	
 
@@ -697,9 +697,9 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPayrollType(payrollReportDTO.getType());
     	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-    	headerDTO.setReportType("DEDUCTION REGISTER");
+    	headerDTO.setReportType("DEDUCTION REPORT");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 
 		document.add(Chunk.NEWLINE);
@@ -739,7 +739,7 @@ public class PayrollReportPdfUtil {
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
-			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getCurrent(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
@@ -817,7 +817,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
     	headerDTO.setReportType("PAYROLL REGISTER");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 		
 		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
@@ -1481,8 +1481,8 @@ public class PayrollReportPdfUtil {
 			if(associate.getFederalTaxAllowances() != null) {
 				federalAllowances = associate.getFederalTaxAllowances();
 			}
-			if(associate.getState() != null) {
-				state = associate.getState();
+			if(associate.getResidenceStateCode() != null) {
+				state = associate.getResidenceStateCode();
 			}
 			if(associate.getStateFillingStatus() != null) {
 				stateStatus = associate.getStateFillingStatus();
@@ -1536,7 +1536,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
@@ -1594,7 +1594,7 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deduction_contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
                     .setIgnorePageMargins(true)

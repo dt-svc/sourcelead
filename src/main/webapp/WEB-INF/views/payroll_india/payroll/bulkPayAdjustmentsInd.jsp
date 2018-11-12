@@ -12,40 +12,47 @@
 				<button type="button" class="close" data-dismiss="modal" onclick="bulkAdjustmentClose();">×</button>
 				 <h4 class="modal-title">Bulk Pay Adjustments</h4>
 			 </div>
+			 
+			<form:form id="bulkPayheadAdjust_form" name="bulkPayheadAdjust_form">
 			<div class="modal-body" style="min-height: 150px;">
 					<div class="row mb10 clearfix">
-					<div class="col-md-6">
+						<div class="col-md-6">
 							<div class="clearfix">
 								<div class="checkbox-new pull-left ml">
-										<input id="sae" class="checkbox-custom" name="selectAllEmployees" value="selectAllEmployees" type="checkbox">
+										<input id="sae" class="checkbox-custom" name="allEmployees" type="checkbox">
 										<label for="sae" class="checkbox-custom-label"></label><span class="ml10">Select All Employees</span>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="clearfix">
-							<select class="chosen-select" multiple data-placeholder="Select Employees" id="selectEmployees">
+							<select class="chosen-select" multiple data-placeholder="Select Employees" field-name="Select Employee" id="selectEmployees" name="indEmpPayrollUUIDList" data-validation="required">
 								<c:forEach var="payFrequencyEmployee" items="${payFrequencyEmployeeList}">
-									<option>${payFrequencyEmployee.empName}</option>
+									<option value="${payFrequencyEmployee.indEmpPayrollUUID}">${payFrequencyEmployee.empName}</option>
 								</c:forEach>
 							</select>
 							</div>
 						</div>
 					</div>
+					<input type="text" hidden id="paySheetFrequencyUUID" name="paySheetFrequencyUUID" value="${indPaysheetFrequency.paySheetFrequencyUUID}">
 					<div class="clearfix"></div>
 					<hr>
 					<div class="clearfix mt25 minDivHeight">
-						<c:forEach var="variablePayhead" items="${variablePayheadsList}">
+						<c:forEach var="variablePayhead" items="${variablePayheadsList}" varStatus="loop">
 							<div class="mb clearfix">
 								<label class="col-md-3 textBold text-right">${variablePayhead.name}</label>
 								<div class="col-md-6">
-									<input type="text" value="" class="form-control input-sm">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadName" value="${variablePayhead.name}">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].uuid" value="${variablePayhead.uuid}">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayhead" value="${variablePayhead.id}">
+									<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop.index}].payrollPayheadType" value="${variablePayhead.type}">
+									<input type="text" name="associateSalaryPayheadIndEarningList[${loop.index}].monthly" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="" class="form-control input-sm">
 								</div>
 							</div>
 						</c:forEach>
 					</div>
 				</div>
-			
+			</form:form>
 		 <div class="modal-footer clearfix">
 			<button type="button" class="btn btn-primary" onclick="bulkAdjustmentSaving();">Save</button>
 	        <button type="button" class="btn btn-default" onclick="bulkAdjustmentClose();">Cancel</button>
@@ -58,11 +65,33 @@
 <script>
 $('#sae').change(function () {
     if (this.checked) {
+    	$('#sae').val('Y');
+    	$('#selectEmployees').removeAttr("data-validation");
         $('#selectEmployees').prop('disabled', true).trigger("chosen:updated");
     }else{
+    	$('#sae').val('N');
+    	$('#selectEmployees').attr("data-validation","required");
     	$('#selectEmployees').prop('disabled', false).trigger("chosen:updated");
     }
 });
+
+function bulkAdjustmentSaving(){
+	if ($('#bulkPayheadAdjust_form').validate(false, validationSettings)) {
+		var psfUUID = $('#paySheetFrequencyUUID').val();
+		var formData = getFormData1("bulkPayheadAdjust_form");
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		     processData: false,
+		     contentType:false, 
+			 url : sourceleadUrl+"/saveBulkPayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 success : function(result) {
+				 bulkAdjustmentClose();
+				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
+			 }
+		});
+	}
+}
 </script>
 
 <script type="text/javascript">
