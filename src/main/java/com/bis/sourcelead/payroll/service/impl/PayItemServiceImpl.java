@@ -67,6 +67,7 @@ public class PayItemServiceImpl implements PayItemService{
 				payItem.setDescription(payItemDTO.getDescription());
 				payItem.setOrgLocationId(orgLocation);
 				payItem.setStatus(1);
+				payItem.setAllowOverTime(payItemDTO.getAllowOverTime());
 				PayItem savedPayItem = payItemDao.addPayItem(payItem);
 				if (savedPayItem != null) {
 					resObj.setResponse(Result.SUCCESS.name());
