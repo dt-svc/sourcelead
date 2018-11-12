@@ -602,6 +602,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			associatePayrollPayheadHistoryDTO.setPayrollPayhead(payHeadHistoryDTO.getPayrollPayhead());
 		}
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
 		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
 		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
@@ -642,6 +643,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			PayrollPayhead payrollPayhead = new PayrollPayhead();
 			payrollPayhead.setId(payHeadHistoryDTO.getPayrollPayhead());
 			payrollPayhead.setType(payHeadHistoryDTO.getPayrollPayheadType());
+			payrollPayhead.setShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 			associatePayrollPayheadHistory.setPayrollPayhead(payrollPayhead);
 		}
 		associatePayrollPayheadHistory.setMonthly(payHeadHistoryDTO.getMonthly());

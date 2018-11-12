@@ -18,9 +18,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project Attributes</h2>
+        <h2>Status</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Project Attributes</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; Project Task Status</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -115,9 +115,9 @@ function getTaskStatusList(){
    		    		var report = json[i];
 	   		    	result = result +'	<tr>';
 	   		    	result = result +'  <td><div class="tblminwidth-150">'+report.id+'</div></td>';
-	                result = result +'  <td><div class="tblminwidth-150">'+report.name+'</div></td>';
+	                result = result +'  <td><div class="tblminwidth-150" title="'+report.name+'">'+report.name+'</div></td>';
 	                
-	                result = result +'  <td><div class="tbldata-dotdot-big">'+report.description+'</div></td>';
+	                result = result +'  <td><div class="tbldata-dotdot-big" title="'+report.description+'">'+report.description+'</div></td>';
 	                result = result +'  <td>';
 	                if(report.referId != null){
 	                	 result = result +'  '+report.referName+'';
