@@ -113,6 +113,76 @@
 				</c:if> --%>
 			</div>
 		</div>
+		
+		
+		
+<div class="sideMask"></div>
+<div class="modal requestPop">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" onClick="closeRequestLoanPop();">×</button>
+				<h4 class="modal-title">Request</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group clearfix">
+					<label class="col-md-3">Type</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<select>
+							<option selected="">Type</option>
+							<option>Type1</option>
+							<option>Type2</option>
+							<option>Type3</option>
+							<option>Type4</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">Name</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<input type="text" class="form-control" placeholder="Enter">
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">Amount</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<input type="text" class="form-control" placeholder="Enter">
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">No. of Scheduels</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<input type="text" class="form-control" placeholder="Enter">
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">Requested To</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<input type="text" class="form-control" placeholder="Enter">
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">Emi6</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<input type="text" class="form-control" placeholder="Enter">
+					</div>
+				</div>
+				<div class="form-group clearfix">
+					<label class="col-md-3">Comment</label>
+					<div class="clearfix dropdown-select col-md-9">
+						<textarea cols="2" class="form-control" placeholder="Enter"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary">Request</button>
+				<button type="button" class="btn btn-default"
+					onClick="closeRequestLoanPop();">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+		
 <script>
 function getMyLoansAdvList(loanStatus){
 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
