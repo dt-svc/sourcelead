@@ -611,6 +611,10 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
+			if(StringUtils.isNotBlank(emp.getPayPeriodNum()))
+				dto.setRunNo(emp.getPayPeriodNum());
+			else
+				dto.setRunNo("0");
 			if(emp.getCandidate().getWorkLocation() != null)
 				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
 			dto.setSsnNumber(emp.getCandidate().getConsultantUser().getSsn());

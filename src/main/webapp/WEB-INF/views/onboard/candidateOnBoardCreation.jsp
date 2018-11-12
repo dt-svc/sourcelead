@@ -383,6 +383,7 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
+
   
   
 <div id="divAttachmentTd1" style="display: none; float: left;">
