@@ -390,6 +390,7 @@ public class TaxAdminController {
 			}
 			modelAndView.addObject("formTypes", taxService.getTaxFormTypeList(false));
 			modelAndView.addObject("activeTaxTab", "forms");
+			modelAndView.addObject("formTabType", isEditable ? "createForm" : "viewForm");
 			modelAndView.setViewName("payroll_india/addForm");
 		} catch (Exception e) {
 			logger.error(e.getMessage());

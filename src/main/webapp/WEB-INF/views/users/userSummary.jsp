@@ -9,6 +9,7 @@
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
 
+
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -1839,11 +1840,12 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" name="ssn" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
 					result = result + ' </div>';
 					}
+					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
@@ -2987,6 +2989,45 @@ function getStartandEndDate(){
 	  
     }
 </script>
+   <script>
+    function validateSSNNumber(){
+		var SSN = $("#SSN").val();
+		var length  = $("#SSN").val().length;
+		if(SSN.search("-") > 0){
+			SSN = SSN.replace(/-/g, "");
+			length = SSN.length;
+			calculateSSNLength(length,SSN);
+		}else{
+			calculateSSNLength(length,SSN);
+		}
+	}
+	function calculateSSNLength(length,SSN){
+		if(length == 0){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		}else if(length != 9){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		}else{
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			var value = "";
+			var ssn = SSN.substring(0,3);
+			value += ssn+"-";
+			ssn = SSN.substring(3,5);
+			value += ssn+"-";
+			ssn = SSN.substring(5,9);
+			value += ssn;
+			$("#SSN").val(value);
+			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+			}else{
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+			}
+		}
+	}
+	 </script>
+
 
 
 

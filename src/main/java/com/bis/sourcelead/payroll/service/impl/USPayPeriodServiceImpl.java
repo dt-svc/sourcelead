@@ -17,6 +17,7 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.util.CommonUtil;
 
