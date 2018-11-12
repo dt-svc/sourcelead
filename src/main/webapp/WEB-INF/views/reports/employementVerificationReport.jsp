@@ -593,7 +593,6 @@ function viewCompleteTemplate(temp){
 	//pop function for employeementVarification filter
 	
 	function employementveriFileterPopUp(){
-		alert("helllllllllllo");
 	 $("#vendorFilterId").toggle();
 	 $(".advancedsearch-mask").fadeIn();
 }
