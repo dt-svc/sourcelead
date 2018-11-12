@@ -35,6 +35,7 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
     private String createdByCandidates;
     private String createdByFilter;
     private List<String> candidateTags;
+    private String isSharedInMarketplace;
     
     
 	public List<String> getCandidateSkills() {
@@ -281,4 +282,30 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 	public void setCandidateTags(List<String> candidateTags) {
 		this.candidateTags = candidateTags;
 	}
+
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
+	}
+
+	@Override
+	public String toString() {
+		return "CandidateSearchDTO [candidateSkills=" + candidateSkills + ", candidateVisa=" + candidateVisa
+				+ ", primarySkill=" + primarySkill + ", minRate=" + minRate + ", maxRate=" + maxRate + ", currency="
+				+ currency + ", rateType=" + rateType + ", designation=" + designation + ", minExpYears=" + minExpYears
+				+ ", maxExpYears=" + maxExpYears + ", noticePeriod=" + noticePeriod + ", designationType="
+				+ designationType + ", education=" + education + ", excludeEducation=" + excludeEducation
+				+ ", certification=" + certification + ", excludeEmployers=" + excludeEmployers + ", employers="
+				+ employers + ", applicantType=" + applicantType + ", candidateStatus=" + candidateStatus
+				+ ", isAssociate=" + isAssociate + ", candidateType=" + candidateType + ", generatedId=" + generatedId
+				+ ", createdBy=" + createdBy + ", employmnetTypes=" + employmnetTypes + ", candidateFilterSkills="
+				+ candidateFilterSkills + ", availability=" + availability + ", candidateTypeFilter="
+				+ candidateTypeFilter + ", createdByCandidates=" + createdByCandidates + ", createdByFilter="
+				+ createdByFilter + ", candidateTags=" + candidateTags + ", isSharedInMarketplace="
+				+ isSharedInMarketplace + "]";
+	}
+	
 }

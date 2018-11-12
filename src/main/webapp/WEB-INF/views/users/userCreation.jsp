@@ -140,10 +140,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                      <label class="col-md-3">Date of Joining</label>
+                      <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
                          <div class="col-md-9">
                            <div class="input-group errorInptgroup">
-                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
