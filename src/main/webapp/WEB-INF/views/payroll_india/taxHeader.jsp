@@ -8,9 +8,20 @@
 </div>
 <section class="content-header clearfix">
 	<div class="pull-left" >
-		<h2> ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : 'Forms'}</h2>
+		<h2> ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</h2>
 	</div>
-	<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : 'Forms'}</div>
+	<c:choose>
+		<c:when test="${formTabType == 'createForm' || formTabType == 'viewForm'}">
+			<div class="pull-right brud-crum">
+				<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+				<a href="/app/form/list">Forms List</a> &raquo; 
+				${formTabType == 'createForm' ? 'Create Form' :'View Form'}
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
+		</c:otherwise>
+	</c:choose>
 </section>
 
 <div class="tabsMenu">

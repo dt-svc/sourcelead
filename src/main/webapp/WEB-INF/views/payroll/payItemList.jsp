@@ -69,6 +69,7 @@ $(document).ready(function(){
 				result = result + '<tr>';
 				result = result + '<th>Name</th>';
 				result = result + '<th>Description</th>';
+				result = result + '<th>Override</th>';
 				result = result + '<th>Emp Type</th>';
 				result = result + '<th>Schedule</th>';
 				result = result + '<th>Action</th>';
@@ -92,6 +93,13 @@ $(document).ready(function(){
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '   <div title="'+opt.description+'" class="tblminwidth-75">'+opt.description+'</div>';
+			        		 result = result + ' </td>';
+			        		 result = result + ' <td>';
+			        		 if(opt.allowOverTime != null && opt.allowOverTime != '' && opt.allowOverTime != 'undefined'){
+			        			 result = result + '   <div title="'+opt.allowOverTime+'" class="tblminwidth-75">'+opt.allowOverTime+'</div>';
+			        		 }else{
+			        			 result = result + '   <div class="tblminwidth-75">--</div>';
+			        		 }
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + '   <div title="'+opt.empType+'" class="tbldata-dotdot-100">'+opt.empType+'</div>';
