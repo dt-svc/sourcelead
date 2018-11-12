@@ -639,13 +639,14 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		  
 		  $('#payrollPayDate').datepicker({
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+	  		  maxDate: 0,
 		  	  onSelect : function(selected) {
-				addValidClass();
+			   addValidClass();
+/* 		  		document.getElementById("payrollPayDateDivId").style.display="block"; */
 			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
