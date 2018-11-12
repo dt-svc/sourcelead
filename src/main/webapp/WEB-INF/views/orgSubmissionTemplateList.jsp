@@ -310,12 +310,12 @@ function cancel(){
             }
             
             fields.push({
-                type: fieldType,
-                label: fieldLabel,
-                req: fieldReq,
-                choices: choices,
-                isRemoved : isRemoved,
-                isLabelModified : isLabelModified
+            		type: fieldType,
+	                label: fieldLabel,
+	                req: fieldReq,
+	                choices: choices,
+	                isRemoved : isRemoved,
+	                isLabelModified : isLabelModified
             });
 
         });
