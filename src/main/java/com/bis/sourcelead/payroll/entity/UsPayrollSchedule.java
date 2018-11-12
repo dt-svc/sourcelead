@@ -48,6 +48,9 @@ public class UsPayrollSchedule {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "PAYROLL_SCHEDULE_UUID")
+	private String payrollScheduleUUID;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -180,6 +183,16 @@ public class UsPayrollSchedule {
 	public void setPayScheduleNotifyMember(Set<USPayScheduleNotifyMember> payScheduleNotifyMember)
 	{
 		this.payScheduleNotifyMember = payScheduleNotifyMember;
+	}
+
+	public String getPayrollScheduleUUID()
+	{
+		return payrollScheduleUUID;
+	}
+
+	public void setPayrollScheduleUUID(String payrollScheduleUUID)
+	{
+		this.payrollScheduleUUID = payrollScheduleUUID;
 	}
 
 	

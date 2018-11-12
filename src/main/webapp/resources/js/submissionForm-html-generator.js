@@ -225,18 +225,18 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                              }
 
                              else if (fieldType == 'radio') {
-                                 var choiceHTML = '<label><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label+'\');"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</label>';
                                  if(required == 1 && flag == 0){
-                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                  }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'checkbox') {
                                  var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label+'\')"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</label>';
                                  if(required == 1 && flag == 0){
-                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                  }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
@@ -559,6 +559,7 @@ function getCheckBoxValue(id,name){
 		 $("input[name='"+name+"']:checked").each( function (i) {
 			 checkList[i] = $(this).val();
 		});
+		 
 		 
 	if (checkList.length > 0) { 
 	  $('#'+name+"checkbox").val(id.value); 
