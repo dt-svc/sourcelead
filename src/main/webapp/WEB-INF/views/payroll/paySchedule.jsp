@@ -24,18 +24,19 @@ $(document).ready(function(){
         <div class="success_pop" id="selector2" style="display: none;">
           <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
         </div>
-      <div class="pull-right brud-crum">Home &raquo; Pay Schedule</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a></div>
     </section>
     <div class="clearfix"></div>
     <div class="timesheet_out">
       <div class="tablelist-wrap clearfix">
-          <div class="row">
-		  <div class="col-md-6 mt">
+          <div class="row mt">
+		  <div class="clearfix">
 		  <div id="loaderDIV"></div>
 		    <form:form id="add_payroll_schedule_form" name="add_payroll_schedule_form" method="post">
+            <div class="col-md-6">
             <div class="form-group clearfix">
-				<label class="col-md-4">Pay Frequency</label>
-              <div class="col-md-6">
+			 <label class="col-md-4">Pay Frequency</label>
+              <div class="col-md-8">
                 <div class="dropdown-select" id="scheduleFreDIV">
                   <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" onchange="weekOnChange();" field-name="Pay Frequency">
                     <option value="">Select Frequency</option>
@@ -45,20 +46,22 @@ $(document).ready(function(){
                   </select>
                 </div>
               </div>
-            </div>
+              </div>
+            
 			  <input type="hidden" value="${payScheduleUUID}" name="payrollScheduleUUID"/>
 			  <div style="display: block;">
           <div class="form-group clearfix" id="frequencyBy">
 				<label class="col-md-4">Pay Period Start Date</label>
-              <div class="col-md-6" id="payperiodDiv1">
+              <div class="col-md-8" id="payperiodDiv1">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
               </div>
 			  <div class="clearfix"></div>
           </div>
+          
 		<div id="frequencyByMonthly" style="display: none;">
           <div class="form-group clearfix">
 				<label class="col-md-4">Next Pay Month</label>
-              <div class="col-md-6" id="nextPayrollMonth">
+              <div class="col-md-8" id="nextPayrollMonth">
 				  <select class="sel" id="nextPayMonth" name="nextPayMonth"  field-name="Next Pay Month">
 				  <!-- 	<option value="">Slect Month</option>
 				  	<option value="JANUARY">January</option>
@@ -79,30 +82,37 @@ $(document).ready(function(){
 			  <div class="clearfix"></div>
           </div>
           </div>
-			 <h5 class="col-md-12 clearfix">Pay Period Frequency</h5>
+          </div>
+          <div class="form-group">
+              <label class="col-md-4">Notify to Members</label>
+				<div class="col-md-8">
+					<select class="form-control chosen-select" multiple data-placeholder="Notify Members" id="notifyMember" name="notifyMember">
+					</select>
+				</div>
+            </div>
+          </div>
+          
+          
+          <div class="col-md-6">
+			 <h5 class="col-md-12 clearfix margin-top0">Pay Period Frequency</h5>
 			  <div class="clearfix"></div>
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
-              <div class="col-md-6">
+              <div class="col-md-8">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="payCheckDate">
               </div>
 			  <div class="clearfix"></div>
             </div>
 			  <div class="form-group clearfix">
 				<label class="col-md-4">Run Payroll</label> 
-              <div class="col-md-6">
+              <div class="col-md-8">
                 <input class="form-control calendar" placeholder="Date" type="text" id="runPayrollDate" name="runPayDate" data-validation="required" field-name="Run Payroll Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
-            
-            <div class="form-group">
-              <label class="col-md-12 paddingRight">Notify to Members</label>
-				<div class="col-md-12">
-					<select class="form-control chosen-select" multiple data-placeholder="Notify Members" id="notifyMember" name="notifyMember">
-					</select>
-				</div>
             </div>
+            
+            
           <!--   <div class="form-group clearfix">
 				<label class="col-md-4">Notify to Members</label>
               <div class="col-md-6">
@@ -114,9 +124,10 @@ $(document).ready(function(){
 			  
 			  <div class="clearfix"></div>
 			  
-			  <div class="col-md-6 col-md-offset-4 mb">
-			  	<div class="pull-right">
-					<button type="button" class="btn btn-primary" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button>  
+			  <div class="col-md-12 mb mt">
+			  	<div class="pull-right mr">
+					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -198,6 +209,12 @@ $('#payCheckDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
     //minDate: 0  this line for to restrict selection of previous dates
+    		onSelect : function(selected) {
+    			var dt = $(this).datepicker('getDate', '+1d');
+    			dt.setDate(dt.getDate()+1);
+    			$("#runPayrollDate").datepicker("option", "minDate", dt);
+// 			removeStartValid();
+			}
 });
 
 $('#runPayrollDate').datepicker({
@@ -205,6 +222,12 @@ $('#runPayrollDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
     //minDate: 0  this line for to restrict selection of previous dates
+    onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#payCheckDate").datepicker("option", "maxDate", dt);
+// 			removeEndValid();
+	}
 });
 
 $('#payPeriodStartDate').datepicker({
@@ -212,7 +235,9 @@ $('#payPeriodStartDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
 	  onSelect : function(selected) {
-		//addValidClass();
+		  var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate()+1);
+			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
     //minDate: 0  this line for to restrict selection of previous dates
 });
@@ -222,7 +247,16 @@ $('#payPeriodStartDate').datepicker({
 		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
 	} */
 </script>
-	
+
+<script>
+function removeStartValid(){
+	$('#payCheckDate').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndValid(){
+	$('#runPayrollDate').find('p.jquery_form_error_message').remove();
+}
+</script>
 <script>
 function weekOnChange() {
 	var frequency = $("#payFrequency").val();

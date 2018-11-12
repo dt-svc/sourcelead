@@ -27,7 +27,9 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Upcomming pay period and paydays</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Upcomming pay period and paydays</div>
+     <!--  <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Upcomming pay period and paydays</div> -->
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> <a href="<c:url value='${appPath}/payrollScheduleList'/>">Pay Schedule List &raquo;</a> </div>
+      
     </section>
     
 	<div class="timesheet_out clearfix">
@@ -35,7 +37,7 @@ $(document).ready(function(){
 			<div class="clearfix mb10 mt10">
 				<div class="pull-left reqListBtn ml10">
 					<span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span>
-					<span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span>
+					<!-- <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> -->
 				</div>
 				</div>
 			</div>
@@ -135,7 +137,7 @@ function calenderPagination(){
   
   <script>
 $(".listviewPaydays").click(function(){
-	$("#payperiodListview").toggle();
+	$("#payperiodListview").show();
 	$("#payperiodCalendarview").hide();
 	$(this).addClass("rAct");
 	$(".calendarviewPaydays").removeClass("rAct");
