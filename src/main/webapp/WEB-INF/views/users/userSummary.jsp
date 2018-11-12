@@ -1839,9 +1839,9 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <div id="ssnNumberDiv"class="user_summary_edit_cta">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" name="ssn" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" id="ssnNumber" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
 					result = result + ' </div>';
 					}
 					
@@ -2864,6 +2864,44 @@ $(document).ready(function() {
 
 
 </script>
+<script>
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+}
+function calculateSSNLength(length,ssnNumber){
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+	}
+}
+ </script>
 
 <script type="text/javascript">
 function flushProject(){
