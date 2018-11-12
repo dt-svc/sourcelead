@@ -502,8 +502,8 @@ function immigrationReportPagination(url){
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		 if(opt.phone !=null && opt.phone != '' && opt.phone !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phone+'" >'+opt.phone+'</div>';
+	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phoneNumber+'" >'+opt.phoneNumber+'</div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
