@@ -7,8 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -142,12 +145,17 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		return indPaysheetFrequencyDTO;
 	}
 	
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "null" })
 	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
+				if(employee.getHireDate().after(freqEndDate)) {
+					continue;
+				}
+				
 				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
 				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
 					double totalHours = 0;
@@ -186,11 +194,37 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
 					
-					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 					if (employee != null) {
 						employeePayroll.setEmployee(employee);
 					}
-					IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser,userGroup.getPayFrequency());
+					
+					Set<AssociateSalaryPayheadInd> salaryPayheadList = new HashSet<AssociateSalaryPayheadInd>();
+					for(AssociateSalaryPayheadInd associateSalaryPayheadInd : assoSal.getAssociateSalaryPayheadIndList()) {
+						boolean isPayheadApplincable = true;
+						if((StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor()) && associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor().equalsIgnoreCase("Experienced"))) {
+							Date joinDate = null;
+							if(employee.getHireDate() != null) {
+								joinDate = employee.getHireDate();
+							}else {
+								joinDate = employee.getCreatedDate();
+							}
+							Date expDate = joinDate;
+							DateUtils.addYears(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
+							DateUtils.addMonths(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
+							if(expDate.before(freqStartDate)) {
+								isPayheadApplincable = false;
+							}
+						}
+						if(associateSalaryPayheadInd.getPayrollPayhead() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate().before(freqEndDate) 
+								&& isPayheadApplincable ) {
+							salaryPayheadList.add(associateSalaryPayheadInd);
+						}else if(associateSalaryPayheadInd.getPayrollPayhead() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate() == null
+								&& isPayheadApplincable ) {
+							salaryPayheadList.add(associateSalaryPayheadInd);
+						}
+					}
+					
+					IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(salaryPayheadList, employeePayroll, loginUser,userGroup.getPayFrequency());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
 					employeePayroll.setGrossPay(utilDTO.getGrossPay());
 					employeePayroll.setNetPay(utilDTO.getNetPay());

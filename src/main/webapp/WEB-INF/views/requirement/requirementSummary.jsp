@@ -622,8 +622,9 @@ function viewJobSummaryDocument(jobId,title){
 function updateReuqirementStatus(status){
 	
 	
-	var requirementId = '${requirementId}';
+	 var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
+	 var requirementUUID = '${requirementUUID}';
 	 
 	 var reason;
 	 if ($('#rejectReason').length)
@@ -637,6 +638,7 @@ function updateReuqirementStatus(status){
      $("#approverbut").attr("disabled", "disabled");
  	
 	$('#reasonDiv').empty();
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
@@ -655,7 +657,8 @@ function updateReuqirementStatus(status){
           				$("#msgDiv").html("Job approved Successfully");
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
-          			   }
+         			   }
+          			location.replace(sourceleadUrl+"/requirementSummary?requirementUUID="+requirementUUID);
           			$("#selector11").fadeOut(3000);
           			sideBar(requirementId);
              			msgFadein();

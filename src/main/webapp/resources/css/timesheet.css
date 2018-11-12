@@ -571,7 +571,7 @@ z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;}
 	word-wrap:break-word;}
 .remove_user_pop  b {display:block; text-align:center;}
 .remove_user_pop input {
-    width:50%; border:none; height:30px; font-size:14px; font-weight:500; color:#FFF; background-color:#ff4b4b;}
+    width:49%; border:none; height:30px; font-size:14px; font-weight:500; color:#FFF; background-color:#ff4b4b;}
 .remove_user_pop input.u_can_color {background-color:#375d81;}
 .remove_user_pop textarea { width:92%; margin:3px 4% 4%; padding:5px 10px; height:100px;}   
 .user_summary_edit_cta input.us-btn {
@@ -8377,12 +8377,10 @@ color: #666 !important; border: none;}
 
 
 
-
-
-
-
-
-
+.petitionReport {
+width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+background: url(../images/immi.svg); background-repeat: no-repeat; background-size: 70px; background-position: top;
+}
 
 .navIcons.assIconImport {
 background: url("../images/associates.svg"); background-size: 80px; opacity: 0.7;
@@ -8410,7 +8408,37 @@ background-position: center top; width: 60px !important; height: 60px !important
 }
 
 .navIcons.immIconImport {
-background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
-background-position: center top; width: 60px !important; height: 60px !important;
+	background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
+	background-position: center top; width: 60px !important; height: 60px !important;
 }
-
+.connectionIC {
+	width: 20px; height: 20px; display: block; background: url("../images/connectionsSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.contactsIC {
+	width: 20px; height: 20px; display: block; background: url("../images/contactsSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.invitecompanyIC {
+	width: 20px; height: 20px; display: block; background: url("../images/invitecompanySVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.addtaskIC {
+	width: 20px; height: 20px; display: block; background: url("../images/addtaskSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.reporttaskIC {
+	width: 20px; height: 20px; display: block; background: url("../images/reportbugSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.logOutIC {
+	width: 20px; height: 20px; display: block; background: url("../images/logoutSVG.svg"); background-repeat: no-repeat;
+	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+}
+.width90percnt {
+width: 90% !important;
+}
+.customErrorTag .phoneValidator p.jquery_form_error_message
+{
+bottom: auto !important; top: 55px !important;
+}

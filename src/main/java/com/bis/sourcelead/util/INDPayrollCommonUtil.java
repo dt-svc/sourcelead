@@ -578,14 +578,18 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	@SuppressWarnings("null")
 	public List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadAdjustIndSessionList(List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList, INDPayrollDTO indPayrollDTO, IndEmployeePayrollDTO indEmployeePayrollDTO, User loginUser, OrgLocations orgLocation) throws Exception{
-		for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
-			if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-				associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+				}
 			}
 		}
-		for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
-			if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-				associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+				}
 			}
 		}
 		return associatePayrollPayheadDTOList;
@@ -598,6 +602,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			associatePayrollPayheadHistoryDTO.setPayrollPayhead(payHeadHistoryDTO.getPayrollPayhead());
 		}
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
 		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
 		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
@@ -614,14 +619,18 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	@SuppressWarnings("null")
 	public Set<AssociatePayrollPayheadHistory> associatePayrollPayheadAdjustIndList(IndEmployeePayroll indEmployeePayroll, IndEmployeePayrollDTO indEmployeePayrollDTO, User loginUser) throws Exception {
 		Set<AssociatePayrollPayheadHistory> apphList = new HashSet<AssociatePayrollPayheadHistory>();
-		for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
-			if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-				apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+				}
 			}
 		}
-		for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
-			if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-				apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+				}
 			}
 		}
 		return apphList;
@@ -633,6 +642,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
 			PayrollPayhead payrollPayhead = new PayrollPayhead();
 			payrollPayhead.setId(payHeadHistoryDTO.getPayrollPayhead());
+			payrollPayhead.setType(payHeadHistoryDTO.getPayrollPayheadType());
+			payrollPayhead.setShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 			associatePayrollPayheadHistory.setPayrollPayhead(payrollPayhead);
 		}
 		associatePayrollPayheadHistory.setMonthly(payHeadHistoryDTO.getMonthly());
