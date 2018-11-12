@@ -739,7 +739,7 @@ public class PayrollReportPdfUtil {
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
-			empDataTable.addCell(getPdfCell("$ "+report.getCurrent(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDedAmount(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
