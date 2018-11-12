@@ -27,7 +27,7 @@ window.onload = function () {
     				<form:form id="payroll_report_form" name="payroll_report_form"  enctype='multipart/form-data' >
 	        			<div class="positionRelative clearfix col-md-6 col-md-offset-3 mb">
 	        			<div class="col-md-10">
-			                <select class="chosen-select" id="empId" name="empName"  redirect();">
+			                <select class="chosen-select" id="empId" name="empName">
 			                  	<option value=" " selected >-Select Employee-</option>
 					            <c:forEach var="wage" items="${wageTaxSummaryList}">
 									<option value="${wage.employeeId}">${wage.employeeName}</option>
@@ -155,6 +155,7 @@ function redirect() {
     
     <script type="text/javascript">
 function getIncomeData(){
+		$("#customize_btn").attr("onClick","getIncomeData();");
 	    var empId = $("#empId").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -557,6 +558,7 @@ function dataTableSearch(){
   
  <script type="text/javascript">
 function getChecks(){
+		$("#customize_btn").attr("onClick","getChecks();");
 	    var empId = $("#empId").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -1017,6 +1019,7 @@ function empChecksListPagination(){
 
  <script type="text/javascript">
 function getWagesTaxSummaryByEmpId(){
+		$("#customize_btn").attr("onClick","getWagesTaxSummaryByEmpId();");
 	    var empId = $("#empId").val();
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -1068,6 +1071,7 @@ function prepareWagesAndTaxList(url){
       result = result +"<tbody>"; 
       result = result +" </tbody>";
       result = result +"</table>";
+      $("#tab-1").show();
       $("#tab-1").append(result);
       wagesTaxpagination(url); 
 }
@@ -1411,6 +1415,7 @@ function wagesAndTaxEmpTablePagination(){
  
      <script type="text/javascript">
 function getAccontDeductions(){
+	$("#customize_btn").attr("onClick","getAccontDeductions();");
 	    var empId = $("#empId").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -1848,6 +1853,7 @@ function closeModalExpenses(){
 
  <script type="text/javascript">
 function getHRDeductions(){
+	$("#customize_btn").attr("onClick","getHRDeductions();");
 	    var empId = $("#empId").val();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
@@ -2272,6 +2278,7 @@ function employeeHrDeductionsListTablePagination(){
 
 <script>
 function finalBalance(){
+	$("#customize_btn").attr("onClick","finalBalance();");
 		var empId = $("#empId").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var sourceleadUrl ='${sourceleadUrl}';
