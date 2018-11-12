@@ -690,7 +690,7 @@ public class PayrollReportPdfUtil {
 		Document document = new Document(PageSize.A4.rotate());
 		PdfWriter.getInstance(document, new FileOutputStream(file));
 		document.open();
-		
+		try {
 		
 		PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
     	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
@@ -790,8 +790,12 @@ public class PayrollReportPdfUtil {
 		document.add(ytdTable);
 		document.close();
 		System.out.println("Done.!!");
+	} catch (Exception e) {
+		  e.printStackTrace();
+	}
 		return file;
-		}
+		
+}
 	
 	
 	public File getPayrollRegisterReportsPdf(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocation) throws Exception
