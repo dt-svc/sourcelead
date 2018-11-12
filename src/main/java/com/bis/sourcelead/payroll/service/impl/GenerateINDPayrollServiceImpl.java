@@ -151,6 +151,11 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
+				if(employee.getHireDate().after(freqEndDate)) {
+					continue;
+				}
+				
 				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
 				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
 					double totalHours = 0;
@@ -189,7 +194,6 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
 					
-					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 					if (employee != null) {
 						employeePayroll.setEmployee(employee);
 					}

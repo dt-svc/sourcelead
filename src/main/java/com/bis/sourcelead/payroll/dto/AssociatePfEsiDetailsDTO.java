@@ -28,6 +28,8 @@ public class AssociatePfEsiDetailsDTO {
 	private String associateUserId;
 	
 	private String pfesiId;
+	
+	private String nominee;
 
 	public Long getId() {
 		return id;
@@ -116,4 +118,14 @@ public class AssociatePfEsiDetailsDTO {
 	public void setPfesiId(String pfesiId) {
 		this.pfesiId = pfesiId;
 	}
+
+	public String getNominee() {
+		return nominee;
+	}
+
+	public void setNominee(String nominee) {
+		this.nominee = nominee;
+	}
+	
+	
 }
