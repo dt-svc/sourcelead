@@ -69,7 +69,6 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
-			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
 			}
@@ -189,6 +188,11 @@ public class CandidateIndexHelper {
 			if(null != candidate.getIsAssociate()){
 				candidateIndex.setIsAssociate(candidate.getIsAssociate());	
 			}
+			
+			if(null != candidate.getIsSharedInMarketplace()){
+				candidateIndex.setIsSharedInMarketplace(candidate.getIsSharedInMarketplace());	
+			}
+			
 			if(null != candidate.getSpocId()){
 				candidateIndex.setSpocId(candidate.getSpocId().getId());	
 			}else{

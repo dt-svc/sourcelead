@@ -178,15 +178,9 @@ public class PayrollReportDTO extends SearchDTO{
 	
 	private String orgDateFormat;
 	
-	private BigDecimal current;
+	private String runNo;
 	
-	public BigDecimal getCurrent() {
-		return current;
-	}
-
-	public void setCurrent(BigDecimal current) {
-		this.current = current;
-	}
+	private BigDecimal current;
 
 	public String getEmpId()
 	{
@@ -1004,6 +998,26 @@ public class PayrollReportDTO extends SearchDTO{
 
 	public void setOrgDateFormat(String orgDateFormat) {
 		this.orgDateFormat = orgDateFormat;
+	}
+
+	public String getRunNo()
+	{
+		return runNo;
+	}
+
+	public void setRunNo(String runNo)
+	{
+		this.runNo = runNo;
+	}
+
+	public BigDecimal getCurrent()
+	{
+		return current;
+	}
+
+	public void setCurrent(BigDecimal current)
+	{
+		this.current = current;
 	}
 
 }
