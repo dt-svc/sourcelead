@@ -37,10 +37,10 @@
             <input type="text" class="form-control" placeholder="Location" name="pwd" id = "candidateLocation" value = "">
           </div>
           <div class="col-md-1 col-xs-12 padding_left"> <a onclick = "getGloblaMarketPlaceCandidates('listModel')" class="btn btn-primary btn-block width50px pull-right"><i class="fa fa-search"></i></a> </div>
-          <div class="clearfix"></div>
+          <!-- <div class="clearfix"></div>
               <div class="tbldata-dotdot-100 mt">
 		   	  	   <a href="#" onclick="initMarketplacePayment()">Pay</a>
-		   </div>
+		   </div> -->
           
           <div class="col-md-12 mt10"> <a href="#" class="pull-right small advancedSearch" title="Advanced Search" onClick=" openPop()">Advanced Search</a> </div>
         </div>

@@ -104,7 +104,12 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
-		    	headerDTO.setRunNumber(0);
+		    	if(StringUtils.isNotBlank(registerDTO.getRunNo())) {
+		    		headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	}else {
+		    		headerDTO.setRunNumber(0);
+		    	}
+		    	
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
 		    	
@@ -354,7 +359,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
     	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
     	headerDTO.setRunDate(registerDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
     	
     	createHeaderTable(document,headerDTO,orgLocation);
 		
@@ -576,7 +581,7 @@ public class PayrollReportPdfUtil {
 	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
 	    	headerDTO.setReportType("CONTRIBUTION REPORTS");
 	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-	    	headerDTO.setRunNumber(0);
+	    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
 	    	createHeaderTable(document, headerDTO, orgLocation);
 	    	
 
@@ -685,7 +690,7 @@ public class PayrollReportPdfUtil {
 		Document document = new Document(PageSize.A4.rotate());
 		PdfWriter.getInstance(document, new FileOutputStream(file));
 		document.open();
-		
+		try {
 		
 		PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
     	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
@@ -697,9 +702,9 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPayrollType(payrollReportDTO.getType());
     	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-    	headerDTO.setReportType("DEDUCTION REGISTER");
+    	headerDTO.setReportType("DEDUCTION REPORT");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 
 		document.add(Chunk.NEWLINE);
@@ -739,7 +744,7 @@ public class PayrollReportPdfUtil {
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
-			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getCurrent(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
@@ -785,8 +790,12 @@ public class PayrollReportPdfUtil {
 		document.add(ytdTable);
 		document.close();
 		System.out.println("Done.!!");
+	} catch (Exception e) {
+		  e.printStackTrace();
+	}
 		return file;
-		}
+		
+}
 	
 	
 	public File getPayrollRegisterReportsPdf(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocation) throws Exception
@@ -817,7 +826,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
     	headerDTO.setReportType("PAYROLL REGISTER");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 		
 		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
@@ -842,12 +851,26 @@ public class PayrollReportPdfUtil {
 			PdfPCell cell1 = new PdfPCell();
 			cell1.addElement(new Paragraph(""));
 			String ssn = "";
+			System.out.println(payrollReportDto.getSsnNumber());
 			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
 				StringBuilder sb1 = new StringBuilder();
 				sb1.append("xxx-xx-");
-				String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				try {
+					String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = payrollReportDto.getSsnNumber();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
 				sb1.append(ssnNum[2]);
-				ssn = sb1.toString();
+				ssn = sb1.toString();*/
 			}else {
 				ssn = "NA";
 			}
