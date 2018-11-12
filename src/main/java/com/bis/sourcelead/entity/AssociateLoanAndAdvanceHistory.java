@@ -10,8 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_LOAN_AND_ADVANCES_HISTORY")
@@ -29,11 +32,29 @@ public class AssociateLoanAndAdvanceHistory {
 	private AssociateLoanAndAdvances associateLoanAndAdvances;
 	
 	@ManyToOne
+	@JoinColumn(name = "IND_EMPLOYEE_PAYROLL_ID")
+	private IndEmployeePayroll indEmployeePayrollId;
+	
+	@ManyToOne
+	@JoinColumn(name = "ORG_LOCATIONS_ID")
+	private OrgLocations orgLocationsId;
+	
+	@Column(name = "PAYROLL_TYPE")
+	private String payrollType;
+	
+	@ManyToOne
 	@JoinColumn(name = "PAYROLL_ID")
 	private EmployeePayroll payroll;
 	
 	@Column(name = "DED_AMOUNT")
 	private Double deductAmount;
+	
+	@Column(name = "PAID_AMOUNT")
+	private Double paidAmount;
+	
+	@Column(name = "DUE_AMOUNT")
+	private Double dueAmount;
+	
 	
 	@Column(name = "SCHEDULE")
 	private Integer schedule;
@@ -56,6 +77,34 @@ public class AssociateLoanAndAdvanceHistory {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
+	@Transient
+    @JsonProperty
+    private String name;
+	
+	@Transient
+    @JsonProperty
+    private String type;
+	
+	@Transient
+    @JsonProperty
+    private Double totalAmount;
+	
+	@Transient
+    @JsonProperty
+    private String requestedTo;
+	
+	@Transient
+    @JsonProperty
+    private String requestedOn;
+	
+	@Transient
+    @JsonProperty
+    private Integer noOfShedules;
+	
+	@Transient
+    @JsonProperty
+    private Double lastPaindOn;
+	 
 	public Long getId()
 	{
 		return id;
@@ -167,6 +216,100 @@ public class AssociateLoanAndAdvanceHistory {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
+	public IndEmployeePayroll getIndEmployeePayrollId() {
+		return indEmployeePayrollId;
+	}
+
+	public OrgLocations getOrgLocationsId() {
+		return orgLocationsId;
+	}
+
+	public String getPayrollType() {
+		return payrollType;
+	}
+
+	public void setIndEmployeePayrollId(IndEmployeePayroll indEmployeePayrollId) {
+		this.indEmployeePayrollId = indEmployeePayrollId;
+	}
+
+	public void setOrgLocationsId(OrgLocations orgLocationsId) {
+		this.orgLocationsId = orgLocationsId;
+	}
+
+	public void setPayrollType(String payrollType) {
+		this.payrollType = payrollType;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public Double getTotalAmount() {
+		return totalAmount;
+	}
+
+	public Double getPaidAmount() {
+		return paidAmount;
+	}
+
+	public Double getDueAmount() {
+		return dueAmount;
+	}
+
+	public String getRequestedTo() {
+		return requestedTo;
+	}
+
+	public String getRequestedOn() {
+		return requestedOn;
+	}
+
+	public Integer getNoOfShedules() {
+		return noOfShedules;
+	}
+
+	public Double getLastPaindOn() {
+		return lastPaindOn;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setTotalAmount(Double totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public void setPaidAmount(Double paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+
+	public void setDueAmount(Double dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+
+	public void setRequestedTo(String requestedTo) {
+		this.requestedTo = requestedTo;
+	}
+
+	public void setRequestedOn(String requestedOn) {
+		this.requestedOn = requestedOn;
+	}
+
+	public void setNoOfShedules(Integer noOfShedules) {
+		this.noOfShedules = noOfShedules;
+	}
+
+	public void setLastPaindOn(Double lastPaindOn) {
+		this.lastPaindOn = lastPaindOn;
+	}
 }
