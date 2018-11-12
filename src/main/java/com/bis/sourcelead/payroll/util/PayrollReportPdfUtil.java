@@ -104,7 +104,12 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
-		    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	if(StringUtils.isNotBlank(registerDTO.getRunNo())) {
+		    		headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	}else {
+		    		headerDTO.setRunNumber(0);
+		    	}
+		    	
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
 		    	
@@ -842,12 +847,26 @@ public class PayrollReportPdfUtil {
 			PdfPCell cell1 = new PdfPCell();
 			cell1.addElement(new Paragraph(""));
 			String ssn = "";
+			System.out.println(payrollReportDto.getSsnNumber());
 			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
 				StringBuilder sb1 = new StringBuilder();
 				sb1.append("xxx-xx-");
-				String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				try {
+					String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = payrollReportDto.getSsnNumber();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
 				sb1.append(ssnNum[2]);
-				ssn = sb1.toString();
+				ssn = sb1.toString();*/
 			}else {
 				ssn = "NA";
 			}
