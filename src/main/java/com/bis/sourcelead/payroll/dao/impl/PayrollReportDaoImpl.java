@@ -196,9 +196,9 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 					queryObj.setFirstResult(payrollReportDTO.getStart());
 					queryObj.setMaxResults(payrollReportDTO.getLength());
-					queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
-					queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				}
+				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
+				queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				payrollList = queryObj.list();
 				int count = 0;
 				int filteredCount = 0;
