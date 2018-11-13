@@ -115,7 +115,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 								 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
 							 }
 						 }
-						 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+						 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue() && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
 							 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
 						 }
 					 }
