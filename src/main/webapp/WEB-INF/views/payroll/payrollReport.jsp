@@ -1416,7 +1416,7 @@ function getAccontDeductions(){
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAccontDeductionsByEmpId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&employeeId="+empId;
+		var url = sourceleadUrl+"/getAccontDeductionsByEmpId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareAccountDeductions(url);
 }
@@ -1781,7 +1781,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
+					var json = data.data;
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];
@@ -1853,7 +1853,7 @@ function getHRDeductions(){
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getHRDeductionsByEmployeeId?orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&employeeId="+empId;
+		var url = sourceleadUrl+"/getHRDeductionsByEmployeeId?orgLocationId="+orgLocationId+"&employeeId="+empId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareHRDeductions(url);
 }
@@ -2048,12 +2048,12 @@ function hRDeductionsPagination(url){
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   prepareHRDeductions();
+    		   getHRDeductions();
     	   }
     	});
 }
 function dataTableSearch(){
-	prepareHRDeductions();
+	getHRDeductions();
 }
 </script>
 
@@ -2196,7 +2196,7 @@ function getHrDeductionDetails(hrDedId,empName){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
-			        success: function(data) {
+			        success: function(json) {
 					var result = "";				        	
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -2207,10 +2207,11 @@ function getHrDeductionDetails(hrDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
-		        	 for (var i=0; i<json.length; i++)
+// 					var json = JSON.parse(data);
+					var data = json.data;
+		        	 for (var i=0; i<data.length; i++)
 					{
-		        		 var opt = json[i];
+		        		 var opt = data[i];
 		        		    result = result + ' <tr>';
 		        		    
 		        		    if(opt.payCycleName !=null && opt.payCycleName !='' && opt.payCycleName !='undefined'){

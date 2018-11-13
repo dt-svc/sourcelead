@@ -37,7 +37,7 @@ $(document).ready(function(){
 			
 			<div id="customtaxablewages" style="display: none">
 			  	<div class="col-md-5">
-		            <div class="form-group">
+		            <div class="form-group" id="fromDateDiv">
 		              <label class="col-md-12 paddingRight">From Date</label>
 						<div class="col-md-12">
 							<input type="text" class="form-control calendar" id="fromDate">
@@ -45,7 +45,7 @@ $(document).ready(function(){
 		            </div>
 	            </div>
 	            <div class="col-md-5">
-		            <div class="form-group">
+		            <div class="form-group" id="toDateDiv">
 		              <label class="col-md-12">To Date</label>
 		              <div class="col-md-12">
 		                <input type="text" class="form-control calendar" id="toDate">
@@ -155,8 +155,32 @@ function runPayrollTaxAndWagesReport(){
 			freqEndDate = $("#freqEndDate").val();
 		}
 		var url = sourceleadUrl+"/getpayrollTaxAndWagesReport?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
-		payrollTaxAndWagesList(url);
-		$("#payrollTaxAndWagesDiv").show();
+		
+		if($("#payGroup").val() == "custom"){
+			var fromDate = $("#fromDate").val();
+			var toDate = $("#toDate").val();
+			if(fromDate == null || fromDate == '' || fromDate == 'undefined'){
+				$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+			  	$("input#fromDate").after("<p class='jquery_form_error_message'>From Date is required.</span>");
+			}else{
+				$('#fromDateDiv').find('p.jquery_form_error_message').remove(); 
+			}
+			if(toDate == null || toDate == '' || toDate == 'undefined'){
+				$('#toDateDiv').find('p.jquery_form_error_message').remove();
+			  	$("input#toDate").after("<p class='jquery_form_error_message'>To Date is required.</span>");
+			}else{
+				$('#toDateDiv').find('p.jquery_form_error_message').remove(); 
+			}
+			if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+				payrollTaxAndWagesList(url);
+				$("#payrollTaxAndWagesDiv").show();
+			}
+		}else{
+			$("#fromDate").val("");
+			$("#toDate").val("");
+			payrollTaxAndWagesList(url);
+			$("#payrollTaxAndWagesDiv").show();
+		}
 }
 
 function payrollTaxAndWagesList(url){

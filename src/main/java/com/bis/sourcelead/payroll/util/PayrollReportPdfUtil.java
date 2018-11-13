@@ -851,7 +851,6 @@ public class PayrollReportPdfUtil {
 			PdfPCell cell1 = new PdfPCell();
 			cell1.addElement(new Paragraph(""));
 			String ssn = "";
-			System.out.println(payrollReportDto.getSsnNumber());
 			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
 				StringBuilder sb1 = new StringBuilder();
 				sb1.append("xxx-xx-");
