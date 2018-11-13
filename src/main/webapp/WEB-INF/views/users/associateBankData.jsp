@@ -92,6 +92,7 @@
 							$("#associateTax").click();
 							$("#save_associate_bank_data_button").removeAttr("disabled");
 							$("#save_associate_bank_data_button").addClass('button').val('Save & Continue');
+							getResidenceLocation();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
@@ -151,6 +152,9 @@ function showHideAccountTypes(){
 		$('#routingNumberSpanId').attr('style',"display:inline-block");
 		
 	}else{
+		$("#bankName").val('');
+		$("#accountNumber").val('');
+		$("#routingNumber").val('');
 		$("#bankName").removeAttr('data-validation');
 		$('#bankName').attr('data-validation-optional',"true");
 		$("#accountNumber").removeAttr('data-validation');
@@ -170,5 +174,6 @@ function skipAssociateBankDataJsp(){
 	document.getElementById("associateTax").removeAttribute("class"); 
 	associateTax.href="#tab-3"; 
 	$("#associateTax").click();
+	getResidenceLocation();
 }
 </script>

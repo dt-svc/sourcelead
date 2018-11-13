@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Type;
+
 public class JobFairDTO extends SearchDTO implements Serializable {
 
 	/**
@@ -15,6 +17,7 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long id;
 	private String uuid;
 	private String generatedId;
+	@Type(desc = "name", maxLength = 100)
 	private String name;
 	private String budget;
 	private String description;
@@ -23,9 +26,12 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private String startDateStr;
 	private String endDateStr;
 	private String postedFrom;
+	private String selectedClient;
 	private long requirementId;
 	// private List<String> requirementsList;
+	@Type(desc = "venue", maxLength = 200)
 	private String venue;
+	@Type(desc = "notifyTo", maxLength = 500)
 	private String notifyTo;
 	private long userId;
 	private long orgLocationId;
@@ -38,11 +44,20 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long jobFairRequirementId;
 	private long applicantCount;
 	private long offeredCount;
-	
+
 	private long createdByUserId;
 	private Date createdDate;
 	private long updatedByUserId;
 	private Date updatedDate;
+	private boolean adminUser;
+
+	public boolean isAdminUser() {
+		return adminUser;
+	}
+
+	public void setAdminUser(boolean adminUser) {
+		this.adminUser = adminUser;
+	}
 
 	public String getGeneratedId() {
 		return generatedId;
@@ -266,6 +281,14 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getSelectedClient() {
+		return selectedClient;
+	}
+
+	public void setSelectedClient(String selectedClient) {
+		this.selectedClient = selectedClient;
 	}
 
 }

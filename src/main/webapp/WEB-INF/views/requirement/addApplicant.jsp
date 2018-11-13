@@ -1422,7 +1422,6 @@ function getCandidateSelectionType(){
 				        		}else{
 				        			updatedDate  = "";
 				        		}
-				        		output = output + "<option value=''>-- Select Resume --</option>";
 				        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.title+" "+updatedDate+"</option>";
 				            	}else{
@@ -1750,6 +1749,13 @@ function getCandidateDetails(){
 			        	 }else{
 			        		 $("#submissionZipCode").val('');
 			        	 }
+			        	 
+			        	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != 'undefined'){
+			        		 $("#DOB").val(json['dateofBirthString']);
+			        	 }else{
+			        		 $("#DOB").val('');
+			        	 }
+			        	 
 			        
 			        	 if(json['noticePeriod'] != null && json['noticePeriod'] != "" && json['noticePeriod'] != 'undefined'){
 			        		 $("select[name=NoticePeriod]").val(json['noticePeriod']);

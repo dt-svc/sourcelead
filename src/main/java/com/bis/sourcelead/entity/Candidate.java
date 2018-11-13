@@ -72,13 +72,13 @@ public class Candidate implements Serializable {
 	@Column(name = "RESIDENCE_STREET_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String residenceStreetAddress;
 	
-	@Column(name = "RESIDENCE_COUNTRY")
+	@Column(name = "RESIDENCE_COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String residenceCountry;
 	
-	@Column(name = "RESIDENCE_STATE")
+	@Column(name = "RESIDENCE_STATE", columnDefinition = "LONGTEXT default NULL")
 	private String residenceState;
 	
-	@Column(name = "RESIDENCE_CITY")
+	@Column(name = "RESIDENCE_CITY", columnDefinition = "LONGTEXT default NULL")
 	private String residenceCity;
 	
 	@Column(name = "RESIDENCE_ZIP_CODE")
@@ -238,6 +238,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "IS_ASSOCIATE")
 	private String isAssociate;
+	
+	@Column(name = "IS_SHARED_IN_MARKETPLACE")
+	private String isSharedInMarketplace;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
@@ -339,6 +342,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "RANK")
 	private String rank;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer candidateProfilePercentage;
 
 	// Immigration columns End
 	@JsonProperty
@@ -361,10 +367,20 @@ public class Candidate implements Serializable {
 
 	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
+	
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateHistory> candidateHistory = new HashSet<CandidateHistory>(0);
+	
+	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
 
 	@Transient
 	@JsonProperty
 	private String candidateEdu;
+	
+	@Transient
+	@JsonProperty
+	private String createdDateStr;
 
 	@Transient
 	@JsonProperty
@@ -573,6 +589,11 @@ public class Candidate implements Serializable {
      @Transient
 	 @JsonProperty
 	 private Set<String> candidateTagsList;
+     
+     
+     @Transient
+ 	@JsonProperty
+ 	private String candidateAssignedJobsCount;
 	 
 	public int getProfilePercentage()
 	{
@@ -1278,6 +1299,14 @@ public class Candidate implements Serializable {
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
 	}
+	
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
+	}
 
 	public OrgRelations getOrgRelationId() {
 		return orgRelationId;
@@ -1825,4 +1854,46 @@ public class Candidate implements Serializable {
 	public void setWorkLocation(OrgLocations workLocation) {
 		this.workLocation = workLocation;
 	}
+
+	public Integer getCandidateProfilePercentage() {
+		return candidateProfilePercentage;
+	}
+
+	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
+		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	public Set<CandidateHistory> getCandidateHistory() {
+		return candidateHistory;
+	}
+
+	public void setCandidateHistory(Set<CandidateHistory> candidateHistory) {
+		this.candidateHistory = candidateHistory;
+	}
+
+	public Set<CandidateTimelineActivity> getCandidateTimeLineActivity() {
+		return candidateTimeLineActivity;
+	}
+
+	public void setCandidateTimeLineActivity(Set<CandidateTimelineActivity> candidateTimeLineActivity) {
+		this.candidateTimeLineActivity = candidateTimeLineActivity;
+	}
+
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
+
+	public String getCandidateAssignedJobsCount() {
+		return candidateAssignedJobsCount;
+	}
+
+	public void setCandidateAssignedJobsCount(String candidateAssignedJobsCount) {
+		this.candidateAssignedJobsCount = candidateAssignedJobsCount;
+	}
+
+	
 }

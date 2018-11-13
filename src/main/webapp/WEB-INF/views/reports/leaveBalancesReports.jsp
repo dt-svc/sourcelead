@@ -8,19 +8,21 @@ $(document).ready(function(){
 	getBalanceLeaveReportList();
 });
 </script>
-
+<div id="emptyPopup"></div>
+<input type="hidden" id="noLeaveBalanceList" name="noLeaveBalanceList"  value="0"/>  
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Leave Balances</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Balances</div>
+<!--       <div class="pull-right brud-crum">Home &raquo; Leave Balances</div> -->
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Leave Balances</div>
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
         <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		  
@@ -39,7 +41,9 @@ $(document).ready(function(){
 					</div>
 				</li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='balanceLeavesTableSearch'/><span class="repSearchIcon" onClick="getBalanceLeaveReportList();"></span></li>
+<!-- 		  <li style="display: none;"><input type="text" class="repSearchBar" placeholder='Search' id='balanceLeavesTableSearch'/><span class="repSearchIcon" onClick="getBalanceLeaveReportList();"></span></li> -->
+      		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="getBalanceLeaveReportList();"></span></li>
+      
         </ul>
       </div>
       
@@ -164,7 +168,8 @@ $(document).ready(function(){
 <script>
 function getBalanceLeaveReportList(){
 	var fromDate = $("#fromDate").val();
-	var searchValue = $("#employeeDataTableSearch").val();
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val(0); 
 	searchValue = searchValue ? searchValue : "";
 	//var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate;
 	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;
@@ -175,11 +180,12 @@ function getBalanceLeaveReportList(){
 
 <script>
 function getBalanceLeaveReportList(){
-
-var topleave = "";
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	var topleave = "";
 var MonthStartDate ="";
 var MonthEndDate ="";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+var  noLeaveBalanceList=$("#noLeaveBalanceList").val(0); 
 	
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
@@ -201,8 +207,8 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		    {
 		leaveType.push($(this).val());
      });
-	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
-$("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";
@@ -234,11 +240,27 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 								result = result + '<tbody>';
 								
 								for(j=0; j < opt.users.length; j++){
+									$("#noLeaveBalanceList").val(1);
 									var report = opt.users[j];
 									result += "<tr>";
-									
-									result += "<td> "+report.empName+" </td>";
-									result += "<td> "+report.empType+" </td>";
+						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+											result += "<td> "+report.empName+" </td>";
+ 
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+						        	  
+						        	  if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+						        		  result += "<td> "+report.empType+" </td>";
+
+						        	  }
+						        	  else{
+											result += "<td>--</td>";
+
+						        	  }
+
 									var lo=0;
 									for (i = 0; i < opt.leaveTypeNames.length; i++) {
 										for(var k in opt.map){
@@ -288,8 +310,10 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 <script>
 	function listTypePagination() {
 		$('#dynamicBalanceLeaveReportsListView').DataTable({
+			"searching": false, 
+		    "paging": true,
 			"scrollCollapse" : false,
-			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20] ],
 			"bLengthChange" : true,
 			"bDestroy" : true,
 			"ordering" : true,
@@ -304,6 +328,12 @@ $("#balanceLeavesTableSearch").attr('style','position:absolute; width:100%; heig
 		$("#dynamicBalanceLeaveReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 
 	}
+	$("#leaveReportDataTableSearch").keydown(function(e) {
+		   if(e.which === 13) {
+			   getBalanceLeaveReportList();
+		   }
+		});
+
 </script>
  
 <script>
@@ -336,6 +366,7 @@ function viewCompleteTemplate(temp){
 </script>
 <script>
 function exportToPdf(){
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val(); 
 	var exportType = "pdf";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     
@@ -359,13 +390,32 @@ function exportToPdf(){
 		    {
 		leaveType.push($(this).val());
      });
-	
-	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType;
-	
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	if(noLeaveBalanceList != 0){
+		window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>LeaveBalances List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
 function exportToExcel(){
+	var  noLeaveBalanceList=$("#noLeaveBalanceList").val();
 	var exportType = "excel";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     
@@ -389,9 +439,21 @@ function exportToExcel(){
 		    {
 		leaveType.push($(this).val());
      });
-	
-	window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType;
-	
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	if(noLeaveBalanceList != 0){
+		window.location.href = sourceleadUrl + "/getExportReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&searchValue="+searchValue;
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>LeaveBalances List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#candidate_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 }
 </script>
 <script>

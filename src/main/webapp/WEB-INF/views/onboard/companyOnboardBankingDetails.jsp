@@ -182,6 +182,11 @@ right: 15px;
 	  event.stopPropagation();
 	});
   });
+  
+  $(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+  })
+	
 </script>
 
 
@@ -316,6 +321,8 @@ function closePaymentAccountPopup(type) {
         showOrHidePaymentFormFields(type);
         $("input[id*=paymentAccount]").val("");
     }
+    
+    $(".location-alert").fadeOut();
 }
 
 function savePaymentAccount() {

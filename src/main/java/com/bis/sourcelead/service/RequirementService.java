@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 
 /**
  * @author Prasad K
@@ -70,6 +71,8 @@ public interface RequirementService {
     public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String userCode) throws Exception;
 
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception;
+
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId, String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception;
 
     public List<String> getJobFairDaysListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
     
@@ -224,17 +227,17 @@ public interface RequirementService {
     
     public JobFairDTO getJobFairByUUID(String uuid);
     
-    public boolean changeJobFairStatus(Long jobFairId, int status);
+    public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation);
 
 	public List<JobFair> getJobFairsListByRequirementId(Long requirementId);
 
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat);
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag);
 
-	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date);
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag);
 
 	public List<JobFairDTO> getJobFairsDTOListByRequirementId(long requirementId);
 	
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId);
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag);
 	
 	public String getJobFairDatesByRequirementIdAndJobFairId(long requirementId, long jobFairId);
 	
@@ -248,4 +251,5 @@ public interface RequirementService {
 	
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception;
 
+	public File getJobFairListOfExcel(List<JobFairDTO> jobFairDTOList, User user, OrgLocations orgLocation);
 }

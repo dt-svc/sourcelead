@@ -57,10 +57,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                 <select class="chosen-select form-control" id="vendorContact" multiple="multiple" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
               </div>
-             <span class="col-md-3 noPad clearfix" onclick="selectedVendor();">
+             <span class="col-md-3 noPad clearfix">
              <span class="btn btn-primary btn-sm" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			           <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			           <a href="javascript:void(0)" onclick="selectedVendor();"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			        </sec:authorize>
 		     </span>
             </div>
@@ -68,7 +68,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="invoiceIdDiv" onkeyup="validateBillId();">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Bill Id">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Bill Id">
               </div>
             </div>
             <div class="form-group">
@@ -500,6 +500,25 @@ function addConversionDiv(){
 </script>
 
 <script type="text/javascript">
+function addConversionDivEditMode(){
+	var result = "";
+	var vendorCurrency = $("#vendorCurrency").val();
+	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	if(vendorCurrency != currencyCode){
+		result = result +'<div class="row">';
+		result = result +'<div class="clearfix mt col-md-offset-2 col-md-10" style="padding-right:0;">';
+		result = result +'<div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span class="pull-left" id="currencyCode">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +' <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+vendorCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+		result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+vendorCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+		result = result +'</div>';
+		result = result +'</div>';
+		$("#conversionId").empty();
+		$("#conversionId").append(result);
+	}
+}
+</script>
+
+<script type="text/javascript">
 function alertMessageInPayable(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -627,6 +646,7 @@ function populateInlineItemsGrid1(data){
 	document.getElementById("lineItemAddRows").style.display="block";
 	document.getElementById("tableBody").style.display="block";
     addTaxDivs();
+    addConversionDivEditMode();
 }
 </script>
 
@@ -1388,7 +1408,8 @@ function toDate(selector) {
 		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
 		        	 }
 		        	 var selected = 'selected';
-		        	 result = result +'<option value='+json.vendorOrgRelationId+' '+selected+' >'+json.orgName+'</option>';
+		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
 		           	 $("#vendorOrgRelationId").append(result); 
 		           	 $('#vendorOrgRelationId').trigger("chosen:updated");

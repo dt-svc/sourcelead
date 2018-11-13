@@ -15,7 +15,27 @@
     </section>
     
 <div class="reportNewDash">
-    
+	
+		<a href="${appPath}/assetsReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-check-square-o"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Asset Assigned History</h2><b>View</b>
+		</div>
+	</div>	
+
+	</a>
+
+
+    <a href="${appPath}/projectReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-bar-chart"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Project Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
     <a href="${appPath}/daywiseTimeSheetReports">
 	<div class="repDashCta">
@@ -107,6 +127,7 @@
 	</div>	
 
 	</a>
+	
 	
 	<a href="${appPath}/topLeaveTakenReports">
 	<div class="repDashCta">

@@ -157,7 +157,12 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 						candidateDocuments.setFileURL(fileInfo.getFileURL());
 						;
 						// candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "candidateDocuments");
+						try {
+							FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "candidateDocuments");
+						} catch (Exception e) {
+							
+						}
+						
 					}
 				}
 
@@ -363,5 +368,10 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	@Override
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception {
 		return candidateDocumentsDao.validateCandidateDocument(candidateId, candidateDocument);
+	}
+
+	@Override
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId) {
+		return candidateDocumentsDao.getCandidateActiveDocumentsByCandidateId(candidateId);
 	}
 }

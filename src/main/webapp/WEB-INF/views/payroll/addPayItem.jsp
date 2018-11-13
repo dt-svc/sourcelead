@@ -5,10 +5,10 @@
 
 <script>
 $(document).ready(function(){
-   var empType = '${payItem.allowEmployeementType}';
+ /*   var empType = '${payItem.allowEmployeementType}';
    if(empType != null && empType != '' && empType != 'undefined'){
 	   $("#allowEmployeementType").val(empType);
-   }
+   } */
 });
 </script>
 <!-- Content Area -->
@@ -72,7 +72,8 @@ $(document).ready(function(){
         <div class="col-md-5">
               <label class="clearfix">Description</label>
               <div class="clearfix">
-               <textarea rows="2" class="form-control" name="description" id="description">${payItem.description}</textarea>
+               <textarea rows="2" class="form-control" name="description"  data-validation="validate_length length1-5000"
+							   id="description">${payItem.description}</textarea>
             </div>
         </div>
 

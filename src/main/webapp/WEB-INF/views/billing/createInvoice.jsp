@@ -83,7 +83,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -101,10 +101,10 @@ function errRemoveClientContact(){
 				                  <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
 				              </div>
-				               <span class="col-md-3 noPad clearfix" onclick="selectedClient();">
+				               <span class="col-md-3 noPad clearfix" >
 				               <span class="btn btn-primary" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
 			                             <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-			                              <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			                              <a href="javascript:void(0)" onclick="selectedClient();"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 			                             </sec:authorize>
 		             	</span>
 				            </div>
@@ -115,12 +115,11 @@ function errRemoveClientContact(){
 							<div class="col-md-9" id="invoiceIdDiv">
 								<input type="text" class="form-control" id="invoiceId" onkeyup="validateInvoiceId();"
 									name="invoiceId" value="" placeholder="Invoice Id"
-									data-validation="required" field-name="Invoice Id">
+									data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Invoice Id">
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Date<span
-								class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
 							<div class="input-group">
 								<input type="text" class="form-control calendar"
@@ -157,16 +156,15 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Address</label>
+							<label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Invoice Address"></textarea>
+								<textarea class="form-control" rows="2" id="billingAddress" data-validation="required" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
-			              <label class="col-md-3">Payment Account</label>
+			              <label class="col-md-3">Payment Account<span class="text-danger">&nbsp;*</span></label>
 			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+			                <select class="form-control" id="paymentAccountId" data-validation="required" field-name="paymentAccountId Name" name="paymentAccount">
 			                   <option value="">--Select Account--</option>
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -296,7 +294,7 @@ function errRemoveClientContact(){
 		 result = result +'  <tfoot class="table_footer">';
 		 result = result +'  <tr>';
 		 result = result +'  <td colspan="5"></td>';
-		 result = result +'  <td><strong>Subtotal</strong></td>';
+		 result = result +'  <td><strong>Sub Total</strong></td>';
 		 result = result +'  <td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "00.00" id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly></div>';
 		 result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
 		 result = result +'  <td>&nbsp;</td>';
@@ -308,7 +306,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="clearfix invoice_other mt">';
          result = result +'  <div class="col-md-5">';
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
+         result = result +'  <button type="button" class="btn btn-sm btn-primary mr" id="addAssociateBtn" onclick="getAllAssociates();"><i class="fa fa-plus paddingRight"></i>Add</button>';
          result = result +'  </div>';
            
            
@@ -321,8 +319,8 @@ function errRemoveClientContact(){
          result = result +'  </div>';
          
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <label><strong>Message</strong></label>';
-         result = result +'  <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>';
+         result = result +'  <label><strong>Message<span class="text-danger">&nbsp;*</span></strong></label>';
+         result = result +'  <textarea class="form-control" rows="2" id="comment"  data-validation="required" field-name="Message" name="comment"></textarea>';
          result = result +'  </div>';
            
         
@@ -412,8 +410,8 @@ function errRemoveClientContact(){
                      
                      result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion From</strong></label><div class="paddingLeft col-md-6"><span id="loginCurrencyCode" class="pull-left">'+currencyCode+'</span><div class="pull-right"><input type="text" id="conversionFrom" placeholder="00:00" class="ReadTextFli" readonly="" type="text"></div></div></div>';
                      
-                      result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode"></span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
-  	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode"></span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
+                      result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Conversion To</strong></label><div  class="paddingLeft col-md-6"><span id="vendorCurrencyCode">'+clientCurrency+'</span><div id="exchangeCurrency" class="pull-right"><input  class="ReadTextFli" readonly="" type="text"></div></div></div>';
+  	                result = result +'  <div class="clearfix"><label class="col-md-6 text-right"><strong>Exchange Rate</strong></label><div  class="paddingLeft col-md-6"><span id="convertedCurrencyCode">'+currencyCode+' to '+clientCurrency+'</span><div id="exchangeRate" class="pull-right"><input class="ReadTextFli ReadTextFli90" readonly="" type="text"></div></div></div>';
   	                  
                      
                      result = result +'  </div>';
@@ -425,6 +423,12 @@ function errRemoveClientContact(){
                    result = result +'  </div>';
                    $("#lineItemAddRows").empty();
                    $("#lineItemAddRows").append(result);
+                   var invoiceUUID = '${invoiceUUID}';
+                   if($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual' && invoiceUUID != null && invoiceUUID != "" && invoiceUUID !="undefined"){
+              			$("#addAssociateBtn").prop("disabled", true);
+              		}else{
+              			$("#addAssociateBtn").prop('disabled', false);
+              		}
                    maskme();
 		
 	}
@@ -513,12 +517,13 @@ if(selectedTextInvoice =='percentage'){
 		        	 }
 		        	 
 		        	 var selected = 'selected';
-		        	 result = result +'<option disabled selected>--Select Vendor--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
+		        	 result = result +'<option disabled selected>--Select Client--</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated"); 
 		           	 $('#clientCurrency').val(json['clientCurrency']);
+		           
 		           	/* getClientContacts(json['vendorContactId']); */
 		           	//alert(json['contactUsers']);
 		           	//var clientContact = json['contactUsers'];
@@ -570,10 +575,14 @@ if(selectedTextInvoice =='percentage'){
 			   			document.getElementById("saveButtonId").style.display="inline-block";
 			       	}
 		        	
-		        	
-		        	
 		        }
     		});
+		 if($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual'){
+  			$("#addAssociateBtn").prop('disabled', true);
+  		}else{
+  			$("#addAssociateBtn").prop('disabled', false);
+  		}
+		 
 	}
 	</script>
 
@@ -720,6 +729,9 @@ if(selectedTextInvoice =='percentage'){
 		var count = r.cells.length;
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
+			if($("#addInvoiceTbl").find("td").length == 0){
+				$("#addAssociateBtn").prop('disabled', false);
+			}
 		}
 	}
 </script>
@@ -975,7 +987,8 @@ function cancelDelDoc(){
 			            getEstimatedHours(maxRowNum);
 					 /*  var dt = toDate("#"+maxRowNum+"edate-input");
 						dt.setDate(dt.getDate() - 1);
-						$("#"+maxRowNum+"sdate-input").datepicker("option", "maxDate", dt); */
+						$("#"+maxRowNum+"sdate-input").date
+						picker("option", "maxDate", dt); */
 			 	  }
 			    });
 			
@@ -1029,14 +1042,44 @@ function cancelDelDoc(){
 	    $(".new_side_wrap").removeClass("new_side_wrap_active");
  		$(".side_mask").fadeOut(200);
  		$("body").css('overflow-y', 'auto')
+ 		if(($("#addInvoiceTbl").find("td").length != 0) && ($("#clientOrgRelationId").find(':selected').attr("data-Invoice") == 'Individual')){
+ 			$("#addAssociateBtn").prop('disabled', true);
+ 		}else{
+ 			$("#addAssociateBtn").prop('disabled', false);
+ 		}
+ 		
 	}
   </script>
-
-
+<div id="allowOneAssociatePopUp"></div>
 <script>
+function allowOneAssociate(){ 
+	var result = "";
+	$("#allowOneAssociatePopUp").empty();
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<div class='modal-body'><p>Allow only One Associate</p></div>";
+	result = result + ' <div id="allowOneAssociateDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input class="u_can_color width100percnt" type="button"  value="Ok" onClick="cancelPopup();"></b>';
+	result = result +"	</div>";
+	$("#allowOneAssociatePopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelPopup(){
+	$("#allowOneAssociatePopUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+
   function getAllAssociates(){
 	  var maxTsRowNum = parseInt($("input[name = 'maxTsRowNum']").val());
 	  var orgRelationId = $("#clientOrgRelationId").val();
+	  var invoiceCreateType = $("#clientOrgRelationId").find(':selected').attr("data-Invoice");
+	  if(invoiceCreateType == "Individual"){
+		  allowOneAssociate();
+	  }
 	  var selectedAssociates = '';
 	  if(maxTsRowNum > 0){
 		  for(var i=0; i<maxTsRowNum; i++){
@@ -1066,7 +1109,11 @@ function cancelDelDoc(){
 	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
+	             		if(invoiceCreateType == "Bulk"){
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
+	             		}else if(invoiceCreateType == "Individual"){
+		             		result = result +'             <th></th>';
+	             		}
 	             		result = result +'             <th>Associate Name</th>';
 	             		result = result +'             <th>Email</th>';
 	             		result = result +'             <th>Phone</th>';
@@ -1095,7 +1142,11 @@ function cancelDelDoc(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
+	                    	 if(invoiceCreateType == "Bulk"){
 	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
+	                    	 }else if(invoiceCreateType == "Individual"){
+		                     result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="radio" name="associates[]" class="myCheckbox" >';
+	                    	 }
 	                    	 result = result +'<td>'+associateName+'</td>';
 	                    	 result = result +'<td>'+opt.email+'</td>';
 	                    	 result = result +'<td>'+mobilephone+'</td>';
@@ -1143,7 +1194,6 @@ function cancelDelDoc(){
 	  $(".new_side_wrap").addClass("new_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		
   }
   </script>
   
@@ -1224,9 +1274,9 @@ function pagination(){
 		        success: function(data) {
 		        	 if(data == true){
 		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
-						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+"  exists. Please choose a different invoice id.</span>");
 						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
-						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+'  exists. Please choose a different invoice id.'); 
 						  $("#saveButtonId").attr("disabled", "disabled");
 						  $("#sendButtonId").attr("disabled", "disabled");
 		        	}
@@ -1941,12 +1991,12 @@ function getClients(){
 		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+		}
 		}
 		
-		}
 		$("#clientOrgRelationId").empty();
 		$("#clientOrgRelationId").append(output);
 		$('#clientOrgRelationId').trigger("chosen:updated");

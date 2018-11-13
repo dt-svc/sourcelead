@@ -101,7 +101,7 @@ public interface LeaveDao {
 
 	Map<String,List<LeaveBalanceReportDTO>> getLeaveNamesByOrgLocationId(Long orgLocationId,List<Long> userleaveTypeList,List<String> leaveTypesList,String topleave) ;
 
-	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId);
+	String getDepartmentTypeNamesByOrgLocationIdAndUserId(Long userId,Long orgLocationId);
 
 	 Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
 }

@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -99,7 +101,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
-								    	 		createExcelsheet =  createXlsSheet(createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
+								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
 								    	 		rowCount++;
 											}
 										}
@@ -158,10 +160,11 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	}
 	return file;
 }*/
-		private Sheet createXlsSheet(Sheet createExcelsheet,DateFormat DF_YMD,SimpleDateFormat WEEK_DAY,String weekDayName,String status, Row writeRow, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, Long totalBillable, Long totalNonbillable) throws Exception {
+		private Sheet createXlsSheet(Workbook workbook,Sheet createExcelsheet,DateFormat DF_YMD,SimpleDateFormat WEEK_DAY,String weekDayName,String status, Row writeRow, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, Long totalBillable, Long totalNonbillable) throws Exception {
 				weekDayName = WEEK_DAY.format(dayEntries.getTimesheetDate());
 				if (dayEntries.getTimesheetDate() != null) {
-					writeRow.createCell(0).setCellValue(DF_YMD.format(dayEntries.getTimesheetDate()));
+					String timesheetDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate());
+					writeRow.createCell(0).setCellValue(timesheetDate);
 				}
 				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
 					writeRow.createCell(1).setCellValue(weekDayName);
@@ -192,11 +195,41 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					writeRow.createCell(7).setCellValue(dayEntries.getTask());
 				}
 				if (dayEntries.getBillableHrs() != null) {
-					writeRow.createCell(8).setCellValue(dayEntries.getBillableHrs());
+					CellStyle style = workbook.createCellStyle();
+					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
+					writeRow.createCell(8).setCellStyle(style);
+					if(StringUtils.isNotEmpty(dayEntries.getBillableHrs())) {
+						String[] hours = dayEntries.getBillableHrs().split(":");
+						if(hours != null && hours.length > 1) {
+							String billableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+							writeRow.createCell(8).setCellValue(Float.parseFloat(billableHrs));
+						}else {
+							writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
+						}
+						
+					}else {
+						writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
+					}
+					
 				}
 				if (dayEntries.getNonBillableHrs() != null) {
-					writeRow.createCell(9).setCellValue(dayEntries.getNonBillableHrs());
-				}
+					CellStyle style = workbook.createCellStyle();
+					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
+					writeRow.createCell(9).setCellStyle(style);
+					if(StringUtils.isNotEmpty(dayEntries.getNonBillableHrs())) {
+						String[] hours = dayEntries.getNonBillableHrs().split(":");
+						if(hours != null && hours.length > 1) {
+							String nonbillableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+							writeRow.createCell(9).setCellValue(Float.parseFloat(nonbillableHrs));
+						}else {
+							writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
+						}
+						
+					}else {
+						writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
+					}
+					
+			    }
 				if (dayEntries.getStatus() != null) {
 					writeRow.createCell(10).setCellValue(dayEntries.getStatus());
 				}
@@ -224,13 +257,13 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}else {*/
 					if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
 						if(dayEntries.getSubmittedDate() != null)
-						 submittedDate = DF_YMD.format(dayEntries.getSubmittedDate());
-						//commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						 submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+						
 					}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")){
 						if(dayEntries.getSubmittedDate() != null)
-						  submittedDate = DF_YMD.format(dayEntries.getSubmittedDate());
+						  submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 						if(dayEntries.getApprovedDate() != null)
-							approvedDate = DF_YMD.format(dayEntries.getApprovedDate());
+							approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 					}
 				//}
 				writeRow.createCell(12).setCellValue(submittedDate);
@@ -590,7 +623,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		String hours = "00";
 		String min = "00";
 		if (StringUtils.isNotEmpty(dayHours)) {
-			String[] parts = dayHours.split(":");
+			String[] parts = dayHours.split("\\:");
 			hours = parts[0];
 			min = parts[1];
 		}

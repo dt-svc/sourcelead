@@ -199,13 +199,13 @@ $(document).ready(function () {
 <section class="content-wraper">
   <section class="content-header clearfix">
      <div class="pull-left">
-     <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
+      <c:if test="${empty requirementId}"><h2>Add Job</h2></c:if>
       <c:if test="${!empty requirementId}"><h2>Update Job</h2></c:if>
     </div>
     <div class="success_pop" id="selector2" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgJobDiv"></span>
        </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Add Job </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; <c:if test="${empty requirementId}">Add Job</c:if> <c:if test="${!empty requirementId}">Update Job</c:if> </div>
   	
   </section>
   <div class="content-area content-new clearfix">
@@ -351,6 +351,17 @@ $(document).ready(function () {
             </div>
           </div>
           </c:if>
+          
+          <div class="form-group">
+            <label class="col-md-3">Profile Percentage<span class="text-danger paddingLeft">*</span></label>
+            <div class="col-md-9">
+               <input type="text" class="form-control" id="profilePercentage" name="profilePercentage" onblur="validateProfilePercentage()"  value="${!empty requirement.profilePercentage  ? requirement.profilePercentage : SourceLeadWeb_orgLocations.profilePercentage}"  field-name="Profile Percentage" data-validation="required validate_Space validate_int" >
+            </div>
+                <div class="row mxrateerror" id="profilePercentageValidateId">
+            				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
+ 			    </div>
+          </div>
+          
                  <div class="form-group">
               <label class="col-md-3">Project</label>
               <div class="col-md-9 select-field">
@@ -845,7 +856,12 @@ $(document).ready(function () {
             <div class="clearfix"></div>
             <!-- upload file html need to add bottom JavaScript otherwise it will not work --> 
           </div>
-           
+            <div class="form-group pras req-title" id="jobTitleDiv">
+	         <label class="col-md-3">Process</label>
+	        <div class="col-md-9 validLabel">
+	             <input type="text" id="process" name="process" value="${requirement.process}"  field-name="Job Process"  data-validation="validate_Space validate_length length1-250"  data-validation-optional="true" value="" class="form-control">
+	         </div>
+	       </div>
           <div class="clearfix"></div>
           <div class="clearfix mb">
           <label class="col-md-3">Description</label>
@@ -1139,12 +1155,24 @@ $(document).ready(function () {
                   <c:choose> 
 			 			 <c:when test="${val == 'Y'}">
 			   				<select class="chosen-select form-control" name="selectContact" data-validation-optional="true" field-name = "Client Contact" id="selectContact">
-								  <c:forEach var="report" items="${clientContactList}">
-			         		<%-- <option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocId.SpocUser.firstName}&nbsp;${report.spocId.SpocUser.lastName}</option> --%>
-			         				<c:if test="${report.id  == requirement.spocId.id}">
-			         					<option value="${report.id}" ${report.id  == requirement.spocId.id ? 'selected' : ''} >${report.spocName} (${report.ownerName})</option>
-			         				</c:if>
-					    		 </c:forEach>
+					    		 <c:if test="${!empty clientContactList}">
+					    		 	<c:set var="found" value="0" scope="page"/>
+					    		 	<c:forEach var="report" items="${clientContactList}">
+				         				<c:if test="${report.id  == requirement.spocId.id}">
+				         					<c:set var="found" value="${found + 1}" scope="page"/>
+				         					<option value="${report.id}" selected >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
+				         				<c:if test="${report.id  != requirement.spocId.id}">
+				         					<option value="${report.id}" >${report.spocName} (${report.ownerName})</option>
+				         				</c:if>
+						    		 </c:forEach>
+						    		 <c:if test="${found == 0}">
+							    		 	<option value="${requirement.spocId.id}" selected>${requirement.spocName} (${requirement.spocOwnerName})</option>
+							    	 </c:if>
+					    		 </c:if>
+					    		 <c:if test="${empty clientContactList}">
+					    		 	<option value="${requirement.spocId.id}" >${requirement.spocName} (${requirement.spocOwnerName})</option>
+					    		 </c:if>
                     		</select>
 						 </c:when>
 					<c:otherwise>
@@ -1772,6 +1800,33 @@ $(document).ready(function () {
 </div> 
 
 <script>
+function validateProfilePercentage(){
+	var profilePercentage = $('#profilePercentage').val();
+	
+	 if(profilePercentage > 100 || profilePercentage < 0){
+		 if(profilePercentage < 0){
+			    $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not in negitive</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not in negitive'); 
+		 }else{
+			 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not more than 100</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not more than 100'); 
+		 }
+	 }else{
+		 
+	     $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+    	 $('input#profilePercentageValidation').removeAttr( "class record-exist record-exist-errormsg");
+		 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove();
+	 }
+}
+</script>
+
+<script>
 	var orgLocationDateFormat = "${orgLocationDateFormat}";
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var jsDateFormat= '';
@@ -2254,7 +2309,7 @@ function validate_fileupload(fileName)
 								    			$("#msgJobDiv").html("Successfully job  submitted for approval");
 								    		}else if(saveType == 'saveAndContinue'){
 								    			if(result.object != 'MissingData'){
-								    				$("#msgJobDiv").html("Successfully job saved..");
+								    				$("#msgJobDiv").html("Job saved successfully");
 								    				location.replace(sourceleadUrl+"/jobReleaseManagement?requirementUUID="+result.object);	
 								    			}
 								    		}
@@ -2761,8 +2816,12 @@ function removeApprovers(){
 	 
 	if(!$("#apprverReq").is(':checked')){
          $("#navbar").removeClass("glyphicon glyphicon-info-sign text-info ml");
+         $("#parallelapprovers").hide();
+         $("#seqentialApprovers").hide();
     }else{
 		 $("#navbar").addClass("glyphicon glyphicon-info-sign text-info ml");
+		 $("#parallelapprovers").show();
+         $("#seqentialApprovers").show();
     } 
 }
 </script> 

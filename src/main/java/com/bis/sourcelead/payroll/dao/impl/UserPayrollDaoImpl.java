@@ -1,5 +1,9 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -265,6 +269,93 @@ public class UserPayrollDaoImpl implements UserPayrollDao{
 		return obj;
 	}
 
-	
+	@Override
+	@Transactional
+	public ResponseList<Checks> getChecksListByEmployeeId(OrgLocations orgLocations, ChecksDTO checksDTO) {
+		ResponseList<Checks> response = new ResponseList<>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Checks> checkslList = null;
+			String qry = "";
+			String query = "";
+			if(StringUtils.isNotBlank(checksDTO.getSortColumn())) {
+				qry = " order by checks."+ checksDTO.getSortColumn() +" "+checksDTO.getSortOrder();
+			}
+			if(StringUtils.isNoneBlank(checksDTO.getEmpId())){
+				query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId";
+				checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameter("empId", checksDTO.getEmpId()).list();
+			}else{
+				query = "from Checks checks  left join fetch checks.orgLocationId where checks.orgLocationId.id =:orgLocationId";
+				checkslList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+			}
+//			String query = "from WageTaxSummary wts  left join fetch wts.orgLocationId where wts.orgLocationId.id =:orgLocationId and (wts.status IS NULL or wts.status <> '0')";
+			String countQuery = "from Checks checks  where checks.orgLocationId.id =:orgLocationId and checks.empId = :empId  and (checks.status IS NULL or checks.status <> '0')";
+			
+			if(StringUtils.isNotBlank(checksDTO.getSearchValue()) && (checksDTO.getSearchValue().contains("/") || checksDTO.getSearchValue().contains("-"))){
+				String convertedDate=checksDTO.getSearchValue();
+				if(checksDTO.getSearchValue().contains("/")){
+					convertedDate = checksDTO.getSearchValue().replaceAll("/", "-");
+				}
+				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+	            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+	            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	            String newDate = parsedDate.format(f2);
+	            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+	            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+	            String queryDate = "from Checks checks where checks.orgLocationId.id =:orgLocationId and (checks.status IS NULL or checks.status <> '0') and ( checks.date =:sqlDate or checks.lastmodified =:sqlDate or checks.dueDate =:sqlDate)";
+	            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
+	            response.setData(queryObjDate.list());
+
+			}else{
+			StringBuilder query1 = new StringBuilder("");
+				if(checksDTO.getSearchValue() !=null && !"".equalsIgnoreCase(checksDTO.getSearchValue())) {
+//					query1 = " and wts.employeeId like %%";
+				query1.append(" and (checks.empId like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.empName like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.typeOfExpense like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.bankName like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.month like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.legalFees like '%" + checksDTO.getSearchValue() + "%' ")
+//						.append("OR checks.advanceStr like '%" + checksDTO.getSearchValue() + "%' ")
+//						.append("OR checks.generalExpensesStr like '%" + checksDTO.getSearchValue() + "%' ")
+//						.append("OR checks.vendorPaymentsStr like '%" + checksDTO.getSearchValue() + "%' ")
+						.append("OR checks.electronicWithdrawals like '%" + checksDTO.getSearchValue() + "%' ")
+//						.append("OR checks.payrollChecksStr like '%" + checksDTO.getSearchValue() + "%' ")
+//						.append("OR checks.amountStr like '%" + checksDTO.getSearchValue() + "%' ")
+				        .append("OR checks.checkNo like '%" + checksDTO.getSearchValue() + "%') ");
+							/*+ "OR wts.checkDate like '%" + wagesTaxSummaryDTO.getSearchValue() + "%'";*/
+				}
+			Query queryObj = session.createQuery(query + query1.toString()+qry);
+			if (checksDTO != null && checksDTO.getLength() > 0) {
+				queryObj.setFirstResult(checksDTO.getStart());
+				queryObj.setMaxResults(checksDTO.getLength());
+			}
+			queryObj.setLong("orgLocationId", orgLocations.getId())
+			.setLong("empId", Long.parseLong(checksDTO.getEmpId()));
+			checkslList = queryObj.list();
+			int count = 0;
+			int filteredCount = 0;
+			List<Long> countlist = session.createQuery("select count(*) " + countQuery).setParameter("empId", checksDTO.getEmpId()).setLong("orgLocationId", orgLocations.getId()).list();
+			if(countlist != null && !countlist.isEmpty()) {
+				count = countlist.iterator().next().intValue();
+			}
+			response.setRecordsTotal(count);
+			if (checksDTO != null) {
+				List<Long> filteredCountlist  = session.createQuery("select count(*) " + countQuery + query1.toString()).setLong("orgLocationId", orgLocations.getId()).setParameter("empId", checksDTO.getEmpId()).list();
+				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+					filteredCount = filteredCountlist.iterator().next().intValue();
+				}
+				response.setRecordsFiltered(filteredCount);
+			} 
+				response.setData(checkslList);
+			}
+				
+		}catch (Exception e) {
+
+		e.printStackTrace();
+		}
+		return response;
+		
+	}
 
 }

@@ -182,6 +182,8 @@ public class CandidateIndex implements Serializable {
 		
 	private String isAssociate;
 	
+	private String isSharedInMarketplace;
+	
 	private int profilePercentage;
 	
 	private String currentResumeUUID;
@@ -205,6 +207,10 @@ public class CandidateIndex implements Serializable {
 	private String dateofBirth;
 	
 	private String tags;
+	
+	private Integer submittedJobsCount;
+	
+	private Integer candidateProfilePercentage;
 	
 	
 	public String getSearchType() {
@@ -861,6 +867,14 @@ public class CandidateIndex implements Serializable {
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
 	}
+	
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
+	}
 
 	public Integer getIsFavouriteAssociate() {
 		return isFavouriteAssociate;
@@ -1029,6 +1043,24 @@ public class CandidateIndex implements Serializable {
 	public void setTags(String tags) {
 		this.tags = tags;
 	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	public Integer getCandidateProfilePercentage() {
+		return candidateProfilePercentage;
+	}
+
+	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
+		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	
 	
 }
 

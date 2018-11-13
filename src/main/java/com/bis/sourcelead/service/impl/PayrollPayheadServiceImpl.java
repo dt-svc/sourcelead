@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -36,6 +38,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	INDPayrollCommonUtil payrollCommonUtil;
 	
 	@Autowired
 	UserGroupDao userGroupDao;
@@ -113,6 +118,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 				}else {
 					payrollPayhead.setExperienceMonths(null);
 				}
+			}else {
+				payrollPayhead.setExperienceYears(null);
+				payrollPayhead.setExperienceMonths(null);
 			}
 		}else {
 			payrollPayhead.setApplicableFor(null);
@@ -186,7 +194,18 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 
 	@Override
 	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
-		return payrollPayheadDao.getPayrollPayheadList(orgLocations);
+		List<PayrollPayhead> payrollPayheadList = payrollPayheadDao.getPayrollPayheadList(orgLocations);
+		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
+		payrollPayheadDTOList.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
+		return payrollPayheadDTOList;
+	}
+	
+	@Override
+	public ResponseList<PayrollPayheadDTO> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception{
+		List<PayrollPayhead> payrollPayheadList = payrollPayheadDao.getPayrollPayheadListByPayheadComponentType(orgLocations, component);
+		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
+		payrollPayheadDTOList.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
+		return payrollPayheadDTOList;
 	}
 	
 	@Override
@@ -338,4 +357,5 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
 		return payrollPayheadDao.getAssociateSalaryIndByCandidateId(id);
 	}
+	
 }

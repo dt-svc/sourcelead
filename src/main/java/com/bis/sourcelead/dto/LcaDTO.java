@@ -46,6 +46,8 @@ public class LcaDTO extends SearchDTO {
 	
 	private String noOfPositions;
 	
+	private String availablePositions;
+	
 	/*@Required(desc = "location")*/
 	private String location;
 	
@@ -116,6 +118,8 @@ public class LcaDTO extends SearchDTO {
 	
 	private Long lcaPlacaOfempDeletedListIds[];
 	
+	private Long lcaDocumentListIds[];
+	
 	//End Place of Employment dto fields
 	
 	//Start  of Docs dto fields 
@@ -140,6 +144,8 @@ public class LcaDTO extends SearchDTO {
 	private List<FileInfo> fileInfo;
 	
 	private String editMode;
+	
+	private String visaClsfId;
 
 	public Long getId() {
 		return id;
@@ -589,6 +595,30 @@ public class LcaDTO extends SearchDTO {
 
 	public void setLcaPlacaOfempDeletedListIds(Long[] lcaPlacaOfempDeletedListIds) {
 		this.lcaPlacaOfempDeletedListIds = lcaPlacaOfempDeletedListIds;
+	}
+
+	public Long[] getLcaDocumentListIds() {
+		return lcaDocumentListIds;
+	}
+
+	public void setLcaDocumentListIds(Long[] lcaDocumentListIds) {
+		this.lcaDocumentListIds = lcaDocumentListIds;
+	}
+
+	public String getVisaClsfId() {
+		return visaClsfId;
+	}
+
+	public void setVisaClsfId(String visaClsfId) {
+		this.visaClsfId = visaClsfId;
+	}
+
+	public String getAvailablePositions() {
+		return availablePositions;
+	}
+
+	public void setAvailablePositions(String availablePositions) {
+		this.availablePositions = availablePositions;
 	}
 	
 }

@@ -219,7 +219,7 @@ public class CandidateListRestController {
 		 * names should match the ELK Candidate index field names.
 		 */
 		String[] tableColumns = { "", "isAssociate", "generatedId.keyword", "firstName.keyword", "primarySkill.keyword",
-				"designationType.keyword", "email.keyword", "mobilePhone.keyword", "country.keyword", "updatedDate", "createdBy.keyword" };
+				"designationType.keyword", "email.keyword", "mobilePhone.keyword","country.keyword", "updatedDate","profilePercentage","noOfJobs", "createdBy.keyword" };
 
 		int sortColumnIndex = 9; // by default sorting using updated date
 		boolean sortColumnOrder = false; // by default descending order
@@ -232,15 +232,17 @@ public class CandidateListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		// SimpleDateFormat simpleDateFormat =
-		// loginOrgLocation.getLocFullFormDateFormatter();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
-
 		BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
-
-		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		if (!Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
+				boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+				boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+				
+		}else{
+			boolQueryBuilder.mustNot(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+			boolQueryBuilderForCount.mustNot(QueryBuilders.matchQuery("orgLocationId", loginOrgLocation.getId()));
+		}
 
 
 		if (Constants.YES.equalsIgnoreCase(search.getIsAssociate())) {
@@ -250,6 +252,12 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", search.getCandidateType()));
 			}
 		}
+		
+		if (Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
+			boolQueryBuilder.must(QueryBuilders.matchQuery("isSharedInMarketplace", "Y"));
+			boolQueryBuilderForCount.must(QueryBuilders.matchQuery("isSharedInMarketplace", "Y"));
+		}
+		
 
 		if (!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("recruiterUserId", user.getId()));
@@ -527,21 +535,25 @@ public class CandidateListRestController {
 		}
 
 		
-		
-		if(search.getCandidateType().equalsIgnoreCase("Favourite") && StringUtils.isBlank(search.getCandidateTypeFilter())) {
-			BoolQueryBuilder favBoolQueryBuilder = QueryBuilders.boolQuery();
-			boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
-			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
-			favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
-			boolQueryBuilder.must(favBoolQueryBuilder);
+		if(search.getCandidateType() != null && search.getCandidateTypeFilter() != null){
+			if(search.getCandidateType().equalsIgnoreCase("Favourite") && StringUtils.isBlank(search.getCandidateTypeFilter())) {
+				BoolQueryBuilder favBoolQueryBuilder = QueryBuilders.boolQuery();
+				boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", "1"));
+				favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "N"));
+				favBoolQueryBuilder.should(QueryBuilders.matchQuery("isAssociate", "Y"));
+				boolQueryBuilder.must(favBoolQueryBuilder);
+			}
 		}
 		
-		
-		if(StringUtils.isNotBlank(search.getCreatedByFilter()) && search.getCreatedByFilter().equalsIgnoreCase("myCandidates")) {
-			BoolQueryBuilder createdByBuilder = QueryBuilders.boolQuery();
-			createdByBuilder.must(QueryBuilders.matchQuery("createdByUserCode", user.getUserCode()));
-			boolQueryBuilder.must(createdByBuilder);
-		}
+			if(StringUtils.isNotBlank(search.getCreatedByFilter()) && search.getCreatedByFilter().equalsIgnoreCase("myCandidates")) {
+				BoolQueryBuilder createdByBuilder = QueryBuilders.boolQuery();
+				if (!Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
+					createdByBuilder.must(QueryBuilders.matchQuery("createdByUserCode", user.getUserCode()));
+				}else{
+					createdByBuilder.mustNot(QueryBuilders.matchQuery("createdByUserCode", user.getUserCode()));
+				}
+				boolQueryBuilder.must(createdByBuilder);
+			}
 		
 		if(StringUtils.isNotBlank(search.getCandidateTypeFilter())) {
 			String[] candidateType = search.getCandidateTypeFilter().split(",");
@@ -705,11 +717,17 @@ public class CandidateListRestController {
 		ResponseList<CandidateIndex> response = new ResponseList<>();
 
 		try {
-
-			SearchResponse searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
-					Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
-					sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
-
+			//search.setLength(100);
+			SearchResponse searchResponse = null;
+			if (Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
+				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithGlobalSearchResult(Constants.ELK_CANDIDATE_INDEX,
+						Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
+			}else{
+				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
+						Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
+						sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+			}
+			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
 			if (null != searchHits && searchHits.length > 0) {
 				ObjectMapper mapper = new ObjectMapper();
@@ -725,9 +743,11 @@ public class CandidateListRestController {
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
 					Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
-					
-					int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
-					candidateIndex.setProfilePercentage(percentage);
+					if(can.getCandidateProfilePercentage() != null) {
+						candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
+					}
+					Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateIndex.getCandidateId(), loginOrgLocation.getId());
+					candidateIndex.setSubmittedJobsCount(submittedJobCount);
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());

@@ -74,6 +74,8 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
+import com.bis.sourcelead.entity.LcaHistory;
+import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
@@ -128,7 +130,6 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.web.FileController;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
@@ -388,8 +389,8 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-	//@Scheduled(cron = "0 0 0/1 ? 1/1 * *") // Scheduled for every one hour 
-	 @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
+	// @Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour 
+    @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
 	//@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
@@ -415,7 +416,7 @@ public class EMailJobScheduler {
 					for(EmailScenarioConfiguration email :  emailsList) {
 						//System.out.println(" Email id is :" + email.getEmailId());
 						logger.debug("*********** Email id is :" + email.getEmailId());
-						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"temp" );
+						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
 					
@@ -440,15 +441,16 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	  @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
 		logger.info("******************  updating All LCA  Deatails Started..! **********");
 		//System.out.println("******************  updating All LCA  Deatails Started..! **********");
 		try {
-			String fromUser = "donotreply@sourcelead.com";
+			String fromUser = "";
+			User configUser=null;
 			Date currentDate = new Date();
 			Date daysFilter = null;
 			Calendar cal = Calendar.getInstance();
@@ -508,28 +510,56 @@ public class EMailJobScheduler {
 					User toUser = (User) entry.getKey();
 					List<Lca> mapLcaList = entry.getValue();
 					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // getting org loaction id from the first
-																			// object.
-					sendEmailReminderToLcaManagerExpired(toUser, fromUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
+					User fromNotificationUser =userService.getUserByEmail(fromUser);														// object.
+					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
 			}
 			
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
+			e.printStackTrace();
 			// System.out.println("ERROR in " + e.getMessage());
 		}
 	}
 	
-	private void sendEmailReminderToLcaManagerExpired(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
+	private void sendEmailReminderToLcaManagerExpired(User toUserObj, User fromUser, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		
 		 emailMessage.setFirstName(toUserObj.getFirstName());
 		 emailMessage.setLastName(toUserObj.getLastName());
 		 emailMessage.setToEmail(toUserObj.getEmail());
-		 emailMessage.setFromEmail(fromEmail);
-		
-		 StringBuilder sb = new StringBuilder();
+		//configured Email
 			
+			String configuredFromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(ol.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int i=0; i<jobIds.length; i++) {
+								if(Long.valueOf(jobIds[i]) == 39l ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail != null){
+					 configuredFromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(configuredFromEmail)){
+				 emailMessage.setFromEmail(configuredFromEmail);
+			 }else {
+				 emailMessage.setFromEmail(fromUser.toString());
+			 }
+		
+	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
+		 StringBuilder sb = new StringBuilder();
+		 
 		 sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
 		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");            
@@ -544,20 +574,27 @@ public class EMailJobScheduler {
 		        sb.append("<tbody>");
 	        lcaList.forEach(lca->{
 	        	
-	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
+ 	        	String strStartDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getStartDate());
 	  			String strEndDate = commonUtil.dateStrFromOrgDateFormatter(ol.getDateFormat(), lca.getEndDate());
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
 		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>"); 
+		        StringBuilder locSb = new StringBuilder();
+		        for (LcaPlaceOfEployment source : lca.getLcaPlaceOfEployment()) {
+		        	locSb.append(source.getLocation()).append(" &").toString();	
+		        }
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
+		       
+		        List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lca.getId());
+		       // System.out.println("sendEmailReminderToLcaManagerExpired lcaid>>>>>>"+lca.getId());
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+( employeeList.size() > 0 ? StringUtils.join(employeeList,',') : " " ) +"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
 		        sb.append("</tr>");
 	        });
 	  		
 	  		sb.append("</tbody>");   
-		    sb.append("/<table>"); 
+		    sb.append("</table>"); 
 
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("currLcaStatus", currLcaStatus);
@@ -600,7 +637,17 @@ public class EMailJobScheduler {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		
+		 
+		// LCA manager Expired Notification 
+		EmailScenario notificationScenario = null;
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("")
+				.append(sourceleadUrl).append("/immigration").append("/viewLCAList").toString();
+		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -636,14 +683,20 @@ public class EMailJobScheduler {
 		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
 		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+lca.getLcaNo()+"</td>");                      
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+lca.getLcaTitle()+"</td>");                  
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>----</td>"); 
-		        sb.append("<td style='border: 1px solid #375d81;' width='225'>-----</td>"); 
+		        StringBuilder locSb = new StringBuilder();
+		        for (LcaPlaceOfEployment source : lca.getLcaPlaceOfEployment()) {
+		        	locSb.append(source.getLocation()).append(" &").toString();	
+		        }
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+locSb.deleteCharAt(locSb.length() - 1)+"</td>"); 
+		        List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lca.getId());
+		       // System.out.println("sendEmailReminderToLcaManagerExpiredInDays lcaid>>>>>>>>>>>"+lca.getId());
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+(employeeList.size() > 0 ? StringUtils.join(employeeList,',') : " ") +"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strStartDate+"</td>"); 
 		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+strEndDate+"</td>"); 
 		        sb.append("</tr>");	
 		       }
 	  		sb.append("</tbody>");   
-		    sb.append("/<table>"); 
+		    sb.append("</table>"); 
        
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 			 globalVarsMap.put("currLcaStatus", currLcaDaysStatus);
@@ -3682,6 +3735,7 @@ public class EMailJobScheduler {
 	
 	
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception
 	{
@@ -3745,7 +3799,7 @@ public class EMailJobScheduler {
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
-					Date[] dates = conversionUtil.getPreviousYearStartAndEndDate();
+					Date[] dates = ConversionUtil.getPreviousYearStartAndEndDate();
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}

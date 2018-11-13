@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
@@ -98,6 +100,9 @@ public class InvoicePdfHelper {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private UserDao userDao;
 
 	OrgLocationService orgLocationService;
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,
@@ -1154,39 +1159,65 @@ public class InvoicePdfHelper {
 			billingArray[1] = "--";
 		}
 
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getLastName()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getLastName())) {
-				StringBuilder contactName = new StringBuilder();
-				billingArray[2] = contactName.append(invoice.getContactUser().getFirstName()).append(" ")
-						.append(invoice.getContactUser().getLastName()).toString();
-			} else if (null != invoice.getContactUser().getFirstName()) {
-				billingArray[2] = invoice.getContactUser().getFirstName();
-			} else {
-				billingArray[2] = "--";
+		if (null != invoice.getContactUsers()) {
+			List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+			String contactName = "";
+			int count = contactUsersList.size();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getLastName()
+						&& !"".equalsIgnoreCase(contactUser.getLastName())) {
+					StringBuilder contactNameBuilder = new StringBuilder();
+							contactName = contactName + contactNameBuilder.append(contactUser.getFirstName()).append(" ")
+									.append(contactUser.getLastName()).toString();
+				}else{
+					contactName = contactName + contactUser.getFirstName();
+				}
+				count--;
+				if(count != 0){
+					contactName = contactName + ", ";
+				}
 			}
+			billingArray[2] = contactName;
 		} else {
 			billingArray[2] = "--";
 		}
 
-		if (null != invoice.getContactUser()) {
-			if (null != invoice.getContactUser().getEmail()
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getEmail())) {
-				billingArray[3] = invoice.getContactUser().getEmail();
-			} else {
-				billingArray[3] = "--";
+		if (null != invoice.getContactUsers()) {
+			List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+			String contactEmail = "";
+			int count = contactUsersList.size();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getEmail()
+						&& !"".equalsIgnoreCase(contactUser.getEmail())) {
+							contactEmail = contactEmail + contactUser.getEmail();
+				}
+				count--;
+				if(count != 0){
+					contactEmail = contactEmail + ", ";
+				}
 			}
+			billingArray[3] = contactEmail;
 		} else {
 			billingArray[3] = "--";
 		}
 
-		if (null != invoice.getContactUser()) {
-			if (invoice.getContactUser().getMobilePhone() != null
-					&& !"".equalsIgnoreCase(invoice.getContactUser().getMobilePhone())) {
-				billingArray[4] = invoice.getContactUser().getMobilePhone();
-			} else {
-				billingArray[4] = "--";
+		if (null != invoice.getContactUsers()) {
+			List<User> contactUsersList = userDao.getUsersListUsingMultipleStringIds(invoice.getContactUsers());
+			String contactMobile = "";
+			int count = contactUsersList.size();
+			for(User contactUser : contactUsersList){
+				if(null != contactUser.getMobilePhone()
+						&& !"".equalsIgnoreCase(contactUser.getMobilePhone())) {
+					StringBuilder contactNameBuilder = new StringBuilder();
+							contactMobile = contactMobile + contactUser.getMobilePhone();
+				}
+				count--;
+				if(count != 0 && null != contactUser.getMobilePhone()
+						&& !"".equalsIgnoreCase(contactUser.getMobilePhone())){
+					contactMobile = contactMobile + ", ";
+				}
 			}
+			billingArray[4] = contactMobile;
 		} else {
 			billingArray[4] = "--";
 		}

@@ -115,6 +115,37 @@ BEGIN
 end;
 $$
 
+DROP PROCEDURE IF EXISTS User_Hierarchy_Id_List 
+$$
+
+CREATE PROCEDURE `User_Hierarchy_Id_List`(IN userId varchar(64))
+     BEGIN
+
+            SELECT ID FROM USER U where  FIND_IN_SET (ID,(SELECT  GROUP_CONCAT(lv SEPARATOR ',') FROM (
+            SELECT @pv:=(SELECT GROUP_CONCAT(USER_ID SEPARATOR ',') FROM USER_ROLE  WHERE (REPORTING_MANAGER_ID IN (@pv)  OR RESOURCE_MANAGER_ID IN (@pv))) AS lv FROM USER_ROLE
+            JOIN
+            (SELECT @pv:= userId)tmp
+            WHERE REPORTING_MANAGER_ID IN (@pv)  OR RESOURCE_MANAGER_ID IN (@pv)) a));
+
+     END 
+$$
+
+
+DROP PROCEDURE IF EXISTS User_Hierarchy_UserCode_List 
+$$
+
+CREATE PROCEDURE `User_Hierarchy_UserCode_List`(IN userId varchar(64))
+     BEGIN
+
+            SELECT USER_CODE FROM USER U where  FIND_IN_SET (ID,(SELECT  GROUP_CONCAT(lv SEPARATOR ',') FROM (
+            SELECT @pv:=(SELECT GROUP_CONCAT(USER_ID SEPARATOR ',') FROM USER_ROLE  WHERE (REPORTING_MANAGER_ID IN (@pv)  OR RESOURCE_MANAGER_ID IN (@pv))) AS lv FROM USER_ROLE
+            JOIN
+            (SELECT @pv:= userId)tmp
+            WHERE REPORTING_MANAGER_ID IN (@pv)  OR RESOURCE_MANAGER_ID IN (@pv)) a));
+
+     END 
+$$
+
 DELIMITER ;
 
 

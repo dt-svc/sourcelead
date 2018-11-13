@@ -688,6 +688,18 @@ jQueryFormUtils.validateFloat = function(val) {
 	return val.match(/^-?\d*(\.\d+)?$/)!==null;
 };
 
+
+/**
+ * Validate LCA Number start letter or number and allow -(hyphen)
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateLcaNum = function(val) {
+	return val.match(/(^[a-zA-Z]?-)\d+(-\d+)*$|^\d+(-\d+)*$/)!==null;
+};
+
+//  \d+[a-zA-Z]|[a-zA-Z]+\d
 /**
  * Validate that given value is a number
  *
@@ -698,6 +710,17 @@ jQueryFormUtils.validateInteger = function(val) {
     return val !== '' && val.replace(/[0-9]/g, '') === '';
 };
 
+
+
+/**
+ * Validate that given value is a number starts from 1
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateIntegerStartfrom = function(val) {
+	return val !== '' && val.replace(/^[1-9][0-9]*/g,'') === '';
+};
 /**
  * Has month only 30 days?
  *
@@ -1176,6 +1199,15 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_int') > -1 && !jQueryFormUtils.validateInteger(value)) {
             return validationErrorMsg || language.badInt;
         }
+        
+        else if (validationRules.indexOf('validate_intFromOne') > -1 && !jQueryFormUtils.validateIntegerStartfrom(value)) {
+            return validationErrorMsg || language.badIntFromOne;
+        }
+        
+        // LCA Number
+        else if (validationRules.indexOf('validate_LcaNum') > -1 && !jQueryFormUtils.validateLcaNum(value)) {
+            return validationErrorMsg || language.badLCA;
+        }
 
         // Time
         else if (validationRules.indexOf('validate_time') > -1 && !jQueryFormUtils.validateTime(value)) {
@@ -1402,7 +1434,7 @@ jQueryFormUtils.LANG =  {
     errorTitle : 'Form submission failed!',
     requiredFields : ' is required',
     badTime : 'You have not given a correct time',
-    badEmail : 'You have not given a correct e-mail address',
+    badEmail : 'Incorrect email ID/ Please enter a valid email ID',
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
@@ -1421,6 +1453,8 @@ jQueryFormUtils.LANG =  {
     badFloat : 'Incorrect float value',
     badCustomVal : 'This is Custom Validation',
     badInt : 'Incorrect integer value',
+    badIntFromOne :'Must not Start With Zero',
+    badLCA : 'Incorrect LCA Number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',
     badNumberOfSelectedOptionsStart : 'You have to choose at least ',

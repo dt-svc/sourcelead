@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UsMyPayrollFormsDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
@@ -69,7 +72,9 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayItem;
+import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
@@ -94,6 +99,7 @@ import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
@@ -203,6 +209,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	CandidateService candidateService;
 
 	
 	/**
@@ -798,7 +807,7 @@ public class USPayrollRestController {
 		 * @throws Exception
 		 */
 	@RequestMapping(value = { "/getGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
-	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<String> getGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<String> listDates = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1153,15 +1162,36 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value =  "/savePayrollSchedule", method = RequestMethod.POST)
 	@ResponseBody
-	public UsPayrollSchedule savePayrollSchedule(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<PayrollScheduleDTO> savePayrollSchedule(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		UsPayrollSchedule  payrollSchedule = payrollScheduleService.savePayrollSchedule(payrollScheduleDTO,orgLocation,loginUser);	
-		return payrollSchedule;
+		return payrollScheduleService.savePayrollSchedule(payrollScheduleDTO,orgLocation,loginUser);	
 	}
 	
-	@RequestMapping(value =  "/getWeeklyFrequenciesBySelectedDate", method = RequestMethod.GET)
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/payrollScheduleList")
+	public ModelAndView getPayrollScheduleListJSP(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/payrollScheduleList");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
+	}
+	
+	
+	/*@RequestMapping(value =  "/getWeeklyFrequenciesBySelectedDate", method = RequestMethod.GET)
 	@ResponseBody
 	public ResponseList<String> getWeeklyFrequenciesBySelectedDate(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request) throws Exception
 	{
@@ -1172,9 +1202,9 @@ public class USPayrollRestController {
 		response.setData(datesList);
 		
 		return response;
-	}
+	}*/
 	
-	@RequestMapping(value =  "/getDisableApplyFrequencies", method = RequestMethod.GET)
+	/*@RequestMapping(value =  "/getDisableApplyFrequencies", method = RequestMethod.GET)
 	@ResponseBody
 	public boolean getDisableApplyFrequencies(PayrollScheduleDTO payrollScheduleDTO , HttpServletRequest request) throws Exception
 	{
@@ -1186,7 +1216,7 @@ public class USPayrollRestController {
 		}
 		return bol;
 		
-	}
+	}*/
 
 	/**
 	 * Get Pay sheet frequency data
@@ -1203,8 +1233,54 @@ public class USPayrollRestController {
 	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//		return uSPaysheetService.getPaySheetFrequencyListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
 		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
+	}
+	
+	/**
+	 * Get all Payroll Schedule List
+	 * @param request
+	 * @param response
+	 * @return List<PayrollScheduleDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/findAllPayrollScheduleList", "/rest/findAllPayrollScheduleList" })
+	@ResponseBody
+	public List<PayrollScheduleDTO> findAllPayrollScheduleList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return payrollScheduleService.findAllPayrollScheduleList(orgLocation.getId(),orgLocation.getDateFormat());
+	}
+	
+	
+	/**
+	 * Get all Payroll Schedule List
+	 * @param request
+	 * @param response
+	 * @return List<PayrollScheduleDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/findScheduleDates", "/rest/findScheduleDates" },method = RequestMethod.POST)
+	@ResponseBody
+	public List<PayrollScheduleDTO> findScheduleDates(PayrollScheduleDTO payrollScheduleDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		System.out.println("------------------------------");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		Date date = sdf.parse(payrollScheduleDTO.getPayPeriodStartDate());
+		Calendar now = Calendar.getInstance();
+		now.setTime(date);
+//		Calendar now = Calendar.getInstance(); // Gets the current date and
+		System.out.println("*********************"+now.getTime());
+		int year = now.get(Calendar.YEAR);
+		int month = now.get(Calendar.MONTH);
+		int dateInt = now.get(Calendar.DATE);
+		System.out.println("^^^^^^^^^^^^^^^^^^^Month "+month);
+		System.out.println("^^^^^^^^^^^^^^^^^^^Date "+dateInt);
+		System.out.println("^^^^^^^^^^^^^^^^^^");
+		List<String> s  = payrollUtil.getPayScheduleWeeksByDate(year, month, dateInt,orgLocation);
+		System.out.println(""+s);
+		return null;
+//		return payrollScheduleService.findAllPayrollScheduleList(orgLocation.getId(),orgLocation.getDateFormat());
 	}
 	
 	/**
@@ -1274,6 +1350,37 @@ public class USPayrollRestController {
 		return approverDTO;
 	}
 	
+	
+	/**
+	 * Find all payroll Approvers
+	 * @param payrollUUID
+	 * @param request
+	 * @param response
+	 * @return ApproverDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/findPayrollApprover","/rest/findPayrollApprover" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<UserDTO>  findPayrollApprover(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		List<UserDTO> userList = new ArrayList<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+		Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
+		for(PayrollApprover approver :payrollApprover ) {
+			UserDTO userDTO = new UserDTO();
+			userDTO.setId(approver.getId());
+			StringBuilder sb = new StringBuilder();
+			if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
+				sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
+			}else {
+				sb.append(approver.getUser().getFirstName());
+			}
+			userDTO.setFullName(sb.toString());
+			userList.add(userDTO);
+		}
+		return userList;
+	}
 	
 	/**
 	 * Save Payroll Approvers
@@ -1420,7 +1527,8 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		List<UserGroup> filteredGroupList = new ArrayList<>();
-		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+//		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+		List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationIdAndDepartmentId(orgLocation,userGroupDTO.getUserId());
 		if(groupList != null)
 		filteredGroupList = groupList.stream().filter(i->i.getPayFrequency().equalsIgnoreCase(userGroupDTO.getPayFrequency())).collect(Collectors.toList());
 		return filteredGroupList;
@@ -1532,12 +1640,21 @@ public class USPayrollRestController {
 		return res;
 	}
 
+	/**
+	 * My Payroll Data
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = {"/getMyPayrollList","/rest/getMyPayrollList"}, method = RequestMethod.GET)
 	@ResponseBody
-	public MyPayrollSummaryDTO getMyPayrollList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	public MyPayrollSummaryDTO getMyPayrollList(@RequestParam(value = "candidateId",required = false)Long candidateId,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		if(candidateId == null) {
+			candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		}
 		return paysheetFrequencyService.getMyPayrollListByCandidateId(candidateId,orgLocation);
 	}
 	
@@ -1656,6 +1773,27 @@ public class USPayrollRestController {
 			resList.setRecordsFiltered(assSalList.getRecordsFiltered());
 			resList.setRecordsTotal(assSalList.getRecordsTotal());
 			return resList;
+		}
+		
+		@RequestMapping(value = "/getResidenceLocation",method = RequestMethod.GET)
+		@ResponseBody
+		public String getResidenceLocation(@RequestParam(value = "userId",required = false)Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception{
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			StringBuilder sb = new StringBuilder();
+			sb.append(candidate.getResidenceCity()).append(",").append(candidate.getResidenceStateCode());
+			
+			return sb.toString();
+		}
+		
+		
+		@RequestMapping(value = {"/getContributionList","/rest/getContributionList"}, method = RequestMethod.GET)
+		@ResponseBody
+		public List<PayrollContributionDTO> getContributionList(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return payrollContributionService.getAllContributionTypeByLocationId(orgLocation);
 		}
 
 }

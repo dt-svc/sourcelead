@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
@@ -186,7 +187,7 @@ public interface UserDao {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type,List<Long> rolesList) throws Exception;
 
 
 	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId);
@@ -198,7 +199,16 @@ public interface UserDao {
 	
 	public List<User> getUsersListUsingMultipleStringIdsWithLocationId(String ids, Long orgLocationId) throws Exception;
 	
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception;
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue, Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception;
 
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception;
+	
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+	
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
+	
+	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long orgLocationId,Date[] searchDates,List<Long> teamsList,String type,List<Long> clientIdsList) throws Exception;
+
+	List<Object[]> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate);
+
 }

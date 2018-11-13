@@ -21,7 +21,7 @@ $(document).ready(function(){
      <div class="timesheet_out">
       <div class="vendor_wrap">
         <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
          
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -65,6 +65,7 @@ $(document).ready(function(){
 
 <script>
 function getDaywiseLeaveReportList(){
+	var  noReports=$("#noReports").val(0); 
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -93,7 +94,7 @@ function getDaywiseLeaveReportList(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
+	var url = sourceleadUrl+"/getDaywiseLeaveReportList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeName="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
 	prepareAllDaywiseLeaveReportList(url);
 }
 </script>	
@@ -123,7 +124,6 @@ function prepareAllDaywiseLeaveReportList(url){
 		result = result	+ '</div>';
 		$("#daywiseLeaveReportsList").empty();
 		$("#daywiseLeaveReportsList").append(result);
-		$("#noReports").val(result.length);
 		daywiseLeaveReportsListPagination(url);
 }
 </script>
@@ -633,13 +633,38 @@ function exportUserData(){
 	var ReportsListEmpty = $("#noReports").val();
 	var exportType = "xls";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
-	
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	var leaveTypeNames = [];
+	$('input:checkbox[name=leaveTypeNames]:checked').each(function() 
+		    {
+		leaveTypeNames.push($(this).val());
+     });
+	var leaveTypeBillable = [];
+	$('input:checkbox[name=leaveTypeBillable]:checked').each(function() 
+		    {
+		leaveTypeBillable.push($(this).val());
+     });
+	if(ReportsListEmpty != 0){
+		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&exportType="+exportType+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
+
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -664,8 +689,36 @@ function exportToPdf(){
 	var fromDate = $("#fromDate").val();
 	var searchValue = $("#daywiseReportDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(ReportsListEmpty > 0){
-		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
+	
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	var leaveTypeNames = [];
+	$('input:checkbox[name=leaveTypeNames]:checked').each(function() 
+		    {
+		leaveTypeNames.push($(this).val());
+     });
+	var leaveTypeBillable = [];
+	$('input:checkbox[name=leaveTypeBillable]:checked').each(function() 
+		    {
+		leaveTypeBillable.push($(this).val());
+     });
+	if(ReportsListEmpty != 0){
+		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&exportType="+exportType+"&fromDate="+fromDate+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&employmentType="+employmentType+"&leaveTypeNames="+leaveTypeNames+"&leaveTypeBillable="+leaveTypeBillable;
+
+// 		window.location.href = sourceleadUrl + "/getExportDailyWiseLeaveReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&exportType="+exportType+"&searchValue="+searchValue;
 	}else{
 		var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";

@@ -537,13 +537,15 @@
 
 							
 								<div id="cp"
-									class="input-group colorpicker-component errorInptgroup">
+									class="input-group errorInptgroup">
 									<input type="text" name="colorCode" field-name="Color Picker"
 										placeholder="Select Color Picker" readonly="readonly"
 										value="${leaveType.colorCode}" class="form-control" id="colorCode" 
-										data-validation="required" > <span class="input-group-addon colPicBox" onclick="validateColor();"><i>
-										
-										</i></span>
+										data-validation="required"> 
+											<span class="input-group-addon colPicBox"><input type="color" class="" value="" id="favcolor" onclick="validateColor(); colorPicker();"></span>
+								</div>
+								<div>
+								
 								</div>
 							</div>
 						</div>
@@ -1147,13 +1149,13 @@
 							<div class="form-group">
 								<label class="col-md-4"></label>
 								<div class="col-md-6 checkBox">
-									<c:if test="${!empty leaveType.visibilityToAllUsers}">
+									<c:if test="${!empty leaveType.visibilityToAllUsers && leaveType.visibilityToAllUsers == 'Y'}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visiblity
+											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visibility
 										All Users
 									</c:if>
-									<c:if test="${empty leaveType.visibilityToAllUsers}">
-										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visiblity
+									<c:if test="${empty leaveType.visibilityToAllUsers || leaveType.visibilityToAllUsers == 'N'}">
+										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visibility
 										All Users
 									</c:if>
 								</div>
@@ -1462,14 +1464,14 @@ function leavepolicyDescription(){
 		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
 		$('#errorNoOfdaysToCarryforward').find('p.jquery_form_error_message').remove();
 		$("#noOfDaysDiv").hide();
-		$("#noOfdaysToCarryforward").val();
+// 		$("#noOfdaysToCarryforward").val();
 	}
 	
 	function carryForwardYesUsers(){
 		$('#noOfdaysToCarryforward').attr('data-validation-optional', "true");
 		$('#noOfdaysToCarryforward').attr('data-validation', "validate_int");
 		$("#noOfDaysDiv").show();
-		$("#noOfdaysToCarryforward").val('');
+// 		$("#noOfdaysToCarryforward").val('');
 	}
 	
 	function validateNoDays(){
@@ -1531,10 +1533,17 @@ function leavepolicyDescription(){
 </script>
 <script>
 	//Color Picker
-	$(function() {
+	/* $(function() {
 		$('#cp').colorpicker();
-	});
-	
+	}); */
+	function colorPicker(){
+		var theInput = document.getElementById("favcolor");
+	    var theColor = theInput.value;
+	    
+	    theInput.addEventListener("input", function() {
+	    	document.getElementById("colorCode").value = theInput.value;
+	    }, false);
+	}
 </script>
 
 <script>

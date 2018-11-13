@@ -1839,7 +1839,34 @@ public class LeaveManagementRestController {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.valueOf(leaveDTO.getOrgLocationId()));
 		ResponseList<LeaveDTO> responseList = new ResponseList<>();
 		try {
+			String[] tableColumns1 = null;
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","approvedBy","updatedDate",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_PENDING.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","","",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","rejectedBy","",""};
+				tableColumns1 = tableColumns;
+			}else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+				String[] tableColumns = {"firstName",  "name","", "","approvedBy","cancelledBy",""};
+				tableColumns1 = tableColumns;
+			}
+			
+		    int sortColumnIndex = 1;		 //by default sorting using updated date
+			String sortColumnOrder = "asc";  //by default descending order
+			if(leaveDTO.getOrder() != null && !leaveDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(leaveDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = leaveDTO.getOrder().get(0).get("dir");
+			}
+
+				leaveDTO.setSortColumn(tableColumns1[sortColumnIndex]);
+				leaveDTO.setSortOrder(sortColumnOrder);
+
+			
+			
 			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			leaveDTO.setLoginUserRole(loginUserRole);
 			if (loginOrgLocation != null) {
@@ -2058,16 +2085,14 @@ public class LeaveManagementRestController {
 				try {
 					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(laph1.getApproverUserId().getId(),
 							orgLocations.getId());
-					if (role != null) {
+//					if (role != null) {
 						if (StringUtils.isNotBlank(laph1.getApproverUserId().getLastName())) {
-							aphlist.add(sb1.append(role.getUserType()).append(" ( ")
-									.append(laph1.getApproverUserId().getFirstName()).append(" ")
-									.append(laph1.getApproverUserId().getLastName()).append(" )").toString());
+							aphlist.add(sb1.append(laph1.getApproverUserId().getFirstName()).append(" ")
+									.append(laph1.getApproverUserId().getLastName()).toString());
 						} else {
-							aphlist.add(sb1.append(role.getUserType()).append(" ( ")
-									.append(laph1.getApproverUserId().getFirstName()).append(" )").toString());
+							aphlist.add(sb1.append(laph1.getApproverUserId().getFirstName()).toString());
 						}
-					}
+//					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2075,7 +2100,7 @@ public class LeaveManagementRestController {
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
 			
 //			int totalLeavesperYear = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(), emp,orgLocations, leave.getUser());
-			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(),orgLocations.getOrg().getId());
+			float totalLeavesperYear = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId(),orgLocations.getOrg().getId());
 			
 			leaveDto.setApproverUsers(String.join(",", aphlist));
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),
@@ -2092,7 +2117,7 @@ public class LeaveManagementRestController {
 //			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
-			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			 float totalLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, leave.getLeaveType(),leave.getUser().getId());
 			 if(!(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus()) || Constants.LEAVE_REJECTED.equalsIgnoreCase(leave.getStatus()))){
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
 						try {
@@ -2100,9 +2125,9 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = tot - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
@@ -2111,9 +2136,9 @@ public class LeaveManagementRestController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						balLeaves = tot - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }
 			

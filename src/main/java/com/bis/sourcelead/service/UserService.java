@@ -1,15 +1,20 @@
 package com.bis.sourcelead.service;
 
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -233,7 +238,7 @@ public interface UserService  {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type,List<Long> rolesList) throws Exception;
 
 	
 //	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
@@ -246,11 +251,24 @@ public interface UserService  {
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 	
- List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
+ List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date monthStartDate,Date monthEndDate) throws Exception;
  
  public void sendEmailToUserForEmailUpdation(User user, User loginUser, OrgLocations orgLocations,String toEmail,String existingEmail) throws Exception;
 
 public List<User> getUsersListUsingMultipleStringIds(String id) throws Exception;
+
+public List<Long> getUserHierarchyIdList(Long userId) throws Exception;
+
+public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception;
+
+public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long OrgLocationId,Date[] searchDates,List<Long> teamsList,String type,List<Long> clientIdsList) throws Exception;
+
+public Sheet exportAllApplicantJoinedList(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations) throws Exception;
+
+public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations,Date[] searchDates) throws Exception;
+
+public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat);
+
 
 }	
 

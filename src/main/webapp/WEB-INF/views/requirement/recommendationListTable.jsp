@@ -5,10 +5,14 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
+	<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
+	
 <%-- <jsp:include page="addApplicant.jsp" />
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>
 
 <div id="popUp" ></div>
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div>
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>  
 <script>
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
@@ -168,7 +172,6 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 	    	  	"render": function(data, type, report, meta) {
 	    	  		 var result = "";
 	    	  		 var flag = false;
-	    	  	
 	        			 
    	        		 for(var e in compareCandidates) {
 	   	     	    	   if(!e || !compareCandidates[e] || compareCandidates[e] === "")
@@ -273,7 +276,11 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 		    	  	"data": "noOfReq",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		if(report.noOfReq == 0){
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
+		    	  		}else{
+		    	  			result = result +'<td class="text-center"><div class="show-tooltip"><a href="#" onclick="getSubmittedJobsList('+report.candidateId+')">'+report.noOfReq+'</div></a>';
+		    	  		}
 		    		    result = result +' </div></td>';
 		    	  		 return result; 
 		    	  	}
@@ -396,9 +403,12 @@ function recommendationpagination(url,requirementId, requirementSubmissionStatus
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, report, meta) {
 					    	  		 var result = "";
+					    	  		 var profilePercentage = '${requirementProfilePercentage}';
 					    	  		 if(report.isCandidateSubmitted == 'N'){
 					    	  			if(requirementSubmissionStatus != 'SUBMITTED' && requirementSubmissionStatus != 'CLOSED' && requirementSubmissionStatus != 'REJECTED' &&  requirementSubmissionStatus != 'CANCEL' && requirementSubmissionStatus != 'DRAFT' && requirementSubmissionStatus != 'ONHOLD' && requirementSubmissionStatus != 'FILLEDCLOSED'  && requirementSubmissionStatus != 'UNFILLEDCLOSED'){
-					    	  				result = result +'<td class="tblminwidth-100"><div id="recommendedCandidate'+report.candidateId+'" class="pull-left"><a href="javascript:void(0)" title="Add"   onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-user-plus"></a></div>';
+					    	  				 if(report.candidateProfilePercentage >= profilePercentage){
+					    	  					result = result +'<td class="tblminwidth-100"><div id="recommendedCandidate'+report.candidateId+'" class="pull-left"><a href="javascript:void(0)" title="Add"   onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-user-plus"></a></div>';
+					    	  				 }
 					    			    	result = result +'<div class="pull-left ml5"><a href="javascript:void(0)" title="Share" onclick="shareRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant fa fa-share-alt"></a></div>';
 					    			    	result = result +'</td>';
 					    	  			}
@@ -563,6 +573,21 @@ function checkShareRecommendation(elem) {
 }
 </script>
 
+<script>
+function getSubmittedJobsList(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		     success :function(response) {
+		    	    $("#candidateSubmittedJobsDiv").empty();  
+		    	    $("#candidateSubmittedJobsDiv").append(response);
+		    	    $(".modal.paymentaccount-modal").fadeIn();
+		    	    $(".comMask").fadeIn();
+				},
+			});
+}
+</script>
+
 
 <script>
 function submitRecommendationCandidates(requirementId){
@@ -647,10 +672,24 @@ function submitRecommendationCandidatesToJob(requirementId){
 			    	} else if (data.response === "AWKWARD") {
 			    		location.href = "/errorPage";
 			    	} else if (data.response === "SUCCESS") {
-			    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+			    		
+			    		
 			    		candMsgFadein();
 		       			cancelSubmitApplicant();
 		       			requirementRecommendations(requirementId);
+		       			
+			    		var submittedlength = '';
+		       			if(data.responseObject.length > 0){
+		       				 submittedlength = candidateIds.length - data.responseObject.length;
+		       				failedCandidates.getFailuredCandidates(data.responseObject);
+		       			}else{
+		       				 submittedlength = candidateIds.length;
+		       			}
+		       			
+		       			if(submittedlength > 0){
+		       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
+		       			}
+			    		
 			    	}else if (data.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {

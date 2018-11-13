@@ -861,6 +861,7 @@ function createFolder(){
 function closeFolder(){
 	$(".popMask").fadeOut(200);
 	$("#createFolder, #renameFolder").fadeOut(100);
+	 $('#rmoveErrMsgCF').find('p.jquery_form_error_message').remove();
 }
 
 function renameFolder(){

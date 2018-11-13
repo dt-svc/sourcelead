@@ -25,7 +25,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
 public class SubmissionApproverHierarchyServiceImpl implements SubmissionApproverHierarchyService {
-
+	
 	@Autowired
 	SubmissionApproverHierarchyDao submissionApproverHierarchyDao;
 	
@@ -301,8 +301,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}
 
 	@Override
-	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId){
-		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId);
+	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId,Long orgId,String isGlobalAccess){
+		return submissionApproverHierarchyDao.isReopenButtonVisible(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId,locationId,orgId,isGlobalAccess);
 	}
 
 	@Override
@@ -330,6 +330,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchiesByProjectMemberId(
 			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId,Long locationId) throws Exception {
 		return submissionApproverHierarchyDao.getAllSubmissionApproverHierarchiesByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId,locationId);
+	}
+
+	@Override
+	public Boolean isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(Date frequencyStartDate,
+			Date frequencyEndDate, Long masterCandidateId, Long projectId) {
+		return submissionApproverHierarchyDao.isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(frequencyStartDate, frequencyEndDate, masterCandidateId, projectId);
 	}
 
 	

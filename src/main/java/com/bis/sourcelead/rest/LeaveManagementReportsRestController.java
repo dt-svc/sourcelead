@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -496,7 +497,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 	
 	@RequestMapping(value="/getLeaveBalanceReportList",method = RequestMethod.GET)
 	@ResponseBody
-	public Response<LeaveBalanceReportDTO> getLeaveBalanceReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public Response<LeaveBalanceReportDTO> getLeaveBalanceReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="searchValue", required=false) String searchValue,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Response<LeaveBalanceReportDTO> res = new Response<>();
 		LeaveBalanceReportDTO leaveBalanceReportDto = new LeaveBalanceReportDTO();
 		try {
@@ -541,7 +542,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		MonthStart = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), MonthStart);
 		MonthEnd = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), MonthEnd);
 		}
-		List<LeaveBalanceReportDTO> users =  userService.getUserNameAndTypeByOrgLocationId(orgLocation.getId(),userRolesList,orgDepartmentsList,topleave,MonthStart,MonthEnd);
+		List<LeaveBalanceReportDTO> users =  userService.getUserNameAndTypeByOrgLocationId(searchValue,orgLocation.getId(),userRolesList,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 		
 		
 		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId(),topleave);
@@ -550,39 +551,48 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
 				
 		List<LeaveBalanceReportDTO> leaveTypeList = resultMap.get("LEAVETYPES");
+		
 		List<LeaveBalanceReportDTO> departmentList = resultMap.get("DEPARMENTS");
 		Map<String,Float> map = new HashMap<>();
 		Map<Long,String> depart = new HashMap<>();
 		int viki;
 		if ("yes".equalsIgnoreCase(topleave)) {
+			leaveTypeNames = leaveTypeList.stream().map(LeaveBalanceReportDTO::getName).collect(Collectors.toList());
 			for(LeaveBalanceReportDTO ltDto : users) {
 				float total =0;
+				List<LeaveType> leaveTypes = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocation.getId()));
+				for(LeaveType lt : leaveTypes) {
+					if(leaveTypeNames != null && leaveTypeNames.contains(lt.getName())) {
+						lt.setActionType("CUSTOM");
+						lt.setFromDate(MonthStartDate);
+						lt.setToDate(MonthEndDate);
+						float Leavestaken = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocation, lt, ltDto.getUserId().longValue());
+						StringBuilder sb = new StringBuilder();
+						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						map.put(sb.toString(), Leavestaken);
+						total = total +Leavestaken;
+					}
+				}
+//				for(LeaveBalanceReportDTO d:departmentList) {
+					String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
+					depart.put(ltDto.getUserId().longValue(),Departments );
+//				}
+				}
+		}else {
+			for(LeaveBalanceReportDTO ltDto : users) {
 				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-			float Leavestaken = leaveService.getTakenLeavesByOrgLocationIdAndUserId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId());
-			StringBuilder sb = new StringBuilder();
-			sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-			map.put(sb.toString(), Leavestaken);
-			total = total +Leavestaken;
-			}for(LeaveBalanceReportDTO d:departmentList) {
-
-				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue());
-				depart.put(ltDto.getUserId().longValue(),Departments );
-			}
-			}}else {
-		for(LeaveBalanceReportDTO ltDto : users) {
-			for(LeaveBalanceReportDTO lt : leaveTypeList) {
-				float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
-				StringBuilder sb = new StringBuilder();
-				sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-				map.put(sb.toString(), leaveTypeBalance);
-			}
-			for(LeaveBalanceReportDTO d:departmentList) {
-
-				String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue());
-				depart.put(ltDto.getUserId().longValue(),Departments );
+					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
+					StringBuilder sb = new StringBuilder();
+					sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+					map.put(sb.toString(), leaveTypeBalance);
+				}
+	//			for(LeaveBalanceReportDTO d:departmentList) {
+	
+					String Departments = leaveService.getDepartmentTypeNamesByOrgLocationIdAndUserId(ltDto.getUserId().longValue(),orgLocation.getId());
+					depart.put(ltDto.getUserId().longValue(),Departments );
+	//			}
 			}
 		}
-			}
 		
 	
 		leaveBalanceReportDto.setLeaveTypeNames(leaveTypeNames);
@@ -608,17 +618,17 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 
 	@RequestMapping(value = "/gettopleavetakenReportList", method = RequestMethod.GET)
 	@ResponseBody
-	public Response<LeaveBalanceReportDTO> gettopleavetakenReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<LeaveBalanceReportDTO> gettopleavetakenReportList(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="searchValue", required=false) String searchValue,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		Response<LeaveBalanceReportDTO> topLeave = getLeaveBalanceReportList( userRole, orgDepartments, userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate, request, response);
+		Response<LeaveBalanceReportDTO> topLeave = getLeaveBalanceReportList(userRole, searchValue, orgDepartments, userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate, request, response);
 		
 		return topLeave;
 	}
 
 	@RequestMapping(value = "/getExportReports", method = RequestMethod.GET)
 	@ResponseBody
-	public void getExportReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public void getExportReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="searchValue", required=false) String searchValue,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
          
@@ -627,7 +637,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		 String topleave = null;
 		 String MonthStartDate= null;
 		 String MonthEndDate= null;
-		Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(  userRole,  orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate,request,  response);
+		Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(userRole,searchValue,  orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate,request,  response);
 			File file = null;
 	 		if(!"pdf".equalsIgnoreCase(exportType)){
 	 			createExcelsheet = leaveService.getLeaveBalanceExcelFile(createExcelsheet,createExcelworkbook,LeaveBalanceReport,orgLocation,topleave);
@@ -666,12 +676,12 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 
 	@RequestMapping(value = "/getExportTopReports", method = RequestMethod.GET)
 	@ResponseBody
-	public void getExportTopReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
+	public void getExportTopReports(@RequestParam(value="userRole", required=false) String userRole,@RequestParam(value="searchValue", required=false) String searchValue,@RequestParam(value="orgDepartments", required=false) String orgDepartments,@RequestParam(value="userleaveType", required=false) String userleaveType,@RequestParam(value="leaveType", required=false) String leaveType,@RequestParam(value="exportType", required=false) String exportType,@RequestParam(value="topleave", required=false) String topleave,@RequestParam(value="MonthStartDate", required=false) String MonthStartDate,@RequestParam(value="MonthEndDate", required=false) String MonthEndDate,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
         OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Sheet createExcelsheet = createExcelworkbook.createSheet("TopLeaveTakenReport");
-		 Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(  userRole,  orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate ,request,  response);
+		 Response<LeaveBalanceReportDTO> LeaveBalanceReport=  getLeaveBalanceReportList(   userRole, searchValue, orgDepartments,  userleaveType, leaveType,topleave,MonthStartDate,MonthEndDate ,request,  response);
 			File file = null;
 	 		if(!"pdf".equalsIgnoreCase(exportType)){
 	 			createExcelsheet = leaveService.getLeaveBalanceExcelFile(createExcelsheet,createExcelworkbook,LeaveBalanceReport,orgLocation,topleave);

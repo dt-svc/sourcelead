@@ -7,6 +7,7 @@ import java.util.List;
 import org.json.JSONException;
 
 import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -92,5 +93,9 @@ public interface CandidateResumesService {
 	public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId);
 	
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception;
+	
+	Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception;
+	
+	public CandidateResumesDTO  getCandidateLatesResumeDetails(Long candidateId) throws Exception;
 	
 }

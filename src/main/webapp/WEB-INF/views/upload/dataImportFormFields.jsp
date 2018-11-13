@@ -25,7 +25,7 @@
 			</c:if>
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
-				<option value="${map.key}">${map.value}(column-${map.key})</option>
+				<option value="${map.key}" ${field.labelName == map.value.replace("*", "").trim() ? 'selected' : ''}>${map.value}(column-${map.key})</option>
 			</c:forEach>
 			</select>
 		</div>

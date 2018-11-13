@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,9 +29,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
-import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -57,7 +58,7 @@ import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @Repository
 public class ProjectsDaoImpl implements ProjectsDao{
-	
+	 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -91,6 +92,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
     
     @Autowired
     ProjectsService projectsService;
+    
+    @Autowired 
+    UserDao userDao;
     
     @Value("${SourceLead.100}")
 	private String notFound;
@@ -585,14 +589,14 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(projectsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectsDTO.getSearchValue())) {
-		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue() + "%' ")
-				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
-				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
-				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.firstName like '" + projectsDTO.getSearchValue() + "%' OR pex.approverUserId.lastName like '%" + projectsDTO.getSearchValue() + "' ) ")
-				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
-				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue() + "%' ");
+		 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.projectName like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
+				.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
+				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pex.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
+				.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
+				.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ");
 		 
 			 if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
 					 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
@@ -1422,14 +1426,19 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	@Transactional
 	public List<ProjectsDTO> getProjectListForDaywiseReports(Long orgLocationsId, Long orgId, String isGlobalManager,Long userId,String type,String userRole)
 			throws Exception {
-		
+	
 		List<ProjectsDTO> projectsDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		String subQuery = "";
 		String projectTypesubQuery = "";
+		
 		String userRoleQuery = "";
 		
+		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(userId);
+		if(userHierarchyIds == null || userHierarchyIds.isEmpty()) {
+			userHierarchyIds.add(0l);
+		}
 		if(StringUtils.isNotBlank(isGlobalManager) && isGlobalManager.equalsIgnoreCase(Constants.YES)) {
 			subQuery = " ORG.ID = :orgId ";
 		}else {
@@ -1447,6 +1456,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 +" OR "
 					 +" (CAND.CONSULTANT_USER_ID IS NOT NULL"
 					 +" AND CAND.CONSULTANT_USER_ID IN (SELECT UR.USER_ID FROM USER_ROLE UR WHERE (UR.REPORTING_MANAGER_ID = :userId OR UR.RESOURCE_MANAGER_ID = :userId)))"
+					 +" OR"
+					 +" (CAND.CONSULTANT_USER_ID IS NOT NULL AND CAND.CONSULTANT_USER_ID IN (:userHierarchyIds))"
 					 +" OR"
 					 + "(:userId IN (SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = :orgLocationsId)) "
 					 +" ) ";
@@ -1474,7 +1485,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
             }
             
             queryObj.setLong("orgLocationsId", orgLocationsId);
-            
+            queryObj.setParameterList("userHierarchyIds", userHierarchyIds);
             queryObj.setLong("userId", userId);
             
 			queryObj.setResultTransformer(Transformers.aliasToBean(ProjectsDTO.class));
@@ -1482,7 +1493,128 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			return projectsDTOList;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Projects> getProjectReportList(ProjectReportDTO projectReportDTO, Long orgLocationId) {
+
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+
+			// java.sql.Date sqlDate = null;
+			
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(projectReportDTO.getSearchValue());
+			   java.sql.Date sqlDate = null;
+			    if(matcher.matches() == true) {
+							if(projectReportDTO.getSearchValue().contains("/")||(projectReportDTO.getSearchValue().contains("-"))) {
+								String replacedValue = projectReportDTO.getSearchValue().replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
 	
+			StringBuilder query1 = new StringBuilder("");
+			if(projectReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectReportDTO.getSearchValue())) {
+			 query1.append(" and ps.projectSequeneNumber like '%" + projectReportDTO.getSearchValue() + "%' ")
+					.append("OR ps.projectName like '%" + projectReportDTO.getSearchValue() + "%' ")
+					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectReportDTO.getSearchValue() + "%' OR pah.approverUserId.lastName like '%" + projectReportDTO.getSearchValue() + "' ) ")
+					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectReportDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
+					.append("OR ps.id IN (select pm.projects.id from ProjectMembers pm where pm.projectMemberCandidteId.firstName like '" + projectReportDTO.getSearchValue() + "%' OR pm.projectMemberCandidteId.lastName like '%" + projectReportDTO.getSearchValue() + "' ) ")
+					.append("OR ps.id IN (select pm.projects.id from ProjectMembers pm where pm.projectMemberCandidteId.id IN (select can.id from Candidate can where (concat(can.firstName,can.lastName) like '%" + projectReportDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')))" )
+					.append("OR ps.projectMode like '%" + projectReportDTO.getSearchValue() + "%' ");
+			 
+			 
+			 
+			 
+				 if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
+						 || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
+					 query1.append("OR ps.projectStatus like '%INPROGRESS%' ");
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on-hold") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on hold") 
+						 || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("onhold")) {
+					 query1.append("OR ps.projectStatus like '%ONHOLD%' ");
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("not started") || projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("notstarted")) {
+					 query1.append("OR ps.projectStatus like '%NOTSTARTED%' ");
+				 }else {
+					 query1.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectReportDTO.getSearchValue()) + "%' ");
+				 }
+				 if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("In-Active") ) {
+					 query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='0')");
+
+				 }else if(projectReportDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Active") ) {
+					 query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.status ='1')");
+
+				 }
+				 
+			     if(sqlDate != null) {
+			    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR ps.id IN(select pm.projects.id from ProjectMembers pm where pm.projectAssignedDate like '%" + sqlDate + "%' OR pm.projectEndDate like '%" + sqlDate + "%' )");
+				 }
+				
+						
+			}
+			
+			
+			String clientQuery = "";
+			List<Long> clientIdsList = new LinkedList<>();
+			if (projectReportDTO.getProjectClients() != null && !projectReportDTO.getProjectClients().isEmpty()) {
+				clientIdsList = projectReportDTO.getProjectClients();
+				if (clientIdsList == null || clientIdsList.isEmpty()) {
+					clientIdsList.add(0L);
+				}
+				clientQuery = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and pc.orgRelationId.id IN (:clientIdsList)))";
+			}
+			
+			
+			String query = "select ps from Projects ps ";
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				query += " join ps.projectApprovers pa";
+			}
+			/*query += " where ps.orgLocationsId.id = :orgLocationsId and ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+					+ clientQuery + " "+query1+")";*/
+			query += " where ps.id IN(select pc.projectId.id from ProjectClients pc where pc.orgLocationsId = :orgLocationsId "
+					+ clientQuery + " "+query1+")";
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				query += " and pa.level in (1,2) and pa.approverUserId.id in (:projectManagers)";
+			}
+			if (projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				query +=  " and ps.projectStatus in (:projectStatus)";
+			}
+			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
+				query += " and ps.id in (:projectIds)";
+			}
+			
+			Query queryObj = session.createQuery(query);
+			if (projectReportDTO.getProjectClients() != null && !projectReportDTO.getProjectClients().isEmpty()) {
+				queryObj.setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList);
+			}
+			if (projectReportDTO.getProjectManagers() != null && !projectReportDTO.getProjectManagers().isEmpty()) {
+				queryObj.setParameterList("projectManagers", projectReportDTO.getProjectManagers());
+			}
+			if (projectReportDTO.getProjectStatus() != null && !projectReportDTO.getProjectStatus().isEmpty()) {
+				List<Project_Status> enumList = new LinkedList<>();
+				for(String status : projectReportDTO.getProjectStatus().split(",")) {
+					enumList.add(Project_Status.valueOf(status));
+				}
+				queryObj.setParameterList("projectStatus", enumList);
+			}
+			if (projectReportDTO.getProjectIds() != null && !projectReportDTO.getProjectIds().isEmpty()) {
+				queryObj.setParameterList("projectIds", projectReportDTO.getProjectIds());
+			}
+			queryObj.setLong("orgLocationsId", orgLocationId);
+
+			List<Projects> projectList = queryObj.list();
+			if (projectList != null && !projectList.isEmpty()) {
+				return projectList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 }
 

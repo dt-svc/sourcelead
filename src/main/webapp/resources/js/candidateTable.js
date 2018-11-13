@@ -18,7 +18,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	}
  }
  
-  function candidateList(){
+  function candidateList(type){
 	  var candFilterRadio = $('input[name=candidateStatus]');
  	  var candidateStatus = candFilterRadio.filter(':checked').val();
 	  
@@ -104,9 +104,11 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		searchValue = searchValue ? searchValue : "";
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
-	  		prepareCandidateList(url);
-	  		// advanced search pop up close 
-//	  		closePop();
+	  		if(type == 'gMarketPlace'){
+	  			callMarketPlaceCandidates(url)
+	  		}else{
+	  			prepareCandidateList(url);
+	  		}
 			return true;
 		 }else{ 
 				return false;
@@ -116,7 +118,25 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	$('body').on('blur', '#candidatelist_form', function() {
 		$("#candidatelist_form").showHelpOnFocus();
 		$("#candidatelist_form").validateOnBlur(false, validationSettings);
-	}); 
+	});
+	
+	function callMarketPlaceCandidates(urlGlobal){
+		$.ajax({
+			type : "POST",
+			url : urlGlobal,
+			success : function(object) {
+				var candidateIdsArray = [];
+				if(object.data != null && object.data.length != 0){
+					for(var i=0;i<object.data.length;i++){
+						var objectArray = object.data[i]
+						candidateIdsArray.push(objectArray.candidateId)
+					}
+				}
+				getGloblaMarketPlaceCandidates(globalMarketDivType, candidateIdsArray);
+				candidateIdsArray = [];
+			}
+		});
+	}
 	
   function prepareCandidateList(url){
  	     $("#candidateList").removeAttr("style");
@@ -133,9 +153,10 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
           result = result +"    <th>Mobile Number</th>";
-          result = result +"    <th>Profile Percentage</th>"
-          result = result +"    <th>Location</th>"; 
+          result = result +"    <th>Location</th>";
           result = result +"    <th>Last Update</th>"; 
+          result = result +"    <th>Profile %</th>"
+          result = result +"    <th>No Of Jobs</th>"; 
           result = result +"    <th>Created By</th>"; 
           result = result +"  </tr>"; 
           result = result +"</thead>";
@@ -188,9 +209,10 @@ function cpagination(url){
             { "data": "designationType"},
             { "data": "email" },
             { "data": "mobilePhone" },
-            { "data": "profilePercentage" },
             { "data": "country"},
             { "data": "updatedDate" },
+            { "data": "profilePercentage" },
+            { "data": "noOfJobs"},
             { "data": "createdBy" }
         ],
         "columnDefs": [ {
@@ -211,8 +233,7 @@ function cpagination(url){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-   	        		 
-	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onchange="checkShareCandidates(this)"/></td>';
+	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+report.candidateId+'" data-id="'+report.candidateId+'" value="'+report.candidateId+'" onclick="appendIdsToMarketPlace(this);" data-uuid="'+report.candidateUUID+'" onchange="checkShareCandidates(this)"/></td>';
     	  		 return result; 
     	  	}
         	},{
@@ -233,10 +254,18 @@ function cpagination(url){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
-	    	  		result = result +"<div class='tblminwidth-50 pull-left'>";
+	    	  		result = result +"<div class='tblminwidth-75 pull-left'>";
 	    	  		if(data == "Y" && isAssociate == 'N'){
-		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
+	    	  			result = result +"&nbsp;<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> "; 
+	    	  			if(full.isSharedInMarketplace == 'Y'){
+	  	    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr10' title='Shared in Marketplace'></i> "; 
+	  	    	  		}
 		             }
+	    	  		else if(full.isSharedInMarketplace == 'Y'){
+		    	  		  result = result +"&nbsp;<i class='fa fa-address-book-o pull-right mt10 mr25' title='Shared in Marketplace'></i> "; 
+		    	  	}
+	    	  		
+	    	  		
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
 		              if(associateFlag)
 		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
@@ -332,19 +361,6 @@ function cpagination(url){
 	    	  		return "<div class='tbldata-dotdot-vsm'>"+mobilePhone+"</div>";
 	    	  	}
 	    	  },{
-		    	  	"targets": colIndex++,
-		    	  	"data": "profilePercentage",
-		    	  	"sortable": false,
-		    	  	"render": function(data, type, full, meta) {
-		    	  		var profilePercentage = "";
-		    	  		if(full.profilePercentage != null && full.profilePercentage != 'undefined' && full.profilePercentage != ""){
-		    	  			profilePercentage = full.profilePercentage + "%";
-			            	}else{
-			            		profilePercentage = "--";
-			            	}
-		    	  		return "<div class='tbldata-dotdot-vsm'>"+profilePercentage+"</div>";
-		    	  	}
-		    	  }, {
                   "targets": colIndex++,
                   "data": "country",
                   "render": function ( data, type, opt, meta ) {
@@ -362,7 +378,7 @@ function cpagination(url){
 		            		}
       	              return "<div><span title='"+location+"'>"+location+"</span></div>";
                   }
-                }, {
+                },{
                   "targets": colIndex++,
                   "data": "updatedDate",
                   "className": "tblminwidth-75",
@@ -375,7 +391,37 @@ function cpagination(url){
 			            	}
       	              return result;
                   }
-                } , {
+                },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "profilePercentage",
+		    	  	"sortable": false,
+		    	  	"render": function(data, type, full, meta) {
+		    	  		var profilePercentage = "";
+		    	  		var color = "";
+		    	  			profilePercentage = full.profilePercentage + "%";
+		    	  			if(full.profilePercentage >= 50){
+		    	  				color = "text-green";
+		    	  			}else{
+		    	  				color = "colorRed";
+		    	  			}
+			            	
+		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
+		    	  		
+		    	  		
+		    	  	}
+		    	  }, {
+	    	    	  	"targets": colIndex++,
+	    	    	  	"data": "noOfJobs",
+	    	    		"sortable": false,
+	    	    	  	"render": function(data, type, opt, meta) {
+	    	    	  		if(opt.submittedJobsCount == 0){
+	    	    	  			return "<div class='tbldata-dotdot-vsm'>"+opt.submittedJobsCount+"</div>";
+	    	    	  		}else{
+	    	    	  			return "<div class='tbldata-dotdot-vsm'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'>"+opt.submittedJobsCount+"</div></a></div>";
+	    	    	  		}
+	    	    	  		
+	    	    	  	}
+    	    	  },{
                     "targets": colIndex++,
                     "data": "createdBy",
                     "className": "tblminwidth-75",
@@ -414,4 +460,17 @@ function cpagination(url){
 		candidateSearchHighlight();
     	   }
     	});
+}
+
+function getSubmittedJobsList(candidateId){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
+		     success :function(response) {
+		    	    $("#candidateSubmittedJobsDiv").empty();  
+		    	    $("#candidateSubmittedJobsDiv").append(response);
+		    	    $(".modal.paymentaccount-modal").fadeIn();
+		    	    $(".comMask").fadeIn();
+				},
+			});
 }

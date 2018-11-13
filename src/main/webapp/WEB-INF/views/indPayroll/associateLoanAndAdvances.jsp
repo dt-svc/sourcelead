@@ -157,7 +157,7 @@
 		               
 		               <div class="col-md-4 minHeight">
 		                  <label>No Of Schedules<span class="text-danger">&nbsp;*</span></label>
-		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="loanAdv.getDetuctAmountDetails();" field-name="No Of Schedules">
+		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="loanAdv.getDetuctAmountDetails();" field-name="No Of Schedules" data-validation="validate_int">
 		              </div>
 		               
 		               <div class="col-md-4 minHeight" id="pendingAmountDiv" style="display: none;">
@@ -332,7 +332,15 @@ function editLoanAndAdvance(loanAdvId){
         		 
         		 $("input[name=effectiveDate]").val(json.effectiveDate);
         		 loanAdv.getLoanAndAdvApprovers(json.loanAndAdvApprover);
-        		 loanAdv.getLoanAndAdvDetails();
+        		    setTimeout(function () {
+	               		 loanAdv.getLoanAndAdvDetails();
+        	 			}, 1000);
+        		  
+        		    setTimeout(function () {
+        		    	loanAdv.getDetuctAmountDetails();
+       	 			}, 2000);
+        		    
+        		    
         		 
         		 
         	}else{

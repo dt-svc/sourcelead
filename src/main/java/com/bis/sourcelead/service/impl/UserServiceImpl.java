@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,13 +14,20 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -40,6 +49,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
@@ -50,6 +60,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -60,6 +72,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -77,6 +90,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -84,6 +98,7 @@ import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -92,6 +107,7 @@ import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserCustomFieldDataService;
@@ -100,6 +116,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 
@@ -212,6 +229,17 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AssociateBalanceLeaveService associateBalanceLeaveService;
 	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	PdfUtil pdfUtil;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -244,8 +272,13 @@ public class UserServiceImpl implements UserService {
 	   String password = null;
 	   UserRole userRole = null;
 	   boolean isUserActive = false;
-	   boolean associateBalance = true;
-	   user = userDao.findByUserName(addUserDTO.getEmail());
+	   boolean associateBalance = false;
+	   if(StringUtils.isNotBlank(candidateDTO.getAssociateId())){
+		   user = userDao.getUserById(Long.valueOf(candidateDTO.getAssociateId()));
+	   }else {
+		   user = userDao.findByUserName(addUserDTO.getEmail());
+	   }
+	   
 	   if(null != user){
 		  isUserActive = userRoleService.isUserActive(user.getId());
 		 
@@ -260,6 +293,9 @@ public class UserServiceImpl implements UserService {
 		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {
 			  user.setMobilePhone(addUserDTO.getPhoneNumber());
 		  }
+		  
+		  user.setEmail(addUserDTO.getEmail());
+		  user.setUserName(addUserDTO.getEmail());
 		  
 			  if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
 				  user.setSsn(addUserDTO.getSsn());
@@ -304,7 +340,7 @@ public class UserServiceImpl implements UserService {
  		  user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
  		  user.setUrlSentTime(new Date());
  		  user.setIsVerified(Constants.NO);
-// 		 associateBalance  = true;
+ 		 associateBalance  = true;
 		}else if(isUserActive == false){
 			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
@@ -327,38 +363,49 @@ public class UserServiceImpl implements UserService {
 	    }*/	
 	    
 	    
-       //For saving the User Role 
-	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
-	   if(userRole == null){
-		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
-		   
-		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
-				 userRole.setDesignation(addUserDTO.getDesignation());
-		    }
-		   
-		   if(null == user.getId()){
-				userRole.setIsPrimary(1);
-				 if(sourceType.equalsIgnoreCase("PROJECTS")){
-					 userRole.setUserType("Employee");
-				 }
-		  }else{
-			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			  if(primaryUserRole == null){
-				  userRole.setIsPrimary(1);
-			  }else{
-				  userRole.setIsPrimary(0);
-			  }
-			}
-	   }else {
-		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
-			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
-				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
-			}
-			
-		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
-				 userRole.setDesignation(addUserDTO.getDesignation());
-		    }
-	   }
+	    //For saving the User Role 
+	    if(StringUtils.isNotBlank(candidateDTO.getAssociateId()) && user != null && user.getId() != null){
+	    	 userRole = getUserRoleEditDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+	    } else {
+	    	
+    	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
+	   	   if(userRole == null){
+	   		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+	   		   
+	   		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+	   				 userRole.setDesignation(addUserDTO.getDesignation());
+	   		    }
+	   		   
+	   		   if(null == user.getId()){
+	   				userRole.setIsPrimary(1);
+	   				 if(sourceType.equalsIgnoreCase("PROJECTS")){
+	   					 userRole.setUserType("Employee");
+	   				 }
+	   		  }else{
+	   			  UserRole primaryUserRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+	   			  if(primaryUserRole == null){
+	   				  userRole.setIsPrimary(1);
+	   			  }else{
+	   				  userRole.setIsPrimary(0);
+	   			  }
+	   			}
+	   	   }else {
+	   		   userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+	   			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+	   				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+	   			}
+	   			
+	   		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+	   				 userRole.setDesignation(addUserDTO.getDesignation());
+	   		    }
+	   	   }
+	    }
+	   
+	 
+	   
+	   
+	   
+	   
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
 			userRole.setIsGlobal(Constants.YES);
@@ -422,7 +469,9 @@ public class UserServiceImpl implements UserService {
 				candidate.setUpdatedBy(loginuser.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsAssociate(Constants.YES);
-				
+				candidate.setEmail(addUserDTO.getEmail());
+				candidate.setFirstName(addUserDTO.getFirstName());
+				candidate.setLastName(addUserDTO.getLastName());
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
@@ -444,23 +493,33 @@ public class UserServiceImpl implements UserService {
 					candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
 				}
 				
-                       if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
-					   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
-					   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
-					   candidate.setResidenceState(addUserDTO.getResidenceState());
-					   candidate.setResidenceCity(addUserDTO.getResidenceCity());
-					   candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
-					   candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
-					   candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
-					   candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
-					   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-					   candidate.setWorkLocation(workLocation);
-				    	
-				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-				    	candidate.setResidenceStateCode(stateCode);
-				    }
-                       
+				
+			    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+				    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+					candidate.setWorkLocation(workLocation);
+			    }else {
+			    	candidate.setWorkLocation(orgLocations);
+			    }
+				
+				  
+			    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+			    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+			    	candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+			    	candidate.setResidenceState(addUserDTO.getResidenceState());
+			    	candidate.setResidenceCity(addUserDTO.getResidenceCity());
+			    	candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+			    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+			    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+			    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+			    	
+			    	
+			    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+			    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+			    	if(stateCode != null) {
+			    		candidate.setResidenceStateCode(stateCode);
+			    	}
+			    	
+			    }
 				MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 				if(null == masterCandidate){
 					masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
@@ -469,6 +528,52 @@ public class UserServiceImpl implements UserService {
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	
+			
+			else{
+				// existing candidate saving as a User
+				candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
+				if(candidate == null){
+					MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+					if(null == masterCandidate){
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginuser);
+					}
+				 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
+					
+				}else{
+					candidate.setConsultantUser(user);
+				    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+					    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+						candidate.setWorkLocation(workLocation);
+				    }else {
+				    	candidate.setWorkLocation(orgLocations);
+				    }
+					
+					  
+				    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+				    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
+				    	candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
+				    	candidate.setResidenceState(addUserDTO.getResidenceState());
+				    	candidate.setResidenceCity(addUserDTO.getResidenceCity());
+				    	candidate.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+				    	candidate.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+				    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+				    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+				    	
+				    	
+				    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+				    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+				    	if(stateCode != null) {
+				    		candidate.setResidenceStateCode(stateCode);
+				    	}
+				    	
+				    }
+					candidate.setIsAssociate(Constants.YES);
+					candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+				}
+				
+			}
 		}else{
 			// existing candidate saving as a User
 			candidate = candidateService.findByCandidateEmail(candidateDTO.getEmail(),orgLocations.getId());
@@ -707,12 +812,86 @@ public class UserServiceImpl implements UserService {
 		
 		try {
 
-			/*if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
-				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
+			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+			userRole.setUserType(roles.getDisplayName()); 
+			}
+			else{
+			roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
+			}
+
+
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		userRole.setPhoneNumber(addUserDTO.getPhoneNumber());
+		if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
+			userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
+		}
+		
+		userRole.setRoles(roles);
+		userRole.setUserType(roles.getDisplayName());
+		userRole.setCreatedDate(commonUtil.currentDate());
+		userRole.setCreatedBy(userCode);
+		userRole.setUpdatedDate(commonUtil.currentDate());
+		userRole.setUpdatedBy(userCode);
+		return userRole;
+	}
+	
+	
+	
+	private UserRole getUserRoleEditDetails(AddUserDTO addUserDTO,User user,String userCode, Long orgLocationsId) throws Exception {
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationsId);
+		userRole.setUser(user);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationsId);
+		userRole.setOrgLocations(orgLocations);
+		
+		if(StringUtils.isNotBlank(addUserDTO.getReportingManager())){
+			User reportingManager = new User();
+			reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
+			userRole.setReportingManager(reportingManager);
+		}else {
+			userRole.setReportingManager(user);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getShiftId())) {
+			Shift shift = new Shift();
+			shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+			userRole.setShift(shift);
+		}
+		
+	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
+	    	userRole.setIsMailSent(Status.Y);
 			}else{
-				roles = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER,orgLocations.getId());
-			}*/
+				userRole.setIsMailSent(Status.N);
+			}
+		   
+		userRole.setUserState(Status.NOT_LOGGEDIN);
+		
+		Roles roles = null;
+		
+		if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
+			try {
+				roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleType()));
+				userRole.setUserType(roles.getDisplayName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
+		}
+		
+		try {
+
 			if(StringUtils.isNotBlank(addUserDTO.getRoleTypeId())){
 			roles = rolesService.getRolesById(Long.parseLong(addUserDTO.getRoleTypeId()));
 			}else if(StringUtils.isNotBlank(addUserDTO.getRoleType())){
@@ -1697,9 +1876,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type,List<Long> rolesList)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
 	}
 
 
@@ -1711,7 +1890,7 @@ public class UserServiceImpl implements UserService {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
 				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
-				if (jsonArray != null) {
+				if (jsonArray != null && jsonArray.length() > 0) {
 					List<JSONObject> itemsObjectList = new LinkedList<>();
 					for (int i = 0; i < jsonArray.length(); i++) {
 						JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1766,8 +1945,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
-		 return userDao.getUserNameAndTypeByOrgLocationId(OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long OrgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) throws Exception {
+		 return userDao.getUserNameAndTypeByOrgLocationId(searchValue,OrgLocationId,userRole,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 	 }
 
 	@Override
@@ -1804,7 +1983,259 @@ public class UserServiceImpl implements UserService {
 	public List<User> getUsersListUsingMultipleStringIds(String ids) throws Exception
 	{
 		return userDao.getUsersListUsingMultipleStringIds(ids);
+	}
+	
+	@Override
+	public List<String> getUserHierarchyUserCodeList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyUserCodeList(userId);
+	}
+	
+	@Override
+	public List<Long> getUserHierarchyIdList(Long userId) throws Exception
+	{
+		return userDao.getUserHierarchyIdList(userId);
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long orglocationId, Date[] searchDates, List<Long> teamsList, String type, List<Long> clientIdsList) throws Exception
+	{
+		ResponseList<ApplicantsJoinedReportDTO> response = userDao.getApplicantsJoinedReport(applicantsJoinedReportDTO,orglocationId,searchDates,teamsList,type,clientIdsList);
+		
+//		Map<Long, List<>> map = res.getData().stream().collect(Collectors.groupingBy(ApplicantsJoinedReportDTO::getUserId,Collectors.mapping(ApplicantsJoinedReportDTO::getUserId, Collectors.toList()));
+		
+		Map<BigInteger, List<ApplicantsJoinedReportDTO>> map = response.getData().stream().collect(Collectors.groupingBy(ApplicantsJoinedReportDTO::getUserId));
+		ResponseList<ApplicantsJoinedReportDTO> responseList = new ResponseList<>();
+		List<ApplicantsJoinedReportDTO> list = new LinkedList<>();
+		for(BigInteger userId : map.keySet()){
+			list.add(map.get(userId).get(0));
+		}
+		responseList.setRecordsFiltered(list.size()); 
+		responseList.setRecordsTotal(list.size());
+	/*	for(ApplicantsJoinedReportDTO applicantsJoinedReportDTO2:response.get){
+			
+			
+			responseList.setRecordsTotal(applicantsJoinedReportDTO.getRecordsTotal());
+			responseList.setRecordsFiltered(applicantsJoinedReportDTO2.getRecordsFiltered());
+			
+
+		}*/
+		responseList.setData(list);
+		   
+		Long joiners = null;
+		float finalRate = 0f;
+		float k=0f;
+		for(ApplicantsJoinedReportDTO dto : responseList.getData()){
+			List<ApplicantsJoinedReportDTO> mainList = map.get(dto.getUserId());
+			Float totalIncentiveAmount = 0f;
+			Integer totalReqCount = 0;
+			Float percentage=0f;
+			List<ApplicantsJoinedReportDTO> searchReqList =null;
+			for(ApplicantsJoinedReportDTO sub : mainList){
+				// query to get total amount 
+				List<ApplicantsJoinedReportDTO> applicantsJoinedReportDTOList=requirementSubmissionService.getRequirementIncentiveByRequirementIdAndLocation(sub.getRequirementID().longValue(),sub.getCreatedBy(),sub.getOrglocationId().longValue(),searchDates);
+					searchReqList = applicantsJoinedReportDTOList;
+					Long reqId = 0l;
+				for(ApplicantsJoinedReportDTO applicantJoinedReportDTO:searchReqList){
+					reqId = applicantJoinedReportDTO.getRequirementID().longValue();
+					Integer count= requirementSubmissionService.getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(applicantJoinedReportDTO.getRequirementID().longValue(), applicantJoinedReportDTO.getCreatedBy(),searchDates);			
+					if(applicantJoinedReportDTO.getIncentJoiners() != null){
+						joiners=Long.parseLong(applicantJoinedReportDTO.getIncentJoiners());
+					}
+					if(applicantJoinedReportDTO.getFinalRate() != null){
+						float finalRates = Float.parseFloat(applicantJoinedReportDTO.getFinalRate());
+						finalRate=finalRates;
+
+					}
+					else{
+						float offeredAmount = Float.parseFloat(applicantJoinedReportDTO.getOfferAmount());
+						finalRate=offeredAmount;
+
+					}
+					
+					if("flat".equalsIgnoreCase(applicantJoinedReportDTO.getIncentAmountType())  && count >= joiners){
+						float incentAmount = Float.parseFloat(applicantJoinedReportDTO.getIncentAmount());
+						totalIncentiveAmount=totalIncentiveAmount+incentAmount;
+
+					}
+					if("percentage".equalsIgnoreCase(applicantJoinedReportDTO.getIncentAmountType()) && count >= joiners){
+//						if(finalRate != 0){
+							k = (finalRate*(joiners/100.0f));
+//						}
+						percentage=k;
+						totalIncentiveAmount=totalIncentiveAmount+percentage;
+					}
+					
+               }
+				if(sub.getRequirementCount() != null){
+					totalReqCount=sub.getRequirementCount().intValue();
+				}
+				if(sub.getReqClientCount() != null){
+					totalReqCount=totalReqCount + sub.getReqClientCount().intValue();
+				}
+				sub.setIncentAmount(totalIncentiveAmount.toString());
+				dto.setTotalRequirementCount(BigInteger.valueOf(totalReqCount));
+//               java.math.BigDecimal k1 = java.math.BigDecimal.valueOf(totalIncentiveAmount);
+			}
+			
+		}
+	
+		return responseList;
+	}
+	
+	
+
+	@Override
+	public Sheet exportAllApplicantJoinedList(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations) throws Exception
+	{
+
+			Row writeRow = null;
+			if(!userDTOList.getData().isEmpty()){
+		        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,userDTOList.getData().get(0).getDatesList(),orgLocations);
+			}
+	        ResponseList<ApplicantsJoinedReportDTO> list = userDTOList;
+	        int column=0;
+	        for(ApplicantsJoinedReportDTO lrv : list.getData()){
+	       	 writeRow = createExcelsheet.createRow(column+1);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,lrv,orgLocations);
+	       	 column++;
+	        }
+			return createExcelsheet;
+		
+	}	
+private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,Set<String> datesList, OrgLocations orgLocations) {
+
+		
+		
+		CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     org.apache.poi.ss.usermodel.Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+         style.setFont(font);
+		 
+		 writeRow = createExcelsheet.createRow(0);
+		 createExcelsheet.setColumnWidth(0, 10000);
+		 createExcelsheet.setColumnWidth(1, 10000);
+		 createExcelsheet.setColumnWidth(2, 5000);
+		 createExcelsheet.setColumnWidth(3, 5000);
+		 createExcelsheet.setColumnWidth(4, 5000);
+//		 createExcelsheet.setColumnWidth(5, 5000);
+//		 String headers [] = Constants.APPLICANTS_JOINED_LIST_REPORT_HEADERS;
+		 
+		 List<String> headerList = new LinkedList<>();
+		 headerList.add("Recruiter Name");
+		 for(String date : datesList) {
+			 headerList.add(date.split("<<>>").length > 1 ? date.split("<<>>")[0] : date);
+		 }
+		 headerList.add("No Of Jobs");
+		 headerList.add("Total Offer");
+		 headerList.add("Total Joiners");
+		 headerList.add("Total Leaves");
+		 
+		 String headers[] = new String[headerList.size()];
+		 
+		 int i=0;
+		 for(String header : headerList) {
+			 headers[i] = header;
+			 i++;
+		 }
+		 
+		 return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column,ApplicantsJoinedReportDTO userDTO, OrgLocations orgLocations) throws Exception {
+	
+	int cellCount = 0;
+	if(userDTO.getName() !=null){
+		 writeRow.createCell(cellCount++).setCellValue(userDTO.getName()); 
+	 }
+	else{
+		   writeRow.createCell(cellCount++).setCellValue("--");   
+	   }
+	   /*if(userDTO.getFromDate()!=null){
+		   writeRow.createCell(1).setCellValue(userDTO.getFromDate());
+	   }
+	   else{
+		   writeRow.createCell(1).setCellValue("--");   
+	   }*/
+		if(userDTO.getDatesList()!=null && !userDTO.getDatesList().isEmpty()) {
+			for(String date : userDTO.getDatesList()) {
+				writeRow.createCell(cellCount++).setCellValue(date.split("<<>>").length > 1 ? date.split("<<>>")[1] : date);
+			}
+		}
+	
+	   if(userDTO.getRequirementCount() != null){
+		   writeRow.createCell(cellCount++).setCellValue(userDTO.getRequirementCount().longValue());
+	   }
+	   else{
+		   writeRow.createCell(cellCount++).setCellValue("0");   
+	   }
+	   if(userDTO.getOfferCount() != null){
+		   writeRow.createCell(cellCount++).setCellValue(userDTO.getOfferCount().longValue());
+	   }
+	   else{
+		   writeRow.createCell(cellCount++).setCellValue("0");   
+	   }
+	   if(userDTO.getJoinedCount() !=null){
+		   writeRow.createCell(cellCount++).setCellValue(userDTO.getJoinedCount().longValue());
+	   }
+	   else{
+		   writeRow.createCell(cellCount++).setCellValue("0");   
+	   }
+	   
+	   List<LeaveType> leaveTypesList=leaveTypeService.getLeaveTypeListByLocationId(orgLocations.getId().toString());
+	 
+		List<AppliedLeaveDateView> appliedLeaves = null;
+		float appliedNoofLeaves = 0;
+		float appliedLeaveCount = 0;
+		float totalLeavesCount=0;
+	   for(LeaveType leaveType:leaveTypesList){
+		   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+			ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+			ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+		   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), userDTO.getFromDate(), userDTO.getToDate(), userDTO.getUserId().longValue(),orgLocations.getOrg().getId());
+			appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,userDTO.getFromDate(),userDTO.getToDate(),leaveType);
+			totalLeavesCount=totalLeavesCount+appliedNoofLeaves;
+	   }
+	 
+	/*	 if(leaveReportDTO.getLeaveTypeBillable() !=null){
+			 writeRow.createCell(5).setCellValue(leaveReportDTO.getLeaveTypeBillable()); 
+		 }
+		 else{
+			   writeRow.createCell(5).setCellValue("--");   
+		   }*/
+//}
+	   if(totalLeavesCount !=0){
+		   writeRow.createCell(cellCount++).setCellValue(totalLeavesCount);
+	   }
+	   else{
+		   writeRow.createCell(cellCount++).setCellValue("0");   
+	   }
+	   
+return createExcelsheet;
+
+}
+@Override
+public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportDTO> userDTOList, OrgLocations orgLocations,Date[] searchDates) throws Exception
+{
+	return pdfUtil.createAllApplicantJoinedListPdfTable(userDTOList,orgLocations,searchDates);
+
+}
+
+	@Override
+	public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat)
+	{
+		Map<String, Long> datesMap = new HashMap<>();
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+		List<Object[]> datesList = userDao.getApplicantsJoinedCountByDates(createdBy, fromDate, toDate);
+		if(datesList!= null && !datesList.isEmpty()) {
+			for(Object[] obj : datesList) {
+				datesMap.put(sdf.format(obj[0]), (Long) obj[1]);
+			}
+		}
+		return datesMap;
 	}
 
 

@@ -9,7 +9,8 @@ $(document).ready(function(){
 	datePickeerTest();
 });
 </script>
-
+<div id="emptyPopup"></div>
+<input type="hidden" id="noTopLeaveTakenList" name="noTopLeaveTakenList"  value="0"/>  
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
@@ -21,7 +22,7 @@ $(document).ready(function(){
     <div class="timesheet_out">
       <div class="vendor_wrap">
         <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
       
@@ -74,8 +75,9 @@ $(document).ready(function(){
 						</span>
 					</div>
 				</li>
+		          		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='topLeavesTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li>
+<!-- 		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='topLeavesTableSearch'/><span class="repSearchIcon" onClick="gettopleavetakenReportList();"></span></li> -->
         </ul>
       </div>
       
@@ -221,7 +223,7 @@ function gettopleavetakenReportList(){
 			$("#fromDateDiv").append("Start Date is Required") ; 
 		}
 		if(toDate == null || toDate == '' || toDate == 'undefined'){
-			$("#toDateDiv").append("To Date is Required") ; 
+			$("#toDateDiv").append("End Date is Required") ; 
 		}
 		if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 			gettopleavetakenReportList(fromDate,toDate);
@@ -237,9 +239,11 @@ function gettopleavetakenReportList(){
 </script>
 <script>
 function gettopleavetakenReportList(){
+	var searchValue = $("#leaveReportDataTableSearch").val();
 	var topleave = "yes";
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	
+
+var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val(0);
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -262,7 +266,7 @@ var loginUserRole = '${SourceLeadWeb_loginUserRole}';
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	var url = sourceleadUrl+"/gettopleavetakenReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+	var url = sourceleadUrl+"/gettopleavetakenReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
@@ -294,13 +298,23 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 								result = result + '</tr>';
 								result = result + '</thead>';
 								result = result + '<tbody>';
-								
-								for(j=0; j < opt.users.length; j++){
+								for(var j=0; j < opt.users.length; j++){
+									$("#noTopLeaveTakenList").val(1);
 									var report = opt.users[j];
 									result += "<tr>";
-									
-									result += "<td> "+report.empName+" </td>";
-									result += "<td> "+report.empType+" </td>";
+						        	  if(report.empName !=null && report.empName !='' && report.empName !='undefined'){
+						        		  result += "<td> "+report.empName+" </td>";	
+									}
+						        	  else{
+						        		  result += "<td>--</td>";
+						        	  }
+						        	  if(report.empType !=null && report.empType !='' && report.empType !='undefined'){
+											result += "<td> "+report.empType+" </td>";
+									}
+						        	  else{
+											result += "<td>--</td>";
+						        	  }
+						        	  
 									if(opt.depart.length=!null){
 										   for(var m in opt.depart){
 												var ltv = m;
@@ -313,7 +327,7 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 										result += "<td> -- </td>";
 									}
 									var lo=0;
-									for (i = 0; i < opt.leaveTypeNames.length; i++) {
+									for (var i = 0; i < opt.leaveTypeNames.length; i++) {
 										for(var k in opt.map){
 											var ltName = k.split("-");
 											if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[i]){
@@ -331,17 +345,22 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 									result += "<td> "+lo+" </td>";
 
 									result += "</tr>"
-								}
+								} 
+								 
+								result = result + '  </tbody>';
 								
-								
-								
-								result = result + '  </tbody>                                                                                                        ';
 								result = result + '</table> ';
 							
+								
 							$("#topLeaveTakenReportsList").empty();
 							$("#topLeaveTakenReportsList").append(result);
 							$("#loading").removeAttr('style');
-							listTypePagination(opt.leaveTypeNames.length);
+							if(opt.users != null && opt.users != "" && opt.users != "undefined"){
+								listTypePagination(opt.leaveTypeNames.length);
+							}else{
+								listTypePagination(0);
+							}
+							
 							$(".proj_show").click(
 									function() {
 										$(".new_side_wrap").addClass(
@@ -361,9 +380,66 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 					
 </script>
 <script>
+
+function listTypePagination(count) {
+	count += 3;
+	$('#topLeaveTakenReportsListView').DataTable({
+		"searching": false, 
+	    "paging": true,
+		"scrollCollapse" : false,
+		"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+		"bLengthChange" : true,
+		"bDestroy" : true,
+		"ordering" : true,
+		"mark" : true,
+		"oLanguage" : {
+			"sSearch" : "",
+			"sZeroRecords" : "",
+			"sEmptyTable" : "",
+				"sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+		}
+	});
+	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
+
+}
+$("#leaveReportDataTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   gettopleavetakenReportList();
+	   }
+	});
+
+
+
+
+/* function listTypePagination(count) {
+	
+	alert("count "+count);
+	count += 3;
+	$('#topLeaveTakenReportsListView').DataTable({
+		"searching": false,
+		"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"aaSorting": [[count,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+	});
+	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
+
+} */
+
+
+
+/* 
 	function listTypePagination(count) {
 		count += 3;
 		$('#topLeaveTakenReportsListView').DataTable({
+			"searching": false, 
+		    "paging": true,
 			"scrollCollapse" : false,
 			"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
 			"aaSorting": [[count,'desc']],
@@ -373,13 +449,18 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 			"mark" : true,
 			"oLanguage" : {
 				"sSearch" : "",
-				"sZeroRecords" : "",
-				"sEmptyTable" : ""
+				"sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 			}
 		});
 		$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
 
-	}
+	} */
+/* 	$("#leaveReportDataTableSearch").keydown(function(e) {
+		   if(e.which === 13) {
+			   gettopleavetakenReportList();
+		   }
+		}); */
 </script>
  
 <script>
@@ -415,7 +496,8 @@ function exportToPdf(){
 	var exportType = "pdf";
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
+	var searchValue = $("#leaveReportDataTableSearch").val();
+	var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val();
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -438,16 +520,35 @@ function exportToPdf(){
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
-	
+	if(noTopLeaveTakenList !=	 0){
+		window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+	}else{
+	  	var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>TopLeaveTaken List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+<script type="text/javascript">
+function candidtaeCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <script>
 function exportToExcel(){
+	var searchValue = $("#leaveReportDataTableSearch").val();
 	var exportType = "excel";
 	var topleave ="yes";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    
+	var  noTopLeaveTakenList=$("#noTopLeaveTakenList").val();
 	var userRole = [];
 	$('input:checkbox[name=userRole]:checked').each(function() 
     {
@@ -470,8 +571,20 @@ function exportToExcel(){
      });
 	var MonthStartDate =$("#filterStartDate").val();
 	var MonthEndDate = $("#filterEndDate").val();
-	
-	window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate;
+	if(noTopLeaveTakenList !=	 0){
+		window.location.href = sourceleadUrl + "/getExportTopReports?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&exportType="+exportType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
+	}else{
+	  	var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>TopLeaveTaken List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+		result = result +"	</div>";
+		$("#emptyPopup").append(result);
+		$("#candidate_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);	
+	}
 	
 }
 </script>

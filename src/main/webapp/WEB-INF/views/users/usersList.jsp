@@ -342,13 +342,26 @@ function getUsersSearchResult(searchValue){
 							</li>
 				</c:if>
 				
-				<%-- <c:if test="${SourceLeadWeb_currencyCode == 'USD'}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
-				</c:if> --%>
-				
 				<c:if test="${orgLocationsCount == 1}">
-				<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
-				</c:if>		
+				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
+				           <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>
+							</sec:authorize>
+							
+				<sec:authorize access="!hasRole('ROLE_USER_BULK_IMPORTS')"> 
+						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</sec:authorize>
+							
+				</c:if>	
 	           
 						
 	       </sec:authorize>
@@ -369,7 +382,7 @@ function getUsersSearchResult(searchValue){
 					</div>
 				</li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="beforeSearch();"></span></li>
         </ul>
       </div>
       
@@ -1196,6 +1209,8 @@ function getDynamciUserList(){
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
 	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
 	prepareDynamicUserList(url);
+	
+	
 }
 </script>
 
@@ -1387,14 +1402,37 @@ function dynamicUserListPagination(url){
     $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
 }
+</script>
+<script>
+$("#dynamicUserDataTableSearch").keyup(function(event) {
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    if (event.keyCode === 13) {
+    	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#dynamicUserDataTableSearch').val();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getDynamciUserList();
+		    searchHighlight();
+    	}else{
+    		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#dynamicUserDataTableSearch').val(searchData);
+    }
+});
 
-$("#dynamicUserDataTableSearch").keydown(function(e) {
-	   if(e.which === 13) {
-		   getDynamciUserList();
-		   searchHighlight();
-	   }
-	});
-</script> 
+function beforeSearch(){
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dynamicUserDataTableSearch').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getDynamciUserList();
+	    searchHighlight();
+	}else{
+		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dynamicUserDataTableSearch').val(searchData);
+}
+</script>
  <script>
  function searchHighlight(){
 	 setTimeout(function () {

@@ -66,25 +66,25 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	private BigInteger totalNoOfUsers;
 	
-    private BigDecimal userRequirementsCount;
+    private BigDecimal userRequirementsCount = new BigDecimal(0);
 	
-    private BigDecimal userApplicantsCount;
+    private BigDecimal userApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userCandidatesCount;
+    private BigDecimal userCandidatesCount = new BigDecimal(0);
 	
-    private BigDecimal userShortlistedApplicantsCount;
+    private BigDecimal userShortlistedApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userSubmittedApplicantsCount;
+    private BigDecimal userSubmittedApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userInterviewedApplicantsCount;
+    private BigDecimal userInterviewedApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userOfferedApplicantsCount;
+    private BigDecimal userOfferedApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userRejectedApplicantsCount;
+    private BigDecimal userRejectedApplicantsCount = new BigDecimal(0);
 	
-    private BigDecimal userApplicantsBackOutCount;
+    private BigDecimal userApplicantsBackOutCount = new BigDecimal(0);
     
-    private BigDecimal userApplicantsJoinedCount;
+    private BigDecimal userApplicantsJoinedCount = new BigDecimal(0);
     
     private String isGlobalUser;
     
@@ -93,6 +93,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigInteger userId;
 
     private String tags;
+    
+    private String joinersAmount;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -637,4 +639,15 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.isPayRollApprover = isPayRollApprover;
 	}
 
+	public String getJoinersAmount()
+	{
+		return joinersAmount;
+	}
+
+	public void setJoinersAmount(String joinersAmount)
+	{
+		this.joinersAmount = joinersAmount;
+	}
+
+	
 }

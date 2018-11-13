@@ -23,6 +23,9 @@ public class RequirementDTO extends CommonDTO {
 
 	@Required(desc = "job title")
 	private String jobTitle;
+	
+	@Required(desc = "profilePercentage")
+	private String profilePercentage;
 
 	private String jobType;
 
@@ -215,6 +218,15 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String orgTeams;
 	
+	private String process;
+	
+	private String jobCreatedDateRange;
+	
+	private String clientIds;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1548,6 +1560,56 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setJobFairDates(String[] jobFairDates) {
 		this.jobFairDates = jobFairDates;
+	}
+
+	public String getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(String profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
+	public String getJobCreatedDateRange() {
+		return jobCreatedDateRange;
+	}
+
+	public void setJobCreatedDateRange(String jobCreatedDateRange) {
+		this.jobCreatedDateRange = jobCreatedDateRange;
+	}
+
+	public String getClientIds() {
+		return clientIds;
+	}
+
+	public void setClientIds(String clientIds) {
+		this.clientIds = clientIds;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
 	}
 	
 	

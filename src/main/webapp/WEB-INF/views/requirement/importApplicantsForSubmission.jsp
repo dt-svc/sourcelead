@@ -15,7 +15,25 @@
 	border: none;
 	background: transparent
 }
+  
 </style>
+
+<script type="text/javascript">
+var uploadflag= true;
+		function getSubmissionsUploadedHistory() {
+			var refreshId = setInterval(function(){
+				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
+				if(uploadflag == true){
+					xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
+				  }else{
+					     clearInterval(refreshId);
+						 $(".browseProgress").hide();
+						 $("#upload_button").removeAttr("disabled");
+						 xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
+				  }
+			},1000);
+		 }
+</script>
 
 	<section class="content-header clearfix">
       <div class="pull-left">
@@ -36,7 +54,7 @@
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
+								class="btn btn-success btn-block" title="Submission Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -105,14 +123,19 @@
 						</span>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 		</form:form>
 	</div>
 	<div id="dataFieldsDiv" style="display: none"></div>
 	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+		</div>
 	
-	
+<script type="text/javascript" src="/resources/js/xlsupload.js"></script>	
 <script type="text/javascript">
 function cancelFileImport(){
 	location.replace(sourceleadUrl+"/uploadCandidateForm");

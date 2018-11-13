@@ -13,11 +13,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -35,20 +37,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -58,6 +58,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -79,6 +80,9 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -906,12 +910,14 @@ public class UserDaoImpl implements UserDao {
 		
 	  Session session = this.sessionFactory.getCurrentSession();
 	  String query = "";
-	  Boolean isAdmin = userRoleDao.isUserAdminByOrgLocationId(currentApproverId,orgLocationsId);
+	 /* Boolean isAdmin = userRoleDao.isUserAdminByOrgLocationId(currentApproverId,orgLocationsId);
 	  if(isAdmin){
 		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.user.id != :currentApproverId)";
 	  }else{
 		  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList) and userRole.user.id != :currentApproverId)";
-	  }
+	  }*/
+	  
+	  query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.orgLocations.id = :orgLocationsId and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList)  and userRole.userState = 'ACTIVE' and userRole.user.id != :currentApproverId)";
 		
 	  String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
@@ -1875,7 +1881,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList,String type,List<Long> rolesList)
 			throws Exception {
 		
 		
@@ -1892,17 +1898,21 @@ public class UserDaoImpl implements UserDao {
 		String searchQuery = "";
 		int totalCount = 0;
 		String subQueryTeam = "";
+		String subQueryRole = "";
 		String sortingQry = "";
 		String myPerformanceReportQuery="";
 		
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-			
+			//List<String> userList = this.getUserHierarchyUserCodeList(userId);
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
+				searchQuery = " AND (U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%')";
 			}
 			if(teamsList.size()>0 && !teamsList.isEmpty()){
 			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
 			}
+			if(rolesList.size()>0 && !rolesList.isEmpty()){
+				subQueryRole = " AND UR.ROLE_ID IN (SELECT UR.ROLE_ID FROM USER_ROLE UR WHERE UR.ROLE_ID IN (:rolesList))";
+				}
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 				sortingQry = " ORDER BY U.FIRST_NAME"+" "+userDTO.getSortOrder();
 			}
@@ -1923,6 +1933,7 @@ public class UserDaoImpl implements UserDao {
 					    + " UR.USER_STATE = 'ACTIVE' "
 						+searchQuery
 						+subQueryTeam
+						+subQueryRole
 						+ " AND  OL.ORG_ID = :orgId"
 					    + " GROUP BY UR.USER_ID"
 					    +sortingQry;
@@ -1957,6 +1968,7 @@ public class UserDaoImpl implements UserDao {
 					    + " UR.USER_STATE = 'ACTIVE' "
 						+searchQuery
 						+subQueryTeam
+						+subQueryRole
 						+ " AND  OL.ORG_ID = :orgId"
 					    +sortingQry;
 			
@@ -1989,6 +2001,7 @@ public class UserDaoImpl implements UserDao {
 						    + " UR.USER_STATE = 'ACTIVE' "
 							+searchQuery
 							+subQueryTeam
+							+subQueryRole
 							+ " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
 							+myPerformanceReportQuery
 						    + " GROUP BY UR.USER_ID"
@@ -2002,6 +2015,9 @@ public class UserDaoImpl implements UserDao {
 					if(teamsList.size()>0 && !teamsList.isEmpty()){
 					queryObj.setParameterList("teamsList", teamsList);
 					}
+					if(rolesList.size()>0 && !rolesList.isEmpty()){
+						queryObj.setParameterList("rolesList", rolesList);
+						}
 					queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
 					queryObj.setFirstResult(userDTO.getStart());
 					queryObj.setMaxResults(userDTO.getLength());
@@ -2026,6 +2042,7 @@ public class UserDaoImpl implements UserDao {
 						    + " UR.USER_STATE = 'ACTIVE' "
 							+searchQuery
 							+subQueryTeam
+							+subQueryRole
 						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
 						    +myPerformanceReportQuery
 						    +sortingQry;
@@ -2038,6 +2055,9 @@ public class UserDaoImpl implements UserDao {
 				if(teamsList.size()>0 && !teamsList.isEmpty()){
 				countqueryString.setParameterList("teamsList", teamsList);
 				}
+				if(rolesList.size()>0 && !rolesList.isEmpty()){
+					countqueryString.setParameterList("rolesList", rolesList);
+					}
 				BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
 				filterCount = filterCount1.intValue();
 				totalCount = filterCount1.intValue();
@@ -2049,12 +2069,19 @@ public class UserDaoImpl implements UserDao {
 
 			
 		}else {
-			
+			List<String> userList = this.getUserHierarchyUserCodeList(userId);
+			String users = "'" + StringUtils.join(userList, "','")  + "'";
 			if(teamsList != null && teamsList.isEmpty()){
 				teamsList.add(0l);
 			}
+			if(rolesList != null && rolesList.isEmpty()){
+				rolesList.add(0l);
+			}
 			
 			String subQuery = " and ((:varZero  IN (:teamsList)) OR (:varZero NOT IN (:teamsList) and tm.teamId.id IN (:teamsList))) ";
+			
+			String roleQuery = " and ((:varRoleZero  IN (:rolesList)) OR (:varRoleZero NOT IN (:rolesList) and userRole.roles.id IN (:rolesList))) ";
+
 			
 			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 				globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
@@ -2073,10 +2100,15 @@ public class UserDaoImpl implements UserDao {
 			}
 			if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
 				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' "+globalAccessQuery+" )) ";
+//				query = "from User user where (user.userCode IN("+users+") OR user.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId and userRole.userState = 'ACTIVE' "+globalAccessQuery+" )) ";
 			}
 			else{
-				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+				/*query = "from User user where (user.userCode IN("+users+") OR user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+roleQuery+" "+globalAccessQuery+" ) "
 						+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			*/
+				query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+roleQuery+" "+globalAccessQuery+" ) "
+						+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId  "+subQuery+"))";
+			
 			}
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -2089,11 +2121,11 @@ public class UserDaoImpl implements UserDao {
 				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 			}
 			else{
-				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameterList("teamsList", teamsList).setLong("varZero", 0).list();
+				queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).setParameterList("teamsList", teamsList).setParameterList("rolesList", rolesList).setLong("varZero", 0).setLong("varRoleZero", 0).list();
 			}
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setLong("varRoleZero", 0).setParameterList("teamsList", teamsList).setParameterList("rolesList", rolesList).list();
 				filterCount = countlist.iterator().next().intValue();
 			}else {
 				if(StringUtils.isNotBlank(type) && type.equalsIgnoreCase("myPerformanceReports")) {
@@ -2101,7 +2133,7 @@ public class UserDaoImpl implements UserDao {
 					filterCount = countlist.iterator().next().intValue();	
 				}
 				else{
-					countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setParameterList("teamsList", teamsList).list();
+					countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("varZero", 0).setLong("varRoleZero", 0).setParameterList("teamsList", teamsList).setParameterList("rolesList", rolesList).list();
 					filterCount = countlist.iterator().next().intValue();	
 				}
 				
@@ -2176,26 +2208,51 @@ public class UserDaoImpl implements UserDao {
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
+				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
 						jobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(jobIds.size());
-						userDTO.setUserRequirementsCount(bd);
+						/*BigDecimal bd = new BigDecimal(jobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}*/
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+					}
+					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")){
+						primaryUserjobIds.add(reportDTO.getRequirementId());
+						/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}*/
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
-					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
+					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
 					if(userDTO != null){
-						primaryUserjobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
-						userDTO.setUserRequirementsCount(bd);
-					}
+						approverUserjobIds.add(reportDTO.getRequirementId());
+						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
+						if(userDTO.getUserRequirementsCount() != null) {
+							bd = bd.add(userDTO.getUserRequirementsCount());
+						}
+						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+					}*/
 					
 					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 							jobIds.add(reportDTO.getRequirementId());
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}
+					
+					if(reportDTO.getReleaseJobToAllUsers() != null && reportDTO.getReleaseJobToAllUsers().equalsIgnoreCase("Y")){
+						for(User user:usersList){
+							 userDTO = userListMap.get(user.getUserCode());
+							 if(reportDTO.getManagerUserId().longValue() != user.getId()){
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+							 }
 						}
 					}
 					
@@ -2218,14 +2275,14 @@ public class UserDaoImpl implements UserDao {
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
 					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
 						UserDTO userDTO = userListMap.get(recuiterReportView.getUserCode());
-						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
-						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
-						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
-						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
-						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
-						userDTO.setUserInterviewedApplicantsCount(recuiterReportView.getApplicantInterviewCount());
-						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
-						userDTO.setUserApplicantsJoinedCount(recuiterReportView.getApplicantJoinedCount());
+						userDTO.setUserApplicantsCount(userDTO.getUserApplicantsCount().add(recuiterReportView.getApplicantSubmissionCount()));
+						userDTO.setUserShortlistedApplicantsCount(userDTO.getUserShortlistedApplicantsCount().add(recuiterReportView.getApplicantShortlistedCount()));
+						userDTO.setUserSubmittedApplicantsCount(userDTO.getUserSubmittedApplicantsCount().add(recuiterReportView.getApplicantSubmittedClientCount()));
+						userDTO.setUserOfferedApplicantsCount(userDTO.getUserOfferedApplicantsCount().add(recuiterReportView.getApplicantOfferMadeCount()));
+						userDTO.setUserRejectedApplicantsCount(userDTO.getUserRejectedApplicantsCount().add(recuiterReportView.getApplicantRejectedCount()));
+						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
+						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
+						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
 					}
 					
 				}
@@ -2235,7 +2292,6 @@ public class UserDaoImpl implements UserDao {
 		}
 		return usersDTOList;
 	}
-
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
@@ -2297,7 +2353,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) {
+	public List<LeaveBalanceReportDTO> getUserNameAndTypeByOrgLocationId(String searchValue,Long orgLocationId,List<Long> userRole,List<Long> orgDepartmentsList,String topleave,Date MonthStart,Date MonthEnd) {
 		try {
 		java.sql.Date startDateSqlDate = null;
 		java.sql.Date endDateSqlDate = null;
@@ -2318,6 +2374,7 @@ public class UserDaoImpl implements UserDao {
 		String subQuery5 =" ";
 		String subQuery6 =" ";
 		String subQuery7 =" ";
+        StringBuilder subQuery8 = new StringBuilder();
 		if("yes".equalsIgnoreCase(topleave)) {
 
 			if(startDateSqlDate !=null) {
@@ -2328,8 +2385,20 @@ public class UserDaoImpl implements UserDao {
 				subQuery7=" and ul.TO_DATE <=:endDateSqlDate";
 			}
 		}
+		
+		
+		if(searchValue !=null && !"".equalsIgnoreCase(searchValue)) {
+			subQuery8.append("and (CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) like '%" + searchValue + "%' ")
+					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
+					.append("OR concat(u.FIRST_NAME,u.LAST_NAME) like '%" + searchValue + "%' ")
+			.append("OR e.EMPLOYMENT_TYPE like '%" + searchValue + "%' ) ");
+
+		}
+			
+					
+		
 	
-		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e,USER_LEAVE ul where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+		String query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		//Query queryString = (Query) session.createSQLQuery(query).setLong("orgLocationId",orgLocationId).setResultTransformer(Transformers.aliasToBean(LeaveBalanceReportDTO.class)).list();
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("orgLocationId", orgLocationId);
@@ -2393,6 +2462,207 @@ public class UserDaoImpl implements UserDao {
 	return list;
 
 	}
+	
+	@Override
+    @Transactional
+    public List<Long> getUserHierarchyIdList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<Long> userIds = session.createSQLQuery("CALL User_Hierarchy_Id_List(:userId)").setParameter("userId", userId).list();
+        return userIds;
+    }
+
+    @Override
+    @Transactional
+    public List<String> getUserHierarchyUserCodeList(Long userId) {
+         Session session = this.sessionFactory.getCurrentSession();
+         List<String> userCodes = session.createSQLQuery("CALL User_Hierarchy_UserCode_List(:userId)").setParameter("userId", userId).list();
+        return userCodes;
+    }
+
+	@Override
+	@Transactional
+	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO, Long orgLocationId, Date[] searchDates, List<Long> teamsList, String type, List<Long> clientIdsList) throws Exception
+	{
+		List<ApplicantsJoinedReportDTO> applicantJoinedReportList = null;
+//		List<ApplicantsJoinedReportDTO> response = new LinkedList<ApplicantsJoinedReportDTO>();
+		ResponseList<ApplicantsJoinedReportDTO> responses = new ResponseList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		/*
+		 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); String
+		 * fromDate = sdf.format(searchDates[0]); String toDate =
+		 * sdf.format(searchDates[1]);
+		 */
+		Integer filterCount = 0;
+		java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+		java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+		java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+		java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+		Query queryString = null;
+		String query = null;
+		String dateQury = null;
+		String teamSubQuery = "";
+		String clientSubQuery = "";
+		List<Long> countlist = null;
+        StringBuilder query1 = new StringBuilder();
+        List countQueryString;
+		dateQury = " and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+				+ "' and '" + toDate + "'";
+		if(applicantsJoinedReportDTO.getSearchValue() != null && !applicantsJoinedReportDTO.getSearchValue().isEmpty() && applicantsJoinedReportDTO.getSearchValue() != "undefined"){
+			 query1.append(" and (CONCAT(FIRST_NAME,LAST_NAME) like '%"
+		                + applicantsJoinedReportDTO.getSearchValue()
+		                + "%' )");
+		}
+String groupSubQuery = "";
+
+String sortingQry ="";
+		
+		if (applicantsJoinedReportDTO.getOrgTeams() == null &&
+				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
+			groupSubQuery=" group by u.ID,req.ID";
+		}
+		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
+		}
+		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
+				+ "req.ORG_LOCATION_ID as orglocationId,"
+				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
+				+ "reqSub.CREATED_BY as createdBy, "
+				+ "(SELECT count(*) FROM REQUIREMENT_ASSIGN_TO reqAssign WHERE reqAssign.ASSIGN_USER_ID = u.ID "
+				+ " and DATE_FORMAT(reqAssign.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS requirementCount ,"
+				+"(SELECT count(*) FROM REQUIREMENT requirement WHERE requirement.ID = req.ID and (requirement.MANAGER_USER_ID = u.ID OR requirement.PRIMARY_RECRUITER_USER_ID = u.ID)"
+				+ " and DATE_FORMAT(requirement.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate+ "' and '" + toDate + "' ) AS reqClientCount ,"
+				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name,"
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS submissionCount,"
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'JOINED' OR reqSub.PREVIOUS_SUBMISSION_STATUS='JOINED') and reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS joinedCount , "
+				+ "(SELECT count(*) FROM REQUIREMENT_SUBMISSION reqSub WHERE (reqSub.SUBMISSION_STATUS = 'OFFERMADE' OR  reqSub.SUBMISSION_STATUS='OFFERACCEPTED' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERMADE' OR reqSub.PREVIOUS_SUBMISSION_STATUS='OFFERACCEPTED') and reqSub.CREATED_BY = u.USER_CODE "
+				+ dateQury + ") AS offerCount  "
+				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1
+				+groupSubQuery;
+		/*
+		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
+		 * !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { teamSubQuery =
+		 * " and applicantsJoinedReport.deptId  IN (:teamsList)"; }
+		 */
+		/*
+		 * if (applicantsJoinedReportDTO.getClients() != null &&
+		 * !applicantsJoinedReportDTO.getClients().isEmpty()) { clientSubQuery =
+		 * " and applicantsJoinedReport.clientId  IN (:clientIdsList)";
+		 * 
+		 * }
+		 */
+		
+		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
+				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+				 }
+		
+       
+		if (applicantsJoinedReportDTO.getClients() != null &&
+				  !applicantsJoinedReportDTO.getClients().isEmpty()) { 
+			clientSubQuery =" and req.ORG_RELATION_ID  IN (:clientIdsList)";
+				  
+				  }
+		
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
+		/*
+		 * queryString.setLong("orgLocationId", orgLocationId);
+		 * queryString.setParameter("fromDate", fromDate);
+		 * queryString.setParameter("toDate", toDate);
+		 */
+		/*
+		 * if (!teamsList.isEmpty()) { queryString.setParameterList("teamsList",
+		 * teamsList); }
+		 */
+		
+		if (!teamsList.isEmpty()) {
+			queryString.setParameterList("teamsList",teamsList);
+			}
+		
+		if (!clientIdsList.isEmpty()) {
+			queryString.setParameterList("clientIdsList", clientIdsList);
+		}
+		queryString.setResultTransformer(Transformers.aliasToBean(ApplicantsJoinedReportDTO.class));
+		applicantJoinedReportList = queryString.setFirstResult(applicantsJoinedReportDTO.getStart()).setMaxResults(applicantsJoinedReportDTO.getLength()).list();
+		
+		/*String countQuery1=null;
+		countQuery1 = 
+				"SELECT" + " distinct u.ID as userId " 
+				+ " FROM USER u, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1
+				+" group by u.ID,req.ID";
+		 if (!clientIdsList.isEmpty()) {
+			 countlist = session.createSQLQuery(countQuery1 + clientSubQuery).setParameterList("clientIdsList", clientIdsList).list();
+		 }else{
+			 countlist = session.createSQLQuery(countQuery1).list();
+		 }*/
+//		  filterCount = countlist.size();
+		if (applicantJoinedReportList != null && !applicantJoinedReportList.isEmpty()) {
+			for (ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : applicantJoinedReportList) {
+				applicantsJoinedReportDTO2.setFromDate(fromDate);
+				applicantsJoinedReportDTO2.setToDate(toDate);
+				Set<String> datesList = new LinkedHashSet<>();
+				datesList.add(fromDate.toString());
+				applicantsJoinedReportDTO2.setDatesList(datesList);
+				applicantsJoinedReportDTO2.setMonthName(new SimpleDateFormat("MMMM").format(applicantsJoinedReportDTO2.getReqSubCreatedDate()));
+				applicantsJoinedReportDTO2.setMonthNumber(applicantsJoinedReportDTO2.getReqSubCreatedDate().getMonth());
+			}
+		}
+		
+		/*int totalCount = 0;
+		if (applicantsJoinedReportDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.size();
+			}
+		} 
+		responses.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			responses.setRecordsFiltered(filterCount);
+		}else {
+			responses.setRecordsFiltered(totalCount);
+		}*/
+		
+		responses.setData(applicantJoinedReportList);
+		
+		return responses;
+	}
+
+	@Override
+	@Transactional
+	public List<Object[]> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate)
+	{
+		try {
+			
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(fromDate.getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(toDate.getTime());
+			java.sql.Date fromDate2 = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate2 = new java.sql.Date(toDate1.getTime());
+			
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT rs.joinedDate, count(*), rs.createdDate from RequirementSubmission rs where rs.createdBy='"
+					+ createdBy + "' and rs.submissionStatus ='JOINED' and rs.joinedDate between '"
+					+ fromDate2 + "' and '" + toDate2 + "' group by rs.joinedDate";
+		 	List<Object[]> result = session.createQuery(query).list();
+		 	if(result != null) {
+		 		/*for(Object[] obj : result){
+		 			System.out.println("CreatedBY :"+ createdBy +" Date : " + obj[0] + "    Count : " + obj[1]);
+		 		}*/
+		 		return result;
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
 
 
 }

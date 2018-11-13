@@ -1,5 +1,6 @@
 	package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -215,12 +216,29 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	{
 		Date from = commonUtil.orgLocationCommonDate(fromDate, orgLocations);
 		Date to =  commonUtil.orgLocationCommonDate(toDate, orgLocations);
-		java.sql.Date startDate = new java.sql.Date(from.getTime());
-		java.sql.Date endDate = new java.sql.Date(to.getTime());
+		java.sql.Date startDate = new java.sql.Date(fromDate.getTime());
+		java.sql.Date endDate = new java.sql.Date(toDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and (day.day >= :fromDate and day.day <= :toDate) and day.status = '1'";
+		String query = "from HolidayAndRestrictday day where day.holiday.orgLocations.id = :orgLocationId and day.restrictDay.id IS NULL and ((day.day > :fromDate and day.day <:toDate) or (day.day = :fromDate or day.day = :toDate)) and day.status = '1'";
 		List<HolidayAndRestrictday> list = session.createQuery(query).setParameter("fromDate", startDate).setParameter("toDate", endDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return list;
+	}
+
+	@Override
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,
+			List<Long> excludeIds) throws Exception {
+		if(excludeIds == null || excludeIds.isEmpty()) {
+			excludeIds.add(0l);
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		if (holiday.size() > 0) {
+			return holiday;
+		}
+		else {
+			return null;
+		}
 	}
 
 	

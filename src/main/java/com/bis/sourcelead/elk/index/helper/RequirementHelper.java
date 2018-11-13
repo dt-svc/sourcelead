@@ -81,6 +81,9 @@ public class RequirementHelper {
 			if(requirement.getIsClientJob() !=null){
 				requirementIndex.setIsClientJob(requirement.getIsClientJob());
 			}
+			if(requirement.getProcess() !=null){
+				requirementIndex.setProcess(requirement.getProcess());
+			}
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
 			}
@@ -151,6 +154,7 @@ public class RequirementHelper {
 			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
+			requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus() != null ? requirement.getRequirementSubmissionPreviousStatus().name() : "");
 			
 			StringBuilder country = new StringBuilder();
 			StringBuilder state = new StringBuilder();

@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,12 +39,16 @@ import org.xml.sax.InputSource;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.dao.RequirementDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -65,6 +70,8 @@ import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -109,6 +116,12 @@ public class RequirementDaoImpl implements RequirementDao {
         
     @Autowired
     SourceleadELKBaseIndexer sourceleadELKBaseIndexer;
+    
+    @Autowired
+    private RequirementSubmissionDao requirementSubmissionDao;
+    
+    @Autowired
+    private OrgLocationsDao orgLocationsDao;
         
     @Value("${static.path}")
 	private String staticPath;
@@ -133,6 +146,9 @@ public class RequirementDaoImpl implements RequirementDao {
 	
 	@Autowired
 	private ReportsUtil reportsUtil;
+	
+	@Autowired
+	RequirementAssignToDao requirementAssignToDao;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -671,10 +687,16 @@ public class RequirementDaoImpl implements RequirementDao {
 
 			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
 			params.put("userId", userId);
+			
+			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
+			params.put("userId", userId);
+			
+			String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
+			params.put("approverUserId", userId);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "") {
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") ) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {
@@ -709,6 +731,199 @@ public class RequirementDaoImpl implements RequirementDao {
 
 		}
 		return query.list();
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId, String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = userDao.getUserById(userId);
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Requirement> reqList = null;
+		List<Long> countlist = null;
+		ResponseList<Requirement> response = new ResponseList<>();
+
+		/* String subQueryRole = ""; */
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement ";
+		String subQuery = "";
+		String countQuery = "from Requirement requirement";
+		String countQuerySub ="";
+		String jobTypeVal ="";
+		String clientVal ="";
+		//List<Long> data = new ArrayList<Long>;
+		
+		//List sorting order
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(jobFilterDTO.getSortColumn())) {
+				sortingQry = " order by requirement."+ jobFilterDTO.getSortColumn() +" "+jobFilterDTO.getSortOrder();
+				}
+				
+		StringBuilder query1 = new StringBuilder("");
+		if(StringUtils.isNotBlank(jobFilterDTO.getJobType())){
+			if(jobFilterDTO.getJobType().equalsIgnoreCase("internal")){
+				jobTypeVal = " requirement.isClientJob = 'N'";	
+			}
+			else if(jobFilterDTO.getJobType().equalsIgnoreCase("client")){
+				jobTypeVal = " requirement.isClientJob = 'Y' and requirement.clientId IS NOT NULL";	
+			}else{
+				jobTypeVal = " (requirement.isClientJob = 'N') or (requirement.isClientJob = 'Y')";	
+			}
+			
+		}
+		if(StringUtils.isNotBlank(jobFilterDTO.getClientIds())){
+			
+			clientVal = "requirement.clientId IN("+jobFilterDTO.getClientIds()+")";	
+		}
+		if (!StringUtils.equalsIgnoreCase(userType, "ADMIN")) {
+
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0' and rah.createdDate BETWEEN :startDateUTC and :endDateUTC)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
+			params.put("userId", userId);
+
+			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId) and rah.createdDate BETWEEN :startDateUTC and :endDateUTC) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			params.put("userId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || jobTypeVal !="") {
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
+						+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
+				}else{
+					countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ")  or (" + subQuery3 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC ";
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+			}
+			
+		} else {
+			
+			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where  ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT' and rah.status <> '0' and rah.createdDate BETWEEN :startDateUTC and :endDateUTC) ";
+
+			String subQuery2 = " ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			params.put("managerUserId", userId);
+
+			if (subQuery1 != "" || subQuery2 != "" || jobTypeVal !="") {
+				if(clientVal != ""){
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
+						+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
+				}else{
+					subQuery = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";	
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+				if(clientVal != ""){
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ clientVal +") and ("+ jobTypeVal +") and ( (" + subQuery1 + ")  or ("
+						+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
+				}else{
+				countQuerySub = "where requirement.orgLocationId.id =:orgLocationId and ("+ jobTypeVal +") and ( (" + subQuery1 + ") or ("
+							+ subQuery2 + ") ) and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC";
+						
+				}
+				params.put("orgLocationId", orgLocationId);
+				params.put("startDateUTC", startDateUTC);
+				params.put("endDateUTC", endDateUTC);
+				
+			}
+		}
+		if(!jobFilterDTO.getSearchValue().equals("'")){
+		if (jobFilterDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFilterDTO.getSearchValue())) {
+			query1.append(" and (requirement.jobTitle like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.jobId like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.priority like '%" + jobFilterDTO.getSearchValue() + "%' ")
+					.append("OR requirement.generatedId like '%" + jobFilterDTO.getSearchValue() + "%' )");
+
+		}
+		}
+		int count = 0;
+		String whereCondition = subQuery+query1;
+		Query query = session.createQuery(from + " " + whereCondition + sortingQry);
+		for (String str : query.getNamedParameters()) {
+		if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
+			query.setLong(str, (long) params.get(str));
+		}else{
+			query.setParameter(str, params.get(str));
+		}
+	}
+		
+		reqList = query.setFirstResult(jobFilterDTO.getStart()).setMaxResults(jobFilterDTO.getLength()).list();
+		
+		for(Requirement requirement : reqList){
+			 
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+					requirement.setOrgRelationUUID(requirement.getClientId().getUUID());
+				}
+			}
+			/*Integer requirementAssignToListCount = requirementAssignToDao.getRequirementAssignToListCountByRequirementId(requirement.getId());
+    		requirement.setAssignedMembersCount(requirementAssignToListCount.toString());*/
+			List<String> requirementLocationsList = new ArrayList<>();
+			StringBuilder sb = new StringBuilder();
+    		List<RequirementLocations> locationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+    		locationList.forEach(loclist->{
+    			requirementLocationsList.add(loclist.getLocation());
+    			if(sb.length() > 0) 
+    				sb.append(",");
+    			sb.append(loclist.getLocation()).toString();
+    		});
+    		requirement.setLocation(sb.toString());
+    		requirement.setLocationsList(requirementLocationsList);
+    		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),user,orgLocation,"All");
+    		requirement.setAssignedMembersCount(requirementSubmissionsCountDTO.getApplicantsCount().toString());
+    		requirement.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount().toString());
+    		requirement.setOffersCount(requirementSubmissionsCountDTO.getOffersCount().toString());
+    		requirement.setSubmitToClientCount(requirementSubmissionsCountDTO.getSubmitToClientCount().toString());
+    		requirement.setJoinedCount(requirementSubmissionsCountDTO.getJoinedCount().toString());
+    		requirement.setBackoutCount(requirementSubmissionsCountDTO.getBackoutCount().toString());
+    		requirement.setInterviewCount(requirementSubmissionsCountDTO.getInterviewCount().toString());
+    		requirement.setRejectedCount(requirementSubmissionsCountDTO.getRejectedCount().toString());
+    		
+		}
+		
+		
+		Query countQueryFinal = session.createQuery("select count(*) " + countQuery + " " +countQuerySub +query1);
+		for (String str : countQueryFinal.getNamedParameters()) {
+			if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("")) {
+				countQueryFinal.setLong(str, (long) params.get(str));
+			}else {
+				countQueryFinal.setParameter(str, params.get(str));
+			}
+		}
+		countlist=countQueryFinal.list();
+		if (countlist != null && !countlist.isEmpty()) {
+			count = countlist.iterator().next().intValue();
+		}
+		response.setRecordsTotal(count);
+		response.setRecordsFiltered(count);
+		
+		response.setData(reqList);
+		return response;
 
 	}
 	
@@ -1453,12 +1668,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		Date todayDate = c.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		/*String startTimeTS = Constants.TZ_DF.format(todayDate);
+		String startTimeTS = Constants.TZ_DF.format(todayDate);
 		String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
-		Date startUTCDate = dateFormat.parse(startDateString);*/
+		Date startUTCDate = dateFormat.parse(startDateString);
 		
-		//@Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
-		Date startUTCDate = todayDate;
+/*		//@Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
+		Date startUTCDate = todayDate;*/
 
 		int hrs;
 		switch (numberOfDays) {
@@ -1575,15 +1790,14 @@ public class RequirementDaoImpl implements RequirementDao {
 			Date todayDate = c.getTime();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-			/*
-			 * String startTimeTS = Constants.TZ_DF.format(todayDate); String
-			 * startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
-			 * Date startUTCDate = dateFormat.parse(startDateString);
-			 */
+			
+			String startTimeTS = Constants.TZ_DF.format(todayDate);
+			String startDateString = CommonUtil.convertTimeUTC(Constants.UTC_TIMEZONE, startTimeTS);
+			Date startUTCDate = dateFormat.parse(startDateString);
+			 
 
-			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in
-			// commit
-			Date startUTCDate = todayDate;
+/*			// @Mahaveer Manoj commented above code for testing jobFairs, uncomment this in commit
+			Date startUTCDate = todayDate;*/
 
 			int hrs = numberOfDays * 24;
 
@@ -2618,9 +2832,9 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 			
-			query = "SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQ.ORG_LOCATION_ID AS orglocationId,OL.ORG_ID AS orgId,REQA.STATUS AS assignedUserStatus "
-					+" FROM REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID,LEFT JOIN ORGLOCATIONS OL ON REQ.ORG_LOCATION_ID = OL.ID WHERE OL.ORG_ID =:orgId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
-					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1')) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'";
+			query = "SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQ.ORG_LOCATION_ID AS orglocationId,OL.ORG_ID AS orgId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId "
+					+" FROM REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID LEFT JOIN ORGLOCATIONS OL ON REQ.ORG_LOCATION_ID = OL.ID LEFT JOIN REQUIREMENT_APPROVER_HIERARCHY RAH ON REQ.ID = RAH.REQUIREMENT_ID WHERE OL.ORG_ID =:orgId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
+					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  from REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList))) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'";
 			
 	            Query queryObj = session.createSQLQuery(query);
 				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
@@ -2629,9 +2843,9 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 		}
 		else {
-			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus  "
-					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
-					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1')) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
+			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId,REQ.RELEASE_JOB_TO_ALL_USERS AS releaseJobToAllUsers  "
+					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID LEFT JOIN REQUIREMENT_APPROVER_HIERARCHY RAH ON REQ.ID = RAH.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
+					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  FROM REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList)) OR REQ.RELEASE_JOB_TO_ALL_USERS = 'Y') AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
 		
 			
 		
@@ -2672,6 +2886,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
 				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.profilePercentage like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.clientName like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
@@ -2785,7 +3000,8 @@ public class RequirementDaoImpl implements RequirementDao {
 					"REQ.GENERATED_ID AS generatedId," + 
 					"REQ.JOB_TITLE AS jobTitle, " + 
 					"DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
-					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " + 
+					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " +
+					"REQ.PROFILE_PERCENTAGE AS profilePercentage, " + 
 					"REQ.SKILLS AS skills, " + 
 					"REQ.NOTICEPERIOD AS noticePeriod, " + 
 					"REQ.ORG_RELATION_ID AS orgRelationId, " + 
@@ -2882,12 +3098,14 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	@Override
-	public JobFair getJobFairByName(String jobFairName) {
+	public JobFair getJobFairByName(String jobFairName, long userId, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from JobFair jobFair where jobFair.name=:jobFairName";
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("jobFairName", jobFairName);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
 			List<JobFair> jobFairList = queryObj.list();
 			if (jobFairList != null && !jobFairList.isEmpty())
 				return jobFairList.get(0);
@@ -2922,35 +3140,42 @@ public class RequirementDaoImpl implements RequirementDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<JobFair> jobFairList = null;
 			List<Long> countlist = null;
-//			Integer filterCount = 0;
 			ResponseList<JobFair> response = new ResponseList<>();
 			StringBuilder query1 = new StringBuilder("");
-			if(jobFairDTO.getSearchValue() !=null && !"".equalsIgnoreCase(jobFairDTO.getSearchValue())) {
+			if(jobFairDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFairDTO.getSearchValue())) {
 			 query1.append("and (jobFair.name like '%" + jobFairDTO.getSearchValue() + "%' ")
 				   .append("OR jobFair.venue like '%" + jobFairDTO.getSearchValue() + "%' )");
 			}
-			query1.append(" order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder());
+			query1.append(" order by " + (jobFairDTO.getSortColumn() != null && !jobFairDTO.getSortColumn().isEmpty() ? jobFairDTO.getSortColumn() : "id") + " " + (jobFairDTO.getSortOrder() != null && !jobFairDTO.getSortOrder().isEmpty() ? jobFairDTO.getSortOrder() : "desc"));
 			
-			String query = "from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			String query = "from JobFair jobFair where jobFair.orgLocations.id=:orgLocationId";
+			if(!jobFairDTO.isAdminUser()) {
+				query += " and jobFair.user.id=:userId";
+			}
+			query += " and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
 			Query queryObj = session.createQuery(query + " " + query1);
-			jobFairList = queryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			if(!jobFairDTO.isAdminUser()) {
+				queryObj.setLong("userId", jobFairDTO.getUserId());
+			}
+			jobFairList = queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
 			
-			String  countQuery = "select count(*) from JobFair jobFair where jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationId and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
-			/*countQuery += " order by " + jobFairDTO.getSortColumn() + " " + jobFairDTO.getSortOrder();*/
-			Query countQueryObj = session.createQuery(countQuery + query1); 
-			countlist = countQueryObj.setLong("userId", jobFairDTO.getUserId()).setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
+			String  countQuery = "select count(*) from JobFair jobFair where jobFair.orgLocations.id=:orgLocationId";
+			if(!jobFairDTO.isAdminUser()) {
+				countQuery += " and jobFair.user.id=:userId ";
+			}
+			countQuery += " and jobFair.status in " + (includeInactive ? "(0, 1)" : "(1)");
+			Query countQueryObj = session.createQuery(countQuery + query1);
+			if(!jobFairDTO.isAdminUser()) {
+				countQueryObj.setLong("userId", jobFairDTO.getUserId());
+			}
+			countlist = countQueryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId()).list();
 			
 			int totalCount = 0;
 			if (jobFairDTO != null) {
 				if(countlist != null && !countlist.isEmpty()) {
 					totalCount = countlist.iterator().next().intValue();
 				}
-			} 
-//			if(query1.toString() != null && !query1.toString().isEmpty()){
-//				response.setRecordsFiltered(filterCount);
-//			}else {
-//				response.setRecordsFiltered(totalCount);
-//			}
+			}
 			response.setRecordsFiltered(totalCount);
 			response.setRecordsTotal(totalCount);
 			response.setData(jobFairList);
@@ -2994,21 +3219,39 @@ public class RequirementDaoImpl implements RequirementDao {
 		return 0;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat) {
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag) {
 		try {
-			List<String> finalDatesList = new LinkedList<>();
+			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
+			
 			Session session = this.sessionFactory.getCurrentSession();
 			
+			List<String> finalDatesList = new LinkedList<>();
+			
 			// Checking for jobFairRequirements with no date selected, set all dates in between startDate and endDate
-			String query2 = "select jobFair.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList where jobFair.status in (1) and jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationsId and (jobFairRequirementList.fairDates = '' or jobFairRequirementList.fairDates = null)";
-			Query queryObj2 = session.createQuery(query2);
-			queryObj2.setLong("userId", userId);
-			queryObj2.setLong("orgLocationsId", orgLocationId);
-			List<Long> jobFairIdList = queryObj2.list();
-			if (jobFairIdList != null && !jobFairIdList.isEmpty()) {
-				SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
+			String query1 = "select jobFairRequirements.jobFair.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			query1 += " where ((";
+			if(!adminFlag) {
+				query1 += "jobFair.user.id=:userId and";
+			}
+			query1 += " jobFair.orgLocations.id = :orgLocationId)";
+			query1 += " or jobFairRequirements.requirement.id in ";
+			query1 += " (select rat.requirementId.id from RequirementAssignTo rat where rat.status in (1)";
+			if(!adminFlag) {
+				query1 += " and rat.assignUserId.id = :userId ";
+			}
+			query1 += " and rat.requirementId.orgLocationId = :orgLocationId))";
+			query1 += " and (jobFairRequirements.fairDates = null or jobFairRequirements.fairDates = '')";
+			query1 += " and jobFair.status in (1)";
+			Query queryObj1 = session.createQuery(query1);
+			if(!adminFlag) {
+				queryObj1.setLong("userId", userId);
+			}
+			queryObj1.setLong("orgLocationId", orgLocationId);
+			List<Long> jobFairIdList = queryObj1.list();
+			if(jobFairIdList != null && !jobFairIdList.isEmpty()) {
 				for (Long jobFairId : jobFairIdList) {
 					JobFair jobFair = getJobFair(jobFairId);
 					if (jobFair != null) {
@@ -3018,11 +3261,63 @@ public class RequirementDaoImpl implements RequirementDao {
 						Calendar endDate = Calendar.getInstance();
 						endDate.setTime(jobFair.getEndDate());
 						endDate.roll(Calendar.DATE, true);
-						/*System.out.println("Start Date : " + startDate.getTime() + " ,End Date : " + endDate.getTime());*/
 
 						while (startDate.before(endDate)) {
 							finalDatesList.add(dateFormatSDF.format(startDate.getTime()));
-							/*System.out.println("Date : " + startDate.getTime() + ", Converted Date : " + startDate.getTime().toString());*/
+							startDate.add(Calendar.DATE, 1);
+						}
+					}
+				}
+			}
+			
+			// Checking jobFairRequirements with dates selected
+			String query2 = "select jobFairRequirementList.fairDates from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList";
+			query2 += " where ((";
+			if(!adminFlag) {
+				query2 += "jobFair.user.id=:userId and";
+			}
+			query2 += " jobFair.orgLocations.id = :orgLocationId)";
+			query2 += " or jobFairRequirementList.requirement.id in ";
+			query2 += "(select rat.requirementId.id from RequirementAssignTo rat where rat.status in (1)";
+			if(!adminFlag) {
+				query2 += " and rat.assignUserId.id = :userId";
+			}
+			query2 += " and rat.requirementId.orgLocationId = :orgLocationId))";
+			query2 += " and jobFair.status in (1)";
+			Query queryObj2 = session.createQuery(query2);
+			if(!adminFlag) {
+				queryObj2.setLong("userId", userId);
+			}
+			queryObj2.setLong("orgLocationId", orgLocationId);
+			List<String> datesList = queryObj2.list();
+			for (String date : datesList) {
+				finalDatesList.add(date);
+			}
+			
+			/*// Checking for jobFairRequirements with no date selected, set all dates in between startDate and endDate
+			String query2 = "select jobFair.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirementList where jobFair.status in (1) and jobFair.user.id=:userId and jobFair.orgLocations.id=:orgLocationsId and (jobFairRequirementList.fairDates = '' or jobFairRequirementList.fairDates = null)";
+			Query queryObj2 = session.createQuery(query2);
+			queryObj2.setLong("userId", userId);
+			queryObj2.setLong("orgLocationsId", orgLocationId);
+			List<Long> jobFairIdList = queryObj2.list();
+			if (jobFairIdList != null && !jobFairIdList.isEmpty()) {
+				System.out.println("Actual JobFairIds");
+				
+				for (Long jobFairId : jobFairIdList) {
+					System.out.println("JobFairId : " + jobFairId);
+					JobFair jobFair = getJobFair(jobFairId);
+					if (jobFair != null) {
+						Calendar startDate = Calendar.getInstance();
+						startDate.setTime(jobFair.getStartDate());
+
+						Calendar endDate = Calendar.getInstance();
+						endDate.setTime(jobFair.getEndDate());
+						endDate.roll(Calendar.DATE, true);
+						System.out.println("Start Date : " + startDate.getTime() + " ,End Date : " + endDate.getTime());
+
+						while (startDate.before(endDate)) {
+							finalDatesList.add(dateFormatSDF.format(startDate.getTime()));
+							System.out.println("Date : " + startDate.getTime() + ", Converted Date : " + startDate.getTime().toString());
 //							startDate.roll(Calendar.DATE, true);
 							startDate.add(Calendar.DATE, 1);
 						}
@@ -3038,8 +3333,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			List<String> datesList = queryObj1.list();
 			for (String date : datesList) {
 				finalDatesList.add(date);
-			}
-
+			}*/
 			
 			if (finalDatesList != null && !finalDatesList.isEmpty() && !finalDatesList.get(0).isEmpty()) {
 				return finalDatesList;
@@ -3104,7 +3398,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional
-	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String selectedDate) {
+	public List<Requirement> getRequirementsByJobFairDate(long userId, long orgLocationId, String dateFormat, String selectedDate, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -3138,14 +3432,42 @@ public class RequirementDaoImpl implements RequirementDao {
 				}
 			}
 			String finalDate = year + "-" + month + "-" + date;
+			
 			// getting the jobFairRequirements with no dates selected
-			String query1 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.status in (1) and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.startDate <= '" + finalDate + "' and jobFair.endDate >= '" + finalDate + "' and (jobFairRequirements.fairDates='' or jobFairRequirements.fairDates = null)";
-			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, query1, requirementIds, requirementList);
-
+			String newQuery1 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			newQuery1 += " where ((";
+			if(!adminFlag) {
+				newQuery1 += "jobFair.user.id=:userId and ";
+			}
+			newQuery1 += " jobFair.orgLocations.id = :orgLocationId)";
+			newQuery1 += " or jobFairRequirements.requirement.id in ";
+			newQuery1 += " (select rat.requirementId.id from RequirementAssignTo rat where rat.status in (1)";
+			if(!adminFlag) {
+				newQuery1 += " and rat.assignUserId.id = :userId";
+			}
+			newQuery1 += " and rat.requirementId.orgLocationId = :orgLocationId))";
+			newQuery1 += " and jobFair.startDate <= '" + finalDate + "' and jobFair.endDate >= '" + finalDate + "' and (jobFairRequirements.fairDates = null or jobFairRequirements.fairDates = '')";
+			newQuery1 += " and jobFair.status = 1";
+			
+			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, newQuery1, requirementIds, requirementList, adminFlag);
+			
 			// getting the jobFairRequirements with selected date
-			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.status in (1) and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFairRequirements.fairDates like '%"
-					+ selectedDate + "%'";
-			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, query, requirementIds, requirementList);
+			String newQuery2 = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			newQuery2 += " where ((";
+			if(!adminFlag) {
+				newQuery2 += "jobFair.user.id=:userId and ";
+			}
+			newQuery2 += " jobFair.orgLocations.id = :orgLocationId)";
+			newQuery2 += " or jobFairRequirements.requirement.id in";
+			newQuery2 += " (select rat.requirementId.id from RequirementAssignTo rat where rat.status in (1)";
+			if(!adminFlag) {
+				newQuery2 += " and rat.assignUserId.id = :userId";
+			}
+			newQuery2 += " and rat.requirementId.orgLocationId = :orgLocationId))";
+			newQuery2 += " and jobFairRequirements.fairDates like '%" + selectedDate + "%'";
+			newQuery2 += " and jobFair.status = 1";
+			
+			requirementList = getRequirementsForSelectedDate(session, userId, orgLocationId, newQuery2, requirementIds, requirementList, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3154,10 +3476,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@SuppressWarnings("unchecked")
 	private List<Requirement> getRequirementsForSelectedDate(Session session, long userId, long orgLocationId, String query,
-			Set<Long> requirementIds, List<Requirement> requirementList) {
+			Set<Long> requirementIds, List<Requirement> requirementList, boolean adminFlag) {
 		try {
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
+			if(!adminFlag) {
+				queryObj.setLong("userId", userId);
+			}
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<Long> idList = queryObj.list();
 			for (Long id : idList) {
@@ -3194,13 +3518,19 @@ public class RequirementDaoImpl implements RequirementDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements where jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			String query = "select jobFairRequirements.id from JobFair jobFair join jobFair.jobFairRequirementList jobFairRequirements";
+			query += " where jobFair.orgLocations.id = :orgLocationId and jobFair.id = :jobFairId";
+			if(!adminFlag) {
+				query += " and jobFair.user.id = :userId";
+			}
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
+			if(!adminFlag) {
+				queryObj.setLong("userId", userId);
+			}
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("jobFairId", jobFairId);
 			List<Long> idList = queryObj.list();
@@ -3312,7 +3642,10 @@ public class RequirementDaoImpl implements RequirementDao {
 		if(teamsList.size()>0 && !teamsList.isEmpty()){
 			subQueryTeam.append(" and requirement.id IN (SELECT rato.requirementId.id FROM  RequirementAssignTo rato WHERE rato.teamId.id IN (:teamsList) and rato.status='1')");
 		}
-			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and ( requirement.releaseJobToAllUsers='Y' or requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1'))";
+			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") "
+					+ "and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and "
+					+ "( requirement.releaseJobToAllUsers='Y' or requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
+					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') )";
 			if (query1.toString() != null && !query1.toString().isEmpty()) {
 				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
 			} else {
@@ -3422,6 +3755,8 @@ public class RequirementDaoImpl implements RequirementDao {
 						
 						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
 						
+						queryList.add("DELETE FROM RequirementIncentive ri WHERE ri.requirementId.id = "+req.getId()+" ");
+						
 						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
 						
 						for(String query : queryList) {
@@ -3469,6 +3804,29 @@ public class RequirementDaoImpl implements RequirementDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId, String orgRelationIds,	Date startDateUTC, Date endDateUTC) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Requirement> reqList = null;
+		if(StringUtils.isNotBlank(orgRelationIds)){
+		String[] idsValues = orgRelationIds.split(",");
+		// convert string array to long array
+		Long[] data = new Long[idsValues.length];
+		for (int i = 0; i < idsValues.length; i++) {
+		  data[i] = Long.valueOf(idsValues[i]);
+		}
+		query = "from Requirement req where req.orgLocationId.id =:orglocationId and req.clientId.id IN (:orgRelationIds) and req.createdDate BETWEEN :startDateUTC and :endDateUTC ";
+		 reqList = session.createQuery(query).setParameterList("orgRelationIds", data).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setParameter("orglocationId", orglocationId).list();
+		}else{
+		query = "from Requirement req where req.orgLocationId.id =:orglocationId and req.createdDate BETWEEN :startDateUTC and :endDateUTC ";
+		 reqList = session.createQuery(query).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setParameter("orglocationId", orglocationId).list();
+			
+		}
+		 return reqList;
 	}
 
 }

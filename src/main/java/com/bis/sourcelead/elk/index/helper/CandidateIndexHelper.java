@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -68,7 +69,6 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
-			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
 			}
@@ -125,15 +125,15 @@ public class CandidateIndexHelper {
 				}
 			}
 			
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+			CandidateResumesDTO candidateResumes = candidateResumesService.getCandidateLatesResumeDetails(candidate.getId());
 			if(null != candidateResumes){
-				candidateIndex.setCurrentResumeId(candidateResumes.getId());
-				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setCurrentResumeId(candidateResumes.getResumeId().longValue());
+				candidateIndex.setCurrentResumeName(candidateResumes.getResumeName());
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
-				//candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
-				candidateIndex.setFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileUrl());
 				candidateIndex.setResumeContent("");
 			}
+			
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
 					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
@@ -188,6 +188,11 @@ public class CandidateIndexHelper {
 			if(null != candidate.getIsAssociate()){
 				candidateIndex.setIsAssociate(candidate.getIsAssociate());	
 			}
+			
+			if(null != candidate.getIsSharedInMarketplace()){
+				candidateIndex.setIsSharedInMarketplace(candidate.getIsSharedInMarketplace());	
+			}
+			
 			if(null != candidate.getSpocId()){
 				candidateIndex.setSpocId(candidate.getSpocId().getId());	
 			}else{

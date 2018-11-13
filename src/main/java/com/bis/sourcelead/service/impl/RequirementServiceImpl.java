@@ -96,6 +96,7 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -337,12 +338,24 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUrl(jobTitle);
 			}
 		}
+		
+		if(requirementDTO.getProfilePercentage() != null) {
+			requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		}else {
+			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
+		}
+		
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
 			if (!"".equalsIgnoreCase(requirementDTO.getJobTitle())) {
 				requirement.setJobTitle(requirementDTO.getJobTitle());
+			}
+		}
+		if (StringUtils.isNotBlank(requirementDTO.getProcess())) {
+			if (!"".equalsIgnoreCase(requirementDTO.getProcess())) {
+				requirement.setProcess(requirementDTO.getProcess());
 			}
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobType())) {
@@ -1221,12 +1234,18 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 				Map<Long, String> reqMap = new HashMap<>();
 				for (String dateString : requirementDTO.getJobFairDates()) {
-					reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					if (dateString.contains(":")) {
+						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
+					} else if (dateString.contains(",")) {
+						for (String id : dateString.split(",")) {
+							reqMap.put(Long.parseLong(id), "");
+						}
+					}
 				}
 				for (Long id : reqMap.keySet()) {
 					String dates = "";
 					for (String dateString : requirementDTO.getJobFairDates()) {
-						if ((Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
+						if (dateString.contains(":") && (Long.parseLong(dateString.split(":")[0]) == id) && dateString.split(":").length > 1) {
 							dates += (dates.isEmpty() ? "" : ",") + dateString.split(":")[1];
 						}
 					}
@@ -3015,7 +3034,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) throws Exception {
+		 java.util.List<String> requirementLocationsList = new ArrayList<>();
+		 java.util.List<RequirementLocations> locationsList;
+		locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 		if (requirement.getJobId() != null) {
 			writeRow.createCell(0).setCellValue(requirement.getJobId());
 		}
@@ -3046,9 +3068,23 @@ public class RequirementServiceImpl implements RequirementService {
 			writeRow.createCell(3).setCellValue(
 					sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
 		}
+		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).append(" ").toString();
+						writeRow.createCell(4).setCellValue(location);
+					}else{
+						writeRow.createCell(4).setCellValue("--");
+					}
+				}
+			}
+/*		
 		if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())) {
 			writeRow.createCell(4).setCellValue(requirement.getCountry());
-		}
+		}*/
 		if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
 			writeRow.createCell(5).setCellValue(requirement.getSkills());
 		}
@@ -4081,7 +4117,7 @@ public class RequirementServiceImpl implements RequirementService {
 		Response<String> response = new Response<>();
 		try {
 			JobFair jobFair = null;
-			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName());
+			JobFair savedJobFair = requirementDao.getJobFairByName(jobFairDTO.getName(), user.getId(), orgLocations.getId());
 			if (savedJobFair != null && savedJobFair.getId() != jobFairDTO.getId()) {
 				response.setResponse(Result.DUPLICATE_NAME.name());
 				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
@@ -4117,6 +4153,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFair.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getStartDate()));
 				jobFair.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), jobFairDTO.getEndDate()));
 				jobFair.setPostedFrom(jobFairDTO.getPostedFrom());
+				jobFair.setSelectedClient(jobFairDTO.getSelectedClient());
 				jobFair.setDateFormat(orgLocations.getDateFormat());
 				List<JobFairRequirements> jobFairRequirementList = new LinkedList<>();
 				JSONArray jsonArray = new JSONArray(jobFairDTO.getRequirementJSONData());
@@ -4233,6 +4270,7 @@ public class RequirementServiceImpl implements RequirementService {
 				jobFairDTO.setEndDateStr(dateFormat.format(jobFair.getEndDate()));
 			}
 			jobFairDTO.setPostedFrom(jobFair.getPostedFrom());
+			jobFairDTO.setSelectedClient(jobFair.getSelectedClient());
 			jobFairDTO.setVenue(jobFair.getVenue());
 			jobFairDTO.setNotifyTo(jobFair.getNotifyTo());
 			jobFairDTO.setStatus(jobFair.getStatus());
@@ -4266,9 +4304,15 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public boolean changeJobFairStatus(Long jobFairId, int status) {
+	public boolean changeJobFairStatus(Long jobFairId, int status, User user, OrgLocations orgLocation) {
 		try {
-			return requirementDao.changeJobFairStatus(jobFairId, status);
+			JobFair jobFair = requirementDao.getJobFair(jobFairId);
+			jobFair.setStatus(status);
+			jobFair.setUpdatedBy(user);
+			jobFair.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocation));
+//			return requirementDao.changeJobFairStatus(jobFairId, status);
+			long result = requirementDao.saveJobFair(jobFair);
+			return result > 0; 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4312,13 +4356,13 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat) {
+	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag) {
 		List<String> jobFairDatesList = new LinkedList<>();
 		try {
 			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
 			SimpleDateFormat convertToFormatSDF = new SimpleDateFormat("yyyy/MM/dd");
 			Set<String> jobFairDatesSet = new SortedArraySet<>();
-			List<String> jobFairDates = requirementDao.getJobFairDatesForCalendar(userId, orgLocationId, dateFormat);
+			List<String> jobFairDates = requirementDao.getJobFairDatesForCalendar(userId, orgLocationId, dateFormat, adminFlag);
 			if (jobFairDates != null && !jobFairDates.isEmpty()) {
 				for (String fairDate : jobFairDates) {
 					for (String date : fairDate.split(",")) {
@@ -4339,10 +4383,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date) {
+	public List<Requirement> getJobFairRequirementsByDate(long userId, long orgLocationId, String dateFormat, String date, boolean adminFlag) {
 		List<Requirement> requirementList = new LinkedList<>();
 		try {
-			requirementList = requirementDao.getRequirementsByJobFairDate(userId, orgLocationId, dateFormat, date);
+			requirementList = requirementDao.getRequirementsByJobFairDate(userId, orgLocationId, dateFormat, date, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4351,9 +4395,9 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 	
 	@Override
-	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId) {
+	public List<Requirement> getRequirementsListByJobFairId(long userId, long orgLocationId, long jobFairId, boolean adminFlag) {
 		try {
-			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId);
+			return requirementDao.getRequirementsListByJobFairId(userId, orgLocationId, jobFairId, adminFlag);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -4406,6 +4450,90 @@ public class RequirementServiceImpl implements RequirementService {
 	public void deleteRequirementIncentiveByRequirementIdOrIds(long requirementId, String ids) throws Exception {
 		 requirementDao.deleteRequirementIncentiveByRequirementIdOrIds(requirementId, ids);
 	}
+	
+	@Override
+	public File getJobFairListOfExcel(List<JobFairDTO> jobFairDTOList, User user, OrgLocations orgLocation) {
+		File file = null;
+		try {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			DateFormat dateFormat = new SimpleDateFormat(orgLocation.getDateFormat());
+			Sheet createExcelsheet = createExcelworkbook
+					.createSheet(orgLocation.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook);
+			int column = 0;
+			for (JobFairDTO reportList : jobFairDTOList) {
+				writeRow = createExcelsheet.createRow(column + 1);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocation, user);
+				column++;
+			}
+			file = File.createTempFile(orgLocation.getOrgLocationName() + "_JobFair_" + dateFormat.format(new Date()), ".xlsx");
+			file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
 
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.JOBFAIR_EXPORT_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, JobFairDTO jobFairDTO, OrgLocations orgLocation,
+			User loginUser) throws Exception {
+
+		writeRow.createCell(0).setCellValue(jobFairDTO.getGeneratedId() != null && !jobFairDTO.getGeneratedId().isEmpty()
+						? jobFairDTO.getGeneratedId()
+						: "----");
+		createExcelsheet.autoSizeColumn(0);
+
+		writeRow.createCell(1).setCellValue(jobFairDTO.getName() != null && !jobFairDTO.getName().isEmpty() 
+						? jobFairDTO.getName() 
+						: "----");
+		createExcelsheet.autoSizeColumn(1);
+
+		writeRow.createCell(2).setCellValue(jobFairDTO.getStartDate() != null && !jobFairDTO.getStartDate().isEmpty()
+						? jobFairDTO.getStartDate()
+						: "----");
+		createExcelsheet.autoSizeColumn(2);
+
+		writeRow.createCell(3).setCellValue(jobFairDTO.getEndDate() != null && !jobFairDTO.getEndDate().isEmpty() 
+						? jobFairDTO.getEndDate()
+						: "----");
+		createExcelsheet.autoSizeColumn(3);
+
+		writeRow.createCell(4).setCellValue(jobFairDTO.getJobFairRequirementList() != null && !jobFairDTO.getJobFairRequirementList().isEmpty()
+						? jobFairDTO.getJobFairRequirementList().size()
+						: 0);
+		createExcelsheet.autoSizeColumn(4);
+
+		writeRow.createCell(5).setCellValue(jobFairDTO.getApplicantCount());
+		createExcelsheet.autoSizeColumn(5);
+
+		writeRow.createCell(6).setCellValue(jobFairDTO.getOfferedCount());
+		createExcelsheet.autoSizeColumn(6);
+
+		writeRow.createCell(7).setCellValue(jobFairDTO.getVenue() != null && !jobFairDTO.getVenue().isEmpty() 
+						? jobFairDTO.getVenue()
+						: "----");
+		createExcelsheet.autoSizeColumn(7);
+
+		writeRow.createCell(8).setCellValue(jobFairDTO.getStatus() == 1 ? "OPEN" : "CLOSE");
+		createExcelsheet.autoSizeColumn(8);
+
+		return createExcelsheet;
+	}
+	
+	@Override
+	public ResponseList<Requirement> getAssignedJobsPerformanceList(Long orgLocationId, String userType, Long userId,
+			String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception {
+		return requirementDao.getAssignedJobsPerformanceList(orgLocationId,userType,userId,userCode,startDateUTC,endDateUTC,jobFilterDTO);
+	}
 	
 }

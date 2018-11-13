@@ -119,7 +119,7 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "LCA_RATE")
 	private String lcaRate;
 	
-	@Column(name = "EMPLOYER_LOCATION")
+	@Column(name = "EMPLOYER_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String employerLocation;
 	
 	@Column(name = "PREVIOUS_LCA_START_DATE")

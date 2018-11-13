@@ -10,7 +10,7 @@ window.onload = function() {
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
-		getLeaveDetails();
+// 		getLeaveDetails();
 		getUsersBasedOnHierarchy('edit');
 		var checkFromEdit = '${leave.fromHalfDay}';
 		var checkToEdit = '${leave.toHalfDay}';
@@ -28,6 +28,9 @@ window.onload = function() {
 	getPieChartBasedOnUser();
 	getApproversList();
    
+	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
+		setTimeout(function(){ getLeaveDetails(); }, 1000);
+	}
    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
    if(isSuperUser){
 	   $("#approvalDiv").hide();
@@ -220,7 +223,7 @@ window.onload = function() {
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
 								<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-						<label>&nbsp;&nbsp;Notify to others
+						<label>&nbsp;&nbsp;Notify others
 							&nbsp;&nbsp;
 						</label>
 					</div>
@@ -231,7 +234,7 @@ window.onload = function() {
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
 								<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-						<label>&nbsp;&nbsp;Notify to others
+						<label>&nbsp;&nbsp;Notify others
 							&nbsp;&nbsp;
 						</label>
 					</div>
@@ -466,7 +469,7 @@ window.onload = function() {
 			$("#toDate").datepicker("option", "minDate", dt);
 			removeStartValid();
 			checkFromDate();
-			calcaulateDuraton();
+			calculateDuration();
 // 			validateDate();
 			getLeaveDetails(finalDateFormatEndDate);
 			}
@@ -498,7 +501,7 @@ function removeEndValid(){
 	$('#toDateDiv').find('p.jquery_form_error_message').remove();
 }
 
-function calcaulateDuraton(){
+function calculateDuration(){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	if(toDate == ""){
@@ -1029,8 +1032,8 @@ function getLeaveDetails(finalDateFormatEndDate){
 		    }
 		});
 	}
-	calcaulateDuraton();
-	setTimeout(function(){ validateDate(); }, 800);
+	calculateDuration();
+	setTimeout(function(){ validateDate(); checkToDate();}, 800);
 		
 	
 }
@@ -1039,16 +1042,37 @@ function getLeaveDetails(finalDateFormatEndDate){
 
 <script>
 function validateOverDrawLeaves(leaveTypeName){
-	var fromDate = $("#fromDate").val();
-	var toDate = $("#toDate").val();
-	var date1 = new Date(fromDate);
-	var date2 = new Date(toDate);
-	var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-	var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-	var typeName = leaveTypeName.replace(/ /g,"_");
-	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
-	if(((diffDays > typeIdBalCount) || typeIdBalCount ==  0) && typeIdBalCount != "" ){
-		errorMessage += "You Have Not Enough Leaves To Apply.";
+	var from = $("#fromDate").val();
+	var to = $("#toDate").val();
+  	var one_day=1000*60*60*24;
+	
+	var date1 = new Date(from);
+	var date2 = new Date(to);
+	
+	
+// 	var date1 = new Date(parts[2], parts[1] - 1, parts[0]); 
+	console.log(date1.getTime());
+// 	var date2 = new Date(parts1[2], parts1[1] - 1, parts1[0]); 
+	console.log(date2.getTime());
+	
+	// Convert both dates to milliseconds
+	var date1_ms = date1.getTime();
+	var date2_ms = date2.getTime();
+
+	// Calculate the difference in milliseconds
+	var difference_ms = date2_ms - date1_ms;
+	    
+	// Convert back to days and return
+	var days = Math.round(difference_ms/one_day);
+	
+	if(to != ""){
+// 		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+// 		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+		var typeName = leaveTypeName.replace(/ /g,"_");
+		var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
+		if(((days+1) >= typeIdBalCount) || typeIdBalCount ==  0){
+			errorMessage += "You Have Not Enough Leaves To Apply.";
+		}
 	}
 }
 </script>
@@ -1261,7 +1285,7 @@ $("#toDateHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
-    calcaulateDuraton();
+    calculateDuration();
     validateDate();
 }); 
 
@@ -1279,7 +1303,7 @@ $("#toDateToHalfTime").timepicker({
 	 'step': 15
 }).on('changeTime', function() {
     $("#toDateFromHalfTime").timepicker('option', 'maxTime', $(this).val());
-    calcaulateDuraton();
+    calculateDuration();
     validateDate();
 }); 
 

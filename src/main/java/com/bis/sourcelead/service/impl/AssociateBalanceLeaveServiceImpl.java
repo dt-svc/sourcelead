@@ -489,23 +489,23 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					float appliedNoofLeaves = 0;
 					if (Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
 						Date[] monthDates = getMonthStartDateEndDate();
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), monthDates[0], monthDates[1], user.getId(),orgLocations.getOrg().getId());
-						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,monthDates[0],monthDates[1],leaveType);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), startDate, endDate, user.getId(),orgLocations.getOrg().getId());
+						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,startDate,endDate,leaveType);
 					}
 					else if (Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
-						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate.minusDays(1));
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), user.getId(),orgLocations.getOrg().getId());
 						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),leaveType);
 					}
 					else if (Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
-						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate.minusDays(1));
 						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), user.getId(),orgLocations.getOrg().getId());
 						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),leaveType);
 					}
 					else if (Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
-						LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), user.getId(),orgLocations.getOrg().getId());
-						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate(),leaveType);
+						Date[] thisYearDates = ConversionUtil.getPreviousYearStartAndEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), thisYearDates[0], thisYearDates[1], user.getId(),orgLocations.getOrg().getId());
+						appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,thisYearDates[0],thisYearDates[1],leaveType);
 					}
 					
 					if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){

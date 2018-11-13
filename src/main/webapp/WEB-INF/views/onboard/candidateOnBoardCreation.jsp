@@ -83,7 +83,7 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="shiftList();addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftList();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
@@ -181,7 +181,7 @@
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -383,6 +383,7 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
+  <jsp:include page="onboardingCandidatePfAndEsiDetails.jsp" />
   
   
 <div id="divAttachmentTd1" style="display: none; float: left;">
@@ -898,12 +899,22 @@ function validateUploadFile(id)
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
 				    	 
-				    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+				    	 if(json['mobilePhone'] != "" && json['mobilePhone'] != null && json['mobilePhone'] !="undefined"){
 				        		$("#mobileNumber").val(json['mobilePhone']);
 				        		$("#mobileNumber").attr("readonly","readonly");
 				        	}else{
-				        		$("#mobileNumber").remveAttr("readonly");
+				        		$("#mobileNumber").removeAttr("readonly");
 				        	}
+				    	 
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    		 
+				    	 }	 
+				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
 				    	 
 				    	 $("#personalEmail").val(json['email']);
 				    	 $("#offBoardLocation").val(json['location']);
@@ -951,9 +962,18 @@ function validateUploadFile(id)
 				        		$("#mobileNumber").val(json['mobilePhone']);
 				        		$("#mobileNumber").attr("readonly","readonly");
 				        	}else{
-				        		$("#mobileNumber").remveAttr("readonly");
+				        		$("#mobileNumber").removeAttr("readonly");
 				        	}
+				    	
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
 				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
+				    	
 				    	 $("#personalEmail").val(json['email']);
 				    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
 					    	 $("#country").val(json['country']);
@@ -2469,11 +2489,12 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="clearfix"></div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Gender</label>';
+	 result = result +'<label class="col-md-3 control-label">Gender <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" ><span class="mr5"></span>Male</label>';
-	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>';
-	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>';
+	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>';
+	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>';
+	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>';
+	 result = result +'<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
@@ -2724,6 +2745,22 @@ function addCandidateDetailsForOnboarding(){
 }
 </script>
 
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+
+
 <script>
   function getDatesScript(){
 	  
@@ -2897,7 +2934,7 @@ function shiftList(shiftId){
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
-	        		if(shiftId == opt.id){
+	        		if(shiftId != null && shiftId != '' && shiftId != 'undefined' && shiftId == opt.id){
 		       			output = output + "<option value='"+opt.id+"' selected >"+opt.shiftName+"</option>";
 	        		}else{
 		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";

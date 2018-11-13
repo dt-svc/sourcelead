@@ -64,7 +64,7 @@ function approvePayrollDiv(){
 <div class="col-md-12 mt">
 	<div class="row">
 		<div class="col-md-3" id="groupIdDiv">
-			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();getGroupFrequency();" data-validation="required" field-name="User Group">
+			<select class="chosen-select" id="groupId" name="groupId" onchange="removeValidateGroup();clearSubmitDiv();getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">User Group</option>
                     <c:forEach var="ug" items="${userGroupList}">
 					<option value="${ug.groupUUID},${ug.id}">${ug.groupName}</option>
@@ -104,9 +104,9 @@ function approvePayrollDiv(){
 
   
  
-<div class="tableScroll">
+<div class="clearfix">
 <form:form id="submit_for_approver"  name="submit_for_approver" method="post">
- <div class="styleTables clearfix mt">
+ <div class="tableScroll styleTables clearfix mt">
  <!-- <div id="USPayrollDiv"></div> -->
  <div id="payrollDataDiv"></div>
  <div id="initiateLoading"></div>
@@ -117,6 +117,29 @@ function approvePayrollDiv(){
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
 	<div id="submitButtonDiv">
+	
+<div class="col-md-7">
+	<div class="row">
+	
+	<div class="col-md-5">
+		<div class="row">
+			<label class="col-md-7">No. of Payroll Generated  :</label>
+			<div class="col-md-5" id="totalNoPayroll"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	<div class="col-md-7">
+			<div class="row">
+			<label class="col-md-3">Total Net Pay  :</label>
+			<div class="col-md-9" id="totalPayrollAmount"><strong>00.00</strong></div>
+		</div>
+	</div>
+	
+	</div>
+	
+</div>	
+	
+	<div class="col-md-5">
 	<ul class="pull-right mr list-unstyled list-inline">
 		<li><a href="#" class="btn btn-primary btnSuccess" id="Submit" onClick="sendPayrollForApprover();">Submit for Approve</a></li>
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
@@ -124,6 +147,8 @@ function approvePayrollDiv(){
 		</c:if>
 		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
 	</ul>
+	</div>
+	
 	</div>
 <div class="clearfix"></div>
 </div>
@@ -444,7 +469,7 @@ function getGroupFrequency(){
 	    });
 	 $("#payrollDataDiv").empty();
 	 $('#payrollPayDate').val("").datepicker("update");
-	 $("#submitButtonDiv").hide();
+// 	 $("#submitButtonDiv").hide();
 }
  
  function removeValidateGroup(){
@@ -452,6 +477,8 @@ function getGroupFrequency(){
  }
  function errPayType(){
 		$('#payTypeIdDiv').find('p.jquery_form_error_message').remove(); 
+		$("#payrollDataDiv").empty();
+		$("#submitButtonDiv").hide();
 
  }
  
@@ -526,8 +553,8 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">--</div></td>';
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-// 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+ 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
@@ -542,20 +569,20 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
 						        	}
 						        	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
 						        	if(opt.preTaxDeduction != null && opt.preTaxDeduction != '' && opt.preTaxDeduction != 'undefined'){
-						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+						        		result += '</td><td><div class="tblminwidth-125 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
 						        	}else{
-						        		result += '</td><td><div class="tblminwidth-50 clearfix">$ 0.000</td>';
+						        		result += '</td><td><div class="tblminwidth-125 clearfix">$ 0.00</td>';
 						        	}
 						        	if(opt.postTaxDeduction != null && opt.postTaxDeduction != '' && opt.postTaxDeduction != 'undefined'){
-						        		result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
+						        		result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';	
 						        	}else{
-						        		result += '<td><div class="tblminwidth-50 clearfix">$ 0.00</div></td>';
+						        		result += '<td><div class="tblminwidth-125 clearfix">$ 0.00</div></td>';
 						        	}
 						        	
-						        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
-						        	result += '<td><div class="tblminwidth-50 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+						        	result += '<td><div class="tblminwidth-125 clearfix"><a onClick="payAdjustment(\''+opt.empPayrollUUID+'\',\'DRAFT\');">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
 						        	result += '</tr>';  
 					        	}
 					        	
@@ -569,6 +596,8 @@ function runUSPayroll(){
 				        	result += '</table>';
 				        	$("#payrollDataDiv").show();
 				        	$("#payrollDataDiv").empty();
+				        	$("#totalNoPayroll").html(data.noOfGeneratedPayroll);
+				        	$("#totalPayrollAmount").html(data.totalGeneratedAmount);
 				        	$("#payrollDataDiv").append(result);
 				        	$("#initiateLoading").removeAttr('style');
 		        	    
@@ -670,13 +699,18 @@ function msgFadein() {
 <script>
 function clearPayrollDiv(){
 // 	$("#groupId").val('');
-	$("#payrollPayDate").val('');
+// 	$("#payrollPayDate").val('');
 	$("#payrollDataDiv").empty();
 	$("#submitButtonDiv").hide();
 }
 function errPayPeriod(){
 	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();  
 
+}
+function clearSubmitDiv(){
+	$("#submitButtonDiv").hide();
+	$("#payType").val('');
+	$('#payType').trigger("chosen:updated"); 
 }
 </script>
 

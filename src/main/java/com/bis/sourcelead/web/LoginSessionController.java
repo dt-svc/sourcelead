@@ -204,6 +204,7 @@ public class LoginSessionController {
 			return model;
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
@@ -266,7 +267,6 @@ public class LoginSessionController {
 			if(org.getOrgType().equalsIgnoreCase("Company")){
 				tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
-					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
 					}
@@ -281,6 +281,8 @@ public class LoginSessionController {
 					
 					if(tabs.getTabName().equalsIgnoreCase("Reports")){
 						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+					}else {
+						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "N");
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
@@ -306,6 +308,9 @@ public class LoginSessionController {
 				for(int i=0; i < weekOffDays.length; i++) {
 					weekOffDaysList.add(weekOffDays[i]);
 				}
+			}else {
+				weekOffDaysList.add("Sat");
+				weekOffDaysList.add("Sun");
 			}
 			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
 			
@@ -433,6 +438,7 @@ public class LoginSessionController {
 				model.addObject("bussinessTypesList", bussinessTypesList);
 				List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 				model.addObject("timezoneList", timezoneList);
+				model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 				model.setViewName("onboard/companyOnboard");
 			}else{
 				CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
@@ -443,8 +449,10 @@ public class LoginSessionController {
 					if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
 						if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+							model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 							model.setViewName("offboard/offboardStep1");
 						}else{
+							model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 							model.setViewName("offboard/offboardUser");
 						}
 					}else{

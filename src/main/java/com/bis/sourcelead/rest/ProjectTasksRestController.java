@@ -41,6 +41,7 @@ import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTO;
 import com.bis.sourcelead.dto.TimeSheetDayEntriesDTOList;
 import com.bis.sourcelead.entity.Expenses;
@@ -278,14 +279,17 @@ public class ProjectTasksRestController {
 	 * @return success
 	 * @throws Exception
 	 */
-
+ 
 	@RequestMapping(value = "/saveProjectTaskComment", method = RequestMethod.POST)
-	public @ResponseBody Response<String> saveProjectTaskComment(ProjectTaskDocumentDTO projectTaskDocumentDTO)
+	public @ResponseBody Response<String> saveProjectTaskComment(ProjectTaskDocumentDTO projectTaskDocumentDTO,TaskDTO taskDTO,HttpServletRequest request)
 			throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
 		Response<String> response = new Response<>();
 		try {
 			if (Validator.validate(projectTaskDocumentDTO)) {
-				projectTaskCommentsService.storeprojectComments(projectTaskDocumentDTO);
+				projectTaskCommentsService.storeprojectComments(projectTaskDocumentDTO,taskDTO,loginOrgLocation);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -524,10 +528,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskStatus", method = RequestMethod.POST)
-	public String updateTaskStatus(@RequestParam(value = "taskStatusId", required = false) Long taskStatusId,
-			@RequestParam(value = "taskId", required = false) String taskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateTaskStatus(taskStatusId, taskId, userId);
+	public String updateTaskStatus(TaskDTO taskDTO,HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
+		tasksService.updateTaskStatus(taskDTO,loginOrgLocation);
 		return "success";
 	}
 
@@ -540,11 +545,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskName", method = RequestMethod.POST)
-	public String updateTaskName(@RequestParam(value = "taskName", required = false) String taskName,
+	public String updateTaskName(ProjectTasksDTO projectTasksDTO,
 			@RequestParam(value = "taskId", required = false) String taskId,
 			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateTaskName(taskName, taskId, userId);
-		return taskName;
+		tasksService.updateTaskName(projectTasksDTO.getTaskName(), taskId, userId);
+		return projectTasksDTO.getTaskName();
 	}
 
 	/**
@@ -555,10 +560,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskPriority", method = RequestMethod.POST)
-	public String updateTaskPriority(@RequestParam(value = "taskpriorityId", required = false) Long taskpriorityId,
-			@RequestParam(value = "taskId", required = false) String taskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateTaskPriority(taskpriorityId, taskId, userId);
+	public String updateTaskPriority(TaskDTO taskDTO,HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
+		tasksService.updateTaskPriority(taskDTO, loginOrgLocation);
 		return "success";
 	}
 
@@ -570,10 +576,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateTaskSeverity", method = RequestMethod.POST)
-	public String updateTaskSeverity(@RequestParam(value = "taskSeverityId", required = false) Long taskSeverityId,
-			@RequestParam(value = "taskId", required = false) String taskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateTaskSeverity(taskSeverityId, taskId, userId);
+	public String updateTaskSeverity(TaskDTO taskDTO,HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
+		tasksService.updateTaskSeverity(taskDTO, loginOrgLocation);
 		return "success";
 	}
 
@@ -617,11 +624,14 @@ public class ProjectTasksRestController {
 	 * @return success
 	 * @throws Exception
 	 */
+	
 	@RequestMapping(value = "/updateDueDate", method = RequestMethod.POST)
-	public String updateDueDate(@RequestParam(value = "editDueDate", required = false) String editDueDate,
-			@RequestParam(value = "taskId", required = false) String taskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateDueDate(editDueDate, taskId, userId);
+	public String updateDueDate(TaskDTO taskDTO,HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
+		
+		tasksService.updateDueDate(taskDTO,loginOrgLocation);
 		return "success";
 	}
 
@@ -634,10 +644,11 @@ public class ProjectTasksRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/updateEstimatedTime", method = RequestMethod.POST)
-	public String updateEstimatedTime(@RequestParam(value = "estimatedTime", required = false) String estimatedTime,
-			@RequestParam(value = "taskId", required = false) String taskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		tasksService.updateEstimatedTime(estimatedTime, taskId, userId);
+	public String updateEstimatedTime(TaskDTO taskDTO,HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		taskDTO.setCandidateId(candidateId);
+		tasksService.updateEstimatedTime(taskDTO,loginOrgLocation);
 		return "success";
 	}
 

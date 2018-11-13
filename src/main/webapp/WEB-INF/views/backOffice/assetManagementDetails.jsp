@@ -30,6 +30,7 @@ function assetNotes(assetId,assetUUID){
 	    $("#tab-1").empty(); 
 	    $("#tab-2").empty();
 	    $("#tab-3").empty();
+	    $("#tab-4").empty();
 	    $("#tab-2").append(result);  
 	    assetNotesList(assetUUID);    
 }
@@ -298,8 +299,8 @@ function assetDetails(assetUUID) {
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
-						if(json.hardDisk != null && json.hardDisk != '' && json.hardDisk != 'undefined'){
-							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+json.hardDisk+'</span>';
+						if(json.harddisk != null && json.harddisk != '' && json.harddisk != 'undefined'){
+							result = result + ' <div class="require_wrap_details_cta"> <b><strong>Hard Disk:</strong></b> <span class = "wordWrap-breakword">'+json.harddisk+'</span>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + ' </div>';
 						}
@@ -381,10 +382,12 @@ function assetDetails(assetUUID) {
 							result = result + ' <div class="clearfix"></div>';
 						}
 						
+						result = result + ' </div>';
+					    result = result + '<div class="require_one clearfix">';
 						
 						if(json.assetAssignList.length > 0){
 						result = result + ' <div class="row mt">';
-						result = result + ' <div class="col-md-9 styleTables">';
+						result = result + ' <div class="col-md-12 styleTables">';
 						result = result + ' <h4>Assign asset details</h4>';
 						result = result + ' <table class="table table-bordered">';
 						result = result + ' <thead>';
@@ -392,6 +395,8 @@ function assetDetails(assetUUID) {
 						result = result + ' <th>Shift Name</th>';
 						result = result + ' <th>Employee Name</th>';
 						result = result + ' <th>Document</th>';
+						result = result + ' <th>Assigned On</th>';
+						result = result + ' <th>Returned On</th>';
 						result = result + ' </tr>';
 						result = result + ' </thead>';
 						result = result + ' <tbody>';
@@ -406,6 +411,19 @@ function assetDetails(assetUUID) {
 							}else{
 								result = result + ' <td><div class="pull-left">--</div></td>';
 							}
+							
+							if(report.assignedOnStr != null && report.assignedOnStr !="" && report.assignedOnStr != "undefined"){
+		   	   		    		result = result +'<td><div class="tbldata-dotdot_80" title="'+report.assignedOnStr+'">'+report.assignedOnStr+'</div></td>';
+		   		    		}else{
+		   	   		    		result = result +'<td><div class="tbldata-dotdot_80">--</div></td>';
+		   		    		}
+		   		    		if(report.returnedOnStr != null && report.returnedOnStr !="" && report.returnedOnStr != "undefined"){
+		   	   		    		result = result +'<td><div class="tbldata-dotdot_80" title="'+report.returnedOnStr+'">'+report.returnedOnStr+'</div></td>';
+		   		    		}else{
+		   	   		    		result = result +'<td><div class="tbldata-dotdot_80">--</div></td>';
+		   		    		}
+							
+							
 							result = result + ' </tr>';
 						}
 					
@@ -426,6 +444,7 @@ function assetDetails(assetUUID) {
 					$("#tab-1").empty();
 					$("#tab-2").empty();
 					$("#tab-3").empty();
+					$("#tab-4").empty();
 					$("#tab-1").append(result);
 					$("#tab-1").show();
 			}

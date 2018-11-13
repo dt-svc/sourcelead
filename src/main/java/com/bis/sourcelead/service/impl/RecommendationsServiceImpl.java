@@ -828,6 +828,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 					// get the locationPercentage
 					locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
 					
+					Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateIndex.getCandidateId());
+					candidateIndex.setCandidateProfilePercentage(profilePercentage);
+					
 					//keywords calculation
 				    float totalKeyWordPer = 0;
 					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){

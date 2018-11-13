@@ -5,9 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
-.dashboard-widget {
-/* min-height: 400px !important; */
-}
+
 .dashboard-widget.dashboard-widget-icons{
 	min-height: 125px !important;
 }
@@ -50,7 +48,7 @@ $( document ).ready(function() {
 </script> 
 
 <form:form class="login-form clearfix" id="configure_form" name="configure_form" method="post">
-	<div id ="configurePopUpDiv"></div>
+	<div id="configurePopUpDiv"></div>
 </form:form>
 
 <script>
@@ -88,6 +86,7 @@ var loaded = false;
 		    	<h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
 		  	</div>
 		</section>
+		
 		<div class="row">
 	    <c:if test="${dashboardItems != null && dashboardItems.itemsObjectList.size() > 0}">
 			<c:forEach items="${dashboardItems.itemsObjectList}" var="itemObj">
@@ -98,6 +97,7 @@ var loaded = false;
 			    	<sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
 					<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 						<jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
+						
 					</c:if> 
 			     	</sec:authorize>
 				</c:if>
@@ -106,7 +106,7 @@ var loaded = false;
 			      	<c:if test="${userTabs.tabName == 'Jobs'}">
 						 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 							<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-								<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
+								<jsp:include page="dashboardRequirement.jsp"></jsp:include>
 							</c:if>
 					     </sec:authorize>
 				     </c:if>
@@ -129,29 +129,27 @@ var loaded = false;
 				    		<c:if test="${userTabs.tabName == 'Jobs'}">
 				    			<c:if test='${itemName eq "Assigned Jobs" && itemChecked == true}'>
 					    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-										<jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> 
+										<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include></div> 
 									</sec:authorize>
 				    			</c:if>
 							</c:if>	
 						</c:forEach>
 						<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 							<c:if test='${itemName eq "Candidates for Onboarding" && itemChecked == true}'>
-								<jsp:include page="onboardingCandidatesList.jsp"></jsp:include> 
+								<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div>
 							</c:if>
 						</sec:authorize>
 							
 						<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 							   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-							<c:if test='${itemName eq "Associate Requests" && itemChecked == true}'>
-							    <jsp:include page="projectResourceRequest.jsp"></jsp:include>  
-							</c:if>
-							<c:if test='${itemName eq "New Resource Requests" && itemChecked == true}'>
+							<c:if test='${itemName eq "Project Requests" && itemChecked == true}'>
+							   <div class="col-md-12"> <jsp:include page="projectResourceRequest.jsp"></jsp:include> </div> 
 							    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 							</c:if>
 						</sec:authorize>
 							
 						<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
-							<c:if test='${itemName eq "Budget Requests" && itemChecked == true}'>
+							<c:if test='${itemName eq "Project Requests" && itemChecked == true}'>
 						    	<jsp:include page="budgetRequest.jsp"></jsp:include>
 							</c:if>
 						</sec:authorize>
@@ -161,9 +159,7 @@ var loaded = false;
 					    	<c:if test="${userTabs.tabName == 'Jobs'}">
 						    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 						    	 <c:if test='${itemName eq "Job Approvals" && itemChecked == true}'>
-						    	 	<div class="col-md-6 mb"> 
 							   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-							   	 	</div>
 						    	 </c:if>
 						   	 	 </sec:authorize>
 					   	 	 </c:if>	
@@ -174,41 +170,23 @@ var loaded = false;
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 			     			<%-- <c:forEach items="${dashboardItems.itemsList}" var="item"> --%>
 			     				<c:if test='${itemName eq "Applicant Permission" && itemChecked == true}'>
-					     			<div class="col-md-6 mb"> 
 					     				<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-					     			</div>
 			     				</c:if>
 			     			<%-- </c:forEach> --%>
 			     		</sec:authorize>
 			     	</c:if>
 		     	</c:forEach>
-		     
-		     	
-
-			<%-- <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-		 		<div class='row'>
-					<div class='col-lg-12'> 
-						<div class='content-area clearfix'>
-							<div class='blank-pages'>
-						    	<p><i class='fa fa-5x fa-bar-chart'></i></p>
-					        	<p>No Records Found</p>
-						 	</div>
-						</div>
-					</div>
-				</div> 
-			</sec:authorize> 
-	    
-			<div class="clearfix"></div>--%>
+		   
 	    	
 	    		<c:if test='${itemName eq "Events" && itemChecked == true}'>
 					<div class="clearfix"></div>
-					<jsp:include page="dashboardEvents.jsp"></jsp:include>
+					<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>
 					<div class="clearfix"></div>
 	    		</c:if>
 	     	
 				<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 		     		<c:if test='${itemName eq "Contracts" && itemChecked == true}'>
-						<jsp:include page="dashboardContracts.jsp"></jsp:include>
+						<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include></div>
 		     		</c:if>
 				</sec:authorize>
 	    	</c:forEach>

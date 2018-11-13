@@ -315,7 +315,7 @@
 					  <label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									<div class="col-md-8">
-									<input class="form-control" type="text" readonly name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}"/>
+									<input class="form-control" type="text" disabled="disabled" name="candidateNameEmail" id="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}" />
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 						
 						</div>	
@@ -329,11 +329,11 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<input type="text" class="form-control" name="candidateNameEmail" value="${immigrationDTO.candidateNameEmail}" field-name="Associate" data-validation="required"
-										id="candidateNameEmail" placeholder="Select Beneficiary"/>
+										id="candidateNameEmail" placeholder="Select Beneficiary" disabled="disabled"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/app/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="<c:url value="/app/userCreation" />" target="_blank" hidden="true"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 							</div>
 							</div>
@@ -341,23 +341,24 @@
 					</c:if>
 					
 					</c:if>	
-                                                                                                                                             
+		<!--for  New  Beneficiary  details -->	
+		 <c:if test="${empty immigrationDTO}">                                                                                                                                   
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" id="firstName" value="${immigrationDTO.firstName}" name="firstName" field-name="First Name" data-validation="required"/>
+					<input type="text" class="form-control" id="firstName" name="firstName" field-name="First Name" data-validation="required"/>
               </div>
           </div>
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
+					<input type="text" class="form-control"  name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
               </div>
           </div> 
           <div class="form-group">
               <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="lastName" id="lastName" value="${immigrationDTO.lastName}" field-name="Last Name" data-validation="required">
+					<input type="text" class="form-control" name="lastName" id="lastName"  field-name="Last Name" data-validation="required">
               </div>
           </div>  
          <div class="form-group">
@@ -372,21 +373,21 @@
           <div class="form-group">
               <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required">
+					<input type="text" class="form-control" name="email"  id="email" field-name="Email" data-validation="required validate_email">
               </div>
           </div>
                       	
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="mobile" id="mobile"  data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile"  data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
               </div>
           </div> 
             
@@ -394,7 +395,7 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate"  placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -403,7 +404,7 @@
               <label class="col-md-4">Place of Birth</label>
               <div class="col-md-8">
                    <div class="positionRelative">
-          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" value="${immigrationDTO.birthPlace}" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace"  onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
          			</div>
               </div>
@@ -413,7 +414,7 @@
               <label class="col-md-4">Nationality</label>
               <div class="col-md-8">
                   <div class="positionRelative">
-          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="${immigrationDTO.nationality}" placeholder="Select Country"  type="text"></input>
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality"  placeholder="Select Country"  type="text"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
          			</div>
               </div>
@@ -427,6 +428,95 @@
                   <label class="radioIput paddingLeft"><input type="radio"   ${immigrationDTO.maritalStatus == 'Separated'? 'checked': ''} value="Separated"  name="maritalStatus">Separated</label>
               </div>
             </div>  
+             </c:if>			
+          <!--for  Edit  Beneficiary  details -->
+         <c:if test="${!empty immigrationDTO}">                                                                                                                                   
+         <div class="form-group">
+              <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" id="firstName" value="${immigrationDTO.firstName}" name="firstName" field-name="First Name" data-validation="required" readonly="readonly"/>
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-md-4">Middle Name</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div> 
+          <div class="form-group">
+              <label class="col-md-4">Last Name<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="lastName" id="lastName" value="${immigrationDTO.lastName}" field-name="Last Name" data-validation="required" readonly="readonly">
+              </div>
+          </div>  
+         <div class="form-group">
+						<label class="col-md-4">Gender</label>
+						<div class="col-md-8" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Male'? 'checked': '' } value="Male"  name="gender" readonly="readonly"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio" ${immigrationDTO.gender == 'Female'? 'checked': '' } value="Female" name="gender" readonly="readonly"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio" ${immigrationDTO.gender == 'Transgender'? 'checked': '' } value="Transgender" name="gender" readonly="readonly"><span class="mr5"></span>Transgender</label>
+						<!-- <input type="hidden"  id="genderValue" name="genderValue"/> --> 		
+			</div>
+			</div>
+          <div class="form-group">
+              <label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="email" value="${immigrationDTO.email}" id="email" field-name="Email" data-validation="required validate_email" readonly="readonly">
+              </div>
+          </div>
+                      	
+          <div class="form-group">
+              <label class="col-md-4">Mobile</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div>
+          
+           <div class="form-group">
+              <label class="col-md-4">Alternative Mobile</label>
+              <div class="col-md-8">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true" readonly="readonly">
+              </div>
+          </div> 
+            
+           <div class="form-group">
+              <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8">
+					<div class="input-group errorInptgroup">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required" readonly="readonly">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
+              </div>
+              </div>
+          </div> 
+           <div class="form-group">
+              <label class="col-md-4">Place of Birth</label>
+              <div class="col-md-8">
+                   <div class="positionRelative">
+          			<input class="form-control positionRelative" id="birthPlace" name="birthPlace" value="${immigrationDTO.birthPlace}" onclick="initLocationAuto('birthPlace');" type="text" field-name="Place of Birth" readonly="readonly"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('birthPlace');"></i>
+         			</div>
+              </div>
+            </div>   
+          
+            <div class="form-group">
+              <label class="col-md-4">Nationality</label>
+              <div class="col-md-8">
+                  <div class="positionRelative">
+          			<input class="form-control positionRelative" id="nationality" onclick="editOrgLocationAuto('nationality');" name="nationality" value="${immigrationDTO.nationality}" placeholder="Select Country"  type="text" readonly="readonly"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('nationality');"></i>
+         			</div>
+              </div>
+            </div> 
+            <div class="form-group">
+              <label class="col-md-4">Marital status</label>
+              <div class="col-md-8">
+                  <label class="radioIput paddingRight"><input type="radio" ${immigrationDTO.maritalStatus == 'Single'? 'checked': ''} value="Single" name="maritalStatus" readonly="readonly">Single</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Married'? 'checked': ''} value="Married"  name="maritalStatus" readonly="readonly">Married</label>
+                  <label class="radioIput paddingLeft"><input type="radio"  ${immigrationDTO.maritalStatus == 'Divorced'? 'checked': ''} value="Divorced"  name="maritalStatus" readonly="readonly">Divorced</label>
+                  <label class="radioIput paddingLeft"><input type="radio"   ${immigrationDTO.maritalStatus == 'Separated'? 'checked': ''} value="Separated"  name="maritalStatus" readonly="readonly">Separated</label>
+              </div>
+            </div>  
+             </c:if>
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
@@ -453,13 +543,26 @@
                 <input type="text" class="form-control" name="eadNumber" placeholder="000-000-000"  id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
+            
+             <c:if test="${empty immigrationDTO.prevLcaNumber}">
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="Previous LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
+            </c:if>
             
+            <c:if test="${!empty immigrationDTO.prevLcaNumber}">
+            <div class="form-group">
+              <label class="col-md-4">Previous LCA Number</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" disabled="disabled">
+              </div>
+            </div>
+            </c:if>
+            
+             <c:if test="${empty immigrationDTO.prevLcaStartDate}">
             <div class="form-group">
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
@@ -469,8 +572,22 @@
             </div>
               </div>
             </div>
-
-                        <div class="form-group">
+           </c:if>
+           
+            <c:if test="${!empty immigrationDTO.prevLcaStartDate}">
+            <div class="form-group">
+              <label class="col-md-4">Previous LCA Start Date</label>
+              <div class="col-md-8">
+               <div class="input-group">
+                <input class="form-control calendar"  id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text" disabled="disabled">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
+            </div>
+              </div>
+            </div>
+           </c:if>
+           
+            <c:if test="${empty immigrationDTO.prevLcaEndDate}">
+           <div class="form-group">
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
@@ -479,7 +596,19 @@
             </div>
               </div>
             </div>
-             
+            </c:if> 
+            
+            <c:if test="${!empty immigrationDTO.prevLcaEndDate}">
+           <div class="form-group">
+              <label class="col-md-4">Previous LCA End date</label>
+              <div class="col-md-8">
+               <div class="input-group">
+                <input class="form-control calendar"  id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text" disabled="disabled">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
+            </div>
+              </div>
+            </div>
+            </c:if> 
                                             
                                             
            <div class="form-group" >
@@ -636,38 +765,79 @@
               </div>
             </div>
             
+             <c:if test="${empty immigrationDTO.lcaNumber}">
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
+                 <input type="text" class="form-control"  name="lcaNumber" id="lcaNumber" value="${immigrationDTO.lcaNumber}" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
               </div>
-          </div>
+            </div>
+            </c:if>
             
+             <c:if test="${!empty immigrationDTO.lcaNumber}">
+             <div class="form-group">
+              <label class="col-md-4">LCA Number</label>
+              <div class="col-md-8">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();" disabled="disabled">
+              </div>
+            </div>
+            </c:if>
+            
+             <c:if test="${empty immigrationDTO.lcaStartDate}">
             <div class="form-group">
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start date">
+                <input type="text" class="form-control calendar" id="lcaStartDate"  name="lcaStartDate" placeholder="LCA Start date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
             </div>
+            </c:if>
+            
+             <c:if test="${!empty immigrationDTO.lcaStartDate}">
+            <div class="form-group">
+              <label class="col-md-4">LCA Start date</label>
+              <div class="col-md-8">
+               <div class="input-group">
+                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start date" disabled="disabled">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
+            </div>
+              </div>
+            </div>
+            </c:if>
+            
+             <c:if test="${empty immigrationDTO.lcaEndDate}">
             <div class="form-group">
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar"  value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar"   id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
             </div>
+            </c:if>
             
+             <c:if test="${!empty immigrationDTO.lcaEndDate}">
+            <div class="form-group">
+              <label class="col-md-4">LCA End date</label>
+              <div class="col-md-8">
+               <div class="input-group">
+                <input type="text" class="form-control calendar"  value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date" disabled="disabled">
+                <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
+            </div>
+              </div>
+            </div>
+            </c:if>
+            
+             <c:if test="${empty immigrationDTO.lcaCurrLocation}">
             <div class="form-group">
               <label class="col-md-4">LCA Current Location</label>
               <div class="col-md-8">
                   <div class="positionRelative">
 								<input class="form-control positionRelative"
-									id="lcaCurrLocation" name="lcaCurrLocation" value="${immigrationDTO.lcaCurrLocation}" 
+									id="lcaCurrLocation" name="lcaCurrLocation"  
 									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location" ></input> <i
 									class="fa fa-refresh btn btn-primary refresh-icon"
 									title="Refresh"
@@ -675,6 +845,23 @@
 					</div>
               </div>
             </div>
+            </c:if>
+            
+             <c:if test="${!empty immigrationDTO.lcaCurrLocation}">
+            <div class="form-group">
+              <label class="col-md-4">LCA Current Location</label>
+              <div class="col-md-8">
+                  <div class="positionRelative">
+								<input class="form-control positionRelative"
+									id="lcaCurrLocation" name="lcaCurrLocation" value="${immigrationDTO.lcaCurrLocation}" 
+									placeholder="Enter LCA Current Location" type="text" field-name="LCA Current Location"  disabled="disabled"></input> <i
+									class="fa fa-refresh btn btn-primary refresh-icon"
+									title="Refresh"
+									></i>
+					</div>
+              </div>
+            </div>
+            </c:if>
 
            <div class="clearfix"></div>
            	<div class="col-md-12 mb margin-top0">
@@ -890,6 +1077,7 @@
  */
  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
  var finalDateFormatOrg = getOrgDateFormat(locationDate);
+ var orgLocationId = "";
  
 $("input[id='candidateNameEmail']").focusout(function(){
 	 var seletedVal= $("#candidateNameEmail").attr("selecedVal")
@@ -929,7 +1117,7 @@ function resetBeneficiaryDetails(){
 					type : "GET",
 					data : {
 						name : request.term,
-						locationIdVal : "${SourceLeadWeb_orgLocation.isLawFirm == 'Y' ? "+responderLocationId+" : ''}"
+						locationIdVal : orgLocationId
 					},
 					dataType : "json",
 					success : function(data) {
@@ -1176,6 +1364,7 @@ $("#experienceValue").change(function () {
 	 var orgRelationID = null;
 	 var reponsderLocId = $('option:selected', '#attorneyId').attr('attrval');
 	 responderLocationId = reponsderLocId;
+	 var attorneySelId = $('option:selected', '#attorneyId').val();
 	 	if(attorneyId != null){
 	 		orgRelationID = attorneyId;
 	 	}else{
@@ -1184,9 +1373,22 @@ $("#experienceValue").change(function () {
 	 	
 	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
+			orgLocationId = reponsderLocId;
+
+			if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){
+		 		<c:if test="${empty immigrationDTO}">
+			 		$("#candidateNameEmail").attr("readonly",true);
+			 		$("#candidateNameEmail").val("");
+		 		</c:if>
+			  }else{
+				  $("#candidateNameEmail").attr("readonly",false);
+				  $("#candidateNameEmail").val("");
+			  }
 		}else{
 			type = "Vendor";
+			orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 		}
+	 	
 			 $.ajax({
 				    type: "POST",
 			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
@@ -1206,7 +1408,13 @@ $("#experienceValue").change(function () {
 			            	 }
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
+			            if(attorneySelId  == '' ||  typeof attorneySelId == 'undefined' ){ // reset the job dropdown chosen select.
+			            	$('#jobId').empty();
+				        	$('#jobId').append('<option value="">--Select Type --</option>'); 
+				        	$('#jobId').trigger("chosen:updated");
+			            }else{
 			            jobTitleDropDown("${immigrationDTO.jobId}");
+			            }
 			        }
 			 }); 
 	 }
@@ -1506,7 +1714,8 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			 	},
 			 dataType : "json",
 			 success : function(data) {
-			 	response(data);
+				  
+			 	  response(data);
 			 }
 		 });
 	 },
@@ -1514,6 +1723,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		    $("#lcaNumber").val(ui.item.label);
 		 	$("#currLcaId").val(ui.item.value);//currentLcaId for LcaHistory
 		 	$("#lcaNumber").attr("selecedVal", ui.item.label);
+		 	
 			 $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+immiModulePath+"/getLcaByLcaId?id="+ui.item.value, 
@@ -1521,6 +1731,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 			        	
 			        	if(data.lcaLocation != null && typeof data.lcaLocation != 'undefined' && data.lcaLocation !=''){
 			    			 $("#lcaCurrLocation").val(data.lcaLocation);
+			    			 $("#lcaCurrLocation" ).prop( "disabled", true);
 			    		}
 			    		// Job And LCA Locations Are Equal Or Not Show Alert msg.
 			    		var jobLocation = $("#jobLocation").val();
@@ -1553,12 +1764,13 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 	 });
  
  $("input[id='lcaNumber']").focusout(function(){
-	 var seletedVal= $("#lcaNumber").attr("selecedVal")
-	  if(typeof seletedVal =='undefined') {
+	 var seletedVal= $("#lcaNumber").attr("selecedVal");
+	
+  if(typeof seletedVal =='undefined') {
 		  resetLcaDetails();
 	  }else if (typeof seletedVal !='undefined' && $("#lcaNumber").attr("selecedVal")!=$("#lcaNumber").val().trim()){
 		  resetLcaDetails();
-	  }
+	  } 
  });
  
  function resetLcaDetails(){
@@ -1568,7 +1780,7 @@ var finalDateFormatOrg = getOrgDateFormat(locationDate);
 		$("#lcaCurrLocation").val("");
 		$("#lcaStartDate").datepicker('enable');
 		$("#lcaEndDate").datepicker('enable');
-	}
+	} 
  
 </script> 
 

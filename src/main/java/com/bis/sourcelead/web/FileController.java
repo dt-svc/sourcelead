@@ -103,6 +103,7 @@ public class FileController {
 					orgId = org.getId();
 				}
 				if (loginOrgLocation != null) {
+					orgId = loginOrgLocation.getOrg().getId();
 					orgLocationId = loginOrgLocation.getId();
 				}
 
@@ -138,7 +139,7 @@ public class FileController {
 	public List<FileInfo> uploadFile(MultipartHttpServletRequest request, @RequestParam String type) {
 		List<FileInfo> fileInfoList = new LinkedList<>();
 		try {
-			List<MultipartFile> filesList = request.getFiles("taxDocuments");
+			List<MultipartFile> filesList = request.getFiles(type);
 			if (filesList != null && filesList.size() > 0) {
 				for (MultipartFile multipartFile : filesList) {
 					long orgId = 0, orgLocationId = 0;
@@ -481,7 +482,7 @@ public class FileController {
 			outStream.close();
 
 		} catch (Exception ex) {
-
+			ex.printStackTrace();
 		}
 	}
 

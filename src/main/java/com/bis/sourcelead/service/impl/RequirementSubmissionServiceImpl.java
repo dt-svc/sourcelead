@@ -29,6 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -76,6 +78,8 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -99,6 +103,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
@@ -109,10 +114,12 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -241,7 +248,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     @Autowired
 	RequirementOffersService requirementOffersService;
 
-	
+    @Autowired
+    RequirementInterviewService requirementInterviewService;
+    
+    @Autowired
+    PdfUtil pdfUtil;
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionById(submissionId);
@@ -287,7 +298,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 OrgLocations guestOrglocation=null;
 		 String submissionstatus=null;
 		 Countries countries = null;
-		 if(StringUtils.isNotBlank(orgLocations.getCountry())) {
+		 if(orgLocations != null && StringUtils.isNotBlank(orgLocations.getCountry())) {
 			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
 		 }
 		 
@@ -524,7 +535,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 }
 					
 					 candidate = candidateDao.storeCandidate(candidate);
-					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+					 candidateService.getCandidatePercentage(candidate, orgLocations);
+					 CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 					
@@ -5140,7 +5152,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public Integer[] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) {
+	public Integer[] getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(Long orgLocationsId,String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate) throws Exception {
 		return requirementSubmissionDao.getRequirementSubmissionsListsByOrgLocationsIdAndSubmissionStatus(orgLocationsId, dateRange, userType, user, startUTCDate, endUTCDate);
 	}
 
@@ -5177,6 +5189,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
         	  headers = Constants.REQIREMENT_APPLICANT_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("SUBMIT_TO_CLIENT")) {
         	 headers = Constants.REQIREMENT_SUBMISSION_HEADERS;
+         }else if(submissionStatus.equalsIgnoreCase("SHORTLIST")) {
+        	 headers = Constants.REQIREMENT_SHORTLIST_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("INTERVIEW")) {
         	 headers = Constants.REQIREMENT_INTERVIEW_HEADERS;
          }else if(submissionStatus.equalsIgnoreCase("OFFERMADE")) {
@@ -5468,6 +5482,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 }else {
 				 writeRow.createCell(9).setCellValue("--");
 			 }
+		 }else if(submissionStatus.equalsIgnoreCase("SHORTLIST")) {
+			 //Applied On
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+			 
+			//Sourece Name
+			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
+				
+			//Aplicant Status
+			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			
+			//Job Rating
+			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
+				 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+			 }else {
+				 writeRow.createCell(7).setCellValue("--");
+
+			 }
+
+			//Incentivize
+			 if(rsh.getSubmissionId().getRequirement().getIncentivized() != null) {
+				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getRequirement().getIncentivized());
+			 }else {
+				 writeRow.createCell(8).setCellValue("--");
+			 }
 		 }
 		
 		return createExcelsheet;
@@ -5476,6 +5514,179 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public List<RequirementSubmission> getAllSubmissionsNotInTemplateFileds() throws Exception {
 		return requirementSubmissionDao.getAllSubmissionsNotInTemplateFileds();
+	}
+
+	@Override
+	public Integer getRequirementSubmissionCountByCandiateIdAndOrgLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateSubmittedRequirementsListByCandidateId(Long candidateId,
+			Long orgLocationId,String dateFormat) throws Exception {
+		return requirementSubmissionDao.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocationId,dateFormat);
+	}
+
+	@Override
+	public Sheet getApplicaantJoinedListExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations, String submissionStatus) throws Exception
+	{
+		Row writeRow = null;
+        createExcelsheet = getApplicantJoinedListExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,dashboardJobsCountlist,loginOrgLocations,submissionStatus);
+        List<RequirementSubmissionHistory> list =  dashboardJobsCountlist.getData();
+        int column=0;
+        for(RequirementSubmissionHistory rsh : list){
+       	 writeRow = createExcelsheet.createRow(column+1);
+       	 createExcelsheet = createApplicantJoinedXlsSheet(createExcelsheet,writeRow,column,rsh,loginOrgLocations,submissionStatus);
+       	 column++;
+        }
+		return createExcelsheet;
+	}
+	
+	
+	private Sheet getApplicantJoinedListExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations orgLocations,String submissionStatus) {
+		 CellStyle style = createExcelworkbook.createCellStyle();
+	     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	     Font font = createExcelworkbook.createFont();
+        font.setColor(IndexedColors.BLACK.getIndex());
+        style.setFont(font);
+        String[] headers = null;
+       	 headers = Constants.APPLICANTS_JOINED_HEADERS;
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+	}
+	
+	
+	
+	
+	private Sheet createApplicantJoinedXlsSheet(Sheet createExcelsheet, Row writeRow, int column, RequirementSubmissionHistory rsh, OrgLocations orgLocations,String submissionStatus) throws Exception {
+		StringBuilder candidateName = new StringBuilder();
+		
+		//Candidate Name
+		if(rsh.getSubmissionId().getCandidate().getLastName() != null) {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString()); 
+		}else {
+			writeRow.createCell(0).setCellValue(candidateName.append(rsh.getSubmissionId().getCandidate().getFirstName()).toString()); 
+		}
+		
+		//Candidate Email
+		writeRow.createCell(1).setCellValue(rsh.getSubmissionId().getCandidate().getEmail());
+		
+		
+		if(rsh.getSubmissionId().getCandidate().getMobilePhone() != null) {
+			writeRow.createCell(2).setCellValue(rsh.getSubmissionId().getCandidate().getMobilePhone());	
+		}
+		else{
+			writeRow.createCell(2).setCellValue("--");
+		}
+		//Requirement Name
+		if(rsh.getSubmissionId().getRequirement() != null) {
+			if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
+				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getGeneratedId() +" - "+rsh.getSubmissionId().getRequirement().getJobTitle());
+			}else {
+				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
+			}
+		}
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(4).setCellValue("--"); 
+		 }
+		//Clinet Name
+		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
+					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(5).setCellValue("--");
+				}
+			}
+			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
+				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
+					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+				}else {
+					writeRow.createCell(5).setCellValue("--");
+				}
+			}
+		}else {
+			writeRow.createCell(5).setCellValue("--");
+		}
+		 
+		RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
+		if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
+			writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
+		}
+		else{
+			writeRow.createCell(6).setCellValue("--");
+		}
+		
+		RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
+			
+		if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
+			writeRow.createCell(7).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
+		}
+		else{
+			writeRow.createCell(7).setCellValue("--");
+		}
+		//Sourece Name
+		 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
+		 //Submitted On
+		 writeRow.createCell(9).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+
+			if(rsh.getSubmissionId().getJoinedDate()  != null){
+				 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
+			}
+			else{
+				writeRow.createCell(10).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				 writeRow.createCell(11).setCellValue(rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString());
+			}
+			else{
+				writeRow.createCell(11).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+				 writeRow.createCell(12).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+
+			}
+			else{
+				writeRow.createCell(12).setCellValue("--");
+			}
+
+		return createExcelsheet;
+	}
+
+	@Override
+	public File getApplicantsJoinedListPdfFile(ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist, OrgLocations loginOrgLocations)throws Exception
+	{
+		return pdfUtil.ApplicantsJoinedListPdfTable(dashboardJobsCountlist,loginOrgLocations);
+	}
+	
+	@Override
+	public Integer getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(Long requirementId, String userCode,Date[] searchDates) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementCountBySubmissionStatusJoinedandAssignedUsercode(requirementId, userCode,searchDates);
+
+	}
+	
+	@Override
+	public RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementIncentiveByRequirementId(requirementId);
+
+	}
+
+	@Override
+	public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId, String usercode, Long orgLocationId, Date[] searchDates) throws Exception
+	{
+		return requirementSubmissionDao.getRequirementIncentiveByRequirementIdAndLocation(requirementId,usercode,orgLocationId,searchDates);
+
 	}
 
 }

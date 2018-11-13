@@ -199,30 +199,34 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			StringBuilder qry = new StringBuilder(); 
 			qry.append("select distinct can.ID as candidateID,")
 			.append(" projmem.ID as projectMemId,")
+			.append(" projmem.PROJECT_ID as projectId,")
 			.append(" projmem.PAY_RATE as payRate,")
 			.append(" projmem.PAY_RATE_CURRENCY as payRateCurrency,")
 			.append(" projmem.CURRENT_BILL_RATE as currentBillRate,")
 			.append(" projmem.BILL_RATE_CURRENCY as billRateCurrency,")
 			.append(" projmem.PAY_RATE_TYPE as payRateType,")
-			.append(" sah.FREQUENCY_START_DATE as startDate,")
-			.append(" sah.FREQUENCY_END_DATE as endDate,")
+			//new field
+			.append(" tde.TIMESHEET_DATE as timesheetDate,")
+			.append(" ts.START_DATE as startDate,")
+			.append(" ts.END_DATE as endDate,")
 			.append(" ts.ID as submissinId,")
-			.append(" ts.BILLABLE_HOURS as billableHours,")
+			.append(" REPLACE ( tde.BILLABLE_HOURS , ':' , '.' )  as billableHours,")
 			.append(" ts.TOTAL_HOURS as totalHours,")
 			.append(" ts.ESTIMATED_HOURS as estimatedHours,")
-			.append(" ts.NON_BILLABLE_HOURS as nonBillableHours")
+			.append(" REPLACE ( tde.NONBILLABLE_HOURS , ':' , '.' ) as nonBillableHours")
 			.append(" from ")
 			.append(" USER user,")
 			.append(" CANDIDATE can,")
 			.append(" PROJECT_MEMBERS projmem,")
 			.append("SUBMISSION_APPROVER_HIERARCHY sah,")
-			.append(" TIMESHEET_SUBMISSIONS ts")
+			.append(" TIMESHEET_DAY_ENTRIES tde LEFT JOIN TIMESHEET_SUBMISSIONS ts ON tde.SUBMISSION_ID = ts.ID")
 			.append(" where can.ID  = projmem.CANDIDATE_ID")
 			.append(" AND   projmem.MASTER_CANDIDATE_ID = ts.MASTER_CANDIDATE_ID")
 			.append (" AND   projmem.PROJECT_ID = ts.PROJECT_ID")
 			.append (" AND   sah.SUBMISSION_ID = ts.ID")
-			.append(" AND can.ID = :candidateId and sah.FREQUENCY_START_DATE = :startDate and sah.FREQUENCY_END_DATE = :endDate ");
-//				 System.out.println(qry.toString());
+			.append(" AND can.ID = :candidateId and tde.TIMESHEET_DATE  >= :startDate AND tde.TIMESHEET_DATE <= :endDate ")
+			.append(" AND sah.SUBMISSION_APPROVALSTATUS = 'APPROVED' ");
+				 System.out.println(qry.toString());
 			        
 					Query queryString = session.createSQLQuery(qry.toString());
 					queryString.setParameter("candidateId", candidateId).setDate("startDate", startDate).setDate("endDate",endDate);
@@ -242,7 +246,7 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder qry = new StringBuilder(); 
-			qry.append("SELECT distinct payFreq.GROUP_ID as groupId, payFreq.FREQUENCY_START_DATE as freqStartDate, ")
+			qry.append("SELECT distinct payFreq.GROUP_ID as groupId, payFreq.ID as paySheetFreqId, payFreq.FREQUENCY_START_DATE as freqStartDate, ")
 			.append("payFreq.FREQUENCY_END_DATE as freqEndDate, payPeriod.PAY_PERIOD_NUM as payPeriodNumber, ")
 			.append("payPeriod.APPROVER_STATUS as approverStatus FROM US_PAY_PERIOD payPeriod, ")
 			.append("PAY_SHEET_FREQUENCY payFreq where payPeriod.PAY_SHEET_FREQUENCY_ID = payFreq.ID")
@@ -255,6 +259,22 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			e.printStackTrace();
 		}
 		return payPeriodDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId)
+	{
+		List<UserGroup> userGroupList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId and userGroup.departmentId IN (select departmentId.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId)";
+			userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId", Long.parseLong(userId)).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return userGroupList;
 	}
 	
 	

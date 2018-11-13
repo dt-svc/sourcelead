@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,6 +28,8 @@ import com.bis.sourcelead.constants.Constants;
 
 
 public  class CalendarUtil {	
+	
+	
 	public static double getCombinedHours(double hours1,double hours2){
 		double cthHours = hours1;
 		double cthHoursValue = (int) cthHours;
@@ -545,13 +548,21 @@ public  class CalendarUtil {
 			DateFormat  sdf = new SimpleDateFormat(dateFormart);
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
+			SimpleDateFormat sf = new SimpleDateFormat("E");
+			
 			cal.setTime(nowDate);
-			if(day_offset == 8){
-				cal.add(Calendar.DATE, 7);
-				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			}
-			else{
+			if(StringUtils.isNotEmpty(sf.format(nowDate)) && sf.format(nowDate).equalsIgnoreCase("SUN") && day_offset == 2) {
+				cal.add(Calendar.DATE, -7);
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
+			}
+			else {
+				if(day_offset == 8){
+					cal.add(Calendar.DATE, 7);
+					cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				}
+				else{
+					cal.set(Calendar.DAY_OF_WEEK, day_offset);
+				}
 			}
 			return cal;
 		} catch (Exception e) {
@@ -1169,5 +1180,48 @@ public  class CalendarUtil {
      cal.set(Calendar.MILLISECOND, 0);  
      return cal.getTime(); 
  }
+  
+ 
+ public static int numberOfDayOccurancesBetweenTwoDates(Date d1,Date d2,String day_Of_Week) {
+	 Calendar c1 = Calendar.getInstance();
+	 c1.setTime(d1);
+	  
+	 Calendar c2 = Calendar.getInstance();
+	 c2.setTime(d2);
+	 int count = 0;
+	  
+	 while(c1.before(c2)|| c1.equals(c2)) {
+	     if(day_Of_Week.equalsIgnoreCase("Sun") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Mon") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Tue") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.TUESDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Wed") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.WEDNESDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Thu") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Fri") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Sat") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)
+	    	    count++;
+	     c1.add(Calendar.DATE,1);
+	     
+	 }
+	 return count;
+ }
+	public static Date addDaysForGenerateInvoice(Date date, int days)
+	{
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.DATE, days);
+			return cal.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+ 
 }
 

@@ -245,9 +245,4 @@ public class PaysheetFrequency {
 		this.approverStatus = approverStatus;
 	}
 
-
-
-
-	
-	
 }

@@ -23,41 +23,37 @@
 </script>
  
  
-      <div class="mb col-md-12 clearfix"> 
-      	  <div class=" dashboard-widget col-md-12">
-      	    <h4>Project Requests</h4>
-      	    
-      	    <div class="clearfix">
-      	    	<div class="project_side_wrap_inn_tabs">
-      	    		<ul class="project-tabs-menu tabnewStyles">
-      	    		   <sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-				        <li class="current" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
+      <div class="mb clearfix col-md-12 noPad"> 
+      	  <div class="dashNewWrap mb10">
+      	  
+      	  
+        	<div class="dashNewWrapHead clearfix">
+				<h4 class="pull-left">Project Requests</h4>
+	     	    <ul class="nav nav-tabs pull-right">
+	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
 				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
 				       </sec:authorize> 
 				       <sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
 				        <li id="budgetDiv"><a href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Budget</a></li>
 				       </sec:authorize>
 			        <div class="clearfix"></div>
-			    </ul>
-			    <div class="clearfix"></div>
-      	    	</div>
-      	    	<!-- <div id="associateDivInner">Associate</div>
-      	    	<div id="newResourceDivInner">New Resource</div>
-      	    	<div id="budgetDivInner">Budget</div> -->
+			    </ul>				
+        	</div>       	  
+      	  
       	    
-      	    
-      	    
+      	    <div class="clearfix newDashPad">
       	    
       	    <div class="project_side_wrap_inn_tabs" id="assocaiteRequestsTabDiv" style="display: block;">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu tabnewStyles  tabnew-styles">
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
 			        <li class="activeIcon" id="waiting"><a title="Waiting" onclick="resourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="waitingCount"></span>)</a></li>
 			        <li id="requestApproved"><a title="Approved"  onclick="resourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="approvedCount"></span>)</a></li>
 			        <li id="requestRejected"><a title="Rejected" onclick="resourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="rejectedCount"></span>)</a></li>
 			        <li id="requestOnhold"><a title="On-Hold" onclick="resourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i>(<span id="onholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
-			    <div class="clearfix mb10"></div>
+			    <div class="clearfix mb5"></div>
 			    <div id="resourceRequestList"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="requestedAssociatesDivLoading"></div>
@@ -67,14 +63,14 @@
            
            <div class="project_side_wrap_inn_tabs" id="newResourceRequestTabDiv" style="display: none;">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu tabnewStyles tabnew-styles">
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
 			        <li class="activeIcon" id="newReqWaiting"><a title="Waitig" onclick="newResourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i>(<span id="newWaitingCount"></span>)</a></li>
 			        <li id="newRequestApproved"><a title="Approved" onclick="newResourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="newApprovedCount"></span>)</a></li>
 			        <li id="newRequestRejected"><a title="Rejected" onclick="newResourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="newRejectedCount"></span>)</a></li>
 			        <li id="newRequestOnhold"><a title="On-Hold" onclick="newResourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="newOnholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
-			    <div class="clearfix mb10"></div>
+			    <div class="clearfix mb5"></div>
 			    <div id="newResourceRequestList"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="requestedNewAssociatesDivLoading"></div>
@@ -84,14 +80,14 @@
            
            <div class="project_side_wrap_inn_tabs" id="budgetTabDiv" style="display: none;">
       	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu tabnewStyles tabnew-styles">
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
 			        <li class="activeIcon" id="budgetWaiting"><a title="Waiting" onclick="getBudgetRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="budgetWaitingCount"></span>)</a></li>
 			        <li id="budgetApproved"><a title="Approved"  onclick="getBudgetRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="budgetApprovedCount"></span>)</a></li>
 			        <li id="budgetRejected"><a title="Rejected" onclick="getBudgetRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="budgetRejectedCount"></span>)</a></li>
-			        <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"<i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
+			        <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
 			        <div class="clearfix"></div>
 			    </ul>
-			    <div class="clearfix mb10"></div>
+			    <div class="clearfix mb5"></div>
 			    <div id="budgetRequestListDiv"></div>
 			    <div class="vendor_wrap_mask"></div>
    				<div id="budgetRejectedReasonDiv" ></div>
@@ -129,16 +125,16 @@ function resourceRequestList(requestType){
 	  $('#newResourceRequestTabDiv').hide();
 	  $('#assocaiteRequestsTabDiv').show();
 	  $("#budgetTabDiv").hide();
-	  $("#associateDiv").addClass("current");
-	  $("#newResourceDiv").removeClass("current");
-	  $("#budgetDiv").removeClass("current");
+	  $("#associateDiv").addClass("active");
+	  $("#newResourceDiv").removeClass("active");
+	  $("#budgetDiv").removeClass("active");
 	  
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Associate search' id='requestAssociatesTableSearch'/>";
+	 	result = result +" <input type='text' class='repSearchBar' placeholder='Associate search' id='requestAssociatesTableSearch'/>";
 	 	result = result +"</div>";
 	 	
-	    result = result +'<div class="clearfix popupFilter mt5">';
+	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="clearfix popupFilter datatable_filter">'; 
 	 	
   		result = result +'<table id="requestAssociates" class="display" cellspacing="0" width="100%"  >';
@@ -194,14 +190,14 @@ function requestAssociatesDataTableList(requestType){
 	    
 	    else if(requestType == 'Rejected'){
 	    	 $("#requestRejected").addClass("activeIcon");
-	    	 $("#waiting").removeClass("current");
+	    	 $("#waiting").removeClass("active");
 	    	 $("#requestApproved").removeClass("activeIcon");
 	    	 $("#requestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'On hold'){
 	    	 $("#requestOnhold").addClass("activeIcon");
-	    	 $("#waiting").removeClass("current");
+	    	 $("#waiting").removeClass("active");
 	    	 $("#requestApproved").removeClass("activeIcon");
 	    	 $("#requestRejected").removeClass("activeIcon");
 	    	
