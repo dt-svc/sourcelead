@@ -38,6 +38,8 @@ $(document).ready(function(){
                   </div>
                 </div>
               </li>
+              <li id="employementveriFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="employementveriFileterPopUp();"></a></li>
+				
               <li>
               <div class="dynamic_search" style="top:-10px;">
         		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
@@ -587,6 +589,14 @@ function viewCompleteTemplate(temp){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 			})
+			
+	//pop function for employeementVarification filter
+	
+	function employementveriFileterPopUp(){
+	 $("#vendorFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+			
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
