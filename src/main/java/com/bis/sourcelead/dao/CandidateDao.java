@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -150,14 +153,45 @@ public interface CandidateDao {
 	List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long orgLocationId, String name);
 	
 	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
+
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue);
 	
 	public List<Candidate> getAllCandidatesList() throws Exception;
+
+	public void saveMarketPlace(CandidateMarketPlace marketPlace) throws Exception;
+
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIdsStr);
 	
 	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
 	
 	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
 	
 	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public List<Long> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
+
+	public CandidateMarketPlace getCandidateMarketPlaceByCandidateId(Long candidateId);
+
+	public CandidateMarketPlace getCandidateMarketPlaceById(Long id);
+
+	public void updateMarketPlacePrice(CandidateMarketPlace marketPlace);
+	
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
+	
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace)throws Exception;
+	
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
+	
+	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
+
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue);
+
+	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
+
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
 	
 	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
+	
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
+
 }

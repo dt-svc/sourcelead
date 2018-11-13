@@ -22,6 +22,10 @@
 			getResourceManagers();
 			maskme();
 			editMe(this);
+			var country = '${SourceLeadWeb_orgLocations.country}';
+			if(country == 'United States'){
+				 $('#ssnNumber').attr("data-validation","required"); 
+			}
 		 };
 	</script>
 <script>	
@@ -136,10 +140,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                      <label class="col-md-3">Date of Joining</label>
+                      <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
                          <div class="col-md-9">
                            <div class="input-group errorInptgroup">
-                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
@@ -1077,6 +1081,14 @@ function getAssociateUserDetails(){
 	        		  $("select[name=currentCurrency]").val(json['currentRateCurrency']);
 		        	  $("#currentCurrency").selectpicker('refresh');
 		        	  
+		        	  if(json['designation'] != null && json['designation'] != "" && json['designation'] != "undefined"){
+		        		  $("#designation").val(json['designation']);
+		        	  }
+		        	  
+		        	  if(json['maritalStatus'] != null && json['maritalStatus'] != "" && json['maritalStatus'] != "undefined"){
+				    		 $("input[name='maritalStatus'][value='"+json['maritalStatus']+"']").prop('checked', true); 
+				    	 }
+		        	  
 		        	  if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
 				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
 				    		 $("#genderValue").val(json['gender']);
@@ -1614,7 +1626,7 @@ $(document).ready(function() {
         $("#loading").removeAttr('style');
         $(tab).fadeIn();
     });
-});
+})
 </script> 
 
 

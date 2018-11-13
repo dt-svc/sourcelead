@@ -18,9 +18,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project Attributes</h2>
+        <h2>Priority</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Project Attributes</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; Project Task Priority</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -63,7 +63,7 @@ $(document).ready(function(){
             <div class="clearfix mb">
                 <label class="noPad">Name <b class="valStar">*</b></label>
                 <div class="clearfix">
-                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" data-validation="required validate_length length1-100" field-name="Task Type" onblur="validateTaskTypeName('','new');">
+                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" data-validation="required validate_length length1-10" field-name="Task Type" onblur="validateTaskTypeName('','new');">
                 </div>
             </div>
             <div class="clearfix mb">
@@ -131,9 +131,9 @@ function getTaskPriorityList(){
    		    		var report = json[i];
 	   		    	result = result +'	<tr>';
 	   		    	result = result +'  <td><div class="tblminwidth-150">'+report.id+'</div></td>';
-	                result = result +'  <td><div class="tblminwidth-150">'+report.name+'</div></td>';
+	                result = result +'  <td><div class="tblminwidth-150" title="'+report.name+'">'+report.name+'</div></td>';
 	                
-	                result = result +'  <td><div class="tbldata-dotdot">'+report.description+'</div></td>';
+	                result = result +'  <td><div class="tbldata-dotdot" title="'+report.description+'">'+report.description+'</div></td>';
 	                
 	                result = result +'  <td><div class="tblminwidth-150">';
 	                if(report.referId != null){
@@ -251,7 +251,7 @@ function eidtTaskType(lookupId){
 			result = result +'            <div class="clearfix mb">';
 			result = result +'                <label class="noPad">Name <b class="valStar">*</b></label>';
 			result = result +'                <div class="clearfix">';
-			result = result +'                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" value="'+data.name+'" data-validation="required validate_length length1-100" field-name="Task Type" onblur="validateTaskTypeName('+data.id+',"edit");">';
+			result = result +'                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" value="'+data.name+'" data-validation="required validate_length length1-10" field-name="Task Type" onblur="validateTaskTypeName('+data.id+',"edit");">';
 			result = result +'                </div>';
 			result = result +'            </div>'; 
 			

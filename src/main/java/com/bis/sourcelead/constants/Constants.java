@@ -241,10 +241,12 @@ public class Constants {
 	public static final int CANDIDATE_ALL = 2;
 	public static final int CANDIDATE_ACTIVE = 1;
 	public static final int CANDIDATE_IN_ACTIVE = 0;
+	public static final String STATUS_WITHDRAWN = "WITHDRAWN";
 	/** Candidate Skill constants **/
 	public static final int CANDIDATE_SKILL_ACTIVE = 1;
 	public static final int CANDIDATE_SKILL_IN_ACTIVE = 0;
 	public static final String ACTIVE = "Active";
+	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -621,6 +623,9 @@ public class Constants {
 	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source",
 			"Score", "Experience", "Status", "Submitted On", "Submitted By", "Client Contact" };
+	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED = {
+			"Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source", "Score", "Experience", "Status",
+			"Submitted On", "Submitted By", "Client Contact" };
 	public static final String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Rate", "Source", "Score", "Experience",
 			"Status", "ShortListed By", "ShortListed On" };
@@ -1240,6 +1245,8 @@ public class Constants {
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
+    
+    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";

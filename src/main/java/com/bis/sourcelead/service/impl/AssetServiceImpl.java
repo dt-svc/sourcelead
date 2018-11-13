@@ -421,7 +421,7 @@ public class AssetServiceImpl implements AssetService{
 					 aa.setShift(shift);
 					 
 					 aa.setStatus(Constants.RECORD_ACTIVE);
-					 if(aad.getAssignedOn() != null) {
+					 if(StringUtils.isNotBlank(aad.getAssignedOn())) {
 						 aa.setAssignedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getAssignedOn()));
 					 }else {
 						 aa.setAssignedOn(null);
@@ -464,19 +464,19 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
-		 
+		 Asset savedAsset = assetDao.saveAsset(asset); 
 
 		 //send assign asset email
-		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
+		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && savedAsset != null) {
 			 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
 				 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
-					     Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(asset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
+					     Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(savedAsset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
 					      if(flag == false)
 							assignAssetEmail(aad,asset,user,orgLocations);
 					 }
 			 }
 		 }
-		 Asset savedAsset = assetDao.saveAsset(asset);
+		
 			if(assetDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
 					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
@@ -528,12 +528,13 @@ public class AssetServiceImpl implements AssetService{
 			globalVarsMap.put("category", cat.getCategoryName());
 
 			
-			if(aad.getAssignedOn() != null) {
+			if(StringUtils.isNotBlank(aad.getAssignedOn())) {
 				globalVarsMap.put("assignedOn", aad.getAssignedOn());
 			}else {
 				globalVarsMap.put("assignedOn", "--");
 			}
-			if(!aad.getReturnedOn().isEmpty()) {
+			
+			 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
 				globalVarsMap.put("returnedOn", aad.getReturnedOn());
 			}else {
 				globalVarsMap.put("returnedOn", "--");
@@ -614,8 +615,14 @@ public class AssetServiceImpl implements AssetService{
 				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserUUID());
 				assetDto.setEmployeeName(assetAssign.getUserRole().getUser().getFullName());
 				assetDto.setCategory(asset.getCategoryName());
-				assetDto.setAssignedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getAssignedOn()));
-				assetDto.setReturnedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getReturnedOn()));
+			    if(assetAssign.getAssignedOn() != null) {
+					assetDto.setAssignedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getAssignedOn()));
+				}
+				
+			    if(assetAssign.getReturnedOn() != null) {
+			    	assetDto.setReturnedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getReturnedOn()));
+			    }
+				
 				assetDto.setShift(assetAssign.getShift().getShiftName());
 				assetDto.setFileUrl(assetAssign.getFileURL());
 				assetDto.setDocument(assetAssign.getFileName());
@@ -718,7 +725,7 @@ public class AssetServiceImpl implements AssetService{
 				createExcelsheet.autoSizeColumn(4);
 			}
 			
-			if (null != reportList.getAssignedOn()) {
+			if(StringUtils.isNotBlank(reportList.getAssignedOn())) {
 				 writeRow.createCell(5).setCellValue(reportList.getAssignedOn());
 				createExcelsheet.autoSizeColumn(5);
 			} else {
@@ -726,7 +733,7 @@ public class AssetServiceImpl implements AssetService{
 				createExcelsheet.autoSizeColumn(5);
 			}
 
-			if (null != reportList.getReturnedOn()) {
+			if(StringUtils.isNotBlank(reportList.getReturnedOn())) {
 				writeRow.createCell(6).setCellValue(reportList.getReturnedOn());
 				createExcelsheet.autoSizeColumn(6);
 			} else {

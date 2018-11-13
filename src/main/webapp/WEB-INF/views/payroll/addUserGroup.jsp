@@ -10,12 +10,12 @@
  <form:form id="add_user_group_form"  name="add_user_group_form" method="post">
  <div id="loading"></div>
     <div class="popupHead">Add Group <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
-    <div class="popupMid">
+    <div class="popupMid" id="formDiv">
                     <div class="minHeightcol5">
                         <div class="col-md-6">
                             <label>Group Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="required" onblur="validateGroupId();" field-name="Group Id">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="validate_length length1-10" onblur="validateGroupId();" field-name="Group Id">
                                 <input type="hidden" id="groupUUID" name="groupUUID" value="${userGroup.groupUUID}"/>
                                 <input type="hidden" id="id" name="id" value="${userGroup.id}"/>
                             </div>
@@ -23,7 +23,7 @@
                         <div class="col-md-6">
                             <label>Group Name<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupNameDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required" onblur="validateGroupName();" field-name="Group Name">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required validate_length length1-100" onblur="validateGroupName();" field-name="Group Name">
                             </div>
                         </div>
                 
@@ -54,7 +54,7 @@
                     <div class="col-md-6">
                             <label>Description</label>
                             <div class="clearfix">
-                                <textarea rows="2" class="form-control"  placeholder="Enter" id="description" name="description" data-validation="validate_Space validate_length length1-100" data-validation-optional="true" field-name="Description">${userGroup.description}</textarea>
+                                <textarea rows="2" class="form-control"  placeholder="Enter" id="description" name="description" data-validation="validate_Space validate_length length1-500" data-validation-optional="true" field-name="Description">${userGroup.description}</textarea>
                             </div>
                         </div>
                     </div>                
@@ -89,9 +89,11 @@ function validateGroupId(){
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
                 	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+                	$("#save_user_group_button").attr("disabled", false);
                 }  else {
 					$('#groupIdDiv').find('p.jquery_form_error_message').remove();
       			  	$("#groupId").after("<p class='jquery_form_error_message'>"+groupId+" already exists..!!</span>");
+      			    $("#save_user_group_button").attr("disabled", true);
                 }
 			
 		});
@@ -104,8 +106,14 @@ function validateGroupName(){
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-                	$('#groupNameDiv').find('p.jquery_form_error_message').remove();
-                	$("#save_user_group_button").attr("disabled", false);
+                	if(groupName.length > 10){
+                		$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+          			  	$("#groupName").after("<p class='jquery_form_error_message'>The values should be between 1-10 characters</span>");
+          			  	$("#save_user_group_button").attr("disabled", true);
+                	}else{
+                		$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+                    	$("#save_user_group_button").attr("disabled", false);
+                	}
                 }  else {
 					$('#groupNameDiv').find('p.jquery_form_error_message').remove();
       			  	$("#groupName").after("<p class='jquery_form_error_message'>"+groupName+" already exists..!!</span>");
@@ -119,7 +127,8 @@ function validateGroupName(){
 
  <script type="text/javascript">
  function createUserGroup() {
-	 if ($('#add_user_group_form').validate(false, validationSettings)){ 
+	 
+		 if ($('#add_user_group_form').validate(false, validationSettings)){ 
 
 		 		var fromType = '${fromType}';
 			    var formData = getFormData("add_user_group_form");

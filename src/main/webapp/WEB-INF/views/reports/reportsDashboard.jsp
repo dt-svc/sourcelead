@@ -309,8 +309,8 @@
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
-				<li><a href="${appPath}/usDeductionSummaryReport" >UsDeductionSummaryReport</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" >UsContributionSummaryReport</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
@@ -328,22 +328,21 @@
                      
           <%--     </sec:authorize>  --%>
               
-              <div class="col-md-4 reportNewCta">
+                <div class="col-md-4 reportNewCta">
                   <!-- DropDown Petition Report -->
 			<div class="dropdown pull-right report-dropdown">
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 					<li><a href="${appPath}/petitionReport">Petition Report</a></li>
+					<%-- <li><a href="${appPath}/petitionAttorneyReport">Petition Attorney Report</a></li> --%>
 					<li><a href="${appPath}/lcaReport">LCA Report</a></li>
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/immigration/petitionReport" class="block">
+                  <a href="${appPath}/petitionReport" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
                   </div>  
-              
-              
                   
       </div>
       
