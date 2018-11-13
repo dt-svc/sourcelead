@@ -586,6 +586,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 					var marketDelelIcon = "";
 					var profilePercentage = "";
 					if(divType=="listModel"){
+						if(object.length != 0){
 						for(var i=0;i<object.length;i++){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
@@ -659,6 +660,9 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '</div>';
 							result = result + '</div>';
 						}
+						}else{
+							result = result + "<div class='dataTables_empty'></div>";
+						}
 						$("#listView").empty().append(result);
 						$("#listView").show();
 						$("#cardView").hide();
@@ -667,6 +671,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 					}
 					if(divType=="cardModel"){
 						result = result + '<div class="clearfix mt"></div>';
+						if(object.length != 0){
 						for(var i=0;i<object.length;i++){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
@@ -732,6 +737,9 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '</div>';
 							result = result + '</div>';				  
 							result = result + '</div>';
+						}
+						}else{
+							result = result + "<div class='dataTables_empty'></div>";
 						}
 						$("#cardView").empty().append(result);
 						$("#listView").hide();
