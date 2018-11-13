@@ -41,18 +41,22 @@
                     </div>
 				  <a class="pull-left mt2 mr10" href="javascript:void(0)" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete</small></a>
 				</li>
+				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
 				  <a id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">0</a></li>
               <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i>
 				  <a id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
+				  </sec:authorize>
               <li> <a href="javascript:void(0)" class="sortSvg mr10" title="Sorting"></a> </li>
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
               <li class="mr">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
                 <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
                 <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary"><i class="fa fa-send paddingRight"></i>Check Out</button>
                 </li>
+                </sec:authorize>
             </ul>
           </div>
         </div>
@@ -71,6 +75,7 @@
               <div class="cartInvoiceHeader">
                 <h5 class="margin-top0">Invoice</h5>
               </div>
+               <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBody">
                 <div class="cartInvoiceTable clearfix">
 					<table class="table">
@@ -110,11 +115,14 @@
 					</table>
                 </div>
               </div>
+              </sec:authorize>
+                <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
                   <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="javascript:void(0)">Cancel</a> </div>
                 </div>
               </div>
+              </sec:authorize>
             </div>
           </div>
         </div>
