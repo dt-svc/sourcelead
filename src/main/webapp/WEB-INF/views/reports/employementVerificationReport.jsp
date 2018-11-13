@@ -38,6 +38,8 @@ $(document).ready(function(){
                   </div>
                 </div>
               </li>
+              <li id="employementveriFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="employementveriFileterPopUp();"></a></li>
+				
               <li>
               <div class="dynamic_search" style="top:-10px;">
         		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
@@ -526,8 +528,8 @@ function emplyoeesListPagination(url){
 				           result = result + '      <div class="positionRelative actionList-vdse-div">';
 				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
 				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
+// 				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
+// 				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
 				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
 				           result = result + '      </div>';
@@ -587,6 +589,14 @@ function viewCompleteTemplate(temp){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 			})
+			
+	//pop function for employeementVarification filter
+	
+	function employementveriFileterPopUp(){
+	 $("#vendorFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+			
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
