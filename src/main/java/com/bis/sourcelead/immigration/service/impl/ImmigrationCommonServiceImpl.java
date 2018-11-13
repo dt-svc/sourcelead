@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
@@ -152,6 +153,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
@@ -1847,6 +1851,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		// calling the sendEmail method of emailScenerioUtil
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
+		
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.IMMIGRATION_NOTIFICATION_TO_BENEFICIARY, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
+		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), immigration.getCandidateUserId(), orgLocations,notificationScenario,new HashMap<String,String>());
 
 		// String actionLink="";
 		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations,
@@ -2904,6 +2916,15 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO,
 			OrgLocations orgLocations) {
 		return immigrationCommonDao.getImmigrationReports(immigrationReportDTO, orgLocations);
+	}
+	
+	/*
+	 * immigration reports
+	 */
+	@Override
+	public ResponseList<ImmigrationReportViewDTO> getImmigrationAttorneyReports(ImmigrationReportViewDTO immigrationReportDTO,
+			OrgLocations orgLocations) {
+		return immigrationCommonDao.getImmigrationAttorneyReports(immigrationReportDTO, orgLocations);
 	}
 
 	@Override
