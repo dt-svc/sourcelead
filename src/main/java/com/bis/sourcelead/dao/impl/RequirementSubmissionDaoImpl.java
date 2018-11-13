@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.TeamDao;
@@ -81,6 +82,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
+	
+	@Autowired
+	RequirementApproverHierarchyDao requirementApproverHierarchyDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -545,7 +549,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 Boolean teamFlag = teamDao.getTeamOwnersListByUserIdAndRequirementId(user,loginOrgLocation.getId(),requirement.getId());
-		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false ) {
+		 Boolean approverFlag = requirementApproverHierarchyDao.getisRequirementApprover(user.getId(),requirement.getId());
+		 if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && requirement.getManagerUserId().getId().longValue() != user.getId().longValue() && teamFlag == false && approverFlag == false ) {
 			 subQuery = " and ((rs.requirement.primaryRecruiterUserId.id = '"+user.getId()+"') OR (rs.createdBy = '"+user.getUserCode()+"') OR (rs.vendorLocationId IS NOT NULL) OR (rs.candidate.candidateType = 'Professional') OR (rs.recruiterUserId IS NOT NULL)) ";
 		 }
 		 
@@ -714,6 +719,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         	 statusList.add("BACKOUT");
         	 statusList.add("OFFERED");
         	 statusList.add("JOINED");
+        	 statusList.add("ONHOLD");
+        	 statusList.add("NORESPONSE");
         	 
          }else {
         	 statusList.add(submissionStatus);
@@ -740,6 +747,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                          + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
              }else if(ss.equalsIgnoreCase("JOINED")){
                  submissionStages = "and (reqSub.submissionStatus = 'JOINED')";
+             }
+             else if(ss.equalsIgnoreCase("ONHOLD")){
+                 submissionStages = "and (reqSub.submissionStatus = 'ONHOLD')";
+             }
+             else if(ss.equalsIgnoreCase("NORESPONSE")){
+                 submissionStages = "and (reqSub.submissionStatus = 'NORESPONSE')";
              }
              
              ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
@@ -859,6 +872,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                         		break;
                         case "JOINED":  rsc.setJoinedCount(listDistinct.size());
                         		break;
+                        case "ONHOLD":  rsc.setOnHoldCount(listDistinct.size());
+                		break;
+                        case "NORESPONSE":  rsc.setNoResponseCount(listDistinct.size());
+                		break;
                     }
         	 
          }
@@ -2620,7 +2637,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		String subQuery4 = "";
 	    		String subQuery5 = "";
 	    		
-	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY") || (requirementSubmissionHistoryDTO.getApplicants() != null && requirementSubmissionHistoryDTO.getApplicants().equalsIgnoreCase("MYApplicants"))) {
 	    			subQuery1 = " (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}else {
@@ -2639,7 +2656,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		params.put("usercode",user.getUserCode());
 		    		
 		    		//login user as a  manager for this job.
-		    		subQuery3 = " or (rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId ) ) ";
+		    		subQuery3 = " or (rsh.submissionId.requirement.id IN ( select requirement.id from Requirement requirement where  requirement.managerUserId.id = :managerUserId or requirement.primaryRecruiterUserId.id = :managerUserId) ) ";
 		    		params.put("managerUserId",user.getId());
 		    		
 		    		subQuery4 = " or (rsh.submissionId.requirement.releaseJobToAllUsers = 'Y' and  rsh.submissionId.createdBy =:usercode)";
@@ -2733,7 +2750,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	    		}
 	        	
 	        	String subQuery1 = "";
-	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY")) {
+	    		if(requirementSubmissionHistoryDTO.getSearchType().equalsIgnoreCase("MY") || (requirementSubmissionHistoryDTO.getApplicants() != null && requirementSubmissionHistoryDTO.getApplicants().equalsIgnoreCase("MYApplicants"))) {
 	    			subQuery1 = " and (rsh.submissionId.createdBy =:userCode)";
 	    			params.put("userCode",user.getUserCode());
 	    		}
@@ -2886,6 +2903,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						query1.append("and (rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )");
 					}
 					else{
+						if(!requirementSubmissionHistoryDTO.getSearchValue().equals("'")){
 				query1.append(" and( (rsh.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
 				      .append("OR (concat(rsh.candidate.firstName,rsh.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
@@ -2893,7 +2911,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			          .append("OR rsh.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
-			
+						}
 					}
 					}
 			
@@ -3639,7 +3657,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					   "OR (req.ID IN(select REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO rat where rat.ASSIGN_USER_ID ="+user.getId()+") and rs.CREATED_BY = '"+user.getUserCode()+"'))" + 
 					   
 				 //login user as a  manager for this job.
-					   "OR (req.ID IN(select ID from REQUIREMENT requirement where  requirement.MANAGER_USER_ID = "+user.getId()+"))" + 
+					   "OR (req.ID IN(select ID from REQUIREMENT requirement where  requirement.MANAGER_USER_ID = "+user.getId()+" OR requirement.PRIMARY_RECRUITER_USER_ID = "+user.getId()+"))" + 
 					   
 					   "OR(req.RELEASE_JOB_TO_ALL_USERS = 'Y' and rs.CREATED_BY = '"+user.getUserCode()+"') )";
 					   

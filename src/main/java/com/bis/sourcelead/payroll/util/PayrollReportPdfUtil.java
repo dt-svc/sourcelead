@@ -29,6 +29,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
 import com.bis.sourcelead.payroll.dto.AssociateWithHoldingDTO;
 import com.bis.sourcelead.payroll.dto.CheckRegisterReportDTO;
+import com.bis.sourcelead.payroll.dto.DeductionSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.PdfHeaderDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
@@ -103,7 +104,12 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
-		    	headerDTO.setRunNumber(0);
+		    	if(StringUtils.isNotBlank(registerDTO.getRunNo())) {
+		    		headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	}else {
+		    		headerDTO.setRunNumber(0);
+		    	}
+		    	
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
 		    	
@@ -353,7 +359,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), registerDTO.getFreqEndDate()));
     	headerDTO.setReportType("DIRECT DEPOSIT REGISTER");
     	headerDTO.setRunDate(registerDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
     	
     	createHeaderTable(document,headerDTO,orgLocation);
 		
@@ -575,7 +581,7 @@ public class PayrollReportPdfUtil {
 	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
 	    	headerDTO.setReportType("CONTRIBUTION REPORTS");
 	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-	    	headerDTO.setRunNumber(0);
+	    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
 	    	createHeaderTable(document, headerDTO, orgLocation);
 	    	
 
@@ -684,7 +690,7 @@ public class PayrollReportPdfUtil {
 		Document document = new Document(PageSize.A4.rotate());
 		PdfWriter.getInstance(document, new FileOutputStream(file));
 		document.open();
-		
+		try {
 		
 		PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
     	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
@@ -696,9 +702,9 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPayrollType(payrollReportDTO.getType());
     	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-    	headerDTO.setReportType("DEDUCTION REGISTER");
+    	headerDTO.setReportType("DEDUCTION REPORT");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 
 		document.add(Chunk.NEWLINE);
@@ -738,7 +744,7 @@ public class PayrollReportPdfUtil {
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
-			empDataTable.addCell(getPdfCell("$ xxxx",normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDedAmount(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
@@ -784,8 +790,12 @@ public class PayrollReportPdfUtil {
 		document.add(ytdTable);
 		document.close();
 		System.out.println("Done.!!");
+	} catch (Exception e) {
+		  e.printStackTrace();
+	}
 		return file;
-		}
+		
+}
 	
 	
 	public File getPayrollRegisterReportsPdf(ResponseList<PayrollReportDTO> responseList, OrgLocations orgLocation) throws Exception
@@ -816,7 +826,7 @@ public class PayrollReportPdfUtil {
     	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
     	headerDTO.setReportType("PAYROLL REGISTER");
     	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-    	headerDTO.setRunNumber(0);
+    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
     	createHeaderTable(document, headerDTO, orgLocation);
 		
 		for(PayrollReportDTO payrollReportDto : responseList.getData()) {
@@ -841,12 +851,26 @@ public class PayrollReportPdfUtil {
 			PdfPCell cell1 = new PdfPCell();
 			cell1.addElement(new Paragraph(""));
 			String ssn = "";
+			System.out.println(payrollReportDto.getSsnNumber());
 			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
 				StringBuilder sb1 = new StringBuilder();
 				sb1.append("xxx-xx-");
-				String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				try {
+					String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = payrollReportDto.getSsnNumber();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
 				sb1.append(ssnNum[2]);
-				ssn = sb1.toString();
+				ssn = sb1.toString();*/
 			}else {
 				ssn = "NA";
 			}
@@ -1303,15 +1327,15 @@ public class PayrollReportPdfUtil {
 				.columns(
 						col.column("Employee Id", "empId", type.stringType()),
 						col.column("Employee Name", "empName", type.stringType()),
-						col.column("Gross Pay", "grossPay", type.bigDecimalType()),
-						col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
-						col.column("Federal Tax", "federalTax", type.bigDecimalType()),
-						col.column("Social Security", "socialSec", type.bigDecimalType()),
-						col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
-						col.column("State Withholding", "state", type.bigDecimalType()),
-						col.column("SUI/SDI", "sui", type.bigDecimalType()),
-						col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
-						col.column("Net Pay", "netPay", type.bigDecimalType()))
+						col.column("Gross Pay", "grossPay", type.stringType()),
+						col.column("Pre Tax Deductions", "preTaxDed", type.stringType()),
+						col.column("Federal Tax", "federalTax", type.stringType()),
+						col.column("Social Security", "socialSec", type.stringType()),
+						col.column("Medicare Withholding", "medicare", type.stringType()),
+						col.column("State Withholding", "state", type.stringType()),
+						col.column("SUI/SDI", "sui", type.stringType()),
+						col.column("Post Tax Deductions", "postTaxDed", type.stringType()),
+						col.column("Net Pay", "netPay", type.stringType()))
 				.pageFooter(Templates.footerComponent)
 				.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toPdf(pdfExporter);
 		} catch (DRException e) {
@@ -1325,15 +1349,15 @@ public class PayrollReportPdfUtil {
 		for(AssociateReportDTO associate :responseList.getData()) {
 			String  employeeId= "--";
 			String employeeName = "--";
-			BigDecimal grossPay = BigDecimal.ZERO;
-			BigDecimal preTaxDed = BigDecimal.ZERO;
-			BigDecimal federalTax = BigDecimal.ZERO;
-			BigDecimal socialSec = BigDecimal.ZERO;
-			BigDecimal medicare = BigDecimal.ZERO;
-			BigDecimal state = BigDecimal.ZERO;
-			BigDecimal sui = BigDecimal.ZERO;
-			BigDecimal postTaxDed = BigDecimal.ZERO;
-			BigDecimal netPay = BigDecimal.ZERO;
+			String grossPay = "$ 0.0";
+			String preTaxDed = "$ 0.0";
+			String federalTax = "$ 0.0";
+			String socialSec = "$ 0.0";
+			String medicare = "$ 0.0";
+			String state = "$ 0.0";
+			String sui = "$ 0.0";
+			String postTaxDed = "$ 0.0";
+			String netPay = "$ 0.0";
 			if(associate != null && associate.getEmpId() != null) {
 				employeeId = associate.getEmpId();
 			}
@@ -1342,39 +1366,39 @@ public class PayrollReportPdfUtil {
 			}
 			
 			if(associate.getGrossPay() != null) {                   // usefull for 0  amount condition && !(BigDecimal.ZERO.compareTo(associate.getGrossPay()) == 0)
-				grossPay = associate.getGrossPay();
+				grossPay = "$ "+associate.getGrossPay().toString();
 			}
 			
 			if(associate.getPreTaxDeduction() != null ) {
-				preTaxDed = associate.getPreTaxDeduction();
+				preTaxDed = "$ "+associate.getPreTaxDeduction().toString();
 			}
 			
 			if(associate.getTotalFederalWithholding() != null) {
-				federalTax = associate.getTotalFederalWithholding();
+				federalTax = "$ "+associate.getTotalFederalWithholding().toString();
 			}
 			
 			if(associate.getTotalfica() != null) {
-				socialSec = associate.getTotalfica();
+				socialSec = "$ "+associate.getTotalfica().toString();
 			}
 			
 			if(associate.getTotalMedicareWithholding() != null) {
-				medicare = associate.getTotalMedicareWithholding();
+				medicare = "$ "+associate.getTotalMedicareWithholding().toString();
 			}
 			
 			if(associate.getTotalStateWithholding() != null) {
-				state = associate.getTotalStateWithholding();
+				state = "$ "+associate.getTotalStateWithholding().toString();
 			}
 			
 			if(associate.getTotalSui() != null) {
-				sui = associate.getTotalSui();
+				sui = "$ "+associate.getTotalSui().toString();
 			}
 			
 			if(associate.getPostTaxDeduction() != null) {
-				postTaxDed = associate.getPostTaxDeduction();
+				postTaxDed = "$ "+associate.getPostTaxDeduction().toString();
 			}
 			
 			if(associate.getNetPay() != null) {
-				netPay = associate.getNetPay();
+				netPay = "$ "+associate.getNetPay().toString();
 			}
 			
 
@@ -1402,15 +1426,15 @@ public class PayrollReportPdfUtil {
 					.columns(
 							col.column("Employee Id", "empId", type.stringType()),
 							col.column("Employee Name", "empName", type.stringType()),
-							col.column("Gross Pay", "grossPay", type.bigDecimalType()),
-							col.column("Pre Tax Deductions", "preTaxDed", type.bigDecimalType()),
-							col.column("Federal Tax", "federalTax", type.bigDecimalType()),
-							col.column("Social Security", "socialSec", type.bigDecimalType()),
-							col.column("Medicare Withholding", "medicare", type.bigDecimalType()),
-							col.column("State Withholding", "state", type.bigDecimalType()),
-							col.column("SUI/SDI", "sui", type.bigDecimalType()),
-							col.column("Post Tax Deductions", "postTaxDed", type.bigDecimalType()),
-							col.column("Net Pay", "netPay", type.bigDecimalType()))
+							col.column("Gross Pay", "grossPay", type.stringType()),
+							col.column("Pre Tax Deductions", "preTaxDed", type.stringType()),
+							col.column("Federal Tax", "federalTax", type.stringType()),
+							col.column("Social Security", "socialSec", type.stringType()),
+							col.column("Medicare Withholding", "medicare", type.stringType()),
+							col.column("State Withholding", "state", type.stringType()),
+							col.column("SUI/SDI", "sui", type.stringType()),
+							col.column("Post Tax Deductions", "postTaxDed", type.stringType()),
+							col.column("Net Pay", "netPay", type.stringType()))
 					.setDataSource(createEmployeePayrollPdfDataSource(responseList)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
@@ -1480,8 +1504,8 @@ public class PayrollReportPdfUtil {
 			if(associate.getFederalTaxAllowances() != null) {
 				federalAllowances = associate.getFederalTaxAllowances();
 			}
-			if(associate.getState() != null) {
-				state = associate.getState();
+			if(associate.getResidenceStateCode() != null) {
+				state = associate.getResidenceStateCode();
 			}
 			if(associate.getStateFillingStatus() != null) {
 				stateStatus = associate.getStateFillingStatus();
@@ -1525,6 +1549,93 @@ public class PayrollReportPdfUtil {
 							col.column("State Filling Status", "stateStatus", type.stringType()),
 							col.column("State Allowances", "stateAllowances", type.stringType()))
 					.setDataSource(createAssociateWithholdingPdfDataSource(res)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+	return file;
+	}
+
+	public File getDeductionSummaryReportPdf(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Type", "type", type.stringType()),
+							col.column("No of Employees", "noOfEmployees", type.integerType()),
+							col.column("Current", "current", type.bigDecimalType()),
+							col.column("QTD", "qtd", type.bigDecimalType()),
+							col.column("YTD", "ytd", type.bigDecimalType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createDeductionSummaryPdfDataSource(data)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+	private DRDataSource createDeductionSummaryPdfDataSource(List<DeductionSummaryDTO> data) {
+		DRDataSource dataSource = new DRDataSource("type","noOfEmployees", "current", "qtd", "ytd");
+		for(DeductionSummaryDTO ded :data) {
+			String  type= "--";
+			int noOfEmployees = 0;
+			BigDecimal current = BigDecimal.ZERO;
+			BigDecimal qtd = BigDecimal.ZERO;
+			BigDecimal ytd = BigDecimal.ZERO;
+
+			if(ded.getDeductionType() != null) {
+				type = ded.getDeductionType();
+			}
+			
+				noOfEmployees = ded.getCandidateCount();
+				
+			if(ded.getCurrentAmt() != null) {
+				current = ded.getCurrentAmt();
+			}
+			
+			if(ded.getQtd() != null) {
+				qtd = ded.getQtd();
+			}
+			
+			if(ded.getYtd() != null) {
+				ytd = ded.getYtd();
+			}
+			
+
+			
+
+			dataSource.add(type,noOfEmployees,current,qtd,ytd);
+		}
+		return dataSource;
+	}
+
+	public File getDeductionSummaryReportXls(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							col.column("Type", "type", type.stringType()),
+							col.column("No of Employees", "noOfEmployees", type.integerType()),
+							col.column("Current", "current", type.bigDecimalType()),
+							col.column("QTD", "qtd", type.bigDecimalType()),
+							col.column("YTD", "ytd", type.bigDecimalType()))
+					.setDataSource(createDeductionSummaryPdfDataSource(data)).toXls(xlsExporter);
 		} catch (DRException e) {
 			e.printStackTrace();
 		}

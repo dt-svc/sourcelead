@@ -66,29 +66,6 @@
 										<div class="clearfix"></div>
 									</div>
 									<div class="clearfix"></div>
-									<%-- <h1>Fair Job(s):</h1>
-									<div class="clearfix" id="selectedJobsDiv">
-										<c:forEach items="${jobFair.jobFairRequirementList}" var="req">
-											<div class="require_one">
-												<div class="multiJobTitle clearfix">
-													<h2 class="pull-left">${req.requirementTitle}</h2>
-												</div>
-												<div class="multiJobDate clearfix">
-													<c:choose>
-														<c:when test="${req.fairDates != null && req.fairDates != ''}">
-															<c:forEach items="${req.fairDates.split(',')}" var="date">
-															<span class="reqDate">${date}</span>
-															</c:forEach>
-														</c:when>
-														<c:otherwise>
-															No Date(s) selected
-														</c:otherwise>
-													</c:choose>
-												</div>
-											</div>
-										</c:forEach>
-									</div>
-									<div class="clearfix"></div> --%>
 								</div>
 								<div class="clearfix"></div>
 							</div>

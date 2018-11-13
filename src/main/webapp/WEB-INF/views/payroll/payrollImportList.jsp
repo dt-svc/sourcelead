@@ -4,39 +4,63 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <script>
-	window.onload = function() {
+	$(document).ready(function() {
+		$("#employeeCostSearch").show();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
 		loadEmployeePayrollCost();
-	}
+	});
 </script>
+
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Pay Roll
-				<a href="<c:url value='${appPath}/uploadDocuments'/>" class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload Files</a>
+			<h2>
+				Pay Roll <a href="<c:url value='${appPath}/uploadDocuments'/>"
+					class="jobHeadBtn" id="uloadDocs" title="Upload Files">Upload
+					Files</a>
 			</h2>
 		</div>
-		<div class="success_pop" id="selector1" style="display: none;"><i class="fa fa-check-circle"></i><span id="msgDiv"></span></div>
+		<div class="success_pop" id="selector1" style="display: none;">
+			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+		</div>
+
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Payroll
+			<a
+				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
+			<a href="<c:url value='${appPath}/payrollConfiguration'/>">
+				Payroll Configuration</a>&raquo; Payroll
 		</div>
 	</section>
-	
-	
+
+
 	<%-- <a href="<c:url value='/addChecks'/>" class="ml10 mt5"
 		id=generateReportId title="Generate Report">Add Checks</a> --%>
 	<form:form id="payroll_list_form" name="payroll_list_form"
 		method="post">
 		<section class="contrHead">
 			<ul id="parentUl">
-				<li title="Employer Payroll"><a class="wVer" id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer Payroll</a></li>
+				<li title="Employer Payroll"><a class="wVer"
+					id="empPayrollCostLi" onclick="loadEmployeePayrollCost();">Employer
+						Payroll</a></li>
 				<!-- <li title="Employee list"><a id="empList" onclick="getEmployeeList();">Master Data</a></li> -->
-				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi" onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
-				<li title="Account Deductions"><a id="accountDedLi" onclick="accountDeductionsList();">Account Deductions</a></li>
-				<li title="HR Deductions"><a id="HrdedLi" onclick="hrDeductionsList();">HR Deductions</a></li>
-				<li title="Payments"><a id="BisChecks" onclick="bisChecksList();">Payments</a></li>
-				<li title="Invoice Details"><a id="invoiceData" onclick="getInvoiceDetails();">Invoice Details</a></li>
-				<li title="Generate Payroll"><a id="paylistLi" onclick="showPayrollDiv();">Generate Payroll</a></li>
+				<li title="Wages & Tax Summary"><a id="WageTaxSummaryLi"
+					onclick="wagesAndTaxList();">Wages & Tax Summary</a></li>
+				<li title="Account Deductions"><a id="accountDedLi"
+					onclick="accountDeductionsList();">Account Deductions</a></li>
+				<li title="HR Deductions"><a id="HrdedLi"
+					onclick="hrDeductionsList();">HR Deductions</a></li>
+				<li title="Payments"><a id="BisChecks"
+					onclick="bisChecksList();">Payments</a></li>
+				<li title="Invoice Details"><a id="invoiceData"
+					onclick="getInvoiceDetails();">Invoice Details</a></li>
+				<li title="Generate Payroll"><a id="paylistLi"
+					onclick="showPayrollDiv();">Generate Payroll</a></li>
 				<!-- <li><button type="button" class="btn btn-sm btn-primary pull-right" id="generatePayroll" onclick="generatrPayroll();">Generate Payroll</button></li> -->
 			</ul>
 			<div class="clearfix"></div>
@@ -54,44 +78,56 @@
 
 					<div class="clearfix">
 
-						<a href="<c:url value='${appPath}/userMapping'/>" class="btn btn-primary btn-sm ml10 mt5 hidden" title="User Mapping" onClick="userMaping();">User Mapping </a>
+						<a href="<c:url value='${appPath}/userMapping'/>"
+							class="btn btn-primary btn-sm ml10 mt5 hidden"
+							title="User Mapping" onClick="userMaping();">User Mapping </a>
 
 						<!--  Runpayroll div -->
-						<form:form id="run_payroll_cycle" name="run_payroll_cycle" method="post">
+						<form:form id="run_payroll_cycle" name="run_payroll_cycle"
+							method="post">
 							<div class="clearfix mt" id="addPayrollDiv">
 								<div class="clearfix">
 									<div id="payrollCycleDiv" class="col-md-7">
 										<div class="form-inline">
-										<span class="form-group">
-											 <input type="text" class="form-control calendar" value="" id="payrollStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
-											 <p id="reportStartDate" class="ReError"></p>
-										 </span>
-										<span class="form-group">
-											<input type="text"  class="form-control calendar" value="" id="payrollEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
-											<p id="reportEndDate" class="ReError"></p>
-										</span>
-									
-									<div class="form-group">
-										<button type="button" class="btn btn-primary btn-block" id="runPayrollCycle" onclick="runPayrollCycles();">Run Payroll</button>
+											<span class="form-group"> <input type="text"
+												class="form-control calendar" value="" id="payrollStartDate"
+												name="StartDate" field-name="Start Date"
+												data-validation="required" readonly="readonly"
+												placeholder="Start Date">
+												<p id="reportStartDate" class="ReError"></p>
+											</span> <span class="form-group"> <input type="text"
+												class="form-control calendar" value="" id="payrollEndDate"
+												name="EndDate" field-name="End Date"
+												data-validation="required" readonly="readonly"
+												placeholder="End Date">
+												<p id="reportEndDate" class="ReError"></p>
+											</span>
+
+											<div class="form-group">
+												<button type="button" class="btn btn-primary btn-block"
+													id="runPayrollCycle" onclick="runPayrollCycles();">Run
+													Payroll</button>
+											</div>
+										</div>
 									</div>
-									</div>
-									</div>
-									
-									<div id="payScale" class="col-md-3 mt5 paddingLeft" style="display: none;">
-										<span class="label label-info runpayRoll-txt" id="payCycleName"></span>
+
+									<div id="payScale" class="col-md-3 mt5 paddingLeft"
+										style="display: none;">
+										<span class="label label-info runpayRoll-txt"
+											id="payCycleName"></span>
 									</div>
 								</div>
 
 							</div>
 						</form:form>
 						<!--  Runpayroll div -->
-						
+
 					</div>
 				</div>
-				
-				
-				
-				
+
+
+
+
 				<!-- End -->
 
 			</div>
@@ -103,6 +139,50 @@
 		<div
 			class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
 			<div id="loading"></div>
+			<div class='reportHead' id="employeeCostSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='employeeDataTableSearch' /> <span
+						class='repSearchIcon' onClick='employeeDataSearch();'></span></li>
+				</ul>
+			</div>
+			<div class='reportHead' id="wageTaxSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='dataTableSearch' /><span
+						class='repSearchIcon' onClick='dataTableSearch()'></span></li>
+				</ul>
+			</div>
+			<div class='reportHead' id="accountDedSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='accountDataTableSearch' /><span
+						class='repSearchIcon' onClick='accountDataTableSearch();'></span></li>
+				</ul>
+			</div>
+			<div class='reportHead' id="hrDedSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='hrDataTableSearch' /><span
+						class='repSearchIcon' onClick='hrDataTableSearch();'></span></li>
+				</ul>
+			</div>
+			<div class='reportHead' id="checksSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='checksDataTableSearch' /><span
+						class='repSearchIcon' onClick='checksDataTableSearch();'></span></li>
+				</ul>
+			</div>
+
+			<div class='reportHead' id="invoiceDataSearch">
+				<ul class='pull-right'>
+					<li><input type='text' placeholder='Search'
+						class='repSearchBar' id='invoiceDataTableSearch' /> <span
+						class='repSearchIcon' onClick='invoiceDataTableSearch();'></span></li>
+				</ul>
+			</div>
+
 			<div id="employerCostDiv" class="datatable_filter"></div>
 			<div id="wagesAndTaxListDiv" class="datatable_filter"></div>
 			<div id="accountDeductionsListDiv" class="datatable_filter"></div>
@@ -118,11 +198,11 @@
 
 <script>
 	$(function() {
-		
+
 		$('#payrollStartDate').datepicker({
 			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
+			changeMonth : true,
+			changeYear : true,
 			onSelect : function(selected) {
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate() + 1);
@@ -130,11 +210,11 @@
 				addValidClass();
 			}
 		});
-		
+
 		$('#payrollEndDate').datepicker({
 			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
+			changeMonth : true,
+			changeYear : true,
 			onSelect : function(selected) {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
@@ -142,27 +222,27 @@
 				addValidClass();
 			}
 		});
-		
+
 	});
 </script>
 
-<script type="text/javascript"> 
-	function addValidClass(){
-		 var StartDate = document.getElementById("payrollStartDate").value;
-		 if(StartDate){
-			 $('#reportStartDate').empty() 
-		 }
-		 
-		 var EndDate = document.getElementById("payrollEndDate").value;
-		 if(EndDate){
-			 $('#reportEndDate').empty(); 
-		 }
-}
+<script type="text/javascript">
+	function addValidClass() {
+		var StartDate = document.getElementById("payrollStartDate").value;
+		if (StartDate) {
+			$('#reportStartDate').empty()
+		}
+
+		var EndDate = document.getElementById("payrollEndDate").value;
+		if (EndDate) {
+			$('#reportEndDate').empty();
+		}
+	}
 </script>
 
 <script>
 	function runPayrollCycles(type) {
-		
+
 		var payrollValue = $('#payrollCycle').val();
 		var payrollStartDate = $('#payrollStartDate').val();
 		var payrollEndDate = $('#payrollEndDate').val();
@@ -170,7 +250,7 @@
 				|| (payrollValue != "" && payrollValue != 'undefined' && payrollValue != null)) {
 			if ($('#run_payroll_cycle').validate(false, validationSettings)) {
 				$('#addPayrollDiv').removeClass("show-div");
-				var payrollCycle =  payrollStartDate +" - "+payrollEndDate;
+				var payrollCycle = payrollStartDate + " - " + payrollEndDate;
 				var frm = $('#run_payroll_cycle').serializeFormJSON();
 				var con = JSON.stringify(frm);
 				con = con.replace(/[{}]/g, "");
@@ -333,7 +413,7 @@
 			$("#HrdedLi").removeClass('wVer');
 			$("#BisChecks").removeClass('wVer');
 			$("#invoiceData").removeClass('wVer');
-			
+
 			loadEmployeePayrollCost();
 		} else if (payrollType == "WAGE_TAX") {
 			$("#empPayrollCostLi").removeClass('wVer');
@@ -505,20 +585,27 @@
 
 <script>
 	function loadEmployeePayrollCost() {
+		$("#employeeCostSearch").show();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
+
 		var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#employeeDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
 		var url = sourceleadUrl
 				+ "/loadEmployerPayrollCostByOrgLocationId?searchValue="
-				+ searchValue+"&orgLocationId="+orgLocationId;
+				+ searchValue + "&orgLocationId=" + orgLocationId;
 		prepareEmployeePayrollList(url);
 	}
 </script>
 
 <script>
 	function prepareEmployeePayrollList(url) {
-	 	$("#addPayrollDiv").hide(); 
+		$("#addPayrollDiv").hide();
 		$("#checksListDiv").empty();
 		$("#accountDeductionsListDiv").empty();
 		$("#hrDeductionsListDiv").empty();
@@ -534,12 +621,13 @@
 		$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 		$('#payrollCycle').val('').trigger("chosen:updated");
 		var result = "";
- 		result = result +" <div class='reportHead'>";
+		/* result = result +" <div class='reportHead'>";
 		result = result + " <ul class='pull-right'>";
 		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='employeeDataTableSearch'/><span class='repSearchIcon' onClick='employeeDataSearch();'></span></li>";
 		result = result + "</ul>";
-		result = result + "</div>"; 
-		result = result + '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
+		result = result + "</div>";  */
+		result = result
+				+ '<table id="employeePayrollTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>From Date</th>';
@@ -610,11 +698,12 @@
 								"data" : "totalErCost"
 							}, {
 								"data" : "action"
-							}],
+							} ],
 							"columnDefs" : [
 									{
 										"targets" : colIndex++,
 										"data" : "fromDate",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -628,6 +717,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "toDate",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -642,6 +732,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "employeeId",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -668,6 +759,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "ssn",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -688,6 +780,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalHrs",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -708,6 +801,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "grossWages",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -721,6 +815,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "fica",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -733,6 +828,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "futa",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -745,6 +841,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "sui",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -757,6 +854,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "erLocals",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -770,6 +868,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "wcCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -783,6 +882,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "adminFee",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -796,6 +896,7 @@
 									{
 										"targets" : colIndex++,
 										"data" : "totalErCost",
+										"sortable" : false,
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
@@ -809,9 +910,14 @@
 									{
 										"targets" : colIndex++,
 										"data" : "action",
-										"render" : function(data, type, opt, meta) {
+										"sortable" : false,
+										"render" : function(data, type, opt,
+												meta) {
 											var result = "";
-											result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'EmployeePayrollCost\')"></i></div></td>';
+											result = result
+													+ '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''
+													+ opt.uuid
+													+ '\',\'EmployeePayrollCost\')"></i></div></td>';
 											return result;
 										}
 									} ],
@@ -831,35 +937,38 @@
 		$("#employeePayrollTable").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#employeeDataTableSearch").keyup(function(e) {
-			if (e.which === 13) {
-				loadEmployeePayrollCost();
-			}
-		});
-		
 	}
-	function employeeDataSearch(){
+
+	$("#employeeDataTableSearch").keyup(function(e) {
+		if (e.which === 13) {
+			loadEmployeePayrollCost();
+		}
+	});
+
+	function employeeDataSearch() {
 		loadEmployeePayrollCost();
 	}
-	
-function deletePayrollEntity(uuid,entityType){
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.get(sourceleadUrl+"/deletePayrollEntitiesByUUIDAndEntityType?"+tokenParamName+"="+tokenValue+"&uuid="+uuid+"&entityType="+entityType,  function(result) {
-		if(entityType == "EmployeePayrollCost"){
-			loadEmployeePayrollCost();
-		}else if(entityType == "WageTaxSummary"){
-			wagesAndTaxList();
-		}else if(entityType == "AccountDeductions"){
-			accountDeductionsList();
-		}else if(entityType == "HrDeductions"){
-			hrDeductionsList();
-		}else if(entityType == "Checks"){
-			bisChecksList();
-		}else if(entityType == "InvoiceData"){
-			getInvoiceDetails();
-		}
-	}); 
-}
+
+	function deletePayrollEntity(uuid, entityType) {
+		var sourceleadUrl = '${sourceleadUrl}';
+		$.get(sourceleadUrl + "/deletePayrollEntitiesByUUIDAndEntityType?"
+				+ tokenParamName + "=" + tokenValue + "&uuid=" + uuid
+				+ "&entityType=" + entityType, function(result) {
+			if (entityType == "EmployeePayrollCost") {
+				loadEmployeePayrollCost();
+			} else if (entityType == "WageTaxSummary") {
+				wagesAndTaxList();
+			} else if (entityType == "AccountDeductions") {
+				accountDeductionsList();
+			} else if (entityType == "HrDeductions") {
+				hrDeductionsList();
+			} else if (entityType == "Checks") {
+				bisChecksList();
+			} else if (entityType == "InvoiceData") {
+				getInvoiceDetails();
+			}
+		});
+	}
 </script>
 
 

@@ -178,6 +178,9 @@ $(function() {
 
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
+		alert("fileURL : "+fileURL);
+		alert("title : "+title);
+		alert("contentType : "+contentType);
 		window.open(sourceleadUrl+'/viewFile?documentPath='+encodeURI(fileURL)+"&contentType="+contentType,title,"height=600,width=600");
 	}  
 }

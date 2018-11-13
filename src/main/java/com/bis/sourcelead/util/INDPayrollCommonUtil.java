@@ -2,6 +2,8 @@ package com.bis.sourcelead.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
@@ -27,8 +30,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
@@ -518,12 +523,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(payHeadHistory.getUpdatedBy() != null) {
 					payHeadHistoryDTO.setUpdatedBy(payHeadHistory.getUpdatedBy().getId());
 				}
-				
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				if(payHeadHistory.getCreatedDate() != null) {
-					payHeadHistoryDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payHeadHistory.getCreatedDate()));
+					payHeadHistoryDTO.setCreatedDate(df.format(payHeadHistory.getCreatedDate()));
 				}
 				if(payHeadHistory.getUpdatedDate() != null) {
-					payHeadHistoryDTO.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payHeadHistory.getUpdatedDate()));
+					payHeadHistoryDTO.setUpdatedDate(df.format(payHeadHistory.getUpdatedDate()));
 				}
 				payHeadHistoryDTOList.add(payHeadHistoryDTO);
 			}
@@ -558,18 +563,100 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					user.setId(payHeadHistoryDTO.getUpdatedBy());
 					payHeadHistory.setUpdatedBy(user);
 				}
-				
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				if(StringUtils.isNotEmpty(payHeadHistoryDTO.getCreatedDate())) {
-					payHeadHistory.setCreatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),payHeadHistoryDTO.getCreatedDate()));
+					payHeadHistory.setCreatedDate(df.parse(payHeadHistoryDTO.getCreatedDate()));
 				}
 				if(StringUtils.isNotEmpty(payHeadHistoryDTO.getUpdatedDate())) {
-					payHeadHistory.setUpdatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),payHeadHistoryDTO.getUpdatedDate()));
+					payHeadHistory.setUpdatedDate(df.parse(payHeadHistoryDTO.getUpdatedDate()));
 				}
 				payHeadHistoryList.add(payHeadHistory);
 			}
 		}
 		return payHeadHistoryList;
 	}
+	
+	@SuppressWarnings("null")
+	public List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadAdjustIndSessionList(List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList, INDPayrollDTO indPayrollDTO, IndEmployeePayrollDTO indEmployeePayrollDTO, User loginUser, OrgLocations orgLocation) throws Exception{
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+				}
+			}
+		}
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+				}
+			}
+		}
+		return associatePayrollPayheadDTOList;
+	}
+	
+	public AssociatePayrollPayheadHistoryDTO associatePayrollPayheadAdjustIndSession(INDPayrollDTO indPayrollDTO, AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO, User loginUser, OrgLocations orgLocation) throws Exception {
+		AssociatePayrollPayheadHistoryDTO  associatePayrollPayheadHistoryDTO = new AssociatePayrollPayheadHistoryDTO();
+		associatePayrollPayheadHistoryDTO.setIndEmployeePayrollId(indPayrollDTO.getId());
+		if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
+			associatePayrollPayheadHistoryDTO.setPayrollPayhead(payHeadHistoryDTO.getPayrollPayhead());
+		}
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
+		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
+		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
+		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
+		associatePayrollPayheadHistoryDTO.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		associatePayrollPayheadHistoryDTO.setStatus(Constants.RECORD_ACTIVE);
+		associatePayrollPayheadHistoryDTO.setCreatedBy(loginUser.getId());
+		associatePayrollPayheadHistoryDTO.setUpdatedBy(loginUser.getId());
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		associatePayrollPayheadHistoryDTO.setCreatedDate(df.format(new Date()));
+		associatePayrollPayheadHistoryDTO.setUpdatedDate(df.format(new Date()));
+		return associatePayrollPayheadHistoryDTO;
+	}
+	
+	@SuppressWarnings("null")
+	public Set<AssociatePayrollPayheadHistory> associatePayrollPayheadAdjustIndList(IndEmployeePayroll indEmployeePayroll, IndEmployeePayrollDTO indEmployeePayrollDTO, User loginUser) throws Exception {
+		Set<AssociatePayrollPayheadHistory> apphList = new HashSet<AssociatePayrollPayheadHistory>();
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+				}
+			}
+		}
+		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList() != null) {
+			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
+				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
+					apphList.add(associatePayrollPayheadAdjustInd(indEmployeePayroll, payHeadHistoryDTO, loginUser));
+				}
+			}
+		}
+		return apphList;
+	}
+	
+	public AssociatePayrollPayheadHistory associatePayrollPayheadAdjustInd(IndEmployeePayroll indEmployeePayroll, AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO, User loginUser) throws Exception {
+		AssociatePayrollPayheadHistory  associatePayrollPayheadHistory = new AssociatePayrollPayheadHistory();
+		associatePayrollPayheadHistory.setIndEmployeePayrollId(indEmployeePayroll);
+		if(payHeadHistoryDTO.getPayrollPayhead() !=null) {
+			PayrollPayhead payrollPayhead = new PayrollPayhead();
+			payrollPayhead.setId(payHeadHistoryDTO.getPayrollPayhead());
+			payrollPayhead.setType(payHeadHistoryDTO.getPayrollPayheadType());
+			payrollPayhead.setShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
+			associatePayrollPayheadHistory.setPayrollPayhead(payrollPayhead);
+		}
+		associatePayrollPayheadHistory.setMonthly(payHeadHistoryDTO.getMonthly());
+		associatePayrollPayheadHistory.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
+		associatePayrollPayheadHistory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		associatePayrollPayheadHistory.setStatus(Constants.RECORD_ACTIVE);
+		associatePayrollPayheadHistory.setCreatedBy(loginUser);
+		associatePayrollPayheadHistory.setUpdatedBy(loginUser);
+		associatePayrollPayheadHistory.setCreatedDate(new Date());
+		associatePayrollPayheadHistory.setUpdatedDate(new Date());
+		return associatePayrollPayheadHistory;
+	}
+	
 	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)

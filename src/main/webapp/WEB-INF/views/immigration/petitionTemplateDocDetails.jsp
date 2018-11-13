@@ -39,7 +39,7 @@
 				      
 				      <div class="col-md-2">
 						<select class="form-control" 
-										name="immigrationDocList[0].documentCategory" id="immigrationDocList[0].documentCat" onchange="getDocumentType(this,'0');"  title='Document Category' field-name="Select Document Category" data-validation="required">
+										name="immigrationDocList[0].documentCategory" id="documentCategory0" onchange="getDocumentType(this,'0');"  title='Document Category' field-name="Select Document Category" data-validation="required">
 									<option value="" selected>--Select Document Type--</option>
 									<option value="PetitionerCategory" >Petitioner</option>
 									<option value="Document Type" >Beneficiary</option>

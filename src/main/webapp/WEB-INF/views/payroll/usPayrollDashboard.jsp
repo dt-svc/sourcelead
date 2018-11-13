@@ -459,8 +459,9 @@ function getGroupFrequency(){
 	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var opt = json[i];
+				var date = opt.payPeriod.replace(",", " to ");
+				output = output + "<option value='" +opt.payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);
@@ -554,7 +555,7 @@ function runUSPayroll(){
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
  						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';

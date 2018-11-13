@@ -1,7 +1,9 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.util.List;
+import java.util.Set;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -12,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollScheduleDao;
+import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 
 @Repository
 public class PayrollScheduleDaoImpl implements PayrollScheduleDao {
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserPayrollDaoImpl.class);
 	
 	@Autowired
@@ -45,6 +49,59 @@ public class PayrollScheduleDaoImpl implements PayrollScheduleDao {
 	    	return null;
 	    }
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UsPayrollSchedule> findAllPayrollScheduleList(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id =:orgLocationId and usPay.status = 1";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UsPayrollSchedule getPayScheduleByUUID(String payrollScheduleUUID,Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id = :orgLocationId and usPay.payrollScheduleUUID =:payrollScheduleUUID and usPay.status = 1";
+		return (UsPayrollSchedule) session.createQuery(query).setString("payrollScheduleUUID", payrollScheduleUUID).setLong("orgLocationId", orgLocationId).uniqueResult();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int deleteExistedNotifyMembers(Long payScheduleId)
+	{
+		int isDeleted = 0;
+		try {
+			if(payScheduleId != null) {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "delete from USPayScheduleNotifyMember notifyMem where notifyMem.payrollScheduleId.id =:payrollScheduleId ";
+				Query qry = session.createQuery(query).setLong("payrollScheduleId", payScheduleId);
+				isDeleted = qry.executeUpdate();	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isDeleted;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId,String scheduleUUID)
+	{
+		UsPayrollSchedule usPayrollSchedule = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id = :orgLocationId and usPay.payFrequency =:payFrequency and usPay.status = 1 and usPay.payrollScheduleUUID != :scheduleUUID";
+			usPayrollSchedule =  (UsPayrollSchedule) session.createQuery(query).setString("payFrequency", payFrequency).setLong("orgLocationId", orgLocationId).setString("scheduleUUID", scheduleUUID).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return usPayrollSchedule;
 	}
 
 }

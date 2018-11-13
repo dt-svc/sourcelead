@@ -247,7 +247,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@SuppressWarnings("static-access")
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	public Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
@@ -1413,7 +1413,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			double payItemSum = 0;
 			// PayItems 
 			if(payAdjustmentDTO.getPayItem() != null && payAdjustmentDTO.getPayItem().size()>0) {
-		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getPayItemAmount() != null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getAmount() != null).mapToDouble(p->p.getAmount().doubleValue()).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
@@ -1481,7 +1481,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Long dtoPayItemId = assPayItemDTO.getPayItemId().longValue();
 			for(PayitemHistory paiHis : payItemHis) {
 				if(dtoPayItemId.longValue() == paiHis.getId().longValue()) {
-					paiHis.setAmount(new BigDecimal(assPayItemDTO.getPayItemAmount()));
+					paiHis.setAmount(assPayItemDTO.getAmount());
 					if(assPayItemDTO.getPayItemCheck() != null) {
 						paiHis.setIsBlocked(PayrollConstant.YES);
 					}else {
@@ -1590,7 +1590,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				payItemHis.setPayitemId(dto.getPayItemId().longValue());
 				payItemHis.setPrePayItemAmt(new BigDecimal(dto.getPrePayItemAmt()));
 				payItemHis.setPrePayItemName(dto.getPrePayItemName());
-				payItemHis.setPayItemAmt(new BigDecimal(dto.getPayItemAmount()));
+				payItemHis.setPayItemAmt(dto.getAmount());
 				payItemHis.setPayItemName(dto.getPrePayItemName());
 				payItemHis.setPayAdjustmentHistory(payAdjHistory);
 				if(dto.getPayItemCheck() != null) {

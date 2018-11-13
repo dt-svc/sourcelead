@@ -50,8 +50,29 @@ public class TaskDTO implements Serializable{
     
     private String vendorTaskDateStr;
     
+    //Email fields
+    private Long taskStatusId;
     
-
+    private String taskId;
+    
+    private Long userId;
+    
+    private Long editOwnerId;
+    
+    private String assignValue;
+    
+    private Long taskpriorityId;
+    
+    private Long taskSeverityId;
+    
+    private String editDueDate;
+    
+    private String projectClientUUID;
+    
+    private Long candidateId;
+    
+    private String estimatedTime;
+    
 	public Long getId() {
 		return id;
 	}
@@ -210,5 +231,93 @@ public class TaskDTO implements Serializable{
 
 	public void setVendorTaskDateStr(String vendorTaskDateStr) {
 		this.vendorTaskDateStr = vendorTaskDateStr;
+	}
+
+	public Long getTaskStatusId() {
+		return taskStatusId;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public Long getEditOwnerId() {
+		return editOwnerId;
+	}
+
+	public String getAssignValue() {
+		return assignValue;
+	}
+
+	public Long getTaskpriorityId() {
+		return taskpriorityId;
+	}
+
+	public Long getTaskSeverityId() {
+		return taskSeverityId;
+	}
+
+	public String getEditDueDate() {
+		return editDueDate;
+	}
+
+	public void setTaskStatusId(Long taskStatusId) {
+		this.taskStatusId = taskStatusId;
+	}
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setEditOwnerId(Long editOwnerId) {
+		this.editOwnerId = editOwnerId;
+	}
+
+	public void setAssignValue(String assignValue) {
+		this.assignValue = assignValue;
+	}
+
+	public void setTaskpriorityId(Long taskpriorityId) {
+		this.taskpriorityId = taskpriorityId;
+	}
+
+	public void setTaskSeverityId(Long taskSeverityId) {
+		this.taskSeverityId = taskSeverityId;
+	}
+
+	public void setEditDueDate(String editDueDate) {
+		this.editDueDate = editDueDate;
+	}
+
+	public String getProjectClientUUID() {
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getEstimatedTime() {
+		return estimatedTime;
+	}
+
+	public void setEstimatedTime(String estimatedTime) {
+		this.estimatedTime = estimatedTime;
 	}
 }

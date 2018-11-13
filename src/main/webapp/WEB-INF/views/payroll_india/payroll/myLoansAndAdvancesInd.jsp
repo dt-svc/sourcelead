@@ -1,11 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-		
-		<div class="tablelist-wrap">
+ 
+<div class="tablelist-wrap">
 			<div class="col-md-12">
 				<ul class="list-unstyled mt row">
-					<li class="col-md-3" title="Outstanding" onclick="getMyLoansAdv('Outstanding');">
+					<li class="col-md-3" title="Outstanding" onclick="getMyLoansAdvList('Outstanding');">
 						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Outstanding' ? 'currentActive' : ''}" id="outstandingWidget">
 							<h5 class="margin-top0">Outstanding</h5>
 							<p class="text-muted mb0">
@@ -13,7 +13,7 @@
 							</p>
 						</div>
 					</li>
-					<li class="col-md-3" title="Completed" onclick="getMyLoansAdv('Completed');">
+					<li class="col-md-3" title="Completed" onclick="getMyLoansAdvList('Completed');">
 						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Completed' ? 'currentActive' : ''}" id="completedWidget">
 							<h5 class="margin-top0">Completed</h5>
 							<p class="text-muted mb0">
@@ -21,7 +21,7 @@
 							</p>
 						</div>
 					</li>
-					<li class="col-md-3" title="Request" onclick="getMyLoansAdv('Requested');">
+					<li class="col-md-3" title="Request" onclick="getMyLoansAdvList('Requested');">
 						<div class="cardModel-widget text-center cursorPointer ${loanStatus == 'Requested' ? 'currentActive' : ''}" id="requestWidget">
 							<h5 class="margin-top0">Requested</h5>
 							<p class="text-muted mb0">
@@ -35,8 +35,8 @@
 			</div>
 			<div class="clearfix"></div>
 			
-			<div class="clearfix project_tabs_inn_table overflow_Auto">
-				<table width="100%">
+			<div class="clearfix project_tabs_inn_table overflow_Auto dataFilterNew" id="myLoansAdvListDivId">
+				<%-- <table width="100%">
 					<thead>
 						<tr>
 						  <th>Name</th>
@@ -70,11 +70,11 @@
 					
 					<tbody>
 						<c:if test="${loanAdvListSize > 0}">
-						 <c:forEach var="loanAdv" items="${loanAdvList}">
+						 <c:forEach var="loanAdv" items="${loanAdvHistoryList}">
 							 <tr>
-							   <td><div class="tblminwidth-50" title="${loanAdv.payrollLoanAndAdvanceId.name}">${loanAdv.payrollLoanAndAdvanceId.name}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.loanAdvanceType}">${loanAdv.loanAdvanceType}</div></td>
-							   <td><div class="tblminwidth-50" title="${loanAdv.amount}"><span class="paddingLeft">&#8377; ${loanAdv.amount}</span></div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.associateLoanAndAdvances.payrollLoanAndAdvanceId.name}">${loanAdv.associateLoanAndAdvances.payrollLoanAndAdvanceId.name}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.associateLoanAndAdvances.loanAdvanceType}">${loanAdv.associateLoanAndAdvances.loanAdvanceType}</div></td>
+							   <td><div class="tblminwidth-50" title="${loanAdv.associateLoanAndAdvances.amount}"><span class="paddingLeft">&#8377; ${loanAdv.associateLoanAndAdvances.amount}</span></div></td>
 							   <c:if test="${loanStatus == 'Outstanding'}">
 								   <td><div class="tblminwidth-50" title="">--</div></td>
 								   <td><div class="tblminwidth-30" title="">--</div></td>
@@ -84,7 +84,7 @@
 			                  		<td><div class="tblminwidth-50" title="">--</div></td>
 			                   </c:if>
 			                   <c:if test="${loanStatus == 'Outstanding' || loanStatus == 'Completed'}">
-			                  		<td><div class="tblminwidth-50" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
+			                  		<td><div class="tblminwidth-50" title="${loanAdv.associateLoanAndAdvances.noOfSchedules}">${loanAdv.associateLoanAndAdvances.noOfSchedules}</div></td>
 			                   </c:if>
 							   <c:if test="${loanStatus == 'Outstanding'}">
 			                  		<td><div class="tblminwidth-50" title="">--</div></td>
@@ -102,105 +102,20 @@
 						 </c:forEach>
 						</c:if>
 					</tbody>
-				</table>
-				<c:if test="${loanAdvListSize == 0}">
+				</table> --%>
+				<%-- <c:if test="${loanAdvListSize == 0}">
 					 <div class='row'> 
 						 <div class='col-lg-12'> 
 							 <div class='dataTables_empty'>
 							 </div>
 						 </div>
 					 </div>
-				</c:if>
+				</c:if> --%>
 			</div>
-
-			<!-- <div class="loan_and_advance_table project_tabs_inn_table clearfix" id="outStadingTable">
-				<table id="outstandingList">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Total Amount</th>
-							<th>Paid Amount</th>
-							<th>Due Amount</th>
-							<th>No. of Schedule</th>
-							<th>Next Schedule</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><div class="tbldata-dotdot-vsm">Car</div></td>
-							<td><div class="tblminwidth-50">Loan</div></td>
-							<td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-							<td><div class="tblminwidth-50 clearfix">3,000,000</div></td>
-							<td><div class="tblminwidth-50 clearfix">2,000,000</div></td>
-							<td><div class="tblminwidth-50 clearfix">10</div></td>
-							<td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-							<td>
-								<div class="tblminwidth-30 text-center">
-									<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div> -->
-			<!-- <div class="loan_and_advance_table project_tabs_inn_table clearfix" id="completedTable" style="display: none">
-				<table id="completedList">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Total Amount</th>
-							<th>No. of Schedule</th>
-							<th>Last Paid On</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><div class="tbldata-dotdot-vsm">Personal</div></td>
-							<td><div class="tblminwidth-50">Loan</div></td>
-							<td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-							<td><div class="tblminwidth-50 clearfix">5</div></td>
-							<td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-							<td>
-								<div class="tblminwidth-30 text-center">
-									<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="loan_and_advance_table project_tabs_inn_table clearfix" id="requestTable" style="display: none">
-				<table id="requestedList">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Type</th>
-							<th>Total Amount</th>
-							<th>Requested To</th>
-							<th>Requested On</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><div class="tbldata-dotdot-vsm">Gold</div></td>
-							<td><div class="tblminwidth-50">Loan</div></td>
-							<td><div class="tblminwidth-50 clearfix">5,000,000</div></td>
-							<td><div class="tblminwidth-50 clearfix">Users</div></td>
-							<td><div class="tblminwidth-50 clearfix">11/08/2018</div></td>
-							<td>
-								<div class="tblminwidth-30 text-center text-danger">Pending</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div> -->
 		</div>
-
+		
+		
+		
 <div class="sideMask"></div>
 <div class="modal requestPop">
 	<div class="modal-dialog">
@@ -267,3 +182,101 @@
 		</div>
 	</div>
 </div>
+		
+<script>
+function getMyLoansAdvList(loanStatus){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/getMyLoansAdvList?${_csrf.parameterName}=${_csrf.token}&loanStatus="+loanStatus,
+		success : function(json) {
+			var result = "";
+			result = result +'<table width="100%" id="myLoansAdvPagination">';
+			result = result +'<thead>';
+			result = result +'<tr>';
+			result = result +'<th>Name</th>';
+			result = result +'<th>Type</th> '; 
+			result = result +'<th>Total Amount</th>';
+			 if(loanStatus === "Outstanding"){
+			    result = result +'<th>Paid Amount</th>';
+			    result = result +'<th>Due Amount</th>';
+		    }	         
+		    if(loanStatus === "Requested"){
+			    result = result +'<th>Requested To</th>';
+			    result = result +'<th>Requested On</th>';
+		    } 
+		    if(loanStatus === "Outstanding" || loanStatus === "Completed"){
+				result = result +'<th>No. of Schedules</th>';
+		    } 
+		     if(loanStatus === "Outstanding"){
+				result = result +'<th>Next Schedule</th>';
+		    } 
+		    if(loanStatus === "Completed"){
+				result = result +'<th>Last Paid On</th>';
+		    } 
+		     if(loanStatus === "Outstanding" || loanStatus === "Completed"){
+				result = result +'<th>Action</th>';
+		    } 
+		     if(loanStatus === "Requested"){
+				result = result +'<th>Status</th>';
+		    }        
+			result = result +'</tr>';
+			result = result +'</thead>';
+			result = result +'<tbody>';
+			for (var i=0; i<json.length; i++){	
+				var report = json[i];
+					result = result +'	<tr>';
+					result = result +'	   <td><div class="tblminwidth-50" title="'+report.name+'">'+report.name+'</div></td>';
+					result = result +'	   <td><div class="tblminwidth-50" title="'+report.type+'">'+report.type+'</div></td>';
+					result = result +'	   <td><div class="tblminwidth-50" title="'+report.totalAmount+'"><span class="paddingLeft">&#8377; '+report.totalAmount+'</span></div></td>';
+					if(loanStatus === "Outstanding"){ 
+						result = result +'		   <td><div class="tblminwidth-50" title="">--</div></td>';
+						result = result +'		   <td><div class="tblminwidth-30" title="">--</div></td>';
+					}
+					if(loanStatus === "Requested"){
+						result = result +'   		<td><div class="tblminwidth-50" title="">--</div></td>';
+						result = result +'   		<td><div class="tblminwidth-50" title="">--</div></td>';
+					}
+					if(loanStatus === "Outstanding" || loanStatus === "Completed"){
+						result = result +'   		<td><div class="tblminwidth-50" title="${loanAdv.associateLoanAndAdvances.noOfSchedules}">${loanAdv.associateLoanAndAdvances.noOfSchedules}</div></td>';
+					}
+					if(loanStatus === "Outstanding"){ 
+						result = result +'   		<td><div class="tblminwidth-50" title="">--</div></td>';
+					}
+					if(loanStatus === "Completed"){ 
+						result = result +'   		<td><div class="tblminwidth-50" title="">--</div></td>';
+					}
+					if(loanStatus === "Outstanding" || loanStatus === "Completed"){ 
+						result = result +'   		<td><div class="tblminwidth-50"><a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a></div></td>';
+					}
+					if(loanStatus === "Requested"){ 
+						result = result +'   		<td><div class="tblminwidth-30 text-center text-danger">Pending</div></td>';
+					}
+					result = result +'	 </tr>';
+			}		
+			result = result +'</tbody>';
+			result = result +'</table>'; 
+			$("#myLoansAdvListDivId").empty();
+			$("#myLoansAdvListDivId").append(result);
+			myLoansAdvPagenation();
+		}
+	});
+}
+ 
+</script>
+
+ <script>
+function myLoansAdvPagenation(){  
+    $('#myLoansAdvPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>

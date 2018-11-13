@@ -59,19 +59,18 @@
 							<h4 class="col-md-10">Provident Fund</h4>
 							<div class="col-md-5">
 								<label class="clearfix">Ceil Value</label>
+								
 								<div class="clearfix">
-									<input type="number" title="Ceil Value" data-live-search="true"
-										id="ceilvaluepf" field-name="CeilValue"
-										data-validation="required" name="ceilvaluepf"
-										class="form-control" name="Website"
-										value="${centralTax.ceilvaluepf}" placeholder="Enter">
-								</div>
+							<input type="number" class="form-control" id="ceilvaluepf"
+								name="ceilvaluepf" field-name="CeilValue" data-validation="validate_length length1-10 "
+								data-validation-optional="true" value="${centralTax.ceilvaluepf}"placeholder="Enter">
+						</div>
 							</div>
 							<div class="col-md-5">
 								<label class="clearfix">No. of Employees</label>
 								<div class="clearfix">
 									<input type="number" title="no.of employees" id="noofemployees"
-										name="noofemployees" class="form-control" name="Website"
+										name="noofemployees" class="form-control" name="Website" data-validation="validate_length length1-10 "
 										value="${centralTax.noofemployees}" placeholder="Enter">
 								</div>
 							</div>
@@ -79,16 +78,17 @@
 								<label class="clearfix">Employee</label>
 								<div class="clearfix">
 									<input type="number" id="employeepf" name="employeepf"
-										class="form-control" name="Website"
-										value="${centralTax.employeepf}" placeholder="Enter">
+										class="form-control" name="Website" data-validation="validate_length length1-3 "
+										value="${centralTax.employeepf}" placeholder="Enter %">
 								</div>
 							</div>
 							<div class="col-md-5">
 								<label class="clearfix">Employer</label>
 								<div class="clearfix">
-									<input type="number" id="employerpf" name="employerpf"
+						
+									<input type="number" id="employerpf" name="employerpf" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
-										value="${centralTax.employerpf}" placeholder="Enter">
+										value="${centralTax.employerpf}" placeholder="Enter %">
 								</div>
 							</div>
 							<div class="clearfix"></div>
@@ -101,7 +101,7 @@
 								<div class="clearfix">
 									<input type="number" title="ESI Ceil Value"
 										data-live-search="true" id="ceilvalueesi"
-										field-name="ESI CeilValue" data-validation="required"
+										field-name="ESI CeilValue" data-validation="validate_length length1-10 "
 										name="ceilvalueEsi" class="form-control" name="Website"
 										value="${centralTax.ceilvalueEsi}" placeholder="Enter">
 								</div>
@@ -109,7 +109,7 @@
 							<div class="col-md-5">
 								<label class="clearfix">Employee</label>
 								<div class="clearfix">
-									<input type="number"  id="employeeesi" name="employeeEsi"
+									<input type="number"  id="employeeesi" name="employeeEsi" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
 										value="${centralTax.employeeEsi}" placeholder="Enter">
 								</div>
@@ -117,7 +117,7 @@
 							<div class="col-md-5">
 								<label class="clearfix">Employer</label>
 								<div class="clearfix">
-									<input type="number" id="employeresi" name="employerEsi"
+									<input type="number" id="employeresi" name="employerEsi" data-validation="validate_length length1-3 "
 										class="form-control" name="Website"
 										value="${centralTax.employerEsi}" placeholder="Enter">
 								</div>
@@ -236,7 +236,7 @@
 						<div class="pull-right">
 							<input value="Save" id="saveCentralTax"
 								class="btn btn-success btnSuccess" type="button"> <input
-								value="Cancel" class="btn btn-default ml10" type="button">
+								value="Cancel" class="btn btn-default ml10" type="button" onclick = "cancel();">
 						</div>
 					</div>
 				</div>
@@ -246,3 +246,9 @@
 	</div>
 </section>
 
+<script>
+function cancel(){
+	window.location.href =  sourceleadUrl+"/centralTax/list";
+}
+
+</script>

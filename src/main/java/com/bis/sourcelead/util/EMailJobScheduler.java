@@ -1,6 +1,7 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
@@ -92,11 +95,27 @@ import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
+import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollDTO;
+import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
+import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
+import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayrollScheduleService;
+import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -128,6 +147,7 @@ import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.docusign.esign.api.AuthenticationApi;
@@ -320,6 +340,28 @@ public class EMailJobScheduler {
 	@Autowired
 	private ImmigrationTemplateService immigrationTemplateService;
 	
+	@Autowired
+	private ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	private UserGroupService userGroupService;
+	
+	@Autowired
+	private PayrollScheduleService payrollScheduleService;
+	
+	@Autowired
+	private PayrollUtil payrollUtil;
+	
+	@Autowired
+	private AssociateSalaryService associateSalaryService;
+	
+	@Autowired
+	private GenerateUSPayrollService generateUSPayrollService;
+	
+	@Autowired
+	private USPaysheetService uSPaysheetService;
+	
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -441,15 +483,16 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-   // @Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
 		logger.info("******************  updating All LCA  Deatails Started..! **********");
 		//System.out.println("******************  updating All LCA  Deatails Started..! **********");
 		try {
-			String fromUser = "donotreply@sourcelead.com";
+			String fromUser = "";
+			User configUser=null;
 			Date currentDate = new Date();
 			Date daysFilter = null;
 			Calendar cal = Calendar.getInstance();
@@ -509,8 +552,8 @@ public class EMailJobScheduler {
 					User toUser = (User) entry.getKey();
 					List<Lca> mapLcaList = entry.getValue();
 					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // getting org loaction id from the first
-																			// object.
-					sendEmailReminderToLcaManagerExpired(toUser, fromUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
+					User fromNotificationUser =userService.getUserByEmail(fromUser);														// object.
+					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
 			}
 			
@@ -522,13 +565,39 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	private void sendEmailReminderToLcaManagerExpired(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
+	private void sendEmailReminderToLcaManagerExpired(User toUserObj, User fromUser, List<Lca> lcaList, OrgLocations ol, String currLcaStatus) throws Exception {
 		 EmailMessage emailMessage = new EmailMessage();
 		
 		 emailMessage.setFirstName(toUserObj.getFirstName());
 		 emailMessage.setLastName(toUserObj.getLastName());
 		 emailMessage.setToEmail(toUserObj.getEmail());
-		 emailMessage.setFromEmail(fromEmail);
+		//configured Email
+			
+			String configuredFromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(ol.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int i=0; i<jobIds.length; i++) {
+								if(Long.valueOf(jobIds[i]) == 39l ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail != null){
+					 configuredFromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(configuredFromEmail)){
+				 emailMessage.setFromEmail(configuredFromEmail);
+			 }else {
+				 emailMessage.setFromEmail(fromUser.toString());
+			 }
 		
 	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 		 StringBuilder sb = new StringBuilder();
@@ -610,7 +679,17 @@ public class EMailJobScheduler {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		
+		 
+		// LCA manager Expired Notification 
+		EmailScenario notificationScenario = null;
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("")
+				.append(sourceleadUrl).append("/immigration").append("/viewLCAList").toString();
+		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
@@ -3766,6 +3845,102 @@ public class EMailJobScheduler {
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
+		}
+	}
+	
+    //	0 0 8 ? * MON-FRI  Every Day at * AM 
+	@Scheduled(cron = "0 0 8 ? * MON-FRI")
+//	@Scheduled(cron = "0 0/5 * 1/1 * ?") Every 5 min for testing purpose
+	public void autoMaticPayrollRunning() throws Exception
+	{
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			ConfigurePayrollApprover configurePayroll = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+			if(configurePayroll != null && "YES".equalsIgnoreCase(configurePayroll.getAutomaticPayroll())) {
+				List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+				for(UserGroup usrGroup : groupList) {
+					UsPayrollSchedule uSPayrollSchedule = payrollScheduleService.findScheduleByFrequency(usrGroup.getPayFrequency(), orgLocation.getId(), "");
+					if(uSPayrollSchedule != null) {
+						List<PayrollScheduleCalenderDTO> scheduleList = payrollUtil.getPayScheduleWeeksByDate(uSPayrollSchedule,orgLocation);
+						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//11-10-2018
+//						Calendar cal = Calendar.getInstance();
+//						cal.set(Calendar.MONTH, 10);
+//						cal.set(Calendar.DATE,10);
+//						cal.set(Calendar.YEAR,2018);
+//						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//cal.getTime();
+						for(PayrollScheduleCalenderDTO scheduleDto : scheduleList) {
+							Date nextPayRunDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), scheduleDto.getPayRunDate());
+							if(nextPayRunDate.equals(currentDate)) {
+								GenerateUSPayrollDTO generateUSPayrollDTO = new GenerateUSPayrollDTO();
+								String dates[] = scheduleDto.getPayPeriod().split(",");
+								Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+								Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+								PaysheetFrequencyDTO paysheetFrequencyDTO = null;
+								
+								generateUSPayrollDTO.setGroupId(usrGroup.getGroupUUID());
+								generateUSPayrollDTO.setPayPeriod(scheduleDto.getPayPeriod());
+								PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+								
+								List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,usrGroup.getId(),"All");
+								
+//								UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
+								
+								if (assSallist != null && assSallist.size() >0) {
+									PaysheetFrequency paySheetFreq = null;
+									if(existedData != null) {
+										 paySheetFreq = new PaysheetFrequency();
+										 paySheetFreq.setId(existedData.getPaySheetFrequencyId());
+									}else {
+										 paySheetFreq = new PaysheetFrequency();
+									}
+									
+									paySheetFreq.setUserGroup(usrGroup);
+									paySheetFreq.setOrgLocation(orgLocation);
+									String[] payPeriod = scheduleDto.getPayPeriod().split(",");
+									Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[0]);
+									paySheetFreq.setFrequencyStartDate(startDate);
+									Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payPeriod[1]);
+									paySheetFreq.setFrequencyEndDate(endDate);
+									paySheetFreq.setPayCheckDate(uSPayrollSchedule.getPayCheckDate());
+									paySheetFreq.setCreatedDate(new Date());
+									paySheetFreq.setUpdatedDate(new Date());
+									paySheetFreq.setCreatedBy(orgLocation.getUser().getId());
+									paySheetFreq.setUpdatedBy(orgLocation.getUser().getId());
+									paySheetFreq.setStatus(1);
+									paySheetFreq.setType(PayrollConstant.PAYROLL);
+									paySheetFreq.setApproverStatus(PayrollConstant.DRAFT);
+									paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+									Set<EmployeePayroll> payrollList = generateUSPayrollService.calculatePayroll(existedData,paySheetFreq, orgLocation.getUser(), orgLocation,assSallist,freqStartDate, freqEndDate,usrGroup);
+									if(payrollList !=null && payrollList.size() > 0) {
+										paySheetFreq.setEmployeepayroll(payrollList);
+										uSPaysheetService.addPaysheetFrequency(paySheetFreq);
+									}
+										/*paysheetFrequencyDTO = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
+										if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
+											List<USPayrollDTO> draftPayroll = null;
+											if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
+												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+														.stream()
+														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+														.collect(Collectors.toList());
+											}else {
+												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
+														.stream()
+														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+														.collect(Collectors.toList());
+											}
+											paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
+											paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
+											paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
+										}*/
+								}
+//								return paysheetFrequencyDTO;
+							}
+						}
+					}	
+					}
+					
+ 			}
 		}
 	}
 	

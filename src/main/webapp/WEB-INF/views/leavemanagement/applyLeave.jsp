@@ -223,7 +223,7 @@ window.onload = function() {
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
 								<input  type="checkbox" checked name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-						<label>&nbsp;&nbsp;Notify to others
+						<label>&nbsp;&nbsp;Notify others
 							&nbsp;&nbsp;
 						</label>
 					</div>
@@ -234,7 +234,7 @@ window.onload = function() {
 	         <div class="form-group" id="notifyToOthersDiv">
 					<div class="ml">
 								<input  type="checkbox" name="notifyToOthers" id="notifyOthersId" value="Y" onclick="getUsersBasedOnHierarchy();">
-						<label>&nbsp;&nbsp;Notify to others
+						<label>&nbsp;&nbsp;Notify others
 							&nbsp;&nbsp;
 						</label>
 					</div>

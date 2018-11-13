@@ -47,6 +47,10 @@
 								<option selected>Salary</option>
 							</select>
 						</div>
+						
+						<div class="col-md-4">
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+						</div>
 						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
 								onclick="runIndPayroll();">Run Payroll</a>
@@ -201,6 +205,7 @@ function editNetpay(){
 	$(".saveNetpay").show();
 }
 function saveNetpay(){
+	calculateGrossSalary();
 	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
 	var x = document.getElementsByClassName("formControl"), i;
 	for (i=0; i<x.length; i++) {
@@ -212,7 +217,51 @@ function saveNetpay(){
 	}
 	$(".editNetpay").show();
 	$(".saveNetpay").hide();
-}employeePayrollList
+	
+	saveAdjustedPayheads();
+}
+
+function saveAdjustedPayheads(){
+	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
+		var formData = getFormData1("associatePayheadAdjust_form");
+		var psfUUID = $('#paySheetFrequencyUUID').val();
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		     processData: false,
+		     contentType:false, 
+			 url : sourceleadUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 success : function(result) {
+				 closeNetPay();
+				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
+			 }
+		});
+	}
+}
+
+function calculateGrossSalary(){
+	var grossTotal = 0.00;
+	$('.earningPayheadTbady #earningPayheadAmount').each(function() {
+		grossTotal += parseFloat($(this).val());
+	});
+	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
+	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
+function calculateNetSalary(){
+	var netTotal = 0.00;
+	$('.deductionPayheadTbady #deductionPayheadAmount').each(function() {
+		netTotal += parseFloat($(this).val());
+	});
+	$('#deductionPayheadAmountTotal').html(netTotal.toFixed(2));
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
 function confirmPayroll() {
 	$(".confirmPayroll, .comMask").fadeIn();
 }
@@ -268,14 +317,32 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
     });
 });
 
-
 $('#reviewTab').click(function(){
 	 $("#reviewTab").addClass("current");
 	 $("#approveTab").removeClass("current");
 	 $("#reviewDiv").show();
 	 $("#approveDiv").remove();
-	 
 });
 </script>
+
+ <div class="modal" style="display: none;" id="bulkimportPOP"></div>
+ <script>
+ function bulkAdjustment(){
+	 $("#bulkimportPOP, .mask").fadeIn();
+	 var feqUUID = $("#paySheetFrequency").val();
+	 $.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+	         success :function(result) {
+	        	 $("#bulkimportPOP").empty();
+	             $("#bulkimportPOP").append(result);
+	         },
+	    });
+ };
+ function bulkAdjustmentClose(){
+	 $("#bulkimportPOP, .mask").fadeOut();
+	 $("#bulkimportPOP").empty();
+ }
+ </script>
   
 <jsp:include page="../../masterFooter.jsp" />
