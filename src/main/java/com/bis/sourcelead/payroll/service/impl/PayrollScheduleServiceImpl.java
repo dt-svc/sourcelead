@@ -29,6 +29,7 @@ import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.PayrollScheduleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class PayrollScheduleServiceImpl implements PayrollScheduleService {
@@ -49,9 +50,19 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 		Response<PayrollScheduleDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(payrollScheduleDTO)) {
-				UsPayrollSchedule usPayrollSchedule = new UsPayrollSchedule();
+				UsPayrollSchedule usPayrollSchedule = null;
+				if(StringUtils.isNotBlank(payrollScheduleDTO.getPayrollScheduleUUID())) {
+					usPayrollSchedule = payrollScheduleDao.getPayScheduleByUUID(payrollScheduleDTO.getPayrollScheduleUUID(), orgLocations.getId());
+				}else {
+					usPayrollSchedule = new UsPayrollSchedule();
+				}
 				usPayrollSchedule.setOrgLocation(orgLocations);
-				usPayrollSchedule.setPayPeriodStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollScheduleDTO.getPayPeriodStartDate()));
+				if(StringUtils.isNotBlank(payrollScheduleDTO.getPayPeriodStartDate())) {
+					usPayrollSchedule.setPayPeriodStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollScheduleDTO.getPayPeriodStartDate()));
+				}
+				if(StringUtils.isNotBlank(payrollScheduleDTO.getNextPayMonth())) {
+					usPayrollSchedule.setNextPayMonth(payrollScheduleDTO.getNextPayMonth());
+				}
 				usPayrollSchedule.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollScheduleDTO.getPayCheckDate()));
 				usPayrollSchedule.setRunPayrollDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollScheduleDTO.getRunPayDate()));
 				usPayrollSchedule.setStatus(1);
@@ -60,6 +71,7 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 				usPayrollSchedule.setPayFrequency(payrollScheduleDTO.getPayFrequency());
 				usPayrollSchedule.setCreatedDate(new Date());
 				usPayrollSchedule.setUpdatedDate(new Date());
+				usPayrollSchedule.setPayrollScheduleUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				Set<USPayScheduleNotifyMember> payScheduleNotifyMember = getPayScheduleNotifyMember(usPayrollSchedule,payrollScheduleDTO,loginUser);
 				usPayrollSchedule.setPayScheduleNotifyMember(payScheduleNotifyMember);
 				UsPayrollSchedule savedUsPayrollSchedule = payrollScheduleDao.savePayrollSchedule(usPayrollSchedule, orgLocations);
@@ -94,6 +106,7 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 		Set<USPayScheduleNotifyMember> set = new HashSet<>();
 		try {
 			if(StringUtils.isNotBlank(payrollScheduleDTO.getNotifyMember())) {
+				int isDeleted = payrollScheduleDao.deleteExistedNotifyMembers(usPayrollSchedule.getId());
 				String[] approverId = payrollScheduleDTO.getNotifyMember().split(",");
 				for(String userId : approverId) {
 					USPayScheduleNotifyMember uSPayScheduleNotifyMember = new USPayScheduleNotifyMember();
@@ -172,14 +185,32 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 				scheduleDTO.setId(schedule.getId());
 				scheduleDTO.setPayFrequency(schedule.getPayFrequency());
 				scheduleDTO.setPayCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, schedule.getPayCheckDate()));
-				scheduleDTO.setPayPeriodStartDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, schedule.getPayPeriodStartDate()));
+				if(schedule.getPayPeriodStartDate() != null) {
+					scheduleDTO.setPayPeriodStartDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, schedule.getPayPeriodStartDate()));
+				}
+				if(StringUtils.isNotBlank(schedule.getNextPayMonth())) {
+					scheduleDTO.setNextPayMonth(schedule.getNextPayMonth());
+				}
 				scheduleDTO.setRunPayDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, schedule.getRunPayrollDate()));
+				scheduleDTO.setPayrollScheduleUUID(schedule.getPayrollScheduleUUID());
 				schedulelist.add(scheduleDTO);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return schedulelist;
+	}
+
+	@Override
+	public UsPayrollSchedule getPayScheduleByUUID(String payrollScheduleUUID,Long orgLocationId)
+	{
+		return payrollScheduleDao.getPayScheduleByUUID(payrollScheduleUUID,orgLocationId);
+	}
+
+	@Override
+	public UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId,String scheduleUUID)
+	{
+		return payrollScheduleDao.findScheduleByFrequency(payFrequency,orgLocationId,scheduleUUID);
 	}
 
 }
