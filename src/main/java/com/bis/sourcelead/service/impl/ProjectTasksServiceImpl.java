@@ -1045,7 +1045,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	   
 	//Project Task createby Email
 	   if(projectTask.getCreatedBy() != null) {
-		   if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
+		   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
 				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
 		   }
 	   }

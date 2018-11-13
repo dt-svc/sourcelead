@@ -55,7 +55,6 @@ public class AssociateLoanAndAdvanceHistory {
 	@Column(name = "DUE_AMOUNT")
 	private Double dueAmount;
 	
-	
 	@Column(name = "SCHEDULE")
 	private Integer schedule;
 	
@@ -104,6 +103,10 @@ public class AssociateLoanAndAdvanceHistory {
 	@Transient
     @JsonProperty
     private Double lastPaindOn;
+	
+	@Transient
+    @JsonProperty
+    private String loanStatus;
 	 
 	public Long getId()
 	{
@@ -311,5 +314,13 @@ public class AssociateLoanAndAdvanceHistory {
 
 	public void setLastPaindOn(Double lastPaindOn) {
 		this.lastPaindOn = lastPaindOn;
+	}
+
+	public String getLoanStatus() {
+		return loanStatus;
+	}
+
+	public void setLoanStatus(String loanStatus) {
+		this.loanStatus = loanStatus;
 	}
 }
