@@ -18,7 +18,7 @@
 	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
 	  </c:if>
 	  </section>
-	  <div class="popUp"></div>
+	  <div id="popUp"></div>
  	<div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
@@ -244,7 +244,7 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-	getCandidateDetailsFromMarketplace();
+	getCandidateDetailsFromMarketcart();
 	updateInvoiceAndCartDetails();
 
 });
@@ -280,17 +280,18 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-//\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\"
-function getCandidateDetailsFromMarketplace(){
+
+
+function getCandidateDetailsFromMarketcart(){
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketplace",
+		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart",
 		success : function(object) {
 			if(object != null){
 			var result ="";
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
-				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart("+object[i].id+")'><i class='fa fa-trash-o'></i></a>";
+				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o'></i></a>";
 				result = result + "<div class='media-left'>";
 				result = result + "<div class='cartImg positionRelative'>";
 				result = result + "<img src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
@@ -356,49 +357,47 @@ function updateInvoiceAndCartDetails(){
 	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 		        	$("#invoiceCartCount").html(object[0]);
-	        		$("#invoiceCartTotal").html(totalPriceInCurrency);
-	        		$("#invoiceTotalAmount").html(totalPriceInCurrency);
+	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+	        		$("#invoiceTotalAmount").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		}}
-	});
-}
+		});
+	}
 
 
-function deleteCandidateFromMarketcartByCandidateId(candidateName, candidateId){
-	 $(".project_inn_mask").remove();
-		var result = "";
-		result = result +" <div class='project_inn_mask'></div>";
-		result = result +" <div id='remove_candidateFromMarketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +" <b>Do you want to remove "+candidateName+" from Market cart!</b>";
-		result = result +" <b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcart("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
-		result = result +" </div>";
-		$("#popUp").empty().append(result);
-		$("#remove_candidateFromMarketCart_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
-}
+function cancelMarketCart(){
+	$("#remove_marketCart_pop, .project_inn_mask").fadeOut();
+	}
+	
+function deleteCandidateFromMarketcart(candidateName, candidateUuid){ 
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"  <b>Do you want to remove "+candidateName+" from Market cart!</b>";
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcartByCandidateUuid(\""+candidateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCart();'></b>";
+	result = result +"	</div>";
+	$("#popUp").empty().append(result);
+	$("#remove_marketCart_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	}
 
-function cancelMarketCartPopup(){
-	$("#remove_candidateFromMarketCart_pop").fadeOut(200);
-	$(".project_inn_mask").fadeOut(200);
-}
-
-function deleteCandidateFromMarketcart(id){
+function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 	$.ajax({
-	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateId?id="+id,
+	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
 		success : function(result){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            
+            	getCandidateDetailsFromMarketcart();
+				updateInvoiceAndCartDetails();
+            	$("#remove_marketCart_pop").fadeOut(200);
+    			$(".project_inn_mask").fadeOut(200);
             }else{
-           	 showError("Operation failed, please try again");
-            }
-			
-			
-		}
+           	 	showError("Operation failed, please try again");
+            }}
 	});
-}
-
+	}
 </script> 
 <script>
 //Window scroll fixed header
