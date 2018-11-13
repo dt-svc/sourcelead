@@ -556,8 +556,8 @@
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
-						<li><a href="${appPath}/usDeductionSummaryReport" >UsDeductionSummaryReport</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" >UsContributionSummaryReport</a></li>
+						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 						</sec:authorize>

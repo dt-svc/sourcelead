@@ -2871,5 +2871,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
 		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
+	
+	@Override
+	public List<Long> getCandidateIdFromMarketCart(User user, String userRole, Long orgLocationId)throws Exception {
+	return candidateDao.getCandidateIdFromMarketCart(user, userRole, orgLocationId);
+	}
+
+	@Override
+	public List<CandidateMarketPlace> getCandidatesFromMarketplace(List<Long> candidateIdFromMarketCart) throws Exception {
+		return candidateDao.getCandidatesFromMarketplace(candidateIdFromMarketCart);
+	}
 
 }

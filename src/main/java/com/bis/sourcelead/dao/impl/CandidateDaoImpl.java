@@ -2479,4 +2479,41 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 			return null;
 		}}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getCandidateIdFromMarketCart(User user, String userRole, Long orgLocationId) {
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = ""; 
+		String createdByQuery =" ";
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			createdByQuery = " and marketCart.createdBy=:createdByuser";
+		}
+		query = "select candidateId from CandidateMarketCart marketCart where marketCart.targetOrgLocationId =:orgLocationId";
+		Query queryObj = session.createQuery(query + createdByQuery).setLong("orgLocationId", orgLocationId);
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			queryObj.setLong("createdByuser", user.getId());
+		}
+		List<Long> candidateIdFromMarketCart = queryObj.list();
+		return candidateIdFromMarketCart;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlace> getCandidatesFromMarketplace(List<Long> candidateIdFromMarketCart) {
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateMarketPlace marketplace where marketplace.candidateId IN (:candidateIdFromMarketCart)";
+		List<CandidateMarketPlace> candidatesFromMarketplace = session.createQuery(query).setParameterList("candidateIdFromMarketCart", candidateIdFromMarketCart).list();
+		return candidatesFromMarketplace;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

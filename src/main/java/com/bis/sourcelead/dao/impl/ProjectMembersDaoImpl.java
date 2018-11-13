@@ -1699,7 +1699,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
 			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
-			employmentTypeQuery = " and can.designationType IN (:empType)";
+			employmentTypeQuery = " and can.designationType IN (:empType) and can.orgLocationId.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'";
 		}
 	
 		String projectQuery = "";
