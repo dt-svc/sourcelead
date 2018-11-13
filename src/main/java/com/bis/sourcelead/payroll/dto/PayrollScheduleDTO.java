@@ -1,6 +1,9 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.util.List;
+
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.dto.UserDTO;
 
 public class PayrollScheduleDTO {
 	
@@ -11,7 +14,6 @@ public class PayrollScheduleDTO {
 	@Required(desc = "Pay Frequency")
 	private String payFrequency;
 	
-	@Required(desc = "Pay PeriodStartDate")
 	private String payPeriodStartDate;
 	
 	@Required(desc = "Pay CheckDate")
@@ -25,6 +27,14 @@ public class PayrollScheduleDTO {
 	private String notifyMember;
 	
 	private int status;
+	
+	private String payrollScheduleUUID;
+	
+	private  List<Long> notifiMemIds;
+	
+	private List<UserDTO> approvers;
+	
+	private List<String> month;
 	
 	public String getOrgLocationId() {
 		return orgLocationId;
@@ -114,6 +124,46 @@ public class PayrollScheduleDTO {
 	public void setRunPayDate(String runPayDate)
 	{
 		this.runPayDate = runPayDate;
+	}
+
+	public String getPayrollScheduleUUID()
+	{
+		return payrollScheduleUUID;
+	}
+
+	public void setPayrollScheduleUUID(String payrollScheduleUUID)
+	{
+		this.payrollScheduleUUID = payrollScheduleUUID;
+	}
+
+	public List<Long> getNotifiMemIds()
+	{
+		return notifiMemIds;
+	}
+
+	public void setNotifiMemIds(List<Long> notifiMemIds)
+	{
+		this.notifiMemIds = notifiMemIds;
+	}
+
+	public List<UserDTO> getApprovers()
+	{
+		return approvers;
+	}
+
+	public void setApprovers(List<UserDTO> approvers)
+	{
+		this.approvers = approvers;
+	}
+
+	public List<String> getMonth()
+	{
+		return month;
+	}
+
+	public void setMonth(List<String> month)
+	{
+		this.month = month;
 	}
 	
 	
