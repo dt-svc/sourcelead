@@ -315,6 +315,7 @@
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 				<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+				<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 				</sec:authorize>
 				</ul>
 			</div>
@@ -563,6 +564,9 @@
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 						</sec:authorize>
 	                </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>

@@ -25,6 +25,8 @@ public class PayPeriodDTO {
 	
 	private String convertedFreqEndDate;
 	
+	private BigInteger paySheetFreqId;
+	
 	public BigInteger getGroupId()
 	{
 		return groupId;
@@ -101,6 +103,11 @@ public class PayPeriodDTO {
 	public void setConvertedFreqEndDate(String convertedFreqEndDate) {
 		this.convertedFreqEndDate = convertedFreqEndDate;
 	}
-	
+	public BigInteger getPaySheetFreqId() {
+		return paySheetFreqId;
+	}
+	public void setPaySheetFreqId(BigInteger paySheetFreqId) {
+		this.paySheetFreqId = paySheetFreqId;
+	}
 	
 }

@@ -1536,11 +1536,16 @@ public class PayrollReportPdfUtil {
 	return file;
 	}
 
-	public File getDeductionSummaryReportPdf(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+	public File getDeductionSummaryReportPdf(List<DeductionSummaryDTO> data, OrgLocations orgLocation, String reportType) throws Exception {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    if(Constants.DEDUCTION.equalsIgnoreCase(reportType)) {
+		    	file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    }else {
+		    	file = File.createTempFile(fileSB.append("contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    }
+			
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
@@ -1594,11 +1599,16 @@ public class PayrollReportPdfUtil {
 		return dataSource;
 	}
 
-	public File getDeductionSummaryReportXls(List<DeductionSummaryDTO> data, OrgLocations orgLocation) throws Exception {
+	public File getDeductionSummaryReportXls(List<DeductionSummaryDTO> data, OrgLocations orgLocation, String reportType) throws Exception {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
-			file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+		    
+		    if(Constants.DEDUCTION.equalsIgnoreCase(reportType)) {
+			     file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+		    }else {
+		    	 file = File.createTempFile(fileSB.append("contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".xls");
+		    }
 			file.setReadable(true);
 			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
                     .setIgnorePageMargins(true)
