@@ -231,6 +231,7 @@ function prepareTasksList(url){
 	result = result + '<th>Priority</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
+	result = result + '<th>Created Date</th>'; 
 	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>';
@@ -258,6 +259,7 @@ function projectTaskPaginations(url){
             { "data": "taskType"},
             { "data": "priority"},
             { "data": "assignedTo" },
+            { "data": "createdDate" },
             { "data": "projectTaskStatus" },
             { "data": "projectTaskActin" }
         ],
@@ -267,7 +269,7 @@ function projectTaskPaginations(url){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot_80">'+opt.id+ '</div></td>';
+            	  result = result	+ '<td><div class="tblminwidth-30">'+opt.id+ '</div></td>';
 	              return result;
                 }
 	          }, {
@@ -331,7 +333,18 @@ function projectTaskPaginations(url){
 						taskStaus = "--"
 					}
                 	var result = "";
-                	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+                	result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+    	              return result;
+                }
+          },
+            {
+                "targets": colIndex++,
+                "data": "createdDate",
+                "sortable": false,
+                "render": function ( data, type, opt, meta ) {
+                 
+                	var result = "";
+                	result = result	+ '<td><div class="tblminwidth-30" title="'+opt.createdDateStr+'">'+opt.createdDateStr+'</div></td>';
     	              return result;
                 }
           },{

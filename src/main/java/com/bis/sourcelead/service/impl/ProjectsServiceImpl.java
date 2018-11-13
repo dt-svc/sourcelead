@@ -2711,10 +2711,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 }else {
 	       		pm.setRateHistroyList(Constants.NO);
 	       	 }
-	       	 
-	       	 System.out.println("member Id>>"+pm.getId());
-	       	 System.out.println("member Id>>"+pm.getEmpName());
-
 			 projectMembersArrList.add(pm);
 		 }
 		}
