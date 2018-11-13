@@ -2403,13 +2403,17 @@ public class CandidateDaoImpl implements CandidateDao {
 				searchCandiIdsLong.add(Long.valueOf(s));
 			}
 		}
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
-		System.out.println(listQuery+query1+query2);
-		Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
-		if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-			queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+		if(searchCandidateIds.length == 0 && orgId != 0 && candidateLocation.equals("") && searchValue.equals("")){
+			queryList = new ArrayList<>();
+		}else{
+			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+				System.out.println(listQuery+query1+query2);
+			Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
+			if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
+				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+			}
+			queryList = queryObject.list();
 		}
-		queryList = queryObject.list();
 		return queryList;
 	}
 	

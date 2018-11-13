@@ -1120,6 +1120,8 @@ function resetCandidateFilter(){
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
+	$("#globalMarketSearh").val("");
+	$("#candidateLocation").val("");
 	candidateList('gMarketPlace');
 }
 </script>
