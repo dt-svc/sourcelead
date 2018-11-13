@@ -334,7 +334,7 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 					<li><a href="${appPath}/petitionReport">Petition Report</a></li>
-					<%-- <li><a href="${appPath}/petitionAttorneyReport">Petition Attorney Report</a></li> --%>
+					<li><a href="${appPath}/petitionAttorneyReport">Petition Attorney Report</a></li>
 					<li><a href="${appPath}/lcaReport">LCA Report</a></li>
 				</ul>
 			</div>
@@ -342,7 +342,7 @@
                   <a href="${appPath}/petitionReport" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
-                  </div>  
+                  </div> 
                   
       </div>
       
