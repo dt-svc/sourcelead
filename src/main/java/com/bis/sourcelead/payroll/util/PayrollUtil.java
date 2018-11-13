@@ -945,6 +945,8 @@ public class PayrollUtil {
 					
 					calenderDTO.setPayPeriod(sds.format(cal.getTime()).toUpperCase());
 					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
+					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
+					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
 					payFrequency.add(calenderDTO);
@@ -975,6 +977,7 @@ public class PayrollUtil {
 						dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
 						weekdates.add(dates);
 						c.add(Calendar.DAY_OF_MONTH, 1);
+						dateInt = c.get(Calendar.DATE);
 					}
 				}	
 				int checkDateDiff = commonUtil.diffBtwTowDates(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), weekdates.get(0).get(1)),paySchedule.getPayCheckDate());
@@ -995,9 +998,17 @@ public class PayrollUtil {
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
 					
 					calenderDTO.setPayPeriod(sb.toString());
+//					System.out.println("*****************  "+sb.toString());
 					calenderDTO.setPayFrequency(sb.toString());
+					Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(0));
+					Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1));
+					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(sDate));
+					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(eDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
+					
+					String dateFormat = getDateChangedFormat(sDate,eDate);
+					calenderDTO.setDateFormat(dateFormat);
 					payFrequency.add(calenderDTO);
 				}
 			}
@@ -1007,6 +1018,28 @@ public class PayrollUtil {
 			e.printStackTrace();
 		}
 		return payFrequency;
+	}
+
+	/**
+	 * Changing Date format like Decemeber : 9-15 ,2018
+	 * @param sDate
+	 * @param eDate
+	 * @return String
+	 */
+	private String getDateChangedFormat(Date sDate, Date eDate)
+	{
+		StringBuilder sb = new StringBuilder("");
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(sDate);
+			String startDate = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
+			cal.setTime(eDate);
+			String endDate = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
+			sb.append(startDate).append(" / ").append(endDate);	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 
 	/**
