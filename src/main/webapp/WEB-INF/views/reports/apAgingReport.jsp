@@ -26,7 +26,7 @@ $(document).ready(function(){
           <a href='${appPath}/apAgingReport' title="List View" id="LView" class="btn btn-default"><i class="fa fa-list"></i></a>
      </div>
       
-      <div class="col-md-1 col-md-offset-8">
+      <!-- <div class="col-md-1 col-md-offset-8">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
           <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -35,7 +35,7 @@ $(document).ready(function(){
            
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="clearfix"></div>
       <div class="vendor_wrap mt">
@@ -364,41 +364,41 @@ function apaging(url){
   <!-- Bill Started -->
   <script>
 function customSearch(){
-	 var fromDate = $("#fromDate").val();
-	 var toDate = $("#toDate").val();
-	   $("#apagingByVendor").empty();	
-	   $("#dataTableSearch").hide();
-	   $("#dataTableBillSearch").show();
-	   $("#apagingBillTotal").show();
-	   $("#apagingTotal").hide();
-	     var apagingType = 'Payables';
-		var sourceleadUrl ='${sourceleadUrl}';
-		var filterType = $("#custom-dates").val(); 
-		var searchValue = $("#dataTableBillSearch").val();
-		var filterDateType = $("#filterDateType").val();
-		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType+"&fromDate="+fromDate+"&toDate="+toDate;
-			prepareApagingBillList(url);
+	vendorapagingBill();
 }
 </script>
   
   <script>
 function vendorapagingBill(){
-	   $("#apagingByVendor").empty();	
-	   $("#dataTableSearch").hide();
-	   $("#dataTableBillSearch").show();
-	   $("#apagingBillTotal").show();
-	   $("#apagingTotal").hide();
-	    var apagingType = 'Payables';
-		var sourceleadUrl ='${sourceleadUrl}';
-		var filterType = $("#custom-dates").val(); 
-		var searchValue = $("#dataTableBillSearch").val();
-		var filterDateType = $("#filterDateType").val();
-		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType;
-		if(filterType != 'custom'){
+	var filterType = $("#custom-dates").val(); 
+	var fromDate = "";
+	var toDate = "";
+	if(filterType === 'custom'){
+		fromDate = $("#fromDate").val();
+		toDate = $("#toDate").val();
+	}else{
+		$("#fromDate").val("");
+		$("#toDate").val("");
+	}
+ 	var toDate = $("#toDate").val();
+	$("#apagingByVendor").empty();	
+	$("#dataTableSearch").hide();
+	$("#dataTableBillSearch").show();
+	$("#apagingBillTotal").show();
+	$("#apagingTotal").hide();
+  	var apagingType = 'Payables';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var searchValue = $("#dataTableBillSearch").val();
+	var filterDateType = $("#filterDateType").val();
+	searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl+"/apagingBill?searchValue="+searchValue+"&apagingType="+apagingType+"&filterType="+filterType+"&fromDate="+fromDate+"&toDate="+toDate;
+	if(filterType != 'custom'){
+		prepareApagingBillList(url);
+	}else{
+		if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
 			prepareApagingBillList(url);
 		}
+	}
 		
 }
 </script>
@@ -454,15 +454,23 @@ function apagingBill(url){
 	    	  	"data": "referId",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + ' <td><div class="tblminwidth-75">'+opt.referId+'</div></td>';
-		             return result;
+	    	  		if(opt.referId != null && opt.referId != '' && opt.referId != 'undefined'){
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.referId+'</div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div class="tblminwidth-75">---</div></td>';
+	    	  		}
+		            return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
               "data": "orgName",
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+            	  if(opt.orgName != null && opt.orgName != '' && opt.orgName != 'undefined'){
+            		  result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+            	  }else{
+            		  result = result + ' <td><div class="tblminwidth-75">---</div></td>';
+            	  }
 	              return result;
               		
               }
@@ -470,13 +478,25 @@ function apagingBill(url){
             "targets": colIndex++,
             "data": "billDate",
             "render": function ( data, type, opt, meta ) {
-            	return  '<td><div class="tblminwidth-75">'+opt.billDate+'</div></td>';
+       			  var result = "";
+	          	  if(opt.billDate != null && opt.billDate != '' && opt.billDate != 'undefined'){
+	          		  result = result + ' <td><div class="tblminwidth-75">'+opt.billDate+'</div></td>';
+	          	  }else{
+	          		  result = result + ' <td><div class="tblminwidth-75">---</div></td>';
+	          	  }
+	              return result;
             }
           }, {
               "targets": colIndex++,
               "data": "dueDate",
               "render": function ( data, type, opt, meta ) {
-            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.dueDate+'">'+opt.dueDate+'</div></td>';
+            	  var result = "";
+	          	  if(opt.dueDate != null && opt.dueDate != '' && opt.dueDate != 'undefined'){
+	          		  result = result + ' <td><div class="tbldata-dotdot-vsm">'+opt.dueDate+'</div></td>';
+	          	  }else{
+	          		  result = result + ' <td><div class="tbldata-dotdot-vsm">---</div></td>';
+	          	  }
+	              return result;
               }
             }, {
                 "targets": colIndex++,
