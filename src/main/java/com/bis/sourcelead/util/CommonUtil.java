@@ -1748,7 +1748,7 @@ public class CommonUtil {
 			return bytesArray;
 		}
 		/**
-		 * Get Number of days Between two given dates
+		 * Get Number of days Between two given dates including boundaries
 		 * @param fromDate
 		 * @param toDate
 		 * @return
@@ -1760,6 +1760,18 @@ public class CommonUtil {
 				return nuberOfDays+1;
 			}
 		
+		/**
+		 * Get Number of days Between two given dates excluding boundaries
+		 * @param fromDate
+		 * @param toDate
+		 * @return int
+		 * @throws ParseException
+		 */
+		public int diffBtwTowDates(Date fromDate, Date toDate) throws ParseException {
+				long diff = toDate.getTime() - fromDate.getTime();
+				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays;
+			}
 		
 		public  Date[] getStartDateEndDateByYear(int year){
 			Date[] dates = new Date[2];

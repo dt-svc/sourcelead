@@ -28,6 +28,7 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 
 @Repository
 public class USPayPeriodDaoImpl implements USPayPeriodDao{
@@ -151,4 +152,5 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		empList = session.createQuery(query).setInteger("payPeriodNum", payPeriodNum).list();
 		return empList;
 	}
+
 }

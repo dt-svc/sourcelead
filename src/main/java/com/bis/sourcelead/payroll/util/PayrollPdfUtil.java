@@ -214,8 +214,8 @@ public class PayrollPdfUtil {
 		            PdfPCell cc2 = new PdfPCell(new Paragraph("Current Earnings",f4));
 		            PdfPCell cc3 = new PdfPCell(new Paragraph("YTD Earnings",f4));
 		            PdfPCell c41 = new PdfPCell(new Paragraph("Regular",f4));
-		            PdfPCell c51 = new PdfPCell(new Paragraph(String.valueOf(payroll.getGrossPay()),f3));
-		            PdfPCell c61 = new PdfPCell(new Paragraph(ytdTaxes.getYtdGross().toString(),f3));
+		            PdfPCell c51 = new PdfPCell(new Paragraph("$ "+String.valueOf(payroll.getGrossPay()),f3));
+		            PdfPCell c61 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdGross().toString(),f3));
 		            cc.addCell(cc1);
 		            cc.addCell(cc2);
 		            cc.addCell(cc3);
@@ -229,22 +229,22 @@ public class PayrollPdfUtil {
 		            PdfPCell cc21 = new PdfPCell(new Paragraph("Current",f4));
 		            PdfPCell cc31 = new PdfPCell(new Paragraph("YTD",f4));
 		            PdfPCell cc41 = new PdfPCell(new Paragraph("Federal",f4));
-		            PdfPCell cc51 = new PdfPCell(new Paragraph(taxes.getFederalWithholding().toString(),f3));
-		            PdfPCell cc61 = new PdfPCell(new Paragraph(ytdTaxes.getYtdFederal().toString(),f4));
+		            PdfPCell cc51 = new PdfPCell(new Paragraph("$ "+taxes.getFederalWithholding().toString(),f3));
+		            PdfPCell cc61 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdFederal().toString(),f4));
 		            PdfPCell cc6fica = new PdfPCell(new Paragraph("FICA",f4));
-		            PdfPCell cc6ficaWith = new PdfPCell(new Paragraph(taxes.getFicaWithholding().toString(),f3));
-		            PdfPCell cc6ficaYTD = new PdfPCell(new Paragraph(ytdTaxes.getYtdFICA().toString(),f3));
+		            PdfPCell cc6ficaWith = new PdfPCell(new Paragraph("$ "+taxes.getFicaWithholding().toString(),f3));
+		            PdfPCell cc6ficaYTD = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdFICA().toString(),f3));
 		            PdfPCell medicare = new PdfPCell(new Paragraph("Medicare",f4));
-		            PdfPCell medicareTax = new PdfPCell(new Paragraph(taxes.getMedicareWithholding().toString(),f3));
-		            PdfPCell medicareYTD = new PdfPCell(new Paragraph(ytdTaxes.getYtdMedicare().toString(),f4));
+		            PdfPCell medicareTax = new PdfPCell(new Paragraph("$ "+taxes.getMedicareWithholding().toString(),f3));
+		            PdfPCell medicareYTD = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdMedicare().toString(),f4));
 		            
 		            PdfPCell county = new PdfPCell(new Paragraph("County",f4));
-		            PdfPCell countyTax = new PdfPCell(new Paragraph(taxes.getCountyWithholding().toString(),f3));
-		            PdfPCell countyYTD = new PdfPCell(new Paragraph(ytdTaxes.getYtdCounty().toString(),f3));
+		            PdfPCell countyTax = new PdfPCell(new Paragraph("$ "+taxes.getCountyWithholding().toString(),f3));
+		            PdfPCell countyYTD = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdCounty().toString(),f3));
 		            
 		            PdfPCell local = new PdfPCell(new Paragraph("Local tax",f4));
-		            PdfPCell localTax = new PdfPCell(new Paragraph(taxes.getLocalTax().toString(),f3));
-		            PdfPCell localYTD = new PdfPCell(new Paragraph(ytdTaxes.getYtdlocaltax().toString(),f3));
+		            PdfPCell localTax = new PdfPCell(new Paragraph("$ "+taxes.getLocalTax().toString(),f3));
+		            PdfPCell localYTD = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdlocaltax().toString(),f3));
 		            
 		            ccx1.addCell(cc11);
 		            ccx1.addCell(cc21);
@@ -331,9 +331,9 @@ public class PayrollPdfUtil {
 		 			     List<DeductionDTO> postDedList = dlist.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 		 			   if(preDedList != null && preDedList.size() >0) {
 		 				  for(DeductionDTO preDed : preDedList) {
-			 			    	PdfPCell p1 = new PdfPCell(new Paragraph(preDed.getDeductionType(),f4));
-				  	            PdfPCell p2 = new PdfPCell(new Paragraph(String.valueOf(preDed.getPreDeductionAmount()),f3));
-				  	            PdfPCell p3 = new PdfPCell(new Paragraph(map.get(preDed.getDeductionType()).toString(),f3));
+			 			    	PdfPCell p1 = new PdfPCell(new Paragraph("$ "+preDed.getDeductionType(),f4));
+				  	            PdfPCell p2 = new PdfPCell(new Paragraph("$ "+String.valueOf(preDed.getPreDeductionAmount()),f3));
+				  	            PdfPCell p3 = new PdfPCell(new Paragraph("$ "+map.get(preDed.getDeductionType()).toString(),f3));
 				  	            preDedTable.addCell(p1);
 				  	            preDedTable.addCell(p2);
 				  	            preDedTable.addCell(p3); 
@@ -349,9 +349,9 @@ public class PayrollPdfUtil {
 		 			   }
 		 			    if(postDedList != null && postDedList.size() >0) {
 		 			    	 for(DeductionDTO preDed : postDedList) {
-		 	 			    	PdfPCell cp1 = new PdfPCell(new Paragraph(preDed.getDeductionType(),f4));
-		 		  	            PdfPCell cp2 = new PdfPCell(new Paragraph(String.valueOf(preDed.getPostDeductionAmt()),f3));
-		 		  	            PdfPCell cp3 = new PdfPCell(new Paragraph(map.get(preDed.getDeductionType()).toString(),f3));
+		 	 			    	PdfPCell cp1 = new PdfPCell(new Paragraph("$ "+preDed.getDeductionType(),f4));
+		 		  	            PdfPCell cp2 = new PdfPCell(new Paragraph("$ "+String.valueOf(preDed.getPostDeductionAmt()),f3));
+		 		  	            PdfPCell cp3 = new PdfPCell(new Paragraph("$ "+map.get(preDed.getDeductionType()).toString(),f3));
 		 		  	         postDedTable.addCell(cp1);
 		 		  	      postDedTable.addCell(cp2);
 		 		  	   postDedTable.addCell(cp3); 
@@ -388,9 +388,9 @@ public class PayrollPdfUtil {
 		            if(contributionList != null && contributionList.size() >0) {
 		            	 Map<String, Double> map = ytdTaxes.getYtdContributionTypeMap();
 		            	for(ContributionDTO contributionDTO : contributionList) {
-		            		PdfPCell cp1 = new PdfPCell(new Paragraph(contributionDTO.getContributionType(),f4));
-		  	  	            PdfPCell cp2 = new PdfPCell(new Paragraph(String.valueOf(contributionDTO.getContributionAmt()),f4));
-		  	  	            PdfPCell cp3 = new PdfPCell(new Paragraph(map.get(contributionDTO.getContributionType()).toString(),f4));
+		            		PdfPCell cp1 = new PdfPCell(new Paragraph("$ "+contributionDTO.getContributionType(),f4));
+		  	  	            PdfPCell cp2 = new PdfPCell(new Paragraph("$ "+String.valueOf(contributionDTO.getContributionAmt()),f4));
+		  	  	            PdfPCell cp3 = new PdfPCell(new Paragraph("$ "+map.get(contributionDTO.getContributionType()).toString(),f4));
 		  	  	            contribtionTable.addCell(cp1);
 		  	  	            contribtionTable.addCell(cp2);
 		  	  	            contribtionTable.addCell(cp3);
@@ -436,11 +436,11 @@ public class PayrollPdfUtil {
 		            table4.addCell(t4p6);
 		            
 		            PdfPCell curt4p1 = new PdfPCell(new Paragraph("Current",f4));
-	  	            PdfPCell curt4p2 = new PdfPCell(new Paragraph(taxes.getFederalWithholding().toString(),f3));
-	  	            PdfPCell curt4p3 = new PdfPCell(new Paragraph(taxes.getFicaWithholding().toString(),f3));
-	  	            PdfPCell curt4p4 = new PdfPCell(new Paragraph(payroll.getTaxes().toString(),f3));
-		            PdfPCell curt4p5 = new PdfPCell(new Paragraph(payroll.getPreTaxDeduction().add(payroll.getPostTaxDeduction()).toString(),f3));
-		            PdfPCell curt4p6 = new PdfPCell(new Paragraph(payroll.getNetPay().toString(),f3));
+	  	            PdfPCell curt4p2 = new PdfPCell(new Paragraph("$ "+taxes.getFederalWithholding().toString(),f3));
+	  	            PdfPCell curt4p3 = new PdfPCell(new Paragraph("$ "+taxes.getFicaWithholding().toString(),f3));
+	  	            PdfPCell curt4p4 = new PdfPCell(new Paragraph("$ "+payroll.getTaxes().toString(),f3));
+		            PdfPCell curt4p5 = new PdfPCell(new Paragraph("$ "+payroll.getPreTaxDeduction().add(payroll.getPostTaxDeduction()).toString(),f3));
+		            PdfPCell curt4p6 = new PdfPCell(new Paragraph("$ "+payroll.getNetPay().toString(),f3));
 		            
 		            table4.addCell(curt4p1);
 		            table4.addCell(curt4p2);
@@ -450,11 +450,11 @@ public class PayrollPdfUtil {
 		            table4.addCell(curt4p6);
 		            
 		            PdfPCell ytdt4p1 = new PdfPCell(new Paragraph("YTD",f4));
-	  	            PdfPCell ytdt4p2 = new PdfPCell(new Paragraph(ytdTaxes.getYtdFederal().toString(),f3));
-	  	            PdfPCell ytdt4p3 = new PdfPCell(new Paragraph(ytdTaxes.getYtdFICA().toString(),f3));
-	  	            PdfPCell ytdt4p4 = new PdfPCell(new Paragraph(ytdTaxes.getYtdTaxes().toString(),f3));
-		            PdfPCell ytdt4p5 = new PdfPCell(new Paragraph(ytdTaxes.getYtdDeduction().toString(),f3));
-		            PdfPCell ytdt4p6 = new PdfPCell(new Paragraph(ytdTaxes.getYtdNet().toString(),f3));
+	  	            PdfPCell ytdt4p2 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdFederal().toString(),f3));
+	  	            PdfPCell ytdt4p3 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdFICA().toString(),f3));
+	  	            PdfPCell ytdt4p4 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdTaxes().toString(),f3));
+		            PdfPCell ytdt4p5 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdDeduction().toString(),f3));
+		            PdfPCell ytdt4p6 = new PdfPCell(new Paragraph("$ "+ytdTaxes.getYtdNet().toString(),f3));
 		            
 		            table4.addCell(ytdt4p1);
 		            table4.addCell(ytdt4p2);

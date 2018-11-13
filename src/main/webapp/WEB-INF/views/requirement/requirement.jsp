@@ -1002,7 +1002,7 @@ $(document).ready(function () {
 							<div class="col-md-9 chooRadius">
 								<div class="row">
 								<div class="col-md-9">
-								<select multiple class="chosen-select form-control" name="jobFairId" id="jobFairList">
+								<select multiple class="chosen-select form-control" name="jobFairId" id="jobFairList" field-name="Job Fair">
 									
 								</select>
 								</div>
@@ -2028,8 +2028,10 @@ function validateProfilePercentage(){
 	$("#isJobFair").change(function(){
 		if($(this).is(":checked")) {
 			/* getJobFairList(); */
+			$("#jobFairList").attr("data-validation","required");
 			$("#selectJobFairDiv").show();
 		} else {
+			$("#jobFairList").removeAttr("data-validation");
 			$("#selectJobFairDiv").hide();
 			/* $("#jobFairList").empty(); */
 			/* $("#jobFairDatesDiv").hide(); */
