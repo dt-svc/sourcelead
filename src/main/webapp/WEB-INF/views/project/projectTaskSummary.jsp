@@ -570,22 +570,17 @@ function getprojectTaskMembersByProjectId(projectId){
 <script>
 $('.chosen-select').chosen().on('change', function() {
 	var assignValue = $("#assignedUsers").val();
-	alert(assignValue)
 	if(assignValue != null){
-		alert("assignValue>>>"+assignValue)
 		assignValue = assignValue;
 	}else{
-		alert("else")
 		assignValue = "";
 	}
-	alert(assignValue)
 	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
-	alert("projectClientUUID >>"+projectClientUUID)
 	  $.ajax({
 		   	type: "POST",
-// 		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
 	 		    success: function(data) {
 		    }
 	 });  

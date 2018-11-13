@@ -317,7 +317,7 @@ function projectTaskPaginations(url){
 						taskAssignedUsers = "--"
 					}
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot" title="'+taskAssignedUsers+'"><span >'+taskAssignedUsers+'</span ></div></td>';
             	  return result;
               }
             }, {
