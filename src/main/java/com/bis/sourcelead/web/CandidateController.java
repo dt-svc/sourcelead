@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -765,17 +766,15 @@ public class CandidateController {
 			return model;
 		}
 		
-		@RequestMapping(value = "/getCandidatesFromMarketplaceForCheckOut", method = RequestMethod.POST)
-		public @ResponseBody List<CandidateMarketPlace> getCandidatesFromMarketplaceForCheckOut(HttpServletRequest request) throws Exception{
+		@RequestMapping(value = "/getCandidateDetailsFromMarketplace", method = RequestMethod.POST)
+		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(HttpServletRequest request) throws Exception{
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<Long> candidateIdFromMarketCart = null;
-			List<CandidateMarketPlace> candidatesFromMarketplace = null;
+			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					candidateIdFromMarketCart = candidateService.getCandidateIdFromMarketCart(user, userRoleName, orgLocation.getId());
-					candidatesFromMarketplace = candidateService.getCandidatesFromMarketplace(candidateIdFromMarketCart);
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketplace(user, userRoleName, orgLocation);
 			}}
 			return candidatesFromMarketplace;
 		}

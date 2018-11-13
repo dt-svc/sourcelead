@@ -14,6 +14,7 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -194,8 +195,9 @@ public interface CandidateDao {
 	
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
 	
-	public List<Long> getCandidateIdFromMarketCart(User user, String userRole, Long orgLocationId)throws Exception;
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocation)throws Exception;
 	
-	public List<CandidateMarketPlace> getCandidatesFromMarketplace(List<Long> candidateIdFromMarketCart)throws Exception;
+	public void deleteCandidateFromMarketcartByCandidateId(Long id)throws Exception;
+
 
 }

@@ -18,6 +18,7 @@
 	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
 	  </c:if>
 	  </section>
+	  <div class="popUp"></div>
  	<div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
@@ -58,6 +59,7 @@
         <div class="clearfix row">
           <div class="col-md-8">
             <div class="scrollContent">
+            
               <div id="gridView">
                 <!-- Dynamic gridView here... -->
 				</div>
@@ -234,8 +236,8 @@
 <script type="text/javascript">
 
 $(document).ready(function () {
-	getCandidatesFromMarketplaceForCheckOut();
-	updateInvoiceAndCart();
+	getCandidateDetailsFromMarketplace();
+	updateInvoiceAndCartDetails();
 
 });
 
@@ -270,17 +272,17 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-
-function getCandidatesFromMarketplaceForCheckOut(){
+//\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\"
+function getCandidateDetailsFromMarketplace(){
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidatesFromMarketplaceForCheckOut",
+		url : sourceleadUrl +"/getCandidateDetailsFromMarketplace",
 		success : function(object) {
 			if(object != null){
 			var result ="";
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
-				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected'><i class='fa fa-trash-o'></i></a>";
+				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart("+object[i].id+")'><i class='fa fa-trash-o'></i></a>";
 				result = result + "<div class='media-left'>";
 				result = result + "<div class='cartImg positionRelative'>";
 				result = result + "<img src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
@@ -323,10 +325,10 @@ function getCandidatesFromMarketplaceForCheckOut(){
 				result = result + "<div class='cartinnerFooter'>";
 				result = result + "<div class='clearfix'>";
 				result = result + "<div class='col-md-6'>";
-				result = result + "<label class='mr text-muted'>Added by :</label><span>James Robertjessi</span>";
+				result = result + "<label class='mr text-muted'>Added by :</label><span>"+object[i].createdByName+"</span>";
 				result = result + "</div>";	
 				result = result + "<div class='col-md-6'>";
-				result = result + "<label class='mr text-muted'>Added on :</label><span>26/12/2018</span>";
+				result = result + "<label class='mr text-muted'>Added on :</label><span>"+object[i].createdDatestr+"</span>";
 				result = result + "</div></div></div></div></div>";
          		}
 			$("#gridView").empty().append(result);
@@ -335,7 +337,7 @@ function getCandidatesFromMarketplaceForCheckOut(){
 		});
 	}
 
-function updateInvoiceAndCart(){
+function updateInvoiceAndCartDetails(){
 	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
@@ -349,6 +351,43 @@ function updateInvoiceAndCart(){
 	        		$("#invoiceCartTotal").html(totalPriceInCurrency);
 	        		$("#invoiceTotalAmount").html(totalPriceInCurrency);
 	        		}}
+	});
+}
+
+
+function deleteCandidateFromMarketcartByCandidateId(candidateName, candidateId){
+	 $(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_candidateFromMarketCart_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove "+candidateName+" from Market cart!</b>";
+		result = result +" <b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcart("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
+		result = result +" </div>";
+		$("#popUp").empty().append(result);
+		$("#remove_candidateFromMarketCart_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelMarketCartPopup(){
+	$("#remove_candidateFromMarketCart_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
+function deleteCandidateFromMarketcart(id){
+	$.ajax({
+	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateId?id="+id,
+		type: 'GET',
+		success : function(result){
+			if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
+            
+            }else{
+           	 showError("Operation failed, please try again");
+            }
+			
+			
+		}
 	});
 }
 
