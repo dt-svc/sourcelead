@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -763,5 +764,18 @@ public class CandidateController {
 			model.setViewName("candidates/candidateGlobalMarketPlaceList");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
+		}
+		
+		@RequestMapping(value = "/getCandidateDetailsFromMarketplace", method = RequestMethod.POST)
+		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(HttpServletRequest request) throws Exception{
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
+			if(user != null){
+				if(StringUtils.isNotBlank(userRoleName)) {
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketplace(user, userRoleName, orgLocation);
+			}}
+			return candidatesFromMarketplace;
 		}
 }

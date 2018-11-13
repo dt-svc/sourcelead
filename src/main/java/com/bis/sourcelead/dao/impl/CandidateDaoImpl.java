@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+
 
 /**
  * 
@@ -2403,13 +2405,17 @@ public class CandidateDaoImpl implements CandidateDao {
 				searchCandiIdsLong.add(Long.valueOf(s));
 			}
 		}
-		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
-		System.out.println(listQuery+query1+query2);
-		Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
-		if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-			queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+		if(searchCandidateIds.length == 0 && orgId != 0 && candidateLocation.equals("") && searchValue.equals("")){
+			queryList = new ArrayList<>();
+		}else{
+			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+				System.out.println(listQuery+query1+query2);
+			Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
+			if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
+				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
+			}
+			queryList = queryObject.list();
 		}
-		queryList = queryObject.list();
 		return queryList;
 	}
 	
@@ -2475,4 +2481,49 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 			return null;
 		}}
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocation) {
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = ""; 
+		String createdByQuery =" ";
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			createdByQuery = " and marketCartview.createdBy=:createdByuser";
+		}
+		query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
+		Query queryObj = session.createQuery(query + createdByQuery).setLong("orgLocationId", orgLocation.getId());
+		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+			queryObj.setLong("createdByuser", user.getId());
+		}
+		@SuppressWarnings("unchecked")
+		List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
+		if (candidatesList != null && !candidatesList.isEmpty()) {
+			for(CandidateMarketPlaceCartView source : candidatesList){
+				source.setCreatedDatestr(
+				commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), source.getCreatedDate()));
+						
+			}}
+		return candidatesList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteCandidateFromMarketcartByCandidateId(Long id){
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketCart marketCart where marketCart.marketplaceId = :id";
+			session.createQuery(query).setParameter("id", id).executeUpdate();
+			}catch(Exception e){
+					e.printStackTrace();
+			}
+	}
+	
 }
