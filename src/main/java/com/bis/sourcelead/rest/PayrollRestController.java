@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -45,6 +47,7 @@ import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollService;
@@ -95,6 +98,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -321,11 +327,9 @@ public class PayrollRestController {
 				    			if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indPayrollDTO.getIndEmpPayrollUUID()) ) {
 			   						continue;
 			   					}
-				    			//indPayrollDTO = payrollDTOList.iterator().next();
 					    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
 					    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
 					    		
-					    		/*
 					    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					    		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = associatePayrollPayheadDTOList;
 					    		associatePayrollPayheadDTOList = associatePayrollPayheadDTOList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
@@ -337,10 +341,17 @@ public class PayrollRestController {
 									return false;
 								}).count())<1).collect(Collectors.toList());
 					    		
-					    		*/
-					    		
-					    		indPayrollDTO.setGrossPay(indEmployeePayrollDTO.getGrossPay());
-					    		indPayrollDTO.setNetPay(indEmployeePayrollDTO.getNetPay());
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistoryDTO apphDTO : associatePayrollPayheadDTOList) {
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Earnings"))
+					    				ePay = ePay.add(apphDTO.getMonthly());
+					    			
+					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Deduction"))
+					    				dPay = dPay.add(apphDTO.getMonthly());
+					    		}
+					    		indPayrollDTO.setGrossPay(ePay);
+					    		indPayrollDTO.setNetPay(ePay.subtract(dPay));
 					    		indPayrollDTO.setUpdatedBy(loginUser.getId());
 					    		indPayrollDTO.setUpdatedDate(new Date());
 				    		}
@@ -351,10 +362,32 @@ public class PayrollRestController {
 			   					if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees()) && indEmployeePayrollDTO.getIndEmpPayrollUUIDList() != null && !indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(indEmployeePayroll.getIndEmpPayrollUUID()) ) {
 			   						continue;
 			   					}
+			   					
+			   					//the phList is to collect all payheads and calculate gross and net pay
+			   					Set<AssociatePayrollPayheadHistory> phList = new HashSet<>();
+			   					phList.addAll(indEmployeePayroll.getAssociatePayrollPayheadHistory());
+			   					
 		   						Set<AssociatePayrollPayheadHistory> associatePayrollPayheadHistory = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndList(indEmployeePayroll, indEmployeePayrollDTO, loginUser);
 						   		indEmployeePayroll.setAssociatePayrollPayheadHistory(associatePayrollPayheadHistory);
-						   		indEmployeePayroll.setGrossPay(indEmployeePayrollDTO.getGrossPay());
-						   		indEmployeePayroll.setNetPay(indEmployeePayrollDTO.getNetPay());
+						   		
+						   		
+						   		associatePayrollPayheadHistory.addAll(phList);
+					    		Set<AssociatePayrollPayheadHistory> dupAssociatePayrollPayheadHistoryList = associatePayrollPayheadHistory;
+					    		associatePayrollPayheadHistory = associatePayrollPayheadHistory.stream().filter(ml -> (dupAssociatePayrollPayheadHistoryList.stream().filter(sl -> {
+										return sl.getPayrollPayhead().getId().equals(ml.getPayrollPayhead().getId()) && sl.getUpdatedDate().after(ml.getUpdatedDate());
+								}).count())<1).collect(Collectors.toSet());
+					    		
+					    		BigDecimal ePay = new BigDecimal(0);
+					    		BigDecimal dPay = new BigDecimal(0);
+					    		for(AssociatePayrollPayheadHistory apph : associatePayrollPayheadHistory) {
+					    			if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Earnings")) {
+					    				ePay = ePay.add(apph.getMonthly());
+					    			}else if(apph.getPayrollPayhead().getType().equalsIgnoreCase("Deduction")) {
+					    				dPay = dPay.add(apph.getMonthly());
+					    			}
+					    		}
+					    		indEmployeePayroll.setGrossPay(ePay);
+					    		indEmployeePayroll.setNetPay(ePay.subtract(dPay));
 						   		indEmployeePayroll.setUpdatedBy(loginUser.getId());
 						   		indEmployeePayroll.setUpdatedDate(new Date());
 						   		associatePayrollPayheadHistoryService.saveIndEmployeePayroll(indEmployeePayroll);
@@ -505,10 +538,12 @@ public class PayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
-			List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
-			modelAndView.addObject("loanAdvList", loanAdvList);
-			modelAndView.addObject("loanAdvListSize", loanAdvList.size());
-			modelAndView.addObject("loanStatus", loanStatus);
+			/*List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList = associateLoanAndAdvancesHistoryService.getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
+//			List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
+//			modelAndView.addObject("loanAdvList", loanAdvList);
+			modelAndView.addObject("loanAdvHistoryList", loanAdvHistoryList);
+			modelAndView.addObject("loanAdvListSize", loanAdvHistoryList.size());
+			modelAndView.addObject("loanStatus", loanStatus);*/
 			
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
 			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvancesInd");
@@ -518,5 +553,29 @@ public class PayrollRestController {
 		}
 		return modelAndView;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getMyLoansAdvList", method = RequestMethod.POST)
+	public List<AssociateLoanAndAdvanceHistory> getMyLoansAdvList(@RequestParam(value = "loanStatus", required = false) String loanStatus, HttpServletRequest request) {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList = null;
+		try {
+			loanAdvHistoryList = associateLoanAndAdvancesHistoryService.getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
+			for(AssociateLoanAndAdvanceHistory alah:loanAdvHistoryList) {
+				alah.setName(alah.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
+				alah.setType(alah.getAssociateLoanAndAdvances().getLoanAdvanceType());
+				alah.setTotalAmount(alah.getAssociateLoanAndAdvances().getAmount());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return loanAdvHistoryList;
+	}
 
+	
+	
+	
 }

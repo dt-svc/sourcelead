@@ -2903,6 +2903,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						query1.append("and (rsh.candidate.mobilePhone like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )");
 					}
 					else{
+						if(!requirementSubmissionHistoryDTO.getSearchValue().equals("'")){
 				query1.append(" and( (rsh.candidate.firstName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' OR rsh.candidate.lastName like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' )")
 				      .append("OR (concat(rsh.candidate.firstName,rsh.candidate.lastName) like '%" + requirementSubmissionHistoryDTO.getSearchValue().trim() + "%')" )
 				      .append("OR rsh.candidate.email like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
@@ -2910,7 +2911,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			          .append("OR rsh.requirement.jobTitle like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.submissionStatus like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%' ")
 				      .append("OR rsh.createdUser like '%" + requirementSubmissionHistoryDTO.getSearchValue() + "%') ");
-			
+						}
 					}
 					}
 			

@@ -459,8 +459,9 @@ function getGroupFrequency(){
 	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var opt = json[i];
+				var date = opt.payPeriod.replace(",", " to ");
+				output = output + "<option value='" +opt.payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);

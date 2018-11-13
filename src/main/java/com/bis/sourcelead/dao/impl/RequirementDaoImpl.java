@@ -847,12 +847,14 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 			}
 		}
+		if(!jobFilterDTO.getSearchValue().equals("'")){
 		if (jobFilterDTO.getSearchValue() != null && !"".equalsIgnoreCase(jobFilterDTO.getSearchValue())) {
 			query1.append(" and (requirement.jobTitle like '%" + jobFilterDTO.getSearchValue() + "%' ")
 					.append("OR requirement.jobId like '%" + jobFilterDTO.getSearchValue() + "%' ")
 					.append("OR requirement.priority like '%" + jobFilterDTO.getSearchValue() + "%' ")
 					.append("OR requirement.generatedId like '%" + jobFilterDTO.getSearchValue() + "%' )");
 
+		}
 		}
 		int count = 0;
 		String whereCondition = subQuery+query1;
@@ -3643,8 +3645,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") "
 					+ "and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and "
 					+ "( requirement.releaseJobToAllUsers='Y' or requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
-					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') "
-					+ "or :recruiterUserId IN (select rah.approverUserId.id from RequirementApproverHierarchy rah where rah.requirementId=requirement))";
+					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') )";
 			if (query1.toString() != null && !query1.toString().isEmpty()) {
 				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
 			} else {

@@ -16,9 +16,9 @@
                     <div>
                       <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
                         <option value="">--Select--</option>
-                        <option ${associateSalaryInd.payType == "HourlyRate" ? "selected" : ""} value="HourlyRate">Hourly Rate</option>
+                        <%-- <option ${associateSalaryInd.payType == "HourlyRate" ? "selected" : ""} value="HourlyRate">Hourly Rate</option> --%>
                         <option ${associateSalaryInd.payType == "Salary" ? "selected" : ""} value = "Salary">Salary</option>
-                        <option ${associateSalaryInd.payType == "CommissionOnly" ? "selected" : ""} value= "CommissionOnly">Commission Only</option>
+                        <%-- <option ${associateSalaryInd.payType == "CommissionOnly" ? "selected" : ""} value= "CommissionOnly">Commission Only</option> --%>
                       </select>
                     </div>
                   </div>

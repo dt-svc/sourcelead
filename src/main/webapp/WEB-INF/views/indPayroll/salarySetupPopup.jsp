@@ -29,7 +29,7 @@
 							<!-- <option value="">--Select method--</option> -->
 							<option ${payrollPayhead.method == 'Flat' ? 'selected' : ''}>Flat</option>
 							<option ${payrollPayhead.method == '% of CTC' ? 'selected' : ''}>% of CTC</option>
-							<option ${payrollPayhead.method == '% of Gross pay' ? 'selected' : ''}>% of Gross pay</option>
+							<%-- <option ${payrollPayhead.method == '% of Gross pay' ? 'selected' : ''}>% of Gross pay</option> --%>
 							<option ${payrollPayhead.method == '% of Payheads' ? 'selected' : ''}>% of Payheads</option>
 							<%-- <option ${payrollPayhead.method == 'Formula' ? 'selected' : ''}>Formula</option> --%>
 						</select>

@@ -2127,7 +2127,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
@@ -2138,7 +2138,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - totalLeaveCount;
 					}
 			 }
 			
