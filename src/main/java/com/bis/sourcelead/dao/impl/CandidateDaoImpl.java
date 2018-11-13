@@ -2486,7 +2486,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocation) {
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation) {
 		try{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = ""; 
@@ -2505,7 +2505,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			for(CandidateMarketPlaceCartView source : candidatesList){
 				source.setCreatedDatestr(
 				commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), source.getCreatedDate()));
-						
 			}}
 		return candidatesList;
 		}catch(Exception e){
@@ -2516,11 +2515,11 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public void deleteCandidateFromMarketcartByCandidateId(Long id){
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid){
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "delete from CandidateMarketCart marketCart where marketCart.marketplaceId = :id";
-			session.createQuery(query).setParameter("id", id).executeUpdate();
+			String query = "delete from CandidateMarketCart marketCart where marketCart.candidateUUID = :candidateUuid";
+			session.createQuery(query).setParameter("candidateUuid", candidateUuid).executeUpdate();
 			}catch(Exception e){
 					e.printStackTrace();
 			}

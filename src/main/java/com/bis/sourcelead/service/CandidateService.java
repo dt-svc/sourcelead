@@ -266,8 +266,8 @@ public interface CandidateService {
 
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
 	
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocations)throws Exception;
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception;
 	
-	public void deleteCandidateFromMarketcartByCandidateId(Long id)throws Exception;
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
 
 }
