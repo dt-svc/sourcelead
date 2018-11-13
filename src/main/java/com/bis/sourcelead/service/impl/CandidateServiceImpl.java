@@ -67,6 +67,7 @@ import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -2873,13 +2874,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<Long> getCandidateIdFromMarketCart(User user, String userRole, Long orgLocationId)throws Exception {
-	return candidateDao.getCandidateIdFromMarketCart(user, userRole, orgLocationId);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocations)throws Exception {
+	return candidateDao.getCandidateDetailsFromMarketplace(user, userRole, orgLocations);
 	}
 
 	@Override
-	public List<CandidateMarketPlace> getCandidatesFromMarketplace(List<Long> candidateIdFromMarketCart) throws Exception {
-		return candidateDao.getCandidatesFromMarketplace(candidateIdFromMarketCart);
+	public void deleteCandidateFromMarketcartByCandidateId(Long id) throws Exception {
+		candidateDao.deleteCandidateFromMarketcartByCandidateId(id);
+		
 	}
+
 
 }

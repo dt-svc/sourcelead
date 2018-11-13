@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -53,6 +54,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+
 
 /**
  * 
@@ -2480,23 +2482,32 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}}
 	
+	
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getCandidateIdFromMarketCart(User user, String userRole, Long orgLocationId) {
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocation) {
 		try{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = ""; 
 		String createdByQuery =" ";
 		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
-			createdByQuery = " and marketCart.createdBy=:createdByuser";
+			createdByQuery = " and marketCartview.createdBy=:createdByuser";
 		}
-		query = "select candidateId from CandidateMarketCart marketCart where marketCart.targetOrgLocationId =:orgLocationId";
-		Query queryObj = session.createQuery(query + createdByQuery).setLong("orgLocationId", orgLocationId);
+		query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
+		Query queryObj = session.createQuery(query + createdByQuery).setLong("orgLocationId", orgLocation.getId());
 		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 			queryObj.setLong("createdByuser", user.getId());
 		}
-		List<Long> candidateIdFromMarketCart = queryObj.list();
-		return candidateIdFromMarketCart;
+		@SuppressWarnings("unchecked")
+		List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
+		if (candidatesList != null && !candidatesList.isEmpty()) {
+			for(CandidateMarketPlaceCartView source : candidatesList){
+				source.setCreatedDatestr(
+				commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), source.getCreatedDate()));
+						
+			}}
+		return candidatesList;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
@@ -2505,15 +2516,14 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlace> getCandidatesFromMarketplace(List<Long> candidateIdFromMarketCart) {
+	public void deleteCandidateFromMarketcartByCandidateId(Long id){
 		try{
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateMarketPlace marketplace where marketplace.candidateId IN (:candidateIdFromMarketCart)";
-		List<CandidateMarketPlace> candidatesFromMarketplace = session.createQuery(query).setParameterList("candidateIdFromMarketCart", candidateIdFromMarketCart).list();
-		return candidatesFromMarketplace;
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketCart marketCart where marketCart.marketplaceId = :id";
+			session.createQuery(query).setParameter("id", id).executeUpdate();
+			}catch(Exception e){
+					e.printStackTrace();
+			}
 	}
+	
 }

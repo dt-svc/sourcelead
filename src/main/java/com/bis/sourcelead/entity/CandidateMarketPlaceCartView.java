@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
@@ -64,7 +62,10 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	
 	@Column(name = "EXP_IN_YEARS")
 	private String experienceYears;
-
+	
+	@Column(name = "EXP_IN_MONTHS")
+	private String experienceMonths;
+	
 	@Column(name = "MARKET_PRICE")
 	private String marketPrice;
 
@@ -79,6 +80,13 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	
 	@Column(name = "CREATED_BY")
 	private Long createdBy;
+	
+	@Column(name = "CREATED_BY_NAME")
+	private String createdByName;
+	
+	@Transient
+	@JsonProperty
+	private String createdDatestr;
 
 	public Long getId() {
 		return id;
@@ -201,6 +209,14 @@ public class CandidateMarketPlaceCartView implements Serializable {
 		this.experienceYears = experienceYears;
 	}
 
+	public String getExperienceMonths() {
+		return experienceMonths;
+	}
+
+	public void setExperienceMonths(String experienceMonths) {
+		this.experienceMonths = experienceMonths;
+	}
+
 	public String getMarketPrice() {
 		return marketPrice;
 	}
@@ -239,6 +255,22 @@ public class CandidateMarketPlaceCartView implements Serializable {
 
 	public void setCreatedBy(Long createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+
+	public String getCreatedDatestr() {
+		return createdDatestr;
+	}
+
+	public void setCreatedDatestr(String createdDatestr) {
+		this.createdDatestr = createdDatestr;
 	}
 
 	
