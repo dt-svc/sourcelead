@@ -306,7 +306,7 @@
 					            	var ded = json.postDed[i];
 				        			postDed = postDed + '<tr>';
 				        			postDed = postDed + ' <td>'+ded.deductionType+'</td>';
-				        			postDed = postDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl" readOnly></td>';
+				        			postDed = postDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="'+i+'amount" name="postDeduction['+i+'].amount" value='+ded.postDeductionAmt+' class="formControl width90percnt" readOnly></td>';
 				        			postDed = postDed + ' </tr>';
 					            }	
 			            	  
@@ -342,7 +342,7 @@
 				            	var preded = json.preDed[i];
 				            	preDed = preDed + '<tr>';
 				            	preDed = preDed + ' <td>'+preded.deductionType+'</td>';
-				            	preDed = preDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl" readOnly></td>';
+				            	preDed = preDed + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" id="amount" name="preDeduction['+i+'].amount" value='+preded.preDeductionAmount+' class="formControl width90percnt" readOnly></td>';
 				            	preDed = preDed + ' </tr>';
 				            }
 				            
@@ -380,7 +380,7 @@
 					            	output = output + '<tr>';
 					            	output = output + '<input type="hidden" name="contribution['+i+'].taxtType" value='+ot.taxtType+' id="taxtType"/>';
 					            	output = output + '<td>'+ot.contributionType+'</td>';
-					            	output = output + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl" readOnly></td>';
+					            	output = output + ' <td><i class="fa fa-dollar paddingRight"></i><input type="text" name="contribution['+i+'].contributionAmount" value='+ot.contributionAmt+' class="formControl width90percnt" readOnly></td>';
 					            	output = output + '</tr>';
 			                  }
 		                	  

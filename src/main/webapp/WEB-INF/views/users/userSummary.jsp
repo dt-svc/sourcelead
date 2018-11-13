@@ -9,6 +9,7 @@
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
 
+
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -1819,7 +1820,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="row">';
 					
-					result = result + ' <div class="col-md-7 posSta phoneErrorvalid">';
+					result = result + ' <div class="col-md-7 posSta phoneErrorvalid phoneValidator">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
@@ -1839,11 +1840,14 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-					result = result + ' <div id="ssnNumberDiv"class="user_summary_edit_cta">';
+
+					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" id="ssnNumber" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+
 					result = result + ' </div>';
 					}
+					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
@@ -2108,14 +2112,14 @@ $("#editRoleDetailsList").empty();
 					 */
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Date of join</label>';
+					result = result + ' <label>Date of join <span class="text-danger">*</span></label>';
 					result = result + '<div class="input-group">';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}else{
-						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}
@@ -3025,6 +3029,45 @@ function getStartandEndDate(){
 	  
     }
 </script>
+   <script>
+    function validateSSNNumber(){
+		var SSN = $("#SSN").val();
+		var length  = $("#SSN").val().length;
+		if(SSN.search("-") > 0){
+			SSN = SSN.replace(/-/g, "");
+			length = SSN.length;
+			calculateSSNLength(length,SSN);
+		}else{
+			calculateSSNLength(length,SSN);
+		}
+	}
+	function calculateSSNLength(length,SSN){
+		if(length == 0){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		}else if(length != 9){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		}else{
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			var value = "";
+			var ssn = SSN.substring(0,3);
+			value += ssn+"-";
+			ssn = SSN.substring(3,5);
+			value += ssn+"-";
+			ssn = SSN.substring(5,9);
+			value += ssn;
+			$("#SSN").val(value);
+			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+			}else{
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+			}
+		}
+	}
+	 </script>
+
 
 
 

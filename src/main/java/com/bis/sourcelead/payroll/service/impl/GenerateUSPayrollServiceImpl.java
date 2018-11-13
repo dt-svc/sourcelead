@@ -247,7 +247,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@SuppressWarnings("static-access")
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	public Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {

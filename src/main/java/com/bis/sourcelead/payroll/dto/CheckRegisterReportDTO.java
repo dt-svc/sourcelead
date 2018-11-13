@@ -44,6 +44,8 @@ public class CheckRegisterReportDTO {
 	
 	private BigDecimal ytdNet;
 	
+	private String runNo;
+	
 	public String getType()
 	{
 		return type;
@@ -280,6 +282,14 @@ public class CheckRegisterReportDTO {
 	public void setYtdNet(BigDecimal ytdNet) {
 		this.ytdNet = ytdNet;
 	}
-	
-	
+
+	public String getRunNo()
+	{
+		return runNo;
+	}
+
+	public void setRunNo(String runNo)
+	{
+		this.runNo = runNo;
+	}
 }
