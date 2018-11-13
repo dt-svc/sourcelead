@@ -470,7 +470,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
    private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
 	{
 	   boolean isTerminated = false;
-	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+//	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+	   if(date.after(freqStartDate) && date.before(freqEndDate)) {
 		   isTerminated = true;
 		}
 		return isTerminated;

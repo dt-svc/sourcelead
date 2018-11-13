@@ -1,4 +1,4 @@
-	<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -317,7 +317,7 @@ function projectTaskPaginations(url){
 						taskAssignedUsers = "--"
 					}
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot" title="'+taskAssignedUsers+'"><span >'+taskAssignedUsers+'</span ></div></td>';
             	  return result;
               }
             }, {

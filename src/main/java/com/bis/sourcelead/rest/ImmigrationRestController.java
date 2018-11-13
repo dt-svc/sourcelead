@@ -59,7 +59,6 @@ import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
-import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
@@ -102,6 +101,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -160,6 +160,9 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
@@ -1157,7 +1160,10 @@ public class ImmigrationRestController {
 				immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids);
 				if (status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
 					immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration, user, orgLocations);
+					
 				}
+				
+				
 				requiredIds.add(immigration.getId().toString());
 				requiredIds.add(immigration.getCandidate().getId().toString());
 				requiredIds.add(immigration.getImmigrationTemplateId().getId().toString());
