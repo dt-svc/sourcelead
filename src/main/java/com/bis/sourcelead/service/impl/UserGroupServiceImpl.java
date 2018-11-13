@@ -1,9 +1,16 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -212,13 +219,27 @@ public class UserGroupServiceImpl implements UserGroupService{
 	@Override
 	public List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId,OrgLocations orgLocation) throws Exception
 	{
+		List<PayPeriodDTO> dates = new ArrayList<>();
 		List<PayPeriodDTO> datesList =  userGroupDao.getPayPeriodsByGroupId(groupId);
-//		List<Date> dates = new ArrayList<>();
-		for (PayPeriodDTO payPeriodDTO : datesList) {
+		
+		Set<PayPeriodDTO> set = datesList.stream()
+	            .collect(Collectors.toCollection(() -> 
+	                 new TreeSet<>(Comparator.comparing(PayPeriodDTO::getFreqStartDate))));
+		
+		for(PayPeriodDTO payPeriodDTO : set) {
 			payPeriodDTO.setConvertedFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqStartDate()));
 			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
 		}
-		return datesList;
+		dates.addAll(set);
+		
+//		Map<BigInteger, List<PayPeriodDTO>> uniqueData = datesList.stream().collect(Collectors.groupingBy(PayPeriodDTO::getPaySheetFreqId));
+		
+//		List<Date> dates = new ArrayList<>();
+//		for (PayPeriodDTO payPeriodDTO : datesList) {
+//			payPeriodDTO.setConvertedFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqStartDate()));
+//			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
+//		}
+		return dates;
 	}
 
 	@Override

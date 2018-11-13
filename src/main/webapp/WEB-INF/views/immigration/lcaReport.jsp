@@ -107,6 +107,7 @@
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runLCAReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLcaForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      

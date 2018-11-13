@@ -309,12 +309,13 @@
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
-				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" >DeductionSummaryReport</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" >ContributionSummaryReport</a></li>
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 				<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+				<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 				</sec:authorize>
 				</ul>
 			</div>
@@ -563,6 +564,9 @@
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+						</sec:authorize>
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
 						</sec:authorize>
 	                </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
