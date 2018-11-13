@@ -121,7 +121,7 @@
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
-		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+		<a href="javascript:void(0)"   onclick="columClose(); ">Cancel</a>
 	</div>
 </div>				
 			</div>
@@ -470,6 +470,9 @@ function columPop(){
 }
 function columClose(){
 	$(".colPop").hide();
+	$("#columnsPickerUnCheckAll").prop('checked',false);
+	$("#columnsPickerCheckAll").prop('checked',true);
+	$('.toggle-vis:input:checkbox').prop('checked',true);
 }
 function columHide(){
 	hideColumns=[]; // reset the array object.
@@ -491,7 +494,7 @@ function checkAllColumns(obj){
 	var id = obj.id;
 	if(id =='columnsPickerCheckAll'){
 		$('.toggle-vis:input:checkbox').prop('checked',true);
-	}
+     }
 	else if(id =='columnsPickerUnCheckAll'){
 		$('.toggle-vis:input:checkbox').prop('checked',false);
 	}

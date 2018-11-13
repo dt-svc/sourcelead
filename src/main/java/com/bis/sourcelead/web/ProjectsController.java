@@ -490,6 +490,7 @@ public class ProjectsController {
 					 model.addObject("createdBy", user.getFullName());
 				 }
 				 
+				 
 				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId()); 
 				 for(ProjectAssignTask pat:assignedUsers) {
 					 if(pat.getProjectMemberId() != null && pat.getProjectMemberId().getEmployee() != null && pat.getProjectMemberId().getEmployee().getUser() != null) {
@@ -866,43 +867,43 @@ public class ProjectsController {
        }
 
     
-    @RequestMapping(value = "/pojrctAttributes")
+    @RequestMapping(value = "/projectAttributes")
    	public ModelAndView pojrctAttributes(HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
    	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKTYPE);
 		model.addObject("referTypeList", referTypeList);
-		model.setViewName("project/pojrctAttributesTaskType");
+		model.setViewName("project/projectAttributesTaskType");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }
     
-    @RequestMapping(value = "/pojrctAttributePriority")
+    @RequestMapping(value = "/projectAttributePriority")
    	public ModelAndView pojrctAttributePriority(HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
    	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKPRIORITY);
 		model.addObject("referTypeList", referTypeList);
-   		model.setViewName("project/pojrctAttributePriority");
+   		model.setViewName("project/projectAttributePriority");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }
     
     
-    @RequestMapping(value = "/pojrctAttributeStatus")
+    @RequestMapping(value = "/projectAttributeStatus")
    	public ModelAndView pojrctAttributeStatus(HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
    	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSTATUS);
 		model.addObject("referTypeList", referTypeList);
-		model.setViewName("project/pojrctAttributeStatus");
+		model.setViewName("project/projectAttributeStatus");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }
 
-    @RequestMapping(value = "/pojrctAttributeSeverity")
+    @RequestMapping(value = "/projectAttributeSeverity")
    	public ModelAndView pojrctAttributeSeverity(HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
    	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
 		model.addObject("referTypeList", referTypeList);
-   		model.setViewName("project/pojrctAttributeSeverity");
+   		model.setViewName("project/projectAttributeSeverity");
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }

@@ -236,7 +236,7 @@
 						<div class="pull-right">
 							<input value="Save" id="saveCentralTax"
 								class="btn btn-success btnSuccess" type="button"> <input
-								value="Cancel" class="btn btn-default ml10" type="button">
+								value="Cancel" class="btn btn-default ml10" type="button" onclick = "cancel();">
 						</div>
 					</div>
 				</div>
@@ -246,3 +246,9 @@
 	</div>
 </section>
 
+<script>
+function cancel(){
+	window.location.href =  sourceleadUrl+"/centralTax/list";
+}
+
+</script>
