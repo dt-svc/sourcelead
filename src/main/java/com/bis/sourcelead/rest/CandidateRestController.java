@@ -1243,5 +1243,32 @@ public class CandidateRestController {
 		return countAndSum;
 	}
 
+	@RequestMapping(value = "/app/deleteCandidateFromMarketcartByCandidateId")
+	public Response<String> deleteCandidateFromMarketcartByCandidateId(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(id != null){	
+					candidateService.deleteCandidateFromMarketcartByCandidateId(id);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in deleteCandidateFromMarketcartByCandidateId controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		return response;
+	 	}
+	
 }
 

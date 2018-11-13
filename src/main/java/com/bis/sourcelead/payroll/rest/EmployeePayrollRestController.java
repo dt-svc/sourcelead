@@ -324,10 +324,12 @@ public class EmployeePayrollRestController {
 	 */
 	@RequestMapping(value = {"/getDeductionsDetailsbyId", "/rest/getDeductionsDetailsbyId"}, method = RequestMethod.GET)
 	@ResponseBody
-	public  List<AccountDeductionsDetails> getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
+	public  ResponseList<AccountDeductionsDetails> getDeductionsDetailsbyId(@RequestParam(value = "deductionId", required = false) String deductionId, HttpServletRequest request) throws Exception
 	{
+		ResponseList<AccountDeductionsDetails> responseList = new ResponseList<>();
 		List<AccountDeductionsDetails> accountDeductionsDetailsList = accountDeductionsService.getDeductionsDetailsbyId(Long.parseLong(deductionId));
-		return accountDeductionsDetailsList;
+		responseList.setData(accountDeductionsDetailsList);
+		return responseList;
 	}
 	
 	/**
@@ -367,10 +369,12 @@ public class EmployeePayrollRestController {
 	 */
 	@RequestMapping(value = {"/getEmpHrDeductionsDetailsbyId","/rest/getEmpHrDeductionsDetailsbyId"}, method = RequestMethod.GET)
 	@ResponseBody
-	public  List<HrDeductionsDetails> getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
+	public  ResponseList<HrDeductionsDetails> getEmpHrDeductionsDetailsbyId(@RequestParam(value = "hrDeductionId", required = false) String hrDeductionId, HttpServletRequest request) throws Exception
 	{
+		ResponseList<HrDeductionsDetails> responseList = new ResponseList<>();
 		List<HrDeductionsDetails> hrDeductionsList = hrDeductionsService.getHrDeductionsDetailsbyId(Long.parseLong(hrDeductionId));
-		return hrDeductionsList;
+		responseList.setData(hrDeductionsList);
+		return responseList;
 	}
 	
 	/**

@@ -1065,7 +1065,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
-				 
+					  
+					  if(StringUtils.isNotEmpty(projectAssignedMembersDTO.getType()) && projectAssignedMembersDTO.getType().equalsIgnoreCase("projectSummary"))
 					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}

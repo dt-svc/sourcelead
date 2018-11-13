@@ -160,9 +160,9 @@ function editAssociateBankDataFun(userId){
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
 	if(accountType == "Direct Deposit"){
-		$("#bankName").val('');
-		$("#accountNumber").val('');
-		$("#routingNumber").val('');
+// 		$("#bankName").val('');
+// 		$("#accountNumber").val('');
+// 		$("#routingNumber").val('');
 		
 		$("#bankName").removeAttr('data-validation-optional');
 		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");

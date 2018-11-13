@@ -252,7 +252,7 @@ function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
 	//alert(marketPrice+" "+marketPriceCurrency);
 	$(obj).closest('tr').find("div[id='marketPlacePriceValDiv']").empty();
 	var result = "";
-		result = result + '<div class="tblminwidth-100 clearfix"><div class="dropdown-inputbox"><input type="text"  onkeypress="return isNumberKey(event)" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
+		result = result + '<div class="tblminwidth-100 clearfix"><div class="dropdown-inputbox"><input type="text" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
 		result = result + ' <option '+(marketPriceCurrency == "" ? "selected" : "")+' value="">--Select--</option>';
 		result = result + ' <option '+(marketPriceCurrency == "INR" ? "selected" : "")+' value="INR">INR</option> ';
 		result = result + ' <option '+(marketPriceCurrency == "AUD" ? "selected" : "")+' value="AUD">AUD</option>';
@@ -267,15 +267,7 @@ function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
 	'</sec:authorize>'
 }
 
-function isNumberKey(evt)
-{
-   var charCode = (evt.which) ? evt.which : evt.keyCode;
-   if (charCode != 46 && charCode > 31 
-     && (charCode < 48 || charCode > 57))
-      return false;
 
-   return true;
-}
 function popupDisplay(message){
 	$(".project_inn_mask").remove();
 		
@@ -302,10 +294,25 @@ function saveEditMarketPriceFun(id, obj){
 	var  marketPrice = $(obj).closest('tr').find("input[id='priceVal']").val();
 	var marketPriceCurrency = $(obj).closest('tr').find("select[id='amountTypeEach']").val();
 	//alert(textVal+" : "+optionVal+" : "+id);
-	if(marketPrice == ""){
+	var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
+	var amountText = $("#priceVal").val();
+	var val = parseFloat($('#priceVal').val());
+	//var formatDigit = /^\d+\.\d\d$/
+	if(format.test(amountText)){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}else if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	}/* else if(!formatDigit.test(amountText)){
+		popupDisplay("Please enter two digits");
+		return false;
+	} */else if(marketPrice == ""){
 		popupDisplay("Please enter amount!");
 		return false;
 	}
+	
 	$.ajax({
    		type: "POST",
 	 	url : sourceleadUrl+"/updateMarketPlacePrice?marketPlaceId="+id+"&priceVal="+marketPrice+"&priceValType="+marketPriceCurrency,
