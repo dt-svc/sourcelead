@@ -534,17 +534,8 @@ public class PayrollRestController {
 	@ResponseBody
 	public ModelAndView getMyLoansAdv(@RequestParam(value = "loanStatus", required = false) String loanStatus, HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
-			/*List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList = associateLoanAndAdvancesHistoryService.getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
-//			List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
-//			modelAndView.addObject("loanAdvList", loanAdvList);
-			modelAndView.addObject("loanAdvHistoryList", loanAdvHistoryList);
-			modelAndView.addObject("loanAdvListSize", loanAdvHistoryList.size());
-			modelAndView.addObject("loanStatus", loanStatus);*/
-			
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
 			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvancesInd");
 		} catch (Exception e) {
@@ -567,6 +558,10 @@ public class PayrollRestController {
 				alah.setName(alah.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
 				alah.setType(alah.getAssociateLoanAndAdvances().getLoanAdvanceType());
 				alah.setTotalAmount(alah.getAssociateLoanAndAdvances().getAmount());
+				alah.setNoOfShedules(alah.getAssociateLoanAndAdvances().getNoOfSchedules());
+				alah.setRequestedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), alah.getAssociateLoanAndAdvances().getCreatedDate()));
+				alah.setRequestedTo(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), alah.getAssociateLoanAndAdvances().getEffectiveDate()));
+				alah.setLoanStatus(alah.getAssociateLoanAndAdvances().getLoanAndAdvanceStatus());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -15,6 +15,8 @@ public class ProjectAssignedMembersDTO implements Serializable{
 
 	private String projectClientUUID;
 	
+	private String type;
+	
 	public List<ProjectMembersDTO> getProjectMembers() {
 		return projectMembers;
 	}
@@ -39,5 +41,11 @@ public class ProjectAssignedMembersDTO implements Serializable{
 		this.projectClientUUID = projectClientUUID;
 	}
 
-	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

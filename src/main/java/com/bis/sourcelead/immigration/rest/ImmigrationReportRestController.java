@@ -149,8 +149,6 @@ public class ImmigrationReportRestController {
 		}
 		
 		return responseList;
-	
-
 }
 	
 	@RequestMapping(value = { "/exportPetitionReportPdf"})
@@ -358,5 +356,117 @@ public class ImmigrationReportRestController {
 		
 		return model;
 	}
+	
+	
+	/**
+	 * @author Prasad Korasikha
+	 * 
+	 * this method is used to run the Immigration Attorney report
+	 * @param immigrationReportDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value ="/runImmigrationAttorneyReport", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<ImmigrationReportViewDTO> runImmigrationAttorneyReport(ImmigrationReportViewDTO immigrationReportViewDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<ImmigrationReportViewDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				
+				String[] tableColumns = {"generatedId", "petitionType", "clientOrgName", "firstName", "email", "phone"};
+				
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(immigrationReportViewDTO.getOrder() != null && !immigrationReportViewDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(immigrationReportViewDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = immigrationReportViewDTO.getOrder().get(0).get("dir");
+				}
+				immigrationReportViewDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				immigrationReportViewDTO.setSortOrder(sortColumnOrder);
+				Date[] dates = new Date[2];
+				if("Custom".equalsIgnoreCase(immigrationReportViewDTO.getDateFrequency())) {
+					dates[0] = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationReportViewDTO.getFreqStartDate());
+					dates[1] = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationReportViewDTO.getFreqEndDate());
+				}else {
+					dates = reportsUtil.getJobFilterDate(immigrationReportViewDTO.getDateFrequency(), orgLocations);
+				}
+				immigrationReportViewDTO.setFreqDates(dates);
+			    responseList = immigrationCommonService.getImmigrationAttorneyReports(immigrationReportViewDTO,orgLocations);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+				
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		return responseList;
+}
+	
+	
+	@RequestMapping(value = { "/exportPetitionAttorneyReportPdf"})
+	public void exportPetitionAttorneyReportPdf(ImmigrationReportViewDTO immigrationReportViewDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<ImmigrationReportViewDTO> responseList = new ResponseList<>();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				
+				String[] tableColumns = {"generatedId", "petitionType", "vendor", "firstName", "email", "phone"};
+				
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(immigrationReportViewDTO.getOrder() != null && !immigrationReportViewDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(immigrationReportViewDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = immigrationReportViewDTO.getOrder().get(0).get("dir");
+				}
+				immigrationReportViewDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				immigrationReportViewDTO.setSortOrder(sortColumnOrder);
+				Date[] dates = new Date[2];
+				if("Custom".equalsIgnoreCase(immigrationReportViewDTO.getDateFrequency())) {
+					dates[0] = commonUtil.getDateFormat(immigrationReportViewDTO.getFreqStartDate());
+					dates[1] = commonUtil.getDateFormat(immigrationReportViewDTO.getFreqEndDate());
+				}else {
+					dates = reportsUtil.getJobFilterDate(immigrationReportViewDTO.getDateFrequency(), orgLocations);
+				}
+				immigrationReportViewDTO.setFreqDates(dates);
+			    responseList = immigrationCommonService.getImmigrationAttorneyReports(immigrationReportViewDTO,orgLocations);
+			    
+			    File file = null;
+			    if(immigrationReportViewDTO.getExportType().equalsIgnoreCase("pdf")) {
+			    	 file=  reportsPdfUtil.immigrationAttorneyPerformancePdfExport(responseList,orgLocations);
+			    }else {
+			    	 file=  reportsPdfUtil.immigrationAttorneyPerformanceExcelExport(responseList,orgLocations);
+			    }
+				
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+			
+	
+      }
+			
+}
 	
 }	

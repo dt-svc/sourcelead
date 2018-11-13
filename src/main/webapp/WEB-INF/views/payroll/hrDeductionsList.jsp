@@ -276,7 +276,7 @@ function getHrDeductionDetails(hrDedId,empName){
 			  $.ajax({
 			    	type: "GET",
 			        url: sourceleadUrl+"/getEmpHrDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&hrDeductionId="+hrDedId,
-			        success: function(json) {
+			        success: function(data) {
 					var result = "";
 					result = result + '<table id="employeeHrDeductionsListTable" class="display" cellspacing="0" width="100%" >';
 					result = result + '<thead>';
@@ -287,6 +287,7 @@ function getHrDeductionDetails(hrDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
+					var json = data.data;
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];

@@ -14,7 +14,7 @@
 			<ul class="nav nav-tabs newTabs">
 				<li id="myPaysLi" class=""><a onclick="getMyPays();" title="Pays">Pays</a></li>
 				<li id="myFormsLi"  class=""><a onclick="getMyForms();" title="Forms">Forms</a></li>
-				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv('Outstanding');getMyLoansAdvList('Outstanding');" title="Loans & Advances">Loans & Advances</a></li>
+				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv('Outstanding');" title="Loans & Advances">Loans & Advances</a></li>
 			</ul>
 	   </div>
    </div>
@@ -37,8 +37,6 @@
       	          type : "GET",
        	      	  url: sourceleadUrl+"/getMyPays",		
        		      success :function(data) {
-       		    	  
-       		    	  
        		    	  $("#myPayRollTabsContent").empty();
        		  		  $("#myPayRollTabsContent").append(data);
        		    	  $("#loadTime").removeAttr('style');
@@ -78,6 +76,7 @@
       		    	  $("#myPayRollTabsContent").empty();
       		  		  $("#myPayRollTabsContent").append(data);
       		    	  $("#loadTime").removeAttr('style');
+      		    	  getMyLoansAdvList('Outstanding');
       		      }
       	    });
       	   highlight('myLoansAdvancesLi');

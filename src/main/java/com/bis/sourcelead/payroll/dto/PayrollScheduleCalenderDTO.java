@@ -9,6 +9,12 @@ public class PayrollScheduleCalenderDTO {
 	private String payRunDate;
 	
 	private String payFrequency;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private String dateFormat;
 
 	public String getPayPeriod()
 	{
@@ -49,7 +55,36 @@ public class PayrollScheduleCalenderDTO {
 	{
 		this.payFrequency = payFrequency;
 	}
-	
+
+	public String getStartDate()
+	{
+		return startDate;
+	}
+
+	public String getEndDate()
+	{
+		return endDate;
+	}
+
+	public void setStartDate(String startDate)
+	{
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate)
+	{
+		this.endDate = endDate;
+	}
+
+	public String getDateFormat()
+	{
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat)
+	{
+		this.dateFormat = dateFormat;
+	}
 	
 	
 }
