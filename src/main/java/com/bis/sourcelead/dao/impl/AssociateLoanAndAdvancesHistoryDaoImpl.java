@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesHistoryDao;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -93,6 +95,30 @@ public class AssociateLoanAndAdvancesHistoryDaoImpl implements AssociateLoanAndA
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return associateLoanAndAdvancesList;
+	}
+
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvanceHistory> getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(User user,
+			OrgLocations orgLocation, String loanStatus) {
+			Session session = this.sessionFactory.getCurrentSession();
+			  List<AssociateLoanAndAdvanceHistory> loanAndAdvHistoryList = null;
+			  try {
+				  String subQuery = "";
+			         if(loanStatus.equalsIgnoreCase("outstanding")) {
+			        	 subQuery = " and ladh.associateLoanAndAdvances.loanAndAdvanceStatus = 'Outstanding'";
+			         }else if(loanStatus.equalsIgnoreCase("Completed")) {
+			        	 subQuery = " and ladh.associateLoanAndAdvances.loanAndAdvanceStatus = 'Completed'";
+			         }else if(loanStatus.equalsIgnoreCase("Requested")) {
+			        	 subQuery = " and ladh.associateLoanAndAdvances.loanAndAdvanceStatus = 'Requested'";
+			         }
+					 String query = "from AssociateLoanAndAdvanceHistory ladh left join fetch ladh.associateLoanAndAdvances lad left join fetch lad.payrollLoanAndAdvanceId left join fetch lad.approverUser left join fetch lad.candidateId left join fetch lad.candidateId.consultantUser where "
+					 		+ " ladh.associateLoanAndAdvances.candidateId.consultantUser.id = :userId and ladh.associateLoanAndAdvances.orgLocationId.id = :orgLocationId and ladh.associateLoanAndAdvances.status = '1'  ";  
+					 loanAndAdvHistoryList = session.createQuery(query.toString()+subQuery).setLong("userId", user.getId()).setLong("orgLocationId", orgLocation.getId()).list();
+			} catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		     return loanAndAdvHistoryList;
 	}
 
 

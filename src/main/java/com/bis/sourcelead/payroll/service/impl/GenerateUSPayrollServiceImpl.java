@@ -247,7 +247,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@SuppressWarnings("static-access")
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	public Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
@@ -470,7 +470,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
    private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
 	{
 	   boolean isTerminated = false;
-	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+//	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+	   if(date.after(freqStartDate) && date.before(freqEndDate)) {
 		   isTerminated = true;
 		}
 		return isTerminated;

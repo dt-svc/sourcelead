@@ -38,7 +38,7 @@
 
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
-	 	 $('#billingRateType').removeAttr('data-validation');
+	 	    $('#billingRateType').removeAttr('data-validation');
 	 		$('#billingRateType').attr('data-validation-optional',"true");
 	 		
 	 		$('#flatReward').removeAttr('data-validation');

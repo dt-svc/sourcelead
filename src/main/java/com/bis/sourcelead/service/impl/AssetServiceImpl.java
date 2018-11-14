@@ -464,19 +464,35 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
-		 Asset savedAsset = assetDao.saveAsset(asset); 
-
-		 //send assign asset email
-		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && savedAsset != null) {
-			 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
-				 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
-					     Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(savedAsset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
-					      if(flag == false)
-							assignAssetEmail(aad,asset,user,orgLocations);
-					 }
+		 Asset savedAsset = null;
+		 if(assetDTO.getAssetId() != null && !"".equals(assetDTO.getAssetId())){
+			 //send assign asset email
+			 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && assetDTO.getAssetId() != null) {
+				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
+						 Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(asset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
+						      if(flag == false)
+								assignAssetEmail(aad,asset,user,orgLocations);
+						 }
+				 }
+				 savedAsset = assetDao.saveAsset(asset); 
 			 }
-		 }
+		 }else {
+			savedAsset = assetDao.saveAsset(asset); 
+			 //send assign asset email
+			 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && savedAsset != null) {
+				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
+								assignAssetEmail(aad,savedAsset,user,orgLocations);
+						 }
+				 }
+			 }
+			 
+		}
+
 		
+		
+		 
 			if(assetDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
 					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
