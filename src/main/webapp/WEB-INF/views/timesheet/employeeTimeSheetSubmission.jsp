@@ -1437,7 +1437,7 @@ function addTimeSheetRow() {
             	          		  } else if(count == 4 && thuEditable != "true"){
             	          			 $("#commentDiv"+i+" textarea").val('')
             	          			 $("#commentDiv"+i).find('i').removeAttr('class');
-            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
             	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
             	          		  } else if(count == 5 && friEditable != "true"){
             	          			 $("#commentDiv"+i+" textarea").val('')

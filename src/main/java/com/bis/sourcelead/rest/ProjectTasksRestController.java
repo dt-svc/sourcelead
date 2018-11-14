@@ -768,8 +768,11 @@ public class ProjectTasksRestController {
 	public String updateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,
 			@RequestParam(value = "assignValue", required = false) String assignValue,
 			@RequestParam(value = "taskId", required = false) String projectTaskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO, assignValue, projectTaskId, userId);
+			@RequestParam(value = "userId", required = false) Long userId,
+			HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO, assignValue, projectTaskId, userId,loginOrgLocation);
 		return "success";
 	}
 
