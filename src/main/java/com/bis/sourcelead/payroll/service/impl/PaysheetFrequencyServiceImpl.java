@@ -794,16 +794,41 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			StringBuilder sb = new StringBuilder();
 			sb.append(emp.getCandidate().getFirstName());
 			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
-				sb.append(emp.getCandidate().getLastName());
+				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
 			if(emp.getCandidate().getWorkLocation() != null)
 				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
-			StringBuilder sb1 = new StringBuilder();
+			
+			String ssn = "";
+			if(StringUtils.isNotBlank(emp.getEmployee().getUser().getSsn())){
+				StringBuilder sb1 = new StringBuilder();
+				sb1.append("xxx-xx-");
+				try {
+					String[] ssnNum = emp.getEmployee().getUser().getSsn().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = emp.getEmployee().getUser().getSsn();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				sb1.append(ssnNum[2]);
+				ssn = sb1.toString();*/
+			}else {
+				ssn = "NA";
+			}
+			
+			/*StringBuilder sb1 = new StringBuilder();
 			sb1.append("xxx-xx-");
 			String[] ssnNum = emp.getCandidate().getConsultantUser().getSsn().split("-");
-			sb1.append(ssnNum[2]);
-			dto.setSsnNumber(sb1.toString());
+			sb1.append(ssnNum[2]);*/
+			dto.setSsnNumber(ssn);
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
 			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);

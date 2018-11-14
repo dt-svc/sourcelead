@@ -3662,13 +3662,13 @@ public class EMailJobScheduler {
 			globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
 		}
 		
-		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+		/*EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 				Constants.IMMIGRATION_NOTIFICATION_TO_BENEFICIARY, Constants.ENTITY_TYPE_NOTIFICATION);
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
-		emailScenerioUtil.sendNotification(actionLink, ol.getOrg().getUser(), toCandidateObj.getConsultantUser(), ol,notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, ol.getOrg().getUser(), toCandidateObj.getConsultantUser(), ol,notificationScenario,new HashMap<String,String>());*/
 	}
 
 	private void sendEmailToTaskReminderCandidate(Candidate toCandidateObj, User fromUserObj, Immigration immigration,

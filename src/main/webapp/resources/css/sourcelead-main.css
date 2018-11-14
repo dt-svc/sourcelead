@@ -9455,6 +9455,9 @@ display:block; margin:0 auto; width:16px; height:16px; border-radius:50%;
 .colorPosition{
 position: absolute; left:5px; top:7px;
 }
+.eventCalendar .ui-datepicker-header {
+	display: none;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
