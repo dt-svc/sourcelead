@@ -1905,7 +1905,16 @@ public class RequirementListRestController {
 				if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
 					String assignTo = user.getId().toString();
 					BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
-					reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("reqLevel1ApproverUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("reqLevel2ApproverUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("managerUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("primaryRecruiterUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("teamOwnerUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+					
+					
+					
+					
 					boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
 					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
 						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
