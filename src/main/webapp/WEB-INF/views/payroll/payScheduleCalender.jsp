@@ -4,16 +4,50 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+
 <style>
-.Highlighted a {
-	background-color : #9ACD32 !important;
+.Highlighted {
+	background-color : #DCDCDC !important;
 	font-weight:bold !important;
-	font-size: 12pt;
+	font-size: 12pt; border: 1px solid #fff !important;
 }
+.CheckDateHighlighted {
+	background-color : 	#F0E68C !important;
+	font-weight:bold !important;
+	font-size: 12pt; border: 1px solid #fff !important;
+}
+.RunDateHighlighted {
+	background-color : #0000FF !important;
+	font-weight:bold !important;
+	font-size: 12pt; border: 1px solid #fff !important;
+}
+.Highlighted a.ui-state-default {
+ color: #fff !important;
+}
+
+#eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content {
+    border: 1px solid #ededed !important;
+    box-shadow: none;
+    width: 60% !important;
+    border-radius: 0;
+    background: #fff !important;
+    padding: 10px;
+}
+
+/* .Hil a { */
+/* 	background-color : #DC143C !important; */
+/* 	font-weight:bold !important; */
+/* 	font-size: 12pt; */
+/* } */
+
+
+
 </style>
+
 
 <script>
 $(document).ready(function(){
+	$("#calenderViewDIV").hide();
 	var payrollScheduleUUID = "${payScheduleUUID}";
 	calendarView(payrollScheduleUUID);
 });
@@ -37,7 +71,7 @@ $(document).ready(function(){
 			<div class="clearfix mb10 mt10">
 				<div class="pull-left reqListBtn ml10">
 					<span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span>
-					<!-- <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> -->
+					 <!-- <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> -->
 				</div>
 				</div>
 			</div>
@@ -49,7 +83,7 @@ $(document).ready(function(){
 			  </div>
 		</div>
 		
-		<div id="payperiodCalendarview" class="customEvents-Calendar" style="display: none;">
+		<!-- <div id="payperiodCalendarview" class="customEvents-Calendar" style="display: none;">
 			<div class="clearfix mb mt">
 			<div class="col-md-12">
 					<div class="col-md-3 mb">
@@ -58,9 +92,10 @@ $(document).ready(function(){
 							<h4 class="text-primary">December 19-25, 2018</h4>
 						</div>
 						<div id="eventCalendar" class="clearfix width100percnt"></div>
+						<div id="eventCalendar" > </div>
 					</div>
 			</div>
-				<!-- <div class="col-md-3 mb">
+				<div class="col-md-3 mb">
 					<div id="period1"></div>
 					<div class="clearfix"></div>
 				</div>
@@ -75,9 +110,18 @@ $(document).ready(function(){
 				<div class="col-md-3 mb">
 					<div id="period4"></div>
 					<div class="clearfix"></div>
-				</div> -->
+				</div>
 			</div>
+		</div> -->
+		
+		<div class="clearfix">
+		<div id="calenderViewDIV" class="mb mt"></div>
+		<!-- <div class="clearfix">
+			<p class="text-primary">Pay Period</p>
+			<h4 class="text-primary">December 19-25, 2018</h4>
 		</div>
+            <div id="eventCalendar" class='eventCalendar customEvents-Calendar'></div> -->
+        </div>
 		
 	  </div>
 	  
@@ -113,6 +157,7 @@ $(document).ready(function(){
 						$("#calenderDiv").empty();
 						$("#calenderDiv").append(result);
 						calenderPagination();
+						 callDates(data);
 		        },
 		    });
 	}
@@ -139,19 +184,17 @@ function calenderPagination(){
 $(".listviewPaydays").click(function(){
 	$("#payperiodListview").show();
 	$("#payperiodCalendarview").hide();
+	$("#calenderViewDIV").hide();
 	$(this).addClass("rAct");
 	$(".calendarviewPaydays").removeClass("rAct");
 });
 $(".calendarviewPaydays").click(function(){
 	$("#payperiodListview").hide();
 	$("#payperiodCalendarview").toggle();
+	$("#calenderViewDIV").show();
 	$(this).addClass("rAct");
 	$(".listviewPaydays").removeClass("rAct");
 	
-	var dates = {}
-	dates[new Date('11/10/2018')] = new Date('11/10/2018'); 
-	 alert(dates);
-	 openDates(dates);
 	
 });
 </script>
@@ -169,60 +212,92 @@ $('#next, #prev').on('click', function(e) {
 	
 <script>
 
-/* var j=0; */
-	
-	/*  SelectedDates[new Date('10/13/2018')] = new Date('10/13/2018');
-	 SelectedDates[new Date('10/14/2018')] = new Date('10/14/2018');
-	 SelectedDates[new Date('10/15/2018')] = new Date('10/15/2018');
-	 SelectedDates[new Date('10/16/2018')] = new Date('10/16/2018'); */
-	 
-	/*  SelectedDates[new Date('10/17/2018')] = new Date('10/17/2018'); 
-	 SelectedDates[new Date('10/18/2018')] = new Date('10/18/2018');
-	 SelectedDates[new Date('10/19/2018')] = new Date('10/19/2018');
-	 SelectedDates[new Date('10/20/2018')] = new Date('10/20/2018');
-	 SelectedDates[new Date('10/21/2018')] = new Date('10/21/2018');
-	 SelectedDates[new Date('10/22/2018')] = new Date('10/22/2018');
-	 SelectedDates[new Date('10/23/2018')] = new Date('10/23/2018');
-	 
-	 SelectedDates[new Date('10/24/2018')] = new Date('10/24/2018'); 
-	 SelectedDates[new Date('10/25/2018')] = new Date('10/25/2018');
-	 SelectedDates[new Date('10/26/2018')] = new Date('10/26/2018');
-	 SelectedDates[new Date('10/27/2018')] = new Date('10/27/2018');
-	 SelectedDates[new Date('10/28/2018')] = new Date('10/28/2018');
-	 SelectedDates[new Date('10/29/2018')] = new Date('10/29/2018');
-	 SelectedDates[new Date('10/30/2018')] = new Date('10/30/2018'); */
-	 
 
-	/* 
-	  function openDates(){
-		 alert("hi");
-		 var SelectedDates = {};
-		 SelectedDates[new Date('11/10/2018')] = new Date('11/10/2018'); 
-		 SelectedDates[new Date('11/11/2018')] = new Date('11/11/2018');
-		 SelectedDates[new Date('11/12/2018')] = new Date('11/12/2018');
-		 
-	    $("#eventCalendar").datepicker({
-			    beforeShowDay: function(date) {
-			  	  var hlText = SelectedDates[date];
-			  		return (hlText)?[true, "Highlighted", '']: [true, '', ''];  
-			  		
-			        
-			  	}
-	      
-	    });
-	  }  */
-	 
-	
-		function openDates(dates) {
-		  alert(dates);
-		    $("#eventCalendar").datepicker({
-		    	beforeShowDay: function(date) {
-				  	  var hlText = dates[date];
-				        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
-				  	}
-		    });
-		}
+function callDates(data){
+        var result = "";
+        for(var i=0;i<data.length;i++){
+        	var opt = data[i];
+        	result = result + '<div class="col-md-3 mb">';
+        	result = result + '<div class="clearfix">';
+        	result = result + '<p class="text-primary">Pay Period</p>';
+        	result = result + '<h4 class="text-primary">'+opt.dateFormat+'</h4>';
+        	result = result + '</div>';
+        	result = result + '<div id="eventCalendar'+i+'" class="eventCalendar customEvents-Calendar"></div>';
+        	result = result + '</div>';
+        }
+		$("#calenderViewDIV").empty();
+		$("#calenderViewDIV").append(result);
+		
+         for(var i=0;i<data.length;i++){
+        	 var opt = data[i];
+        	 var eventDates = {};
+        	 
+        	 var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
+        	 
+        	 // Preparing eventDates Array
+        	 for (var k = 0; k < dates.length; k++) {
+        		  eventDates[ new Date(''+dates[k]+'')] = new Date(''+dates[k]+'');
+        		} 
+             var dateToday = new Date(''+opt.endDate+'');  // current date calender dates
+        	  $("#eventCalendar"+i).datepicker({
+        		  changeMonth: true,
+        	      changeYear: true,
+        	      defaultDate: dateToday,
+        		    beforeShowDay: function(date) {
+        		  	  var hlText = eventDates[date];
+        		  	return (hlText)?[true, "Highlighted", '']: [true, '', ''];    
+        		  	}
+        	    })
+        	  $("#eventCalendar"+i).removeClass('ui-state-active');
+        	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
+         }
+         
+         for(var i=0;i<data.length;i++){
+        	 var opt = data[i];
+        	 var eventDates = {};
+        	 
+        	/*  var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
+        	 
+        	 // Preparing eventDates Array
+        	 for (var k = 0; k < dates.length; k++) { */
+        		  eventDates[ new Date('10/15/2018')] = new Date('10/15/2018');
+        		/* }  */
+             var dateToday = new Date(''+opt.startDate+'');  // current date calender dates
+        	  $("#eventCalendar"+i).datepicker({
+        		  changeMonth: true,
+        	      changeYear: true,
+        	      defaultDate: dateToday,
+        		    beforeShowDay: function(date) {
+        		  	  var hlText = eventDates[date];
+        		  	return (hlText)?[true, "CheckDateHighlighted", '']: [true, '', ''];    
+        		  	}
+        	    })
+        	  $("#eventCalendar"+i).removeClass('ui-state-active');
+        	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
+         }
+   
+    
+}
 </script>
+
+<script>
+var getDates = function(startDate, endDate) {
+	  var dates = [],
+	      currentDate = startDate,
+	      addDays = function(days) {
+	        var date = new Date(this.valueOf());
+	        date.setDate(date.getDate() + days);
+	        return date;
+	      };
+	  while (currentDate <= endDate) {
+	    dates.push(currentDate);
+	    currentDate = addDays.call(currentDate, 1);
+	  }
+	  return dates;
+	};
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />
 
 

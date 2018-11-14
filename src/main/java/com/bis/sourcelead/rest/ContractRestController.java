@@ -336,6 +336,7 @@ public class ContractRestController {
 		if (null != contracts) {
 			isContractSaved = true;
 		}
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a Contract");
 		return isContractSaved;
 	}
 	
@@ -359,6 +360,7 @@ public class ContractRestController {
 		if (null != contracts) {
 			isContractSaved = true;
 		}
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a Contract");
 		return isContractSaved;
 	}
 	
@@ -664,6 +666,7 @@ public class ContractRestController {
 		if (null != contracts) {
 			isContractSaved = true;
 		}
+		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a Contract");
 		return isContractSaved;
 	}
 	

@@ -59,6 +59,12 @@
 	 requirementApplicantList(true);
 	 /* getClientList(); */
 // 	 getTeamsList();
+	 
+	$("#dataTableSearch").keyup(function(e) {
+		   if(e.which === 13) {
+			   requirementApplicantList();
+		   }
+	});
  });
  
  </script>
@@ -131,13 +137,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	            var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&searchValue="+searchValue;
     	    	    prepareApplicantList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
+    	        var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants+"&searchValue="+searchValue;
     		    prepareApplicantList(url);
     	    } 
 		
@@ -343,11 +349,7 @@ function applicantpagination(url){
     } );
     $("#applicantpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   requirementApplicantList();
-    	   }
-    	});
+
 }
 
 </script>

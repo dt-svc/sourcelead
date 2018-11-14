@@ -594,6 +594,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setStatus(1);
 			projectClients.setLevel(1);
+			projectClients.setIsEndClient(Constants.YES);
 			projectClients.setCreatedDate(new Date());
 			projectClients.setUpdatedDate(new Date());
 			projectClients.setCreatedBy(approverUser);
