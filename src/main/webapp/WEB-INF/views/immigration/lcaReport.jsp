@@ -128,7 +128,7 @@
 					</span>
        			</div>
    				</li>
-			    <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search LCA No,LCA Title,Start date,End date" type="text" title="Search LCA No,LCA Title,Start date,End date"></span>
+			    <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search LCA No,LCA Title,Start date,End date" type="text" title="Search LCA No,LCA Title,SOC Code,SocTitle,Job Title,No. of positions,Start date,End date,LCA Status,Status"></span>
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
