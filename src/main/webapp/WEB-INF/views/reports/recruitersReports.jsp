@@ -351,6 +351,9 @@ function userDataTableList(){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValue;
 		 usersListPagination(url,sourceleadUrl);
+		 if(timePeriod == 'custom'){
+		 $("#customSearch").hide();
+		 }
 	 }
 	
 }
