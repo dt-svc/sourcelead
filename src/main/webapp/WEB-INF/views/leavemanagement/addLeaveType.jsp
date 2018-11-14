@@ -143,7 +143,7 @@
 <%-- 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day')}"> --%>
 											
 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day') && !fn:contains(leaveType.duration, 'Half Day')}">
-												<input type="checkbox" checked="true" id="fullDayId" name="duration" value="Full Day">
+												<input type="checkbox" checked="true" id="fullDayId" name="duration" value="Full Day" >
 												<span class="paddingLeft">Full Day</span>
 												<input type="checkbox" id="halfDayId" name="duration" value="Half Day">
 												<span class="paddingLeft">Half Day</span>
@@ -153,7 +153,7 @@
 											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
 												<span class="paddingLeft">Full Day</span>
 												
-												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day">
+												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day" >
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 											<c:if test = "${fn:contains(leaveType.duration, 'Half Day') && fn:contains(leaveType.duration, 'Full Day') }">
@@ -164,12 +164,13 @@
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" id="fullDayId" checked name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
 										</c:if>
 									</label>
+									<input type="hidden"  id="leaveValue" name="leaveValue"  field-name="Leave type" data-validation="required"/>
 									<%-- <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
 									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option> --%>
 							</div>
@@ -264,7 +265,7 @@
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
 									<select class="chosen-select form-control" multiple name="department" onchange="removeErrMsg();"
-										id="department" field-name="Department" data-placeholder="Select Departments"
+										id="department" field-name="Department" data-placeholder="Select Departmnets"
 										data-validation-optional="true">
 										<c:forEach var="report" items="${departmentList}">
 										    <c:set var="NUM" value="${0}" />
@@ -305,10 +306,10 @@
 							
 										
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Employment Type</label>
+								<label class="col-md-4">Select Employement Type</label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
 									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
-										field-name="Employement Type" data-placeholder="Select Employment Type" data-validation-optional="true">
+										field-name="Employement Type" data-placeholder="Select Employement Type" data-validation-optional="true">
 						                 <c:forEach var="employmentType" items="${employmentTypeList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="dbEmpType" items="${leaveType.leaveEmpType}">
@@ -1262,7 +1263,37 @@ function showLeaveEncashmentDiv(){
 	}
 </script>
 <script type="text/javascript">
+	function LeaveCheckValidationAssociate(){
+		
+		 if($('#fullDayId').is(":checked") || $('#halfDayId').is(":checked")){
+				$('#leaveValue').removeAttr('data-validation');
+		  }else{
+			  $('#leaveValue').attr('data-validation',"required");
+		  }
+		
+	/* 	 var leavesList = [];
+ 		 $("input[name='leave']:checked").each( function (i) {
+ 			leavesList[i] = $(this).val();
+ 		});
+ 		 
+ 		 alert("length-------"+leavesList.length)
+ 		 
+		if (leavesList.length > 0) { 
+			alert(1)
+		document.getElementById("leaveValue").value = id.value;
+		$('#leaveValue').removeAttr('data-validation');
+		}else{
+			alert(2)
+			$('#leaveValue').val(''); 
+		} */
+	} 
+</script>
+<script type="text/javascript">
 	function submitLeaveType() {
+		
+		LeaveCheckValidationAssociate();
+		
+		
 		validateName();
 			var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 			var locationId = '${SourceLeadWeb_orgLocationId}';
