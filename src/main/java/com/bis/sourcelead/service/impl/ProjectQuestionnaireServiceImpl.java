@@ -292,7 +292,9 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			 
 			   if(projectMembersList != null && projectMembersList.size() > 0){
 				   for(ProjectMembers projectMembers : projectMembersList){
-					   sendEmailToTeamMembers(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
+			        	if(orgLocations.getId().longValue() == projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId()) {
+					        sendEmailToTeamMembers(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
+			        	}
 				   }
 			   }
 		   }

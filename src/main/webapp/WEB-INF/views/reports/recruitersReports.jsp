@@ -550,23 +550,26 @@ function usersListPagination(url,sourceleadUrl){
     } );
     $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#usersDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-   		    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#usersDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		userDataTableList();
-   	    	}else{
-   	    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-   	    	}
-   	    	$('#usersDataTableSearch').val(searchData);
-    	   }
-    	});
+    
 }
 </script>
 
 <script>
+
+$("#usersDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+	    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#usersDataTableSearch').val();
+    	var regex =  new RegExp(/[\\-]/g);
+    	if(regex.test(searchData) == false){
+    		userDataTableList();
+    	}else{
+    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+    	}
+    	$('#usersDataTableSearch').val(searchData);
+	   }
+	});
+
 function getRecruiterJobs(userCode){
 	var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
