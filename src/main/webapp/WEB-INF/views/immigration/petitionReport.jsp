@@ -63,7 +63,6 @@ $(document).ready(function(){
             </div>
             
             <div class="col-md-5">
-            
             <div class="clearfix mb">
              <div class="form-group">
               <label class="clearfix">Duration</label>
@@ -100,16 +99,9 @@ $(document).ready(function(){
 				</div>
             </div>
             </div>
-            
-            
             <div>
             
             </div>
-            
-            
-            
-
-            
 			</div>
       </div>
 	<div class="clearfix footerstyelsNew">
@@ -117,6 +109,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -502,8 +495,8 @@ function immigrationReportPagination(url){
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		 if(opt.phone !=null && opt.phone != '' && opt.phone !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phone+'" >'+opt.phone+'</div>';
+	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phoneNumber+'" >'+opt.phoneNumber+'</div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 

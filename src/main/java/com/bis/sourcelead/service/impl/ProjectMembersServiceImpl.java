@@ -1065,7 +1065,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
-				 
+					  
+					  if(StringUtils.isNotEmpty(projectAssignedMembersDTO.getType()) && projectAssignedMembersDTO.getType().equalsIgnoreCase("projectSummary"))
 					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
@@ -2134,6 +2135,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,
 			List<Long> projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersListByCandidateIdAndProjectClientId(candidateId, projectClientsId);
+	}
+
+	@Override
+	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
+			throws Exception {
+		return projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, orglocationId);
 	}
 
 }

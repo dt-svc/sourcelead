@@ -28,12 +28,15 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -666,10 +669,20 @@ public class PayrollUtil {
 		BigDecimal ytdMedicare = BigDecimal.ZERO;
 		BigDecimal ytdCounty = BigDecimal.ZERO;
 		BigDecimal ytdlocaltax = BigDecimal.ZERO;
+		BigDecimal ytdStateWithholding = BigDecimal.ZERO;
+		BigDecimal ytdEarnedIncCredit = BigDecimal.ZERO;
+		BigDecimal ytdSUI = BigDecimal.ZERO;
+		
+		BigDecimal ytdSDI = BigDecimal.ZERO;
+		BigDecimal ytdFLI = BigDecimal.ZERO;
+		BigDecimal ytdHCSF = BigDecimal.ZERO;
+		BigDecimal ytdWC = BigDecimal.ZERO;
+		
 		double ytdGross = 0;
 		double ytdDeduction = 0;
 		double ytdNet = 0;
 		double ytdTaxes = 0;
+		
 		List<DeductionDTO> dedHisList = new ArrayList<>();
 		List<ContributionDTO> contrHisList = new ArrayList<>();
 		try {
@@ -685,6 +698,8 @@ public class PayrollUtil {
 					ytdMedicare = ytdMedicare.add(payrollTax.getMedicareWithholding());
 					ytdCounty = ytdCounty.add(payrollTax.getCountyWithholding());
 					ytdlocaltax = ytdlocaltax.add(payrollTax.getLocalTax());
+					ytdStateWithholding = ytdStateWithholding.add(payrollTax.getStateWithholding());
+					ytdEarnedIncCredit = payrollTax.getEarnedIncCredit();
 					List<DeductionDTO> ytdDedlist = getDeductionData(ytdPayroll);
 					dedHisList.addAll(ytdDedlist);
 					List<ContributionDTO> ytdContributionList = getContributionData(ytdPayroll);
@@ -709,7 +724,14 @@ public class PayrollUtil {
 			ytd.setYtdDeduction(new BigDecimal(df2.format(ytdDeduction)));	
 			ytd.setYtdCounty(ytdCounty);
 			ytd.setYtdMedicare(ytdMedicare);
+			ytd.setYtdEarnedIncCredit(ytdEarnedIncCredit);
+			ytd.setytdStateWithholding(ytdStateWithholding);
 			ytd.setYtdlocaltax(ytdlocaltax);
+			ytd.setYtdSUI(ytdSUI);
+			ytd.setYtdSDI(ytdSDI);
+			ytd.setYtdFLI(ytdFLI);
+			ytd.setYtdHCSF(ytdHCSF);
+			ytd.setYtdWC(ytdWC);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -904,36 +926,191 @@ public class PayrollUtil {
 		return list;
 	}
 
-	public List<String> getPayScheduleWeeksByDate(int year, int month, int dateInt, OrgLocations orgLocation)
+	public List<PayrollScheduleCalenderDTO> getPayScheduleWeeksByDate(UsPayrollSchedule paySchedule, OrgLocations orgLocation)
 	{
-		List<String> payFrequency = new ArrayList<>();
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		List<List<String>> weekdates = new ArrayList<List<String>>();
-		List<String> dates;
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.YEAR, year);
-		for (int i =month; i <=11; i++) {
-			c.set(Calendar.MONTH, i);
-			c.set(Calendar.DAY_OF_MONTH, dateInt);
-			while (c.get(Calendar.MONTH) == i) {
-				dates = new ArrayList<String>();
-//				while (c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-//					c.add(Calendar.DAY_OF_MONTH, -1);
-//				}
-				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-				c.add(Calendar.DAY_OF_MONTH, 6);
-				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-				weekdates.add(dates);
-				c.add(Calendar.DAY_OF_MONTH, 1);
+		
+		List<PayrollScheduleCalenderDTO> payFrequency = new ArrayList<>();
+		try {
+			List<List<String>> weekdates = new ArrayList<List<String>>();
+			List<String> dates;
+			int numberOfDays = 0;
+			if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+			  String[] mm = paySchedule.getNextPayMonth().split("-");
+			  int month = getMonth(mm[0]);
+			  Calendar cal = Calendar.getInstance();
+				int year = cal.get(Calendar.YEAR);
+				SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
+				cal.set(Calendar.YEAR,year);
+				for(int i=month;i<12;i++) {
+					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
+					cal.set(Calendar.MONTH, i);
+//					cal.set(Calendar.DATE,1);
+					cal.set(Calendar.DATE, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+					Date monthStartDate = cal.getTime();
+					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+					Date monthEndDate = cal.getTime();
+					int checkDateDiff = commonUtil.diffBtwTowDates(monthEndDate,paySchedule.getPayCheckDate());
+					int runPayDateDiff = commonUtil.diffBtwTowDates(monthEndDate,paySchedule.getRunPayrollDate());
+					// System.out.println(nextMonthLastDay);
+					Calendar ncal = Calendar.getInstance();
+					ncal.setTime(monthEndDate); // Now use today date.
+					ncal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
+					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+					
+					Calendar runPalCal = Calendar.getInstance();
+					runPalCal.setTime(monthEndDate); // Now use today date.
+					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
+					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
+					
+					calenderDTO.setPayPeriod(sds.format(monthStartDate).toUpperCase());
+					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
+					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
+					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
+					calenderDTO.setPayCheckDate(nextPayCheckDate);
+					calenderDTO.setPayRunDate(nextPayRunDate);
+					payFrequency.add(calenderDTO);
+				}
 			}
-		}
-		for (List<String> innerList : weekdates) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(innerList.get(0)).append(",").append(innerList.get(1));
-			payFrequency.add(innerList.get(0));
-			payFrequency.add(innerList.get(1));
+//			Weekly Bi-Weekly
+			if("Weekly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+				numberOfDays = 6;
+			}else if("Bi-Weekly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+				numberOfDays = 14; 
+			}
+			Date date = paySchedule.getPayPeriodStartDate();
+			if(!"Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+				Calendar now = Calendar.getInstance();
+				now.setTime(date);
+				int year = now.get(Calendar.YEAR);
+				int month = now.get(Calendar.MONTH);
+				int dateInt = now.get(Calendar.DATE);
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.YEAR, year);
+				for (int i =month; i <=11; i++) {
+					c.set(Calendar.MONTH, i);
+					c.set(Calendar.DAY_OF_MONTH, dateInt);
+					while (c.get(Calendar.MONTH) == i) {
+						dates = new ArrayList<String>();
+						dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+						c.add(Calendar.DAY_OF_MONTH, numberOfDays);
+						dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+						weekdates.add(dates);
+						c.add(Calendar.DAY_OF_MONTH, 1);
+						dateInt = c.get(Calendar.DATE);
+					}
+				}	
+				int checkDateDiff = commonUtil.diffBtwTowDates(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), weekdates.get(0).get(1)),paySchedule.getPayCheckDate());
+				int runPayDateDiff = commonUtil.diffBtwTowDates(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), weekdates.get(0).get(1)),paySchedule.getRunPayrollDate());
+				
+				for (List<String> innerList : weekdates) {
+					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
+					StringBuilder sb = new StringBuilder();
+					sb.append(innerList.get(0)).append(",").append(innerList.get(1));
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1))); // Now use today date.
+					cal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
+					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+					
+					Calendar runPalCal = Calendar.getInstance();
+					runPalCal.setTime(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1))); // Now use today date.
+					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
+					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
+					
+					calenderDTO.setPayPeriod(sb.toString());
+//					System.out.println("*****************  "+sb.toString());
+					calenderDTO.setPayFrequency(sb.toString());
+					Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(0));
+					Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1));
+					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(sDate));
+					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(eDate));
+					calenderDTO.setPayCheckDate(nextPayCheckDate);
+					calenderDTO.setPayRunDate(nextPayRunDate);
+					
+					String dateFormat = getDateChangedFormat(sDate,eDate);
+					calenderDTO.setDateFormat(dateFormat);
+					payFrequency.add(calenderDTO);
+				}
+			}
+			
+		
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return payFrequency;
+	}
+
+	/**
+	 * Changing Date format like Decemeber : 9-15 ,2018
+	 * @param sDate
+	 * @param eDate
+	 * @return String
+	 */
+	private String getDateChangedFormat(Date sDate, Date eDate)
+	{
+		StringBuilder sb = new StringBuilder("");
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(sDate);
+			String startDate = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
+			cal.setTime(eDate);
+			String endDate = new SimpleDateFormat("dd MMM yyyy").format(cal.getTime());
+			sb.append(startDate).append(" / ").append(endDate);	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Get Month Numbers
+	 * @param monthName
+	 * @return
+	 */
+	private int getMonth(String monthName)
+	{
+		int month = 0;
+		switch (monthName) {
+			case "JAN":
+				month = 0;
+				break;
+			case "FEB":
+				month = 1;
+				break;
+			case "MAR":
+				month = 2;
+				break;
+			case "APR":
+				month = 3;
+				break;
+			case "MAY":
+				month = 4;
+				break;
+			case "JUN":
+				month = 5;
+				break;
+			case "JUL":
+				month = 6;
+				break;
+			case "AUG":
+				month = 7;
+				break;
+			case "SEP":
+				month = 8;
+				break;
+			case "OCT":
+				month = 9;
+				break;
+			case "NOV":
+				month = 10;
+				break;
+			case "DEC":
+				month = 11;
+				break;
+			default:
+				month = 0;
+				break;
+		}
+		return month;
 	}
 
 	
