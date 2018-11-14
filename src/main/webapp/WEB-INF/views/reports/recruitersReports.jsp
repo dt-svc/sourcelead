@@ -349,7 +349,7 @@ function userDataTableList(){
 	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValue;
 		 usersListPagination(url,sourceleadUrl);
 	 }
 	
@@ -401,9 +401,9 @@ function usersListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-            		  result = result +"<td><div class='small'> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span> </a></div> </td>";
+            		  result = result +"<td><div> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span> </a></div> </td>";
             	  }else{
-         	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+         	    	 result = result +"<td><div> <span>0</span></div></td>"; 
           	      }
             	  
 	             return result;
@@ -417,9 +417,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
-	            		  result = result +"<td><div class='small'><a onClick='getRecruiterCandidates(\""+opt.userCode+"\")'><span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></a></div></td>";
+	            		  result = result +"<td><div><a onClick='getRecruiterCandidates(\""+opt.userCode+"\")'><span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></a></div></td>";
 	            	  }else{
-	          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	          	    	 result = result +"<td><div> <span>0</span></div></td>"; 
 	          	      }
 	            	  return result;
 	              }
@@ -430,9 +430,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'><a onClick='getRecruiterApplicantsList(\""+opt.userCode+"\")'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></a></div></td>";
+	            	    	 result = result +"<td><div><a onClick='getRecruiterApplicantsList(\""+opt.userCode+"\")'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	 result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		 return result;
@@ -444,9 +444,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {  
 	            	    var result = "";
 	            	    if(opt.userShortlistedApplicantsCount !=null && opt.userShortlistedApplicantsCount !='' && opt.userShortlistedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'><a onClick='getRecruiterApplicantShortlistsList(\""+opt.userCode+"\")'>  <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></a></div></td>";
+	            	    	result = result +"<td><div><a onClick='getRecruiterApplicantShortlistsList(\""+opt.userCode+"\")'>  <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		return result;
@@ -458,9 +458,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userSubmittedApplicantsCount !=null && opt.userSubmittedApplicantsCount !='' && opt.userSubmittedApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <a onClick='getRecruiterApplicantSubToClientsList(\""+opt.userCode+"\")'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></a></div></td>";
+	            	    	 result = result +"<td><div> <a onClick='getRecruiterApplicantSubToClientsList(\""+opt.userCode+"\")'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -472,9 +472,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userInterviewedApplicantsCount !=null && opt.userInterviewedApplicantsCount !='' && opt.userInterviewedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <a onClick='getRecruiterApplicantInterviewsList(\""+opt.userCode+"\")'><span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></a></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantInterviewsList(\""+opt.userCode+"\")'><span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -486,9 +486,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userOfferedApplicantsCount !=null && opt.userOfferedApplicantsCount !='' && opt.userOfferedApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'><a onClick='getRecruiterApplicantOffermadeList(\""+opt.userCode+"\")'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></a></div></td>";
+	            	    	 result = result +"<td><div><a onClick='getRecruiterApplicantOffermadeList(\""+opt.userCode+"\")'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -500,9 +500,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userRejectedApplicantsCount !=null && opt.userRejectedApplicantsCount !='' && opt.userRejectedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <a onClick='getRecruiterApplicantRejectList(\""+opt.userCode+"\")'><span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></a></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantRejectList(\""+opt.userCode+"\")'><span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -514,9 +514,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsJoinedCount !=null && opt.userApplicantsJoinedCount !='' && opt.userApplicantsJoinedCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <a onClick='getRecruiterApplicantJoinedList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></a></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantJoinedList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -528,9 +528,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <a onClick='getRecruiterApplicantBackoutList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></a></div></td>";
+	            	    	 result = result +"<td><div> <a onClick='getRecruiterApplicantBackoutList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
