@@ -655,7 +655,6 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			try {
 				uRole = userRoleService.getUserRoleByUserIdAndLocationId(emp.getEmployee().getUser().getId(), emp.getEmployee().getOrgLocations().getId());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -673,7 +672,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				PayrollReportDTO repoDto = new PayrollReportDTO();
 				BigDecimal totalDed = ded.getPreDeductionAmount().add(ded.getPostDeductionAmount());
 				repoDto.setDeductions(totalDed);
-				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getId(), orgLocations);
+				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getDeductionId().getId(), orgLocations);
 				repoDto.setYtdDeductions(ytd.getDeductionYTD());
 				dedList.add(repoDto);
 			}
