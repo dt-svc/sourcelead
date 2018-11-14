@@ -16,11 +16,17 @@ $(document).ready(function(){
 function reviewPayroll(){
 	$("#approveDiv").hide();
 	$("#reviewPayrollDiv").show();
+	
+	$("#cativeId").removeClass('current'); 
+	$("#reviewId").addClass('current'); 
 }
 
 function approvePayrollTab(){
 	 $("#reviewPayrollDiv").hide();
 	$("#approveDiv").show(); 
+	
+	$("#reviewId").removeClass('current'); 
+	$("#cativeId").addClass('current'); 
 }
 </script>
 
@@ -35,8 +41,10 @@ function approvePayrollTab(){
     
     <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
-		   <li class="current"><a onclick="reviewPayroll();">Review Payroll</a></li>
-		   <li><a id="draftApproveDiv" onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   <li class="current" id="reviewId"><a onclick="reviewPayroll();">Review Payroll</a></li>
+		   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+		   <li id="cativeId"><a id="draftApproveDiv" onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   </c:if>
 	   </ul>
    </div>
    
@@ -247,6 +255,10 @@ function sendPayrollForApprover(){
   
  <script>
 function confirmPayroll(fromState){
+	$("#cativeId").attr("onClick","approvePayrollTab();");
+	$("#reviewId").removeClass('current'); 
+	$("#cativeId").addClass('current'); 
+	
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
