@@ -2327,7 +2327,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(marketPlace);
 	}
-
+	
+	@Override
+	@Transactional
 	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
 		
 		Integer profilePercentage = 0;

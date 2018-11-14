@@ -631,6 +631,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setYtdHours("NA");
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());
+//			dto.setYtdPayrollDTO(ytdPayrollDTO);
 			dto.setEmpRegularAmount(emp.getRegularHoursAmount());	
 			
 			dto.setCheckDate(commonUtil.orgLocationCommonDate(emp.getPayCheckDate(), orgLocations));
@@ -678,7 +679,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			}
 			
 			dto.setTaxHistory(emp.getUsPayrollTax());
-			dto.setYtdPayrollDTO(getPayrollTaxesYTD(emp, orgLocations));
+			dto.setYtdPayrollDTO(ytdDTO);
 			dto.setDeductionsList(dedList);	
 			payrollList.add(dto);
 //			}
@@ -707,45 +708,45 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			List<EmployeePayroll> payrollList = paysheetFrequencyDao.getPayrollTaxesYTD(payroll,orgLocation);
-			 BigDecimal ficaYTD = BigDecimal.ZERO;
-			 BigDecimal medicareYTD = BigDecimal.ZERO;
-			 BigDecimal federalYTD = BigDecimal.ZERO;
-			 BigDecimal earnedIncCreditYTD = BigDecimal.ZERO;
-			 BigDecimal stateWithholdingYTD = BigDecimal.ZERO;
-			 BigDecimal countyWithholdingYTD = BigDecimal.ZERO;
-			 BigDecimal suiYTD = BigDecimal.ZERO;
-			 BigDecimal sdiYTD = BigDecimal.ZERO;
-			 BigDecimal fliYTD = BigDecimal.ZERO;
-			 BigDecimal hcsfYTD = BigDecimal.ZERO;
-			 BigDecimal wcYTD = BigDecimal.ZERO;
-			 BigDecimal localTaxYTD = BigDecimal.ZERO;
+			 BigDecimal ytdFICA = BigDecimal.ZERO;
+			 BigDecimal ytdMedicare = BigDecimal.ZERO;
+			 BigDecimal ytdFederal = BigDecimal.ZERO;
+			 BigDecimal ytdEarnedIncCredit = BigDecimal.ZERO;
+			 BigDecimal ytdStateWithholding = BigDecimal.ZERO;
+			 BigDecimal ytdCounty = BigDecimal.ZERO;
+			 BigDecimal ytdSUI = BigDecimal.ZERO;
+			 BigDecimal ytdSDI = BigDecimal.ZERO;
+			 BigDecimal ytdFLI = BigDecimal.ZERO;
+			 BigDecimal ytdHCSF = BigDecimal.ZERO;
+			 BigDecimal ytdWC = BigDecimal.ZERO;
+			 BigDecimal ytdLocaltax = BigDecimal.ZERO;
 			for(EmployeePayroll payll : payrollList) {
 				EmployeePayrollTax tax = payll.getUsPayrollTax().iterator().next();
-				ficaYTD = ficaYTD.add(tax.getFicaWithholding());
-				medicareYTD = medicareYTD.add(tax.getMedicareWithholding());
-				federalYTD = federalYTD.add(tax.getFederalWithholding());
-				earnedIncCreditYTD = earnedIncCreditYTD.add(tax.getEarnedIncCredit());
-				stateWithholdingYTD = stateWithholdingYTD.add(tax.getStateWithholding());
-				countyWithholdingYTD = countyWithholdingYTD.add(tax.getCountyWithholding());
-				suiYTD = suiYTD.add(tax.getSUI());
-				sdiYTD = sdiYTD.add(tax.getSDI());
-				fliYTD = fliYTD.add(tax.getFLI());
-				hcsfYTD = hcsfYTD.add(tax.getHCSF());
-				wcYTD = wcYTD.add(tax.getWC());
-				localTaxYTD = localTaxYTD.add(tax.getLocalTax());
+				ytdFICA = ytdFICA.add(tax.getFicaWithholding());
+				ytdMedicare = ytdMedicare.add(tax.getMedicareWithholding());
+				ytdFederal = ytdFederal.add(tax.getFederalWithholding());
+				ytdEarnedIncCredit = ytdEarnedIncCredit.add(tax.getEarnedIncCredit());
+				ytdStateWithholding = ytdStateWithholding.add(tax.getStateWithholding());
+				ytdCounty = ytdCounty.add(tax.getCountyWithholding());
+				ytdSUI = ytdSUI.add(tax.getSUI());
+				ytdSDI = ytdSDI.add(tax.getSDI());
+				ytdFLI = ytdFLI.add(tax.getFLI());
+				ytdHCSF = ytdHCSF.add(tax.getHCSF());
+				ytdWC = ytdWC.add(tax.getWC());
+				ytdLocaltax = ytdLocaltax.add(tax.getLocalTax());
 			}
-			yTDPayrollDTO.setFicaYTD(ficaYTD);
-			yTDPayrollDTO.setMedicareYTD(medicareYTD);
-			yTDPayrollDTO.setFederalYTD(federalYTD);
-			yTDPayrollDTO.setEarnedIncCreditYTD(earnedIncCreditYTD);
-			yTDPayrollDTO.setStateWithholdingYTD(stateWithholdingYTD);
-			yTDPayrollDTO.setCountyWithholdingYTD(countyWithholdingYTD);
-			yTDPayrollDTO.setSuiYTD(suiYTD);
-			yTDPayrollDTO.setSdiYTD(sdiYTD);
-			yTDPayrollDTO.setFliYTD(fliYTD);
-			yTDPayrollDTO.setHcsfYTD(hcsfYTD);
-			yTDPayrollDTO.setWcYTD(wcYTD);
-			yTDPayrollDTO.setLocalTaxYTD(localTaxYTD);
+			yTDPayrollDTO.setYtdFICA(ytdFICA);
+			yTDPayrollDTO.setYtdMedicare(ytdMedicare);
+			yTDPayrollDTO.setYtdFederal(ytdFederal);
+			yTDPayrollDTO.setYtdEarnedIncCredit(ytdEarnedIncCredit);
+			yTDPayrollDTO.setytdStateWithholding(ytdStateWithholding);
+			yTDPayrollDTO.setYtdCounty(ytdCounty);
+			yTDPayrollDTO.setYtdSUI(ytdSUI);
+			yTDPayrollDTO.setYtdSDI(ytdSDI);
+			yTDPayrollDTO.setYtdFLI(ytdFLI);
+			yTDPayrollDTO.setYtdHCSF(ytdHCSF);
+			yTDPayrollDTO.setYtdWC(ytdWC);
+			yTDPayrollDTO.setYtdlocaltax(ytdLocaltax);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
