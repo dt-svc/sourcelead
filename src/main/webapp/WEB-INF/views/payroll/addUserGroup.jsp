@@ -9,23 +9,23 @@
 <div class="addPayrollGroupWrap">
  <form:form id="add_user_group_form"  name="add_user_group_form" method="post">
  <div id="loading"></div>
-    <div class="popupHead">Add Group <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
+    <div class="popupHead">Add Batch <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
     <div class="popupMid" id="formDiv">
                     <div class="minHeightcol5">
                         <div class="col-md-6">
-                            <label>Group Id<span class="text-danger">*</span> </label>
+                            <label>Batch Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">
-
-                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="required validate_length length1-9" onblur="validateGroupId();" field-name="Group Id">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="required validate_length length1-9" onblur="validateGroupId();" field-name="Batch Id">
 
                                 <input type="hidden" id="groupUUID" name="groupUUID" value="${userGroup.groupUUID}"/>
                                 <input type="hidden" id="id" name="id" value="${userGroup.id}"/>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label>Group Name<span class="text-danger">*</span> </label>
+                            <label>Batch Name<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupNameDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required" onblur="validateGroupName();" field-name="Group Name">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required" onblur="validateGroupName();" field-name="Batch Name">
+
                             </div>
                         </div>
                 
