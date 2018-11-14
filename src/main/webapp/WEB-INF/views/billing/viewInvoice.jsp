@@ -630,7 +630,7 @@ function getViewInvoice(){
                                 if(report.dueAmount != null && report.dueAmount != '' && report.dueAmount != 'undefined' && parseFloat(report.dueAmount) > 0){
 	        			dueAmount = parseFloat(report.dueAmount);
 	        		}else{
-	        			dueAmount = "--";
+	        			dueAmount = "0.0";
 	        		}
 	        		
 	        		if(report.convertCurrencyCode != null && report.convertCurrencyCode != '' && report.convertCurrencyCode != 'undefined'){
