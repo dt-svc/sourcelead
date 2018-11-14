@@ -1,10 +1,10 @@
 package com.bis.sourcelead.util;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -19,9 +19,12 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
-import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
@@ -30,15 +33,17 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
-import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -71,6 +76,12 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	AssociatePayrollPayheadHistoryService associatePayrollPayheadHistoryService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -330,6 +341,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						
 				List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList = getAssociatePayrollPayheadHistoryDTOListFromAssociatePayrollPayheadHistoryList(employeePayroll, payHeadHistorySet, orgLocations);
 				payrollDTO.setPayHeadHistoryDTOList(payHeadHistoryDTOList);
+				
+				
+				// for loan and advances
+				Set<AssociateLoanAndAdvanceHistory> loanAdvHistorySet = employeePayroll.getLoanHistory();
+				payrollDTO.setLoanAdvHistoryDTOList(getAssociateLoanAndAdvancesHistoryDTOListFromAssociateLoanAndAdvancesHistoryList(employeePayroll, loanAdvHistorySet, orgLocations));
+				
+				
 				payrollDTO.setRegularHours(employeePayroll.getRegularHours());
 				payrollDTO.setRegularHrsAmt(employeePayroll.getRegularHoursAmount());
 				payrollDTO.setOvertimeHours(employeePayroll.getOverTimeHours());
@@ -402,6 +420,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				}
 			    if(payHeadHistoryList != null && !payHeadHistoryList.isEmpty()) {
 			    	employeePayroll.setAssociatePayrollPayheadHistory(new HashSet<AssociatePayrollPayheadHistory>(payHeadHistoryList));
+			    }
+			    
+			    //for loan and advances
+			    List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList  =  getAssociateLoanAndAdvanceHistoryListFromAssociateLoanAndAdvancesHistoryDTOList(employeePayroll,payrollDTO.getLoanAdvHistoryDTOList(), orgLocations);
+			    if(loanAdvHistoryList != null && !loanAdvHistoryList.isEmpty()) {
+			    	employeePayroll.setLoanHistory(new HashSet<AssociateLoanAndAdvanceHistory>(loanAdvHistoryList));
 			    }
 				
 				payrollList.add(employeePayroll);
@@ -537,6 +561,40 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
+	public List<AssociateLoanAndAdvancesHistoryDTO> getAssociateLoanAndAdvancesHistoryDTOListFromAssociateLoanAndAdvancesHistoryList(IndEmployeePayroll indEmployeePayroll,Set<AssociateLoanAndAdvanceHistory> loanAdvHistoryList,OrgLocations orgLocations) throws Exception {
+		List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList = new ArrayList<>();
+		if(loanAdvHistoryList != null && !loanAdvHistoryList.isEmpty()) {
+			for(AssociateLoanAndAdvanceHistory loanAdvHistory : loanAdvHistoryList) {
+				AssociateLoanAndAdvancesHistoryDTO  loanAdvHistoryDTO = new AssociateLoanAndAdvancesHistoryDTO();
+				
+				loanAdvHistoryDTO.setAssociateLoanAndAdvancesId(loanAdvHistory.getAssociateLoanAndAdvances().getId());
+				loanAdvHistoryDTO.setIndEmployeePayrollId(loanAdvHistory.getIndEmployeePayrollId().getId());
+				loanAdvHistoryDTO.setOrgLocationsId(orgLocations.getId());
+				loanAdvHistoryDTO.setPayrollType(loanAdvHistory.getPayrollType());
+				loanAdvHistoryDTO.setDeductAmount(loanAdvHistory.getDeductAmount());
+				loanAdvHistoryDTO.setPaidAmount(loanAdvHistory.getPaidAmount());
+				loanAdvHistoryDTO.setDueAmount(loanAdvHistory.getDueAmount());
+				loanAdvHistoryDTO.setSchedule(loanAdvHistory.getSchedule());
+				loanAdvHistoryDTO.setScheduleStartDate(loanAdvHistory.getScheduleStartDate());
+				loanAdvHistoryDTO.setScheduleEndDate(loanAdvHistory.getScheduleEndDate());
+				loanAdvHistoryDTO.setCreatedDate(loanAdvHistory.getCreatedDate());
+				loanAdvHistoryDTO.setCreatedBy(loanAdvHistory.getCreatedBy());
+				loanAdvHistoryDTO.setUpdatedBy(loanAdvHistory.getUpdatedBy());
+				loanAdvHistoryDTO.setUpdatedDate(loanAdvHistory.getUpdatedDate());
+				loanAdvHistoryDTO.setName(loanAdvHistory.getName());
+				loanAdvHistoryDTO.setType(loanAdvHistory.getType());
+				loanAdvHistoryDTO.setTotalAmount(loanAdvHistory.getTotalAmount());
+				loanAdvHistoryDTO.setRequestedTo(loanAdvHistory.getRequestedTo());
+				loanAdvHistoryDTO.setRequestedOn(loanAdvHistory.getRequestedOn());
+				loanAdvHistoryDTO.setNoOfShedules(loanAdvHistory.getNoOfShedules());
+				loanAdvHistoryDTO.setLastPaidOn(loanAdvHistory.getLastPaindOn());
+				loanAdvHistoryDTOList.add(loanAdvHistoryDTO);
+			}
+		}
+		return loanAdvHistoryDTOList;
+	}
+	
+	
 	
 	public List<AssociatePayrollPayheadHistory> getAssociatePayrollPayheadHistoryListFromAssociatePayrollPayheadHistoryDTOList(IndEmployeePayroll indEmployeePayroll,List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList,OrgLocations orgLocations) throws Exception {
 		List<AssociatePayrollPayheadHistory> payHeadHistoryList = new ArrayList<>();
@@ -574,6 +632,40 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			}
 		}
 		return payHeadHistoryList;
+	}
+	
+	public List<AssociateLoanAndAdvanceHistory> getAssociateLoanAndAdvanceHistoryListFromAssociateLoanAndAdvancesHistoryDTOList(IndEmployeePayroll indEmployeePayroll,List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList,OrgLocations orgLocations) throws Exception {
+		List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList = new ArrayList<>();
+		if(loanAdvHistoryDTOList != null && !loanAdvHistoryDTOList.isEmpty()) {
+			for(AssociateLoanAndAdvancesHistoryDTO loanAdvHistoryDTO : loanAdvHistoryDTOList) {
+				AssociateLoanAndAdvanceHistory  loanAdvHistory = new AssociateLoanAndAdvanceHistory();
+				AssociateLoanAndAdvances ala = new AssociateLoanAndAdvances();
+				ala.setId(loanAdvHistoryDTO.getAssociateLoanAndAdvancesId());
+				loanAdvHistory.setAssociateLoanAndAdvances(ala);
+				loanAdvHistory.setIndEmployeePayrollId(indEmployeePayroll);
+				loanAdvHistory.setOrgLocationsId(orgLocations);
+				loanAdvHistory.setPayrollType(loanAdvHistoryDTO.getPayrollType());
+				loanAdvHistory.setDeductAmount(loanAdvHistoryDTO.getDeductAmount());
+				loanAdvHistory.setPaidAmount(loanAdvHistoryDTO.getPaidAmount());
+				loanAdvHistory.setDueAmount(loanAdvHistoryDTO.getDueAmount());
+				loanAdvHistory.setSchedule(loanAdvHistoryDTO.getSchedule());
+				loanAdvHistory.setScheduleStartDate(loanAdvHistoryDTO.getScheduleStartDate());
+				loanAdvHistory.setScheduleEndDate(loanAdvHistoryDTO.getScheduleEndDate());
+				loanAdvHistory.setCreatedDate(loanAdvHistoryDTO.getCreatedDate());
+				loanAdvHistory.setCreatedBy(loanAdvHistoryDTO.getCreatedBy());
+				loanAdvHistory.setUpdatedBy(loanAdvHistoryDTO.getUpdatedBy());
+				loanAdvHistory.setUpdatedDate(loanAdvHistoryDTO.getUpdatedDate());
+				loanAdvHistory.setName(loanAdvHistoryDTO.getName());
+				loanAdvHistory.setType(loanAdvHistoryDTO.getType());
+				loanAdvHistory.setTotalAmount(loanAdvHistoryDTO.getTotalAmount());
+				loanAdvHistory.setRequestedTo(loanAdvHistoryDTO.getRequestedTo());
+				loanAdvHistory.setRequestedOn(loanAdvHistoryDTO.getRequestedOn());
+				loanAdvHistory.setNoOfShedules(loanAdvHistoryDTO.getNoOfShedules());
+				loanAdvHistory.setLastPaindOn(loanAdvHistoryDTO.getLastPaidOn());
+				loanAdvHistoryList.add(loanAdvHistory);
+			}
+		}
+		return loanAdvHistoryList;
 	}
 	
 	@SuppressWarnings("null")
@@ -655,6 +747,126 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		associatePayrollPayheadHistory.setCreatedDate(new Date());
 		associatePayrollPayheadHistory.setUpdatedDate(new Date());
 		return associatePayrollPayheadHistory;
+	}
+	
+	
+	public AssociateLoanAndAdvancesDTO getAssLoanAndAdvanceDedAmountInd(OrgLocations orgLocation, IndPaysheetFrequency paySheetFreq, User loginUser, Candidate candidate, IndEmployeePayroll employeePayroll)
+	{
+		AssociateLoanAndAdvancesDTO assLoanAdvDto = new AssociateLoanAndAdvancesDTO();
+		try {
+			List<String> loanStatus = new ArrayList<>();
+			loanStatus.add("Outstanding");
+			List<AssociateLoanAndAdvances> loanAndAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(candidate.getId(), orgLocation.getId(), loanStatus);
+			BigDecimal totalLoanAmount = BigDecimal.ZERO, totalAdvanceAmount = BigDecimal.ZERO; 
+			Set<AssociateLoanAndAdvanceHistory> his = new HashSet<>();
+			for(AssociateLoanAndAdvances assLoanAndAdv : loanAndAdvList) {
+				boolean thisPayCheck = false;
+				if(assLoanAndAdv.getDeductStartDate() == null) {
+					thisPayCheck = true;
+				}
+				if(paySheetFreq.getFrequencyStartDate().after(assLoanAndAdv.getEffectiveDate()) || paySheetFreq.getFrequencyStartDate().equals(assLoanAndAdv.getEffectiveDate())) {
+					thisPayCheck = true;
+				}
+				AssociateLoanAndAdvances assLoan = assLoanAndAdv;
+				int scheduleCount = 0;
+				AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(assLoan.getId());
+				if(assLoanAndAdvHis == null || assLoanAndAdvHis.getSchedule() < assLoan.getNoOfSchedules()) {
+					if(thisPayCheck) {
+						scheduleCount = 0;
+						if(assLoanAndAdvHis != null && assLoanAndAdvHis.getSchedule() != null) {
+							scheduleCount = assLoanAndAdvHis.getSchedule() + 1;
+						}else {
+							scheduleCount += 1;
+						}
+					}
+				}else {
+					thisPayCheck = false;
+				}
+				
+				if(thisPayCheck) {
+					Date[] dedFreqDates = getLoanAndAdvancesScheduleDatesInd(paySheetFreq.getFrequencyStartDate(), assLoanAndAdv.getScheduler());
+					if("Loan".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
+						totalLoanAmount = totalLoanAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
+					}else if("Advance".equalsIgnoreCase(assLoanAndAdv.getLoanAdvanceType())){
+						totalAdvanceAmount = totalAdvanceAmount.add(new BigDecimal(assLoanAndAdv.getDeductAmount()));
+					}
+					assLoan.setDeductStartDate(dedFreqDates[0]);
+					if(dedFreqDates[1] != null)
+						assLoan.setDeductEndDate(dedFreqDates[1]);
+					else
+						assLoan.setDeductEndDate(paySheetFreq.getFrequencyEndDate());
+					assLoan.setDeductionStatus(Constants.DEDUCTED);
+					assLoan.setUpdatedDate(new Date());
+					
+					assLoanAdvDto.setAssociateLoanAndAdvances(assLoan);
+					//associateLoanAndAdvancesService.saveAssociateLoanAndAdvances(assLoan);
+					
+					AssociateLoanAndAdvanceHistory assLoanHistory = new AssociateLoanAndAdvanceHistory();
+					assLoanHistory.setAssociateLoanAndAdvances(assLoan);
+					assLoanHistory.setOrgLocationsId(orgLocation);
+					assLoanHistory.setPayrollType(Constants.IND_PAYROLL);
+					assLoanHistory.setDeductAmount(assLoanAndAdv.getDeductAmount());
+					assLoanHistory.setPaidAmount(associateLoanAndAdvancesHistoryService.getEmpLoansAndAdvancesPaidAmountByOrgLocationIdCandidateIdLoansAndAdId(candidate.getId(), orgLocation.getId(), assLoanAndAdv.getId()) + assLoanHistory.getDeductAmount());
+					assLoanHistory.setDueAmount((assLoanAndAdv.getAmount() + (assLoanAndAdv.getAmount() * (assLoanAndAdv.getPayrollLoanAndAdvanceId().getInterestRate()/100) )) - assLoanHistory.getPaidAmount());
+					assLoanHistory.setSchedule(scheduleCount);
+					assLoanHistory.setScheduleStartDate(assLoan.getDeductStartDate());
+					assLoanHistory.setScheduleEndDate(assLoan.getDeductEndDate());
+					assLoanHistory.setCreatedDate(new Date());
+					assLoanHistory.setIndEmployeePayrollId(employeePayroll);
+					assLoanHistory.setCreatedBy(loginUser.getUserCode());
+					assLoanHistory.setUpdatedBy(loginUser.getUserCode());
+					assLoanHistory.setUpdatedDate(new Date());
+					his.add(assLoanHistory);
+ 				}
+			}
+			assLoanAdvDto.setTotalAdvanceAmount(totalAdvanceAmount);
+			assLoanAdvDto.setTotalLoanAmount(totalLoanAmount);
+			assLoanAdvDto.setLoanHis(his);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return assLoanAdvDto;
+	}
+	
+	
+	public Date[] getLoanAndAdvancesScheduleDatesInd(Date currentDate, String schedule)
+	{
+		Date[] dates = new Date[2];
+		dates[0] = currentDate;
+		try {
+			Calendar cal = Calendar.getInstance();
+			 cal.setTime(currentDate);
+			switch (schedule) {
+				case PayrollConstant.LOAN_EVERY_PAY:
+					break;
+				case PayrollConstant.LOAN_EVERY_QUARTER:
+					    cal.add(Calendar.MONTH, +3);  
+				        dates[1]  = cal.getTime();
+					break;
+				case PayrollConstant.LOAN_HALF_YEARLY:
+				    cal.add(Calendar.MONTH, +6);  
+			        dates[1]  = cal.getTime();
+				break;
+				case PayrollConstant.LOAN_ANNUALLY:
+					 cal.add(Calendar.MONTH, +12);  
+				        dates[1]  = cal.getTime();
+					break;
+				default:
+					break;
+			}
+		}catch (Exception e) {
+		 e.printStackTrace();
+		}
+		return dates;
+	}
+	
+	
+	public Double calculateSumOfAllLoanAdvOfEmp(AssociateLoanAndAdvancesDTO assLoanAndAdvDTO) {
+		Double loanAdvTotal = 0.0;
+		for(AssociateLoanAndAdvanceHistory la : assLoanAndAdvDTO.getLoanHis()) {
+			loanAdvTotal = loanAdvTotal + la.getDeductAmount();
+		}
+		return loanAdvTotal;
 	}
 	
 	

@@ -30,4 +30,6 @@ public interface AssociateLoanAndAdvancesService {
 	Map<String, Double> getEmpLoansAndAdvancesCountListByOrgLocationId(Long candidateId);
 	
 	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user, OrgLocations orgLocation, String loanStatus) throws Exception;
+	
+	List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(Long candidateId,Long orgLocationId, List<String> loanStatus) throws Exception;
 }

@@ -2711,8 +2711,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	       	 }else {
 	       		pm.setRateHistroyList(Constants.NO);
 	       	 }
-	       	 
-	       	 
 			 projectMembersArrList.add(pm);
 		 }
 		}
