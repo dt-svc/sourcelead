@@ -67,6 +67,7 @@ import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -2871,5 +2872,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
 		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
+	
+	@Override
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception {
+	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+		
+	}
+
 
 }

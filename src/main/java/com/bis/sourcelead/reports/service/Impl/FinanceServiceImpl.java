@@ -105,10 +105,10 @@ public class FinanceServiceImpl implements FinanceService{
 
 	@Override
 	public ResponseList<MissingInvoiceDTO> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation, String contractType) {
-		ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
 		ResponseList<MissingInvoiceDTO> response = new ResponseList<>();
-		List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
 		try {
+			ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
+			List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
 			if (sahList != null) {
 				int count = 0;
 				double totalAmount = 0;
