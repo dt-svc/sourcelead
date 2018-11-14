@@ -93,7 +93,7 @@ $(document).ready(function(){
 				<li>
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
-       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a title="Excel">Export Excel</a> </span> </div>
+       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <!-- <a title="Excel">Export Excel</a> --> </span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
