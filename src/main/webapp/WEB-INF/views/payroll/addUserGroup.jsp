@@ -15,7 +15,7 @@
                         <div class="col-md-6">
                             <label>Group Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="required" onblur="validateGroupId();" field-name="Group Id">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="validate_length length1-10" onblur="validateGroupId();" field-name="Group Id">
                                 <input type="hidden" id="groupUUID" name="groupUUID" value="${userGroup.groupUUID}"/>
                                 <input type="hidden" id="id" name="id" value="${userGroup.id}"/>
                             </div>
@@ -106,9 +106,9 @@ function validateGroupName(){
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-                	if(groupName.length > 10){
+                	if(groupName.length > 100){
                 		$('#groupNameDiv').find('p.jquery_form_error_message').remove();
-          			  	$("#groupName").after("<p class='jquery_form_error_message'>The values should be between 1-10 characters</span>");
+          			  	$("#groupName").after("<p class='jquery_form_error_message'>The values should be between 1-100 characters</span>");
           			  	$("#save_user_group_button").attr("disabled", true);
                 	}else{
                 		$('#groupNameDiv').find('p.jquery_form_error_message').remove();

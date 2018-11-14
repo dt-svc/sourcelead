@@ -84,6 +84,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     var includeTextHTML = '';
     var DeleteButtion = '';
     var readOnly = '';
+    var dataValidation = '';
     var checkbox = '';
     
     if(templateId == undefined){
@@ -149,6 +150,9 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     
     if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
     	readOnly = 'readonly="readonly"'
+    	dataValidation = 'data-validation="required validate_Space';
+    }else{
+    	dataValidation = 'data-validation="required validate_Space validate_AlphaNumber';
     }
    
     
@@ -182,7 +186,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     	 includeTextHTML = ''+
 		   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
 	       ' <div class="col-md-9" id="label'+addField.i+'"> ' +
-	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" data-validation="required validate_Space" placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
+	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
 	       ' </div> ' +
 	       '</label>' 
     }

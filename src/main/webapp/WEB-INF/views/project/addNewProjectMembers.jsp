@@ -32,6 +32,7 @@
         <div id="choicepopUp"></div>
         <div id="associateRequestLoading"></div>
 	  <form:form id="assignMembers_form" name="assignMembers_form" method="post">
+	       <input type="hidden" name="type" value="projectSummary">
 				<div class="project_tabs_inn_head">
 					<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv" class="btn btn-primary btn-sm anchorWhite">
 					<i class="glyphicon glyphicon-search"></i>Search Associates</a> 

@@ -8,6 +8,7 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 
 public interface USPayPeriodService {
 
@@ -22,4 +23,5 @@ public interface USPayPeriodService {
 	USPayPeriod getPayPeriodByOrglocationId(OrgLocations orgLocation, Long payfrequencyId);
 
 	List<EmployeePayroll> getEmployeePayrollListByPayperiodNum(Integer payPeriodNum);
+
 }

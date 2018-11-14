@@ -466,7 +466,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			
 				Query query1 = session.createQuery(query+" "+searchQuery+" "+groupQuery);
 				List<SubmissionApproverHierarchy> tslist = null;
-				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+				if(orgIds.size() == 0 && (StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType()))) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 					response.setData(tslist);
 				}if(orgIds.size() > 0 && StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())){

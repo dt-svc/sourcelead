@@ -927,9 +927,9 @@ public class USPayrollReportRestController {
 		}
 		
 		 if(payrollReportDTO.getExportType().equalsIgnoreCase("pdf")) {
-			 file = payrollReportPdfUtil.getDeductionSummaryReportPdf(checkRegData.getData(),orgLocation);
+			 file = payrollReportPdfUtil.getDeductionSummaryReportPdf(checkRegData.getData(),orgLocation,payrollReportDTO.getType());
 		 }else {
-			 file = payrollReportPdfUtil.getDeductionSummaryReportXls(checkRegData.getData(),orgLocation);
+			 file = payrollReportPdfUtil.getDeductionSummaryReportXls(checkRegData.getData(),orgLocation,payrollReportDTO.getType());
 		 }
 		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

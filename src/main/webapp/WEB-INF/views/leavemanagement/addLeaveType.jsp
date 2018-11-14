@@ -264,7 +264,7 @@
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
 									<select class="chosen-select form-control" multiple name="department" onchange="removeErrMsg();"
-										id="department" field-name="Department" data-placeholder="Select Departmnets"
+										id="department" field-name="Department" data-placeholder="Select Departments"
 										data-validation-optional="true">
 										<c:forEach var="report" items="${departmentList}">
 										    <c:set var="NUM" value="${0}" />
@@ -305,10 +305,10 @@
 							
 										
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Employement Type</label>
+								<label class="col-md-4">Select Employment Type</label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
 									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
-										field-name="Employement Type" data-placeholder="Select Employement Type" data-validation-optional="true">
+										field-name="Employement Type" data-placeholder="Select Employment Type" data-validation-optional="true">
 						                 <c:forEach var="employmentType" items="${employmentTypeList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="dbEmpType" items="${leaveType.leaveEmpType}">
@@ -443,7 +443,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-4">Accural Period<span
+							<label class="col-md-4">Accrual Period<span
 								class="text-danger paddingLeft">*</span>
 								<div class="tooltip">
 								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
@@ -508,7 +508,7 @@
 								</div>
 								<div class="col-md-4 padding_left" id="experiencedApplicableDaysDiv">
 									<input type="hidden" name="previousExpApplicableDays" id="previousExpApplicableDays" value="${!empty leaveType.experiencedApplicableDays ? leaveType.experiencedApplicableDays : 0}"/>
-									<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days for exp" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
+									<input type="text" class="form-control" id="experiencedApplicableDays" name="experiencedApplicableDays" placeholder="No. of Days" onblur="getNoOfDaysPerPeriodExperienced();" field-name="ApplicableDays" value="${leaveType.experiencedApplicableDays}">
 								</div>
 							</div>
 						</div>
@@ -1081,7 +1081,7 @@
 		                        <span class="checkBox col-md-4">
 								<c:if test="${leaveType.accuralPolicy == 'Y'}">
 									<input type="checkbox" checked="true" name="accuralPolicy" id="accPolicy" 
-									value="Y"> Accural Policy
+									value="Y"> Accrual Policy
 									   <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
 									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
@@ -1089,7 +1089,7 @@
 									</div>
 								</c:if>
 								     <c:if test="${leaveType.accuralPolicy == 'N'}">
-								      <input type="checkbox" name="accuralPolicy" id="accPolicy" value="Y"> Accural Policy 
+								      <input type="checkbox" name="accuralPolicy" id="accPolicy" value="Y"> Accrual Policy 
 								         <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
 									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
@@ -1098,7 +1098,7 @@
                                 </c:if>
                                 <c:if test="${empty leaveType.accuralPolicy}">
 								      <input type="checkbox" name="accuralPolicy" id="accPolicy"
-									   value="Y"> Accural Policy
+									   value="Y"> Accrual Policy
 									      <div class="tooltip">
 									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
 									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
