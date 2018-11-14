@@ -37,9 +37,9 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+<%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();">History</a></li>
-	   </c:if>
+<%-- 	   </c:if> --%>
 	   
 	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->

@@ -783,7 +783,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration.setImmigrationTemplateId(immiTemplate);
 			immigration.setCountry(immiTemplate.getCountry());
 		}
-		immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		if(!StringUtils.isNotBlank(immigration.getImmigrationUuid())){ // skip UUID generation in edit mode.
+			immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
 		OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(Long.parseLong(immigrationDTO.getAttorneyId()));
 		immigration.setOrgRelations(orgRelations);
 		immigration.setAttorneyOrgLocationId(orgRelations.getResponderLocationId());
