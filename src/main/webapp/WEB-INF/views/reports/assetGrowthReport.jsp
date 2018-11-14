@@ -507,7 +507,7 @@ function assetGrowthReportList(response){
   }else{
 	  result = result+'         <th> <i class="fa fa-dollar fa-2x"></i>';
   }
-  result = result+'           <div class="small">Cost of Assests</div></th>';
+  result = result+'           <div class="small">Cost of Assets</div></th>';
   result = result+'       </tr>';
   result = result+'     </thead>';
   result = result+'     <tbody>';

@@ -1084,23 +1084,6 @@ function jpagination(url,sourceleadUrl){
 function jpaginationForJobFairs(url){ 
 	var colIndex = 0;
     $('#jobFairPagination').DataTable( {
-    	dom: 'Bfrtip',
-        buttons: [
-        	{
-        		extend: 'excel', 
-        		title: 'Job Fairs', 
-        		exportOptions: {columns: [0,1,2,3,4], 
-        			modifier: {page: 'all', search: 'none'}
-        		}
-        	},
-            {
-        		extend: 'pdf',
-        		title: 'Job Fairs',
-        		exportOptions: {columns: [0,1,2,3,4],
-        			modifier: {page: 'all', search: 'none'}
-        		}
-        	}
-        ],
    		"processing": true,
        "serverSide": true,
        "searching": false,
