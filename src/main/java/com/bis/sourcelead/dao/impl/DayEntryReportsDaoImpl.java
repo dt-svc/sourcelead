@@ -34,7 +34,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 	@Override
 	@Transactional
 	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate, Date endDate,String searchValue,int start,int length,OrgLocations orgloc , User loginUser,String isGlobalAccess,List<Long> projectMemberIds) throws Exception {
-		List<BigInteger> countlist = null;
+		List<BigInteger> countlist = null;  
 		
 		Integer filterCount = 0;
 		ResponseList<DayWiseTimesheetReoprtsListDTO> response = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
@@ -155,7 +155,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                                               ( SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
 				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "
 				+ "                              OR "
-				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN(SELECT UR.REPORTING_MANAGER_ID FROM USER_ROLE UR WHERE UR.USER_ID = CAN.CONSULTANT_USER_ID AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
+				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN(SELECT UR.REPORTING_MANAGER_ID FROM USER_ROLE UR WHERE UR.USER_ID = CAN.CONSULTANT_USER_ID) "
 				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
 				+ "                              OR "
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where APPROVER_USER_ID IN("+userHierarchyIdString+") "
