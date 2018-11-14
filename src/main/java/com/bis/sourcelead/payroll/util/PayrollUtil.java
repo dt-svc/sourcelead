@@ -943,7 +943,7 @@ public class PayrollUtil {
 					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
 					
-					calenderDTO.setPayPeriod(sds.format(cal.getTime()).toUpperCase());
+					calenderDTO.setPayPeriod(sds.format(monthStartDate).toUpperCase());
 					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
 					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
 					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));

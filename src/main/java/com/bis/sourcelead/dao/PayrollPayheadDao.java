@@ -37,5 +37,5 @@ public interface PayrollPayheadDao {
 	
 	AssociateSalaryPayheadInd getAssociateSalaryPayheadIndById(Long id) throws Exception;
 	
-	void generateINDPayrollPayheadForOldOrgs() throws Exception;
+	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
 }
