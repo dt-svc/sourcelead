@@ -182,7 +182,7 @@
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="${tax.id > 0 ? 'Update' : 'Save'}" class="btn btn-success btnSuccess" type="button" id="saveTaxConfig">
-				<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelTaxConfig">
+				<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelTaxConfig" onclick="cancel()";>
 			</div>
 		</div>
 	</div>
@@ -327,4 +327,13 @@
 			});
 		}
 	}
+</script>
+
+<script>
+function cancel(){
+	window.location.href =  sourceleadUrl+"/indPayrollConfiguration";
+}
+
+
+
 </script>
