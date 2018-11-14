@@ -31,7 +31,7 @@
     <div class="col-md-12">
       <div class="profileDetails">
         <div class="row reportHead">
-          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a></span>
             <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
               <li>
 				  <i class="inlineBlock pull-left mr10 trashIcon" title="Cart"></i>
@@ -428,6 +428,9 @@ $( function(){
 $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })
+function refreshPage(){
+  location.reload(); // refresh the page.
+}
 </script>
 
       
