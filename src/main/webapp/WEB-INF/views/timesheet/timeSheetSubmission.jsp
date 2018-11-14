@@ -814,7 +814,7 @@ function currentMonthHours(){
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
 				     
-				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
 				    	 var billableHours = btemp;
 				    	 var billableSplit = billableHours.split(':');
@@ -828,7 +828,7 @@ function currentMonthHours(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Non-Billable') {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable' || billableType == 'NonBillable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
@@ -844,7 +844,6 @@ function currentMonthHours(){
 			    
 		 }
        }	
-	 
 	   //for calculate billable count
 	    if(!isNaN(billableSum)){
 	        var t1 = billableSum; 
@@ -993,9 +992,7 @@ function currentMonthTotalHours(){
 		 var finalmin = parseInt(minute) + parseInt(minute1);
 	     bsum = parseFloat(bsum) + parseInt(finalmin);
     }
-
-    var t = bsum; 
-    
+     var t = bsum; 
 	 var hours = Math.floor(t / 60); 
 	 var minutes = t % 60;
 	 if (minutes < 10) {
