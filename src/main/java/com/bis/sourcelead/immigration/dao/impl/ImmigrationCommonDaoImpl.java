@@ -2563,7 +2563,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         String subQuery4 = ""; 
         
         StringBuilder query1 = new StringBuilder("");
-        if ((searchValue.contains("-") || searchValue.contains("/")) && (searchValue.matches("^[0-9 \\-]+$"))) {
+        if (CommonUtil.isValidDate(searchValue)) {
 			DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
 					.toFormatter();
 			LocalDate parsedDate = LocalDate.parse(searchValue, orgFormat);
@@ -2579,7 +2579,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (lcaRepView.lcaTitle like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
 			query1.append(" or (lcaRepView.noOfPositions like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
 			query1.append(" or (lcaRepView.location like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
-			
+			query1.append(" or (lcaRepView.wagesLevel like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
 			query1.append(" or (lcaRepView.privilingWageCurrency like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
 			query1.append(" or (lcaRepView.prevailingWage like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
 			query1.append(" or (lcaRepView.privilingWageRateType like '%" + lcaReportViewDTO.getSearchValue() + "%' )");
