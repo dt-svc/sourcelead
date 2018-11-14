@@ -2237,7 +2237,7 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null || (!primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() !=null  && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1"))){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() ==null ){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
