@@ -2874,13 +2874,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(User user, String userRole, OrgLocations orgLocations)throws Exception {
-	return candidateDao.getCandidateDetailsFromMarketplace(user, userRole, orgLocations);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception {
+	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations);
 	}
 
 	@Override
-	public void deleteCandidateFromMarketcartByCandidateId(Long id) throws Exception {
-		candidateDao.deleteCandidateFromMarketcartByCandidateId(id);
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
 

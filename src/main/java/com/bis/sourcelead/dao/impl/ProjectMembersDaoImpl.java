@@ -1783,7 +1783,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.masterCandidateId  where pm.projects.id = :projectId and "
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.masterCandidateId  "
+				+ " left join fetch pm.projectMemberCandidteId cand left join fetch cand.orgLocationId where pm.projects.id = :projectId and "
 				+ " pm.masterCandidateId.id = :masterCandidateId " ;
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("projectId",projectId).list(); 
 		return allProjectsList;
