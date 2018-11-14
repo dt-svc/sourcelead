@@ -766,15 +766,15 @@ public class CandidateController {
 			return model;
 		}
 		
-		@RequestMapping(value = "/getCandidateDetailsFromMarketplace", method = RequestMethod.POST)
-		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketplace(HttpServletRequest request) throws Exception{
+		@RequestMapping(value = "/getCandidateDetailsFromMarketcart", method = RequestMethod.POST)
+		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(HttpServletRequest request) throws Exception{
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketplace(user, userRoleName, orgLocation);
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation);
 			}}
 			return candidatesFromMarketplace;
 		}
