@@ -438,6 +438,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		if (tasks.getDueDate() != null) {
 			dueDate = dateFormat.format(tasks.getDueDate());
 		}
+		if(tasks.getGeneratedId() != null) {
+			globalVarsMap.put("taskId", tasks.getGeneratedId());
+		}else {
+			globalVarsMap.put("taskId", "--");
+		}
+		
+		
 		globalVarsMap.put("DueDate", dueDate);
 		if (tasks.getOwnerUserId() != null) {
 			if (tasks.getOwnerUserId().getFirstName() != null
