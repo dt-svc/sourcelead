@@ -753,7 +753,7 @@ public class ProjectsDashboardRestController {
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				 if(userRole != null) {
-					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","status"};
+					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","createdDate","status"};
 					    int sortColumnIndex = 1; //by default sorting using updated date
 						String sortColumnOrder = "asc"; //by default descending order
 						if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {

@@ -98,7 +98,7 @@ $(document).ready(function(){
 		<ul class='pull-right'>
 		  <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportdirectDepositPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="exportdirectDepositPdf();" title="PDF">Export PDF</a> <!-- <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> --> </span> </div>
     </li>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='directDataTableSearch'/><span class='repSearchIcon' onClick='checkDirectDepositReports();'></span></li>
 		</ul>

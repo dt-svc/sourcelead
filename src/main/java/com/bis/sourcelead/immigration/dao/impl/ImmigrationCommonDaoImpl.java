@@ -1542,7 +1542,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
 		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
-		System.out.println(listExportViews.size());
 		return listExportViews;
 	}
 
@@ -1864,7 +1863,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			
 			String listQueryCount = "select count(*) from LcaListView lcaView  where  lcaView.orgLocationId =:orgLocationId"+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+sortingQry+"";
 			
-			System.out.println(listQueryCount);
 			Query hqlQuery1 = session.createQuery(listQueryCount);
 			hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 			
@@ -2050,7 +2048,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String listQuery = "from LcaListExportView lcaExportView  where  lcaExportView.orgLocationId=:orgLocationId";
 		List<LcaListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
-		System.out.println(listExportViews.size());
 		return listExportViews;
 	}
 
@@ -2673,7 +2670,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = "from LcaReportView lcaRepView  where  lcaRepView.orgLocationId =:orgLocationId "+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+subQuery4+" "+sortingQry+" ";
 		String listQueryCount = "select count(*) from LcaReportView lcaRepView  where  lcaRepView.orgLocationId =:orgLocationId "+query1+"  "+subQuery1+"  "+subQuery2+"  "+subQuery3+" "+subQuery4+" "+sortingQry+" ";
 		
-		System.out.println(listQueryCount);
 		Query hqlQuery1 = session.createQuery(listQueryCount);
 		hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
 		

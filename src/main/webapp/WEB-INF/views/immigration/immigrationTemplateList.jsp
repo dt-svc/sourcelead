@@ -365,6 +365,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 {
                     "targets": colIndex++,
                     "data": "status",
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.status !== null && opt.status !== 'undefined') {
@@ -390,7 +391,8 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 },
                 {
                     "targets": colIndex++,
-                    /*"data": "formsCount",*/
+                    "data": "action",
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                     	  var result = "";
                     	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {

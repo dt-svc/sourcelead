@@ -1407,7 +1407,9 @@ function cancel(candidateId){
       <ul class="pull-right list-unstyled list-inline">
       
 	  <li class="tableShare" style="display: none;">
+	   	<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
 	  	<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a>
+	  	</sec:authorize>
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        

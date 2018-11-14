@@ -1516,6 +1516,13 @@ public class UserDaoImpl implements UserDao {
 			 query = "from UserRole userRole  where  userRole.orgLocations=:orgLocationId";
 		 }
 	      
+		 
+		 String subQuery = "";
+		 if(userDTO.getEmpTypes() != null && userDTO.getEmpTypes().size() >0) {
+			 subQuery = " and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :orgLocationId and emp.userEmploymentType IN (:empTypes)) ";
+		 }
+		 
+		 
 
 	    List<UserRole> usersRoleList = null;
 		ResponseList<UserRole> response = new ResponseList<>();
@@ -1553,15 +1560,25 @@ public class UserDaoImpl implements UserDao {
 	    	 
 	     }
 	     
-	     Query queryObj = session.createQuery(query + query1.toString()+qry);
+	     Query queryObj = session.createQuery(query + query1.toString()+subQuery+qry);
+	     if(userDTO.getEmpTypes() != null && userDTO.getEmpTypes().size() >0) {
+	    	 if(searchDates != null) {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameterList("empTypes", userDTO.getEmpTypes()).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+					 countlist = session.createQuery("select count(*) " + query+subQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).list();
+					 countlist = session.createQuery("select count(*) " + query+subQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).list();
+				} 
+	     }else {
+	    	 if(searchDates != null) {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+					 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+					 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
+				}
+	     }
 			
-			if(searchDates != null) {
-				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
-				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
-			}else {
-				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
-				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
-			}
 			
 			int count = 0;
 			int filteredCount = 0;
@@ -2209,9 +2226,10 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
+				Set<String> assignedIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId()) && !assignedIds.contains(userDTO.getUserCode())){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2220,13 +2238,16 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")){
-						primaryUserjobIds.add(reportDTO.getRequirementId());
-						/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
-						if(userDTO.getUserRequirementsCount() != null) {
-							bd = bd.add(userDTO.getUserRequirementsCount());
-						}*/
-						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+					if((userDTO != null) || (!primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() != null && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1"))){
+						if(!assignedIds.contains(userDTO.getUserCode())) {
+							primaryUserjobIds.add(reportDTO.getRequirementId());
+							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
+							if(userDTO.getUserRequirementsCount() != null) {
+								bd = bd.add(userDTO.getUserRequirementsCount());
+							}*/
+							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+							assignedIds.add(userDTO.getUserCode());
+						}
 					}
 					
 					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
@@ -2238,20 +2259,24 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-					
+						
 					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
-							jobIds.add(reportDTO.getRequirementId());
-							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+							if(!assignedIds.contains(userDTO.getUserCode())) {
+								jobIds.add(reportDTO.getRequirementId());
+								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+								assignedIds.add(userDTO.getUserCode());
+							}
 						}
 					}
 					
 					if(reportDTO.getReleaseJobToAllUsers() != null && reportDTO.getReleaseJobToAllUsers().equalsIgnoreCase("Y")){
 						for(User user:usersList){
 							 userDTO = userListMap.get(user.getUserCode());
-							 if(reportDTO.getManagerUserId().longValue() != user.getId()){
-									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+							 if((reportDTO.getManagerUserId().longValue() != user.getId()) && !assignedIds.contains(userDTO.getUserCode())){
+								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
+//								assignedIds.add(userDTO.getUserCode());
 							 }
 						}
 					}

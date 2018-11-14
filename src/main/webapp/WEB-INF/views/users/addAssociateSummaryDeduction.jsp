@@ -289,11 +289,11 @@ function deductionPopup(){
 					if(data == true){
 						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
-						document.getElementById("contributionAddButtonId").disabled = true;
+						document.getElementById("deductionAddButtonId").disabled = true;
 					}else{
 						$('#dedType').find('p.jquery_form_error_message').remove();
 						document.getElementById("associate_deduction_save_button").disabled = false;
-						document.getElementById("contributionAddButtonId").disabled = false;
+						document.getElementById("deductionAddButtonId").disabled = false;
 					}
 					
 			 },
