@@ -2209,10 +2209,9 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
-				Set<String> assignedIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId()) && !assignedIds.contains(userDTO.getUserCode())){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2221,17 +2220,15 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if((userDTO != null) || (!primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() != null && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1"))){
-						if(!assignedIds.contains(userDTO.getUserCode())) {
+					if(userDTO != null || (!primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() !=null  && !reportDTO.getAssignedUserStatus().equalsIgnoreCase("1"))){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
 								bd = bd.add(userDTO.getUserRequirementsCount());
 							}*/
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
-							assignedIds.add(userDTO.getUserCode());
-						}
 					}
+					
 					
 					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
 					if(userDTO != null){
@@ -2246,21 +2243,8 @@ public class UserDaoImpl implements UserDao {
 					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
-							if(!assignedIds.contains(userDTO.getUserCode())) {
 								jobIds.add(reportDTO.getRequirementId());
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
-								assignedIds.add(userDTO.getUserCode());
-							}
-						}
-					}
-					
-					if(reportDTO.getReleaseJobToAllUsers() != null && reportDTO.getReleaseJobToAllUsers().equalsIgnoreCase("Y")){
-						for(User user:usersList){
-							 userDTO = userListMap.get(user.getUserCode());
-							 if((reportDTO.getManagerUserId().longValue() != user.getId()) && !assignedIds.contains(userDTO.getUserCode())){
-								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
-//								assignedIds.add(userDTO.getUserCode());
-							 }
 						}
 					}
 					
