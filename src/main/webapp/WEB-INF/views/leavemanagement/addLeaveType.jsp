@@ -138,7 +138,7 @@
 							</div>
 							</label>
 							<div class="col-md-6 dropdown-select">
-								<label class="paddingLeft paddingRight"> <c:if
+								<div class="paddingLeft paddingRight"> <c:if
 											test="${!empty leaveType.duration}">
 <%-- 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day')}"> --%>
 											
@@ -169,8 +169,8 @@
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
 										</c:if>
-									</label>
-									<input type="hidden"  id="leaveValue" name="leaveValue"  field-name="Leave type" data-validation="required"/>
+									</div>
+									<input type="hidden"  id="leaveValue" name="leaveValue"  field-name="Duration" data-validation="required"/>
 									<%-- <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
 									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option> --%>
 							</div>
@@ -1271,21 +1271,6 @@ function showLeaveEncashmentDiv(){
 			  $('#leaveValue').attr('data-validation',"required");
 		  }
 		
-	/* 	 var leavesList = [];
- 		 $("input[name='leave']:checked").each( function (i) {
- 			leavesList[i] = $(this).val();
- 		});
- 		 
- 		 alert("length-------"+leavesList.length)
- 		 
-		if (leavesList.length > 0) { 
-			alert(1)
-		document.getElementById("leaveValue").value = id.value;
-		$('#leaveValue').removeAttr('data-validation');
-		}else{
-			alert(2)
-			$('#leaveValue').val(''); 
-		} */
 	} 
 </script>
 <script type="text/javascript">
