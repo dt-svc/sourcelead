@@ -90,7 +90,7 @@ $(document).ready(function(){
       <div class="newActPop" style="">
           <span>
           <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+           <!-- <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a> -->
             </span>
       </div>
     </li>

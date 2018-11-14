@@ -357,5 +357,12 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
 		return payrollPayheadDao.getAssociateSalaryIndByCandidateId(id);
 	}
+
+	@Override
+	public PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId)
+			throws Exception {
+		
+		return payrollPayheadDao.getPayrollPayheadByShortCodeAndOrglocation(shortCode, orgLocationId);
+	}
 	
 }
