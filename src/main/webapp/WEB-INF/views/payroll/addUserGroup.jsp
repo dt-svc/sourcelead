@@ -15,7 +15,8 @@
                         <div class="col-md-6">
                             <label>Batch Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="validate_length length1-10" onblur="validateGroupId();" field-name="Batch Id">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" value="${userGroup.groupId}" data-validation="required validate_length length1-9" onblur="validateGroupId();" field-name="Batch Id">
+
                                 <input type="hidden" id="groupUUID" name="groupUUID" value="${userGroup.groupUUID}"/>
                                 <input type="hidden" id="id" name="id" value="${userGroup.id}"/>
                             </div>
@@ -23,7 +24,8 @@
                         <div class="col-md-6">
                             <label>Batch Name<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupNameDiv">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required validate_length length1-100" onblur="validateGroupName();" field-name="Batch Name">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" value="${userGroup.groupName}" data-validation="required" onblur="validateGroupName();" field-name="Batch Name">
+
                             </div>
                         </div>
                 
@@ -88,7 +90,7 @@ function validateGroupId(){
 			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-                	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+//                 	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
                 	$("#save_user_group_button").attr("disabled", false);
                 }  else {
 					$('#groupIdDiv').find('p.jquery_form_error_message').remove();
