@@ -41,6 +41,7 @@ import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -71,6 +72,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	TimeSheetDayEntriesService timeSheetDayEntriesService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -234,16 +238,19 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					
 					AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = iNDPayrollCommonUtil.getAssLoanAndAdvanceDedAmountInd(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate(),employeePayroll);
 					boolean isLD = false;
+					Double loanAdvTotal = 0.0;
+					//if payroll in Associate Payroll Payheads
 					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
 						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
-							Double loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+							loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
 							ph.setMonthly(new BigDecimal(loanAdvTotal));
 							ph.setAnnualy(new BigDecimal(loanAdvTotal*12));
 							isLD = true;
 						}
 					}
+					//if payroll not found in Associate Payroll Payheads
 					if(!isLD) {
-						Double loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+						loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 						ph.setIndEmployeePayrollId(employeePayroll);
 						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("L&D", orgLocation.getId()));
@@ -261,11 +268,10 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
 					employeePayroll.setGrossPay(utilDTO.getGrossPay());
-					employeePayroll.setNetPay(utilDTO.getNetPay());
+					employeePayroll.setNetPay(utilDTO.getNetPay().subtract(new BigDecimal(loanAdvTotal)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
 				    employeePayroll.setTds(utilDTO.getTds());
 				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
-					
 					employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					employeePayroll.setStatus(Constants.RECORD_ACTIVE);
 					employeePayroll.setCreatedBy(loginUser.getId());
@@ -273,10 +279,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setCreatedDate(new Date());
 					employeePayroll.setUpdatedDate(new Date());
 					
-					
-					
-					
-					//Double overTimeHours =  timeSheetDayEntriesService.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates( assoSal.getCandidate().getMasterCandidateId(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), orgLocation);
+					Double overTimeHours =  timeSheetDayEntriesService.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates( assoSal.getCandidate().getMasterCandidateId().getId(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), orgLocation);
+					employeePayroll.setOverTimeHours(overTimeHours.toString());
 					
 					set.add(employeePayroll);
 			}
