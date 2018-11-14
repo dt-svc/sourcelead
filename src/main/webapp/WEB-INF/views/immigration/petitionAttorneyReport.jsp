@@ -27,12 +27,13 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Petition Attorney Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>>> Petition Attorney Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
     <div id="ImmigReportLoading"></div>
-    <form:form id="immigration_report_form" name="immigration_report_form" method="post">
+    <form:form id="immigration_attorney_report_form" name="immigration_attorney_report_form" method="post">
    
     <div class="clearfix minHeightcol5">
         <div class="clearfix row">
@@ -112,6 +113,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -136,7 +138,7 @@ $(document).ready(function(){
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
-        	<div id="immigrationReportTableDiv"></div>
+        	<div id="immigrationAttorneyReportTableDiv"></div>
         </div>
       </div>
     </div> 
@@ -353,7 +355,7 @@ function runImmigrationReport(){
 	             scrollToTopOnError: true,
 	             dateFormat: 'yyyy/mm/dd'
 	         };
-	     if ($('#immigration_report_form').validate(false, validationSettings)) {
+	     if ($('#immigration_attorney_report_form').validate(false, validationSettings)) {
 	    	 
 	    	 var petitionType=$("#petitionType").val();
 	    	 var petitionStatus=$("#petitionStatus").val();
@@ -389,7 +391,7 @@ function runImmigrationReport(){
 	 			}
 	 		}
 	    	 
-        	var url = sourceleadUrl+ "/runImmigrationReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+        	var url = sourceleadUrl+ "/runImmigrationAttorneyReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
             $("#immigrationReport").show(); 
             prepareImmigrationReportList(url);
 	     }
@@ -403,11 +405,11 @@ function runImmigrationReport(){
 
 <script>
 function prepareImmigrationReportList(url){
-	 $("#immigrationReportTableDiv").empty();
+	 $("#immigrationAttorneyReportTableDiv").empty();
 	  var result = "";
 		result = result +" <div class='remove_search'>";
 		result = result +"</div>";
-		result = result + '<table id="immigReportTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<table id="immigAttorReportTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>ID</th>';
@@ -417,14 +419,14 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
         result = result + '<th>On Date</th>';
-        result = result + '<th>Attorney(Vendor Name)</th>';
+        result = result + '<th>Attorney(Client Org Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
         result = result + '<th>Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
-        $("#immigrationReportTableDiv").append(result);
+        $("#immigrationAttorneyReportTableDiv").append(result);
         immigrationReportPagination(url);  
 }
 </script>
@@ -432,7 +434,7 @@ function prepareImmigrationReportList(url){
 <script>
 function immigrationReportPagination(url){
 	var colIndex = 0;
-    $('#immigReportTable').DataTable({ 
+    $('#immigAttorReportTable').DataTable({ 
     	"processing": true,
         "serverSide": true,
         "searching": false,
@@ -449,7 +451,7 @@ function immigrationReportPagination(url){
             { "data": "type" },
             { "data": "country" },
             { "data": "onDate"},
-            { "data": "attorneyName" },
+            { "data": "clientOrgName" },
             { "data": "lcaStartDate" },
             { "data": "lcaEndDate" },
             { "data": "status" }
@@ -497,8 +499,8 @@ function immigrationReportPagination(url){
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		 if(opt.phone !=null && opt.phone != '' && opt.phone !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phone+'" >'+opt.phone+'</div>';
+	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phoneNumber+'" >'+opt.phoneNumber+'</div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -545,7 +547,7 @@ function immigrationReportPagination(url){
                   }
                }, {
                     "targets": colIndex++,
-                    "data": "attorneyName",
+                    "data": "clientOrgName",
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
@@ -608,7 +610,7 @@ function immigrationReportPagination(url){
     	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
     	     }
                 });
-              $("#immigReportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+              $("#immigAttorReportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
               $("#immSearch").keyup(function (e) {
                   if (e.which === 13) {
                 	  runImmigrationReport();
@@ -643,7 +645,7 @@ function resetImmForm(){
 	             dateFormat: 'yyyy/mm/dd'
 	         };
 		
-		  if ($('#immigration_report_form').validate(false, validationSettings)) {
+		  if ($('#immigration_attorney_report_form').validate(false, validationSettings)) {
 	    	 var petitionType=$("#petitionType").val();
 	    	 var petitionStatus=$("#petitionStatus").val();
 	    	 var dateFrequency=$("#dateFrequency").val();

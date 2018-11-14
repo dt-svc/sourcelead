@@ -104,7 +104,12 @@ public class PayrollReportPdfUtil {
 		    	headerDTO.setReportType("CHECK REGISTER");
 		    	headerDTO.setRunDate(registerDTO.getRunDate());
 //		    	headerDTO.setLiveChecks(checkRegData.size());
-		    	headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	if(StringUtils.isNotBlank(registerDTO.getRunNo())) {
+		    		headerDTO.setRunNumber(Integer.parseInt(registerDTO.getRunNo()));
+		    	}else {
+		    		headerDTO.setRunNumber(0);
+		    	}
+		    	
 		    	
 		    	createHeaderTable(document,headerDTO,orgLocation);
 		    	
@@ -739,7 +744,7 @@ public class PayrollReportPdfUtil {
 			empDataTable.addCell(getPdfCell(report.getEmpName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDepartmentName(),normalFont,0));
 			empDataTable.addCell(getPdfCell(report.getDeductionType(),normalFont,0));
-			empDataTable.addCell(getPdfCell("$ "+report.getCurrent(),normalFont,0));
+			empDataTable.addCell(getPdfCell("$ "+report.getDedAmount(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionMTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionQTD(),normalFont,0));
 			empDataTable.addCell(getPdfCell("$ "+report.getDeductionYTD(),normalFont,0));
@@ -850,9 +855,22 @@ public class PayrollReportPdfUtil {
 			if(StringUtils.isNotBlank(payrollReportDto.getSsnNumber())){
 				StringBuilder sb1 = new StringBuilder();
 				sb1.append("xxx-xx-");
-				String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				try {
+					String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = payrollReportDto.getSsnNumber();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
 				sb1.append(ssnNum[2]);
-				ssn = sb1.toString();
+				ssn = sb1.toString();*/
 			}else {
 				ssn = "NA";
 			}

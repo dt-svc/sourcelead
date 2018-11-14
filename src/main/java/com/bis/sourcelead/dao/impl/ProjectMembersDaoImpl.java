@@ -579,11 +579,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			 statusQuery = " and pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
+			 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
 			 statusCountQuery = statusQuery;
          }
 	     else if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("All"))){
-	    	 statusQuery = " and pm.id NOT IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
+	    	 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id NOT IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
 	    	 statusCountQuery = statusQuery;
 	     }
 	     
@@ -1699,7 +1699,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
 			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
-			employmentTypeQuery = " and can.designationType IN (:empType)";
+			employmentTypeQuery = " and can.designationType IN (:empType) and can.orgLocationId.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'";
 		}
 	
 		String projectQuery = "";

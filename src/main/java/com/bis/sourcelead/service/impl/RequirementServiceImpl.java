@@ -1236,10 +1236,12 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String dateString : requirementDTO.getJobFairDates()) {
 					if (dateString.contains(":")) {
 						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
-					} else if (dateString.contains(",")) {
+					} else if (dateString.contains(",") && dateString.split(",").length > 1) {
 						for (String id : dateString.split(",")) {
 							reqMap.put(Long.parseLong(id), "");
 						}
+					} else {
+						reqMap.put(Long.parseLong(dateString), "");
 					}
 				}
 				for (Long id : reqMap.keySet()) {

@@ -11,25 +11,25 @@ var sourceleadUrl = '${sourceleadUrl}';
 </script>
 <script>
 $(document).ready(function(){
-	getTaskTypeList();
+	getTaskStatusList();
 });
 </script>
 
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project Attributes</h2>
+        <h2>Status</h2>
       </div>
-      <div class="pull-right brud-crum">Home » Project Attributes</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; Project Task Status</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
         <div class="col-md-2 padding_right">
           <ul class="list-unstyled listStyles">
-            <li class="activeList"><a href="/app/pojrctAttributes">Task Type</a></li>
-            <li><a href="/app/pojrctAttributeStatus">Status</a></li>
-            <li><a href="/app/pojrctAttributePriority">Priority</a></li>
-            <li><a href="/app/pojrctAttributeSeverity">Severity</a></li>
+            <li><a href="/app/projectAttributes">Task Type</a></li>
+            <li class="activeList"><a href="/app/projectAttributeStatus">Status</a></li>
+            <li><a href="/app/projectAttributePriority">Priority</a></li>
+            <li><a href="/app/projectAttributeSeverity">Severity</a></li>
           </ul>
         </div>
         <div class="col-md-10 padding_left">
@@ -56,14 +56,14 @@ $(document).ready(function(){
   <div id="editTaskTypeDivId"></div>
 </div>
 <div class="popupWrap" id="modalTasktype">
-      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose" onclick="closeTaskType();"></i></div>
+      <div class="popupHead"><span>Task Status</span><i class="closePop pull-right popClose" onclick="closeTaskType();"></i></div>
         <form id="taskType_form" name="taskType_form" action="" method="post">
-        <input type="hidden" name="taskType" value="TaskType">
+        <input type="hidden" name="taskType" value="TaskStatus">
         <div class="popupContent">
             <div class="clearfix mb">
                 <label class="noPad">Name <b class="valStar">*</b></label>
                 <div class="clearfix">
-                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" data-validation="required validate_length length1-100" field-name="Task Type" onblur="validateTaskTypeName('','new');">
+                    <input class="form-control" placeholder="Name" type="text" name="name" id="taskType" data-validation="required validate_length length1-100" field-name="Name" onblur="validateTaskTypeName('','new');">
                 </div>
             </div>
             <div class="clearfix mb">
@@ -93,10 +93,10 @@ $(document).ready(function(){
 </div>
  
 <script>
-function getTaskTypeList(){
+function getTaskStatusList(){
 	$.ajax({
 		type : "POST",
- 		url : sourceleadUrl+ "/getTaskTypeList",
+ 		url : sourceleadUrl+ "/getTaskStatusList",
 		success : function(json) {
 			var result = "";
 	        	result = result +'<table id="taskTypePagination">';
@@ -115,9 +115,9 @@ function getTaskTypeList(){
    		    		var report = json[i];
 	   		    	result = result +'	<tr>';
 	   		    	result = result +'  <td><div class="tblminwidth-150">'+report.id+'</div></td>';
-	                result = result +'  <td><div class="tblminwidth-150">'+report.name+'</div></td>';
+	                result = result +'  <td><div class="tblminwidth-150" title="'+report.name+'">'+report.name+'</div></td>';
 	                
-	                result = result +'  <td><div class="tbldata-dotdot-big">'+report.description+'</div></td>';
+	                result = result +'  <td><div class="tbldata-dotdot-big" title="'+report.description+'">'+report.description+'</div></td>';
 	                result = result +'  <td>';
 	                if(report.referId != null){
 	                	 result = result +'  '+report.referName+'';
@@ -169,9 +169,9 @@ function saveTaskType(){
 			data: formData,
 	 		url : sourceleadUrl+ "/saveTaskLookupData",
 			success : function(data) {
+				location.reload();
 				editCloseTaskType();
     			closeTaskType();
-				location.reload();
 			},
 		});
 		return true;
@@ -202,7 +202,7 @@ function editCloseTaskType(){
 	$(".mask, #editModalTasktype").fadeOut();
 }
 function deleteTaskType(lookupId){
-	var taskType = "TaskType";
+	var taskType = "TaskStatus";
 	$.ajax({
 		type : "POST",
  		url : sourceleadUrl+ "/deleteLookupDataByLookupId?&taskType="+taskType+"&lookupId="+lookupId,
@@ -220,7 +220,7 @@ function eidtTaskType(lookupId){
 			var result = "";
 			result = result +'      <div class="popupHead"><span>Edit Task Type</span><i class="closePop pull-right popClose" onclick="editCloseTaskType();"></i></div>';
 			result = result +'        <form id="taskType_form" name="editTaskType_form" action="" method="post">';
-			result = result +'       <input type="hidden" name="taskType" value="TaskType">';
+			result = result +'        <input type="hidden" name="taskType" value="TaskStatus">';
 			result = result +'        <input type="hidden" id="lookupId" name="lookupId" value="'+lookupId+'">';
 		 	result = result +'        <div class="popupContent">';
 			result = result +'            <div class="clearfix mb">';
@@ -264,7 +264,7 @@ function eidtTaskType(lookupId){
 
 function validateTaskTypeName(lookupId,type){
 	var TaskTypeName = document.getElementById("taskType").value.trim();
-	var taskTyePe = "TaskType";
+	var taskTyePe = "TaskStatus";
 	if (TaskTypeName != null && TaskTypeName != "") {
 		$.ajax({
 					type : "POST",

@@ -70,6 +70,7 @@ import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.NOTICE_PERIOD;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -277,7 +278,28 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("noticePeriod").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("noticePeriod"))) {
 					String noticePeriod = dataMigrationDTOJsonCopy.getString("noticePeriod");
 					if(noticePeriod.equalsIgnoreCase("Immediately Available") || noticePeriod.equalsIgnoreCase("15 Days") || noticePeriod.equalsIgnoreCase("1 Month") || noticePeriod.equalsIgnoreCase("2 Months") || noticePeriod.equalsIgnoreCase("3 Months")){
-						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriod);
+//						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriod);
+						List<String> noticePeriodList = new ArrayList<>();
+						for(String npString : noticePeriod.split(",")) {
+							switch (npString.toLowerCase()) {
+								case "immediately available":
+									noticePeriodList.add(NOTICE_PERIOD.IMMEDIATELY_AVAILABLE.getValue());
+									break;
+								case "15 days" :
+									noticePeriodList.add(NOTICE_PERIOD.DAYS_15.getValue());
+									break;
+								case "1 month" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTH_1.getValue());
+									break;
+								case "2 months" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTHS_2.getValue());
+									break;
+								case "3 months" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTHS_3.getValue());
+									break;
+							}
+						}
+						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriodList);
 					}else{
 						errorSet.put("noticePeriod", dataMigrationDTOJsonCopy.getString("noticePeriod")+" is invalid Notice period");
 					}

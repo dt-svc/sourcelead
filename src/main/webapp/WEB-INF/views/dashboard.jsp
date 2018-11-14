@@ -97,16 +97,12 @@ function logoutForConfigure() {
 	    <div class="clearfix row">
 	    	
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			 </c:if> 
 	      </sec:authorize>
 	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	      	<c:if test="${userTabs.tabName == 'Jobs'}">
 				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-					</c:if>
 			     </sec:authorize>
 		     </c:if>
 		   </c:forEach>
@@ -119,7 +115,6 @@ function logoutForConfigure() {
 			</sec:authorize>
 			 
 		 
-	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -149,7 +144,7 @@ function logoutForConfigure() {
 				   	 	 </sec:authorize>
 			   	 	 </c:if>	
 			   	 </c:forEach>
-		    </c:if>
+		     	
 		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 			     	<c:if test="${userTabs.tabName == 'Jobs'}">
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
