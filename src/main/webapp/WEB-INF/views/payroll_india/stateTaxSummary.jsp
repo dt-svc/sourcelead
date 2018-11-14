@@ -6,7 +6,7 @@
 		<div class="pull-left">
 			<h2>State Tax</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; State Tax</div>
+		<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${appPath}/stateTax/list">StateTax List</a> &raquo; State Tax Summary</div>
 	</section>
 
 	<div class="clearfix"></div>

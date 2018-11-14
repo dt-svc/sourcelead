@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollService;
@@ -96,6 +98,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -529,15 +534,8 @@ public class PayrollRestController {
 	@ResponseBody
 	public ModelAndView getMyLoansAdv(@RequestParam(value = "loanStatus", required = false) String loanStatus, HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
-			List<AssociateLoanAndAdvances> loanAdvList = associateLoanAndAdvancesService.getAssociateLoanAndAdvancesListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
-			modelAndView.addObject("loanAdvList", loanAdvList);
-			modelAndView.addObject("loanAdvListSize", loanAdvList.size());
-			modelAndView.addObject("loanStatus", loanStatus);
-			
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
 			modelAndView.setViewName("payroll_india/payroll/myLoansAndAdvancesInd");
 		} catch (Exception e) {
@@ -546,5 +544,33 @@ public class PayrollRestController {
 		}
 		return modelAndView;
 	}
+	
+	
+	
+	@RequestMapping(value = "/getMyLoansAdvList", method = RequestMethod.POST)
+	public List<AssociateLoanAndAdvanceHistory> getMyLoansAdvList(@RequestParam(value = "loanStatus", required = false) String loanStatus, HttpServletRequest request) {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<AssociateLoanAndAdvanceHistory> loanAdvHistoryList = null;
+		try {
+			loanAdvHistoryList = associateLoanAndAdvancesHistoryService.getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(loginUser, orgLocation, loanStatus);
+			for(AssociateLoanAndAdvanceHistory alah:loanAdvHistoryList) {
+				alah.setName(alah.getAssociateLoanAndAdvances().getPayrollLoanAndAdvanceId().getName());
+				alah.setType(alah.getAssociateLoanAndAdvances().getLoanAdvanceType());
+				alah.setTotalAmount(alah.getAssociateLoanAndAdvances().getAmount());
+				alah.setNoOfShedules(alah.getAssociateLoanAndAdvances().getNoOfSchedules());
+				alah.setRequestedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), alah.getAssociateLoanAndAdvances().getCreatedDate()));
+				alah.setRequestedTo(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), alah.getAssociateLoanAndAdvances().getEffectiveDate()));
+				alah.setLoanStatus(alah.getAssociateLoanAndAdvances().getLoanAndAdvanceStatus());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return loanAdvHistoryList;
+	}
 
+	
+	
+	
 }
