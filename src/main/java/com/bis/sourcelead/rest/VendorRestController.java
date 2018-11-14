@@ -637,7 +637,7 @@ public class VendorRestController {
 		 			orgSpocService.addOrgSpoc(spoc);
 		 			
 		 			VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationID);
-		 			vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), loginOrgLocation, loginUser, spocUser);
+		 			vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), loginOrgLocation, loginUser, spocUser,spoc);
 		 			
 		 		}
 			

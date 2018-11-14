@@ -148,7 +148,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
   	      result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
           result = result +"    <th>&nbsp;</th>";
           result = result +"    <th>Generated ID</th>";
-          result = result +"    <th>Name</th>"; 
+          result = result +' <div class="tbldata-dotdot-vsm"> <th>Name</th>"</div>'; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
