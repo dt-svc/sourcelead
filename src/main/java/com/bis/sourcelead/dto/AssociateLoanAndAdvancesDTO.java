@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
+import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 
 public class AssociateLoanAndAdvancesDTO implements Serializable{
 	
@@ -76,7 +77,7 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
      
      Set<AssociateLoanAndAdvanceHistory> loanHis;
      
-     
+     AssociateLoanAndAdvances associateLoanAndAdvances;
      
 	public Set<AssociateLoanAndAdvanceHistory> getLoanHis() {
 		return loanHis;
@@ -84,6 +85,14 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 
 	public void setLoanHis(Set<AssociateLoanAndAdvanceHistory> loanHis) {
 		this.loanHis = loanHis;
+	}
+
+	public AssociateLoanAndAdvances getAssociateLoanAndAdvances() {
+		return associateLoanAndAdvances;
+	}
+
+	public void setAssociateLoanAndAdvances(AssociateLoanAndAdvances associateLoanAndAdvances) {
+		this.associateLoanAndAdvances = associateLoanAndAdvances;
 	}
 
 	public static long getSerialversionuid() {

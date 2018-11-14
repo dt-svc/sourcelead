@@ -264,7 +264,7 @@
 								<label class="col-md-4">Select Department</label>
 								<div class="col-md-6 dropdown-select">
 									<select class="chosen-select form-control" multiple name="department" onchange="removeErrMsg();"
-										id="department" field-name="Department" data-placeholder="Select Departmnets"
+										id="department" field-name="Department" data-placeholder="Select Departments"
 										data-validation-optional="true">
 										<c:forEach var="report" items="${departmentList}">
 										    <c:set var="NUM" value="${0}" />
@@ -305,10 +305,10 @@
 							
 										
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Employement Type</label>
+								<label class="col-md-4">Select Employment Type</label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
 									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
-										field-name="Employement Type" data-placeholder="Select Employement Type" data-validation-optional="true">
+										field-name="Employement Type" data-placeholder="Select Employment Type" data-validation-optional="true">
 						                 <c:forEach var="employmentType" items="${employmentTypeList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="dbEmpType" items="${leaveType.leaveEmpType}">

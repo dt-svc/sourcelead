@@ -6,6 +6,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
+
 $(document).ready(function(){           
 	                   
 	var status='${status}'
@@ -131,6 +132,15 @@ padding: 2px 300px 2px 0px;
 
 <section class="content-wraper">
 <section class="content-header clearfix">
+ <div class="success_pop" id="contractSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+   
+   <c:if test="${!empty msg}">
+	        <div class="success_pop" id="sucesspop"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
   <div class="pull-left">
     <h2>Contracts</h2>
   </div>
@@ -3650,6 +3660,7 @@ function previewNewContractPDF(uuid, templateName) {
 </script>
 
 <script>
+$('#sucesspop').delay(2000).fadeOut('slow');
 function removeRecord(recordId,status){
 	var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -3680,7 +3691,12 @@ function finalizeContract(recordId,status){
    });  
 }
 </script>
-
+<script>
+	   function msgFadein() {
+			$("#contractSelector").fadeIn(200);
+		    $('#contractSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
 <script>
 function sendContractFromOwner(contractUUID){
 	var sourceleadUrl ='${sourceleadUrl}';

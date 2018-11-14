@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
+
 public class INDPayrollDTO {
 	private Long id;
 	
@@ -72,6 +74,8 @@ public class INDPayrollDTO {
  	 private Long updatedBy;
 	 
 	 List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList;
+	 
+	 List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList;
 	 
 	public Long getId() {
 		return id;
@@ -295,6 +299,14 @@ public class INDPayrollDTO {
 
 	public void setPayHeadHistoryDTOList(List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList) {
 		this.payHeadHistoryDTOList = payHeadHistoryDTOList;
+	}
+
+	public List<AssociateLoanAndAdvancesHistoryDTO> getLoanAdvHistoryDTOList() {
+		return loanAdvHistoryDTOList;
+	}
+
+	public void setLoanAdvHistoryDTOList(List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList) {
+		this.loanAdvHistoryDTOList = loanAdvHistoryDTOList;
 	}
 
 	public Long getEmployee() {

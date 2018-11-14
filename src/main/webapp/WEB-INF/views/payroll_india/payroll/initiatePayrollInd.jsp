@@ -58,8 +58,8 @@ function getGroupFrequency(){
 	        var output = "";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var date = json[i].payPeriod.replace(",", " to ");
+				output = output + "<option value='" +json[i].payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);
