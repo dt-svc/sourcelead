@@ -1242,16 +1242,16 @@ public class CandidateRestController {
 		}
 		return countAndSum;
 	}
-
-	@RequestMapping(value = "/app/deleteCandidateFromMarketcartByCandidateId")
-	public Response<String> deleteCandidateFromMarketcartByCandidateId(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request)throws Exception{
+	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/deleteCandidateFromMarketcartByCandidateUuid")
+	public Response<String> deleteCandidateFromMarketcartByCandidateUuid(@RequestParam(value = "candidateUuid", required = true) String candidateUuid, HttpServletRequest request)throws Exception{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<String> response = new Response<>();
 		if (user != null) {
 			try {
-				if(id != null){	
-					candidateService.deleteCandidateFromMarketcartByCandidateId(id);
+				if(candidateUuid != null){	
+					candidateService.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else {
@@ -1260,7 +1260,7 @@ public class CandidateRestController {
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 					}
 				} catch (Exception e) {
-				logger.error("Exception caugth in deleteCandidateFromMarketcartByCandidateId controller" + e.getMessage());
+				logger.error("Exception caugth in deleteCandidateFromMarketcartBycandidateUuid controller" + e.getMessage());
 				e.printStackTrace();
 				}
 			}else {
