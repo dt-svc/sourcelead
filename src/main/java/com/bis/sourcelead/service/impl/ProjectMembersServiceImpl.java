@@ -2102,7 +2102,8 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
 				 
-					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
+					  //dont open the code By Laxman
+//					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
 		}
