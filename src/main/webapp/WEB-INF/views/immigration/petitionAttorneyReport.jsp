@@ -9,7 +9,7 @@
 <script>
 $(document).ready(function(){
 	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
-	 getAllRelationssByOrgLocation();
+	  getAllRelationssByOrgLocation("${immigrationDTO.attorneyId}");
 	  if(loc.match("yyyy-MM-dd")){
 		  locDateFormat = 'YYYY-MM-DD';
 	  }if(loc.match("dd-MM-yyyy")){
@@ -315,19 +315,32 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
-function getAllRelationssByOrgLocation(){
+function getAllRelationssByOrgLocation(attorneyId){
 	 console.log(" before function calling ---->");
-	var type = "Vendor";
+	var type = null ;
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		type = "Client";
+	}else{
+		type = "Vendor";
+	}
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
 		        	$('#attorneyId').empty();
+		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
+		        	}else{
+		        		$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	}
 		            for(var i=0;i<json.length;i++){
-		            var opt = json[i];
-		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
+		            	  var opt = json[i];
+		            	  if(opt.id == attorneyId){
+		            		  $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }else{
+		            		$('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		        }

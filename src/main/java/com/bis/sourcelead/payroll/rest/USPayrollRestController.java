@@ -1881,18 +1881,20 @@ public class USPayrollRestController {
 		{
 			List<UserDTO> userList = new ArrayList<>();
 			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-			Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
-			for(PayrollApprover approver :payrollApprover ) {
-				UserDTO userDTO = new UserDTO();
-				userDTO.setId(approver.getId());
-				StringBuilder sb = new StringBuilder();
-				if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
-					sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
-				}else {
-					sb.append(approver.getUser().getFirstName());
+			if(configurePayrollApprover != null) {
+				Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
+				for(PayrollApprover approver :payrollApprover ) {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setId(approver.getId());
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
+						sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
+					}else {
+						sb.append(approver.getUser().getFirstName());
+					}
+					userDTO.setFullName(sb.toString());
+					userList.add(userDTO);
 				}
-				userDTO.setFullName(sb.toString());
-				userList.add(userDTO);
 			}
 			return userList;
 		}
