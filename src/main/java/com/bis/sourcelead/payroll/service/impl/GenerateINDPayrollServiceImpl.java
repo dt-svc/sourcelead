@@ -282,6 +282,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					Double overTimeHours =  timeSheetDayEntriesService.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates( assoSal.getCandidate().getMasterCandidateId().getId(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), orgLocation);
 					employeePayroll.setOverTimeHours(overTimeHours.toString());
 					
+					Double regularHours = 0.0;
+					employeePayroll.setRegularHours(regularHours.toString());
+					
 					set.add(employeePayroll);
 			}
 		}catch (Exception e) {
