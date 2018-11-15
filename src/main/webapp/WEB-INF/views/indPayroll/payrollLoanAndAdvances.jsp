@@ -81,7 +81,7 @@
             </div>
             
             
-            <div class="col-md-5 clearfix mt10">
+           <%--  <div class="col-md-5 clearfix mt10">
               <label class="clearfix">Pay Head</label>
               <div class="clearfix">
                  <div class="clearfix dropdown-select">
@@ -94,7 +94,7 @@
 						</div>
               </div>
             </div>
-            
+             --%>
             <div class="col-md-5 clearfix mt10">
 				<label class="clearfix">Applicable For</label>
 				<div class="clearfix">
