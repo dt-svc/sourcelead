@@ -1849,10 +1849,13 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-
+					var ssn = '';	
+					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
+						ssn = json.user.ssn;
+					}
 					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" id="SSN" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
 
 					result = result + ' </div>';
 					}
