@@ -428,8 +428,9 @@ public class AssetServiceImpl implements AssetService{
 					 }
 					 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
 						 aa.setReturnedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getReturnedOn()));
-						 Date currentDate  = new Date();
-						 if(currentDate.before(aa.getReturnedOn())) {
+						 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						 Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+						 if(aa.getReturnedOn().before(dateWithoutTime)) {
 							 aa.setStatus(Constants.RECORD_INACTIVE);
 						 }
 					 }else {
@@ -619,40 +620,37 @@ public class AssetServiceImpl implements AssetService{
 
 
 	@Override
-	public ResponseList<AssetsReportDTO> getAssetReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId) throws Exception {
+	public ResponseList<AssetsReportDTO> getAssetReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId)
+			throws Exception {
 		ResponseList<AssetsReportDTO> responseList = new ResponseList<>();
-		
-		List<Asset> assetList = assetDao.getAssetsReportList(assetsReportDTO,orgLocationId);
-		List<AssetsReportDTO> list = new  ArrayList<>();
-		for( Asset  asset : assetList ) {
-			for(AssetAssign assetAssign : asset.getAssetAssign()) {
-				AssetsReportDTO assetDto =new AssetsReportDTO();
+		List<AssetsReportDTO> list = new ArrayList<>();
+		List<AssetAssign> assetAssignList = assetDao.getAssetsReportList(assetsReportDTO, orgLocationId);
+		if (assetAssignList != null && !assetAssignList.isEmpty()) {
+			for (AssetAssign assetAssign : assetAssignList) {
+				AssetsReportDTO assetDto = new AssetsReportDTO();
 				User user = userService.getUserByUserCode(assetAssign.getAsset().getCreatedBy());
-				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserUUID());
+				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserCode());
 				assetDto.setEmployeeName(assetAssign.getUserRole().getUser().getFullName());
-				assetDto.setCategory(asset.getCategoryName());
-			    if(assetAssign.getAssignedOn() != null) {
-					assetDto.setAssignedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getAssignedOn()));
+				assetDto.setCategory(assetAssign.getAsset().getCategoryName());
+				if (assetAssign.getAssignedOn() != null) {
+					assetDto.setAssignedOn(commonUtil.dateStrFromOrgDateFormatter(
+							assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getAssignedOn()));
 				}
-				
-			    if(assetAssign.getReturnedOn() != null) {
-			    	assetDto.setReturnedOn(commonUtil.dateStrFromOrgDateFormatter(assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getReturnedOn()));
-			    }
-				
+				if (assetAssign.getReturnedOn() != null) {
+					assetDto.setReturnedOn(commonUtil.dateStrFromOrgDateFormatter(
+							assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getReturnedOn()));
+				}
 				assetDto.setShift(assetAssign.getShift().getShiftName());
 				assetDto.setFileUrl(assetAssign.getFileURL());
+				assetDto.setFileContentType(assetAssign.getFileType());
 				assetDto.setDocument(assetAssign.getFileName());
 				assetDto.setAssetName(assetAssign.getAsset().getName());
 				assetDto.setSerialNo(assetAssign.getAsset().getSlno());
 				assetDto.setAssignBy(user.getFullName());
 				list.add(assetDto);
 			}
-			
 		}
-		
 		responseList.setData(list);
-		
-		
 		return responseList;
 	}
 

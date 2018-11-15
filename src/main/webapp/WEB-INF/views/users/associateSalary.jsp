@@ -386,8 +386,6 @@ function calculateHourlyRateSal(){
 				 
 				} 
 				 
-				
-				
          }else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
 			} else {
