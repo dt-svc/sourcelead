@@ -11,7 +11,12 @@
       <div class="pull-left">
         <h2>Asset Assigned History</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » <a href="<c:url value='${appPath}/assetsReport'/>">Asset Assigned History</a> » Asset Assigned History</div>
+      <div class="pull-right brud-crum">
+         	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+         	<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports </a> &raquo;
+         	Asset Assigned History
+		</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -123,9 +128,6 @@
       
           
       <div class="clearfix timesheet_head">
-         
-       
-         
       <ul class="list-unstyled list-inline">
                 
              <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
@@ -137,10 +139,8 @@
 					</div>
 				</li>
             </ul>
-        <div class="require_wrap_table tableFirstSecond clearfix overflow_inherint datatable_filter">
-        </div>
     </div>
-  
+  <div class="require_wrap_table tableFirstSecond clearfix overflow_inherint datatable_filter"></div>
   </section>
  
 </div>
@@ -204,7 +204,11 @@ function assetReportDataTableList(refreshFlag){
 					text += "		<td><div class='tbldata-dotdot-100'>" + report.assignedOn + "</div></td>";
 					text += "		<td><div class='tblminwidth-75'>" + (report.returnedOn !== null ? report.returnedOn : "----") + "</div></td>";
 					text += "		<td><div class='tblminwidth-75'>" + (report.shift !== null ? report.shift : "----") + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot-100'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a href='" + report.fileUrl + "'>" + report.document + "</a>" : "----") + "</div></td>";
+					if(report.fileUrl !== null && report.fileUrl !== "") {
+						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " <ul class='list-unstyled list-inline mb0 downloadUL'><li><a href='" + report.fileUrl + "' class='fa fa-download cursorPointer'></a></li> <li><a onclick='viewFile(\""+report.fileUrl+"\",\""+report.document+"\",\""+report.fileContentType+"\");' class='fa fa-eye ml cursorPointer'></a></li></ul></div></td>";
+					} else {
+						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " </div></td>";
+					}
 					text += "		<td><div class='tblminwidth-75'>" +(report.assignBy !== null ? report.assignBy : "----") + "</div></td>";
 					text += "	</tr>";
 				}
