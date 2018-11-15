@@ -422,6 +422,10 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
 					}
 					dto.setEmpName(sb.toString());
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPayPeriodNum()))
+						dto.setRunNo(dedHis.getPayroll().getPayPeriodNum());
+					else
+						dto.setRunNo("0");
 					if(dedHis.getPayroll().getEmployee() != null) {
 						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
 					}
@@ -454,7 +458,6 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setContributionMTD(ytd.getContributionMTD());
 					dto.setContributionQTD(ytd.getContributionQTD());
 					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
-					dto.setCurrent(dedHis.getPreContributionAmount().add(dedHis.getPostContributionAmount()));
 					list.add(dto);
 				}
 			}
@@ -481,6 +484,10 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 						sb.append(dedHis.getPayroll().getCandidate().getFirstName());
 					}
 					dto.setEmpName(sb.toString());
+					if(StringUtils.isNotBlank(dedHis.getPayroll().getPayPeriodNum()))
+						dto.setRunNo(dedHis.getPayroll().getPayPeriodNum());
+					else
+						dto.setRunNo("0");
 					if(dedHis.getPayroll().getEmployee() != null) {
 						dto.setEmpId(dedHis.getPayroll().getEmployee().getEmployeeId());
 					}
@@ -514,7 +521,6 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					dto.setGroupFrequency(dedHis.getPayroll().getPaysheetFrequency().getUserGroup().getPayFrequency());
 					dto.setType(dedHis.getPayroll().getType());
 					dto.setRunDate(dedHis.getPayroll().getCreatedDate());
-					dto.setCurrent(dedHis.getPreDeductionAmount().add(dedHis.getPostDeductionAmount()));
 					list.add(dto);
 				}
 			}

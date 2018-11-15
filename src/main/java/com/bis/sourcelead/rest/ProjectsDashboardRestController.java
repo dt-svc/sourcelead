@@ -78,6 +78,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
@@ -751,9 +752,11 @@ public class ProjectsDashboardRestController {
 			 try {
 				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 projectTasksDTO.setOrgLocationId(orgLocations.getId());
 				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				 if(userRole != null) {
-					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","status"};
+					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","createdDate","status"};
 					    int sortColumnIndex = 1; //by default sorting using updated date
 						String sortColumnOrder = "asc"; //by default descending order
 						if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {

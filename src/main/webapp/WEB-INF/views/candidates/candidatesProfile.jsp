@@ -27,8 +27,8 @@ width: 100%; padding: 3px 20px 3px 15px;
 	
 	<script>
 	function candUpdateMsgFadeinFunction() {
-		$("#selector1").fadeIn(200);
-        $('#selector1').delay(2000).fadeOut('slow');
+		$("#selector11").fadeIn(200);
+        $('#selector11').delay(2000).fadeOut('slow');
 	}
 </script> 
 
@@ -150,8 +150,8 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
-							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
-						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+							result  = result + '<div class="success_pop" id="selector11" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDivSum"></span>';
 						    result  = result + '</div>';
 							result = result + '		    <div class="candidate-editdetails col-md-10 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -1315,9 +1315,9 @@ function saveCandidateTags(candidateId){
 				} else if (result.response === "AWKWARD") {
 				    location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
-				    $("#selector1").removeAttr("style");
-				    $("#selector1").css({ display: "block" });
-				    $("#candMsgDiv").html("Success!!  Candidate Updated");
+				    $("#selector11").removeAttr("style");
+				    $("#selector11").css({ display: "block" });
+				    $("#candMsgDivSum").text("Candidate Updated Successfully");
 				    candUpdateMsgFadeinFunction();
 				    candidateQuickViewProfile(candidateId);
 				} else if (result.indexOf('Sign In') !== -1) {

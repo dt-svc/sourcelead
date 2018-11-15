@@ -84,7 +84,7 @@
 		   <div class="clearfix row minHeightcol5">
 		   
 		   <div class="clearfix col-md-10 noPad mb">
-	         <div class="col-md-4">
+	         <div class="col-md-4" id="loanAndAdvTypeDiv">
                   <label>Type<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvType" onchange="loanAdv.getLoanAndAdvNames();loanAdv.getDetuctAmountDetails();" name="loanAndAdvType" data-validation="required" field-name="Type">
@@ -95,7 +95,7 @@
                   </div>
               </div>
               
-               <div class="col-md-4">
+               <div class="col-md-4" id="loanAndAdvNameDiv">
                   <label>Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
                     <select class="form-control chosen-select" name="loanAndAdvName" id="loanAndAdvName" onchange="loanAdv.getLoanAndAdvDetails();loanAdv.getDetuctAmountDetails();" field-name="Name" data-validation="required" field-name="Name">
@@ -104,7 +104,7 @@
                   </div>
               </div>
               
-              <div class="col-md-4">
+              <div class="col-md-4" id="loanAndAdvStatusDiv">
                   <label>Status<span class="text-danger">&nbsp;*</span></label>
                   <div class="dropdown-select">
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" onchange="loanAdv.getLoanAndAdvStatus();loanAdv.getLoanAndAdvDetails();loanAdv.getDetuctAmountDetails();" name="loanAndAdvStatus" data-validation="required" field-name="Status">
@@ -122,12 +122,12 @@
 	         <div class="clearfix col-md-10 noPad mb">
 	         
 	           <div class="clearfix" id="statusTypeDiv" style="display: none;">
-			         <div class="col-md-4 minHeight">
+			         <div class="col-md-4 minHeight" id="requestedAmountDiv">
 		                  <label>Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="loanAmount" id="requestedAmount"  onblur="loanAdv.getDetuctAmountDetails();" field-name="Amount">
 		              </div>
 		              
-		               <div class="col-md-4 minHeight">
+		               <div class="col-md-4 minHeight" id="schedulerDiv">
 		                  <label>Scheduler<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="dropdown-select">
 		                    <select class="form-control" data-placeholder="Select Type" id="scheduler" onchange="loanAdv.getDetuctAmountDetails();" name="scheduler"  field-name="Scheduler">
@@ -155,9 +155,9 @@
 		                  <input type="text" class="form-control" name="paidAmount" id="paidAmount" onblur="loanAdv.getDetuctAmountDetails();" field-name="Paid Amount">
 		               </div>
 		               
-		               <div class="col-md-4 minHeight">
+		               <div class="col-md-4 minHeight" id="noOfSchedulesDiv">
 		                  <label>No Of Schedules<span class="text-danger">&nbsp;*</span></label>
-		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="loanAdv.getDetuctAmountDetails();" field-name="No Of Schedules">
+		                   <input type="text" class="form-control" name="noOfSchedules" id="noOfSchedules" onblur="loanAdv.getDetuctAmountDetails();" field-name="No Of Schedules" data-validation="validate_int">
 		              </div>
 		               
 		               <div class="col-md-4 minHeight" id="pendingAmountDiv" style="display: none;">
@@ -165,28 +165,28 @@
 		                  <input type="text" class="form-control" name="pendingAmount" id="pendingAmount" field-name="Pending Amount" readonly="readonly">
 		               </div>
 		              
-		               <div class="col-md-4 minHeight">
+		               <div class="col-md-4 minHeight" id="endDateDiv">
 		                  <label>End Date<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control calendar" onmouseenter="getDatePicker();" name="endDate"  id="endDate" field-name="End Date"  readonly="readonly" >
 		              </div>
 		              
-		              <div class="col-md-4 minHeight">
+		              <div class="col-md-4 minHeight" id="deductAmountDiv">
 		                  <label>Deduct Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="deductAmount" id="deductAmount" readonly="readonly" field-name="Deduct Amount">
 		              </div>
 		              
-		              <div class="col-md-4 minHeight">
+		              <div class="col-md-4 minHeight" id="loanAndAdvApproverDiv">
 		                  <label>Approver<span class="text-danger">&nbsp;*</span></label>
 		                   <select class="form-control chosen-select" name="loanAndAdvApprover" id="loanAndAdvApprover"  field-name="Approver" field-name="Approver">
                         		<option value="">-- Select Approver --</option>
                    		   </select>
 		              </div>
 		              
-		               <div class="col-md-8 minHeight">
+		               <div class="col-md-8 minHeight" id="descriptionDiv">
 		                  <label>Description</label>
 		                  <textarea rows="4" class="form-control" id="description"
 									name="description" field-name="Description"
-									data-validation=" validate_length length2-5000"
+									data-validation="validate_length length2-5000"
 									data-validation-optional="true"></textarea>
 		              </div>
              
@@ -355,6 +355,8 @@ function editLoanAndAdvance(loanAdvId){
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 function showAssociateLoanAndAdvancePopup() {
+	loanAdv.clearLoanAndAdvances();
+	loanAdv.getLoanAndAdvNames();
     $(".modal.paymentaccount-modal").fadeIn();
     $(".comMask").fadeIn();
 }

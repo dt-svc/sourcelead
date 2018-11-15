@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import com.bis.sourcelead.dto.OnboardTasksDTO;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboarding;
 
@@ -26,7 +27,7 @@ public interface VendorOnboardService {
 	
 	VendorOnboarding getVendorOnboardingByOrgLocationIdAndVendorLocationId(Long orgLocationId,Long vendorLocationId) throws Exception;
 	
-	void sendMailAndNotificationToVendorContact(VendorOnboarding vendorOnboarding,OrgLocations vendorOrgLocations, OrgLocations orgLocations,User user,User spocUser) throws Exception;
+	void sendMailAndNotificationToVendorContact(VendorOnboarding vendorOnboarding,OrgLocations vendorOrgLocations, OrgLocations orgLocations,User user,User spocUser, OrgSpoc orgSpoc) throws Exception;
 	
 	void saveVendorOnboardForVendorBulkImports(Long vendorOnboardingId,User user,User spocUser,OrgLocations orgLocations) throws Exception;
 	

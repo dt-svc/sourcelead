@@ -33,6 +33,7 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
+				    <input type="hidden" id="emptyDeductionId" name="emptyDeductionId"/>
 				<!-- 	<option>Select Group</option>
 						<option>Monthly</option>
 						<option>Weekly</option> -->
@@ -98,7 +99,7 @@ $(document).ready(function(){
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <!-- <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>  --></span> </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -212,7 +213,7 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 
-
+<div id="popUp"></div>
 <script type="text/javascript">
 function deductionReport(){
 	 if ($('#deduction_report_form').validate(false, validationSettings)){ 
@@ -306,7 +307,7 @@ function getDeductionReports(){
 									"data" : "type",
 									"sortable": true,
 									"render" : function(data, type, opt,meta) {
-										
+										$("#emptyDeductionId").val(1);
 										     var result = "";
 											result = result+ ' <td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
 										
@@ -440,8 +441,30 @@ function deductionReportExportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var deductionId = $("#deductionId").val();
+	var emptyExport = $('#emptyDeductionId').val();
 	
-	window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+	if(emptyExport > 0){
+		window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Report List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+}
+</script>
+
+<script type="text/javascript">
+function cancelExport(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 

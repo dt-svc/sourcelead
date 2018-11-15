@@ -36,7 +36,7 @@
 			getOnBoardCandidateCountry('${SourceLeadWeb_candidateOnBoarding.country}');
 			getOnBoardCandidateStates('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}');
 			getOnBoardCandidateCities('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}','${SourceLeadWeb_candidateOnBoarding.city}');
-		 };
+		};
 </script>
 
 <script type="text/javascript">
@@ -112,14 +112,16 @@
 			  <div class="clearfix"></div>
 		  </div>
 		  
+		  
+
+<div class="welCo1">	
  <form:form class="login-form clearfix"  id="onboardCandidatePfEsi_form"  name="onboardCandidatePfEsi_form" method="post" >
  <div id="loading"></div>
-<div class="welCo1">
 <h5> PF & ESI Details </h5>
 <div class="form-horizontal padBot">
 <input type="hidden" id="id" name="id" value="${associatePfEsi.id}">
 
-			<div class="clearfix row minHeightcol5">
+			<div class="clearfix row">
               <div class="col-md-12 mb">
                 <div class="clearfix row">
                   <div class="col-md-6 mb checkbox-new">
@@ -156,7 +158,7 @@
                   </div>
                   </div>
                   <div class="clearfix"></div>
-                   <div class="col-md-6 mb checkbox-new">
+                   <div class="col-md-6 checkbox-new">
                    <c:if test="${associatePfEsi.eligibleForEsi eq 'Y'}">
                              <input id="esi" class="checkbox-custom"  checked name="eligibleForEsi" type="checkbox"  onClick="esiFunction()">
                    </c:if>
@@ -170,7 +172,7 @@
                   <div class="clearfix"></div>
                   
                   
-                  <div class="col-md-5" id="esiEligible" style="display: none;">
+                  <div class="col-md-5 mt10" id="esiEligible" style="display: none;">
                     <label>ESI Number</label>
                     <div>
                        <input type="text" class="form-control" name="esinumber" value="${associatePfEsi.esinumber}" id="esiNumber" data-validation="validate_int validate_length length1-17" data-validation-optional="true" field-name="ESI Number">
@@ -180,17 +182,374 @@
                 </div>
               </div>
 		</div>
-</div>
- 
-</div>
+		
+		<div class="clearfix"></div>
+		
+		<div class="col-md-6 mb checkbox-new noPad">
+                   <c:if test="${associatePfEsi.nominee eq 'Y'}">
+                             <input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
+                   </c:if>
+                   <c:if test="${empty associatePfEsi.nominee}">
+                   			<input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
+                   </c:if>
+					<label for="nomineeShow" class="checkbox-custom-label" onClick="nomineeDetails()"><span class="ml10">Nominee</span></label>
+                    <div>
+                    </div>
+        </div>
+		
+<!--         <div class="clearfix row">  -->
+<!--         	<a href="javascript:void(0)" id="nomineeShow" class="col-md-12" title="Update Nominee Details">Nominee</a> -->
+<!--          </div> -->
 
-		  
+			<div class="clearfix">
+					<div class="clearfix mb" id="nomineeDetaDiv" style="display: none;" >
+		               <div class="pull-right">
+		                 <input value="Add" id="addButton" class="btn btn-success btnSuccess" type="button" onclick="addNomineeDetails();">
+		               </div>
+		             </div>
+		             <div id="nomineeDeta" style="display: none;" class="require_wrap_table">
+		             </div>
+			</div> 
+
+
+<!--          <div class="clerfix project_wrap_table"> -->
+         
+         
+ <script>
+    function getNomineeDetails(){
+    	 var userId = '${SourceLeadWeb_user.id}';
+//     	var empId = $("#empId").val();
+//     	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+//     		  var sourceleadUrl ='${sourceleadUrl}';
+    				  $.ajax({
+    				    	type: "GET",
+    				        url: sourceleadUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+    				        success: function(json) {
+    						 var result = "";				        	
+    						result = result + '<table id="incometable" class="display" cellspacing="0" width="100%" >';
+    						result = result + '<thead>';
+    						result = result + '<tr>';
+    						result = result + '<th>Name</th>';
+    						result = result + '<th>Relation</th>';
+    						result = result + '<th>Nomination For</th>';
+    						result = result + '<th>Nomination %</th>';
+    						result = result + '<th>Action</th>';
+    						result = result + '</tr>';
+    						result = result + '</thead>	';
+    						result = result + '<tbody>';
+    						 if(json != null && json != ''){
+    							 if(json.data.length >= 4){
+    								 $("#addButton").hide();
+    							 }
+    							 for (var i=0; i<5; i++)
+    	    						{
+    	    			        		 var opt = json.data[i];
+    	    			        		    result = result + ' <tr>';
+    	    			        		    if(opt.name !=null && opt.name !='' && opt.name !='undefined'){
+    	    			        		    	result = result + '<td><div class="tblminwidth-75">'+opt.name+'</div></td>';
+    	    			        		    }else{
+    	    			        		    	result = result + '<td><div class="tblminwidth-75">---</div></td>';
+    	    			        		    }
+    	    			        		    
+    	    			        		    if(opt.relation !=null && opt.relation !='' && opt.relation !='undefined'){
+    	    			        		    	result = result + '<td><div>'+opt.relation+'</div></td>';
+    	    			        		    }else{
+    	    			        		    	result = result + '<td><div>---</div></td>';
+    	    			        		    }
+    	    			        		    
+    	    			        		    if(opt.nominationFor !=null && opt.nominationFor !='' && opt.nominationFor !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.nominationFor+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    			        		    if(opt.nominationPercentage !=null && opt.nominationPercentage !='' && opt.nominationPercentage !='undefined'){
+    	    									result = result + ' <td><div class="tblminwidth-75">'+opt.nominationPercentage+'</div></td>';
+    	    								}else{
+    	    									result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+    	    								}
+    	    								
+    	    			        		    result = result + ' <td><div class="tblminwidth-75"><ul class="list-inline list-unstyled mb0"><li><i class="cursorPointer fa fa-trash" onclick="deleteNominee('+opt.id+','+opt.candidateId+');"></i></li></div></td>';
+    	    								
+    	    								result = result + ' </tr>';
+    	    						}
+    						} 
+    			        	 
+    						result = result + '  </tbody>';
+    						result = result + ' </table>';
+							$("#nomineeDeta").show();
+							$("#nomineeDetaDiv").show();
+							
+    						$("#nomineeDeta").empty();
+    						$("#nomineeDeta").append(result);
+    						$("#loading").removeAttr("style");
+    				        },
+    				        
+    				    });
+    }
+    </script>
+    
+         
+<!--                   <table> -->
+                    <!-- <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Relation</th>
+                        <th>Nomination For</th>
+                        <th>Nomination %</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead> -->
+					  <!-- <tbody>
+				<tr>
+				<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>
+				<td><div>20/09/2017</div></td>
+				<td><div>Cash</div></td>
+				<td><div>USD</div></td>
+				<td><div>5055</div></td>				
+			</tr>
+			<tr class="ExpDe">
+				<td colspan="6">
+					<div class="expDetails">
+						<ul>
+							<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>
+							<li><strong>Date :</strong><span> 20/09/2017</span><div class="clearfix"></div></li>
+							<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>
+							<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>
+							<li><strong>Amount :</strong><span> 20,000</span><div class="clearfix"></div></li>
+							<li><strong>Purpose :</strong><span> Purpose text</span><div class="clearfix"></div></li>
+							<li><strong>Description :</strong><p> Description Description Description Description</p>
+							<div class="clearfix"></div>
+							</li>
+							<div class="clearfix"></div>
+						</ul>
+					</div>
+				</td>			
+			</tr>
+						  
+					  </tbody> -->
+<!--                   </table> -->
+<!--                 </div> -->
+<!--                 <div class="clearfix"></div> -->
+         
+         
+</div>
+</form:form>
+
+
+ <div class="clearfix"></div>
+                <div class="clearfix mt minHeightcol5 row" id="nomineeDetails" style="display: none;">
+                <form:form class="login-form clearfix"  id="nomineeDetails_form"  name="nomineeDetails_form" method="post" >
+                  <div class="col-md-12">
+                  <h5>Family Details</h5>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="col-md-5">
+                    <label>Name<span class="text-danger paddingLeft">*</span></label>
+                    <div>
+                      <input type="text" id="name" class="form-control" name="name" value="" field-name="Name" data-validation="required">
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Date of Birth<span class="text-danger paddingLeft">*</span></label>
+                    <div>
+                      <input type="text" id="dateOfBirth" class="form-control calendar" name="dateOfBirth" value="" field-name="Date of Birth" data-validation="required">
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Gender</label>
+                    <div>
+                      <select class="sel" name="gender">
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Transgender">Transgender</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Blood Group</label>
+                    <div>
+                      <select class="sel" name="bloodGroup">
+                        <option selected>Select</option>
+                        <option value="A+">A+</option>
+                        <option value="B+">B+</option>
+                        <option value="AB+">AB+</option>
+                        <option value="A-">A-</option>
+                        <option value="B-">B-</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Relation<span class="text-danger paddingLeft">*</span></label>
+                    <div>
+                      <select class="sel" name="relation" field-name="Relation" data-validation="required">
+                        <option value="">Select</option>
+                        <option value="Father">Father</option>
+                        <option value="Mother">Mother</option>
+                        <option value="Brother">Brother</option>
+                        <option value="Sister">Sister</option>
+                        <option value="Husband">Husband</option>
+                        <option value="Wife">Wife</option>
+                        <option value="Son">Son</option>
+                        <option value="Daughter">Daughter</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Nomination For</label>
+                    <div>
+                      <select class="sel" name="nominationFor">
+                        <option value="">Select</option>
+                        <option value="PF">PF</option>
+                        <option value="ESI">ESI</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Nomination %<span class="text-danger paddingLeft">*</span></label>
+                    <div>
+                      <input type="text" id="nomination" class="form-control" name="nominationPercentage" field-name="Nomination Percentage" data-validation="required">
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label>Address</label>
+                    <div>
+                      <textarea rows="2" id="address" class="form-control" name="address"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="row">
+                      <div class="col-md-4 mb checkbox-new">
+                        <label>&nbsp;</label>
+                        <div class="clearfix">
+                          <input id="illness" class="checkbox-custom" name="esi" type="checkbox" onClick="esiFunction()">
+                          <label for="illness" class="checkbox-custom-label"><span class="ml10">Illness</span></label>
+                        </div>
+                      </div>
+                      <div class="col-md-4 mb checkbox-new">
+                        <label>&nbsp;</label>
+                        <div class="clearfix">
+                          <input id="minor" class="checkbox-custom" name="esi" type="checkbox">
+                          <label for="minor" class="checkbox-custom-label"><span class="ml10">Minor</span></label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix mt"></div>
+                  <div class="clearfix" id="illnessMinor" style="display: none;">
+                  <h4 class="col-md-12 margin-top0 ml">Illness</h4>
+                    <div class="col-md-5">
+                      <label>Guardian Name<span class="text-danger paddingLeft">*</span></label>
+                      <div>
+                        <input type="text" id="guardianName" class="form-control" name="illnessGuardianName" field-name="Guardian Name" data-validation="required">
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Relation<span class="text-danger paddingLeft">*</span></label>
+                      <div>
+                        <select class="sel" name="illnessGuardianRelationName" field-name="Relation" data-validation="required">
+                          <option value="">Select</option>
+                            <option value="Father">Father</option>
+	                        <option value="Mother">Mother</option>
+	                        <option value="Brother">Brother</option>
+	                        <option value="Sister">Sister</option>
+	                        <option value="Husband">Husband</option>
+	                        <option value="Wife">Wife</option>
+	                        <option value="Son">Son</option>
+	                        <option value="Daughter">Daughter</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Address</label>
+                      <div>
+                        <textarea rows="2" id="address" class="form-control" name="illnessGuardianAddress"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Phone Number</label>
+                      <div>
+                        <input type="text" id="phoneNumber" class="form-control" name="illnessGuardianPhoneNumber">
+                      </div>
+                    </div>
+                    <div class="clearfix mt"></div>
+                    <div class="col-md-5 mt">
+                      <label>Email</label>
+                      <div>
+                        <input type="text" id="email" class="form-control" name="illnessGuardianEmail">
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <!--  Minor Div -->
+                  <div class="clearfix" id="minorDiv" style="display: none;">
+                  <h4 class="col-md-12 margin-top0 ml">Minor</h4>
+                    <div class="col-md-5">
+                      <label>Guardian Name<span class="text-danger paddingLeft">*</span></label>
+                      <div>
+                        <input type="text" id="guardianName" class="form-control" name="minorGuardianName" field-name="Guardian Name" data-validation="required">
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Relation<span class="text-danger paddingLeft">*</span></label>
+                      <div>
+                        <select class="sel" name="minorGuardianRelationName" field-name="Relation" data-validation="required">
+                          <option value="">Select</option>
+                          	<option value="Father">Father</option>
+	                        <option value="Mother">Mother</option>
+	                        <option value="Brother">Brother</option>
+	                        <option value="Sister">Sister</option>
+	                        <option value="Husband">Husband</option>
+	                        <option value="Wife">Wife</option>
+	                        <option value="Son">Son</option>
+	                        <option value="Daughter">Daughter</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Address</label>
+                      <div>
+                        <textarea rows="2" id="address" class="form-control" name="minorGuardianAddress"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <label>Phone Number</label>
+                      <div>
+                        <input type="text" id="phoneNumber" class="form-control" name="minorGuardianPhoneNumber">
+                      </div>
+                    </div>
+                    <div class="clearfix mt"></div>
+                    <div class="col-md-5 mt">
+                      <label>Email</label>
+                      <div>
+                        <input type="text" id="email" class="form-control" name="minorGuardianEmail">
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  
+                  
+                  <div class="clearfix footerstyelsNew">
+			             <div class="col-md-6 col-md-offset-6">
+			               <div class="pull-right">
+			                 <input value="save" id="saveButton" class="btn btn-success btnSuccess" type="button" onclick="saveNomineeDetails();">
+			               </div>
+			             </div>
+			     </div> 
+                </form:form>  
+                </div>
+</div>
+  
+
 <div class="welBtns">
 	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateBankingDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidatePfEsiDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
-</form:form>
 		  
 		</section>
 	</section>  
@@ -303,6 +662,45 @@ $(function() {
 	});
  </script>
  
+ <script>
+ function saveNomineeDetails(){
+	 var userId = '${SourceLeadWeb_user.id}';
+	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
+	        var formData = getFormData("nomineeDetails_form");
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	         $.ajax({
+		    	type: "POST",
+		    	data: formData,
+		    	 url: sourceleadUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		//location.replace(sourceleadUrl+"/onboardingCandidateTaxDetails");  
+		        		getNomineeDetails();
+		        		$("#nomineeDetails").hide();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		        },
+		    });  
+	        return true;
+	  } else {
+		return false;
+	  }
+ }
+ 
+ $('body').on('blur', '#nomineeDetails_form', function() {
+		$("#nomineeDetails_form").showHelpOnFocus();
+		$("#nomineeDetails_form").validateOnBlur(false, validationSettings);  
+	});
+ </script>
  
  <script type="text/javascript">
 (function ($) {
@@ -420,6 +818,56 @@ $(document).ready(function(){
 	pfFunction();
 	esiFunction();
 });
+</script>
+
+<script>
+$("#illness").click(function() {
+	$("#illnessMinor").toggle();
+});
+$("#nomineeShow").click(function() {
+	$("#nomineeDetails").toggle();
+});
+$("#minor").click(function() {
+	$("#minorDiv").toggle();
+});
+</script>
+<script>
+$(function() {
+    $(".ExpShow").click(function(){
+		$(this).parent().parent().next().slideToggle(100);
+		$(this).find("i").toggleClass("closExp");
+	});
+});	
+</script>
+
+<script>
+
+	//to set from date to current month
+	$('#dateOfBirth').datepicker({
+	dateFormat : 'dd-mm-yy',
+	changeMonth: true,
+	changeYear: true,
+	});
+
+</script>
+
+<script> 
+function deleteNominee(nomineeId,candidateId){ 
+    $.ajax({
+  	  type: "POST",
+      url: sourceleadUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
+ 	  success: function(data) { 
+ 		 getNomineeDetails();
+	  }, 
+    });
+	   
+ } 
+ </script> 
+
+<script>
+function addNomineeDetails(){
+	$("#nomineeDetails").show();
+}
 </script>
 
 <script src="/resources/js/slead-common.js?staticTime=${staticTime}"></script>

@@ -138,12 +138,12 @@
 							</div>
 							</label>
 							<div class="col-md-6 dropdown-select">
-								<label class="paddingLeft paddingRight"> <c:if
+								<div class="paddingLeft paddingRight"> <c:if
 											test="${!empty leaveType.duration}">
 <%-- 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day')}"> --%>
 											
 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day') && !fn:contains(leaveType.duration, 'Half Day')}">
-												<input type="checkbox" checked="true" id="fullDayId" name="duration" value="Full Day">
+												<input type="checkbox" checked="true" id="fullDayId" name="duration" value="Full Day" >
 												<span class="paddingLeft">Full Day</span>
 												<input type="checkbox" id="halfDayId" name="duration" value="Half Day">
 												<span class="paddingLeft">Half Day</span>
@@ -153,7 +153,7 @@
 											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
 												<span class="paddingLeft">Full Day</span>
 												
-												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day">
+												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day" >
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 											<c:if test = "${fn:contains(leaveType.duration, 'Half Day') && fn:contains(leaveType.duration, 'Full Day') }">
@@ -164,12 +164,13 @@
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" id="fullDayId" checked name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
 											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
 										</c:if>
-									</label>
+									</div>
+									<input type="hidden"  id="leaveValue" name="leaveValue"  field-name="Duration" data-validation="required"/>
 									<%-- <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
 									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option> --%>
 							</div>
@@ -1149,13 +1150,13 @@
 							<div class="form-group">
 								<label class="col-md-4"></label>
 								<div class="col-md-6 checkBox">
-									<c:if test="${!empty leaveType.visibilityToAllUsers}">
+									<c:if test="${!empty leaveType.visibilityToAllUsers && leaveType.visibilityToAllUsers == 'Y'}">
 										<input type="checkbox" checked="true"
-											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visiblity
+											name="visibilityToAllUsers" value="Y" id="visibilityToAllUsers">Visibility
 										All Users
 									</c:if>
-									<c:if test="${empty leaveType.visibilityToAllUsers}">
-										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visiblity
+									<c:if test="${empty leaveType.visibilityToAllUsers || leaveType.visibilityToAllUsers == 'N'}">
+										<input type="checkbox" name="visibilityToAllUsers"  id="visibilityToAllUsers" value="Y">Visibility
 										All Users
 									</c:if>
 								</div>
@@ -1262,7 +1263,22 @@ function showLeaveEncashmentDiv(){
 	}
 </script>
 <script type="text/javascript">
+	function LeaveCheckValidationAssociate(){
+		
+		 if($('#fullDayId').is(":checked") || $('#halfDayId').is(":checked")){
+				$('#leaveValue').removeAttr('data-validation');
+		  }else{
+			  $('#leaveValue').attr('data-validation',"required");
+		  }
+		
+	} 
+</script>
+<script type="text/javascript">
 	function submitLeaveType() {
+		
+		LeaveCheckValidationAssociate();
+		
+		
 		validateName();
 			var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 			var locationId = '${SourceLeadWeb_orgLocationId}';

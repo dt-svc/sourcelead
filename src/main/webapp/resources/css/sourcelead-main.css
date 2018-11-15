@@ -9180,7 +9180,7 @@ margin: 5px 0; font-size: 16px; color: #606060;
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
 .grid-prfileImg {
-	width: 150px; height: auto; background-color:#fff; padding-right: 0; float: left;
+	width: 150px; height: 150px; background-color:#fff; padding-right: 0; float: left;
 }
 .profilesummarywidgetImg {
 	width: 150px; height: 150px; border: 3px solid #fff;
@@ -9454,6 +9454,9 @@ display:block; margin:0 auto; width:16px; height:16px; border-radius:50%;
 }
 .colorPosition{
 position: absolute; left:5px; top:7px;
+}
+.eventCalendar .ui-datepicker-header {
+	display: none;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

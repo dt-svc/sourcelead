@@ -85,10 +85,11 @@
               <label class="clearfix">Pay Head</label>
               <div class="clearfix">
                  <div class="clearfix dropdown-select">
-							<select  class="form-control chosen-select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
-							  <option value="">--Select Pay Type--</option>
+							<select  class="form-control select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
 	                			<c:forEach var="list" items="${payheadList}">
-			                    	<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
+	                				<c:if test="${list.shortCode == 'L&D'}">
+	                					<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
+	                				</c:if>
 								</c:forEach>
 							</select>
 						</div>

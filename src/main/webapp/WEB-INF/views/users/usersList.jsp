@@ -382,7 +382,7 @@ function getUsersSearchResult(searchValue){
 					</div>
 				</li>
 		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="beforeSearch();"></span></li>
         </ul>
       </div>
       
@@ -628,7 +628,7 @@ function exportUserData(){
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+// 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <!-- script for flush advanced search form -->
@@ -1402,23 +1402,37 @@ function dynamicUserListPagination(url){
     $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
 }
-
-$("#dynamicUserDataTableSearch").keydown(function(e) {
-	   if(e.which === 13) {
-		 //dynamicUserDataTableSearch
-	 	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+</script>
+<script>
+$("#dynamicUserDataTableSearch").keyup(function(event) {
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    if (event.keyCode === 13) {
+    	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
     	var searchData = $('#dynamicUserDataTableSearch').val();
-			    	
-		 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
-		    		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-		    	}else{
-		 		   getDynamciUserList();
-				   searchHighlight();
-		    	}
-   	    	$('#dynamicUserDataTableSearch').val(searchData);		 	
-	 	   }
-	   } );
-</script> 
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getDynamciUserList();
+		    searchHighlight();
+    	}else{
+    		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#dynamicUserDataTableSearch').val(searchData);
+    }
+});
+
+function beforeSearch(){
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dynamicUserDataTableSearch').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getDynamciUserList();
+	    searchHighlight();
+	}else{
+		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dynamicUserDataTableSearch').val(searchData);
+}
+</script>
  <script>
  function searchHighlight(){
 	 setTimeout(function () {

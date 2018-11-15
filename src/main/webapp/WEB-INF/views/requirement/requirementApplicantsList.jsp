@@ -59,6 +59,12 @@
 	 requirementApplicantList(true);
 	 /* getClientList(); */
 // 	 getTeamsList();
+	 
+	$("#dataTableSearch").keyup(function(e) {
+		   if(e.which === 13) {
+			   requirementApplicantList();
+		   }
+	});
  });
  
  </script>
@@ -87,10 +93,12 @@
 	    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
 	     			    	clientNameById.push($(this).val());
 	     				}); 
-    				 } else {
+    				 } else if($("#myOwnerClinetListUL li").length > 0){
     					 $('input:checkbox[name=myClientNameById]').each(function() {
  	     			    	clientNameById.push($(this).val());
  	     				});
+    				 } else {
+    					 clientNameById.push("-1");
     				 }
     			 }
     		 
@@ -129,13 +137,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	            var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&searchValue="+searchValue;
     	    	    prepareApplicantList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants;
+    	        var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants+"&searchValue="+searchValue;
     		    prepareApplicantList(url);
     	    } 
 		
@@ -341,11 +349,7 @@ function applicantpagination(url){
     } );
     $("#applicantpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   requirementApplicantList();
-    	   }
-    	});
+
 }
 
 </script>
@@ -470,7 +474,7 @@ $(".overIcon, .newActPop").click(function(e){
 					  <div class="col-md-3">
 						<div class="row">
 						   <div class="col-md-12 mb">
-								<label><strong>Search for</strong></label>
+								<label><strong>Jobs</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="searchTypeFilter">
 									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>

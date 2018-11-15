@@ -110,13 +110,15 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 						  assignTasks = new ProjectAssignTask();
 						 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
 						 assignTasks.setProjectMemberId(pm);
-						 if(pm.getProjectMemberCandidteId() != null) {
-							 if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
-								 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
-							 }
-						 }
+						  
 						 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
-							 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+							if(projectTasks.getOwnerUserId() == null) {
+								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+							}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
+								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+							}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue() ) {
+								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+							}
 						 }
 					 }
 			   }
@@ -130,7 +132,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 			   
 			//Project Task createby Email
 			   if(projectTask.getCreatedBy() != null) {
-				   if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
+				   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
 					   sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"createdByEmail");
 				   }
 			   }

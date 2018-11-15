@@ -338,7 +338,13 @@ public class RequirementServiceImpl implements RequirementService {
 				requirement.setUrl(jobTitle);
 			}
 		}
-		requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		
+		if(requirementDTO.getProfilePercentage() != null) {
+			requirement.setProfilePercentage(Integer.parseInt(requirementDTO.getProfilePercentage()));
+		}else {
+			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
+		}
+		
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
@@ -1230,10 +1236,12 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String dateString : requirementDTO.getJobFairDates()) {
 					if (dateString.contains(":")) {
 						reqMap.put(Long.parseLong(dateString.split(":")[0]), "");
-					} else if (dateString.contains(",")) {
+					} else if (dateString.contains(",") && dateString.split(",").length > 1) {
 						for (String id : dateString.split(",")) {
 							reqMap.put(Long.parseLong(id), "");
 						}
+					} else {
+						reqMap.put(Long.parseLong(dateString), "");
 					}
 				}
 				for (Long id : reqMap.keySet()) {
@@ -3028,7 +3036,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, Requirement requirement) throws Exception {
+		 java.util.List<String> requirementLocationsList = new ArrayList<>();
+		 java.util.List<RequirementLocations> locationsList;
+		locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
 		if (requirement.getJobId() != null) {
 			writeRow.createCell(0).setCellValue(requirement.getJobId());
 		}
@@ -3059,9 +3070,23 @@ public class RequirementServiceImpl implements RequirementService {
 			writeRow.createCell(3).setCellValue(
 					sb.append(requirement.getRate()).append(" / ").append(requirement.getRateType()).toString());
 		}
+		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).append(" ").toString();
+						writeRow.createCell(4).setCellValue(location);
+					}else{
+						writeRow.createCell(4).setCellValue("--");
+					}
+				}
+			}
+/*		
 		if (requirement.getCountry() != null && !"".equalsIgnoreCase(requirement.getCountry())) {
 			writeRow.createCell(4).setCellValue(requirement.getCountry());
-		}
+		}*/
 		if (requirement.getSkills() != null && !"".equalsIgnoreCase(requirement.getSkills())) {
 			writeRow.createCell(5).setCellValue(requirement.getSkills());
 		}

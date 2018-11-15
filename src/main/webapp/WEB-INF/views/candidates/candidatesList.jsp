@@ -66,6 +66,7 @@
 
 	<script>
 	var isAssociate = 'N';
+	var candidateIDsArr=[];
 	var _csrfParam = '${_csrf.parameterName}';
 	var _csrfToken = '${_csrf.token}';
 	var associateFlag = false;
@@ -1076,11 +1077,11 @@ function cancel(candidateId){
 			</div>
 	     </c:if>
     <div class="pull-left">
-      <h2>Candidate List</h2>
+      <h2 id="headerLbl">Candidate List</h2>
     </div>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -1097,7 +1098,16 @@ function cancel(candidateId){
 		</div>   --%> 
 		
   </section>
-  
+  <div class="clearfix">
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
+         <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+         <div class="clearfix"></div>
+         </sec:authorize>
+     </ul>
+</div>	
   		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
 				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
 				  <div class="cand-advsrch-popup advancedsearch-popup">
@@ -1386,7 +1396,7 @@ function cancel(candidateId){
 				  </div>
 			  </form:form>
   
-  <div class="timesheet_out">
+  <div class="timesheet_out" id="candidatesInfoDiv">
     
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
@@ -1397,10 +1407,13 @@ function cancel(candidateId){
       <ul class="pull-right list-unstyled list-inline">
       
 	  <li class="tableShare" style="display: none;">
+	   	<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+	  	<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a>
+	  	</sec:authorize>
 	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
 	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
 	  </li>        
-      
+ 
            <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
           <!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
           		<div id="addmorepop" class="approved_pop"></div>
@@ -1501,6 +1514,29 @@ function cancel(candidateId){
 
    
    <script>
+   var candidateIdsMark = [];
+   function appendIdsToMarketPlace(obj){
+	   if($(obj).is(":checked")){
+		   candidateIdsMark.push($(obj).attr("id"));
+	   }else if($(obj).not(":checked")){
+		   candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+			   return value != $(obj).attr("id");
+			});
+	   }
+   }
+   
+   function callAddToMarket(){
+	 	 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAddedMarketplaceCandidates",
+		        data : {candidateIdsVal : candidateIdsMark},
+		        success: function(json) {
+		        	candidateIDsArr = [];
+		        	popupDisplay(json['candidatesInMarketplace'].length, json['candidatesNotInMarketplace'].length, json['candidatesNotInMarketplace'] );
+		        }
+	 	}); 
+ }
+  
    function getSourceleadTags(){
  		 $.ajax({
 		    	type: "GET",
@@ -1609,9 +1645,9 @@ $(document).ready(function() {
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
-        $(".project_tabs_inn").not(tab).css("display", "none");
-        $(tab).fadeIn();
-    });
+       // $(".project_tabs_inn").not(tab).css("display", "none"); // commented due to script error in UI.
+       // $(tab).fadeIn();
+    }); 
 
 	
 });
@@ -1731,6 +1767,36 @@ function exportToPdf(){
 	  }
 }
 
+function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...candidatesNotInMarketplace){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result + ' <div id="reasonForTemplateDiv"></div>';
+	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup("+candidatesNotInMarketplace+");'></div>";
+	result = result +"	</div>";
+	$("#emptyPopup").empty().append(result);
+	$("#popupMsg").empty().append(candidatesInMarketplace+" has already processed for the Marketplace, <br/> "+noCandidateNotInMarketplace+" will process for the marketplace.");
+	$("#remove_immigration_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelMarketplacePopup(...candidatesNotInMarketplace){
+	$("#remove_immigration_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	if(candidatesNotInMarketplace.length != 0){
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/navigateMarketPlaceAjax",
+	        data : {candidateIdsVal : candidatesNotInMarketplace},
+	        success: function(json) {
+	        	location.href = sourceleadUrl+"/navigateMarketPlaceList";
+	        	//candidatesNotInMarketplace = [];
+	        }
+ 	});
+	}
+}
 </script>
 <script type="text/javascript">
 function candidtaeCancel(){
@@ -2520,10 +2586,19 @@ function toggleShareCandidates(source){
 	  if($(source).is(":checked")){
 		  $('input[class="contactscheckbox"]').prop('checked', 'checked');
 	  	  $(".tableShare").show();
+	  	$('input:checkbox[name=sharedcheckbox]:checked').each(function(){
+	  		candidateIdsMark.push($(this).attr("id"));
+	 	}); 
 	  }
 	  else{ 
 		  $('input[class="contactscheckbox"]').removeProp('checked');
 	      $(".tableShare").hide();
+	      $('input:checkbox[name=sharedcheckbox]not(:checked)').each(function(){
+	    	  candidateIdsMark = jQuery.grep(candidateIdsMark, function(value) {
+				   return value != $(this).attr("id");
+				});
+		 	});
+	      
 	  }
 	  $('input[class="contactscheckbox"]').each(function(i) {
 		  if($(this).is(":checked")) {
@@ -3058,5 +3133,29 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 </script>
- 
+ <script type="text/javascript">
+	/* function goToGlaobalMarketList() {
+		alert("in global function");
+		 $.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/globalMarketplace?" + tokenParamName + "=" + tokenValue,
+			success : function(result) {
+				$('#candidatesInfoDiv').html(result);
+				$('#brudCrumLbl').html("Global Marketplace");
+				$('#headerLbl').html("Global Marketplace List");
+			},
+		}); 
+	}  */
+function goToCandidateList(){
+	location.href = "${appPath}/candidatesList";
+}
+	
+function goToGlobalMarketPlaceList(){
+	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToOrgMarketPlaceList(){
+	location.href = "${appPath}/OrgMarketplace";
+}
+</script> 
 <jsp:include page="../masterFooter.jsp" /> 

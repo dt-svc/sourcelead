@@ -29,7 +29,7 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group <span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
 					<input type="hidden" id="emptyContributionId" name="emptyContributionId"/>
@@ -37,7 +37,7 @@ $(document).ready(function(){
 				</div>
             </div>
             <div class="form-group">
-              <label class="col-md-12">Contribution Type</label>
+              <label class="col-md-12">Contribution Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple data-placeholder="Contribution Type" id="contributionId" name="contributionId" field-name="Pay Group" data-validation="required">
 					</select>
@@ -46,7 +46,7 @@ $(document).ready(function(){
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Pay Period</label>
+              <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" id="payPeriod" name="payPeriod" field-name="Pay Group" data-validation="required">
 					</select>
@@ -90,7 +90,7 @@ $(document).ready(function(){
       <div class="newActPop" style="">
           <span>
           <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+           <!-- <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a> -->
             </span>
       </div>
     </li>

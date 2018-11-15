@@ -253,12 +253,14 @@
           <div class="clearfix"></div>
           <div class="col-xs-12 col-sm-12 col-md-12 mb">
           <h5 class="col-xs-8 col-sm-8 col-md-8">Place of Employment <span class="text-danger paddingLeft">*</span></h5>
+         <c:if test="${empty lcaDTO.lcaPlaceOfEmploymentList}">
           <div class="col-xs-4 col-sm-4 col-md-4">
          		<div class="pull-right">
           		<button type="button" class="btn btn-primary btn-sm pull-right"  id="placeEmployMntId" onclick="appendDynamicPlaceofEmploymentDiv();"><i class="fa fa-plus paddingRight"></i>Add</button>
           		<div class="clearfix"></div>
           		</div>
           </div>
+          </c:if>
           </div>
           <div class="clearfix"></div>
           
@@ -332,6 +334,7 @@
 				</c:if>
 				
 		 <c:if test="${!empty lcaDTO.lcaPlaceOfEmploymentList}">
+		  
           <c:forEach var='lcaPlaceOfEmployment' items="${lcaDTO.lcaPlaceOfEmploymentList}" varStatus="rows">
           
           	<c:set var="rowIndexPlempt" value="${rows.count-1}" scope="page"/>
@@ -879,12 +882,13 @@ $('#endDate').datepicker({
 
    var removedLcaPlsOfEmpmntIds = new Array();
    function removeDynamicPlsofEmpmtDiv(id){
-	   if($("#plsempmntId"+id).val() !==  undefined ){
-	   removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
+	
+	   if($("#plsempmntId"+id).val() !=='undefined'){
+	    removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
 	   }
-	 
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
-	 //  rowIdPlempt--;// decrement rowid when deleted in UI.
+	   
+	   rowIdPlempt--;// decrement rowid when deleted in UI.
 	   if(rowIdPlempt <= 2){
 		   $("#placeEmployMntId").show();
 	   }

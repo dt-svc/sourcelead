@@ -28,7 +28,7 @@ $(document).ready(function(){
           <div class="col-md-5">
           
             <div class="form-group">
-              <label class="col-md-12">From Date</label>
+              <label class="col-md-12">From Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 	<input type="text" id="fromDate" field-name = "From Date" class="form-control calendar" data-validation="required">
               </div>
@@ -45,7 +45,7 @@ $(document).ready(function(){
             <div class="col-md-5">
             
                  <div class="form-group">
-              <label class="col-md-12">To Date</label>
+              <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 	<input type="text" id="toDate" field-name = "To Date" class="form-control calendar" data-validation="required">
               </div>

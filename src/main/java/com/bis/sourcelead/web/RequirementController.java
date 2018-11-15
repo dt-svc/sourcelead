@@ -679,7 +679,7 @@ public class RequirementController {
 
 //				String reqString = dashboardRestController
 //						.getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDate(jobFairDTO.getPostedFrom(), request);
-				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(orgLocations.getId(), loginUser.getId(), "week", "");
+				List<Requirement> requirementList = requirementService.getRequirementListByPostedDateAndSelectedClients(orgLocations.getId(), loginUser.getId(), jobFairDTO.getPostedFrom(), "");
 				String reqString = commonUtil.toJSON(requirementList);
 				if (reqString != null) {
 					JSONArray jsonArray = new JSONArray(reqString);
@@ -847,7 +847,7 @@ public class RequirementController {
 			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
 			
 			Boolean isPrimaryRecruiter = false;
-			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId()) {
+			if(requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().longValue() == loginUser.getId().longValue()) {
 				isPrimaryRecruiter = true;
 				model.addObject("isPrimaryRecruiter",isPrimaryRecruiter);
 			}

@@ -190,7 +190,12 @@ public class ContractController {
 			model.addObject("contractType", contractType);
 		}
 		List<String> contractTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.PROJECTS.toString(), orgLocation.getId());
-        model.addObject("contractTagsList", contractTagsList);
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
+		if(null != msg && !"".equals(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
+		}
+		model.addObject("contractTagsList", contractTagsList);
         
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
