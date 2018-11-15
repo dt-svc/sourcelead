@@ -620,6 +620,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + ' </ul>';
 							result = result + '<div class="clearfix"></div>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 tbldata-dotdot-verybig inlineBlock">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
@@ -688,7 +692,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 								profilePercentage =object[i].profilePercentage;
 							}
 							result = result + '  <div class="col-md-4 mb">';
-							result = result + '<div class="media profileDetails-Widget">';
+							result = result + '<div class="media profileDetails-Widget overflow_Auto" style="height:350px;">';
 							result = result + '<div class="media-left prfileImg pull-left">';
 							result = result + '<img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '<div class="clearfix mt5 textBold text-center">';
@@ -710,6 +714,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
 							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + '</ul>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 inlineBlock tbldata-dotdot-200">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';

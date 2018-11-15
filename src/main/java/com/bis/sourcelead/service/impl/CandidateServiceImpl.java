@@ -2733,6 +2733,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
+			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
 			marketPlace.setFullName(candidate.getFullName());
 			marketPlace.setGender(candidate.getGender());
 			marketPlace.setEmail(candidate.getEmail());

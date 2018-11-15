@@ -84,6 +84,10 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	
 	private String candidateMarketStatus;
 	
+	private String showCompanyName;
+	
+	private String companyName;
+	
 	private String summary;
 	
 	private String marketCartStatus;
@@ -382,6 +386,22 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 
 	public void setCandidateMarketStatus(String candidateMarketStatus) {
 		this.candidateMarketStatus = candidateMarketStatus;
+	}
+
+	public String getShowCompanyName() {
+		return showCompanyName;
+	}
+
+	public void setShowCompanyName(String showCompanyName) {
+		this.showCompanyName = showCompanyName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getSummary() {
