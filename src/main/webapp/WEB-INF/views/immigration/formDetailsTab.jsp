@@ -310,7 +310,7 @@ function removeImmigFormDoc1(){
 	
 	$("#uploadFormDivEditDocDiv").hide();
 	$("#uploadFormDiv").show();
-	$('#uploadFormFile').attr("data-validation", "required");
+	$('#uploadFormFile').attr("data-validation", "required validatepdf");
 }
 
 

@@ -303,6 +303,7 @@ function jobsDataTableList(){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/getAllJobsByUserIdAndOrgLocationId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&recruiterUserId="+recruiterUserId;
 		 jobsListPagination(url,sourceleadUrl);
+		 $("#customSearchJobs").hide();
 	 }
 	
 }
