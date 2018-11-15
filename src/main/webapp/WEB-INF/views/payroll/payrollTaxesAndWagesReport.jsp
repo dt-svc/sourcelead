@@ -177,7 +177,7 @@ function runPayrollTaxAndWagesReport(){
 				$("#payrollTaxAndWagesDiv").show();
 			}
 		}else{
-			if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+			if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
 				$("#fromDate").val("");
 				$("#toDate").val("");
 				payrollTaxAndWagesList(url);

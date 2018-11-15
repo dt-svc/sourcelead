@@ -246,8 +246,8 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
         ResponseList<DeductionHistory> response = new ResponseList<>();
 		
 		try {
-			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
-			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqStartDate());  //new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqEndDate());//new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
