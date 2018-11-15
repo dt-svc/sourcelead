@@ -428,8 +428,9 @@ public class AssetServiceImpl implements AssetService{
 					 }
 					 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
 						 aa.setReturnedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getReturnedOn()));
-						 Date currentDate  = new Date();
-						 if(currentDate.before(aa.getReturnedOn())) {
+						 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						 Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+						 if(aa.getReturnedOn().before(dateWithoutTime)) {
 							 aa.setStatus(Constants.RECORD_INACTIVE);
 						 }
 					 }else {
