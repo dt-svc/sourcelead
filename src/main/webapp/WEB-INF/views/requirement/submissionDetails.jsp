@@ -721,7 +721,7 @@ function getInternalInterviewsList(submissionId){
 		                    }
 		                    	 if(submissionId == report.interviewSubmissionId){
 		                    		   if(i == 0){
-		                    			   if(report.interviewId.interviewPhase != "Selected" && report.submissionStatus != "REJECTED"){
+		                    			   if(report.interviewId.interviewPhase != "Selected" && report.interviewId.interviewPhase != "Rejected"  && report.submissionStatus != "REJECTED"){
 					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
 												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
 												result = result + '			</div>';
