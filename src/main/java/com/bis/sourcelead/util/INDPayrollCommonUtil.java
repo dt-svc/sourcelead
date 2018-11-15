@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollTaxService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -86,6 +88,9 @@ public class INDPayrollCommonUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	PayrollTaxService payrollTaxService;
+	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
 		if(payrollPayheadList != null && !payrollPayheadList.isEmpty()) {
@@ -99,8 +104,34 @@ public class INDPayrollCommonUtil {
 				payheadDTO.setComponent(payRollPayhead.getComponent());
 				payheadDTO.setTax(payRollPayhead.getTax());
 				payheadDTO.setUuid(payRollPayhead.getUuid());
-				payheadDTO.setMethod(payRollPayhead.getMethod());
-				payheadDTO.setFormula(payRollPayhead.getFormula());
+				
+				
+				if(Arrays.asList(Constants.BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES).contains(payRollPayhead.getShortCode())) {
+					/*payheadDTO.setMethod("% of Payheads");
+					
+					if(payRollPayhead.getShortCode().equalsIgnoreCase("ESI")) {
+						
+						
+						payrollTaxService.getPayrollTaxConfigurationByOrgLocationId(orgLocationId, financialYear);
+						
+					}
+					if(payRollPayhead.getShortCode().equalsIgnoreCase("PF")) {
+						
+					}
+					
+					
+					payheadDTO.setFormula(payRollPayhead.getFormula());*/
+					
+					payheadDTO.setMethod(payRollPayhead.getMethod());
+					payheadDTO.setFormula(payRollPayhead.getFormula());
+					
+				}else {
+					payheadDTO.setMethod(payRollPayhead.getMethod());
+					payheadDTO.setFormula(payRollPayhead.getFormula());
+				}
+				
+				
+				
 				payrollPayheadDTOList.add(payheadDTO);
 			}
 		}
