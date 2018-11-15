@@ -355,7 +355,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
 			}
 		}
-        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(projectTasksDTO,tasks); 
+        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(projectTasksDTO,tasks,loginOrgLocation.getId()); 
         tasks.setProjectAssignTask(assignProjetcTasks);
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
@@ -438,6 +438,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		if (tasks.getDueDate() != null) {
 			dueDate = dateFormat.format(tasks.getDueDate());
 		}
+		if(tasks.getGeneratedId() != null) {
+			globalVarsMap.put("taskId", tasks.getGeneratedId());
+		}else {
+			globalVarsMap.put("taskId", "--");
+		}
+		
+		
 		globalVarsMap.put("DueDate", dueDate);
 		if (tasks.getOwnerUserId() != null) {
 			if (tasks.getOwnerUserId().getFirstName() != null
@@ -473,20 +480,28 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 
-	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks) throws Exception {
+	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, Long loginOrgLocationId) throws Exception {
 		 Set<ProjectAssignTask> projectAssignTaskSet = new HashSet<>();
 		 
 		if(projectTasksDTO != null && projectTasksDTO.getAssignTaskId() != null){
 			String[] assign = projectTasksDTO.getAssignTaskId().split(",");
 			for(String memberId : assign)
 			{
-				ProjectAssignTask assignTask = new ProjectAssignTask();
-				assignTask.setProjectTaskId(tasks);
 				ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(memberId.trim()));
-				assignTask.setProjectMemberId(pm);
-				assignTask.setStatus("1");
-				assignTask.setCreatedDate(CommonUtil.currentDate());
-				projectAssignTaskSet.add(assignTask);
+				List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), tasks.getProjectId().getId());
+						if(pmList != null && !pmList.isEmpty()) {
+							for(ProjectMembers members : pmList) {
+								ProjectAssignTask assignTask = new ProjectAssignTask();
+								assignTask.setProjectTaskId(tasks);
+								
+								assignTask.setProjectMemberId(members);
+								assignTask.setStatus(Constants.MEMBER_ACTIVE);
+								
+								assignTask.setCreatedDate(CommonUtil.currentDate());
+								projectAssignTaskSet.add(assignTask);
+							}
+						}
+				
 			}
 		}
 		return projectAssignTaskSet;
@@ -1030,13 +1045,14 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				  assignTasks = new ProjectAssignTask();
 				 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
 				 assignTasks.setProjectMemberId(pm);
-				 if(pm.getProjectMemberCandidteId() != null) {
-					 if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
-						 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
-					 }
-				 }
-				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue() && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
-					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+					if(projectTasks.getOwnerUserId() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()  ) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}
 				 }
 			 }
 	   }
@@ -1045,7 +1061,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	   
 	//Project Task createby Email
 	   if(projectTask.getCreatedBy() != null) {
-		   if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
+		   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
 				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
 		   }
 	   }

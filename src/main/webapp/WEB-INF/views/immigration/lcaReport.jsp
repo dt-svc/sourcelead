@@ -107,6 +107,7 @@
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runLCAReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLcaForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -359,20 +360,20 @@ function lcaReportPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfPositions",
-              "sorting":false,
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	  if(opt.noOfPositions !=null && opt.noOfPositions != '' && opt.noOfPositions !='undefined'){
-	    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.noOfPositions+'" >'+opt.noOfPositions+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-sm" title="'+opt.noOfPositions+'" >'+opt.noOfPositions+'</div>';
 	        		}else{
-	        			result = result + '     <div class="tblminwidth-75">---</div>';
+	        			result = result + '     <div class="tbldata-dotdot-sm">---</div>';
 	        		}
             	    return result; 
               }
             },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "locationOne",
-	    	  	"sorting":false,
+	    	  	 "sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
                      if (opt.location !== null && opt.location !== '' && opt.location !== 'undefined') {
@@ -406,7 +407,7 @@ function lcaReportPagination(url){
 	    	  },{
                   "targets": colIndex++,
                   "data": "socCode",
-                  "sorting":false,
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
                 	 if (opt.socCode !== null && opt.socCode !== '' && opt.socCode !== 'undefined') {
@@ -419,7 +420,7 @@ function lcaReportPagination(url){
                }, {
                     "targets": colIndex++,
                     "data": "socOccupationTitle",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		 if (opt.socOccupationTitle !== null && opt.socOccupationTitle !== '' && opt.socOccupationTitle !== 'undefined') {
@@ -432,7 +433,7 @@ function lcaReportPagination(url){
                 }, {
                       "targets": colIndex++,
                       "data": "jobTitle",
-                      "sorting":false,
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
                    		 if(opt.jobTitle !=null && opt.jobTitle != '' && opt.jobTitle !='undefined'){
@@ -445,7 +446,7 @@ function lcaReportPagination(url){
                 }, {
                     "targets": colIndex++,
                     "data": "wagesLevel",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
                  		 if(opt.wagesLevel !=null && opt.wagesLevel != '' && opt.wagesLevel !='undefined'){
@@ -458,7 +459,7 @@ function lcaReportPagination(url){
                   }, {
                       "targets": colIndex++,
                       "data": "privilingWageCurrency",
-                      "sorting":false,
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
                    		 if(opt.privilingWageCurrency !=null && opt.privilingWageCurrency != '' && opt.privilingWageCurrency !='undefined'){
@@ -471,7 +472,7 @@ function lcaReportPagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "prevailingWage",
-                        "sorting":false,
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
                      		 if(opt.prevailingWage !=null && opt.prevailingWage != '' && opt.prevailingWage !='undefined'){
@@ -484,7 +485,7 @@ function lcaReportPagination(url){
                       },{
                           "targets": colIndex++,
                           "data": "privilingWageRateType",
-                          "sorting":false,
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                        		var result = "";
                        		 if(opt.privilingWageRateType !=null && opt.privilingWageRateType != '' && opt.privilingWageRateType !='undefined'){
@@ -497,7 +498,7 @@ function lcaReportPagination(url){
                         },{
                             "targets": colIndex++,
                             "data": "startDate",
-                            "sorting":false,
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                          		var result = "";
                          		if(opt.startDateStr !=null && opt.startDateStr != '' && opt.startDateStr !='undefined'){
@@ -510,7 +511,7 @@ function lcaReportPagination(url){
                           },{
                               "targets": colIndex++,
                               "data": "endDate",
-                              "sorting":false,
+                              "sortable": false,
                               "render": function ( data, type, opt, meta ) {
                            		var result = "";
                            		 if(opt.endDateStr !=null && opt.endDateStr != '' && opt.endDateStr !='undefined'){
@@ -523,7 +524,7 @@ function lcaReportPagination(url){
                             },{
                                 "targets": colIndex++,
                                 "data": "lcaStatus",
-                                "sorting":false,
+                                "sortable": false,
                                 "render": function ( data, type, opt, meta ) {
                              		var result = "";
                              		 if(opt.lcaStatus !=null && opt.lcaStatus != '' && opt.lcaStatus !='undefined'){
@@ -536,7 +537,7 @@ function lcaReportPagination(url){
                               },{
                                   "targets": colIndex++,
                                   "data": "status",
-                                  "sorting":false,
+                                  "sortable": false,
                                   "render": function ( data, type, opt, meta ) {
                                		var result = "";
                                		if(opt.status !=null && opt.status != '' && opt.status !='undefined'){
@@ -549,7 +550,7 @@ function lcaReportPagination(url){
                                 },{
                         "targets": colIndex++,
                         "data": "expiredOn",
-                        "sorting":false,
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
                      		if(opt.expiredOn !=null && opt.expiredOn != '' && opt.expiredOn !='undefined'){
@@ -562,7 +563,7 @@ function lcaReportPagination(url){
                 }],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//     	    	"aaSorting": [[1,'desc']],
+    	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
     	    	"ordering": true,

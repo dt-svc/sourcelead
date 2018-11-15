@@ -20,8 +20,8 @@ function getUserGroupListData(url,fromType){
  	    result = result +"<table id='userGroupPagination' class='display' cellspacing='0' width='100%' >"; 
         result = result +"<thead>"; 
         result = result + '<tr>';
-		result = result + '<th>Group Id</th>';
-		result = result + '<th>Group Name</th>';
+		result = result + '<th>Batch Id</th>';
+		result = result + '<th>Batch Name</th>';
 // 		result = result + '<th>No.Of Associates</th>';
 		result = result + '<th>Pay Frequency</th>';
 		result = result + '<th>Action</th>';

@@ -2591,7 +2591,7 @@ public class TimesheetRestController {
 					if (!"Draft".equalsIgnoreCase(status) && projectMember != null
 							&& projectMember.getProjects() != null && frequencyStartDate != null
 							&& frequencyEndDate != null) {
-						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember.getMasterCandidateId().getId(),
+						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember, projectMember.getMasterCandidateId().getId(),
 								projectMember.getProjects().getId(), frequencyStartDate, frequencyEndDate, loginUser,
 								loginOrgLocation, loginOrgLocation.getOrgCode());
 					}
@@ -5499,7 +5499,7 @@ public class TimesheetRestController {
 					if (!"Draft".equalsIgnoreCase(status) && projectMember != null
 							&& projectMember.getProjects() != null && frequencyStartDate != null
 							&& frequencyEndDate != null) {
-						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember.getMasterCandidateId().getId(),
+						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember, projectMember.getMasterCandidateId().getId(),
 								projectMember.getProjects().getId(), frequencyStartDate, frequencyEndDate, loginUser,
 								loginOrgLocation, loginOrgLocation.getOrgCode());
 					}

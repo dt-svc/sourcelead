@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,10 @@ public class AssociateLoanAndAdvancesHistoryServiceImpl implements AssociateLoan
 	@Override
 	public List<AssociateLoanAndAdvanceHistory> getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(User user, OrgLocations orgLocation, String loanStatus) throws Exception {
 			return associateLoanAndAdvancesHistoryDao.getAssociateLoanAndAdvanceHistoryListByUserIdAndLocationId(user, orgLocation,loanStatus);
+	}
+
+	@Override
+	public Double getEmpLoansAndAdvancesPaidAmountByOrgLocationIdCandidateIdLoansAndAdId(Long candidateId, Long orgLocationId, Long assLAId)  throws Exception {
+		return associateLoanAndAdvancesHistoryDao.getEmpLoansAndAdvancesPaidAmountByOrgLocationIdCandidateIdLoansAndAdId(candidateId, orgLocationId, assLAId);
 	}
 }

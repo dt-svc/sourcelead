@@ -2843,9 +2843,9 @@ public class RequirementDaoImpl implements RequirementDao {
 				
 		}
 		else {
-			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId,REQ.RELEASE_JOB_TO_ALL_USERS AS releaseJobToAllUsers  "
+			         query ="SELECT REQ.ID as requirementId,REQ.MANAGER_USER_ID AS managerUserId,REQ.PRIMARY_RECRUITER_USER_ID AS primaryUserId,REQA.ASSIGN_USER_ID AS assignedUserId,REQA.STATUS AS assignedUserStatus,RAH.APPROVER_USER_ID AS approverUserId"
 					+" FROM  REQUIREMENT REQ LEFT JOIN REQUIREMENT_ASSIGN_TO REQA ON REQ.ID = REQA.REQUIREMENT_ID LEFT JOIN REQUIREMENT_APPROVER_HIERARCHY RAH ON REQ.ID = RAH.REQUIREMENT_ID WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN'  AND (REQ.MANAGER_USER_ID IN (:userIdsList) OR REQ.PRIMARY_RECRUITER_USER_ID IN (:userIdsList) "
-					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  FROM REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList)) OR REQ.RELEASE_JOB_TO_ALL_USERS = 'Y') AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
+					+ "OR (REQA.ASSIGN_USER_ID IN (:userIdsList) AND REQA.STATUS = '1') OR REQ.ID IN (SELECT RAH.REQUIREMENT_ID  FROM REQUIREMENT_APPROVER_HIERARCHY RAH where RAH.REQUIREMENT_ID = REQ.ID and RAH.APPROVER_USER_ID IN (:userIdsList))) AND DATE_FORMAT(REQ.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"; 
 		
 			
 		
@@ -3644,7 +3644,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		}
 			String query = "from Requirement requirement  where (requirement.orgLocationId.id =:orglocationId and (date(requirement.createdDate) BETWEEN :fromDate AND :toDate) "+subQueryTeam.toString()+") "
 					+ "and (requirement.requirementSubmissionStatus = 'OPEN' or requirement.requirementSubmissionStatus = 'NEW') and "
-					+ "( requirement.releaseJobToAllUsers='Y' or requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
+					+ "( requirement.primaryRecruiterUserId.id =:recruiterUserId or requirement.managerUserId.id =:recruiterUserId "
 					+ "or :recruiterUserId IN (select ra.assignUserId.id from RequirementAssignTo ra where ra.requirementId=requirement and ra.status='1') )";
 			if (query1.toString() != null && !query1.toString().isEmpty()) {
 				queryObj = session.createQuery(query + "and " + "(" + query1.toString() + ")");
