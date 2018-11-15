@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
@@ -107,31 +108,18 @@ public class INDPayrollCommonUtil {
 				
 				
 				if(Arrays.asList(Constants.BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES).contains(payRollPayhead.getShortCode())) {
-					/*payheadDTO.setMethod("% of Payheads");
-					
-					if(payRollPayhead.getShortCode().equalsIgnoreCase("ESI")) {
-						
-						
-						payrollTaxService.getPayrollTaxConfigurationByOrgLocationId(orgLocationId, financialYear);
-						
+					payheadDTO.setMethod("% of Payheads");
+					PayrollTaxDTO payrollTaxDTO = 	payrollTaxService.getPayrollTaxConfigurationByOrgLocationId(orgLocations.getId());
+					if(payrollTaxDTO != null && payRollPayhead.getShortCode().equalsIgnoreCase("ESI")) {
+						payheadDTO.setFormula(payrollTaxDTO.getEmployeeESIContribution()+"%(BA)+"+payrollTaxDTO.getEmployerESIContribution()+"%(BA)");
 					}
-					if(payRollPayhead.getShortCode().equalsIgnoreCase("PF")) {
-						
+					if(payrollTaxDTO != null && payRollPayhead.getShortCode().equalsIgnoreCase("PF")) {
+						payheadDTO.setFormula(payrollTaxDTO.getEmployeePFContribution()+"%(BA)+"+payrollTaxDTO.getEmployerPFContribution()+"%(BA)");
 					}
-					
-					
-					payheadDTO.setFormula(payRollPayhead.getFormula());*/
-					
-					payheadDTO.setMethod(payRollPayhead.getMethod());
-					payheadDTO.setFormula(payRollPayhead.getFormula());
-					
 				}else {
 					payheadDTO.setMethod(payRollPayhead.getMethod());
 					payheadDTO.setFormula(payRollPayhead.getFormula());
 				}
-				
-				
-				
 				payrollPayheadDTOList.add(payheadDTO);
 			}
 		}
