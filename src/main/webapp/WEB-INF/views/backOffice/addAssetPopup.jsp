@@ -51,7 +51,7 @@
 		                <div class="col-md-5" >
 		                  <label class="clearfix">Name</label>
 		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-200" data-validation-optional="true">
+		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-100" data-validation-optional="true">
 		                  </div>
 		                  </div>
 		                  
