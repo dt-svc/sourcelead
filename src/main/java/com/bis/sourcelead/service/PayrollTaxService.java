@@ -12,4 +12,6 @@ public interface PayrollTaxService {
 	PayrollTaxDTO getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId, String financialYear);
 
 	PayrollTaxDTO getPayrollTaxConfigurationForOrgLocation(String stateName, String financialYear, String taxType);
+	
+	PayrollTaxDTO getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId);
 }
