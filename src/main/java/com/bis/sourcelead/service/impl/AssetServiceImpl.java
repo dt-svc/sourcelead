@@ -629,7 +629,7 @@ public class AssetServiceImpl implements AssetService{
 			for (AssetAssign assetAssign : assetAssignList) {
 				AssetsReportDTO assetDto = new AssetsReportDTO();
 				User user = userService.getUserByUserCode(assetAssign.getAsset().getCreatedBy());
-				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserUUID());
+				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserCode());
 				assetDto.setEmployeeName(assetAssign.getUserRole().getUser().getFullName());
 				assetDto.setCategory(assetAssign.getAsset().getCategoryName());
 				if (assetAssign.getAssignedOn() != null) {
@@ -642,6 +642,7 @@ public class AssetServiceImpl implements AssetService{
 				}
 				assetDto.setShift(assetAssign.getShift().getShiftName());
 				assetDto.setFileUrl(assetAssign.getFileURL());
+				assetDto.setFileContentType(assetAssign.getFileType());
 				assetDto.setDocument(assetAssign.getFileName());
 				assetDto.setAssetName(assetAssign.getAsset().getName());
 				assetDto.setSerialNo(assetAssign.getAsset().getSlno());
