@@ -669,10 +669,20 @@ public class PayrollUtil {
 		BigDecimal ytdMedicare = BigDecimal.ZERO;
 		BigDecimal ytdCounty = BigDecimal.ZERO;
 		BigDecimal ytdlocaltax = BigDecimal.ZERO;
+		BigDecimal ytdStateWithholding = BigDecimal.ZERO;
+		BigDecimal ytdEarnedIncCredit = BigDecimal.ZERO;
+		BigDecimal ytdSUI = BigDecimal.ZERO;
+		
+		BigDecimal ytdSDI = BigDecimal.ZERO;
+		BigDecimal ytdFLI = BigDecimal.ZERO;
+		BigDecimal ytdHCSF = BigDecimal.ZERO;
+		BigDecimal ytdWC = BigDecimal.ZERO;
+		
 		double ytdGross = 0;
 		double ytdDeduction = 0;
 		double ytdNet = 0;
 		double ytdTaxes = 0;
+		
 		List<DeductionDTO> dedHisList = new ArrayList<>();
 		List<ContributionDTO> contrHisList = new ArrayList<>();
 		try {
@@ -688,6 +698,8 @@ public class PayrollUtil {
 					ytdMedicare = ytdMedicare.add(payrollTax.getMedicareWithholding());
 					ytdCounty = ytdCounty.add(payrollTax.getCountyWithholding());
 					ytdlocaltax = ytdlocaltax.add(payrollTax.getLocalTax());
+					ytdStateWithholding = ytdStateWithholding.add(payrollTax.getStateWithholding());
+					ytdEarnedIncCredit = payrollTax.getEarnedIncCredit();
 					List<DeductionDTO> ytdDedlist = getDeductionData(ytdPayroll);
 					dedHisList.addAll(ytdDedlist);
 					List<ContributionDTO> ytdContributionList = getContributionData(ytdPayroll);
@@ -712,7 +724,14 @@ public class PayrollUtil {
 			ytd.setYtdDeduction(new BigDecimal(df2.format(ytdDeduction)));	
 			ytd.setYtdCounty(ytdCounty);
 			ytd.setYtdMedicare(ytdMedicare);
+			ytd.setYtdEarnedIncCredit(ytdEarnedIncCredit);
+			ytd.setytdStateWithholding(ytdStateWithholding);
 			ytd.setYtdlocaltax(ytdlocaltax);
+			ytd.setYtdSUI(ytdSUI);
+			ytd.setYtdSDI(ytdSDI);
+			ytd.setYtdFLI(ytdFLI);
+			ytd.setYtdHCSF(ytdHCSF);
+			ytd.setYtdWC(ytdWC);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -915,6 +934,7 @@ public class PayrollUtil {
 			List<List<String>> weekdates = new ArrayList<List<String>>();
 			List<String> dates;
 			int numberOfDays = 0;
+			if(paySchedule != null) {
 			if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
@@ -1012,7 +1032,7 @@ public class PayrollUtil {
 					payFrequency.add(calenderDTO);
 				}
 			}
-			
+		}
 		
 		}catch (Exception e) {
 			e.printStackTrace();

@@ -158,4 +158,6 @@ public interface ProjectMembersService {
 	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId,Long projectId,Long orgLocationId) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,List<Long> projectClientsId) throws Exception;
+	
+	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId,Long orglocationId) throws Exception;
 }
