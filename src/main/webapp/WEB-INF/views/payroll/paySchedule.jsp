@@ -54,6 +54,8 @@ $(document).ready(function(){
 				<label class="col-md-4">Pay Period Start Date</label>
               <div class="col-md-8" id="payperiodDiv1">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
+              	<div class="clearfix mt5"></div>
+              	<span id="UyuYYu" class="text-muted"></span>
               </div>
 			  <div class="clearfix"></div>
           </div>
@@ -63,20 +65,6 @@ $(document).ready(function(){
 				<label class="col-md-4">Next Pay Month</label>
               <div class="col-md-8" id="nextPayrollMonth">
 				  <select class="sel" id="nextPayMonth" name="nextPayMonth"  field-name="Next Pay Month">
-				  <!-- 	<option value="">Slect Month</option>
-				  	<option value="JANUARY">January</option>
-				  	<option value="FEBRUARY">February</option>
-				  	<option value="MARCH">March</option>
-				  	<option value="APRIL">April</option>
-				  	<option value="MAY">May</option>
-				  	<option value="JUNE">June</option>
-				  	<option value="JULY">July</option>
-				  	<option value="AUGUST">August</option>
-				  	<option value="SEPTEMBER">September</option>
-				  	<option value="OCTOBER">October</option>
-				  	<option value="NOVEMBER">November</option>
-				  	<option value="DECEMBER">December</option> -->
-					  
 				  </select>
               </div>
 			  <div class="clearfix"></div>
@@ -127,7 +115,7 @@ $(document).ready(function(){
 			  <div class="col-md-12 mb mt">
 			  	<div class="pull-right mr">
 					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
-					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="">Cancel</button>  
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/app/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -189,13 +177,6 @@ function savePayrollSchedule(){
 }
 </script>
   
-<!--   <script type="text/javascript">
-$(function() {
-	$("#payCheckDate").datepicker();
-	$("#runPayrollDate").datepicker();
-	$("#payPeriodStartDate").datepicker();
-})
- -->
 
 
 
@@ -236,7 +217,8 @@ $('#payPeriodStartDate').datepicker({
 	  changeYear: true, 
 	  onSelect : function(selected) {
 		  var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate()+1);
+			dt.setDate(dt.getDate()+6);
+			$("#UyuYYu").html(dt);
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
     //minDate: 0  this line for to restrict selection of previous dates

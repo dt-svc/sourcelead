@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -937,10 +938,16 @@ public class PayrollUtil {
 			if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
-			  Calendar cal = Calendar.getInstance();
+			     Calendar cal = Calendar.getInstance();
 				int year = cal.get(Calendar.YEAR);
 				SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
 				cal.set(Calendar.YEAR,year);
+				
+				Calendar calEndDate = Calendar.getInstance();
+				calEndDate.set(Calendar.MONTH,month);
+				calEndDate.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+				int checkDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getPayCheckDate());
+				int runPayDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getRunPayrollDate());
 				for(int i=month;i<12;i++) {
 					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
 					cal.set(Calendar.MONTH, i);
@@ -949,13 +956,11 @@ public class PayrollUtil {
 					Date monthStartDate = cal.getTime();
 					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 					Date monthEndDate = cal.getTime();
-					int checkDateDiff = commonUtil.diffBtwTowDates(monthEndDate,paySchedule.getPayCheckDate());
-					int runPayDateDiff = commonUtil.diffBtwTowDates(monthEndDate,paySchedule.getRunPayrollDate());
 					// System.out.println(nextMonthLastDay);
 					Calendar ncal = Calendar.getInstance();
 					ncal.setTime(monthEndDate); // Now use today date.
 					ncal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
-					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
+					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ncal.getTime());
 					
 					Calendar runPalCal = Calendar.getInstance();
 					runPalCal.setTime(monthEndDate); // Now use today date.
@@ -968,6 +973,7 @@ public class PayrollUtil {
 					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
+					calenderDTO.setMonth(i);
 					payFrequency.add(calenderDTO);
 				}
 			}
@@ -975,7 +981,7 @@ public class PayrollUtil {
 			if("Weekly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
 				numberOfDays = 6;
 			}else if("Bi-Weekly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
-				numberOfDays = 14; 
+				numberOfDays = 13; 
 			}
 			Date date = paySchedule.getPayPeriodStartDate();
 			if(!"Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
@@ -1035,6 +1041,10 @@ public class PayrollUtil {
 		
 		}catch (Exception e) {
 			e.printStackTrace();
+		}
+		if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+			Collections.sort(payFrequency, (p1, p2) -> p1.getMonth() - p2.getMonth());
+			return payFrequency;
 		}
 		return payFrequency;
 	}
