@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.AssetServices;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.Shift;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -86,6 +88,9 @@ public class AssetServiceImpl implements AssetService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@Autowired
 	HttpServletRequest request;
@@ -628,7 +633,12 @@ public class AssetServiceImpl implements AssetService{
 			for (AssetAssign assetAssign : assetAssignList) {
 				AssetsReportDTO assetDto = new AssetsReportDTO();
 				User user = userService.getUserByUserCode(assetAssign.getAsset().getCreatedBy());
-				assetDto.setEmployeeId(assetAssign.getUserRole().getUser().getUserCode());
+				String employeeId = "";
+				Employees employees = employeesService.getEmployeeByUserAndOrgLocationId(assetAssign.getUserRole().getUser().getId(), orgLocationId);
+				if(employees != null) {
+					employeeId = employees.getEmployeeId();
+				}
+				assetDto.setEmployeeId(employeeId);
 				assetDto.setEmployeeName(assetAssign.getUserRole().getUser().getFullName());
 				assetDto.setCategory(assetAssign.getAsset().getCategoryName());
 				if (assetAssign.getAssignedOn() != null) {

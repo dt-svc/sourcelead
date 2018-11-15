@@ -196,7 +196,7 @@ function assetReportDataTableList(refreshFlag){
 				for(var e in result.data) {
 					var report = result.data[e];
 					text += "    <tr>";
-					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId === null ? "--" : report.employeeId ) + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId !== null && report.employeeId !== "" ? report.employeeId : "--") + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot'>" + report.employeeName + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot'>" + report.assetName + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot-vsm'>" + report.category + "</div></td>";
