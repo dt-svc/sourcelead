@@ -2460,7 +2460,7 @@ function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getClientContactList();
-	 $(".mask").fadeIn();
+// 	 $(".mask").fadeIn();
 	
 }
 </script>
