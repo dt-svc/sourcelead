@@ -2619,6 +2619,8 @@ function validateProfilePercentage(){
 				    	} 
 				    }
 				});
+		} else {
+			$("#jobFairDatesDiv").empty();
 		}
 	}
 	

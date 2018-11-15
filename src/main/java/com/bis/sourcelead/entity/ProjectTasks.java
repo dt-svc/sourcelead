@@ -184,6 +184,11 @@ public class ProjectTasks implements Serializable{
 	
 	@JsonProperty
 	@Transient
+	private List<String> assignedTaskUsers;
+	
+	
+	@JsonProperty
+	@Transient
 	private String createdDateStr;
 	
 	@JsonProperty
@@ -690,5 +695,13 @@ public class ProjectTasks implements Serializable{
 
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
+	}
+
+	public List<String> getAssignedTaskUsers() {
+		return assignedTaskUsers;
+	}
+
+	public void setAssignedTaskUsers(List<String> assignedTaskUsers) {
+		this.assignedTaskUsers = assignedTaskUsers;
 	}
 }

@@ -91,6 +91,8 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private Long candidateId;
 	
+	private Long orgLocationId;
+	
 	public Long getId() {
 		return id;
 	}
@@ -337,6 +339,12 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	}
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 }
 
