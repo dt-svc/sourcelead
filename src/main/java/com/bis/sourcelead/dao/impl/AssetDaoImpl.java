@@ -174,7 +174,7 @@ public class AssetDaoImpl implements AssetDao{
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Asset asset   where asset.orgLocations.id = :orgLocationId"; 
+		String query = "from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1'"; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
 	}
