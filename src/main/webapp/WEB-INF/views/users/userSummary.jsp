@@ -2877,7 +2877,8 @@ $(document).ready(function() {
 
 
 </script>
-<script>
+
+<!-- <script>
 function validateSSNNumber(){
 	var ssnNumber = $("#ssnNumber").val();
 	var length  = $("#ssnNumber").val().length;
@@ -2893,9 +2894,11 @@ function calculateSSNLength(length,ssnNumber){
 	if(length == 0){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		$("#update_user").attr("disabled", "disabled");
 	}else if(length != 9){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		$("#update_user").attr("disabled", "disabled");
 	}else{
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		var value = "";
@@ -2914,7 +2917,7 @@ function calculateSSNLength(length,ssnNumber){
 		}
 	}
 }
- </script>
+ </script> -->
 
 <script type="text/javascript">
 function flushProject(){
@@ -2950,7 +2953,6 @@ function inlineEditForUsers(userId,localFieldName){
 
 <script>
 function getStartandEndDate(){
-	
 	var projectId = document.getElementById("proId").value;
 	if(projectId != null && projectId != ""){
     $.ajax({
@@ -3038,6 +3040,7 @@ function getStartandEndDate(){
 	  
     }
 </script>
+
    <script>
     function validateSSNNumber(){
 		var SSN = $("#SSN").val();
@@ -3054,9 +3057,11 @@ function getStartandEndDate(){
 		if(length == 0){
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+			$("#update_user").attr("disabled", "disabled");
 		}else if(length != 9){
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+			$("#update_user").attr("disabled", "disabled");
 		}else{
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			var value = "";
@@ -3070,8 +3075,10 @@ function getStartandEndDate(){
 			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
 				$("#ssnnum").find('span.ssn_errmsg').remove();
 				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+				$("#update_user").attr("disabled", "disabled");
 			}else{
 				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#update_user").removeAttr("disabled", "disabled");
 			}
 		}
 	}
