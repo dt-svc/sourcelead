@@ -165,7 +165,7 @@ function saveProjectsTags(type){
         		}else if(type == "delete"){
         			showDeleteStatusPopup("Tag deleted successfully");
         		}
-        		getJobsTagsList(requirementId);
+        		getProjectsTagsList(projectId)
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
