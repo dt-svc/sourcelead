@@ -223,8 +223,7 @@ public class ProjectTasksRestController {
 		try {
 			if (Validator.validate(projectTasksDTO)) {
 				projectTasksDTO.setStaticPath(staticPath);
-				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,
-						userId);
+				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,userId);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -768,8 +767,11 @@ public class ProjectTasksRestController {
 	public String updateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,
 			@RequestParam(value = "assignValue", required = false) String assignValue,
 			@RequestParam(value = "taskId", required = false) String projectTaskId,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO, assignValue, projectTaskId, userId);
+			@RequestParam(value = "userId", required = false) Long userId,
+			HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		projectAssignTasksService.inlineUpdateAssignTaskUsers(projectTasksDTO, assignValue, projectTaskId, userId,loginOrgLocation);
 		return "success";
 	}
 
