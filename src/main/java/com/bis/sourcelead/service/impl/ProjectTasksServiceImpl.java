@@ -387,9 +387,18 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			}	
 		}
         
+        //onwer Task email
+        if(savedTask.getOwnerUserId() != null) {
+        	if(user.getId().longValue() != savedTask.getOwnerUserId().getId().longValue()) {
+                SendMailtoAssigntoMembersaboutAddingTask(null,projectTasksDTO,savedTask,loginOrgLocation,user);
+        	}
+        }
         
+        //Assign task emails
         for (ProjectAssignTask projectAssignTask : assignProjetcTasks) {
-         SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,tasks,loginOrgLocation,user);
+        	if(loginOrgLocation.getId().longValue() == projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId().getId()) {
+                SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,savedTask,loginOrgLocation,user);
+        	}
         }
         return "success";
 	}
@@ -397,12 +406,21 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser) throws Exception
 	{
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		User user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+		User user = null;
+		if(projectAssignTask == null) {
+			user = tasks.getOwnerUserId();
+		}else {
+			user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+		}
 		StringBuilder fromNameBuilder = new StringBuilder();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		if(projectAssignTask == null) {
+			emailMessage.setToEmail(tasks.getOwnerUserId().getEmail());
+		}else {
+			emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		}
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -418,10 +436,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		else {
 			globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
-		if (projectAssignTask.getProjectMemberId().getEmpName() != null
-				&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
-			globalVarsMap.put("Assignedmember", projectAssignTask.getProjectMemberId().getEmpName());
+		
+		if(projectAssignTask == null) {
+			globalVarsMap.put("Assignedmember", tasks.getOwnerUserId().getFullName());
+		}else {
+			if (projectAssignTask.getProjectMemberId().getEmpName() != null
+					&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
+				globalVarsMap.put("Assignedmember", projectAssignTask.getProjectMemberId().getEmpName());
+			}
 		}
+		
 		if (tasks.getPriority() != null) {
 			String priority = tasks.getPriority().getName();
 			if (priority != null && !"".equalsIgnoreCase(priority)) {
