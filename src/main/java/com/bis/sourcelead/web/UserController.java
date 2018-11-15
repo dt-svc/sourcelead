@@ -234,11 +234,10 @@ public class UserController {
                
 				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 				model.addObject("org_projectsList", projectsList);*/
-				Candidate candidate = null;
-				candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+				Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
-					if(candidate.getMasterCandidateId() != null) {
+					if(candidate != null && candidate.getMasterCandidateId() != null) {
 						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId(),"All");
 						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
 						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
