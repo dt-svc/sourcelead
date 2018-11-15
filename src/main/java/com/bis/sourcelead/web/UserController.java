@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -105,6 +107,9 @@ public class UserController {
 	
 	@Autowired
 	private ShiftService shiftService;
+	
+	@Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 
 	@Autowired
 	UserGroupDao userGroupDao;
@@ -259,6 +264,7 @@ public class UserController {
 			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
+				
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");

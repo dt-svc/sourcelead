@@ -78,7 +78,7 @@ $(document).ready(function(){
 	 
 });
 </script>
-<!-- 
+ 
 		<div class="cearfix">
 				  <div class="newTagsWrap">
 					 <ul class="clearfix tagsWrap tagsWrapBor">
@@ -87,7 +87,7 @@ $(document).ready(function(){
 					</ul>
 					 <div class="clearfix"></div>
 				  </div>
-		     </div> -->
+		     </div>
 	     <div class="success_pop tagStyles" id="addProjectTagAlert">
 				<i class="fa fa-check-circle"></i>
 		   		<span></span>
@@ -149,9 +149,9 @@ function getAssociateTagsList(associateId){
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
 			  var existed = 0;
-                if(json.projectsTags != null && json.projectsTags != 'undefined' && json.projectsTags != '') {
+                if(json.associateTags != null && json.associateTags != 'undefined' && json.associateTags != '') {
 	                var res = [];
-	                res = json.projectsTags.split(",");
+	                res = json.associateTags.split(",");
 	                res.forEach(function(item) {
 	                	if(tags == item){
 	                		existed = 1;
@@ -172,14 +172,14 @@ function getAssociateTagsList(associateId){
 </script>
 <script>
 function saveAssociateTags(type){
-	 var projectId = '${actionId}';
+	 var associateId = '${userId}';
 	 var tagName = $("#associateTagName").val();
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByProjectId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&projectId="+projectId+"&tagName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
 	 } 
 	 $.ajax({  
          type : "POST",
@@ -195,7 +195,7 @@ function saveAssociateTags(type){
         		}else if(type == "delete"){
         			showDeleteStatusPopup("Tag deleted successfully");
         		}
-        		getJobsTagsList(requirementId);
+        		getAssociateTagsList(associateId)
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
@@ -219,12 +219,7 @@ function showDeleteStatusPopup(status) {
 		
 <script type="text/javascript">
 window.onload = function () {
-	var associateId = '${actionId}';
-	var associateName = '${associateName}';
-	/* var projectStartDate = '${projectStartDate}';
-	var projectEndDate = '${projectEndDate}';
-	var projectStatus = '${projectStatus}'; */
-	var tabType = '${tabType}';
+	var associateId = '${userId}';
 	getAssociateTagsList(associateId);
  };
 </script>		 
