@@ -2,6 +2,7 @@
 <jsp:include page="../../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
  <!-- Content Area -->
 <section class="content-wraper contentWraper">
@@ -93,15 +94,10 @@
 								   </c:if> 
 									<td><div class="tblminwidth-50">${empPayroll.empId}</div></td>
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
-
-									<td><div class="tblminwidth-50">${empPayroll.regularHours}</div>
-										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHrsAmt}<span class="paddingLeft">&#8377;</span>
-										</div> --%></td>
-									<td><div class="tblminwidth-50">${empPayroll.overtimeHours}</div>
-										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.otHoursAmt}<span class="paddingLeft">&#8377;</span>
-										</div> --%></td>
+									<td><div class="tblminwidth-50"><fmt:formatNumber value="${empPayroll.regularHours}" pattern="0"/></div></td>
+									<td><div class="tblminwidth-50"><fmt:formatNumber value="${empPayroll.overtimeHours}" pattern="0"/></div></td>
 									<td><div class="tblminwidth-50 clearfix">
-											${empPayroll.noOfLeaves}<span class="paddingLeft"></span>
+											<fmt:formatNumber value="${empPayroll.noOfLeaves}" pattern="0"/><span class="paddingLeft"></span>
 										</div></td>
 									<td><div class="tblminwidth-50 clearfix">
 											${empPayroll.grossPay}<span class="paddingLeft">&#8377;</span>

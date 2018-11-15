@@ -2444,7 +2444,7 @@ function clientFileterPopUp(){
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getClientList();
-	$(".mask").fadeIn();
+// 	$(".mask").fadeOut();
 }
 
 //Client Contact

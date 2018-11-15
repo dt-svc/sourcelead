@@ -156,9 +156,9 @@ function errRemoveClientContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Invoice Address</label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress" data-validation="required" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
+								<textarea class="form-control" rows="2" id="billingAddress" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
 							</div>
 						</div>
 						<div class="form-group">
@@ -319,8 +319,8 @@ function errRemoveClientContact(){
          result = result +'  </div>';
          
          result = result +'  <div class="clearfix mb">';
-         result = result +'  <label><strong>Message<span class="text-danger">&nbsp;*</span></strong></label>';
-         result = result +'  <textarea class="form-control" rows="2" id="comment"  data-validation="required" field-name="Message" name="comment"></textarea>';
+         result = result +'  <label><strong>Message</strong></label>';
+         result = result +'  <textarea class="form-control" rows="2" id="comment" field-name="Message" name="comment"></textarea>';
          result = result +'  </div>';
            
         
