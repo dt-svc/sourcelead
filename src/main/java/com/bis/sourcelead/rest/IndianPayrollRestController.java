@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -230,17 +231,64 @@ public class IndianPayrollRestController {
     
     @RequestMapping(value = "/app/getNamesByLoanAndAdvanceType", method = RequestMethod.POST)
  	public List<PayrollLoanAndAdvancesDTO> getNamesByLoanAndAdvanceType(HttpServletRequest request,
- 			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType){
+ 			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType,
+ 			@RequestParam(value="associateUserId", required=true) Long associateUserId,
+ 			@RequestParam(value="loanAndAdvId", required=false) Long loanAndAdvId) throws Exception{
  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		 Candidate candidate = candidateService.getCandidateByConsultantUserId(associateUserId, orgLocation.getId());
+ 		 Integer candidateExperienceInMonths = 0;
+ 		
+ 		 if(StringUtils.isNotBlank(candidate.getExperienceYears())) {
+ 			candidateExperienceInMonths = (Integer.parseInt(candidate.getExperienceYears()) * 12);
+ 		 }
+ 		 
+ 		 if(StringUtils.isNotBlank(candidate.getExperienceMonths())) {
+				candidateExperienceInMonths = candidateExperienceInMonths+Integer.parseInt(candidate.getExperienceMonths());
+		 }
+ 		 
  		List<PayrollLoanAndAdvancesDTO> padvDTOList = new ArrayList<>();
+ 		HashMap<Long,PayrollLoanAndAdvancesDTO> loanAndAdvMap = new HashMap<>();
  		 try {
+ 			 
+ 			 
+ 			if(loanAndAdvId != null) {
+ 				PayrollLoanAndAdvances padv = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesById(loanAndAdvId);
+ 				PayrollLoanAndAdvancesDTO padvDTO = new PayrollLoanAndAdvancesDTO();
+ 				padvDTO.setId(padv.getId());
+ 				padvDTO.setName(padv.getName());
+ 				loanAndAdvMap.put(padv.getId(),padvDTO);
+ 				padvDTOList.add(padvDTO);
+ 			}
+ 			
  			List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(loanAndAdvType, orgLocation.getId()); 
  			if(padvList != null && !padvList.isEmpty()) {
  				for(PayrollLoanAndAdvances padv : padvList) {
- 					PayrollLoanAndAdvancesDTO padvDTO = new PayrollLoanAndAdvancesDTO();
- 	 				padvDTO.setId(padv.getId());
- 	 				padvDTO.setName(padv.getName());
- 	 				padvDTOList.add(padvDTO);
+ 					PayrollLoanAndAdvancesDTO padvDTO = loanAndAdvMap.get(padv.getId());
+ 					if(padvDTO == null) {
+ 						padvDTO = new PayrollLoanAndAdvancesDTO();
+ 	 					Integer loanAndAdvExperienceInMonths = 0;
+ 	 					if(StringUtils.isNotBlank(padv.getApplicableFor()) && padv.getApplicableFor().equalsIgnoreCase("Experienced")) {
+ 	 							
+ 	 	 						 if(padv.getExperienceYears() != null) {
+ 	 	 							loanAndAdvExperienceInMonths = (padv.getExperienceYears() * 12);
+ 	 	 				 		 }
+ 	 	 				 		 
+ 	 	 				 		 if(padv.getExperienceMonths() != null) {
+ 	 	 				 			loanAndAdvExperienceInMonths = loanAndAdvExperienceInMonths+padv.getExperienceMonths();
+ 	 	 						 }
+ 	 					}
+ 	 					
+ 	 					if(candidateExperienceInMonths >= loanAndAdvExperienceInMonths) {
+ 	 						padvDTO.setId(padv.getId());
+ 	 	 	 				padvDTO.setName(padv.getName());
+ 	 	 	 				loanAndAdvMap.put(padv.getId(),padvDTO);
+ 	 	 	 				padvDTOList.add(padvDTO);
+ 	 	 	 				
+ 	 					}else {
+ 	 						continue;
+ 	 					}
+ 					}
+ 					
  				}
  				
  			}

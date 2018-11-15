@@ -13,12 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -810,12 +812,38 @@ public class RequirementListRestController {
 								}
 								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 								
+								/**
+								*@author Mahaveer Manoj
+								*@purpose Get the resume which got uploaded while adding an applicant from jobpipeline,
+								*@senario-1 : If Resume got uploaded while adding applicant, then get the uploaded resume from RequirementSubmission
+								*@senario-2 : If Resume wasn't uploaded from jobpipeline and if it was uploaded later from Candidate Summary page, 
+								*			  then get the latest uploaded Resume with status == 1 from CandidateResumes 
+								**/
 								if(requirementSubmission.getCandidateResumes() != null) {
 									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
 									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 									requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
 									requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
 									requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+								} else if(requirementSubmission.getCandidate().getCandidateResumes() != null && !requirementSubmission.getCandidate().getCandidateResumes().isEmpty()){
+									List<CandidateResumes> activeResumes = requirementSubmission.getCandidate()
+											.getCandidateResumes()
+											.stream()
+											.filter(x -> x.getStatus() == 1)
+											.collect(Collectors.toList());
+									if (activeResumes != null && !activeResumes.isEmpty()) {
+										CandidateResumes latestResume = activeResumes
+												.stream()
+												.max(Comparator.comparingLong(CandidateResumes::getId))
+												.get();
+										if(latestResume != null) {
+											requirementSubmission.setResumeId(latestResume.getId());
+											requirementSubmission.setResumeUUID(latestResume.getResumeUUID());
+											requirementSubmission.setFileContentType(latestResume.getFileContentType());
+											requirementSubmission.setFileName(latestResume.getFileName());
+											requirementSubmission.setFileURL(latestResume.getFileURL());
+										}
+									}
 								}
 								
 								if(requirementSubmission.getSubmissionStatus() != null) {
@@ -1877,7 +1905,16 @@ public class RequirementListRestController {
 				if(StringUtils.isNotEmpty(search.getFilterAssignTo()) && "Myjobs".equalsIgnoreCase(search.getFilterAssignTo())){
 					String assignTo = user.getId().toString();
 					BoolQueryBuilder reqAssignToBoolQueryBuilder = new BoolQueryBuilder();
-					reqAssignToBoolQueryBuilder.must(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("reqLevel1ApproverUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("reqLevel2ApproverUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("managerUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("primaryRecruiterUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("teamOwnerUserId", assignTo));
+					reqAssignToBoolQueryBuilder.should(QueryBuilders.termQuery("teamAssignUserId", assignTo));
+					
+					
+					
+					
 					boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
 					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
 						boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);

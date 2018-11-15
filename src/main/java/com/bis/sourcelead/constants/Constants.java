@@ -1282,6 +1282,9 @@ public class Constants {
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
 	
 	//Indian_Payroll
+	public static final String IND_PAYROLL = "INDPayroll";
+	public static final String US_PAYROLL = "USPayroll";
+	
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
 	

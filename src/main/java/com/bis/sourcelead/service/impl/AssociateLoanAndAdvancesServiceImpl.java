@@ -285,4 +285,10 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByUserIdAndLocationId(user, orgLocation,loanStatus);
 	}
 
+	@Override
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(Long candidateId,
+			Long orgLocationId, List<String> loanStatus) throws Exception {
+		return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(candidateId, orgLocationId, loanStatus);
+	}
+
 }
