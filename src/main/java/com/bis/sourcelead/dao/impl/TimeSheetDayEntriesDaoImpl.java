@@ -401,7 +401,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				avgWorkingHoursPerDay = 8; 
 		 }
          double estimatedHours = avgWorkingHoursPerDay*workingDays;
- 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
  		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
  		double overTimeHours = 0;
  		if (tdeList != null && !tdeList.isEmpty()) {

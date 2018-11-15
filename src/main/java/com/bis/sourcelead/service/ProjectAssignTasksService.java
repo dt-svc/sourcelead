@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 
 public interface ProjectAssignTasksService {
@@ -14,9 +15,9 @@ public interface ProjectAssignTasksService {
 	
 	 public List<ProjectAssignTask> getProjectAssignTaskListByProjectTaskId(Long projectTaskId) throws Exception;
 	
-	 List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId) throws Exception;
+	 List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId,List<Long> assignedMembersIds) throws Exception;
 	
 	 ProjectAssignTask deleteProjectAssignTask(ProjectAssignTask ProjectAssignTask) throws Exception;
 
-	void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId, Long userId)throws Exception;
+	void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId, Long userId,OrgLocations loginOrgLocation)throws Exception;
 }
