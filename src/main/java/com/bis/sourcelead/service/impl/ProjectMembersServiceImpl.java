@@ -2102,7 +2102,8 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
 				 
-					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
+					  //dont open the code By Laxman
+//					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
 		}
@@ -2135,6 +2136,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,
 			List<Long> projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersListByCandidateIdAndProjectClientId(candidateId, projectClientsId);
+	}
+
+	@Override
+	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
+			throws Exception {
+		return projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, orglocationId);
 	}
 
 }
