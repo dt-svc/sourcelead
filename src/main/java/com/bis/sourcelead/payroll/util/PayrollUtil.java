@@ -935,6 +935,7 @@ public class PayrollUtil {
 			List<List<String>> weekdates = new ArrayList<List<String>>();
 			List<String> dates;
 			int numberOfDays = 0;
+			if(paySchedule != null) {
 			if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
@@ -1037,7 +1038,7 @@ public class PayrollUtil {
 					payFrequency.add(calenderDTO);
 				}
 			}
-			
+		}
 		
 		}catch (Exception e) {
 			e.printStackTrace();

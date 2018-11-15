@@ -250,9 +250,9 @@ this.getLoanAndAdvStatus =  function(){
 		 var statusTypeDiv = document.getElementById("statusTypeDiv");
 		 statusTypeDiv.style.display = "block";	
 		 var loanAndAdvId = $("#loanAndAdvId").val();
-		 if(loanAndAdvId == null || loanAndAdvId == '' || loanAndAdvId == 'undefined'){
+		 /*if(loanAndAdvId == null || loanAndAdvId == '' || loanAndAdvId == 'undefined'){
 			 loanAdv.clearLoanAndAdvances();
-		 }
+		 }*/
 		
 		$("#requestedAmount").attr("data-validation", "required validate_float validate_length length1-12");
 	    $("#scheduler").attr("data-validation", "required");

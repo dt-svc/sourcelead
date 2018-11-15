@@ -220,8 +220,6 @@ function printPage()
 					<div class="addInner">
 					<div class="row">
 					  <div class="col-md-6">
-						<div class="row">
-						    <div class="col-md-12 mb">
 								<label><strong>Employee Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="tierFilter">
@@ -237,9 +235,19 @@ function printPage()
 
 			                        </ul>
 							      </div>
-						     </div> 
+							</div> 
+							  
+							  <div class="col-md-6">
+							     <label><strong>Roles</strong></label>
+								 <div class="clearfix">
+			                        <ul class="list-unstyled positionRelative filterSearch mt5" id="roleFilter">
+										    <c:forEach var="report" items="${orgRolesList}">
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="roleID" value ="${report.id}" ><label>${report.displayName}</label></li>
+											</c:forEach>
+									</ul>
+							      </div>
 						  </div>
-						</div>
+						
 					  </div>
 					</div>
 	
@@ -250,7 +258,7 @@ function printPage()
 						</div>
 					</div>
 					
-				</div>
+</div>
 	<div class="advancedsearch-mask" onClick="closeAdsrch()"></div> 
 
 
@@ -399,12 +407,18 @@ function getAllEmployeesList(fromDate,toDate){
 	var searchValue = $("#employeeDataTableSearch").val();
 	var employmentType = [];
 	$('input:checkbox[name=employmentType]:checked').each(function() 
-		    {
-		employmentType.push($(this).val());
-     });
-	/* alert(employmentType) */
+		{
+			employmentType.push($(this).val());
+     	});
+	
+	var roles = [];
+	$('input:checkbox[name=roleID]:checked').each(function() 
+		{
+			roles.push($(this).val());
+     	});
+	
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&empTypes="+employmentType;
+	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&empTypes="+employmentType+"&roles="+roles;
 	prepareAllEmployeesList(url);
 }
 </script>	
@@ -412,7 +426,7 @@ function getAllEmployeesList(fromDate,toDate){
 <script>
 function prepareAllEmployeesList(url){
 	 	var result = "";
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="clearfix">';
 		result = result + '<table id="dynamicEmployeeListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -573,7 +587,7 @@ function emplyoeesListPagination(url){
 			          "sortable": false,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
-					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
+					       result = result + '      <td><div class="width50px text-center">             ';
 				           result = result + '      <div class="positionRelative actionList-vdse-div">';
 				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
 				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
@@ -581,7 +595,7 @@ function emplyoeesListPagination(url){
 // 				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
 				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
-				           result = result + '      </div>';
+// 				           result = result + '      </div>';
 				           result = result + '    </div>';
 				           result = result + '    </td>';
 				        return result;
@@ -650,15 +664,15 @@ function viewCompleteTemplate(temp){
 	<script>
 				function closeEmployeeFilterPop(){
 					$("#employeeFilterId").hide();
-					$(".advancedsearch-mask").fadeOut();
+					$(".mask").fadeOut();
 				}
 				function employementveriFileterPopUp(){
-					/* alert("hello"); */
 					 $("#employeeFilterId").toggle();
-					 $(".advancedsearch-mask").fadeIn();
+					 $(".mask").fadeIn();
 				}
 				function resetEmployeeFilter(){
 					$("ul#tierFilter > li input:checkbox").prop("checked",false);
+					$("ul#roleFilter > li input:checkbox").prop("checked",false);
 					getEmployeeList();
 					
 				}
@@ -666,7 +680,7 @@ function viewCompleteTemplate(temp){
 	
 function closeAdsrch(){
 		$("div.cand-advsrch-popup").fadeOut();
-		$(".advancedsearch-mask").fadeOut();
+		$(".mask").fadeOut();
 	};
 	
 </script>
