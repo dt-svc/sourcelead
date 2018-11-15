@@ -10,6 +10,7 @@ $(document).ready(function(){
 	var payrollScheduleUUID = "${payScheduleUUID}";
 	/* getApproverList(); */
 	getPayrollSchedule(payrollScheduleUUID);
+	$("#endDateDIV").hide();
 });
 
 </script>
@@ -40,7 +41,7 @@ $(document).ready(function(){
                 <div class="dropdown-select" id="scheduleFreDIV">
                   <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" onchange="weekOnChange();" field-name="Pay Frequency">
                     <option value="">Select Frequency</option>
-                    <option value="Weekly">Weekly</option>
+                    <option value="Weekly">Weekly</option> 
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Monthly">Monthly</option>
                   </select>
@@ -55,7 +56,7 @@ $(document).ready(function(){
               <div class="col-md-8" id="payperiodDiv1">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
               	<div class="clearfix mt5"></div>
-              	<span id="UyuYYu" class="text-muted"></span>
+              	
               </div>
 			  <div class="clearfix"></div>
           </div>
@@ -84,6 +85,15 @@ $(document).ready(function(){
           <div class="col-md-6">
 			 <h5 class="col-md-12 clearfix margin-top0">Pay Period Frequency</h5>
 			  <div class="clearfix"></div>
+			  
+			  <div class="form-group clearfix mt text-primary textBold" id="endDateDIV">
+				<label class="col-md-4">Pay Period End Date</label>
+              <div class="col-md-8">
+              		<span id="payPeriodEndDate"></span>
+              </div>
+			  <div class="clearfix"></div>
+            </div>
+			  
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
               <div class="col-md-8">
@@ -217,11 +227,19 @@ $('#payPeriodStartDate').datepicker({
 	  changeYear: true, 
 	  onSelect : function(selected) {
 		  var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate()+6);
-			$("#UyuYYu").html(dt);
+		  var frequency = $("#payFrequency").val();
+			if(frequency == "Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}if(frequency == "Bi-Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}
+			var dd = new Date(finalDateFormat);
+			dd.setDate(dt);
+			$("#payPeriodEndDate").html(dt);
+			$("#endDateDIV").show();
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
-    //minDate: 0  this line for to restrict selection of previous dates
+    //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
 	 
 	
