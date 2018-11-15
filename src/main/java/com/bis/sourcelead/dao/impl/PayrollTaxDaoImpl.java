@@ -61,5 +61,24 @@ public class PayrollTaxDaoImpl implements PayrollTaxDao {
 		}
 		return null;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PayrollTax getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PayrollTax payrollTax where payrollTax.orgLocations.id =:orgLocationId ORDER by payrollTax.createdDate DESC ";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<PayrollTax> payrollTaxList = queryObj.list();
+			if (payrollTaxList != null && !payrollTaxList.isEmpty()) {
+				return payrollTaxList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

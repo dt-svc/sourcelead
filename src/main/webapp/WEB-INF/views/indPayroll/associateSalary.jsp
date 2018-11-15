@@ -187,9 +187,8 @@ function payHeadCalculation(id, shortCode, method, formula){
 						var match;
 						while ((match = pattern.exec(formatedFormula)) != null)
 						{
-						  //matches.push(match[1]);
 						  var yearPayHeadValue = document.getElementById("payHeadYearly["+match[1]+"]").value;
-						  formatedFormula = formatedFormula.replace(match[1], yearPayHeadValue)
+						  formatedFormula = formatedFormula.replace(match[1], yearPayHeadValue);
 						}
 						 var result = eval(formatedFormula);
 						document.getElementById("payHeadMonthly["+shortCode+"]").value = (result/12).toFixed(2);
