@@ -1943,7 +1943,7 @@ public class UserDaoImpl implements UserDao {
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 			//List<String> userList = this.getUserHierarchyUserCodeList(userId);
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-				searchQuery = " AND (U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%')";
+				searchQuery = " AND (CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) like '%" + userDTO.getSearchValue() + "%')";
 			}
 			if(teamsList.size()>0 && !teamsList.isEmpty()){
 			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
@@ -2129,9 +2129,7 @@ public class UserDaoImpl implements UserDao {
 			
 			
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-				query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
-							
+				query1.append(" (CONCAT (user.firstName,' ',IFNULL(user.lastName,'')) like '%" + userDTO.getSearchValue() + "%')");
 				}
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
