@@ -78,7 +78,7 @@ $(document).ready(function(){
 	 
 });
 </script>
-
+<!-- 
 		<div class="cearfix">
 				  <div class="newTagsWrap">
 					 <ul class="clearfix tagsWrap tagsWrapBor">
@@ -87,7 +87,7 @@ $(document).ready(function(){
 					</ul>
 					 <div class="clearfix"></div>
 				  </div>
-		     </div>
+		     </div> -->
 	     <div class="success_pop tagStyles" id="addProjectTagAlert">
 				<i class="fa fa-check-circle"></i>
 		   		<span></span>
@@ -125,26 +125,26 @@ chosen.search_field.on('keyup', function(e)
               $(this).siblings("[value='"+ this.value+"']").remove();
         });
 		$("#associateTagName").trigger("chosen:updated");
-		saveProjectsTags("add");
+		saveAssociateTags("add");
     }
 });
 
 $('.chosen-select').chosen().on('change', function(evt, params) {
 	if (params.selected && params.selected != undefined) {
-		saveProjectsTags("add");
+		saveAssociateTags("add");
 	}
 	if (params.deselected && params.deselected != undefined) {
-		saveProjectsTags("delete");
+		saveAssociateTags("delete");
 	}
 	
 });
 $("#associateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
 </script>
 <script>
-function getProjectsTagsList(projectId){
+function getAssociateTagsList(associateId){
 	$.ajax({  
         type : "POST",
-        url: sourceleadUrl+"/getProjectsTags?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,        
+        url: sourceleadUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -171,9 +171,9 @@ function getProjectsTagsList(projectId){
 }
 </script>
 <script>
-function saveProjectsTags(type){
-	 var projectId = '${projectId}';
-	 var tagName = $("#projectTagName").val();
+function saveAssociateTags(type){
+	 var projectId = '${actionId}';
+	 var tagName = $("#associateTagName").val();
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
@@ -219,13 +219,13 @@ function showDeleteStatusPopup(status) {
 		
 <script type="text/javascript">
 window.onload = function () {
-	var projectId = '${projectId}';
-	var projectName = '${projectName}';
-	var projectStartDate = '${projectStartDate}';
+	var associateId = '${actionId}';
+	var associateName = '${associateName}';
+	/* var projectStartDate = '${projectStartDate}';
 	var projectEndDate = '${projectEndDate}';
-	var projectStatus = '${projectStatus}';
+	var projectStatus = '${projectStatus}'; */
 	var tabType = '${tabType}';
-	getProjectsTagsList(projectId);
+	getAssociateTagsList(associateId);
  };
 </script>		 
 
