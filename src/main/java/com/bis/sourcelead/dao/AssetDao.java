@@ -71,7 +71,7 @@ public interface AssetDao {
 
 	List<Asset> getAllAssetByOrgId(Long orgLocationsId);
 
-	List<Asset> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId);
+	List<AssetAssign> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId);
 
 
 }

@@ -318,6 +318,7 @@ function userDataTableList(){
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
+	 var searchValueregx = searchValue.replace('^', '');
 	 if(timePeriod == 'custom'){
 		  startDate = $("#ReportStartDate").val();
 		  endDate = $("#ReportEndDate").val();
@@ -349,7 +350,7 @@ function userDataTableList(){
 	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValue;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
 		 usersListPagination(url,sourceleadUrl);
 		 if(timePeriod == 'custom'){
 		 $("#customSearch").hide();

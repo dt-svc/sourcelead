@@ -11,7 +11,12 @@
       <div class="pull-left">
         <h2>Asset Assigned History</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » <a href="<c:url value='${appPath}/assetsReport'/>">Asset Assigned History</a> » Asset Assigned History</div>
+      <div class="pull-right brud-crum">
+         	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+         	<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports </a> &raquo;
+         	Asset Assigned History
+		</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
