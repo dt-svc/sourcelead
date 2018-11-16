@@ -36,7 +36,7 @@ function getGlobalRecommendationList(){
 	    result = result +'</div>'; */
 	    result = result +'</div>';
 	    result = result +'</div>';
-	    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
+	    result = result +'<div class="project_tabs_inn_table  clients_wrap_table backgroundWhite">';
 	    result = result +'<table id="globalRecommendationTable" class="display" cellspacing="0" width="100%"">';
 	    result = result +'<thead>';
 	    result = result +'<tr>';
@@ -244,9 +244,11 @@ function globalRecommendationpagination(){
 				    	  	"render": function(data, type, report, meta) {
 				    	  		var result = '<td><div id="addCartDiv'+report.marketplaceUUID+'">';
 				    	  		 if(report.marketCartStatus == "In_Cart"){
-				    	  			 result = result + 'Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+(report.fullName == null ? "---" : report.fullName)+'\', \''+report.marketplaceUUID+'\', this);"> Delete </a>';
+				    	  			
+				    	  			 result = result + '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+(report.fullName == null ? "---" : report.fullName)+'\', \''+report.marketplaceUUID+'\', this);"> Delete </a></sec:authorize>';
 				    	  		 }else{
-				    	  			 result = result + '<a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+(report.fullName == null ? "---" : report.fullName)+'\',\''+report.marketplaceUUID+'\', this)">Add Cart</a>';
+				    	  			
+				    	  			 result = result + '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')"> <a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+(report.fullName == null ? "---" : report.fullName)+'\',\''+report.marketplaceUUID+'\', this)">Add Cart</a></sec:authorize>';
 				    	  		 }
 				    	  		 result = result + '</div></td>';
 				    	  		 return result; 
@@ -260,10 +262,9 @@ function globalRecommendationpagination(){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
-	     		
 	     }
-	
-   } );
+   });
+	 $('#globalRecommendationTable').wrap("<div class='width100percnt overflow_Auto'></div>");
 	 $("#globalRecommendationTableSearch").keyup(function(e) {
 		   if(e.which === 13) {
 			   globalRecommendationpagination();
@@ -317,7 +318,7 @@ function addCandidateToMarketCart(candidateName, UUID, obj) {
 	        	 if (result.response === "AWKWARD") {
 	                 location.href = "/errorPage";
 	             }else if(result.response === "SUCCESS") {
-		        	$(obj).closest('tr').find("div[id='addCartDiv"+UUID+"']").empty().append(' Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\',\''+obj+'\');"> Delete </a>');
+		        	$(obj).closest('tr').find("div[id='addCartDiv"+UUID+"']").empty().append('<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')"> Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\',\''+obj+'\');"> Delete </a></sec:authorize>');
 	        	}else{
 	            	 showError("Operation failed, please try again");
 	            }

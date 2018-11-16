@@ -67,12 +67,13 @@
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
+        <sec:authorize access="hasRole(\'ROLE_SHARE_PROFILE\',\'ROLE_ADD_PROFILE\')">
         <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
+        </sec:authorize>
         <input type="button" class="btn btn-default ml" value="Cancel">
         </div>
         </div>
         </div>
-          
       </div>
     </div>
   </section>
