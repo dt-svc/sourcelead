@@ -4398,7 +4398,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
 #shortlistedPagination tr td{
     vertical-align: middle;
 }
-.overflow_Auto{
+.overflow_Auto {
     overflow: auto;
 }
 #status-data .filter-position .dataTables_filter {

@@ -2309,7 +2309,7 @@ public class CandidateListRestController {
 			return candidateDTOList;
 			
 		}
-	
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/getGlobalDataRecommendations", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception {
 
