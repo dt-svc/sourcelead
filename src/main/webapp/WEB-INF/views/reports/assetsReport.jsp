@@ -8,14 +8,20 @@
  
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Asset Assigned History</h2>
-      </div>
-      <div class="pull-right brud-crum">
+	    <div class="pull-left">
+	    	<h2>Asset Assigned History</h2>
+	    </div>
+		<div class="pull-right brud-crum">
          	<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
-         	<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; 
-         	<a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports </a> &raquo;
-         	Asset Assigned History
+         	<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; 
+         	<a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo;
+         	<span id="breadCrum1">
+         		Asset Assigned History
+         	</span>
+         	<span id="breadCrum2" style="display: none;">
+	         	<a href="<c:url value='${appPath}/assetsReport'/>">Asset Assigned History</a> &raquo;
+    	     	Asset Assigned History List
+         	</span>
 		</div>
     </section>
     
@@ -174,25 +180,27 @@ function assetReportDataTableList(refreshFlag){
 	
 	function prepareAssetReportData(result){
 		$(".tableFirstSecond").empty();
-			var text = "";
-			if(result.data != "undefined") {  
-				text += "  <table class='table' id='projectReportTableId'>";
-				text += " 	<thead>";
-				text += " 	  <tr>";
-				text += " 	   	<th>Employee ID</th>";
-				text += " 	   	<th>Employee Name</th>";
-				text += " 	   	<th>Asset Name</th>";
-				text += " 		<th>Category</th>";
-				text += " 		<th>Serial Number</th>";
-				text += " 		<th>Assigned On</th>";
-				text += " 		<th>Returned On</th>";
-				text += " 		<th>Shift</th>";
-				text += " 		<th>Document</th>";
-				text += " 		<th>Assigned By</th>";
-				text += " 	  </tr>";
-				text += " 	</thead>";
-				text += " 	<tbody>";
-				 
+		$("#exportOptions").hide();
+		var text = "";
+		if(result.data && result.data !== null) {
+			text += "  <table class='table' id='projectReportTableId'>";
+			text += " 	<thead>";
+			text += " 	  <tr>";
+			text += " 	   	<th>Employee ID</th>";
+			text += " 	   	<th>Employee Name</th>";
+			text += " 	   	<th>Asset Name</th>";
+			text += " 		<th>Category</th>";
+			text += " 		<th>Serial Number</th>";
+			text += " 		<th>Assigned On</th>";
+			text += " 		<th>Returned On</th>";
+			text += " 		<th>Shift</th>";
+			text += " 		<th>Document</th>";
+			text += " 		<th>Assigned By</th>";
+			text += " 	  </tr>";
+			text += " 	</thead>";
+			text += " 	<tbody>";
+			
+			if(result.data !== null && result.data.length > 0) {
 				for(var e in result.data) {
 					var report = result.data[e];
 					text += "    <tr>";
@@ -214,17 +222,21 @@ function assetReportDataTableList(refreshFlag){
 				}
 				text += " 	</tbody>";
 				text += "   </table>";
+
 				$(".tableFirstSecond").append(text);
-				$("#payrollRegister").show();
+
 				$("#exportOptions").show();
-				$("#assetForm").hide();
 				dynamicAssetReportPagination();  
 			} else {
 				$(".tableFirstSecond").append("<div class='dataTables_empty'></div>");
-				$("#exportOptions").hide();						
 			}
-		//}
-		
+			$("#payrollRegister").show();
+			$("#assetForm").hide();
+			$("#breadCrum2").show();
+			$("#breadCrum1").hide();
+		} else {
+			$(".tableFirstSecond").append("<div class='dataTables_empty'></div>");
+		}
 	}
 </script>
 
