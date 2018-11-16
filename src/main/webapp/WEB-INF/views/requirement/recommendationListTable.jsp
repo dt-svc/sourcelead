@@ -13,7 +13,318 @@
 <div id="popUp" ></div>
 <div id="candidateRejectedDiv" class="project_tabs clearfix"></div>
 <div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>  
+<div id="popUpDeleteCart"></div>
 <script>
+function globalDataRecommendations(){
+	//$("#actionsDiv" ).hide();
+ 	//$("#globalRecommendationsLoading").removeAttr('style');
+	//$("#globalRecommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	getGlobalRecommendationList();
+}
+function getGlobalRecommendationList(){
+	var result = '';
+	result = result +" <div class='clearfix'>";
+	    //--------------------------------
+	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
+	    result = result +" <div class='remove_search'>";
+	 	result = result +" <input type='text' placeholder='Search' id='globalRecommendationTableSearch'/>";
+	 	result = result +"</div>";
+	    result = result +'<div class="clearfix timesheetHead">';
+	    result = result +'<div class="rec_head">';
+	   /* result = result +'		   <div class="pull-left cand-advsrch">																							';
+	    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop()">Customize Score <i class="fa fa-info-circle" title="Customise Score based on your requierement"></i>             ';
+	    result = result +'</div>'; */
+	    result = result +'</div>';
+	    result = result +'</div>';
+	    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
+	    result = result +'<table id="globalRecommendationTable" class="display" cellspacing="0" width="100%"">';
+	    result = result +'<thead>';
+	    result = result +'<tr>';
+	    result = result +'<th>Name</th>';
+	    result = result +'<th>Designation</th>';
+	    result = result +'<th>Skills</th>';
+	    result = result +'<th>Current Rate</th>';
+	    result = result +'<th>Expected Rate</th>';
+	    result = result +'<th>Experience</th>';
+	    result = result +'<th>Location</th>';
+	    result = result +'<th>Profile Percentage</th>';
+	    result = result +'<th>Price</th>';
+	    result = result +'<th>Action</th>';
+	    result = result +'</tr>';
+	    result = result +'</thead>';
+	    result = result + "</table>";
+	    result = result +'</div>';
+		$("#tab-2").empty(); 
+	    $("#tab-3").empty();
+	    $("#tab-4").empty();
+	  	//$("#globalRecommendationsLoading").removeAttr("style");
+	    $("#status-div").empty();
+	    $("#actionsDiv").hide();
+	    $("#status-data").empty();
+		$("#tab-5").empty().append(result);
+		globalRecommendationpagination();
+}
+
+function globalRecommendationpagination(){
+	var searchValue = $("#globalRecommendationTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	//$("#globalRecommendationTableSearch").val(searchValue);
+	var url = sourceleadUrl+"/getGlobalDataRecommendations?searchValue="+searchValue;
+	var colIndex = 0;
+	 var dt = $('#globalRecommendationTable').DataTable( { 
+   	"processing": true,
+       "serverSide": true,
+       "searching": false,
+       "ajax": $.fn.dataTable.pipeline( {
+           url: url,
+           method: 'POST',
+           pages: 10
+       }),
+       "columns": [
+           { "data": "name" },
+           { "data": "designation"},
+           { "data": "skills" },
+           { "data": "currentRate"},
+           { "data": "expectedRate" },
+           { "data": "experience" },
+           { "data": "location" },
+           { "data": "profilePercentage" },
+           { "data": "price" },
+           { "data": "action" }
+       ],
+       "columnDefs": [{
+	    	  	"targets": colIndex++,
+	    	  	"data": "name",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var fullName = "";
+	    	  		var result = "";
+	    		    if(report.fullName != null && report.fullName != '' && report.fullName != 'undefiend'){
+	    		    	fullName = report.fullName;
+	    		    }else{
+	    		    	fullName = "";
+	    		    } 
+	    		    result = result +'<tr>';
+	    		    result = result + '<td><span title="'+fullName+'">'+fullName+'</span></i>';
+	    		    result = result +' </div></td>';
+		            return  result;
+	      	}
+       	},{
+           "targets": colIndex++,
+           "data": "designation",
+           "render": function ( data, type, report, meta ) {
+           	  var result = "";
+           	    if(report.designation != null && report.designation !='' && report.designation !='undefined'){
+       		    	result = result +'<td><div class="tbldata-dotdot-vsm"> <span title="'+report.designation+'">'+report.designation+'</span></div></td>';
+       		    }else{
+       		    	result = result +'<td><div><span>--</span></div></td>';
+       		    }
+	              return result; 
+           }
+         }, {
+             "targets": colIndex++,
+             "data": "skills",
+             "render": function ( data, type, report, meta ) {
+           	  var result = "";
+           	   if(report.skillsName != null && report.skillsName !='' && report.skillsName !='undefined'){
+      		    	result = result +'<td><div class="tbldata-dotdot-100"> <span title="'+report.skillsName+'">'+report.skillsName+'</span></div></td>';
+      		    }else{
+      		    	result = result +'<td><div><span>--</span></div></td>';
+      		    }
+ 	              return result; 
+             }
+           }, {
+               "targets": colIndex++,
+               "data": "currentRate",
+               "render": function ( data, type, report, meta ) {
+              	  var result = "";
+              	  var currentRateCurrency = "";
+              	  var currentRate = "";
+               	  if(report.currentRateCurrency != null && report.currentRateCurrency !='' && report.currentRateCurrency !='undefined'){
+               			currentRateCurrency = report.currentRateCurrency;
+         		    }else{
+         		    	currentRateCurrency = '<span>--</span>';
+         		    }
+	               	if(report.currentRate != null && report.currentRate !='' && report.currentRate !='undefined'){
+	               		currentRate = report.currentRate;
+	     		    }else{
+	     		    	currentRate = '<span>--</span>';
+	     		    }
+	               	result = result + '<td><div class="tbldata-dotdot-100"><span title="'+currentRateCurrency +" "+currentRate+'">'+currentRateCurrency +" "+currentRate+'</span></div></td>';
+   	              return result; 
+               }
+         },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "expectedRate",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	              	  var expectedRateCurrencey = "";
+	              	  var expectedRate = "";
+	               	  if(report.expectedRateCurrencey != null && report.expectedRateCurrencey !='' && report.expectedRateCurrencey !='undefined'){
+	               		expectedRateCurrencey = report.expectedRateCurrencey;
+	         		    }else{
+	         		    	expectedRateCurrencey = '<span>--</span>';
+	         		    }
+		               	if(report.expectedRate != null && report.expectedRate !='' && report.expectedRate !='undefined'){
+		               		expectedRate = report.expectedRate;
+		     		    }else{
+		     		    	expectedRate = '<span>--</span>';
+		     		    }
+		               	result = result + '<td><div class="tbldata-dotdot-100"> <span title="'+expectedRateCurrencey +" "+expectedRate+'">'+expectedRateCurrencey +" "+expectedRate+'</span></div></td>';
+	   	              return result;  
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "experience",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	              	  var experienceYears = "";
+	              	  var experienceMonths = "";
+	               	  if(report.experienceYears != null && report.experienceYears !='' && report.experienceYears !='undefined'){
+	               		experienceYears = report.experienceYears;
+	         		    }else{
+	         		    	experienceYears = '<span>--</span>';
+	         		    }
+		               	if(report.experienceMonths != null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
+		               		experienceMonths = report.experienceMonths;
+		     		    }else{
+		     		    	experienceMonths = '<span>--</span>';
+		     		    }
+		               	result = result + '<td><div class="tbldata-dotdot-100" <span title="'+experienceYears +"."+experienceMonths+'">'+experienceYears +"."+experienceMonths+'</span></div></td>';
+	   	              return result; 
+	    	  	}
+	    	  },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "location",
+		    	  	"render": function(data, type, report, meta) {
+		    	  	var result = "";
+		    	  	  if(report.location != null && report.location !='' && report.location !='undefined'){
+		  		    	result = result +'<td><div class="tblminwidth-100"><span>'+report.location+'</span></div></td>';
+		  		    }else{
+		  		    	result = result +'<td><div><span>--</span></div></td>';
+		  		    }
+		    	  		 return result; 
+		    	  	}
+		      },{
+			    	  	"targets": colIndex++,
+			    	  	"data": "profilePercentage",
+			    	  	"render": function(data, type, report, meta) {
+			    	  		var result = "";
+				    	  	  if(report.profilePercentage != null && report.profilePercentage !='' && report.profilePercentage !='undefined'){
+				  		    	result = result +'<td><div class="tblminwidth-100"><span title="'+report.profilePercentage+'">'+report.profilePercentage+'</span></div></td>';
+				  		    }else{
+				  		    	result = result +'<td><div><span>--</span></div></td>';
+				  		    }
+				    	  		 return result; 
+				    	  	}
+			   
+			   },{
+		    	  	"targets": colIndex++,
+		    	  	"data": "price",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		var result = "";
+		              	  var marketRateCurrencey = "";
+		              	  var marketPrice = "";
+		               	  if(report.marketRateCurrencey != null && report.marketRateCurrencey !='' && report.marketRateCurrencey !='undefined'){
+		               		marketRateCurrencey = report.marketRateCurrencey;
+		         		    }else{
+		         		    	marketRateCurrencey = '<span>--</span>';
+		         		    }
+			               	if(report.marketPrice != null && report.marketPrice !='' && report.marketPrice !='undefined'){
+			               		marketPrice = report.marketPrice;
+			     		    }else{
+			     		    	marketPrice = '<span>--</span>';
+			     		    }
+			               	result = result + '<td><div class="tbldata-dotdot-100"><span title="'+marketRateCurrencey +" "+marketPrice+'">'+marketRateCurrencey +" "+marketPrice+'</span></div></td>';
+		   	              return result;
+		    	  	}
+		      },{
+				    	  	"targets": colIndex++,
+				    	  	"data": "action",
+				    	  	"sortable": false,
+				    	  	"render": function(data, type, report, meta) {
+				    	  		var result = '<td><div id="addCartDiv'+report.marketplaceUUID+'">';
+				    	  		 if(report.marketCartStatus == "In_Cart"){
+				    	  			 result = result + 'Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+(report.fullName == null ? "---" : report.fullName)+'\', \''+report.marketplaceUUID+'\', this);"> Delete </a>';
+				    	  		 }else{
+				    	  			 result = result + '<a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+(report.fullName == null ? "---" : report.fullName)+'\',\''+report.marketplaceUUID+'\', this)">Add Cart</a>';
+				    	  		 }
+				    	  		 result = result + '</div></td>';
+				    	  		 return result; 
+				  }
+				  }],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[7,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     		
+	     }
+	
+   } );
+	 $("#globalRecommendationTableSearch").keyup(function(e) {
+		   if(e.which === 13) {
+			   globalRecommendationpagination();
+		   }
+		});
+}
+
+function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, obj){ 
+	 $(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove "+candidateName+" from the cart!</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+obj+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
+		result = result +"	</div>";
+		$("#popUpDeleteCart").empty().append(result);
+		$("#remove_marketCart_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+function cancelMarketCartPopup(){
+	$("#remove_marketCart_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
+function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
+	console.log(candidateName+" "+candidateMarketUUID+" "+obj);
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,
+		success : function(result) {
+			if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
+				//$(obj).closest('tr').find("div[id='addCartDiv"+candidateMarketUUID+"']").empty().append('<a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+candidateName+'\',\''+candidateMarketUUID+'\', \''+obj+'\')">Add Cart</a>');
+				globalRecommendationpagination();
+				$("#remove_marketCart_pop").fadeOut(200);
+				$(".project_inn_mask").fadeOut(200);
+				}else{
+	            	 showError("Operation failed, please try again");
+	            }
+				}
+		}); 
+	}
+
+function addCandidateToMarketCart(candidateName, UUID, obj) {
+	  $.ajax({
+	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
+	        type:'GET',
+	        success: function (result) {
+	        	 if (result.response === "AWKWARD") {
+	                 location.href = "/errorPage";
+	             }else if(result.response === "SUCCESS") {
+		        	$(obj).closest('tr').find("div[id='addCartDiv"+UUID+"']").empty().append(' Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\',\''+obj+'\');"> Delete </a>');
+	        	}else{
+	            	 showError("Operation failed, please try again");
+	            }
+	        }
+	    });
+	}
+
 	function requirementRecommendations(requirementId, requirementSubmissionStatus){
 	 	$("#actionsDiv" ).hide();
 	 	$("#recommendationsLoading").removeAttr('style');
@@ -139,7 +450,6 @@ function prepareRecommendationList(url,requirementRecommendationsDate,requiremen
 		     $(tab).fadeIn();
 		 });
 }
-
 
 	
 function recommendationpagination(url,requirementId, requirementSubmissionStatus){

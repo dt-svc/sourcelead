@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -2308,6 +2309,26 @@ public class CandidateListRestController {
 			return candidateDTOList;
 			
 		}
+	
+	@RequestMapping(value = "/getGlobalDataRecommendations", method = RequestMethod.POST)
+	public @ResponseBody ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception {
+
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = { "fullName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "profilePercentage", "marketPrice"};
+		
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (candidateMarketPlaceDTO.getOrder() != null && !candidateMarketPlaceDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(candidateMarketPlaceDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = candidateMarketPlaceDTO.getOrder().get(0).get("dir");
+		}
+		candidateMarketPlaceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		candidateMarketPlaceDTO.setSortOrder(sortColumnOrder);
+		ResponseList<CandidateMarketPlaceDTO> candidateDTOList = candidateService.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
+		return candidateDTOList;
+		
+	}
 	
 
 }

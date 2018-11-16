@@ -155,12 +155,20 @@
 	                 "targets": colIndex++,
 	                 "data": "currentRate",
 	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.currentRate !== null && opt.currentRate !== '' && opt.currentRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tblminwidth-75' title = '"+opt.currentRate+"'>" + opt.currentRate + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tblminwidth-75'>---</div></td>";
-	                     } 
+	                	 var result = "";
+	                 	  var currentRateCurrency = "";
+	                 	  var currentRate = "";
+	                  	  if(opt.currentRateCurrency != null && opt.currentRateCurrency !='' && opt.currentRateCurrency !='undefined'){
+	                  			currentRateCurrency = opt.currentRateCurrency;
+	            		    }else{
+	            		    	currentRateCurrency = '<span>--</span>';
+	            		    }
+	   	               	if(opt.currentRate != null && opt.currentRate !='' && opt.currentRate !='undefined'){
+	   	               		currentRate = opt.currentRate;
+	   	     		    }else{
+	   	     		    	currentRate = '<span>--</span>';
+	   	     		    }
+	   	               	result = result + '<td><div class="tblminwidth-75"><span title="'+currentRateCurrency +" "+currentRate+'">'+currentRateCurrency +" "+currentRate+'</span></div></td>';
 	                     return result;
 	                 }
 	             },
@@ -168,12 +176,20 @@
 	                 "targets": colIndex++,
 	                 "data": "expectedRate",
 	                 "render": function (data, type, opt, meta) {
-	                     var result = "";
-	                     if (opt.expectedRate !== null && opt.expectedRate !== '' && opt.expectedRate !== 'undefined') {
-	                    	 result = result + "<td><div class='tblminwidth-75' title = '"+opt.expectedRate+"'>" + opt.expectedRate + "</div></td>";
-	                     } else {
-	                         result = result + "<td><div class='tblminwidth-75'>---</div></td>";
-	                     } 
+	                	 var result = "";
+	                	 var expectedRateCurrencey = "";
+		              	  var expectedRate = "";
+		               	  if(opt.expectedRateCurrencey != null && opt.expectedRateCurrencey !='' && opt.expectedRateCurrencey !='undefined'){
+		               		expectedRateCurrencey = opt.expectedRateCurrencey;
+		         		    }else{
+		         		    	expectedRateCurrencey = '<span>--</span>';
+		         		    }
+			               	if(opt.expectedRate != null && opt.expectedRate !='' && opt.expectedRate !='undefined'){
+			               		expectedRate = opt.expectedRate;
+			     		    }else{
+			     		    	expectedRate = '<span>--</span>';
+			     		    }
+			               	result = result + '<td><div class="tblminwidth-75"> <span title="'+expectedRateCurrencey +" "+expectedRate+'">'+expectedRateCurrencey +" "+expectedRate+'</span></div></td>';
 	                     return result;
 	                 }
 	             },
@@ -183,7 +199,7 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
-	                    	 result = result + "<td><div class='tblminwidth-50' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "%</div></td>";
+	                    	 result = result + "<td><div class='tblminwidth-50' title = '"+opt.profilePercentage+"%'>" + opt.profilePercentage + "</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tblminwidth-50'>---</div></td>";
 	                     } 
@@ -196,7 +212,7 @@
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
-	                    	 result = result + "<td><div id='marketPlacePriceDiv'><div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+opt.marketPrice+" "+ opt.marketRateCurrencey+"'>" + opt.marketPrice + " "+ opt.marketRateCurrencey+"</div></div></td>";
+	                    	 result = result + "<td><div id='marketPlacePriceDiv' class='tblminwidth-100'><span title = '"+opt.marketRateCurrencey+" "+opt.marketPrice +"'>" +opt.marketRateCurrencey+ " "+ opt.marketPrice  +"</span></div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tblminwidth-100'>---</div></td>";
 	                     } 
