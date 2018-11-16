@@ -230,8 +230,7 @@ public class CandidateRestController {
 	@RequestMapping(value = { "/parseResume", "/app/parseResume" }, method = RequestMethod.POST)
 	public @ResponseBody Response<ResumeParserJsonUtil> parseResume(
 			@RequestParam(value = "json", required = false) String json, MultipartHttpServletRequest request,
-			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
-			throws Exception {
+			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			MultipartFile multiFile = null;
