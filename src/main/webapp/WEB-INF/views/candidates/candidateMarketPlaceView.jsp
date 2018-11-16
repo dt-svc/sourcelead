@@ -223,6 +223,7 @@
 	             {
 	                 "targets": colIndex++,
 	               /*   "data": "action", */
+	               	"sortable": false,
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
