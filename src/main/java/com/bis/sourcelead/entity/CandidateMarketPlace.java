@@ -127,6 +127,13 @@ public class CandidateMarketPlace implements Serializable {
 	@Column(name = "CAN_MARKET_STATUS")
 	private String candidateMarketStatus;
 	
+	@Column(name = "SHOW_COMPANY_NAME")
+	private String showCompanyName;
+	
+	@Column(name = "COMPANY_NAME")
+	private String companyName;
+	
+	
 	@Column(name = "WITHDRAW_REASON")
 	private String withdrawReason;
 	
@@ -406,6 +413,22 @@ public class CandidateMarketPlace implements Serializable {
 
 	public void setCandidateMarketStatus(String candidateMarketStatus) {
 		this.candidateMarketStatus = candidateMarketStatus;
+	}
+
+	public String getShowCompanyName() {
+		return showCompanyName;
+	}
+
+	public void setShowCompanyName(String showCompanyName) {
+		this.showCompanyName = showCompanyName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getWithdrawReason() {

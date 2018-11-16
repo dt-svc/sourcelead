@@ -21,6 +21,8 @@ public interface PayrollPayheadService {
 	
 	PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception;
 	
+	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId) throws Exception;
+	
 	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 	
 	PayrollPayheadSalarySetup savePayrollPayheadSalarySetup(PayrollPayheadSalarySetup payrollPayheadSalarySetup) throws Exception;

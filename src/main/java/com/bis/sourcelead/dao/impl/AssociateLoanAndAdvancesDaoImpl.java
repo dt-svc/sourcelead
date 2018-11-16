@@ -188,5 +188,23 @@ public class AssociateLoanAndAdvancesDaoImpl implements AssociateLoanAndAdvances
 		}
 	     return loanAndAdvList;
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(
+			Long candidateId, Long orgLocationId, List<String> loanStatus) {
+		Session session = this.sessionFactory.getCurrentSession();
+		  List<AssociateLoanAndAdvances> loanAndAdvList = null;
+		  try {
+				 String query = "from AssociateLoanAndAdvances lad where "
+				 		+ " lad.candidateId.id = :candidateId and lad.orgLocationId.id = :orgLocationId and lad.status = '1' and lad.loanAndAdvanceStatus IN (:loanStatus) ";  
+			     loanAndAdvList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setParameterList("loanStatus", loanStatus).list();
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return loanAndAdvList;
+	}
 
 }

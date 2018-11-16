@@ -393,9 +393,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfApplicants !=null && opt.noOfApplicants !='' && opt.noOfApplicants !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.noOfApplicants+"'>"+opt.noOfApplicants+"</span></div></td>";
+	            	    	 result = result +"<td><div> <span title='"+opt.noOfApplicants+"'>"+opt.noOfApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	 result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		 return result;
@@ -406,9 +406,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfShortlistApplicants !=null && opt.noOfShortlistApplicants !='' && opt.noOfShortlistApplicants !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.noOfShortlistApplicants+"'>"+opt.noOfShortlistApplicants+"</span></div></td>";
+	            	    	result = result +"<td><div> <span title='"+opt.noOfShortlistApplicants+"'>"+opt.noOfShortlistApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		return result;
@@ -419,9 +419,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfSubmittedApplicants !=null && opt.noOfSubmittedApplicants !='' && opt.noOfSubmittedApplicants !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.noOfSubmittedApplicants+"'>"+opt.noOfSubmittedApplicants+"</span></div></td>";
+	            	    	 result = result +"<td><div> <span title='"+opt.noOfSubmittedApplicants+"'>"+opt.noOfSubmittedApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -432,9 +432,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfInterviewedApplicants !=null && opt.noOfInterviewedApplicants !='' && opt.noOfInterviewedApplicants !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.noOfInterviewedApplicants+"'>"+opt.noOfInterviewedApplicants+"</span></div></td>";
+	            	    	result = result +"<td><div> <span title='"+opt.noOfInterviewedApplicants+"'>"+opt.noOfInterviewedApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -445,9 +445,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfOfferedApplicants !=null && opt.noOfOfferedApplicants !='' && opt.noOfOfferedApplicants !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.noOfOfferedApplicants+"'>"+opt.noOfOfferedApplicants+"</span></div></td>";
+	            	    	 result = result +"<td><div> <span title='"+opt.noOfOfferedApplicants+"'>"+opt.noOfOfferedApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -458,9 +458,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfRejectedApplicants !=null && opt.noOfRejectedApplicants !='' && opt.noOfRejectedApplicants !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.noOfRejectedApplicants+"'>"+opt.noOfRejectedApplicants+"</span></div></td>";
+	            	    	result = result +"<td><div> <span title='"+opt.noOfRejectedApplicants+"'>"+opt.noOfRejectedApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -471,9 +471,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfJoinedApplicants !=null && opt.noOfJoinedApplicants !='' && opt.noOfJoinedApplicants !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.noOfJoinedApplicants+"'>"+opt.noOfJoinedApplicants+"</span></div></td>";
+	            	    	result = result +"<td><div> <span title='"+opt.noOfJoinedApplicants+"'>"+opt.noOfJoinedApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -484,9 +484,9 @@ function jobsListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.noOfBackoutApplicants !=null && opt.noOfBackoutApplicants !='' && opt.noOfBackoutApplicants !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.noOfBackoutApplicants+"'>"+opt.noOfBackoutApplicants+"</span></div></td>";
+	            	    	 result = result +"<td><div> <span title='"+opt.noOfBackoutApplicants+"'>"+opt.noOfBackoutApplicants+"</span></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
