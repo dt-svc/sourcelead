@@ -128,9 +128,6 @@
       
           
       <div class="clearfix timesheet_head">
-         
-       
-         
       <ul class="list-unstyled list-inline">
                 
              <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
@@ -142,10 +139,8 @@
 					</div>
 				</li>
             </ul>
-        <div class="require_wrap_table tableFirstSecond clearfix overflow_inherint datatable_filter">
-        </div>
     </div>
-  
+  <div class="require_wrap_table tableFirstSecond clearfix overflow_inherint datatable_filter"></div>
   </section>
  
 </div>
@@ -201,7 +196,7 @@ function assetReportDataTableList(refreshFlag){
 				for(var e in result.data) {
 					var report = result.data[e];
 					text += "    <tr>";
-					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId === null ? "--" : report.employeeId ) + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId !== null && report.employeeId !== "" ? report.employeeId : "--") + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot'>" + report.employeeName + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot'>" + report.assetName + "</div></td>";
 					text += "		<td><div class='tbldata-dotdot-vsm'>" + report.category + "</div></td>";
@@ -209,7 +204,11 @@ function assetReportDataTableList(refreshFlag){
 					text += "		<td><div class='tbldata-dotdot-100'>" + report.assignedOn + "</div></td>";
 					text += "		<td><div class='tblminwidth-75'>" + (report.returnedOn !== null ? report.returnedOn : "----") + "</div></td>";
 					text += "		<td><div class='tblminwidth-75'>" + (report.shift !== null ? report.shift : "----") + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot-100'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a href='" + report.fileUrl + "'>" + report.document + "</a>" : "----") + "</div></td>";
+					if(report.fileUrl !== null && report.fileUrl !== "") {
+						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " <ul class='list-unstyled list-inline mb0 downloadUL'><li><a href='" + report.fileUrl + "' class='fa fa-download cursorPointer'></a></li> <li><a onclick='viewFile(\""+report.fileUrl+"\",\""+report.document+"\",\""+report.fileContentType+"\");' class='fa fa-eye ml cursorPointer'></a></li></ul></div></td>";
+					} else {
+						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " </div></td>";
+					}
 					text += "		<td><div class='tblminwidth-75'>" +(report.assignBy !== null ? report.assignBy : "----") + "</div></td>";
 					text += "	</tr>";
 				}
