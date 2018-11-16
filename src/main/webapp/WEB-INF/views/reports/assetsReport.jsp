@@ -196,20 +196,20 @@ function assetReportDataTableList(refreshFlag){
 				for(var e in result.data) {
 					var report = result.data[e];
 					text += "    <tr>";
-					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId !== null && report.employeeId !== "" ? report.employeeId : "--") + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot'>" + report.employeeName + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot'>" + report.assetName + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot-vsm'>" + report.category + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot'>" + report.serialNo + "</div></td>";
-					text += "		<td><div class='tbldata-dotdot-100'>" + report.assignedOn + "</div></td>";
-					text += "		<td><div class='tblminwidth-75'>" + (report.returnedOn !== null ? report.returnedOn : "----") + "</div></td>";
-					text += "		<td><div class='tblminwidth-75'>" + (report.shift !== null ? report.shift : "----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeId !== null && report.employeeId !== "" ? report.employeeId : "----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.employeeName != null && report.employeeName !== "" ? report.employeeName : "----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.assetName != null && report.assetName !== "" ? report.assetName : "----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot-vsm'>" + (report.category != null && report.category !== "" ? report.category :"----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot'>" + (report.serialNo != null && report.serialNo !== "" ? report.serialNo : "----") + "</div></td>";
+					text += "		<td><div class='tbldata-dotdot-100'>" + (report.assignedOn != null && report.assignedOn !== "" ? report.assignedOn : "----") + "</div></td>";
+					text += "		<td><div class='tblminwidth-75'>" + (report.returnedOn !== null && report.returnedOn !== "" ? report.returnedOn : "----") + "</div></td>";
+					text += "		<td><div class='tblminwidth-75'>" + (report.shift !== null && report.shift !== "" ? report.shift : "----") + "</div></td>";
 					if(report.fileUrl !== null && report.fileUrl !== "") {
 						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " <ul class='list-unstyled list-inline mb0 downloadUL'><li><a href='" + report.fileUrl + "' class='fa fa-download cursorPointer'></a></li> <li><a onclick='viewFile(\""+report.fileUrl+"\",\""+report.document+"\",\""+report.fileContentType+"\");' class='fa fa-eye ml cursorPointer'></a></li></ul></div></td>";
 					} else {
 						text += "		<td><div class='clearfix downloadLinks'>" + (report.fileUrl !== null && report.fileUrl !== "" ? "<a class='tbldata-dotdot'>" + report.document + "</a>" : "----") + " </div></td>";
 					}
-					text += "		<td><div class='tblminwidth-75'>" +(report.assignBy !== null ? report.assignBy : "----") + "</div></td>";
+					text += "		<td><div class='tblminwidth-75'>" +(report.assignBy !== null && report.assignBy !== "" ? report.assignBy : "----") + "</div></td>";
 					text += "	</tr>";
 				}
 				text += " 	</tbody>";
