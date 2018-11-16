@@ -141,7 +141,8 @@ public class CompanyOnboardController {
 					}
 				}
 			 String subscribedCountries = subscriptionCountries.toString();
-			 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+			 if(subscribedCountries != null && !subscribedCountries.isEmpty())
+				 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
 			 
 			model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 			model.addObject("subscribedCountries", subscribedCountries);

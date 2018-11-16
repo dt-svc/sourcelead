@@ -1977,10 +1977,13 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-
+					var ssn = '';	
+					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
+						ssn = json.user.ssn;
+					}
 					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" id="SSN" name="ssn" value="'+json.user.ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
 
 					result = result + ' </div>';
 					}
@@ -3005,7 +3008,8 @@ $(document).ready(function() {
 
 
 </script>
-<script>
+
+<!-- <script>
 function validateSSNNumber(){
 	var ssnNumber = $("#ssnNumber").val();
 	var length  = $("#ssnNumber").val().length;
@@ -3021,9 +3025,11 @@ function calculateSSNLength(length,ssnNumber){
 	if(length == 0){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		$("#update_user").attr("disabled", "disabled");
 	}else if(length != 9){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		$("#update_user").attr("disabled", "disabled");
 	}else{
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		var value = "";
@@ -3042,7 +3048,7 @@ function calculateSSNLength(length,ssnNumber){
 		}
 	}
 }
- </script>
+ </script> -->
 
 <script type="text/javascript">
 function flushProject(){
@@ -3078,7 +3084,6 @@ function inlineEditForUsers(userId,localFieldName){
 
 <script>
 function getStartandEndDate(){
-	
 	var projectId = document.getElementById("proId").value;
 	if(projectId != null && projectId != ""){
     $.ajax({
@@ -3166,6 +3171,7 @@ function getStartandEndDate(){
 	  
     }
 </script>
+
    <script>
     function validateSSNNumber(){
 		var SSN = $("#SSN").val();
@@ -3182,9 +3188,11 @@ function getStartandEndDate(){
 		if(length == 0){
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+			$("#update_user").attr("disabled", "disabled");
 		}else if(length != 9){
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+			$("#update_user").attr("disabled", "disabled");
 		}else{
 			$("#ssnnum").find('span.ssn_errmsg').remove();
 			var value = "";
@@ -3198,8 +3206,10 @@ function getStartandEndDate(){
 			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
 				$("#ssnnum").find('span.ssn_errmsg').remove();
 				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+				$("#update_user").attr("disabled", "disabled");
 			}else{
 				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#update_user").removeAttr("disabled", "disabled");
 			}
 		}
 	}

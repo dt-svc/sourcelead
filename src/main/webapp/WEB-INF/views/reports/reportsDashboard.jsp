@@ -353,7 +353,7 @@
                   </div>  
 
                   
-      </div>
+      
       
       <!--   List View   -->
       
@@ -586,11 +586,9 @@
             </c:if>
             
             <div class="clearfix mt mb"></div>
-            
-            
                                    
         </div>
-        
+        </div>
         <!--  List View End  --> 
     
     </div>

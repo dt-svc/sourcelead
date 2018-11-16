@@ -28,8 +28,8 @@
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-exchange fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Comparsion</h4>
-              <small class="text-muted">Payroll Comparsion</small>
+              <h4 class="text-muted">Comparison</h4>
+              <small class="text-muted">Payroll Comparison</small>
               <div class="clearfix mt10"> <a href="${appPath}/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
