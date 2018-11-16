@@ -504,6 +504,12 @@ $(".overIcon, .newActPop").click(function(e){
 <script>
 function resetData(){
 	document.getElementById("payroll_Taxes_Wages_form").reset(); 
+	$("#payrollTaxAndWagesDiv").hide();
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$("#freqStartDate").val('');
+	$("#freqEndDate").val('');
+// 	document.getElementById("payrollTaxAndWagesList").reset();
 }
 </script>
 
