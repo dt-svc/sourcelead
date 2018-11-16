@@ -39,7 +39,7 @@ public class YTDPayrollDTO {
 	
 	private BigDecimal deductionQTD;
 	
-	private BigDecimal ficaYTD;
+	/*private BigDecimal ficaYTD;
 	
 	private BigDecimal medicareYTD;
 	
@@ -49,303 +49,216 @@ public class YTDPayrollDTO {
 	
 	private BigDecimal stateWithholdingYTD;
 	
-	private BigDecimal countyWithholdingYTD;
+	private BigDecimal countyWithholdingYTD;*/
 	
-	private BigDecimal suiYTD;
+	private BigDecimal ytdSUI;
 	
-	private BigDecimal sdiYTD;
+	private BigDecimal ytdSDI;
 	
-	private BigDecimal fliYTD;
+	private BigDecimal ytdFLI;
 	
-	private BigDecimal hcsfYTD;
+	private BigDecimal ytdHCSF;
 	
-	private BigDecimal wcYTD;
+	private BigDecimal ytdWC;
 	
-	private BigDecimal localTaxYTD;
+//	private BigDecimal localTaxYTD;
 	
+	private BigDecimal ytdStateWithholding;
+	
+	private BigDecimal ytdEarnedIncCredit;
 
-	public BigDecimal getContributionYTD()
-	{
-		return contributionYTD;
-	}
-
-	public BigDecimal getContributionMTD()
-	{
-		return contributionMTD;
-	}
-
-	public BigDecimal getContributionQTD()
-	{
-		return contributionQTD;
-	}
-
-	public void setContributionYTD(BigDecimal contributionYTD)
-	{
-		this.contributionYTD = contributionYTD;
-	}
-
-	public void setContributionMTD(BigDecimal contributionMTD)
-	{
-		this.contributionMTD = contributionMTD;
-	}
-
-	public void setContributionQTD(BigDecimal contributionQTD)
-	{
-		this.contributionQTD = contributionQTD;
-	}
-
-	public Map<String, Double> getYtdContributionTypeMap()
-	{
-		return ytdContributionTypeMap;
-	}
-
-	public void setYtdContributionTypeMap(Map<String, Double> ytdContributionTypeMap)
-	{
-		this.ytdContributionTypeMap = ytdContributionTypeMap;
-	}
-
-	public BigDecimal getYtdGross()
-	{
+	public BigDecimal getYtdGross() {
 		return ytdGross;
 	}
 
-	public BigDecimal getYtdNet()
-	{
+	public BigDecimal getYtdNet() {
 		return ytdNet;
 	}
 
-	public BigDecimal getYtdTaxes()
-	{
+	public BigDecimal getYtdTaxes() {
 		return ytdTaxes;
 	}
 
-	public BigDecimal getYtdDeduction()
-	{
+	public BigDecimal getYtdDeduction() {
 		return ytdDeduction;
 	}
 
-	public BigDecimal getYtdFederal()
-	{
+	public BigDecimal getYtdFederal() {
 		return ytdFederal;
 	}
 
-	public BigDecimal getYtdFICA()
-	{
+	public BigDecimal getYtdFICA() {
 		return ytdFICA;
 	}
 
-	public void setYtdGross(BigDecimal ytdGross)
-	{
-		this.ytdGross = ytdGross;
-	}
-
-	public void setYtdNet(BigDecimal ytdNet)
-	{
-		this.ytdNet = ytdNet;
-	}
-
-	public void setYtdTaxes(BigDecimal ytdTaxes)
-	{
-		this.ytdTaxes = ytdTaxes;
-	}
-
-	public void setYtdDeduction(BigDecimal ytdDeduction)
-	{
-		this.ytdDeduction = ytdDeduction;
-	}
-
-	public void setYtdFederal(BigDecimal ytdFederal)
-	{
-		this.ytdFederal = ytdFederal;
-	}
-
-	public void setYtdFICA(BigDecimal ytdFICA)
-	{
-		this.ytdFICA = ytdFICA;
-	}
-
-	public BigDecimal getYtdMedicare()
-	{
+	public BigDecimal getYtdMedicare() {
 		return ytdMedicare;
 	}
 
-	public BigDecimal getYtdCounty()
-	{
+	public BigDecimal getYtdCounty() {
 		return ytdCounty;
 	}
 
-	public BigDecimal getYtdlocaltax()
-	{
+	public BigDecimal getYtdlocaltax() {
 		return ytdlocaltax;
 	}
 
-	public void setYtdMedicare(BigDecimal ytdMedicare)
-	{
-		this.ytdMedicare = ytdMedicare;
-	}
-
-	public void setYtdCounty(BigDecimal ytdCounty)
-	{
-		this.ytdCounty = ytdCounty;
-	}
-
-	public void setYtdlocaltax(BigDecimal ytdlocaltax)
-	{
-		this.ytdlocaltax = ytdlocaltax;
-	}
-
-	public Map<String, Double> getYtdDedTypeMap()
-	{
+	public Map<String, Double> getYtdDedTypeMap() {
 		return ytdDedTypeMap;
 	}
 
-	public void setYtdDedTypeMap(Map<String, Double> ytdDedTypeMap)
-	{
-		this.ytdDedTypeMap = ytdDedTypeMap;
+	public Map<String, Double> getYtdContributionTypeMap() {
+		return ytdContributionTypeMap;
+	}
+
+	public BigDecimal getContributionYTD() {
+		return contributionYTD;
+	}
+
+	public BigDecimal getContributionMTD() {
+		return contributionMTD;
+	}
+
+	public BigDecimal getContributionQTD() {
+		return contributionQTD;
 	}
 
 	public BigDecimal getDeductionYTD() {
 		return deductionYTD;
 	}
 
-	public void setDeductionYTD(BigDecimal deductionYTD) {
-		this.deductionYTD = deductionYTD;
-	}
-
 	public BigDecimal getDeductionMTD() {
 		return deductionMTD;
-	}
-
-	public void setDeductionMTD(BigDecimal deductionMTD) {
-		this.deductionMTD = deductionMTD;
 	}
 
 	public BigDecimal getDeductionQTD() {
 		return deductionQTD;
 	}
 
+	public BigDecimal getYtdSUI() {
+		return ytdSUI;
+	}
+
+	public BigDecimal getYtdSDI() {
+		return ytdSDI;
+	}
+
+	public BigDecimal getYtdFLI() {
+		return ytdFLI;
+	}
+
+	public BigDecimal getYtdHCSF() {
+		return ytdHCSF;
+	}
+
+	public BigDecimal getYtdWC() {
+		return ytdWC;
+	}
+
+	public BigDecimal getYtdStateWithholding() {
+		return ytdStateWithholding;
+	}
+
+	public BigDecimal getYtdEarnedIncCredit() {
+		return ytdEarnedIncCredit;
+	}
+
+	public void setYtdGross(BigDecimal ytdGross) {
+		this.ytdGross = ytdGross;
+	}
+
+	public void setYtdNet(BigDecimal ytdNet) {
+		this.ytdNet = ytdNet;
+	}
+
+	public void setYtdTaxes(BigDecimal ytdTaxes) {
+		this.ytdTaxes = ytdTaxes;
+	}
+
+	public void setYtdDeduction(BigDecimal ytdDeduction) {
+		this.ytdDeduction = ytdDeduction;
+	}
+
+	public void setYtdFederal(BigDecimal ytdFederal) {
+		this.ytdFederal = ytdFederal;
+	}
+
+	public void setYtdFICA(BigDecimal ytdFICA) {
+		this.ytdFICA = ytdFICA;
+	}
+
+	public void setYtdMedicare(BigDecimal ytdMedicare) {
+		this.ytdMedicare = ytdMedicare;
+	}
+
+	public void setYtdCounty(BigDecimal ytdCounty) {
+		this.ytdCounty = ytdCounty;
+	}
+
+	public void setYtdlocaltax(BigDecimal ytdlocaltax) {
+		this.ytdlocaltax = ytdlocaltax;
+	}
+
+	public void setYtdDedTypeMap(Map<String, Double> ytdDedTypeMap) {
+		this.ytdDedTypeMap = ytdDedTypeMap;
+	}
+
+	public void setYtdContributionTypeMap(Map<String, Double> ytdContributionTypeMap) {
+		this.ytdContributionTypeMap = ytdContributionTypeMap;
+	}
+
+	public void setContributionYTD(BigDecimal contributionYTD) {
+		this.contributionYTD = contributionYTD;
+	}
+
+	public void setContributionMTD(BigDecimal contributionMTD) {
+		this.contributionMTD = contributionMTD;
+	}
+
+	public void setContributionQTD(BigDecimal contributionQTD) {
+		this.contributionQTD = contributionQTD;
+	}
+
+	public void setDeductionYTD(BigDecimal deductionYTD) {
+		this.deductionYTD = deductionYTD;
+	}
+
+	public void setDeductionMTD(BigDecimal deductionMTD) {
+		this.deductionMTD = deductionMTD;
+	}
+
 	public void setDeductionQTD(BigDecimal deductionQTD) {
 		this.deductionQTD = deductionQTD;
 	}
 
-	public BigDecimal getFicaYTD()
-	{
-		return ficaYTD;
+	public void setYtdSUI(BigDecimal ytdSUI) {
+		this.ytdSUI = ytdSUI;
 	}
 
-	public BigDecimal getMedicareYTD()
-	{
-		return medicareYTD;
+	public void setYtdSDI(BigDecimal ytdSDI) {
+		this.ytdSDI = ytdSDI;
 	}
 
-	public BigDecimal getFederalYTD()
-	{
-		return federalYTD;
+	public void setYtdFLI(BigDecimal ytdFLI) {
+		this.ytdFLI = ytdFLI;
 	}
 
-	public BigDecimal getEarnedIncCreditYTD()
-	{
-		return earnedIncCreditYTD;
+	public void setYtdHCSF(BigDecimal ytdHCSF) {
+		this.ytdHCSF = ytdHCSF;
 	}
 
-	public BigDecimal getStateWithholdingYTD()
-	{
-		return stateWithholdingYTD;
+	public void setYtdWC(BigDecimal ytdWC) {
+		this.ytdWC = ytdWC;
 	}
 
-	public BigDecimal getCountyWithholdingYTD()
-	{
-		return countyWithholdingYTD;
+	public void setytdStateWithholding(BigDecimal ytdStateWithholding) {
+		this.ytdStateWithholding = ytdStateWithholding;
 	}
 
-	public BigDecimal getSuiYTD()
-	{
-		return suiYTD;
+	public void setYtdEarnedIncCredit(BigDecimal ytdEarnedIncCredit) {
+		this.ytdEarnedIncCredit = ytdEarnedIncCredit;
 	}
+	
 
-	public BigDecimal getSdiYTD()
-	{
-		return sdiYTD;
-	}
-
-	public BigDecimal getFliYTD()
-	{
-		return fliYTD;
-	}
-
-	public BigDecimal getHcsfYTD()
-	{
-		return hcsfYTD;
-	}
-
-	public BigDecimal getWcYTD()
-	{
-		return wcYTD;
-	}
-
-	public BigDecimal getLocalTaxYTD()
-	{
-		return localTaxYTD;
-	}
-
-	public void setFicaYTD(BigDecimal ficaYTD)
-	{
-		this.ficaYTD = ficaYTD;
-	}
-
-	public void setMedicareYTD(BigDecimal medicareYTD)
-	{
-		this.medicareYTD = medicareYTD;
-	}
-
-	public void setFederalYTD(BigDecimal federalYTD)
-	{
-		this.federalYTD = federalYTD;
-	}
-
-	public void setEarnedIncCreditYTD(BigDecimal earnedIncCreditYTD)
-	{
-		this.earnedIncCreditYTD = earnedIncCreditYTD;
-	}
-
-	public void setStateWithholdingYTD(BigDecimal stateWithholdingYTD)
-	{
-		this.stateWithholdingYTD = stateWithholdingYTD;
-	}
-
-	public void setCountyWithholdingYTD(BigDecimal countyWithholdingYTD)
-	{
-		this.countyWithholdingYTD = countyWithholdingYTD;
-	}
-
-	public void setSuiYTD(BigDecimal suiYTD)
-	{
-		this.suiYTD = suiYTD;
-	}
-
-	public void setSdiYTD(BigDecimal sdiYTD)
-	{
-		this.sdiYTD = sdiYTD;
-	}
-
-	public void setFliYTD(BigDecimal fliYTD)
-	{
-		this.fliYTD = fliYTD;
-	}
-
-	public void setHcsfYTD(BigDecimal hcsfYTD)
-	{
-		this.hcsfYTD = hcsfYTD;
-	}
-
-	public void setWcYTD(BigDecimal wcYTD)
-	{
-		this.wcYTD = wcYTD;
-	}
-
-	public void setLocalTaxYTD(BigDecimal localTaxYTD)
-	{
-		this.localTaxYTD = localTaxYTD;
-	}
 	
 }

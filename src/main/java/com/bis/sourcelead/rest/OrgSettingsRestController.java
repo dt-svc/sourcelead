@@ -1175,6 +1175,37 @@ public class OrgSettingsRestController {
 		}
 		return response;
 	}
+	@RequestMapping(value = "/app/configShowCompanyNameInMarkeplace")
+	public Response<String> configShowCompanyNameInMarkeplace(@RequestParam(value = "showCompnayName", required = true) String showCompnayName,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		try {
+				if (user != null) {
+					if(StringUtils.isNotBlank(showCompnayName)
+							&&showCompnayName.equalsIgnoreCase("true")) {
+					orgLocations.setShowCompanyNameInMarkeplace("Y");
+					}else {
+						orgLocations.setShowCompanyNameInMarkeplace("N");
+					}
+					orgLocationService.updateOrgLocations(orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+		
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
 	
 	
 	@RequestMapping(value = "/app/getAssociatesGradesList", method = RequestMethod.POST)
