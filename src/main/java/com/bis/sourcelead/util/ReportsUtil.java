@@ -449,9 +449,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		
 		Calendar c = Calendar.getInstance(); // this takes current date
 		c.set(Calendar.DAY_OF_MONTH, 1);
-		c.set(Calendar.HOUR_OF_DAY,0);
-		c.set(Calendar.MINUTE,0);
-		c.set(Calendar.SECOND,0);
+		
 		//System.out.println(c.getTime());
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -459,10 +457,6 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
 		Date startDateUTC = TZ_DF_TS.parse(startDate);
-		startDateUTC.setHours(23);
-		startDateUTC.setMinutes(59);
-		startDateUTC.setSeconds(59);
-		
 		Date oneMonthDateUTC = c.getTime();
 		Date[] dates = new Date[2];
 		dates[0] = oneMonthDateUTC;
