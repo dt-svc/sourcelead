@@ -2885,6 +2885,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
+	
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
+		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
+	}
 
 
 }

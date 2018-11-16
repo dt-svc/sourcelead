@@ -706,7 +706,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + marketDelelIcon;
 							result = result + '</div><div class="col-md-12 padding_right">';
 							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
-							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
+							result = result + '<h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
 							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+(object[i].currentRateCurrency == null ? "---" : object[i].currentRateCurrency)+'</span>'+(object[i].currentRate == null ? "---" : object[i].currentRate)+'<small class="paddingLeft">/'+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+' (Current)</small></li>';
