@@ -58,6 +58,8 @@ public class ImmigrationReportViewDTO extends SearchDTO{
 	 private String searchValue;
 	 
 	 private String exportType;
+	 
+	 private String orglocationId;
 
 	public String getId() {
 		return id;
@@ -260,6 +262,14 @@ public class ImmigrationReportViewDTO extends SearchDTO{
 
 	public void setPetitionTypeName(String petitionTypeName) {
 		this.petitionTypeName = petitionTypeName;
+	}
+
+	public String getOrglocationId() {
+		return orglocationId;
+	}
+
+	public void setOrglocationId(String orglocationId) {
+		this.orglocationId = orglocationId;
 	}
 	
 	
