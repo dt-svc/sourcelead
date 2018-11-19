@@ -330,6 +330,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 				        			   
 				        			   
@@ -342,6 +343,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   vendorSubmissionHistory.setCreatedDate(new Date());
 				        			   vendorSubmissionHistory.setUpdatedDate(new Date());
 				        			   vendorSubmissionHistory.setCreatedUser(userName.toString());
+				        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 				        			   
 				        			   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
@@ -357,6 +359,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					        	   }
 					        	  
@@ -371,6 +374,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					           }
 					           
@@ -392,6 +396,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   requirementSubmissionHistory.setCreatedDate(new Date());
 					        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 					        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+					        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 					        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					        			   
 					        			   
@@ -404,6 +409,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   vendorSubmissionHistory.setCreatedDate(new Date());
 					        			   vendorSubmissionHistory.setUpdatedDate(new Date());
 					        			   vendorSubmissionHistory.setCreatedUser(userName.toString());
+					        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 					        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 		                                	
 					        			    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);

@@ -1299,6 +1299,8 @@ public class Constants {
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
+	public static final String[] BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES = { "PF", "ESI" };
+	
 	public static final String[] APPLICANTS_JOINED_LIST_REPORT_HEADERS = { "Recruiter Name", "Date", "No Of Jobs",
 			"Total Offer", "Total Joiners"};
 	
