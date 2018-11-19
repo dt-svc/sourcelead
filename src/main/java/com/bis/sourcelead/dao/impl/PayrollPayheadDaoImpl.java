@@ -86,6 +86,20 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	
 	@Override
 	@Transactional
+	public List<PayrollPayhead> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId and payhead.component=:component and payhead.status = '1'";
+		
+		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setString("component", component).list();
+		
+		return payrollPayheadList;
+	}
+	
+	
+	@Override
+	@Transactional
 	public ResponseList<PayrollPayheadDTO> getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
@@ -320,8 +334,15 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	}
 
 	@Override
-	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
-		
-		
+	@Transactional
+	public PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollPayhead payhead where payhead.shortCode = :shortCode and payhead.orgLocationId.id = :orgLocationId and payhead.status = '1' ";  
+		List<PayrollPayhead> payrollPayheadList =  session.createQuery(query).setString("shortCode", shortCode).setLong("orgLocationId", orgLocationId).list();
+		PayrollPayhead payrollPayhead = null;
+		if (payrollPayheadList != null && payrollPayheadList.size() > 0) {
+			payrollPayhead = (PayrollPayhead) payrollPayheadList.iterator().next();
+		}
+		return payrollPayhead;
 	}
 }

@@ -63,7 +63,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadLcaTemplate'/>"
-								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; LCA Template
+								class="btn btn-success btn-block" title="Download LCA Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; LCA Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">

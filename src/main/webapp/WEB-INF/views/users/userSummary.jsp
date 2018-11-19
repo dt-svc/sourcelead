@@ -9,6 +9,7 @@
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
 
+
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -77,14 +78,151 @@ $(document).ready(function(){
 	 
 });
 </script>
-		
+ 
+		<div class="cearfix">
+				  <div class="newTagsWrap">
+					 <ul class="clearfix tagsWrap tagsWrapBor">
+						<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
+						</select>
+					</ul>
+					 <div class="clearfix"></div>
+				  </div>
+		     </div>
+	     <div class="success_pop tagStyles" id="addProjectTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+	     </div>
+		 <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
+			<i class="fa fa-times"></i>
+			<span></span>
+		 </div>
+
+
+
+		<div id="loadingSummary"></div>
 		<div id="projectSideDiv"></div>
 		<div id="baningDetailsDiv"></div> 
 		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
 
+
+
+<!--  ======================== Tags Related Scripts written by Laxman Start =============================== -->
+ <script>
+var select, chosen;
+select = $("#associateTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#associateTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#associateTagName").trigger("chosen:updated");
+		saveAssociateTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveAssociateTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveAssociateTags("delete");
+	}
+	
+});
+$("#associateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getAssociateTagsList(associateId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.associateTags != null && json.associateTags != 'undefined' && json.associateTags != '') {
+	                var res = [];
+	                res = json.associateTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#associateTagName").empty();
+            $("#associateTagName").append(result);
+            $("#associateTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveAssociateTags(type){
+	 var associateId = '${userId}';
+	 var tagName = $("#associateTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
+	 } 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getAssociateTagsList(associateId)
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addProjectTagAlert").css("display","block");
+	$("#addProjectTagAlert span").html(status);
+    $('#addProjectTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteProjectTagAlert").css("display","block");
+	$("#deleteProjectTagAlert span").html(status);
+    $('#deleteProjectTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ======================== Tags Related Scripts written by Laxman Ends =============================== -->		
 		
-		
-		 
+<script type="text/javascript">
+window.onload = function () {
+	var associateId = '${userId}';
+	getAssociateTagsList(associateId);
+ };
+</script>		 
 
 <script>
  function getUserSummaryDetails(userId){
@@ -215,7 +353,7 @@ $(document).ready(function(){
 		 var waitingTimeSheetsCount = '${waitingTimeSheetsCount}';
 	 }
 	
-	 
+	 $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
@@ -759,6 +897,7 @@ $(document).ready(function(){
 				$("#tab-18").empty(); 
 				 $("#tab-29").empty();
 				 $("#tab-25").empty();
+				 $("#loadingSummary").removeAttr('style');
 			    $("#tab-18").append(result);  
 			    
 			    var config = {
@@ -1818,7 +1957,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="row">';
 					
-					result = result + ' <div class="col-md-7 posSta phoneErrorvalid">';
+					result = result + ' <div class="col-md-7 posSta phoneErrorvalid phoneValidator">';
 					result = result + ' <label>Phone number</label>';
 					result = result + ' <input type="text" value="'+mobilePhone+'" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 					result = result + ' </div>';
@@ -1838,11 +1977,17 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-					result = result + ' <div class="user_summary_edit_cta">';
+					var ssn = '';	
+					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
+						ssn = json.user.ssn;
+					}
+					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" name="ssn" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+
 					result = result + ' </div>';
 					}
+					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
@@ -2107,14 +2252,14 @@ $("#editRoleDetailsList").empty();
 					 */
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Date of join</label>';
+					result = result + ' <label>Date of join <span class="text-danger">*</span></label>';
 					result = result + '<div class="input-group">';
 					if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}else{
-						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar" field-name="Date of join" data-validation="required">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}
@@ -2864,6 +3009,47 @@ $(document).ready(function() {
 
 </script>
 
+<!-- <script>
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+}
+function calculateSSNLength(length,ssnNumber){
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		$("#update_user").attr("disabled", "disabled");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		$("#update_user").attr("disabled", "disabled");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+	}
+}
+ </script> -->
+
 <script type="text/javascript">
 function flushProject(){
 	$("#proId").removeAttr("disabled");
@@ -2898,7 +3084,6 @@ function inlineEditForUsers(userId,localFieldName){
 
 <script>
 function getStartandEndDate(){
-	
 	var projectId = document.getElementById("proId").value;
 	if(projectId != null && projectId != ""){
     $.ajax({
@@ -2986,6 +3171,50 @@ function getStartandEndDate(){
 	  
     }
 </script>
+
+   <script>
+    function validateSSNNumber(){
+		var SSN = $("#SSN").val();
+		var length  = $("#SSN").val().length;
+		if(SSN.search("-") > 0){
+			SSN = SSN.replace(/-/g, "");
+			length = SSN.length;
+			calculateSSNLength(length,SSN);
+		}else{
+			calculateSSNLength(length,SSN);
+		}
+	}
+	function calculateSSNLength(length,SSN){
+		if(length == 0){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+			$("#update_user").attr("disabled", "disabled");
+		}else if(length != 9){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+			$("#update_user").attr("disabled", "disabled");
+		}else{
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			var value = "";
+			var ssn = SSN.substring(0,3);
+			value += ssn+"-";
+			ssn = SSN.substring(3,5);
+			value += ssn+"-";
+			ssn = SSN.substring(5,9);
+			value += ssn;
+			$("#SSN").val(value);
+			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+				$("#update_user").attr("disabled", "disabled");
+			}else{
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#update_user").removeAttr("disabled", "disabled");
+			}
+		}
+	}
+	 </script>
+
 
 
 

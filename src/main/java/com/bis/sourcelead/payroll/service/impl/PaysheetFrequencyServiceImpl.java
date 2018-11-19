@@ -37,6 +37,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoiceLineItems;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -77,6 +81,7 @@ import com.bis.sourcelead.payroll.service.USPayPeriodService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -119,6 +124,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	EmployeesService employeesService;
 	
 	@Override
 	public Response<PayrollApproverDTO> sendPayrollForApprover(PayrollApproverDTO payrollApproverDTO, OrgLocations orgLocation,User loginUser)
@@ -591,6 +599,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payPeriodDTO.setOrgLocationid(orgLocations.getId());
+		payPeriodDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payPeriodDTO);
 		for(EmployeePayroll emp : list.getData()) {
 //			for(EmployeePayroll emp : freq.getEmployeepayroll()) {
@@ -602,6 +611,10 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
+			if(StringUtils.isNotBlank(emp.getPayPeriodNum()))
+				dto.setRunNo(emp.getPayPeriodNum());
+			else
+				dto.setRunNo("0");
 			if(emp.getCandidate().getWorkLocation() != null)
 				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
 			dto.setSsnNumber(emp.getCandidate().getConsultantUser().getSsn());
@@ -618,6 +631,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setYtdHours("NA");
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());
+//			dto.setYtdPayrollDTO(ytdPayrollDTO);
 			dto.setEmpRegularAmount(emp.getRegularHoursAmount());	
 			
 			dto.setCheckDate(commonUtil.orgLocationCommonDate(emp.getPayCheckDate(), orgLocations));
@@ -641,7 +655,6 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			try {
 				uRole = userRoleService.getUserRoleByUserIdAndLocationId(emp.getEmployee().getUser().getId(), emp.getEmployee().getOrgLocations().getId());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -659,13 +672,13 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				PayrollReportDTO repoDto = new PayrollReportDTO();
 				BigDecimal totalDed = ded.getPreDeductionAmount().add(ded.getPostDeductionAmount());
 				repoDto.setDeductions(totalDed);
-				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getId(), orgLocations);
+				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getDeductionId().getId(), orgLocations);
 				repoDto.setYtdDeductions(ytd.getDeductionYTD());
 				dedList.add(repoDto);
 			}
 			
 			dto.setTaxHistory(emp.getUsPayrollTax());
-			dto.setYtdPayrollDTO(getPayrollTaxesYTD(emp, orgLocations));
+			dto.setYtdPayrollDTO(ytdDTO);
 			dto.setDeductionsList(dedList);	
 			payrollList.add(dto);
 //			}
@@ -694,45 +707,45 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		YTDPayrollDTO yTDPayrollDTO = new YTDPayrollDTO();
 		try {
 			List<EmployeePayroll> payrollList = paysheetFrequencyDao.getPayrollTaxesYTD(payroll,orgLocation);
-			 BigDecimal ficaYTD = BigDecimal.ZERO;
-			 BigDecimal medicareYTD = BigDecimal.ZERO;
-			 BigDecimal federalYTD = BigDecimal.ZERO;
-			 BigDecimal earnedIncCreditYTD = BigDecimal.ZERO;
-			 BigDecimal stateWithholdingYTD = BigDecimal.ZERO;
-			 BigDecimal countyWithholdingYTD = BigDecimal.ZERO;
-			 BigDecimal suiYTD = BigDecimal.ZERO;
-			 BigDecimal sdiYTD = BigDecimal.ZERO;
-			 BigDecimal fliYTD = BigDecimal.ZERO;
-			 BigDecimal hcsfYTD = BigDecimal.ZERO;
-			 BigDecimal wcYTD = BigDecimal.ZERO;
-			 BigDecimal localTaxYTD = BigDecimal.ZERO;
+			 BigDecimal ytdFICA = BigDecimal.ZERO;
+			 BigDecimal ytdMedicare = BigDecimal.ZERO;
+			 BigDecimal ytdFederal = BigDecimal.ZERO;
+			 BigDecimal ytdEarnedIncCredit = BigDecimal.ZERO;
+			 BigDecimal ytdStateWithholding = BigDecimal.ZERO;
+			 BigDecimal ytdCounty = BigDecimal.ZERO;
+			 BigDecimal ytdSUI = BigDecimal.ZERO;
+			 BigDecimal ytdSDI = BigDecimal.ZERO;
+			 BigDecimal ytdFLI = BigDecimal.ZERO;
+			 BigDecimal ytdHCSF = BigDecimal.ZERO;
+			 BigDecimal ytdWC = BigDecimal.ZERO;
+			 BigDecimal ytdLocaltax = BigDecimal.ZERO;
 			for(EmployeePayroll payll : payrollList) {
 				EmployeePayrollTax tax = payll.getUsPayrollTax().iterator().next();
-				ficaYTD = ficaYTD.add(tax.getFicaWithholding());
-				medicareYTD = medicareYTD.add(tax.getMedicareWithholding());
-				federalYTD = federalYTD.add(tax.getFederalWithholding());
-				earnedIncCreditYTD = earnedIncCreditYTD.add(tax.getEarnedIncCredit());
-				stateWithholdingYTD = stateWithholdingYTD.add(tax.getStateWithholding());
-				countyWithholdingYTD = countyWithholdingYTD.add(tax.getCountyWithholding());
-				suiYTD = suiYTD.add(tax.getSUI());
-				sdiYTD = sdiYTD.add(tax.getSDI());
-				fliYTD = fliYTD.add(tax.getFLI());
-				hcsfYTD = hcsfYTD.add(tax.getHCSF());
-				wcYTD = wcYTD.add(tax.getWC());
-				localTaxYTD = localTaxYTD.add(tax.getLocalTax());
+				ytdFICA = ytdFICA.add(tax.getFicaWithholding());
+				ytdMedicare = ytdMedicare.add(tax.getMedicareWithholding());
+				ytdFederal = ytdFederal.add(tax.getFederalWithholding());
+				ytdEarnedIncCredit = ytdEarnedIncCredit.add(tax.getEarnedIncCredit());
+				ytdStateWithholding = ytdStateWithholding.add(tax.getStateWithholding());
+				ytdCounty = ytdCounty.add(tax.getCountyWithholding());
+				ytdSUI = ytdSUI.add(tax.getSUI());
+				ytdSDI = ytdSDI.add(tax.getSDI());
+				ytdFLI = ytdFLI.add(tax.getFLI());
+				ytdHCSF = ytdHCSF.add(tax.getHCSF());
+				ytdWC = ytdWC.add(tax.getWC());
+				ytdLocaltax = ytdLocaltax.add(tax.getLocalTax());
 			}
-			yTDPayrollDTO.setFicaYTD(ficaYTD);
-			yTDPayrollDTO.setMedicareYTD(medicareYTD);
-			yTDPayrollDTO.setFederalYTD(federalYTD);
-			yTDPayrollDTO.setEarnedIncCreditYTD(earnedIncCreditYTD);
-			yTDPayrollDTO.setStateWithholdingYTD(stateWithholdingYTD);
-			yTDPayrollDTO.setCountyWithholdingYTD(countyWithholdingYTD);
-			yTDPayrollDTO.setSuiYTD(suiYTD);
-			yTDPayrollDTO.setSdiYTD(sdiYTD);
-			yTDPayrollDTO.setFliYTD(fliYTD);
-			yTDPayrollDTO.setHcsfYTD(hcsfYTD);
-			yTDPayrollDTO.setWcYTD(wcYTD);
-			yTDPayrollDTO.setLocalTaxYTD(localTaxYTD);
+			yTDPayrollDTO.setYtdFICA(ytdFICA);
+			yTDPayrollDTO.setYtdMedicare(ytdMedicare);
+			yTDPayrollDTO.setYtdFederal(ytdFederal);
+			yTDPayrollDTO.setYtdEarnedIncCredit(ytdEarnedIncCredit);
+			yTDPayrollDTO.setytdStateWithholding(ytdStateWithholding);
+			yTDPayrollDTO.setYtdCounty(ytdCounty);
+			yTDPayrollDTO.setYtdSUI(ytdSUI);
+			yTDPayrollDTO.setYtdSDI(ytdSDI);
+			yTDPayrollDTO.setYtdFLI(ytdFLI);
+			yTDPayrollDTO.setYtdHCSF(ytdHCSF);
+			yTDPayrollDTO.setYtdWC(ytdWC);
+			yTDPayrollDTO.setYtdlocaltax(ytdLocaltax);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -745,6 +758,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		ResponseList<PayrollReportDTO> dtoList = new ResponseList<>();
 		List<PayrollReportDTO> payrollList = new ArrayList<>();
 		payrollReportDTO.setOrgLocationid(orgLocations.getId());
+		payrollReportDTO.setOrgDateFormat(orgLocations.getDateFormat());
 		ResponseList<EmployeePayroll> list = paysheetFrequencyDao.getPayrollRegisterReports(payrollReportDTO);
 		Map<Long, PayrollReportDTO> userMap = new HashMap<>();
 		for(EmployeePayroll emp : list.getData()) {
@@ -780,16 +794,41 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			StringBuilder sb = new StringBuilder();
 			sb.append(emp.getCandidate().getFirstName());
 			if(StringUtils.isNotBlank(emp.getCandidate().getLastName())) {
-				sb.append(emp.getCandidate().getLastName());
+				sb.append(" ").append(emp.getCandidate().getLastName());
 			}
 			dto.setEmpName(sb.toString());
 			if(emp.getCandidate().getWorkLocation() != null)
 				dto.setCandidateWorkAddress(emp.getCandidate().getWorkLocation().getOrgLocationAddress());
-			StringBuilder sb1 = new StringBuilder();
+			
+			String ssn = "";
+			if(StringUtils.isNotBlank(emp.getEmployee().getUser().getSsn())){
+				StringBuilder sb1 = new StringBuilder();
+				sb1.append("xxx-xx-");
+				try {
+					String[] ssnNum = emp.getEmployee().getUser().getSsn().split("-");
+					sb1.append(ssnNum[2]);
+					ssn = sb1.toString();
+				} catch (Exception e) {
+					String ssnNum = emp.getEmployee().getUser().getSsn();
+					if (ssnNum.length() == 3) {
+		    		  sb1.append(ssnNum);
+		    		} else if (ssnNum.length() > 3) {
+		    			sb1.append(ssnNum.substring(ssnNum.length() - 4));
+		    		} 
+					ssn = sb1.toString();
+				}
+				/*String[] ssnNum = payrollReportDto.getSsnNumber().split("-");
+				sb1.append(ssnNum[2]);
+				ssn = sb1.toString();*/
+			}else {
+				ssn = "NA";
+			}
+			
+			/*StringBuilder sb1 = new StringBuilder();
 			sb1.append("xxx-xx-");
 			String[] ssnNum = emp.getCandidate().getConsultantUser().getSsn().split("-");
-			sb1.append(ssnNum[2]);
-			dto.setSsnNumber(sb1.toString());
+			sb1.append(ssnNum[2]);*/
+			dto.setSsnNumber(ssn);
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
 			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
@@ -915,4 +954,52 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return resList;
 	}
 
+	@Override
+	public ResponseList<PayrollReportDTO> getContractEmployeeReportList(PayrollReportDTO payrollReportDTO, OrgLocations orgLocation)
+	{
+		ResponseList<PayrollReportDTO> responseList = new ResponseList<>();
+		try {
+			payrollReportDTO.setOrgLocationid(orgLocation.getId());
+			payrollReportDTO.setOrgDateFormat(orgLocation.getDateFormat());
+			List<InvoicePayment> invoicePayItemList = paysheetFrequencyDao.getContractEmployeeReportList(payrollReportDTO);
+			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
+			Map<Long,PayrollReportDTO> userMap = new HashMap<>();
+			for(InvoicePayment invoicePayment : invoicePayItemList) {
+				PayrollReportDTO dto = new PayrollReportDTO();
+				Invoice invoice = invoicePayment.getInvoiceId();
+				for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
+					StringBuilder nameSb = new StringBuilder();
+					if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
+						nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());
+					else
+						nameSb.append(invLine.getCandidate().getFirstName());
+					dto.setEmpName(nameSb.toString());
+					Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(invLine.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+					if(StringUtils.isNotBlank(emp.getEmployeeId()))
+						dto.setEmpId(emp.getEmployeeId());
+					else
+						dto.setEmpId("");
+					if(orgLocation.getId().longValue() == invoice.getOrgRelationID().getLocationId().getId().longValue()) {
+						dto.setVendorName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+					}else {
+						dto.setVendorName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					}
+					dto.setPayCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoicePayment.getPaymentDate()));
+					dto.setInvoiceId(invoice.getInvoiceId());
+					if(StringUtils.isNotBlank(invLine.getAmount()))
+						dto.setAssAmount(invLine.getAmount());
+					else
+						dto.setAssAmount("0");
+					Double totalPaid = invoicePayItemList.stream().mapToDouble(ip -> ip.getPaidAmount()).sum();
+					dto.setInvPaidAmount(totalPaid.toString());
+					userMap.put(invoice.getId(), dto);
+					payrollReportList.add(dto);
+				}
+			}
+			responseList.setData(payrollReportList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
 }

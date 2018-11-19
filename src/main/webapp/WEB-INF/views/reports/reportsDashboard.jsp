@@ -177,6 +177,8 @@
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu3" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 
+                <li><a href="${appPath}/assetsReport">Assigned Assets History</a></li>
+
 				<li><a href="${appPath}/projectReport">Project Report</a></li>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
@@ -202,7 +204,7 @@
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
-
+        
 				<li><a href="${appPath}/daywiseLeaveReport">Daywise Leave Report</a></li>
 				<li><a href="${appPath}/leaveReport">Leave Report</a></li>
 				<li><a href="${appPath}/leaveBalancesReport">Leave Balance Report</a></li>
@@ -307,10 +309,17 @@
 				<li><a href="companysnapshot.html">Taxable Wages Report</a></li> -->
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
+
+				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
 				<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 				<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
+
+				<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
+
 				</sec:authorize>
 				</ul>
 			</div>
@@ -324,11 +333,27 @@
                      
           <%--     </sec:authorize>  --%>
               
-              
-              
-              
+                <div class="col-md-4 reportNewCta">
+                  <!-- DropDown Petition Report -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+					<li><a href="${appPath}/petitionReport">Petition Report</a></li>
+					<li><a href="${appPath}/petitionAttorneyReport">Petition Attorney Report</a></li>
+					<li><a href="${appPath}/lcaReport">LCA Report</a></li>
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="${appPath}/petitionReport" class="block">
+                  <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
+                  <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
+
+                  </div> 
+
+                  </div>  
+
                   
-      </div>
+      
       
       <!--   List View   -->
       
@@ -540,23 +565,30 @@
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
+
+						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
 						</sec:authorize>
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/usEmployeePayrollReport">Employee Payroll</a></li>
 						</sec:authorize>
+
+						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
+						<li><a href="${appPath}/contractEmployeePayreport">Contract Employee Payroll</a></li>
+						</sec:authorize>
+
 	                </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
             </c:if>
             
             <div class="clearfix mt mb"></div>
-            
-            
                                    
         </div>
-        
+        </div>
         <!--  List View End  --> 
     
     </div>

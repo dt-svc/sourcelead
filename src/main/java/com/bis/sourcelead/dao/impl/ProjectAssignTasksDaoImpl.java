@@ -75,10 +75,12 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId) throws Exception {
+	public List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId,List<Long> assignedMembersIds) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select projectAssignTask.projectMemberId.id from ProjectAssignTask  projectAssignTask  where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.status ='1'";
-		List<Long> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).list();
+		String query = "select projectAssignTask.projectMemberId.id from ProjectAssignTask  projectAssignTask  "
+				+ "where projectAssignTask.projectTaskId.id =:projectTaskId and projectAssignTask.status ='1' "
+				+ " and projectAssignTask.projectMemberId.id IN (:assignedMembersIds) ";
+		List<Long> projectassignTaskList = session.createQuery(query).setLong("projectTaskId", projectTaskId).setParameterList("assignedMembersIds", assignedMembersIds).list();
 		return projectassignTaskList;
 	}
 

@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.LcaVisaClarifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 /**
  * @author Srinivas.Sabbu
  *
@@ -240,5 +242,15 @@ public interface ImmigrationCommonDao {
 	int deleteLcaHistoryDetailsByImmigrationId(Long immigrationId);
 	
 	List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId);
+	
+	// immigration reports
+	
+	ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations);
+	
+	ResponseList<ImmigrationReportViewDTO> getImmigrationAttorneyReports(ImmigrationReportViewDTO immigrationReportDTO, OrgLocations orgLocations);
+	
+	ResponseList<LcaReportViewDTO> getLcaReportList(LcaReportViewDTO lcaReportViewDTO, String status,String lcaStatus,String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String filterByDays,String positionsAvaialble)throws Exception;
+	
+	public Lca updateAvailablePositionCountByLcaId(Long lcaId) throws Exception;
 	
 }

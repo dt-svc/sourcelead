@@ -118,6 +118,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 				}else {
 					payrollPayhead.setExperienceMonths(null);
 				}
+			}else {
+				payrollPayhead.setExperienceYears(null);
+				payrollPayhead.setExperienceMonths(null);
 			}
 		}else {
 			payrollPayhead.setApplicableFor(null);
@@ -192,6 +195,14 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	@Override
 	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
 		List<PayrollPayhead> payrollPayheadList = payrollPayheadDao.getPayrollPayheadList(orgLocations);
+		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
+		payrollPayheadDTOList.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
+		return payrollPayheadDTOList;
+	}
+	
+	@Override
+	public ResponseList<PayrollPayheadDTO> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception{
+		List<PayrollPayhead> payrollPayheadList = payrollPayheadDao.getPayrollPayheadListByPayheadComponentType(orgLocations, component);
 		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
 		payrollPayheadDTOList.setData(payrollCommonUtil.setPayrollPayheadList(payrollPayheadList,orgLocations));
 		return payrollPayheadDTOList;
@@ -345,6 +356,13 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	@Override
 	public AssociateSalaryInd getAssociateSalaryIndByCandidateId(Long id) throws Exception {
 		return payrollPayheadDao.getAssociateSalaryIndByCandidateId(id);
+	}
+
+	@Override
+	public PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId)
+			throws Exception {
+		
+		return payrollPayheadDao.getPayrollPayheadByShortCodeAndOrglocation(shortCode, orgLocationId);
 	}
 	
 }

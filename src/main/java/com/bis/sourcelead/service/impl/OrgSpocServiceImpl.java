@@ -319,28 +319,32 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 				  
 				     commonUtil.updateClientVendorElk(orgRelation,orgLocations,user,responderType);
 				  
+				     
+				     
+				     if((("Vendor".equals(responderType)) 
+								&& StringUtils.isNotBlank(clientDTO.getIsMailSent()) ) 
+								&& ("Y".equals(clientDTO.getIsMailSent()))){
+						 VendorOnboarding vendorOnboarding = null;
+						 vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelation.getId());
+						 
+						 if(vendorOnboarding == null) {
+							 OrgLocations invitedOrgLocation = null;
+							 if(orgRelation.getLocationId().getId().equals(orgLocations.getId())) {
+								 invitedOrgLocation = orgRelation.getResponderLocationId();
+							 }else {
+								 invitedOrgLocation = orgRelation.getLocationId();
+							 }
+							 invitedOrgLocation.setVendorOrgRelationId(orgRelation.getId());
+							 invitedOrgLocation.setVendorSpocId(spocUser.getId());
+							 vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
+						 }
+						     vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), orgLocations, user,spocUser,orgSpoc);
+						}
+				     
 				} 
 		}
 		
-		 if((("Vendor".equals(responderType)) 
-					&& StringUtils.isNotBlank(clientDTO.getIsMailSent()) ) 
-					&& ("Y".equals(clientDTO.getIsMailSent()))){
-			 VendorOnboarding vendorOnboarding = null;
-			 vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelation.getId());
-			 
-			 if(vendorOnboarding == null) {
-				 OrgLocations invitedOrgLocation = null;
-				 if(orgRelation.getLocationId().getId().equals(orgLocations.getId())) {
-					 invitedOrgLocation = orgRelation.getResponderLocationId();
-				 }else {
-					 invitedOrgLocation = orgRelation.getLocationId();
-				 }
-				 invitedOrgLocation.setVendorOrgRelationId(orgRelation.getId());
-				 invitedOrgLocation.setVendorSpocId(spocUser.getId());
-				 vendorOnboarding = vendorOnboardService.saveVendorOnboarding(invitedOrgLocation, orgLocations, user);
-			 }
-			     vendorOnboardService.sendMailAndNotificationToVendorContact(vendorOnboarding, vendorOnboarding.getVendorLocationId(), orgLocations, user,spocUser);
-			}
+		
 	}
 	@Override
 	public List<OrgSpoc> getAllSpocsByOrgRelationId(Long orgRelationId, Long userId,Long orgLocationId,String type) throws Exception {
@@ -742,6 +746,14 @@ public class OrgSpocServiceImpl implements OrgSpocService{
 	@Override
 	public OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception {
 		return orgSpocDao.getSpocByOrgRelationIdForNewVendor(orgRelationId);
+	}
+
+
+	@Override
+	public OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId) throws Exception
+	{
+		return orgSpocDao.getSpocByVendorUserIdAndOrgRelationId(orgRelationId, vendorUserId);
+
 	}
 
 	

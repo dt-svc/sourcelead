@@ -1,12 +1,30 @@
 package com.bis.sourcelead.service.impl;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
@@ -22,23 +40,30 @@ import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.AssetServices;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationFormFields;
-import com.bis.sourcelead.entity.ProjectDocumentFolder;
-import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.reportsDTO.AssetGrowthDTO;
+import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetCustomFieldService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class AssetServiceImpl implements AssetService{
@@ -61,6 +86,29 @@ public class AssetServiceImpl implements AssetService{
 		return assetDao.saveAsset(asset);
 	}
 	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private EmployeesService employeesService;
+	
+	@Autowired
+	HttpServletRequest request;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+		
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Autowired
+	AssetCategoryService assetCategoryService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -349,6 +397,7 @@ public class AssetServiceImpl implements AssetService{
 			 FileUploadUtil.moveFile(assetDTO.getStaticPath(), fileInfo, "assetDocuments");
 		 }
 		 
+		 
 		 Set<AssetAssign> assetAssignDBList = new HashSet<>();
 		 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty()) {
 			 AssetAssign aa = null;
@@ -377,15 +426,16 @@ public class AssetServiceImpl implements AssetService{
 					 aa.setShift(shift);
 					 
 					 aa.setStatus(Constants.RECORD_ACTIVE);
-					 if(aad.getAssignedOn() != null) {
+					 if(StringUtils.isNotBlank(aad.getAssignedOn())) {
 						 aa.setAssignedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getAssignedOn()));
 					 }else {
 						 aa.setAssignedOn(null);
 					 }
 					 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
 						 aa.setReturnedOn(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), aad.getReturnedOn()));
-						 Date currentDate  = new Date();
-						 if(currentDate.before(aa.getReturnedOn())) {
+						 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						 Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+						 if(aa.getReturnedOn().before(dateWithoutTime)) {
 							 aa.setStatus(Constants.RECORD_INACTIVE);
 						 }
 					 }else {
@@ -420,8 +470,35 @@ public class AssetServiceImpl implements AssetService{
 		 asset.setUpdatedBy(user.getUserCode());
 		 asset.setUpdatedDate(new Date());
 		 asset.setStatus(Constants.RECORD_ACTIVE);
-		 Asset savedAsset = assetDao.saveAsset(asset);		
+		 Asset savedAsset = null;
+		 if(assetDTO.getAssetId() != null && !"".equals(assetDTO.getAssetId())){
+			 //send assign asset email
+			 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && assetDTO.getAssetId() != null) {
+				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
+						 Boolean flag = assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(asset.getId(), Long.valueOf(aad.getShift()), Long.valueOf(aad.getShiftEmp()));
+						      if(flag == false)
+								assignAssetEmail(aad,asset,user,orgLocations);
+						 }
+				 }
+				 savedAsset = assetDao.saveAsset(asset); 
+			 }
+		 }else {
+			savedAsset = assetDao.saveAsset(asset); 
+			 //send assign asset email
+			 if(assetDTO .getAssignAsset() != null &&  !assetDTO .getAssignAsset().isEmpty() && savedAsset != null) {
+				 for(AssetAssignDTO aad : assetDTO .getAssignAsset()) {
+					 if(aad.getShiftEmp() != null && !aad.getShiftEmp().isEmpty()) {
+								assignAssetEmail(aad,savedAsset,user,orgLocations);
+						 }
+				 }
+			 }
+			 
+		}
 
+		
+		
+		 
 			if(assetDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:assetDTO.getCustomFormData()) {
 					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
@@ -446,6 +523,61 @@ public class AssetServiceImpl implements AssetService{
 
 
 	
+	private void assignAssetEmail(AssetAssignDTO aad, Asset savedAsset, User loginUser, OrgLocations orgLocations) throws Exception {
+		UserRole userRole = userRoleService.getUserRoleById(Long.valueOf(aad.getShiftEmp()));
+		if(userRole.getUser() != loginUser) {
+			AssetCategory cat = assetCategoryService.getAssetCategoryByCategoryId(savedAsset.getAssetCategory().getId());
+			StringBuilder fromNameBuilder = new StringBuilder();
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setLastName(loginUser.getLastName());
+			emailMessage.setToEmail(userRole.getUser().getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			
+			// setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			if(savedAsset.getName() != null) {
+				globalVarsMap.put("assetName", savedAsset.getName());
+			}else {
+				globalVarsMap.put("assetName", "--");
+			}
+			globalVarsMap.put("assignMemberName", userRole.getUser().getFullName());
+			
+			globalVarsMap.put("category", cat.getCategoryName());
+
+			
+			if(StringUtils.isNotBlank(aad.getAssignedOn())) {
+				globalVarsMap.put("assignedOn", aad.getAssignedOn());
+			}else {
+				globalVarsMap.put("assignedOn", "--");
+			}
+			
+			 if(StringUtils.isNotBlank(aad.getReturnedOn())) {
+				globalVarsMap.put("returnedOn", aad.getReturnedOn());
+			}else {
+				globalVarsMap.put("returnedOn", "--");
+			}
+			globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
+			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+			if (null != orgLocations.getId())
+				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.ASSET_ASSIGN_EMAIL,new ArrayList<EmailAttachment>());
+			// calling the sendNotification method of emailScenerioUtil
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSET_ASSIGN_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			notificationScenario.setOrgCode(loginOrgCode);
+			String actionLink = null;
+			if(userRole.getUser() != null) {
+				emailScenerioUtil.sendNotification(actionLink, loginUser, userRole.getUser(), orgLocations, notificationScenario, new HashMap<String, String>());
+			}	
+		}
+	}
+
+
 	@Override
 	public AssetServices saveAssetServiceDetails(AssetServiceDTO assetServiceDTO,OrgLocations orgLocations) throws Exception {
 		AssetServices assetService = new AssetServices();
@@ -478,4 +610,188 @@ public class AssetServiceImpl implements AssetService{
 	public ResponseList<AssetAssign> getDynamicAssignAssetFilterListByLocationId(Long orgLocationId, AssetDTO assetDTO) throws Exception {
 		return assetDao.getDynamicAssignAssetFilterListByLocationId(orgLocationId, assetDTO);
 	}
+
+
+	@Override
+	public Boolean validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(Long assetId, Long shiftId, Long userRoleId) throws Exception {
+		return assetDao.validateAssignAssetByAssetIdAndShiftIdAnsAssignUserId(assetId, shiftId, userRoleId);
+	}
+
+
+	@Override
+	public List<Asset> getAllAssetByOrgId(Long orgLocationsId)throws Exception{
+		return assetDao.getAllAssetByOrgId(orgLocationsId);
+	}
+
+
+	@Override
+	public ResponseList<AssetsReportDTO> getAssetReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId)
+			throws Exception {
+		ResponseList<AssetsReportDTO> responseList = new ResponseList<>();
+		List<AssetsReportDTO> list = new ArrayList<>();
+		List<AssetAssign> assetAssignList = assetDao.getAssetsReportList(assetsReportDTO, orgLocationId);
+		if (assetAssignList != null && !assetAssignList.isEmpty()) {
+			for (AssetAssign assetAssign : assetAssignList) {
+				AssetsReportDTO assetDto = new AssetsReportDTO();
+				User user = userService.getUserByUserCode(assetAssign.getAsset().getCreatedBy());
+				String employeeId = "";
+				Employees employees = employeesService.getEmployeeByUserAndOrgLocationId(assetAssign.getUserRole().getUser().getId(), orgLocationId);
+				if(employees != null) {
+					employeeId = employees.getEmployeeId();
+				}
+				assetDto.setEmployeeId(employeeId);
+				assetDto.setEmployeeName(assetAssign.getUserRole().getUser().getFullName());
+				assetDto.setCategory(assetAssign.getAsset().getCategoryName());
+				if (assetAssign.getAssignedOn() != null) {
+					assetDto.setAssignedOn(commonUtil.dateStrFromOrgDateFormatter(
+							assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getAssignedOn()));
+				}
+				if (assetAssign.getReturnedOn() != null) {
+					assetDto.setReturnedOn(commonUtil.dateStrFromOrgDateFormatter(
+							assetAssign.getAsset().getOrgLocations().getDateFormat(), assetAssign.getReturnedOn()));
+				}
+				assetDto.setShift(assetAssign.getShift().getShiftName());
+				assetDto.setFileUrl(assetAssign.getFileURL());
+				assetDto.setFileContentType(assetAssign.getFileType());
+				assetDto.setDocument(assetAssign.getFileName());
+				assetDto.setAssetName(assetAssign.getAsset().getName());
+				assetDto.setSerialNo(assetAssign.getAsset().getSlno());
+				assetDto.setAssignBy(user.getFullName());
+				list.add(assetDto);
+			}
+		}
+		responseList.setData(list);
+		return responseList;
+	}
+
+
+	@Override
+	public File getAssetsReportListOfExcel(List<AssetsReportDTO> assetsReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws FileNotFoundException {
+		File file = null;
+		Workbook createExcelworkbook = new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocation.getOrgLocationName() + "_" + dateFormat.format(new Date()));
+		Row writeRow = null;
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook, assetsReportDTO);
+		int column = 0;
+		for (AssetsReportDTO   reportList : assetsReportDTO) {
+			writeRow = createExcelsheet.createRow(column + 1);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, reportList, orgLocation, user,isGlobalAccess);
+			column++;
+		}
+		try {
+			file = File.createTempFile(orgLocation.getOrgLocationName() + "_AssetsReport_" + dateFormat.format(new Date()), ".xlsx");
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		file.setReadable(true);
+		FileOutputStream fos = new FileOutputStream(file);
+		try {
+			createExcelworkbook.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return file;
+	}
+
+
+
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,List<AssetsReportDTO> assetsReportDTO) {
+
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		String[] headers = Constants.ASSETS_REPORT_EXPORT_HEADDERS;
+		;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 0);
+		return createExcelsheet;
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, AssetsReportDTO reportList,
+			OrgLocations orgLocation, User user, String isGlobalAccess) {
+			if (null != reportList.getEmployeeId()) {
+				writeRow.createCell(0).setCellValue(reportList.getEmployeeId());
+				createExcelsheet.autoSizeColumn(0);
+			} else {
+				writeRow.createCell(0).setCellValue("--");
+				createExcelsheet.autoSizeColumn(0);
+			}
+
+			if (null != reportList.getEmployeeName()) {
+				writeRow.createCell(1).setCellValue(reportList.getEmployeeName());
+				createExcelsheet.autoSizeColumn(1);
+			} else {
+				writeRow.createCell(1).setCellValue("--");
+				createExcelsheet.autoSizeColumn(1);
+			}
+
+			if (null != reportList.getAssetName()) {
+				writeRow.createCell(2).setCellValue(reportList.getAssetName());
+				createExcelsheet.autoSizeColumn(2);
+			} else {
+				writeRow.createCell(2).setCellValue("--");
+				createExcelsheet.autoSizeColumn(2);
+			}
+			
+			if (null != reportList.getCategory()) {
+				writeRow.createCell(3).setCellValue(reportList.getCategory());
+				createExcelsheet.autoSizeColumn(3);
+			} else {
+				writeRow.createCell(3).setCellValue("--");
+				createExcelsheet.autoSizeColumn(3);
+			}
+
+			if (null != reportList.getSerialNo()) {
+				writeRow.createCell(4).setCellValue(reportList.getSerialNo());
+				createExcelsheet.autoSizeColumn(4);
+			} else {
+				writeRow.createCell(4).setCellValue("--");
+				createExcelsheet.autoSizeColumn(4);
+			}
+			
+			if(StringUtils.isNotBlank(reportList.getAssignedOn())) {
+				 writeRow.createCell(5).setCellValue(reportList.getAssignedOn());
+				createExcelsheet.autoSizeColumn(5);
+			} else {
+				writeRow.createCell(5).setCellValue("--");
+				createExcelsheet.autoSizeColumn(5);
+			}
+
+			if(StringUtils.isNotBlank(reportList.getReturnedOn())) {
+				writeRow.createCell(6).setCellValue(reportList.getReturnedOn());
+				createExcelsheet.autoSizeColumn(6);
+			} else {
+				writeRow.createCell(6).setCellValue("--");
+				createExcelsheet.autoSizeColumn(6);
+			}
+
+			if (null != reportList.getShift()) {
+				writeRow.createCell(7).setCellValue(reportList.getShift());
+				createExcelsheet.autoSizeColumn(7);
+			} else {
+				writeRow.createCell(7).setCellValue("--");
+				createExcelsheet.autoSizeColumn(7);
+			}
+
+			if (null != reportList.getDocument()) {
+				writeRow.createCell(8).setCellValue(reportList.getDocument());
+				createExcelsheet.autoSizeColumn(8);
+			} else {
+				writeRow.createCell(8).setCellValue("--");
+				createExcelsheet.autoSizeColumn(8);
+			}
+
+			if (null != reportList.getAssignBy()) {
+				writeRow.createCell(9).setCellValue(reportList.getAssignBy());
+				createExcelsheet.autoSizeColumn(9);
+			} else {
+				writeRow.createCell(9).setCellValue("--");
+				createExcelsheet.autoSizeColumn(9);
+			}
+		
+		return createExcelsheet;
+	}
+
+	
+
 }

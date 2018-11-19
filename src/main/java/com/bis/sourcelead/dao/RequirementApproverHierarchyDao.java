@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 
 public interface RequirementApproverHierarchyDao {
 
@@ -29,6 +30,8 @@ public interface RequirementApproverHierarchyDao {
 	public RequirementApproverHierarchy getRejectedApproverHierarchyByRequirementId(Long requirementId);
 	
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(Long requirementApproverHierarchyId,Long requirementId) throws Exception;
+	
+	public Boolean getisRequirementApprover(Long userId,Long requirementId);
 
 	
 }

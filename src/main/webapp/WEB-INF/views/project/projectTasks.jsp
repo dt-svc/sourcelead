@@ -1,4 +1,4 @@
-	<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -231,6 +231,7 @@ function prepareTasksList(url){
 	result = result + '<th>Priority</th>';
 	result = result + '<th>Assigned To</th>';
 	result = result + '<th>Status</th>';
+	result = result + '<th>Created Date</th>'; 
 	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>';
@@ -258,6 +259,7 @@ function projectTaskPaginations(url){
             { "data": "taskType"},
             { "data": "priority"},
             { "data": "assignedTo" },
+            { "data": "createdDate" },
             { "data": "projectTaskStatus" },
             { "data": "projectTaskActin" }
         ],
@@ -267,7 +269,7 @@ function projectTaskPaginations(url){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot_80">'+opt.id+ '</div></td>';
+            	  result = result	+ '<td><div class="tblminwidth-30">'+opt.id+ '</div></td>';
 	              return result;
                 }
 	          }, {
@@ -311,13 +313,13 @@ function projectTaskPaginations(url){
               "data": "assignedTo",
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
-            	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
-						taskAssignedUsers = opt.taskAssignedUsers;
+            	  if(opt.assignedTaskUsers != null && opt.assignedTaskUsers != "" && opt.assignedTaskUsers !="undefined"){
+						taskAssignedUsers = opt.assignedTaskUsers;
 					}else{
 						taskAssignedUsers = "--"
 					}
             	  var result = "";
-            	  result = result	+ '<td><div class="tbldata-dotdot"><span >'+taskAssignedUsers+'</span ></div></td>';
+            	  result = result	+ '<td><div class="tbldata-dotdot" title="'+taskAssignedUsers+'"><span >'+taskAssignedUsers+'</span ></div></td>';
             	  return result;
               }
             }, {
@@ -331,7 +333,18 @@ function projectTaskPaginations(url){
 						taskStaus = "--"
 					}
                 	var result = "";
-                	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+                	result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+    	              return result;
+                }
+          },
+            {
+                "targets": colIndex++,
+                "data": "createdDate",
+                "sortable": false,
+                "render": function ( data, type, opt, meta ) {
+                 
+                	var result = "";
+                	result = result	+ '<td><div class="tblminwidth-30" title="'+opt.createdDateStr+'">'+opt.createdDateStr+'</div></td>';
     	              return result;
                 }
           },{
@@ -342,7 +355,13 @@ function projectTaskPaginations(url){
                
               	var result = "";
               	result = result	+ '<td><div class="tbldata-dotdot_50" title="'+opt.taskStaus+'">';
-              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a> <a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">'
+	              	result = result	+ '<a class="glyphicon glyphicon-edit" title="Edit" href="'+sourceleadUrl+'/projectTaskSummary?taskUUID='+opt.projectTasksUUID+'&projectClientUUID='+projectClientUUID+'" ></a>'; 
+	            '</sec:authorize>';
+	            
+              	'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PROJECT_TASK\')">'
+              		result = result	+ '<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteProjectTaskPopUp('+opt.id+');"></a>';
+              	'</sec:authorize>';
               	result = result	+ '</div></td>';
   	              return result;
               }

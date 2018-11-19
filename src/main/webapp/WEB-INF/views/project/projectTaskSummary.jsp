@@ -14,6 +14,35 @@ var sourceleadUrl = '${sourceleadUrl}';
 </script>
 <script>
 	$(document).ready(function(){ 
+		var actveComment = '${param.active}';
+		if(actveComment == "notificationComment"){
+			$("#tab-task5").show();
+			$("#tab-task1").hide();
+		    $('#timeEntity1').removeClass('current');
+		    $('#comment5').addClass('current');
+		    $(".project-tabs-menu a").click(function(event) {
+		        event.preventDefault();
+		        $(this).parent().addClass("current");
+		        $(this).parent().siblings().removeClass("current");
+		        var tab = $(this).attr("href");
+		        $(".project_tabs_inn").not(tab).css("display", "none");
+		        $(tab).fadeIn();
+		    });
+			commentTableList();
+		}else{
+			$("#tab-task1").show();
+		    $("#tab-1").show();
+		    $('#comment5').removeClass('current');
+		    
+		    $(".project-tabs-menu a").click(function(event) {
+		        event.preventDefault();
+		        $(this).parent().addClass("current");
+		        $(this).parent().siblings().removeClass("current");
+		        var tab = $(this).attr("href");
+		        $(".project_tabs_inn").not(tab).css("display", "none");
+		        $(tab).fadeIn();
+		    });
+		}
 		var projectId = "${projectId}";
 		tasksAssignList(projectId);
 		getprojectTaskMembersByProjectId(projectId);
@@ -28,7 +57,19 @@ var sourceleadUrl = '${sourceleadUrl}';
 		if(taskType == "UserStory"){
 			getSelectSubEpicsByUserStory();
 		}
+		priorityColorPic();
+		severityColorPic();
+		
 	});
+function priorityColorPic(){
+	var colorValue= $('select#taskpriorityId option:selected').attr("colorProp");
+	$('#priorityColorPic').css("background-color",colorValue);
+
+}
+function severityColorPic(){
+	var colorValue= $('select#taskseverityId option:selected').attr("colorProp");
+	$('#severityColorPic').css("background-color",colorValue);
+}
  </script>
  
  
@@ -204,14 +245,14 @@ var sourceleadUrl = '${sourceleadUrl}';
 	       <div class="clearfix">
 	         <div class="project_side_wrap_inn_tabs">
 	          <ul class="project-tabs-menu">
- 	            <li class="current"><a href="#tab-task1">Time Entry</a></li>
+ 	            <li id= "timeEntity1" class="current"><a href="#tab-task1">Time Entry</a></li>
 		            <c:if test="${taskTypeName != 'SubTask'}">
 		            	<li><a href="#tab-task2" onclick="getSubTaskList();">Sub Tasks</a></li>
 		            </c:if>
 	            <li><a href="#tab-task3" onclick="closeTimeEntry();documentTableList();">Documents</a></li>
 	            <li><a href="#tab-task4" onclick="getTaskActivities();">Activities</a></li>
                  <sec:authorize access="hasAnyRole('ROLE_ADD_TASK_COMMENTS','ROLE_VIEW_EDIT_TASK_COMMENTS')">
-	                <li><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
+	                <li id="comment5" class="current"><a href="#tab-task5" onclick="commentTableList();">Comments</a></li>
 	             </sec:authorize>
 	            <div class="clearfix"></div>
 	          </ul>
@@ -317,7 +358,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 			          
 			          <c:if test="${taskStatus == 'Bug'}">
 			          <div class="row mb">
-		                  <label class="col-md-12">UserStroy</label>
+		                  <label class="col-md-12">UserStory</label>
 		              <div class="col-md-12 dropdown-select">
 		                   <select class="chosen-select form-control" id="editUserStroyId"  onchange="inlineEditUserStory(${projectTask.id});"></select>
 		              </div>
@@ -339,10 +380,11 @@ var sourceleadUrl = '${sourceleadUrl}';
 		              
 		               
 		              <div class="clearfix  mb select-loader">
-		                <select class="pull-left" onchange="inlineEditTaskPriority(${projectTask.id});" id="taskpriorityId">
+		              <small class="colorBox colorPosition" id="priorityColorPic"></small>
+		                <select style="margin-left:20px;" class="pull-left" onchange="inlineEditTaskPriority(${projectTask.id});priorityColorPic();" id="taskpriorityId">
 		                  <option selected value="">--Select Priority--</option>
 		                  <c:forEach var="priority" items="${taskPriorityList}">  
-		                      <option value="${priority.id}" ${priority.id  == projectTask.priority.id ? 'selected' : ''} >${priority.name}</option>                                                                                                      
+		                      <option  colorProp="${priority.colorPic}"	value="${priority.id}" ${priority.id  == projectTask.priority.id ? 'selected' : ''} >${priority.name}</option>                                                                                                      
 							</c:forEach>
 		                </select>
 		                <span class="pull-right">
@@ -353,10 +395,11 @@ var sourceleadUrl = '${sourceleadUrl}';
 		              
 		              
 		              <div class="clearfix  mb select-loader">
-		                <select class="pull-left" onchange="inlineEditTaskSeverity(${projectTask.id});" id="taskseverityId">
+		              <small class="colorBox colorPosition" id="severityColorPic"></small>
+		                <select style="margin-left:20px;" class="pull-left" onchange="inlineEditTaskSeverity(${projectTask.id});severityColorPic();" id="taskseverityId">
 		                  <option selected value="">--Select Severity--</option>
 		                   <c:forEach var="severity" items="${taskSeverityList}">     
-		                      <option value="${severity.id}" ${severity.id  == projectTask.severity.id ? 'selected' : ''} >${severity.name}</option>                                                                                                
+		                      <option colorProp="${severity.colorPic}" value="${severity.id}" ${severity.id  == projectTask.severity.id ? 'selected' : ''} >${severity.name}</option>                                                                                                
 							</c:forEach>
 		                </select>
 		                <span class="pull-right">
@@ -535,9 +578,10 @@ $('.chosen-select').chosen().on('change', function() {
 	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
+	var projectId =  "${projectId}";
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&projectId="+projectId, 	   
 	 		    success: function(data) {
 		    }
 	 });  
@@ -638,14 +682,28 @@ function editFun(){
 }
 </script>
 <script> 
+
 function inlineEditTaskStatus(taskId){
+	var assignValue = $("#assignedUsers").val();
+	var editOwnerId = $("#editOwnerId").val();
+	if(assignValue != null){
+		assignValue = assignValue;
+	}else{
+		assignValue = "";
+	}
+	if(editOwnerId != null){
+		editOwnerId = editOwnerId;
+	}else{
+		editOwnerId = "";
+	}
+	var projectClientUUID = '${projectClientUUID}';
 	var taskStatusId = $("#taskStatusId").val();
     $("#statusLabel").fadeOut("slow");
     $("#statusSpin").fadeIn("slow");
 	var userId = '${SourceLeadWeb_userId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskStatusId="+taskStatusId+"&taskId="+taskId+"&userId="+userId, 	   
+		    url: sourceleadUrl+"/ProjectTasks/updateTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskStatusId="+taskStatusId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
   		    success: function(data) {
   		    	$("#statusLabel").fadeIn("slow");
   		    	$("#statusSpin").fadeOut("slow");
@@ -654,13 +712,26 @@ function inlineEditTaskStatus(taskId){
 	 });  
 }
 function inlineEditTaskPriority(taskId){
+	var assignValue = $("#assignedUsers").val();
+	var editOwnerId = $("#editOwnerId").val();
+	if(assignValue != null){
+		assignValue = assignValue;
+	}else{
+		assignValue = "";
+	}
+	if(editOwnerId != null){
+		editOwnerId = editOwnerId;
+	}else{
+		editOwnerId = "";
+	}
+	var projectClientUUID = '${projectClientUUID}';
 	var taskpriorityId = $("#taskpriorityId").val();
 	var userId = '${SourceLeadWeb_userId}';
        $("#priorityLabel").fadeOut("slow");
       $("#prioritySpin").fadeIn("slow");
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskPriority?${_csrf.parameterName}=${_csrf.token}&taskpriorityId="+taskpriorityId+"&taskId="+taskId+"&userId="+userId,  	   
+		    url: sourceleadUrl+"/ProjectTasks/updateTaskPriority?${_csrf.parameterName}=${_csrf.token}&taskpriorityId="+taskpriorityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,  	   
   		    success: function(data) {
   		    	$("#priorityLabel").fadeIn("slow");
   		    	$("#prioritySpin").fadeOut("slow");
@@ -669,13 +740,27 @@ function inlineEditTaskPriority(taskId){
 	 });  
 }
 function inlineEditTaskSeverity(taskId){
+	var assignValue = $("#assignedUsers").val();
+	var editOwnerId = $("#editOwnerId").val();
+	if(assignValue != null){
+		assignValue = assignValue;
+	}else{
+		assignValue = "";
+	}
+	if(editOwnerId != null){
+		editOwnerId = editOwnerId;
+	}else{
+		editOwnerId = "";
+	}
+	var projectClientUUID = '${projectClientUUID}';
+	
 	var taskSeverityId = $("#taskseverityId").val();
 	var userId = '${SourceLeadWeb_userId}';
 	$("#severityLabel").fadeOut("slow");
     $("#severitySpin").fadeIn("slow");
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateTaskSeverity?${_csrf.parameterName}=${_csrf.token}&taskSeverityId="+taskSeverityId+"&taskId="+taskId+"&userId="+userId,  	   
+		    url: sourceleadUrl+"/ProjectTasks/updateTaskSeverity?${_csrf.parameterName}=${_csrf.token}&taskSeverityId="+taskSeverityId+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue, 	   
   		    success: function(data) {
   		    	$("#severityLabel").fadeIn("slow");
   		    	$("#severitySpin").fadeOut("slow");
@@ -775,19 +860,6 @@ function inlineEditBillingType(taskId){
  </script>
   
 <script> 
-//project side bar tabs
-$(document).ready(function() {
-$("#tab-task1").show();
-    $("#tab-1").show();
-    $(".project-tabs-menu a").click(function(event) {
-        event.preventDefault();
-        $(this).parent().addClass("current");
-        $(this).parent().siblings().removeClass("current");
-        var tab = $(this).attr("href");
-        $(".project_tabs_inn").not(tab).css("display", "none");
-        $(tab).fadeIn();
-    });
-});
 	
 //  New project Tabs
 $(document).ready(function() {
@@ -912,22 +984,48 @@ $(document).ready(function() {
 
 <script>
 function inlineEditDueDate(taskId){
+	var assignValue = $("#assignedUsers").val();
+	var editOwnerId = $("#editOwnerId").val();
+	if(assignValue != null){
+		assignValue = assignValue;
+	}else{
+		assignValue = "";
+	}
+	if(editOwnerId != null){
+		editOwnerId = editOwnerId;
+	}else{
+		editOwnerId = "";
+	}
+	var projectClientUUID = '${projectClientUUID}';
 	var userId = '${SourceLeadWeb_userId}';
 	var editDueDate = $("#editDueDate").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateDueDate?${_csrf.parameterName}=${_csrf.token}&editDueDate="+editDueDate+"&taskId="+taskId+"&userId="+userId,    
+	    url: sourceleadUrl+"/ProjectTasks/updateDueDate?${_csrf.parameterName}=${_csrf.token}&editDueDate="+editDueDate+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,    
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
  }); 
 }
 function inlineEditEstimatedTime(taskId){
+	var assignValue = $("#assignedUsers").val();
+	var editOwnerId = $("#editOwnerId").val();
+	if(assignValue != null){
+		assignValue = assignValue;
+	}else{
+		assignValue = "";
+	}
+	if(editOwnerId != null){
+		editOwnerId = editOwnerId;
+	}else{
+		editOwnerId = "";
+	}
+	var projectClientUUID = '${projectClientUUID}';
 	var userId = '${SourceLeadWeb_userId}';
 	var editEstimatedTime = $("#editEstimatedTime").val();
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/ProjectTasks/updateEstimatedTime?${_csrf.parameterName}=${_csrf.token}&estimatedTime="+editEstimatedTime+"&taskId="+taskId+"&userId="+userId,    
+	    url: sourceleadUrl+"/ProjectTasks/updateEstimatedTime?${_csrf.parameterName}=${_csrf.token}&estimatedTime="+editEstimatedTime+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
 	    success: function(data) {
 		    	getTaskActivities();
 	    }
@@ -2073,7 +2171,7 @@ function addComment(){
 	result = result + ' <input type="hidden" name="tabType" value="comment">';
 	result  = result + ' <div class="row clearfix">';
 	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="1" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_length length2-500" field-name="Task Comment" ></textarea>';
+	result  = result + '     <textarea class="form-control" rows="3" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_length length2-500" field-name="Task Comment" ></textarea>';
 	result  = result + '   </div>';
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter mt5">';
@@ -2085,11 +2183,53 @@ function addComment(){
 	result = result + ' </form>';
 	$("#commnetPopUpDivId").empty();  
 	$("#commnetPopUpDivId").append(result); 
+	 
 }
+/* function commentMembers(event){
+// 	onkeypress="commentMembers(event)"
+var value = $("#taskComment").val();
+	if(event.keyCode === 64){
+		var projectId = "${projectId}";
+		var values = "Active";
+		$.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
+	        success: function(json) {
+	        	var output = "";
+	        	output = output + "<ul>";
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		output = output + "<li value='" +opt.id+ "'>"+opt.empName+"</li>";
+				}
+	        	output = output + "</ul>";
+	        	$("#taskComment").val(value + output)
+	        	alert(value)
+	        	alert(output)
+	        }
+		});	
+		
+		
+	}
+} */
 </script>
 <script>
 function saveComment(){
 	 if ($('#addComment_form').validate(false, validationSettings)) {
+		 var assignValue = $("#assignedUsers").val();
+			var editOwnerId = $("#editOwnerId").val();
+			if(assignValue != null){
+				assignValue = assignValue;
+			}else{
+				assignValue = "";
+			}
+			if(editOwnerId != null){
+				editOwnerId = editOwnerId;
+			}else{
+				editOwnerId = "";
+			}
+			var projectClientUUID = '${projectClientUUID}';
+			
  			var projectTaskId = '${projectTask.id}';
 		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
@@ -2099,7 +2239,7 @@ function saveComment(){
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId,
+				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
 				  success : function(result) {
 					  if (result && result.response === "INVALID_DATA") {
 		                    showError(result.responseMessage);

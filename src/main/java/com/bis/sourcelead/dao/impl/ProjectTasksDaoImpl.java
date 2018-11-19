@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -19,12 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -97,7 +101,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectTasks getTasksId(String projectTaskId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.id = :projectTaskId " ;
+		String query = "from ProjectTasks pt left join fetch pt.severity severity left join fetch pt.projectId left join fetch pt.taskType taskType left join fetch pt.priority priority where pt.id = :projectTaskId " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setString("projectTaskId", projectTaskId) .list(); 
 		ProjectTasks projectTasks = null;
 		if(projectTasksList != null && !projectTasksList.isEmpty())
@@ -486,12 +490,13 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		 Query query = session.createQuery(queryStr+subQueryStr+query1+tagsQuery+sortingQry);
 		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr+query1+tagsQuery+sortingQry);
 		 List<ProjectTasks> projectTasksList = null;
+		 List<ProjectTasks> tasksList = new CopyOnWriteArrayList<ProjectTasks>();
 		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
-			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setString("varString", "").setParameterList("tagsList", tagsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 projectTasksList = query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setString("varString", "").setParameterList("tagsList", tagsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setString("varString", "").setParameterList("tagsList", tagsList).list();
 			 filterCount = countlist.iterator().next().intValue();
 		 }else {
-			 projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setString("varString", "").setParameterList("tagsList", tagsList).setMaxResults(projectTasksDTO.getLength()).list();
+			 projectTasksList = query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setString("varString", "").setParameterList("tagsList", tagsList).setMaxResults(projectTasksDTO.getLength()).list();
 			 countlist = countQuery.setLong("projectId", projectId).setString("varString", "").setParameterList("tagsList", tagsList).list();
 			 filterCount = countlist.iterator().next().intValue();
 		 }
@@ -511,7 +516,29 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			response.setRecordsFiltered(totalCount);
 		}
 		
-		response.setData(projectTasksList);
+		if(projectTasksList != null && !projectTasksList.isEmpty()) {
+			List<Long> assignedMembersIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, projectTasksDTO.getOrgLocationId());
+			if(!assignedMembersIds.isEmpty()) {
+				for(ProjectTasks pt : projectTasksList) {
+					List<String> assignedTaskUsersList =  new ArrayList<>();
+					Set<ProjectAssignTask> assignTasksList = pt.getProjectAssignTask();
+					if(assignTasksList != null && !assignTasksList.isEmpty()) {
+						for(ProjectAssignTask pat :assignTasksList) {
+							if(assignedMembersIds.contains(pat.getProjectMemberId().getId().longValue())) {
+								assignedTaskUsersList.add(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+							}
+						}
+					}
+					
+					pt.setAssignedTaskUsers(assignedTaskUsersList);
+					tasksList.add(pt);
+				}
+			}
+			
+		}
+		
+		
+		response.setData(tasksList);
 		return response;
 		}
 
@@ -553,6 +580,25 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		String query = "from ProjectTasks pt where pt.leaveType.id = :levaTypeId ";
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("levaTypeId", levaTypeId).list(); 
 		return projectTasksList; 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String quey = "";
+		if(taskType.equalsIgnoreCase(Constants.TASKTYPE)) {
+			quey = "pt.taskType.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSEVERITY)) {
+			quey = "pt.severity.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			quey = "pt.priority.id =:lookupId";
+		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			quey = "pt.taskStatus.id =:lookupId";
+		} 
+		String query = "from ProjectTasks pt where "+quey+" ";
+		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("lookupId", lookupId).list(); 
+		return projectTasksList;
 	}
 	 
 }

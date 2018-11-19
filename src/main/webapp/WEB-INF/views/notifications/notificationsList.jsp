@@ -32,7 +32,7 @@ window.onload = function () {
 			<div class="notificatons">
 			<div class="mailbox-controls clearfix pull-left table-top">
 			<div class="pull-left">
-				 <div class="notifica-checkbox noti-checkbox">
+				 <div class="notifica-checkbox noti-checkbox" id="notificationListDivNonEmpty">
 					<a href="#">
 					<label>
 						  <input type="checkbox" name="list" id = "selectall"/>
@@ -55,13 +55,12 @@ window.onload = function () {
 function dynamicNotificationtLists(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#notificationDataTableSearch").val();
-	 searchValue = searchValue ? searchValue : "";
+	searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl	+"/getDynamicNotificationtLists?searchValue="+searchValue;
 	prepareDynamicNotificationtLists(url);
 }
 function prepareDynamicNotificationtLists(url){
 	var result = "";
-	
 	result = result	+ '<div class="positionRelative reportHead clearfix">';
 	result = result	+ '<ul class="pull-right list-unstyled list-inline">';
 	result = result	+ '<li class=""><input type="text" class="repSearchBar" placeholder="Search" id="notificationDataTableSearch"/><span class="repSearchIcon" onClick="projectTaskList();"></span></li>';
@@ -93,12 +92,12 @@ function prepareDynamicNotificationtLists(url){
 }
 function dynamicNotificationtPaginations(url){
 	var colIndex = 0;
-	$('#notificationTaskPagination').DataTable( { 
+	$('#notificationTaskPagination').DataTable( {
 		  "processing": true,
 	      "serverSide": true,
 	      "searching": false,
 	      "ajax": $.fn.dataTable.pipeline( {
-	          url: url,
+	    	  url: url,
 	          method: 'POST',
 	          pages: 10
 	        }),
@@ -312,6 +311,7 @@ $("#selectall").change(function () {
 
 <script>
 function totalCheck1() {
+	alert("totalCheck1 .... START");
 	if($("input[name='check[]']").is(':checked')){
 		
 		var checked = $("input[name='check[]']:checked"); 
@@ -324,6 +324,7 @@ function totalCheck1() {
 		
 	}
 }
+	alert("totalCheck1 .... END");
 }
 </script>
 

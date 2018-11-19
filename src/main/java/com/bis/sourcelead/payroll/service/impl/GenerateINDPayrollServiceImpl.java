@@ -7,8 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +19,11 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
+import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -35,6 +40,8 @@ import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.PayrollPayheadService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -62,6 +69,12 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	TimeSheetDayEntriesService timeSheetDayEntriesService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -142,12 +155,17 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 		return indPaysheetFrequencyDTO;
 	}
 	
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "null" })
 	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
+				if(employee.getHireDate().after(freqEndDate)) {
+					continue;
+				}
+				
 				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
 				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
 					double totalHours = 0;
@@ -186,24 +204,87 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
 					
-					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 					if (employee != null) {
 						employeePayroll.setEmployee(employee);
 					}
-					IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(assoSal.getAssociateSalaryPayheadIndList(), employeePayroll, loginUser,userGroup.getPayFrequency());
+					
+					Set<AssociateSalaryPayheadInd> salaryPayheadList = new HashSet<AssociateSalaryPayheadInd>();
+					for(AssociateSalaryPayheadInd associateSalaryPayheadInd : assoSal.getAssociateSalaryPayheadIndList()) {
+						boolean isPayheadApplincable = true;
+						if((StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor()) && associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor().equalsIgnoreCase("Experienced"))) {
+							Date joinDate = null;
+							if(employee.getHireDate() != null) {
+								joinDate = employee.getHireDate();
+							}else {
+								joinDate = employee.getCreatedDate();
+							}
+							Date eligibleDate = null;
+							eligibleDate = DateUtils.addYears(joinDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
+							eligibleDate = DateUtils.addMonths(eligibleDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
+							if(eligibleDate != null && eligibleDate.before(freqStartDate)) {
+								isPayheadApplincable = false;
+							}
+						}
+						if(associateSalaryPayheadInd.getPayrollPayhead() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate().before(freqEndDate) 
+								&& isPayheadApplincable ) {
+							salaryPayheadList.add(associateSalaryPayheadInd);
+						}else if(associateSalaryPayheadInd.getPayrollPayhead() != null && associateSalaryPayheadInd.getPayrollPayhead().getEffectiveDate() == null
+								&& isPayheadApplincable ) {
+							salaryPayheadList.add(associateSalaryPayheadInd);
+						}
+					}
+					
+					IndPayrollPayheadUtilDTO utilDTO = iNDPayrollCommonUtil.getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(salaryPayheadList, employeePayroll, loginUser,userGroup.getPayFrequency());
+					
+					AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = iNDPayrollCommonUtil.getAssLoanAndAdvanceDedAmountInd(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate(),employeePayroll);
+					boolean isLD = false;
+					Double loanAdvTotal = 0.0;
+					//if payroll in Associate Payroll Payheads
+					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
+						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
+							loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+							ph.setMonthly(new BigDecimal(loanAdvTotal));
+							ph.setAnnualy(new BigDecimal(loanAdvTotal*12));
+							isLD = true;
+						}
+					}
+					//if payroll not found in Associate Payroll Payheads
+					if(!isLD) {
+						loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+						ph.setIndEmployeePayrollId(employeePayroll);
+						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("L&D", orgLocation.getId()));
+						ph.setMonthly(new BigDecimal(loanAdvTotal));
+						ph.setAnnualy(new BigDecimal(loanAdvTotal*12));
+						ph.setStatus(Constants.RECORD_ACTIVE);
+						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						ph.setCreatedBy(loginUser);
+						ph.setUpdatedBy(loginUser);
+						ph.setCreatedDate(new Date());
+						ph.setUpdatedDate(new Date());
+						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+					}
+					
+					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
 					employeePayroll.setGrossPay(utilDTO.getGrossPay());
-					employeePayroll.setNetPay(utilDTO.getNetPay());
+					employeePayroll.setNetPay(utilDTO.getNetPay().subtract(new BigDecimal(loanAdvTotal)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
 				    employeePayroll.setTds(utilDTO.getTds());
 				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
-					
 					employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-					employeePayroll.setStatus(1);
+					employeePayroll.setStatus(Constants.RECORD_ACTIVE);
 					employeePayroll.setCreatedBy(loginUser.getId());
 					employeePayroll.setUpdatedBy(loginUser.getId());
 					employeePayroll.setCreatedDate(new Date());
 					employeePayroll.setUpdatedDate(new Date());
+					
+					Double overTimeHours =  timeSheetDayEntriesService.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates( assoSal.getCandidate().getMasterCandidateId().getId(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), orgLocation);
+					employeePayroll.setOverTimeHours(overTimeHours.toString());
+					
+					Double regularHours = 0.0;
+					employeePayroll.setRegularHours(regularHours.toString());
+					
 					set.add(employeePayroll);
 			}
 		}catch (Exception e) {

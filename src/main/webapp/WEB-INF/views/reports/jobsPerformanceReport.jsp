@@ -536,7 +536,7 @@ function offerpagination(url){
 		var tab = $("#dateActiveTab").val();
 		var sourceleadUrl = '${sourceleadUrl}';
 		var orgLocId = '${SourceLeadWeb_orgLocationId}';
-		window.location.href = sourceleadUrl + "/jobPerformanceAllApplicantsList?&tab="+tab+"&orgLocationId="+orgLocId+"&requirementId="+requirementId;
+		window.location.href = sourceleadUrl + "/jobPerformanceCandidatesByStatus?&tab="+tab+"&orgLocationId="+orgLocId+"&statusType=All&requirementId="+requirementId;
 	}
  function loadJobInterviewCandidates(requirementId){
 		var tab = $("#dateActiveTab").val();
@@ -681,9 +681,15 @@ function showEndDate(){
 							</div>
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
-									<c:forEach var="clientsList" items="${orgClientList}">
+									<c:forEach var="clientsList" items="${orgClientList}">  
 									
+									<c:if test="${clientsList.locationId.id == loginOrgLocId}">
 									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${clientsList.id}" ><label>${clientsList.responderLocationId.org.orgName}</label></li>
+									</c:if>
+									
+									<c:if test="${clientsList.responderLocationId.id == loginOrgLocId}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${clientsList.id}" ><label>${clientsList.locationId.org.orgName}</label></li>
+									</c:if>
 									
 									</c:forEach>
 								</ul>

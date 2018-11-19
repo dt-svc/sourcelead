@@ -22,7 +22,7 @@
       <div class="pull-left">
         <h2>Loan & Advances</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Loan & Advances</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -80,20 +80,23 @@
               </div>
             </div>
             
-            
-            <div class="col-md-5 clearfix mt10">
-              <label class="clearfix">Pay Head</label>
-              <div class="clearfix">
-                 <div class="clearfix dropdown-select">
-							<select  class="form-control chosen-select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
-							  <option value="">--Select Pay Type--</option>
-	                			<c:forEach var="list" items="${payheadList}">
-			                    	<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
-								</c:forEach>
-							</select>
-						</div>
-              </div>
+            <c:if test="${SourceLeadWeb_loginCountryName != 'United States'}">
+	            <div class="col-md-5 clearfix mt10">
+	              <label class="clearfix">Pay Head</label>
+	              <div class="clearfix">
+	                 <div class="clearfix dropdown-select">
+								<select  class="form-control select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
+		                			<c:forEach var="list" items="${payheadList}">
+		                				<c:if test="${list.shortCode == 'L&D'}">
+		                					<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
+		                				</c:if>
+									</c:forEach>
+								</select>
+							</div>
+	              </div>
             </div>
+            
+            </c:if>
             
             <div class="col-md-5 clearfix mt10">
 				<label class="clearfix">Applicable For</label>

@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 
 public interface AssociatePayrollPayheadHistoryService {
 
@@ -15,5 +16,7 @@ public interface AssociatePayrollPayheadHistoryService {
 	List<AssociatePayrollPayheadHistory> getLatestAssociatePayrollPayheadByEmpPayrollId(Long empPayrollId) throws Exception;
 	
 	List<AssociatePayrollPayheadHistory> getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(String paySheetFrequencyUUID)throws Exception;
+	
+	IndEmployeePayroll saveIndEmployeePayroll(IndEmployeePayroll indEmployeePayroll) throws Exception;
 	
 }

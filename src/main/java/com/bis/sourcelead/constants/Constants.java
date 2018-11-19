@@ -176,10 +176,14 @@ public class Constants {
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
+	public static final String UPDATED_TASK_EMAIL = "UpdatedTaskEmail";
+	public static final String UPDATED_TASK_NOTIFICATION = "UpdatedTaskNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String ASSET_ASSIGN_EMAIL = "AssigneAssetEmail";
+	public static final String ASSET_ASSIGN_NOTIFICATION = "AssigneAssetNotification";
 	
-	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
+	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
@@ -237,10 +241,12 @@ public class Constants {
 	public static final int CANDIDATE_ALL = 2;
 	public static final int CANDIDATE_ACTIVE = 1;
 	public static final int CANDIDATE_IN_ACTIVE = 0;
+	public static final String STATUS_WITHDRAWN = "WITHDRAWN";
 	/** Candidate Skill constants **/
 	public static final int CANDIDATE_SKILL_ACTIVE = 1;
 	public static final int CANDIDATE_SKILL_IN_ACTIVE = 0;
 	public static final String ACTIVE = "Active";
+	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
@@ -617,6 +623,9 @@ public class Constants {
 	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source",
 			"Score", "Experience", "Status", "Submitted On", "Submitted By", "Client Contact" };
+	public static final String[] REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED = {
+			"Resume", "Applied On", "Applicant Rate", "Submission Rate", "Source", "Score", "Experience", "Status",
+			"Submitted On", "Submitted By", "Client Contact" };
 	public static final String[] REQUIREMENT_PIPELINE_SHORTLISTED_EXCEL_HEADERS = { "Name", "Email",
 			"PhoneNumber", "Resume", "Applied On", "Rate", "Source", "Score", "Experience",
 			"Status", "ShortListed By", "ShortListed On" };
@@ -930,6 +939,10 @@ public class Constants {
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
 	
+
+	public static final String[] ASSETS_REPORT_EXPORT_HEADDERS = { "Employee Id", "Employee Name","Asset Name", "Category","Serial Number",
+			"Assigned On", "Returned On" ,"Shift", "Document", "Assigned By",};
+	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
@@ -1151,6 +1164,7 @@ public class Constants {
 	public static final String ROLE_CREATE_PROJECT_TASKS ="ROLE_CREATE_PROJECT_TASKS";
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
+	public static final String REPORT_FILTER_CURRENT_MONTH = "current_month";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
@@ -1232,6 +1246,8 @@ public class Constants {
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
+    
+    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1267,6 +1283,9 @@ public class Constants {
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
 	
 	//Indian_Payroll
+	public static final String IND_PAYROLL = "INDPayroll";
+	public static final String US_PAYROLL = "USPayroll";
+	
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
 	
@@ -1280,8 +1299,19 @@ public class Constants {
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
+	public static final String[] BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES = { "PF", "ESI" };
+	
 	public static final String[] APPLICANTS_JOINED_LIST_REPORT_HEADERS = { "Recruiter Name", "Date", "No Of Jobs",
 			"Total Offer", "Total Joiners"};
 	
 
+	public static final String CONTRIBUTION = "contribution";
+	public static final String DEDUCTION = "deduction";
+	
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
+	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
+	
+	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
+	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
+	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 }

@@ -16,9 +16,9 @@
                     <div>
                       <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
                         <option value="">--Select--</option>
-                        <option ${associateSalaryInd.payType == "HourlyRate" ? "selected" : ""} value="HourlyRate">Hourly Rate</option>
+                        <%-- <option ${associateSalaryInd.payType == "HourlyRate" ? "selected" : ""} value="HourlyRate">Hourly Rate</option> --%>
                         <option ${associateSalaryInd.payType == "Salary" ? "selected" : ""} value = "Salary">Salary</option>
-                        <option ${associateSalaryInd.payType == "CommissionOnly" ? "selected" : ""} value= "CommissionOnly">Commission Only</option>
+                        <%-- <option ${associateSalaryInd.payType == "CommissionOnly" ? "selected" : ""} value= "CommissionOnly">Commission Only</option> --%>
                       </select>
                     </div>
                   </div>
@@ -147,7 +147,9 @@
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
                     <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">
+                    <c:if test="${status == 'NEW' || status == 'NODATA'}">
+						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                    
+                    </c:if>
                     </div>
                   </div>
                 </div>
@@ -185,9 +187,8 @@ function payHeadCalculation(id, shortCode, method, formula){
 						var match;
 						while ((match = pattern.exec(formatedFormula)) != null)
 						{
-						  //matches.push(match[1]);
 						  var yearPayHeadValue = document.getElementById("payHeadYearly["+match[1]+"]").value;
-						  formatedFormula = formatedFormula.replace(match[1], yearPayHeadValue)
+						  formatedFormula = formatedFormula.replace(match[1], yearPayHeadValue);
 						}
 						 var result = eval(formatedFormula);
 						document.getElementById("payHeadMonthly["+shortCode+"]").value = (result/12).toFixed(2);
@@ -234,27 +235,47 @@ function payHeadCalculation(id, shortCode, method, formula){
 
 <script>
 function saveAssociateSalaryInd(){
-	var annualSalary = document.getElementById("annualSal").value;
-	var annualPayheadTotal = 0.00;
-	$("#phTblBody input:checked").each(function(){
-		if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
-			annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
+	if ($('#associateSalary_form').validate(false, validationSettings)) {
+		
+		if(!document.getElementById("BA").checked || document.getElementById("payHeadMonthly[BA]").value == "" || document.getElementById("payHeadMonthly[BA]").value == "0.00" || document.getElementById("payHeadMonthly[BA]").value == "0" || document.getElementById("payHeadMonthly[BA]").value == "0.0" || document.getElementById("payHeadMonthly[BA]").value == "0." || document.getElementById("payHeadYearly[BA]").value == "" || document.getElementById("payHeadYearly[BA]").value == "0.00" || document.getElementById("payHeadYearly[BA]").value == "0" || document.getElementById("payHeadYearly[BA]").value == "0.0" || document.getElementById("payHeadYearly[BA]").value == "0."){
+			payheadsNotMatchedAlert('impba');
+			return false;
 		}
-	});
-	if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
-		payheadsNotMatchedAlert();
-	}else{
-		cnfToSaveAssociateSalaryInd();
+		
+		var annualSalary = document.getElementById("annualSal").value;
+		var annualPayheadTotal = 0.00;
+		$("#phTblBody input:checked").each(function(){
+			if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+				annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
+			}
+		});
+		if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
+			payheadsNotMatchedAlert('mismatch');
+		}else{
+			cnfToSaveAssociateSalaryInd();
+		}
 	}
 }
 
-function payheadsNotMatchedAlert(){
+function payheadsNotMatchedAlert(msg){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_cnf_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Annual Salary and Payheads are mismatched</p>";
+	if(msg==='impba'){
+		result = result +"		<p>Configuration of 'Basic (BA)' is mandatory</p>";
+	}else if(msg==='mismatch'){
+		result = result +"		<p>Annual Salary and Payheads are mismatched</p>";
+	}
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed to Save' onClick='proceedToSavePH();'><input class='u_can_color' type='button'  value='Cancel' onClick='closeAlertPH();'></b>";
+	result = result +"		<b href='javascript:void(0)'>";
+	if(msg==='mismatch'){
+		result = result +"		<input type='button' value='Proceed to Save' onClick='proceedToSavePH();'>";
+	}
+	if(msg==='impba'){
+		result = result +"		<input type='button'  value='Cancel' onClick='closeAlertPH();'></b>";
+	}else if(msg==='mismatch'){
+		result = result +"		<input class='u_can_color' type='button'  value='Cancel' onClick='closeAlertPH();'></b>";
+	}
 	result = result +"	</div>";
 	$("#cnfPHPopUpDiv").empty();
 	$("#cnfPHPopUpDiv").append(result);
@@ -282,7 +303,7 @@ function cnfToSaveAssociateSalaryInd(){
 		     contentType:false, 
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
-			  		if(status == 'NEW'){
+			  		if(status == "NEW" || status == "NODATA"){
 			  			location.replace(sourceleadUrl+"/usersList");
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
@@ -313,7 +334,17 @@ $('#editAssociateBtn').click(function() {
 
 <script>
 $('#cancelAssociateSalaryIndBtn').click(function() {
-	location.replace(sourceleadUrl+"/usersList");
+	var status = $("#status").val();
+	if(status == "NEW" || status == "NODATA"){
+		location.replace(sourceleadUrl+"/usersList");
+	}/* else{
+		var userId = $("#userId").val();
+		$("#tab-30").empty();  
+	    $("#tab-19").empty();
+	    $("#tab-17").empty();
+	    $("#candidateSideDiv").empty();
+		userDetails(userId);
+	} */
 });
 </script>
 

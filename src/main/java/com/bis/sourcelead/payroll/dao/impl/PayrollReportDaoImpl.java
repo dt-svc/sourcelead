@@ -196,9 +196,9 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (payrollReportDTO != null && payrollReportDTO.getLength() > 0) {
 					queryObj.setFirstResult(payrollReportDTO.getStart());
 					queryObj.setMaxResults(payrollReportDTO.getLength());
-					queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
-					queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				}
+				queryObj.setLong("orgLocationId", orgLocation.getId()).setLong("groupId", Long.parseLong(payrollReportDTO.getGroupId())).setDate("freqStartDate", freqStartDate).setDate("freqEndDate", freqEndDate).setParameter("depositType", payrollReportDTO.getDepositType());
+				queryObj.setResultTransformer(Transformers.aliasToBean(CheckRegisterReportDTO.class));
 				payrollList = queryObj.list();
 				int count = 0;
 				int filteredCount = 0;
@@ -246,8 +246,8 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
         ResponseList<DeductionHistory> response = new ResponseList<>();
 		
 		try {
-			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
-			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqStartDate());  //new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqEndDate());//new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
 			Session session = this.sessionFactory.getCurrentSession();
@@ -314,10 +314,13 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
      ResponseList<DeductionHistory> response = new ResponseList<>();
 		
 		try {
-			Date sDate =  new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqStartDate());  
-			Date eDate =new SimpleDateFormat("yyyy-MM-dd").parse(payrollReportDTO.getFreqEndDate());
+			
+			
+			Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqStartDate());
+			Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), payrollReportDTO.getFreqEndDate());
 			java.sql.Date freqStartDate = new java.sql.Date(sDate.getTime());
 			java.sql.Date freqEndDate = new java.sql.Date(eDate.getTime());
+			
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			List<Long> deductionIds = Stream.of(payrollReportDTO.getDeductionId().split(",")).map(Long::parseLong).collect(Collectors.toList());
@@ -389,6 +392,41 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder searchQuery = new StringBuilder("");
 			StringBuilder query = new StringBuilder();
+		/*	query.append("select payroll.ID as empPayrollId,")
+			.append("payroll.EMPLOYEE_ID as empId,")
+			.append("grp.DEPARTMENT_ID as departmentId,")
+			.append("can.FIRST_NAME as firstName,")
+			.append("can.LAST_NAME as lastName,")
+			.append("payroll.PAY_TYPE as payType,")
+			.append(" payroll.NET_PAY as netPay,")
+			.append("payroll.TAXES as taxes,")
+			.append("payroll.GROSS_PAY as grossPay,")
+			.append(" payroll.TYPE as type,")
+			.append(" payroll.PAY_PERIOD_NUM as runNo,")
+			.append(" payroll.CREATED_DATE as runDate,")
+			.append("sheet.FREQUENCY_START_DATE as freqStartDate,")
+			.append("sheet.FREQUENCY_END_DATE as freqEndDate,")
+			.append("grp.GROUP_NAME as payGroupName,")
+			.append("bankHis.BANK_NAME as bankName,")
+			.append("bankHis.ACCOUNT_NUMBER as accountNum,")
+			.append(" bankHis.ROUTING_NUMBER as routingNum,")
+			.append(" grp.PAY_FREQUENCY as payFrequency,")
+			.append(" sheet.PAY_CHECK_DATE as payCheckDate")
+			.append(" from US_EMP_PAYROLL payroll, ASSOCIATE_BANK_DATA bank,")
+		    .append(" BANK_DATA_HIS bankHis,  PAY_SHEET_FREQUENCY sheet,")
+		    .append(" CANDIDATE can,USER_GROUP grp ")
+		    .append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID") 
+		    .append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
+		    .append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID")
+		    .append(" and payroll.CANDIDATE_ID = can.ID ")
+		    .append(" and payroll.ID = bankHis.PAYROLL_ID")
+		    .append(" and sheet.GROUP_ID = grp.ID")
+		    .append(" and bankHis.ACCOUNT_TYPE = :depositType ") 
+		    .append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED'")
+		    .append(" and sheet.ORG_LOCATION_ID = :groupId")
+		    .append(" and sheet.GROUP_ID = :orgLocationId")
+		    .append(" and sheet.FREQUENCY_START_DATE = :freqStartDate")
+		    .append(" and sheet.FREQUENCY_END_DATE = :freqEndDate");*/
 			query.append("select payroll.ID as empPayrollId,")
 			.append("payroll.EMPLOYEE_ID as empId,")
 			.append("grp.DEPARTMENT_ID as departmentId,")
@@ -399,6 +437,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append("payroll.TAXES as taxes,")
 			.append("payroll.GROSS_PAY as grossPay,")
 			.append("payroll.TYPE as type,")
+			.append("payroll.PAY_PERIOD_NUM as runNo,")
 			.append("payroll.CREATED_DATE as runDate,")
 			.append("sheet.FREQUENCY_START_DATE as freqStartDate,")
 			.append("sheet.FREQUENCY_END_DATE as freqEndDate,")
@@ -413,11 +452,17 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 			.append(" BANK_DATA_HIS bankHis, ")  
 			.append(" PAY_SHEET_FREQUENCY sheet,")
 			.append(" CANDIDATE can,USER_GROUP grp ")
-			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
+			/*.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID ")
 			.append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
 			.append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID ")
 			.append(" and payroll.CANDIDATE_ID = can.ID ")
-			.append(" and sheet.GROUP_ID = grp.ID ")
+			.append(" and sheet.GROUP_ID = grp.ID ")*/
+			.append(" where sheet.ID = payroll.PAY_SHEET_FREQUENCY_ID") 
+		    .append(" and bankHis.ASSOCIATE_BANK_ID = bank.ID ")
+		    .append(" and payroll.CANDIDATE_ID = bank.CANDIDATE_ID")
+		    .append(" and payroll.CANDIDATE_ID = can.ID ")
+		    .append(" and payroll.ID = bankHis.PAYROLL_ID")
+		    .append(" and sheet.GROUP_ID = grp.ID")
 			.append(" and bankHis.ACCOUNT_TYPE = :depositType")
 			.append(" and payroll.SUBMIT_FOR_APROVER_STATUS = 'APPROVED' ")
 			.append(" and sheet.ORG_LOCATION_ID = :orgLocationId and sheet.GROUP_ID = :groupId and sheet.FREQUENCY_START_DATE = :freqStartDate ").append(" and sheet.FREQUENCY_END_DATE = :freqEndDate ");
@@ -616,7 +661,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 					if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 						count = assoWithHoldingList.size();
 					}else {
-						count = (int) countlist.iterator().next().intValue();
+						count = assoWithHoldingList.size();;
 					}
 					
 				}
@@ -626,7 +671,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 				if (assWithHoldingDTO != null) {
 					if(countlist != null && !countlist.isEmpty()) {
 						totalCount = countlist.size();
-					}
+					}]
 				} 
 				
 				if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
@@ -644,7 +689,7 @@ public class PayrollReportDaoImpl implements PayrollReportDao{
 						if (assWithHoldingDTO.getSearchValue() != null && !"".equalsIgnoreCase(assWithHoldingDTO.getSearchValue())) {
 							filteredCount = assoWithHoldingList.size();
 						}else {
-							filteredCount = filteredCountlist.iterator().next().intValue();
+							filteredCount = assoWithHoldingList.size();
 						}
 						
 					}

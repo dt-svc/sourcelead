@@ -150,6 +150,7 @@ public class ProjectsController {
 	
 	 @Autowired
 	 private SourceleadTagsService sourceleadTagsService;
+	 
 	
 	 protected boolean isNullOrEmpty(String str)
 	 {
@@ -404,16 +405,17 @@ public class ProjectsController {
 					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 					model.addObject("orgLocationsList", orgLocationsList);
 					
-					 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
+					
+					 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
 					 model.addObject("taskTypeList", taskTypeList);
 					 
-					 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSEVERITY);
+					 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY,orgLocations.getId());
 					 model.addObject("taskSeverityList", taskSeverityList);
 					 
-					 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKPRIORITY);
+					 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
 					 model.addObject("taskPriorityList", taskPriorityList);
 					 
-					 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
+					 List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS,orgLocations.getId());
 					 model.addObject("taskStatusList", taskStatusList);
 					 
 					commonUtil.highLightMenu(Constants.Projects, request);
@@ -488,6 +490,7 @@ public class ProjectsController {
 					 model.addObject("createdBy", user.getFullName());
 				 }
 				 
+				 
 				 List<ProjectAssignTask> assignedUsers = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId()); 
 				 for(ProjectAssignTask pat:assignedUsers) {
 					 if(pat.getProjectMemberId() != null && pat.getProjectMemberId().getEmployee() != null && pat.getProjectMemberId().getEmployee().getUser() != null) {
@@ -510,16 +513,16 @@ public class ProjectsController {
 					model.addObject("projectStartDate",  commonUtil.dateStrFromOrgDateFormatter(projectTask.getProjectId().getOrgLocationsId().getDateFormat(), projectTask.getProjectId().getStartDate()));
 				}
 				 
-				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpDataByCategory(Constants.TASKTYPE);
+				 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
 				 model.addObject("taskTypeList", taskTypeList);
 				 
-				 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSEVERITY);
+				 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY,orgLocations.getId());
 				 model.addObject("taskSeverityList", taskSeverityList);
 				 
-				 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpDataByCategory(Constants.TASKPRIORITY);
+				 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
 				 model.addObject("taskPriorityList", taskPriorityList);
 				 
-				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpDataByCategory(Constants.TASKSTATUS);
+				 List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS,orgLocations.getId());
 				 model.addObject("taskStatusList", taskStatusList);
 				 
 				 
@@ -557,8 +560,11 @@ public class ProjectsController {
 			     List<SourceleadSectionDTO> sectionsProjectTsk  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(actionIDProjectTask.getId(),orgLocations.getId());
 				 model.addObject("sourceleadSectionListForProjectTask",sectionsProjectTsk);
 				 
-				 LookUpData taskStatus = lookUpDataService.getRequirementExperienceLevelyUniqueKey(projectTask.getTaskType().getUniqueKey());
-				 model.addObject("taskStatus", taskStatus.getUniqueKey());
+				LookUpData taskStatus = lookUpDataService.getRequirementExperienceLevelyUniqueKey(projectTask.getTaskType().getUniqueKey());
+				if(taskStatus !=null) {
+					model.addObject("taskStatus", taskStatus.getUniqueKey());
+				}
+				
 				model.addObject("taskUUID", taskUUID);
 				model.addObject("projectClientUUID", projectClientUUID);
 				model.setViewName("project/projectTaskSummary");
@@ -844,9 +850,7 @@ public class ProjectsController {
     
     @RequestMapping(value = "/viewNewResourceRequestDashborad")
    	public ModelAndView viewNewResourceRequestDashborad(@RequestParam(value="requestUUID", required=true) String requestUUID,HttpServletRequest request) throws Exception {
-   	    
    	    ModelAndView model = new ModelAndView();
-   		
    	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -863,5 +867,46 @@ public class ProjectsController {
        }
 
     
+    @RequestMapping(value = "/projectAttributes")
+   	public ModelAndView pojrctAttributes(HttpServletRequest request) throws Exception {
+   	    ModelAndView model = new ModelAndView();
+   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKTYPE);
+		model.addObject("referTypeList", referTypeList);
+		model.setViewName("project/projectAttributesTaskType");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
+    
+    @RequestMapping(value = "/projectAttributePriority")
+   	public ModelAndView pojrctAttributePriority(HttpServletRequest request) throws Exception {
+   	    ModelAndView model = new ModelAndView();
+   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKPRIORITY);
+		model.addObject("referTypeList", referTypeList);
+   		model.setViewName("project/projectAttributePriority");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
+    
+    
+    @RequestMapping(value = "/projectAttributeStatus")
+   	public ModelAndView pojrctAttributeStatus(HttpServletRequest request) throws Exception {
+   	    ModelAndView model = new ModelAndView();
+   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSTATUS);
+		model.addObject("referTypeList", referTypeList);
+		model.setViewName("project/projectAttributeStatus");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
 
+    @RequestMapping(value = "/projectAttributeSeverity")
+   	public ModelAndView pojrctAttributeSeverity(HttpServletRequest request) throws Exception {
+   	    ModelAndView model = new ModelAndView();
+   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
+		model.addObject("referTypeList", referTypeList);
+   		model.setViewName("project/projectAttributeSeverity");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
+    
+   
 }

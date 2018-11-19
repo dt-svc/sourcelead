@@ -114,7 +114,24 @@ function getDayWiseReports(){
 											</c:forEach>
 										</ul>
 									 </div> 
+									 
 								</div>
+								
+								<div class="col-md-3 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a Roles">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+											<c:forEach var="roles" items="${rolesList}">
+												<li class="checkBox positionRelative"><input  type="checkbox" name="orgRoles" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+										</c:forEach>
+										</ul>
+									 </div> 
+									 
+								</div>
+								
 							</div>
 							</div>
 							<div class="clearfix advancedsearch-footer">
@@ -133,7 +150,6 @@ function getDayWiseReports(){
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 }
- 
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
 	    input = document.getElementById("myTeamsInput");
@@ -150,6 +166,25 @@ function getDayWiseReports(){
 	        }
 	    }
 	}
+ 
+ 
+ function myRolesFunction() {
+	    var input, filter, ul, li, a, i;
+	    input = document.getElementById("myRolesInput");
+	    filter = input.value.toUpperCase();
+	    ul = document.getElementById("myRolesUL");
+	    li = ul.getElementsByTagName("li");
+	    for (i = 0; i < li.length; i++) {
+	        a = li[i].getElementsByTagName("label")[0];
+	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            li[i].style.display = "";
+	        } else {
+	            li[i].style.display = "none";
+
+	        }
+	    }
+	}
+ 
  function openFilterPop(){
 		$("div.cand-advsrch-popup").toggle();
 		 $(".advancedsearch-mask").fadeIn();
@@ -283,6 +318,7 @@ function userDataTableList(){
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
+	 var searchValueregx = searchValue.replace('^', '');
 	 if(timePeriod == 'custom'){
 		  startDate = $("#ReportStartDate").val();
 		  endDate = $("#ReportEndDate").val();
@@ -307,10 +343,18 @@ function userDataTableList(){
 			    {
 			orgTeams.push($(this).val());
 	     });
+		var userRoleName = [];
+		$('input:checkbox[name=orgRoles]:checked').each(function() 
+			    {
+			userRoleName.push($(this).val());
+	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
 		 usersListPagination(url,sourceleadUrl);
+		 if(timePeriod == 'custom'){
+		 $("#customSearch").hide();
+		 }
 	 }
 	
 }
@@ -361,9 +405,9 @@ function usersListPagination(url,sourceleadUrl){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-            		  result = result +"<td> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div> </a> </td>";
+            		  result = result +"<td><div> <a onclick='getRecruiterJobs(\""+opt.userCode+"\")'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span> </a></div> </td>";
             	  }else{
-         	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+         	    	 result = result +"<td><div> <span>0</span></div></td>"; 
           	      }
             	  
 	             return result;
@@ -377,9 +421,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
-	            		  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
+	            		  result = result +"<td><div><a onClick='getRecruiterCandidates(\""+opt.userCode+"\")'><span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></a></div></td>";
 	            	  }else{
-	          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	          	    	 result = result +"<td><div> <span>0</span></div></td>"; 
 	          	      }
 	            	  return result;
 	              }
@@ -390,9 +434,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+	            	    	 result = result +"<td><div><a onClick='getRecruiterApplicantsList(\""+opt.userCode+"\")'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	 result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		 return result;
@@ -401,12 +445,12 @@ function usersListPagination(url,sourceleadUrl){
 		    	  "targets": colIndex++,
 	              "data": "shortlisted",
 	              "sortable": false,
-	              "render": function ( data, type, opt, meta ) {
+	              "render": function ( data, type, opt, meta ) {  
 	            	    var result = "";
 	            	    if(opt.userShortlistedApplicantsCount !=null && opt.userShortlistedApplicantsCount !='' && opt.userShortlistedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></div></td>";
+	            	    	result = result +"<td><div><a onClick='getRecruiterApplicantShortlistsList(\""+opt.userCode+"\")'>  <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            		return result;
@@ -418,9 +462,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userSubmittedApplicantsCount !=null && opt.userSubmittedApplicantsCount !='' && opt.userSubmittedApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
+	            	    	 result = result +"<td><div> <a onClick='getRecruiterApplicantSubToClientsList(\""+opt.userCode+"\")'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -432,9 +476,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userInterviewedApplicantsCount !=null && opt.userInterviewedApplicantsCount !='' && opt.userInterviewedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantInterviewsList(\""+opt.userCode+"\")'><span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -446,9 +490,9 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userOfferedApplicantsCount !=null && opt.userOfferedApplicantsCount !='' && opt.userOfferedApplicantsCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
+	            	    	 result = result +"<td><div><a onClick='getRecruiterApplicantOffermadeList(\""+opt.userCode+"\")'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -460,23 +504,23 @@ function usersListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userRejectedApplicantsCount !=null && opt.userRejectedApplicantsCount !='' && opt.userRejectedApplicantsCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantRejectList(\""+opt.userCode+"\")'><span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
 	              }
 		     }, {
 		    	  "targets": colIndex++,
-	              "data": "joined",
+	              "data": "joined",  
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsJoinedCount !=null && opt.userApplicantsJoinedCount !='' && opt.userApplicantsJoinedCount !='undefined'){
-	            	    	result = result +"<td><div class='small'> <span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></div></td>";
+	            	    	result = result +"<td><div> <a onClick='getRecruiterApplicantJoinedList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	    
 	            	    return result;
@@ -484,13 +528,13 @@ function usersListPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "backout",
-	              "sortable": false,
+	              "sortable": false,   
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
-	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	            	    	 result = result +"<td><div> <a onClick='getRecruiterApplicantBackoutList(\""+opt.userCode+"\")'><span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></a></div></td>";
 	            	    }else{
-	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    	result = result +"<td><div> <span>0</span></div></td>"; 
 	            	    }
 	            	   
 	            	    return result;
@@ -510,23 +554,26 @@ function usersListPagination(url,sourceleadUrl){
     } );
     $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#usersDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-   		    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#usersDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		userDataTableList();
-   	    	}else{
-   	    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-   	    	}
-   	    	$('#usersDataTableSearch').val(searchData);
-    	   }
-    	});
+    
 }
 </script>
 
 <script>
+
+$("#usersDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+	    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#usersDataTableSearch').val();
+    	var regex =  new RegExp(/[\\-]/g);
+    	if(regex.test(searchData) == false){
+    		userDataTableList();
+    	}else{
+    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+    	}
+    	$('#usersDataTableSearch').val(searchData);
+	   }
+	});
+
 function getRecruiterJobs(userCode){
 	var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
@@ -564,6 +611,396 @@ function getRecruiterJobs(userCode){
        		$('#reportsResultDiv').empty();
        		$('#reportsResultDiv').append(result);
        		jobsList();
+        }
+   	});
+}
+</script>
+
+
+<script>
+function getRecruiterCandidates(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterCandidatesReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		associateCandidateList();
+        }
+   	});
+}
+</script>
+
+
+<script>
+function getRecruiterApplicantsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SUBMISSION&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantShortlistsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SHORTLIST&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantSubToClientsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=SUBMIT_TO_CLIENT&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantInterviewsList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=INTERVIEW&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantOffermadeList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=OFFERMADE&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantRejectList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=REJECTED&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantJoinedList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=JOINED&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
+        }
+   	});
+}
+
+
+function getRecruiterApplicantBackoutList(userCode){
+	var searchValue = $("#usersDataTableSearch").val();
+	 var timePeriod = $('#reportTypeId').val();
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 var toStage = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+				  $("#reportsEndDate").empty().append("End Date is Required") ; 
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	 var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+	$.ajax({
+        type : "POST",
+   	 	url: sourceleadUrl+"/recruiterApplicantsReportList?"+tokenParamName+"="+tokenValue+"&userCode="+userCode+"&searchValue="+searchValue+"&toStage=BACKOUT&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams,
+       	success :function(result) {
+       		$('#reportsResultDiv').empty();
+       		$('#reportsResultDiv').append(result);
+       		applicantsAllStageList();
         }
    	});
 }

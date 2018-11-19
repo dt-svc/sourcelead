@@ -53,7 +53,7 @@ function userAssetManagement(userId){
 				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.asset.categoryName+'">'+report.asset.categoryName+'</div></td>';
 					result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
 				   	
-				   	result = result + ' <td><div class="tbldata-dotdot-100">';
+				   	result = result + ' <td><div class="tbldata-dotdot-150">';
 					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.id+'\');">';
 					result = result + ' <option '+selected1+'>Working</option>';
 					result = result + ' <option '+selected2+'>Out Of Service</option>';

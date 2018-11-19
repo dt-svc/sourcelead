@@ -27,8 +27,9 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Pay Group</label>
+              <label class="col-md-12 paddingRight">Pay Group<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
+				
 					<select class="form-control sel" id="payGroup" name="payGroup" onchange="getPayPeriodByGroupId('payGroup','payPeriod')">
 					</select>
 				</div>
@@ -46,7 +47,7 @@ $(document).ready(function(){
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Pay Period</label>
+              <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates('freqStartDate','freqEndDate');">
 					    <!-- <option>Select Period</option>
@@ -92,7 +93,7 @@ $(document).ready(function(){
 				<li>
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
-       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a title="Excel">Export Excel</a> </span> </div>
+       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <!-- <a title="Excel">Export Excel</a> --> </span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">

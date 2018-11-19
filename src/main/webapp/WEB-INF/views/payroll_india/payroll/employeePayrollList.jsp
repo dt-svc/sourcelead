@@ -2,6 +2,7 @@
 <jsp:include page="../../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
  <!-- Content Area -->
 <section class="content-wraper contentWraper">
@@ -47,6 +48,10 @@
 								<option selected>Salary</option>
 							</select>
 						</div>
+						
+						<div class="col-md-4">
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+						</div>
 						<!-- <div class="col-md-2">
 							<a class="btn btn-success btnSuccess btn-sm anchorWhite"
 								onclick="runIndPayroll();">Run Payroll</a>
@@ -89,15 +94,10 @@
 								   </c:if> 
 									<td><div class="tblminwidth-50">${empPayroll.empId}</div></td>
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
-
-									<td><div class="tblminwidth-50">${empPayroll.regularHours}</div>
-										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.regularHrsAmt}<span class="paddingLeft">&#8377;</span>
-										</div> --%></td>
-									<td><div class="tblminwidth-50">${empPayroll.overtimeHours}</div>
-										<%-- <div class="tblminwidth-50 clearfix text-danger">${empPayroll.otHoursAmt}<span class="paddingLeft">&#8377;</span>
-										</div> --%></td>
+									<td><div class="tblminwidth-50"><fmt:formatNumber value="${empPayroll.regularHours}" pattern="0"/></div></td>
+									<td><div class="tblminwidth-50"><fmt:formatNumber value="${empPayroll.overtimeHours}" pattern="0"/></div></td>
 									<td><div class="tblminwidth-50 clearfix">
-											${empPayroll.noOfLeaves}<span class="paddingLeft"></span>
+											<fmt:formatNumber value="${empPayroll.noOfLeaves}" pattern="0"/><span class="paddingLeft"></span>
 										</div></td>
 									<td><div class="tblminwidth-50 clearfix">
 											${empPayroll.grossPay}<span class="paddingLeft">&#8377;</span>
@@ -201,6 +201,7 @@ function editNetpay(){
 	$(".saveNetpay").show();
 }
 function saveNetpay(){
+	calculateGrossSalary();
 	$("#tableNetpay").find(".formControl").toggleClass("activeEdit");
 	var x = document.getElementsByClassName("formControl"), i;
 	for (i=0; i<x.length; i++) {
@@ -212,7 +213,51 @@ function saveNetpay(){
 	}
 	$(".editNetpay").show();
 	$(".saveNetpay").hide();
-}employeePayrollList
+	
+	saveAdjustedPayheads();
+}
+
+function saveAdjustedPayheads(){
+	if ($('#associatePayheadAdjust_form').validate(false, validationSettings)) {
+		var formData = getFormData1("associatePayheadAdjust_form");
+		var psfUUID = $('#paySheetFrequencyUUID').val();
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		     processData: false,
+		     contentType:false, 
+			 url : sourceleadUrl+"/saveAssociatePayheadAdjustInd?"+tokenParamName+"="+tokenValue,
+			 success : function(result) {
+				 closeNetPay();
+				 $(location).attr('href', 'employeePayrollList?paySheetFrequencyUUID='+psfUUID);
+			 }
+		});
+	}
+}
+
+function calculateGrossSalary(){
+	var grossTotal = 0.00;
+	$('.earningPayheadTbady #earningPayheadAmount').each(function() {
+		grossTotal += parseFloat($(this).val());
+	});
+	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
+	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
+function calculateNetSalary(){
+	var netTotal = 0.00;
+	$('.deductionPayheadTbady #deductionPayheadAmount').each(function() {
+		netTotal += parseFloat($(this).val());
+	});
+	$('#deductionPayheadAmountTotal').html(netTotal.toFixed(2));
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$("input[name='netPay']").val($('#totalNetPay').html());
+}
+
 function confirmPayroll() {
 	$(".confirmPayroll, .comMask").fadeIn();
 }
@@ -268,14 +313,32 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
     });
 });
 
-
 $('#reviewTab').click(function(){
 	 $("#reviewTab").addClass("current");
 	 $("#approveTab").removeClass("current");
 	 $("#reviewDiv").show();
 	 $("#approveDiv").remove();
-	 
 });
 </script>
+
+ <div class="modal" style="display: none;" id="bulkimportPOP"></div>
+ <script>
+ function bulkAdjustment(){
+	 $("#bulkimportPOP, .mask").fadeIn();
+	 var feqUUID = $("#paySheetFrequency").val();
+	 $.ajax({
+	        type : "GET",
+	        url: sourceleadUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+	         success :function(result) {
+	        	 $("#bulkimportPOP").empty();
+	             $("#bulkimportPOP").append(result);
+	         },
+	    });
+ };
+ function bulkAdjustmentClose(){
+	 $("#bulkimportPOP, .mask").fadeOut();
+	 $("#bulkimportPOP").empty();
+ }
+ </script>
   
 <jsp:include page="../../masterFooter.jsp" />

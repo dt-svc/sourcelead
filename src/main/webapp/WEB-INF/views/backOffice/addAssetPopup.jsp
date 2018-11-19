@@ -39,7 +39,7 @@
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
 							<option value="Working" ${assetAssignData.workingStatus eq "Working" ? 'selected' : ''}>Working</option>
-							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out Of Service</option>
+							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
 						</select>	
 		            </div>
 		            </div>
@@ -51,7 +51,7 @@
 		                <div class="col-md-5" >
 		                  <label class="clearfix">Name</label>
 		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-200" data-validation-optional="true">
+		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-100" data-validation-optional="true">
 		                  </div>
 		                  </div>
 		                  

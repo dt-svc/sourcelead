@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -190,7 +191,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 		
 		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
-		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
+		List<AssociateSalary> totalAssSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
+		List<AssociateSalary> assSallist = new ArrayList<>();
+		for(AssociateSalary ass : totalAssSallist) {
+			Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(ass.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+			List<Long> list = Arrays.stream(ass.getGroupId().getDepartmentId().split(",")).map(Long::parseLong).collect(Collectors.toList());
+			if(list.contains(emp.getDepartmentId().getId())) {
+				assSallist.add(ass);
+			}
+		}
 		
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
@@ -247,7 +256,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	}
 
 	@SuppressWarnings("static-access")
-	private Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	public Set<EmployeePayroll> calculatePayroll(PaysheetFrequencyDTO existedData, PaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalary> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		Set<EmployeePayroll> set = new HashSet<>();
 		try {
@@ -470,7 +479,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
    private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
 	{
 	   boolean isTerminated = false;
-	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+//	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
+	   if(date.after(freqStartDate) && date.before(freqEndDate)) {
 		   isTerminated = true;
 		}
 		return isTerminated;
@@ -1413,7 +1423,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			double payItemSum = 0;
 			// PayItems 
 			if(payAdjustmentDTO.getPayItem() != null && payAdjustmentDTO.getPayItem().size()>0) {
-		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getPayItemAmount() != null).mapToDouble(p->Double.parseDouble(p.getPayItemAmount())).sum();
+		       payItemSum = payAdjustmentDTO.getPayItem().stream().filter(payItem->payItem.getPayItemCheck()== null && payItem.getAmount() != null).mapToDouble(p->p.getAmount().doubleValue()).sum();
 			   Set<PayitemHistory> payItemHis = getUpdatedPayItemData(payroll,payAdjustmentDTO.getPayItem());
 			   payroll.setPayitemHistory(payItemHis);
 			}
@@ -1481,7 +1491,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Long dtoPayItemId = assPayItemDTO.getPayItemId().longValue();
 			for(PayitemHistory paiHis : payItemHis) {
 				if(dtoPayItemId.longValue() == paiHis.getId().longValue()) {
-					paiHis.setAmount(new BigDecimal(assPayItemDTO.getPayItemAmount()));
+					paiHis.setAmount(assPayItemDTO.getAmount());
 					if(assPayItemDTO.getPayItemCheck() != null) {
 						paiHis.setIsBlocked(PayrollConstant.YES);
 					}else {
@@ -1590,7 +1600,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				payItemHis.setPayitemId(dto.getPayItemId().longValue());
 				payItemHis.setPrePayItemAmt(new BigDecimal(dto.getPrePayItemAmt()));
 				payItemHis.setPrePayItemName(dto.getPrePayItemName());
-				payItemHis.setPayItemAmt(new BigDecimal(dto.getPayItemAmount()));
+				payItemHis.setPayItemAmt(dto.getAmount());
 				payItemHis.setPayItemName(dto.getPrePayItemName());
 				payItemHis.setPayAdjustmentHistory(payAdjHistory);
 				if(dto.getPayItemCheck() != null) {

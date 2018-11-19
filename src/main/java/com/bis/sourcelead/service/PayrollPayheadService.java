@@ -15,9 +15,13 @@ public interface PayrollPayheadService {
 	
 	ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception;
 	
+	ResponseList<PayrollPayheadDTO> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception;
+	
 	ResponseList<PayrollPayheadDTO> getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO, OrgLocations orgLocations) throws Exception;
 	
 	PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception;
+	
+	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId) throws Exception;
 	
 	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 	

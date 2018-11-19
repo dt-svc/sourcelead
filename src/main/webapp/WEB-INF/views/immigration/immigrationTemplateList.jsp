@@ -121,7 +121,7 @@
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
-		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+		<a href="javascript:void(0)"   onclick="columClose(); ">Cancel</a>
 	</div>
 </div>				
 			</div>
@@ -365,6 +365,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 {
                     "targets": colIndex++,
                     "data": "status",
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.status !== null && opt.status !== 'undefined') {
@@ -390,7 +391,8 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 },
                 {
                     "targets": colIndex++,
-                    /*"data": "formsCount",*/
+                    "data": "action",
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                     	  var result = "";
                     	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {
@@ -470,6 +472,9 @@ function columPop(){
 }
 function columClose(){
 	$(".colPop").hide();
+	$("#columnsPickerUnCheckAll").prop('checked',false);
+	$("#columnsPickerCheckAll").prop('checked',true);
+	$('.toggle-vis:input:checkbox').prop('checked',true);
 }
 function columHide(){
 	hideColumns=[]; // reset the array object.
@@ -491,7 +496,7 @@ function checkAllColumns(obj){
 	var id = obj.id;
 	if(id =='columnsPickerCheckAll'){
 		$('.toggle-vis:input:checkbox').prop('checked',true);
-	}
+     }
 	else if(id =='columnsPickerUnCheckAll'){
 		$('.toggle-vis:input:checkbox').prop('checked',false);
 	}

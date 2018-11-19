@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -354,7 +355,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
 			}
 		}
-        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(projectTasksDTO,tasks); 
+        Set<ProjectAssignTask> assignProjetcTasks = getAssignProjectTasks(projectTasksDTO,tasks,loginOrgLocation.getId()); 
         tasks.setProjectAssignTask(assignProjetcTasks);
         User user = userService.getUserById(userId);
         tasks.setCreatedBy(user.getUserCode());
@@ -386,9 +387,18 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			}	
 		}
         
+        //onwer Task email
+        if(savedTask.getOwnerUserId() != null) {
+        	if(user.getId().longValue() != savedTask.getOwnerUserId().getId().longValue()) {
+                SendMailtoAssigntoMembersaboutAddingTask(null,projectTasksDTO,savedTask,loginOrgLocation,user);
+        	}
+        }
         
+        //Assign task emails
         for (ProjectAssignTask projectAssignTask : assignProjetcTasks) {
-         SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,tasks,loginOrgLocation,user);
+        	if(loginOrgLocation.getId().longValue() == projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId().getId()) {
+                SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,savedTask,loginOrgLocation,user);
+        	}
         }
         return "success";
 	}
@@ -396,12 +406,21 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser) throws Exception
 	{
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		User user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+		User user = null;
+		if(projectAssignTask == null) {
+			user = tasks.getOwnerUserId();
+		}else {
+			user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+		}
 		StringBuilder fromNameBuilder = new StringBuilder();
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
-		emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		if(projectAssignTask == null) {
+			emailMessage.setToEmail(tasks.getOwnerUserId().getEmail());
+		}else {
+			emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		}
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -417,10 +436,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		else {
 			globalVarsMap.put("LoginUser", loginUser.getFirstName());
 		}
-		if (projectAssignTask.getProjectMemberId().getEmpName() != null
-				&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
-			globalVarsMap.put("Assignedmember", projectAssignTask.getProjectMemberId().getEmpName());
+		
+		if(projectAssignTask == null) {
+			globalVarsMap.put("Assignedmember", tasks.getOwnerUserId().getFullName());
+		}else {
+			if (projectAssignTask.getProjectMemberId().getEmpName() != null
+					&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
+				globalVarsMap.put("Assignedmember", projectAssignTask.getProjectMemberId().getEmpName());
+			}
 		}
+		
 		if (tasks.getPriority() != null) {
 			String priority = tasks.getPriority().getName();
 			if (priority != null && !"".equalsIgnoreCase(priority)) {
@@ -437,6 +462,13 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		if (tasks.getDueDate() != null) {
 			dueDate = dateFormat.format(tasks.getDueDate());
 		}
+		if(tasks.getGeneratedId() != null) {
+			globalVarsMap.put("taskId", tasks.getGeneratedId());
+		}else {
+			globalVarsMap.put("taskId", "--");
+		}
+		
+		
 		globalVarsMap.put("DueDate", dueDate);
 		if (tasks.getOwnerUserId() != null) {
 			if (tasks.getOwnerUserId().getFirstName() != null
@@ -472,20 +504,28 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 
-	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks) throws Exception {
+	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, Long loginOrgLocationId) throws Exception {
 		 Set<ProjectAssignTask> projectAssignTaskSet = new HashSet<>();
 		 
 		if(projectTasksDTO != null && projectTasksDTO.getAssignTaskId() != null){
 			String[] assign = projectTasksDTO.getAssignTaskId().split(",");
 			for(String memberId : assign)
 			{
-				ProjectAssignTask assignTask = new ProjectAssignTask();
-				assignTask.setProjectTaskId(tasks);
 				ProjectMembers pm = projectMembersService.getProjectMemberById(Long.parseLong(memberId.trim()));
-				assignTask.setProjectMemberId(pm);
-				assignTask.setStatus("1");
-				assignTask.setCreatedDate(CommonUtil.currentDate());
-				projectAssignTaskSet.add(assignTask);
+				List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), tasks.getProjectId().getId());
+						if(pmList != null && !pmList.isEmpty()) {
+							for(ProjectMembers members : pmList) {
+								ProjectAssignTask assignTask = new ProjectAssignTask();
+								assignTask.setProjectTaskId(tasks);
+								
+								assignTask.setProjectMemberId(members);
+								assignTask.setStatus(Constants.MEMBER_ACTIVE);
+								
+								assignTask.setCreatedDate(CommonUtil.currentDate());
+								projectAssignTaskSet.add(assignTask);
+							}
+						}
+				
 			}
 		}
 		return projectAssignTaskSet;
@@ -521,16 +561,16 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 	
 	@Override
-	public void updateTaskPriority(Long taskpriorityId, String taskId, Long userId) throws Exception {
-		 User user = userService.getUserById(userId);
-		 ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+	public void updateTaskPriority(TaskDTO taskDTO,OrgLocations loginOrgLocation) throws Exception {
+		 User user = userService.getUserById(taskDTO.getUserId());
+		 ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());
 		 StringBuffer activity = new StringBuffer();
 		 StringBuffer  activitySummary = new StringBuffer();
 		 LookUpData  oldData =null;
 		 LookUpData  nullOldData =null;
 		 LookUpData data  = null;
-		 if(taskpriorityId != null) {
-			data = lookUpDataService.getTasksById(taskpriorityId);
+		 if(taskDTO.getTaskpriorityId() != null) {
+			data = lookUpDataService.getTasksById(taskDTO.getTaskpriorityId());
 			if(projectTasks.getPriority() != null) {
 				oldData = lookUpDataService.getTasksById(projectTasks.getPriority().getId());
 			}
@@ -556,19 +596,22 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		 }
 		 projectTaskActivityService.savePriorityProjectTaskActivitiesByLookupData(activity.toString(), activitySummary.toString(),projectTasks,user,data);
 		
+		//Update Task emails (Assign members,owner,Created Project task)
+		updatedTaskEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
+
 	}
 
 	@Override
-	public void updateTaskSeverity(Long taskSeverityId, String taskId, Long userId)throws Exception {
-		 User user = userService.getUserById(userId);
-		 ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
+	public void updateTaskSeverity(TaskDTO taskDTO,OrgLocations loginOrgLocation)throws Exception {
+		 User user = userService.getUserById(taskDTO.getUserId());
+		 ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());
 		 StringBuffer activity = new StringBuffer();
 		 StringBuffer activitySummary = new StringBuffer();
 		 LookUpData  oldData =null;
 		 LookUpData  nullOldData =null;
 		 LookUpData data  = null;
-		if(taskSeverityId != null) {
-            data = lookUpDataService.getTasksById(taskSeverityId);
+		if(taskDTO.getTaskSeverityId() != null) {
+            data = lookUpDataService.getTasksById(taskDTO.getTaskSeverityId());
             if(projectTasks.getSeverity() != null) {
             	oldData = lookUpDataService.getTasksById(projectTasks.getSeverity().getId());
             }
@@ -592,14 +635,17 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			 
 		 }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
-		
+		 
+		 //Update Task emails (Assign members,owner,Created Project task)
+		 updatedTaskEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
+
 	}
 
 	@Override
-	public void updateTaskStatus(Long taskStatusId, String taskId, Long userId)throws Exception {
-		    User user = userService.getUserById(userId);
-		    ProjectTasks projectTasks = tasksDao.getTasksId(taskId);
-		    LookUpData  data = lookUpDataService.getTasksById(taskStatusId);
+	public void updateTaskStatus(TaskDTO taskDTO,OrgLocations loginOrgLocation)throws Exception {
+		    User user = userService.getUserById(taskDTO.getUserId());
+		    ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());
+		    LookUpData  data = lookUpDataService.getTasksById(taskDTO.getTaskStatusId());
 		    
 		    LookUpData  oldData = lookUpDataService.getTasksById(projectTasks.getTaskStatus().getId());
 		    StringBuffer activity = new StringBuffer();
@@ -612,7 +658,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		   activitySummary.append(oldData.getName()).append(" to ").append(data.getName());
 		   projectTaskActivityService.saveProjectTaskActivitiesByLookupData(activity.toString(), activitySummary.toString(),projectTasks,user,data);
 		
+		   updatedTaskEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
 	}
+
+	
 
 	@Override
 	public void updateTaskName(String taskName, String taskId, Long userId) throws Exception {
@@ -713,17 +762,17 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	}
 
 	@Override
-	public void updateDueDate(String dueDate, String taskId, Long userId) throws Exception {
-		User user = userService.getUserById(userId);
-		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+	public void updateDueDate(TaskDTO taskDTO,OrgLocations loginOrgLocation) throws Exception {
+		User user = userService.getUserById(taskDTO.getUserId());
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());	
 		
 		//Task Due Date 
-		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskDTO.getTaskId());
 	     StringBuffer activity = new StringBuffer();
 	     StringBuffer activitySummary = new StringBuffer();
 	     activity.append("Due Date updated from");
-	     if(dueDate != null && dueDate != "" && dueDate != "undefined") {
-		     projectTasks.setDueDate(commonUtil.orgLocationDateFormat(projectTasks.getProjectId().getOrgLocationsId().getDateFormat(), dueDate));
+	     if(taskDTO.getEditDueDate() != null && taskDTO.getEditDueDate() != "" && taskDTO.getEditDueDate() != "undefined") {
+		     projectTasks.setDueDate(commonUtil.orgLocationDateFormat(projectTasks.getProjectId().getOrgLocationsId().getDateFormat(), taskDTO.getEditDueDate()));
 	     }else {
 		     projectTasks.setDueDate(null);
 	     }
@@ -738,20 +787,23 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
 	     
+		//Update Task emails (Assign members,owner,Created Project task)
+		updatedTaskEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
+
 	}
 
 	@Override
-	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId) throws Exception {
-		User user = userService.getUserById(userId);
-		ProjectTasks projectTasks = tasksDao.getTasksId(taskId);	
+	public void updateEstimatedTime(TaskDTO taskDTO,OrgLocations loginOrgLocation) throws Exception {
+		User user = userService.getUserById(taskDTO.getUserId());
+		ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());	
 		
 		//Task Estimated time 
-		 ProjectTasks  oldData = tasksDao.getTasksId(taskId);
+		 ProjectTasks  oldData = tasksDao.getTasksId(taskDTO.getTaskId());
 	     StringBuffer activity = new StringBuffer();
 	     StringBuffer activitySummary = new StringBuffer();
 	     activity.append("Estimated Time updated from");
-	     if(estimatedTime != null && estimatedTime != "" && estimatedTime != "undefined") {
-		     projectTasks.setEstimateTime(estimatedTime);
+	     if(taskDTO.getEstimatedTime() != null && taskDTO.getEstimatedTime() != "" && taskDTO.getEstimatedTime() != "undefined") {
+		     projectTasks.setEstimateTime(taskDTO.getEstimatedTime());
 	     }else {
 		     projectTasks.setEstimateTime(null);
 	     }
@@ -765,6 +817,9 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		     activitySummary.append(oldData.getEstimateTime()).append(" to ").append("Unassigned");
 	     }
 		 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTasks,user);
+		 
+		//Update Task emails (Assign members,owner,Created Project task)
+		updatedTaskEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
 	}
 
 	@Override
@@ -979,4 +1034,154 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	
 	
 	
+   /**
+    * @author Laxman	
+    * @param taskDTO
+    * @param activity
+    * @param activitySummary
+    * @param user
+    * @param loginOrgLocation
+    * @param projectTasks
+    * @throws Exception
+    */
+	private void updatedTaskEmail(TaskDTO taskDTO, String activity, String activitySummary,User user,OrgLocations loginOrgLocation, ProjectTasks projectTasks) throws Exception {
+		// Assign members Email
+		ProjectTasks projectTask = tasksDao.getTasksId(taskDTO.getTaskId());
+		String[] assignid = taskDTO.getAssignValue().split(",");
+		 List<Long> assignUserids = new ArrayList<Long>();
+			 if(!taskDTO.getAssignValue().isEmpty() && assignid.length > 0) {
+				 for(int i=0; i<assignid.length;i++) {
+					 assignUserids.add(Long.valueOf(assignid[i]));
+				 }
+			 }
+		ProjectAssignTask  assignTasks = null;
+		
+		 //project Task ownerEmail
+		   if(projectTasks.getOwnerUserId() != null) {
+			   if(user.getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
+					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"ownerEmail");
+			   }
+		   }
+		   
+		   
+	   if(assignUserids.size() > 0) {
+		   for (Long assignedMemeber :assignUserids) {
+				  assignTasks = new ProjectAssignTask();
+				 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
+				 assignTasks.setProjectMemberId(pm);
+				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+					if(projectTasks.getOwnerUserId() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()  ) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}
+				 }
+			 }
+	   }
+	   
+	  
+	   
+	//Project Task createby Email
+	   if(projectTask.getCreatedBy() != null) {
+		   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
+				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
+		   }
+	   }
+	   
+	}
+	
+	
+	/**
+	 * @author Laxman
+	 * @param projectAssignTask
+	 * @param projectClientUUID
+	 * @param tasks
+	 * @param loginOrgLocation
+	 * @param loginUser
+	 * @param activity
+	 * @param activitySummary
+	 * @param emailType
+	 * @throws Exception
+	 */
+
+	private void sendUpdatedTaskEmails(ProjectAssignTask projectAssignTask, String projectClientUUID,	ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser, String activity, String activitySummary,String emailType) throws Exception {
+		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+		User user = null;
+		if(emailType.equalsIgnoreCase("assignEmail")) {
+			user = projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+		}else if(emailType.equalsIgnoreCase("ownerEmail")) {
+			user = 	tasks.getOwnerUserId();
+		}else if(emailType.equalsIgnoreCase("createdByEmail")) {
+			User taskCreatedUser = userService.getUserByUserCode(tasks.getCreatedBy());
+			user = 	taskCreatedUser;
+		}
+		StringBuilder fromNameBuilder = new StringBuilder();
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		if(emailType.equalsIgnoreCase("assignEmail")) {
+			emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		}else if(emailType.equalsIgnoreCase("ownerEmail")) {
+			emailMessage.setToEmail(tasks.getOwnerUserId().getEmail());
+		}else if(emailType.equalsIgnoreCase("createdByEmail")) {
+			User taskCreatedUser = userService.getUserByUserCode(tasks.getCreatedBy());
+			emailMessage.setToEmail(taskCreatedUser.getEmail());
+		}
+		
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 
+		if(emailType.equalsIgnoreCase("assignEmail")) {
+			if (projectAssignTask.getProjectMemberId().getEmpName() != null
+					&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
+				globalVarsMap.put("assignMemberName", projectAssignTask.getProjectMemberId().getEmpName());
+			}
+		}else if(emailType.equalsIgnoreCase("ownerEmail")) {
+			globalVarsMap.put("assignMemberName", tasks.getOwnerUserId().getFullName());
+		}else if(emailType.equalsIgnoreCase("createdByEmail")) {
+			User taskCreatedUser = userService.getUserByUserCode(tasks.getCreatedBy());
+			globalVarsMap.put("assignMemberName", taskCreatedUser.getFullName());
+		}
+		
+		
+		globalVarsMap.put("loginUser", loginUser.getFullName());
+		
+		if(tasks.getGeneratedId() != null) {
+			globalVarsMap.put("taskId", tasks.getGeneratedId());
+		}else {
+			globalVarsMap.put("taskId", "--");
+		}
+		globalVarsMap.put("taskTitle", tasks.getTaskName());
+		globalVarsMap.put("projectName", tasks.getProjectId().getProjectName());
+		 
+		globalVarsMap.put("activity", activity);
+		globalVarsMap.put("activityDescrption", activitySummary);
+		// calling the sendEmail method of emailScenerioUtil
+		if (null != loginOrgLocation.getId())
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.UPDATED_TASK_EMAIL,new ArrayList<EmailAttachment>());
+		// calling the sendNotification method of emailScenerioUtil
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_TASK_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgCode);
+		StringBuilder notificationLink = new StringBuilder();
+		String actionLink = "";
+		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
+				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="+ projectClientUUID).toString();
+		if(user != null) {
+			emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());
+		}		
+		
+	}
+
+	@Override
+	public List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception {
+		return tasksDao.getTasksListByLookupIdAndCategoryType(lookupId, taskType);
+	}
 }

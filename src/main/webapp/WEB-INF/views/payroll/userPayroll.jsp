@@ -61,12 +61,12 @@ window.onload = function () {
 				<div class="backWhite">        
 					<div class="clearfix bttabHeighlite">
 				      <ul class="nav nav-tabs" id="menuli">
-					        <li class="active" id="wtsli" onclick="getWagesTaxSummaryByEmpId(); highlight(this);"><a href="#innertab-1" >Wages & Tax Summary</a></li>
-					        <li onclick="getIncomeData(); highlight(this);"><a href="#innertab-2" >Income</a></li>
-					        <li onclick="getChecks(); highlight(this);"><a href="#innertab-3" >Manual checks</a></li>
-					        <li onclick="getAccontDeductions(); highlight(this);"><a href="#innertab-4" >Account Deductions</a></li>
-					        <li onclick="getHRDeductions(); highlight(this);"><a href="#innertab-5" >HR Deductions</a></li>
-					        <li onclick="finalBalance(); highlight(this);"><a href="#innertab-6" >Balance</a></li>
+					        <li class="active" id="wtsli" onclick="getWagesTaxSummaryByEmpId(); highlight(this);"><a id="wtsId" >Wages & Tax Summary</a></li>
+					        <li onclick="getIncomeData(); highlight(this);"><a>Income</a></li>
+					        <li onclick="getChecks(); highlight(this);"><a>Manual checks</a></li>
+					        <li onclick="getAccontDeductions(); highlight(this);"><a>Account Deductions</a></li>
+					        <li onclick="getHRDeductions(); highlight(this);"><a>HR Deductions</a></li>
+					        <li onclick="finalBalance(); highlight(this);"><a>Balance</a></li>
 				        	<div class="clearfix"></div>
 				      </ul>
 					</div>

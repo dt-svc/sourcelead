@@ -33,6 +33,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -49,8 +50,11 @@ import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -61,6 +65,9 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -389,7 +396,6 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCandidateResumes(candidateResumesList);
 				}
 			}
-		
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
 		if(candidateDto.getCustomFormData() !=null) {
@@ -1742,6 +1748,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
+							vendorCandidate.setWorkLocation(orgLocations);
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -2647,8 +2654,235 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue) {
+		return candidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
+	}
+
+	@Override
+	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception {
+		String[] candidateIds = candidateIdsStr.split(",");
+		for(String candidateId : candidateIds){
+			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateId));
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			//BeanUtils.copyProperties(candidate, marketPlace);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setFullName(candidate.getFullName());
+			marketPlace.setGender(candidate.getGender());
+			marketPlace.setEmail(candidate.getEmail());
+			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			marketPlace.setMobilePhone(candidate.getMobilePhone());
+			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			marketPlace.setDesignation(candidate.getDesignation());
+			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setLocation(candidate.getLocation());
+			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
+			marketPlace.setSkillsName(candidate.getSkillsName());
+			marketPlace.setExperienceYears(candidate.getExperienceYears());
+			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			marketPlace.setCurrentRate(candidate.getCurrentRate());
+			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			marketPlace.setExpectedRate(candidate.getExpectedRate());
+			marketPlace.setExpectedRateType(candidate.getRateType());
+			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			marketPlace.setMarketPrice(null);
+			marketPlace.setMarketRateCurrencey(null);
+			marketPlace.setSummary(candidate.getSummary());
+			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
+			marketPlace.setNationality(candidate.getNationality());
+			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			candidateDao.saveMarketPlace(marketPlace);
+			
+		}
+		
+	}
+
+	@Override
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateIdsStr) {
+		ResponseList<CandidateDTO> candidates = candidateDao.getCandidatesByCandidateIds(candidateIdsStr);
+		return candidates;
+	}
+
+	@Override
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception {
+
+		for(CandidateMarketPlaceDTO dto : marketPlaceList){
+			CandidateMarketPlace marketPlace = null;
+			marketPlace = candidateDao.getCandidateMarketPlaceByCandidateId(Long.parseLong(dto.getCandidateId()));
+			if(marketPlace == null){
+				marketPlace = new CandidateMarketPlace();
+			}
+			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
+			//BeanUtils.copyProperties(candidate, marketPlace);
+			candidate.setIsSharedInMarketplace(Constants.YES);
+			marketPlace.setCandidateId(candidate);
+			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+			marketPlace.setFullName(candidate.getFullName());
+			marketPlace.setGender(candidate.getGender());
+			marketPlace.setEmail(candidate.getEmail());
+			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			marketPlace.setMobilePhone(candidate.getMobilePhone());
+			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			marketPlace.setDesignation(candidate.getDesignation());
+			marketPlace.setEmploymentType(candidate.getDesignationType());
+			marketPlace.setLocation(candidate.getLocation());
+			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
+			marketPlace.setSkillsName(candidate.getSkillsName());
+			marketPlace.setExperienceYears(candidate.getExperienceYears());
+			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			marketPlace.setCurrentRate(candidate.getCurrentRate());
+			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			marketPlace.setExpectedRate(candidate.getExpectedRate());
+			marketPlace.setExpectedRateType(candidate.getRateType());
+			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			marketPlace.setNationality(candidate.getNationality());
+			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			marketPlace.setImageUrl(candidate.getFileUrl());
+			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
+			marketPlace.setMarketPrice(dto.getMarketPrice());
+			marketPlace.setSummary(candidate.getSummary());
+			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
+			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
+			marketPlace.setCreatedDate(new Date());
+			marketPlace.setCreatedBy(user);
+			marketPlace.setUpdatedDate(new Date());
+			marketPlace.setUpdatedBy(user);
+			saveOrUpdateCandidateElkDocument(candidate);
+			candidateDao.saveMarketPlace(marketPlace);
+			candidateDao.storeCandidate(candidate);
+		}
+	}
+
+	@Override
+	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal) {
+		List<Long> marketplaceCandidates = candidateDao.getAddedMarketplaceCandidates(candidateIdsVal);
+		candidateIdsVal.removeAll(marketplaceCandidates);
+		Map<String, Object[]> candidatesIds = new HashMap<>();
+		candidatesIds.put("candidatesInMarketplace", marketplaceCandidates.toArray());
+		candidatesIds.put("candidatesNotInMarketplace", candidateIdsVal.toArray());
+		return candidatesIds;
+	}
+
+	@Override
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) {
+		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+		marketPlace.setMarketPrice(priceVal);
+		marketPlace.setMarketRateCurrencey(priceValType);
+		candidateDao.updateMarketPlacePrice(marketPlace);
+	}
+	
+	@Override
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId) throws Exception{
+		return candidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
+		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
+		marketplace.setWithdrawReason(withdrawReason);
+		Candidate candidate = candidateDao.getCandidateById(marketplace.getCandidateId().getId());
+		candidate.setIsSharedInMarketplace(Constants.NO);
+		saveOrUpdateCandidateElkDocument(candidate);
+		candidateDao.storeCandidate(candidate);
+		candidateDao.withdrawCandidateFromMarketplace(marketplace);
+		
+	}
+
+	@Override
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid) throws Exception {
+		// TODO Auto-generated method stub
+		return candidateDao.getCandidateMarketPlaceDetailsByUUId(uuid);
+	}
+
+	@Override
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+		// TODO Auto-generated method stub
+		CandidateMarketCart newMarketCart = new CandidateMarketCart();
+		newMarketCart.setMarketplaceId(marketplace);
+		newMarketCart.setCandidateId(marketplace.getCandidateId());
+		newMarketCart.setCandidateUUID(marketplace.getCandidateUUID());
+		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
+		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		OrgLocations orgLocation = new OrgLocations();
+		orgLocation.setId(orgLocationId);
+		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setTargetOrgLocationId(orgLocation);
+		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
+		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
+		newMarketCart.setStatus(marketplace.getStatus());
+		newMarketCart.setCartStatus(Constants.ADDED_CART);
+		newMarketCart.setCreatedDate(new Date());
+		newMarketCart.setCreatedBy(user);
+		newMarketCart.setUpdatedDate(new Date());
+		newMarketCart.setUpdatedBy(user);
+		candidateDao.addCandidateToMarketCart(newMarketCart);
+	}
+
+	@Override
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue) {
+		List<CandidateMarketPlace> candidateMarketPlaces = null;
+		List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
+		if(candidateMarketPlaces != null){
+			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
+				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+				if(count != 0){
+					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+				}
+				marketPlaceDTOs.add(marketPlaceDTO);
+			}
+		}
+		return marketPlaceDTOs;
+	}
+
+	@Override
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID) {
+		candidateDao.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+		
+	} 
+
 	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
 		return candidateDao.getCandidateProfilePercentageByCandidateId(id);
 	}
+
+	@Override
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception {
+		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId, userRole, user);
+	}
+	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+	}
+	
+	@Override
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception {
+	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations);
+	}
+
+	@Override
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) throws Exception {
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
+		
+	}
+
 
 }

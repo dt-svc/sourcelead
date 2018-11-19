@@ -24,6 +24,9 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
   	private String indEmpPayrollUUID;
   	private String paySheetFrequencyUUID;
     private Integer indEmployeePayrollStatus;
+    
+    private BigDecimal monthlyOld;
+	private BigDecimal annualyOld;
   	
 	public Long getId() {
 		return id;
@@ -127,5 +130,16 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
 	public void setIndEmployeePayrollStatus(Integer indEmployeePayrollStatus) {
 		this.indEmployeePayrollStatus = indEmployeePayrollStatus;
 	}
-	
+	public BigDecimal getMonthlyOld() {
+		return monthlyOld;
+	}
+	public void setMonthlyOld(BigDecimal monthlyOld) {
+		this.monthlyOld = monthlyOld;
+	}
+	public BigDecimal getAnnualyOld() {
+		return annualyOld;
+	}
+	public void setAnnualyOld(BigDecimal annualyOld) {
+		this.annualyOld = annualyOld;
+	}
 }

@@ -50,7 +50,7 @@ import com.bis.sourcelead.dto.LcaDetailsDTO;
 import com.bis.sourcelead.dto.LcaDocumentHistoryDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
 import com.bis.sourcelead.dto.LcaPlaceOfEmploymentDTO;
-import com.bis.sourcelead.dto.LcaVisaClarificationDTO;
+import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -63,6 +63,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
@@ -91,6 +92,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -151,6 +153,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations, Long status) {
@@ -216,6 +221,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				if(StringUtils.isNotBlank(immigrationDTO.getLcaNumber())) {
 					saveLcaHistoryDetails(immigrationObj,candidate,lca,user,orgLocations,true);
 				}
+				 
+				// This block of code for no of positions available for LCA Number once LCA Assigned To candidate
+				    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				    Lca updateLca=	immigrationCommonDao.getLcaByLcaId(Long.parseLong(immigrationDTO.getLcaId()));
+				    updateLca.setAvailablePositions(updateLca.getNoOfPositions()-1);
+				    updateLca.setUpdatedDate(currentDate);
+					immigrationCommonDao.saveLcaDetails(updateLca, null, null);
+				
 				
 			}
 			if(StringUtils.isNotBlank(immigrationDTO.getPrevLcaId())) {
@@ -227,6 +240,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				}
 				
 			}
+			
+			
 			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
@@ -604,8 +619,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		CandidateLcaJobDetails canLcaJobDetails = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		System.out.println("immigration===========>"+immigrationObj.getId());
-		
 		if(immigrationObj.getId() != null) {
 		canLcaJobDetails = immigrationCommonDao.getCandidateLcaJobDetails(immigrationObj.getId());
 		}
@@ -768,7 +781,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration.setImmigrationTemplateId(immiTemplate);
 			immigration.setCountry(immiTemplate.getCountry());
 		}
-		immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		if(!StringUtils.isNotBlank(immigration.getImmigrationUuid())){ // skip UUID generation in edit mode.
+			immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
 		OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(Long.parseLong(immigrationDTO.getAttorneyId()));
 		immigration.setOrgRelations(orgRelations);
 		immigration.setAttorneyOrgLocationId(orgRelations.getResponderLocationId());
@@ -1834,6 +1849,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		// calling the sendEmail method of emailScenerioUtil
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
+		
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.IMMIGRATION_NOTIFICATION_TO_BENEFICIARY, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
+		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), immigration.getCandidateUserId(), orgLocations,notificationScenario,new HashMap<String,String>());
 
 		// String actionLink="";
 		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations,
@@ -2492,7 +2515,9 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		}
 		if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
 		lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
 		}
+		
 		lca.setLcaUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		lca.setLcaNo(lcaDTO.getLcaNo());
 		lca.setLcaTitle(lcaDTO.getLcaTitle());
@@ -2881,6 +2906,33 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public List<String> getAllExpiredCandidatesFromLcaHistoryByLcaId(Long lcaId) {
 		return immigrationCommonDao.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 	}
+
+	/*
+	 * immigration reports
+	 */
+	@Override
+	public ResponseList<ImmigrationReportViewDTO> getImmigrationReports(ImmigrationReportViewDTO immigrationReportDTO,
+			OrgLocations orgLocations) {
+		return immigrationCommonDao.getImmigrationReports(immigrationReportDTO, orgLocations);
+	}
+	
+	/*
+	 * immigration reports
+	 */
+	@Override
+	public ResponseList<ImmigrationReportViewDTO> getImmigrationAttorneyReports(ImmigrationReportViewDTO immigrationReportDTO,
+			OrgLocations orgLocations) {
+		return immigrationCommonDao.getImmigrationAttorneyReports(immigrationReportDTO, orgLocations);
+	}
+
+	@Override
+	public ResponseList<LcaReportViewDTO> getLcaReportsList(LcaReportViewDTO lcaReportViewDTO, String status, String lcaStatus,
+			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String filterByDays,String positionsAvaialble)
+			throws Exception {
+		return immigrationCommonDao.getLcaReportList(lcaReportViewDTO, status, lcaStatus, searchValue, orgLocations, filterVal, filterByDays,positionsAvaialble);
+	}
+
+	
 
 	/*
 	 * LCA Code Ends Here

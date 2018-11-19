@@ -56,14 +56,20 @@
   </section>
 <script>
  $(document).ready(function() {
-	 requirementApplicantList();
-	 getClientList();
-	 getTeamsList();
+	 requirementApplicantList(true);
+	 /* getClientList(); */
+// 	 getTeamsList();
+	 
+	$("#dataTableSearch").keyup(function(e) {
+		   if(e.which === 13) {
+			   requirementApplicantList();
+		   }
+	});
  });
  
  </script>
 <script type="text/javascript">
-       function requirementApplicantList(){
+       function requirementApplicantList(onloadFlag){
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency = $('input[name=customDates]:checked').val(); 
@@ -73,15 +79,29 @@
     		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
     		searchValue = searchValue ? searchValue : "";
     		var employmentType = [];
-    		 $('input:checkbox[name=employmentType]:checked').each(function() 
-			 {
+    		 $('input:checkbox[name=employmentType]:checked').each(function() {
     			employmentType.push($(this).val());
 			 });
     		 var clientNameById = [];
-    		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-			 {
-    			 clientNameById.push($(this).val());
-			 });
+    	
+    			 if($("#allClients").is(":checked")) {
+    				 $('input:checkbox[name=clientNameById]:checked').each(function() {
+    			    	clientNameById.push($(this).val());
+    				}); 
+    			 } else {
+    				 if($('input:checkbox[name=myClientNameById]:checked').length > 0) {
+	    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
+	     			    	clientNameById.push($(this).val());
+	     				}); 
+    				 } else if($("#myOwnerClinetListUL li").length > 0){
+    					 $('input:checkbox[name=myClientNameById]').each(function() {
+ 	     			    	clientNameById.push($(this).val());
+ 	     				});
+    				 } else {
+    					 clientNameById.push("-1");
+    				 }
+    			 }
+    		 
     		 var teamNameById = [];
     		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 			 {
@@ -95,6 +115,8 @@
 			 });
     		 
     		 var searchType = $('input[name=searchType]:checked').val();
+    		 
+    		 var applicants = $('input[name=applicants]:checked').val();
     		 
     	    if(frequency == "Custom"){
     	        if(fromDate == ''){
@@ -115,13 +137,13 @@
     	        	$('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
     	            $("#custom-selects").hide();
-    	            var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	            var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&searchValue="+searchValue;
     	    	    prepareApplicantList(url);
     	        }
     	    }else{
     	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
     	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-    	        var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType;
+    	        var url = sourceleadUrl+"/applicantList?orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&applicants="+applicants+"&searchValue="+searchValue;
     		    prepareApplicantList(url);
     	    } 
 		
@@ -327,11 +349,7 @@ function applicantpagination(url){
     } );
     $("#applicantpagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   requirementApplicantList();
-    	   }
-    	});
+
 }
 
 </script>
@@ -456,7 +474,7 @@ $(".overIcon, .newActPop").click(function(e){
 					  <div class="col-md-3">
 						<div class="row">
 						   <div class="col-md-12 mb">
-								<label><strong>Search for</strong></label>
+								<label><strong>Jobs</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="searchTypeFilter">
 									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>
@@ -539,6 +557,16 @@ $(".overIcon, .newActPop").click(function(e){
 							</div>
 							 <div class="clearfix filterSearch-ul">
 									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
+									<c:forEach items="${teamsList}" var="team">
+											<li class="checkBox positionRelative">
+										<%-- 	<c:if test="${team.ownerUserId.id != null && loginUserId == team.ownerUserId.id}">
+												<input type="checkbox" name="teamNameById" checked value ="${team.id}"><label>${team.name}</label>
+												</c:if> --%>
+<%-- 												<c:if test="${team.ownerUserId.id != null && loginUserId != team.ownerUserId.id}"> --%>
+												<input type="checkbox" name="teamNameById" value ="${team.id}"><label>${team.name}</label>
+<%-- 												</c:if> --%>
+											</li>
+										</c:forEach>
 			                        </ul>
 							 </div> 
 						</div>
@@ -548,10 +576,46 @@ $(".overIcon, .newActPop").click(function(e){
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
-							 <div class="clearfix filterSearch-ul">
-								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
-								</ul>
-							 </div> 
+							
+							<div class="col-md-12 mb">
+								<label><strong>Select Client type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="clientTypeFilter">
+									     <li class="radioIput positionRelative" ><input  type="radio" name="clients" value ="myClients" onchange="showMyClients();" id="myClients"><label for="myClients">My Clients</label></li>
+										 <li class="radioIput positionRelative" ><input  type="radio" name="clients" value ="allClients" onchange="showAllClients();" id="allClients" checked="checked"><label for="allClients">All Clients</label></li>
+				                    </ul>
+								 </div>
+						   		
+						   		<div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
+										<c:forEach items="${allClients}" var="c">
+											<li class="checkBox positionRelative">
+												<input type="checkbox" name="clientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
+											</li>
+										</c:forEach>
+									</ul>
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myOwnerClinetListUL"  style="display: none;">
+										<c:forEach items="${myClients}" var="c">
+											<li class="checkBox positionRelative">
+												<input type="checkbox" name="myClientNameById" value ="${c.orgRelId}"><label>${c.clientName}</label>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+								
+								  <div class="col-md-12 mb">
+								<label><strong>Applicants</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="searchTypeFilter">
+										<li class="radioIput positionRelative" ><input  type="radio" name="applicants" value ="ALLApplicants" checked ><label for="No">ALL Applicants</label></li>
+									     <li class="radioIput positionRelative" ><input  type="radio" name="applicants"  value ="MYApplicants" ><label for="Yes">MY Applicants</label></li>
+				                    </ul>
+								 </div>
+						   </div>
+							 
+						   </div>
+							
+							  
 						</div>
 					  </div>
 					  
@@ -565,7 +629,7 @@ $(".overIcon, .newActPop").click(function(e){
 				</div>
 
 <script>
-function getClientList(){
+/* function getClientList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
@@ -584,6 +648,7 @@ function getClientList(){
 		}
 	});
 }
+
 function myClientFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myClientInput");
@@ -601,8 +666,26 @@ function myClientFunction() {
     }
 }
 
-function getTeamsList(){
+function clientFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("clientOwnerInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myOwnerClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+/* function getTeamsList(){
 	var sourceleadUrl = '${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
@@ -612,15 +695,47 @@ function getTeamsList(){
 				{
 					var report = data[i];
 					result = result + '<li class="checkBox positionRelative">';
-					result = result + '<input  type="checkbox" name="teamNameById" value ='+report.id+'><label>'+report.name+'</label>';
+					if(report.ownerUserId.id != null && loginUserId == report.ownerUserId.id){
+						result = result + '<input  type="checkbox" name="teamNameById" checked value ='+report.id+' id="teamNameById"><label>'+report.name+'</label>';
+					}
+					else{
+						result = result + '<input  type="checkbox" name="teamNameById" value ='+report.id+' id="teamNameById"><label>'+report.name+'</label>';
+					}
 					result = result + '</li>';
 				}
 			  $("#myTeamsListUL").empty();
 			  $("#myTeamsListUL").append(result);
 		}
 	});
-}
+} */
+function myClientFunction() {
+	var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
 
+        }
+    }
+    
+    ul = document.getElementById("myOwnerClinetListUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
 function myTeamsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myTeamsInput");
@@ -636,6 +751,18 @@ function myTeamsFunction() {
 
         }
     }
+}
+
+function showAllClients() {
+	$("ul#myOwnerClinetListUL > li input:checkbox").prop("checked",false);
+	$("#myClinetListUL").show();
+	$("#myOwnerClinetListUL").hide();
+}
+
+function showMyClients() {
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	$("#myClinetListUL").hide();
+	$("#myOwnerClinetListUL").show();
 }
 </script>
 
@@ -661,11 +788,25 @@ function projectExport(type){
 		 {
 			employmentType.push($(this).val());
 		 });
+		 
+		 
 		 var clientNameById = [];
-		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-		 {
-			 clientNameById.push($(this).val());
-		 });
+			 if($("#allClients").is(":checked")) {
+				$('input:checkbox[name=clientNameById]:checked').each(function() {
+			    	clientNameById.push($(this).val());
+				}); 
+			 } else {
+				 if($('input:checkbox[name=myClientNameById]:checked').length > 0) {
+    				$('input:checkbox[name=myClientNameById]:checked').each(function() {
+     			    	clientNameById.push($(this).val());
+     				}); 
+				 } else {
+					 $('input:checkbox[name=myClientNameById]').each(function() {
+	     			    	clientNameById.push($(this).val());
+	     				});
+				 }
+			 }
+		
 		 var teamNameById = [];
 		 $('input:checkbox[name=teamNameById]:checked').each(function() 
 		 {

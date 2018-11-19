@@ -37,9 +37,9 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+<%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();">History</a></li>
-	   </c:if>
+<%-- 	   </c:if> --%>
 	   
 	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
@@ -459,8 +459,9 @@ function getGroupFrequency(){
 	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var opt = json[i];
+				var date = opt.payPeriod.replace(",", " to ");
+				output = output + "<option value='" +opt.payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);
@@ -553,8 +554,8 @@ function runUSPayroll(){
 						        		result += '<td><div class="tblminwidth-50">--</div></td>';
 						        	}
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
-// 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
-						        	result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+ 						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
 						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
@@ -639,13 +640,14 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		  
 		  $('#payrollPayDate').datepicker({
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+	  		  maxDate: 0,
 		  	  onSelect : function(selected) {
-				addValidClass();
+			   addValidClass();
+/* 		  		document.getElementById("payrollPayDateDivId").style.display="block"; */
 			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });

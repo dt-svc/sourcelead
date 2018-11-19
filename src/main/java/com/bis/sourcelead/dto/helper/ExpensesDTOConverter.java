@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dto.helper;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.TreeMap;
@@ -10,6 +9,7 @@ import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.util.CommonUtil;
 
 public class ExpensesDTOConverter {
 
@@ -18,7 +18,7 @@ public class ExpensesDTOConverter {
 		expensesDTO.setId(expenses.getId());
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
 		expensesDTO.setExpensePurpose(expenses.getPurpose());
-		expensesDTO.setTotalAmount(expenses.getTotalAmount());
+		expensesDTO.setTotalAmount(expenses.getTotalAmount()); 
 		
 		if(expenses.getOrgRelationUUID() != null){
 		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());
@@ -36,7 +36,7 @@ public class ExpensesDTOConverter {
 			expensesDTO.setProjectClientUUID(expenses.getProjectMembers().getProjectClientUUID());
 			expensesDTO.setProjectStatus(expenses.getProjectMembers().getProjects().getProjectStatus().name());
 		}
-		SimpleDateFormat dateFormat=expenses.getOrgLocationId().getLocFullFormDateFormatter();
+		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){
 			expensesDTO.setStartDate(dateFormat.format(expenses.getStartDate()));	
 		}
