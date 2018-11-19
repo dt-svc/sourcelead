@@ -218,10 +218,10 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							}else {
 								joinDate = employee.getCreatedDate();
 							}
-							Date expDate = joinDate;
-							DateUtils.addYears(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
-							DateUtils.addMonths(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
-							if(expDate.before(freqStartDate)) {
+							Date eligibleDate = null;
+							eligibleDate = DateUtils.addYears(joinDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
+							eligibleDate = DateUtils.addMonths(eligibleDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
+							if(eligibleDate != null && eligibleDate.before(freqStartDate)) {
 								isPayheadApplincable = false;
 							}
 						}
