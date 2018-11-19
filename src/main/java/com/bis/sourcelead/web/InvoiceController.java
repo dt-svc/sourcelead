@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
@@ -608,7 +609,11 @@ public class InvoiceController {
 	public ModelAndView customizeInvoice(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
 			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+			modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateByUserIdAndOrgLocationId(user.getId(), orgLocations.getId()));
 			modelAndView.setViewName("billing/customInvoice");
 		} catch (Exception e) {
 			e.printStackTrace();

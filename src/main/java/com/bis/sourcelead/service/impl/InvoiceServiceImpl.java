@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +67,8 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
-
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
@@ -78,6 +81,8 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -100,6 +105,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -4241,6 +4247,62 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Override
 	public void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems) {
 		invoiceDao.deleteCreditDebitLineItem(creditDebitLineItems);
+	}
+
+	@Override
+	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, User user, OrgLocations orgLocations) {
+		Response<String> response = new Response<>();
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = null;
+			if (customInvoiceTemplateDTO.getId() > 0) {
+				customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(customInvoiceTemplateDTO.getId());
+			}
+			else {
+				customInvoiceTemplate = new CustomInvoiceTemplate();
+			}
+			customInvoiceTemplate.setItems(customInvoiceTemplateDTO.getJsonData());
+			customInvoiceTemplate.setUser(user);
+			customInvoiceTemplate.setOrgLocations(orgLocations);
+			
+			long result = invoiceDao.saveCustomInvoiceTemplate(customInvoiceTemplate);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@Override
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateByUserIdAndOrgLocationId(userId, orgLocationId);
+			if (customInvoiceTemplate != null) {
+				CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
+				
+				JSONArray jsonArray = new JSONArray(customInvoiceTemplate.getItems());
+				if (jsonArray != null && jsonArray.length() > 0) {
+					List<JSONObject> itemsObjectList = new LinkedList<>();
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
+					}
+					customInvoiceTemplateDTO.setItemObjectList(itemsObjectList);
+				}
+				customInvoiceTemplateDTO.setId(customInvoiceTemplate.getId());
+				return customInvoiceTemplateDTO;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 

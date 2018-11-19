@@ -10,6 +10,7 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.Response;
@@ -118,5 +119,10 @@ public interface InvoiceService {
 	CreditDebitLineItems getCreditDebitLineItemById(Long id);
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
+
+	Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, User user,
+			OrgLocations orgLocations);
+
+	CustomInvoiceTemplateDTO getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId);
 
 }

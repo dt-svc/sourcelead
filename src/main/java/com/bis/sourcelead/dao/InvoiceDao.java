@@ -11,6 +11,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -92,5 +93,11 @@ public interface InvoiceDao{
 	CreditDebitLineItems getCreditDebitLineItemById(Long id);
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
+
+	public CustomInvoiceTemplate getCustomInvoiceTemplateById(long customInvoiceTemplateId);
+
+	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
+
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId);
 
 }

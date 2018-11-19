@@ -1,8 +1,13 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
-<section class="content-wraper">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<div class="success_pop" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invoice Template Saved</span>
+</div>
+
+<section class="content-wraper">
 
 <div class="invLeftWrap">
 	
@@ -142,8 +147,8 @@
 					</div>
 					
 						<div class="popupFoot">
-							<a class="slBtn md colorBtn" href="javascript:void(0)" onclick="applyTextSettings(true)">Save</a>
-							<a class="slBtn md" href="javascript:void(0)" onclick="cancelTextSettings()">Cancel</a>
+							<a class="slBtn md colorBtn configureBtn disabled" id="applyTextSettingsBtn" href="javascript:void(0)" onclick="applyTextSettings(true)">Save</a>
+							<a class="slBtn md configureBtn disabled" id="cancelTextSettingsBtn" href="javascript:void(0)" onclick="cancelTextSettings()">Cancel</a>
 						</div>					
 					
 				</div>
@@ -196,15 +201,14 @@
 					</div>
 					
 					<div class="popupFoot">
-						<a class="slBtn md colorBtn" href="javascript:void(0)" onclick="applyImageSettings(true)">Save</a>
-						<a class="slBtn md" href="javascript:void(0)" onclick="cancelImageSettings()">Cancel</a>
+						<a class="slBtn md colorBtn configureBtn disabled" id="applyImageSettingsBtn" href="javascript:void(0)" onclick="applyImageSettings(true)">Save</a>
+						<a class="slBtn md configureBtn disabled" id="cancelImageSettingsBtn" href="javascript:void(0)" onclick="cancelImageSettings()">Cancel</a>
 					</div>	
 			</div>
 
 			<div id="tableSettingsTab" class="project_tabs_inn">
 
 					<div class="clearfix invLeftWrapCta">
-												
 						<div id="innerTab2" class="templatetab_inn">
 							<div class="project_tabs_inn_table">
 
@@ -235,7 +239,7 @@
 									<label class="col-md-5">Font Size </label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input class="form-control" type="text" id="tableHeadFontSize" onclick="applyTableSettings(false)"> 
+											<input class="form-control" type="text" id="tableHeadFontSize" onchange="applyTableSettings(false)"> 
 											<span class="input-group-addon">px</span>
 										</div>
 									</div>
@@ -274,7 +278,7 @@
 									<label class="col-md-5">Font Size</label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input class="form-control" type="text" id="tableBodyFontSize" onclick="applyTableSettings(false)">
+											<input class="form-control" type="text" id="tableBodyFontSize" onchange="applyTableSettings(false)">
 											<span class="input-group-addon">px</span>
 										</div>
 									</div>
@@ -283,9 +287,9 @@
 									<label class="col-md-5">Background Color</label>
 									<div class="col-md-7">
 										<div class="input-group">
-											<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" placeholder="#EAE6E6" type="text">
+											<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" placeholder="#f9f9f9" type="text">
 											<span class="input-group-addon" style="padding: 2px 10px;">
-												<input id="tableBodyBGColorSelector" value="#EAE6E6"
+												<input id="tableBodyBGColorSelector" value="#f9f9f9"
 												style="width: 20px; height: 20px;" onchange="colorPicker('tableBodyBGColorSelector', 'tableBodyBGColor'); applyTableSettings(false);" type="color">
 											</span>
 										</div>
@@ -308,327 +312,47 @@
 							</div>
 						</div>
 					</div>
-									
 					<div class="popupFoot">
-						<a class="slBtn md colorBtn" href="javascript:void(0)" onclick="applyTableSettings(true)">Save</a>
-						<a class="slBtn md" href="javascript:void(0)" onclick="cancelTableSettings()">Cancel</a>
+						<a class="slBtn md colorBtn configureBtn disabled" id="applyTableSettingsBtn" href="javascript:void(0)" onclick="applyTableSettings(true)">Save</a>
+						<a class="slBtn md configureBtn disabled" id="cancelTableSettingsBtn" href="javascript:void(0)" onclick="cancelTableSettings()">Cancel</a>
 					</div>
-
 			</div>
 	</div>
 
-	
 		<div class="invoicePreview">
 			<div class="invoicePreviewInn clearfix">
 				<ul class="list-unstyled customInvoiceItems clearfix" id="configItemsList">
-
-					<!-- Logo Part -->
-					<li id="invoiceLogo" data-section="image" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Logo</span>
-						<div>
-							<input class="checkbox-custom" id="cb1" checked="checked" type="checkbox">
-							<img src="/resources/images/logo-sourceld.png" id="logoImagePreview" alt="Logo" onclick="showImageSettingsTab(this)">
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					
-					<li class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-					<!-- Logo Part -->
-					
-					<!-- Company Heading -->
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Company Heading</span>
-						<div class="cusInList">
-							<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-							<label onclick="showTextSettingsTab(this)">Company Heading</label>
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					<li class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-					<!-- Company Heading -->
-					
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Client Details</span>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">BIS</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Mahaveer Manoj</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">manu.mahaveer@gmail.com</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">India, Telangana, Hyderabad</label>
-							</div>
-						
-						<span class="movIcon"></span>
-					</li>
-					
-					<!-- Invoice Details -->
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Invoice Details</span>
-						<div id="invoiceDetails">
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Invoice Id : 12345</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Invoice Date : 09/10/2018</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Due Date : 30/10/2018</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Payment Terms : 18 Days</label>
-							</div>
-						</div> 
-						<span class="movIcon"></span>
-					</li>
-					<!-- Invoice Details -->
-					
-					<!-- To -->
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">To</span>
-						<div id="invoiceTo">
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Snigita</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">snigitha@businessintelli.com</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Client Name</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">India, Hyderabad, Telangana</label>
-							</div>
-						</div> 
-						<span class="movIcon"></span>
-					</li>
-					<!-- To -->
-					
-					<!-- Bank Details -->
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Banking Details</span>
-						<div id="bankingDetails">
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Account Type : Savings</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Bank Name : ICICI</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Acc No : 915010023154645</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">IFSC Code : SBIN007170</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">First Name : Mahaveer</label>
-							</div>
-							<div class="cusInList">
-								<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-								<label onclick="showTextSettingsTab(this)">Last Name : Inumarthy</label>
-							</div>
-						</div> 
-						
-						<span class="movIcon"></span>
-					</li>
-					<!-- Banking Details -->
-					
-					<!-- Invoice Table -->
-					<li data-section="table" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
-						<span class="">Invoice Table</span>
-						<div class="project_tabs_inn_table">
-							<table onclick="showTableSettingsTab(this)" id="invoiceTable">
-								<thead>
-									<tr>
-										<th>Id</th>
-										<th>Name</th>
-										<th>Period</th>
-										<th>Brief Description</th>
-										<th>Qty</th>
-										<th>Rate</th>
-										<th>Total</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>0076</td>
-										<td>Mahaveer</td>
-										<td>08/10/2018 to 18/10/2018</td>
-										<td>Description</td>
-										<td>08</td>
-										<td>2800</td>
-										<td>45000.00</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					<!-- Invoice Table -->
-					
-					<!-- Discount -->
-					<li class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Discount</span>
-						<div class="cusInList">
-							<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-							<label onclick="showTextSettingsTab(this)">Discount (2 %) : 320.00</label>
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					<!-- Discount -->
-					
-					<!-- Total -->
-					<li class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-					<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-						<span class="">Total</span>
-						<div class="cusInList">
-							<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-							<label onclick="showTextSettingsTab(this)">Grand Total :INR 15680.00</label>
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					<!-- Total -->
-					
-					<!-- Footer -->
-					<li data-section="footer" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
-						<span class="">Footer</span>
-						<div>
-							<input class="checkbox-custom" id="cb10" checked="checked" type="checkbox">
-							<label onclick="showTextSettingsTab(this)">Address</label>
-						</div>
-						<span class="movIcon"></span>
-					</li>
-					<!-- Footer -->
+					<c:choose>
+						<c:when test="${invoiceTemplate != null}">
+							<jsp:include page="./customInvoiceConfigured.jsp"></jsp:include>
+						</c:when>
+						<c:otherwise>
+							<jsp:include page="./customInvoiceDefaultConfiguration.jsp"></jsp:include>
+						</c:otherwise>
+					</c:choose>
 				</ul>
 				
 				<div class="invBtn">
 					<input class="slBtn md" value="Preview" id="update_user" onclick="showTemplatePreview();" type="button">
 					<input class="slBtn md colorBtn" value="Save" onclick="saveTemplate();" type="button">
 				</div>
-				
 				<jsp:include page="../masterFooter.jsp" />
 			</div>
-			
-			
-			
 		</div>
 	
 </section>
  
 <div class="cusPerPop" id="templatePreview">
-<div class="cusPerPopInn">
-	<div class="popupHead"><span>Template Preview</span>
-		<i class="closePop pull-right popClose" onclick="closePreviewPopup()"></i> 
-	</div>
-	
-	<div class="popupContent clearfix" id="previewItems">
-		<div class="previewInnerCta">
-			<img src="/resources/images/logo-sourceld.png" style="float:center;width:50%;text-align: center;">
+	<div class="cusPerPopInn">
+		<div class="popupHead"><span>Template Preview</span>
+			<i class="closePop pull-right popClose" onclick="closePreviewPopup()"></i> 
 		</div>
-		<div class="previewInnerCta">
-			Company Heading 
-		</div>
-		<div class="previewInnerCta">
-			<h3>Client Details</h3>
-			BIS <br/>
-			Mahaveer Manoj <br/>
-			manu.mahaveer@gmail.com <br/>
-			India, Hyderabad <br/>
-		</div>
-		<div class="previewInnerCta" style="float:right; text-align: right;">
-		<h3>Invoice Details</h3>
-			BIS <br/>
-			Mahaveer Manoj <br/>
-			manu.mahaveer@gmail.com <br/>
-			India, Hyderabad <br/>			
-		</div>
-		<div class="previewInnerCta">
-		<h3>To</h3>
-			BIS <br/>
-			Mahaveer Manoj <br/>
-			manu.mahaveer@gmail.com <br/>
-			India, Hyderabad <br/>				
-		</div>
-		<div class="previewInnerCta" style="float:right; text-align: right;">
-			<h3>Banking Details</h3>
-			BIS <br/>
-			Mahaveer Manoj <br/>
-			manu.mahaveer@gmail.com <br/>
-			India, Hyderabad <br/>				
-		</div>
-		<div class="previewInnerCta previewInnerCtaFull">
-		<div class="project_tabs_inn_table borBot">
-			<table>
-				<thead>
-					<tr>
-						<th>One</th>
-						<th>Two</th>
-						<th>Three</th>
-						<th>Four</th>
-						<th>Five</th>
-						<th>Six</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-					</tr>
-					<tr>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-						<td>One</td>
-					</tr>					
-				</tbody>
-			</table>
-			</div>
-		</div>
-		<div class="previewInnerCta" style="float:right; text-align: right; display: block; width: 100%;">
-			Discount : type(text)
-		</div>
-		<div class="previewInnerCta" style="float:right; text-align: right; display: block; width: 100%;" >
-			Total : type(text)
-		</div>
-		<div class="previewInnerCta previewInnerCtaFull">
-			Footer : type(footer)
-		</div>
-		
-	</div>
+		<div class="popupContent clearfix" id="previewItems"></div>
 		<div class="popupFoot text-right">
           <button type="button" class="slBtn md" onclick="closePreviewPopup()"> Cancel</button>
         </div>	
-</div>
+	</div>
 </div> 
-
-
 
 <script type="text/javascript">
 	$(function() {
@@ -662,14 +386,18 @@
 	
 	function showTextSettingsTab(ele) {
 		var flag = false;
-		if(activeElement !== null) {
+		
+		if(activeElement === null) {
+			flag = true;
+		} else if(activeElement !== null && (activeElement === ele)) {
+			flag = false;
+		} else {
 			if(confirm("cancel previous edit and continue?")) {
 				flag = true;
 				cancelTextSettings();
 			}
-		} else {
-			flag = true;
 		}
+		
 		if(flag) {
 			//getting pre-filled values of activeElement
 			var fontFamily = $(ele).data("font_family") === undefined ? "arial" : $(ele).data("font_family");
@@ -711,12 +439,18 @@
 			$("#textSettingsTab").fadeIn();
 			$("#imageSettingsTab").hide();
 			$("#tableSettingsTab").hide();
-			$("#textSettingsTabHead").addClass("current");
-			$("#imageSettingsTabHead").removeClass("current");
-			$("#tableSettingsTabHead").removeClass("current");
+			$("#textSettingsTabHead a").addClass("Act");
+			$("#imageSettingsTabHead a").removeClass("Act");
+			$("#tableSettingsTabHead a").removeClass("Act");
 			$(".cusInList label").removeClass("activeElement");
-			$(ele).addClass("activeElement");
 			activeElement = ele;
+			$(ele).addClass("activeElement");
+			
+			if(ele !== null) {
+				$(".configureBtn").addClass("disabled");
+				$("#applyTextSettingsBtn").removeClass("disabled");
+				$("#cancelTextSettingsBtn").removeClass("disabled");
+			}
 		}
 	}
 	
@@ -831,9 +565,11 @@
 		$("#textPaddingRight").val("");
 		$("#textPaddingBottom").val("");
 		$("#textPaddingLeft").val("");
+		
+		$(".configureBtn").addClass("disabled");
 	}
 	
-	function refreshElementStyles(ele) {
+	function refreshElementTextStyles(ele) {
 		if($(ele).data("style_saved")) {
 			var fontFamily = $(ele).data("prev_font_family");
 			var fontSize = $(ele).data("prev_font_size");
@@ -852,45 +588,72 @@
 			var paddingLeft = $(ele).data("prev_padding_left");
 			$(ele).attr("style", fontFamily + ";" + fontStyle + ";" + fontSize + ";" + textAlign + ";" + textColor + ";" + textBGColorCB + ";" + bgColor + ";" + marginTop + ";" + marginRight + ";" + marginBottom + ";" + marginLeft + ";" + paddingTop + ";" + paddingRight + ";" + paddingBottom + ";" + paddingLeft + ";");
 
-			console.log("------------apply values----------")
-			console.log(fontFamily + ";" + fontStyle + ";" + fontSize + ";" + textAlign + ";" + textColor + ";" + textBGColorCB + ";" + bgColor + ";" + marginTop + ";" + marginRight + ";" + marginBottom + ";" + marginLeft + ";" + paddingTop + ";" + paddingRight + ";" + paddingBottom + ";" + paddingLeft + ";");
+			//console.log("------------apply values----------")
+			//console.log(fontFamily + ";" + fontStyle + ";" + fontSize + ";" + textAlign + ";" + textColor + ";" + textBGColorCB + ";" + bgColor + ";" + marginTop + ";" + marginRight + ";" + marginBottom + ";" + marginLeft + ";" + paddingTop + ";" + paddingRight + ";" + paddingBottom + ";" + paddingLeft + ";");
 		} else {
 			$(ele).removeAttr("style");
 		}
-		
-		/* var dataAttr = $(ele).data();
-		for(var e in dataAttr) {
-			$(ele).removeAttr("data-" + e);
-		} */
 	}
 	
 	function cancelTextSettings() {
 		var ele = activeElement;
 		activeElement = null;
 		refreshTextSettings();
-		refreshElementStyles(ele);
+		if($(ele).data("id") && $(ele).data("id") === "invoiceLogo") {
+			cancelImageSettings();
+		} else if($(ele).data("id") && $(ele).data("id") === "invoiceTable") {
+			cancelTableSettings();
+		} else {
+			refreshElementTextStyles(ele);
+		}
 	}
 	
 	function showImageSettingsTab(ele) {
 		var flag = false;
-		if(activeElement !== null) {
+		if(ele === null && activeElement !== null) {
+			activeElement = $("#logoImagePreview");
+			flag = true;
+		} else {
+			flag = false;
+		}
+		
+		if(!flag) {
+			if(activeElement === null) {
+				activeElement = $("#logoImagePreview");
+				flag = true;
+			} else {
+				if(activeElement === ele) {
+					flag = false;
+				} else if($(activeElement).data("id") !== undefined) {
+					flag = $(activeElement).data("id") === $(ele).data("id");
+				}
+			}
+		}
+		if(!flag){
 			if(confirm("cancel previous edit and continue?")) {
 				flag = true;
-				refreshTextSettings();
+				cancelImageSettings();
 			}
-		} else {
-			flag = true;
 		}
+		
 		if(flag) {
-			
 			//hiding other tabs and showing image-settings tab
 			$("#textSettingsTab").hide();
 			$("#imageSettingsTab").fadeIn();
 			$("#tableSettingsTab").hide();
-			$("#textSettingsTabHead").removeClass("current");
-			$("#imageSettingsTabHead").addClass("current");
-			$("#tableSettingsTabHead").removeClass("current");
-			activeElement = ele;
+			$("#textSettingsTabHead a").removeClass("Act");
+			$("#imageSettingsTabHead a").addClass("Act");
+			$("#tableSettingsTabHead a").removeClass("Act");
+			
+			$(".configureBtn").addClass("disabled");
+			$("#applyImageSettingsBtn").removeClass("disabled");
+			$("#cancelImageSettingsBtn").removeClass("disabled");
+
+			var top = $("#invoiceLogoGrid").offset().top;
+			window.scrollTo(0, (top-70));
+			if(ele !== null)
+				activeElement = ele;
+			
 		}
 	}
 	
@@ -923,27 +686,69 @@
 	
 	function applyImageSettings(saveFlag) {
 		if(activeElement !== null) {
+			//original values
 			var name = $("#logoImage").val();
 			var src = $("#logoImagePreview").attr("src");
 			var imagePosition = $("#imagePosition").val();
 			var imageSize = $("#imageSize").val();
 			
+			//converted to data attribute values
+			var dataName = name;
+			var dataSrc = src;
+			var dataImagePosition = "float:" + imagePosition;
+			var dataImageSize = "width:" + imageSize;
+			
 			$("#logoImagePreview").attr("src", src);
 			$("#logoImagePreview").attr("style", "float:" + imagePosition + ";width : " + imageSize);
 			
 			if(saveFlag) {
+				//saving actual values as "data" attributes to active element
 				$(activeElement).data("name", name);
 				$(activeElement).data("src", src);
 				$(activeElement).data("image_position", imagePosition);
 				$(activeElement).data("image_size", imageSize);
+				
+				//saving full-named values as "data-prev" attributes to active element
+				$(activeElement).data("prev_name", dataName);
+				$(activeElement).data("prev_src", dataSrc);
+				$(activeElement).data("prev_image_position", dataImagePosition);
+				$(activeElement).data("prev_image_size", dataImageSize);
+				
+				$(activeElement).data("style_saved", true);
+				
+				activeElement = null;
+				/* refreshImageSettings(); */
 			}
 		} else 
 			alert("Please select target image");
 	}
 	
 	function cancelImageSettings() {
+		var ele = activeElement;
 		activeElement = null;
 		refreshImageSettings();
+		
+		if($(ele).data("id") && $(ele).data("id") === "invoiceLogo") {
+			refreshElementImageStyles(ele);
+		} else if($(ele).data("id") && $(ele).data("id") === "invoiceTable") {
+			cancelTableSettings();
+		} else {
+			cancelTextSettings();
+		}
+	}
+	
+	function refreshElementImageStyles(ele) {
+		if($(ele).data("style_saved")) {
+			var name = $(activeElement).data("prev_name");
+			var src = $(activeElement).data("prev_src");
+			var imagePosition = $(activeElement).data("prev_image_position");
+			var imageSize = $(activeElement).data("prev_image_size");
+			
+			$("#logoImagePreview").attr("src", src);
+			$(ele).attr("style", imagePosition + ";" + imageSize + ";");
+		} else {
+			$(ele).removeAttr("style");
+		}
 	}
 	
 	function refreshImageSettings() {
@@ -955,22 +760,48 @@
 	
 	function showTableSettingsTab(ele) {
 		var flag = false;
-		if(activeElement !== null) {
+		if(ele === null && activeElement !== null) {
+			activeElement = $("#invoiceTableGrid");
+			flag = true;
+		} else {
+			flag = false;
+		}
+		
+		if(!flag) {
+			if(activeElement === null) {
+				activeElement = $("#invoiceTableGrid");
+				flag = true;
+			} else {
+				if(activeElement === ele) {
+					flag = false;
+				} else if($(activeElement).data("id") !== undefined) {
+					flag = $(activeElement).data("id") === $(ele).data("id");
+				}
+			}
+		}
+		if(!flag){
 			if(confirm("cancel previous edit and continue?")) {
 				flag = true;
-				refreshTextSettings();
+				cancelTableSettings();
 			}
-		} else {
-			flag = true;
 		}
+		
 		if(flag) {
 			$("#textSettingsTab").hide();
 			$("#imageSettingsTab").hide();
 			$("#tableSettingsTab").fadeIn();
-			$("#textSettingsTabHead").removeClass("current");
-			$("#imageSettingsTabHead").removeClass("current");
-			$("#tableSettingsTabHead").addClass("current");
-			activeElement = ele;
+			$("#textSettingsTabHead a").removeClass("Act");
+			$("#imageSettingsTabHead a").removeClass("Act");
+			$("#tableSettingsTabHead a").addClass("Act");
+			
+			$(".configureBtn").addClass("disabled");
+			$("#applyTableSettingsBtn").removeClass("disabled");
+			$("#cancelTableSettingsBtn").removeClass("disabled");
+			
+			var top = $("#invoiceTableGrid").offset().top;
+			window.scrollTo(0, (top-70));
+			if(ele !== null)
+				activeElement = ele;
 		}
 	}
 	
@@ -1023,6 +854,9 @@
 				$(activeElement).data("tableBodyBGColorSelector", tableBodyBGColorSelector);
 				$(activeElement).data("tableBodyFontColor", tableBodyFontColor);
 				$(activeElement).data("tableBodyFontColorSelector", tableBodyFontColorSelector);
+				
+				activeElement = null;
+				/* refreshTableSettings(); */
 			}
 		} else 
 			alert("Please select target table");
@@ -1043,29 +877,98 @@
 		$("#tableHeadFontColor").val("#FFFFFF");
 		$("#tableHeadFontColorSelector").val("#FFFFFF");
 		$("#tableBodyFontSize").val("14");
-		$("#tableBodyBGColor").val("#EAE6E6");
-		$("#tableBodyBGColorSelector").val("#EAE6E6");
+		$("#tableBodyBGColor").val("#f9f9f9");
+		$("#tableBodyBGColorSelector").val("#f9f9f9");
 		$("#tableBodyFontColor").val("#333");
 		$("#tableBodyFontColorSelector").val("#333");
 	}
 	
 	function showTemplatePreview() {
-		/* var text = "";
-		$("#configItemsList .previewGrid").each(function() {
-			var section = $(this).data("section");
-			var heading = $(this).find("span").html();
-			text += "<div>";
-			if(section === "image") {
-				var style = "float:center;width:50%;";
-				text += "<img src='/resources/images/logo-sourceld.png' style= " + style + " />";
-			} else if (section === "table" || section === "footer") {
-				text += heading + " : type(" + section + ")";
+		$("#previewItems").empty();
+		var text = "";
+		$("#configItemsList li").each(function () {
+			var index = 1;
+			if($(this).hasClass("sortable-hidden")) {
+				text += "<div class='previewInnerCta' data-type='hidden' data-section='item'></div>";
+				index++;
 			} else {
-				text += heading + " : type(" + section + ")";
+				var style = "";
+				if($(this).data("section") === "image") {
+					style = $(this).find("img").attr("style");
+					text += "<div class='previewInnerCta' data-type='image' data-section='item'>";
+					text += "	<span style='" + style + "'>";
+					text += "		<img src='" + $(this).find("img").attr("src") + "' style='" + style + "'>";
+					text += "	</span>";
+					text += "</div>";
+				} else if($(this).data("section") === "table") {
+					text += "<div class='previewInnerCta previewInnerCtaFull' data-type='table' data-section='item'>";
+					text += "		<div class='project_tabs_inn_table borBot'>";
+					text += "			<table>";
+					text += "				<thead>";
+					text += "					<tr>";
+					var thIndex = 1;
+					$(this).find("table thead th").each(function() {
+						style = $(this).attr("style");
+						text += "						<th style='" + style + "'>" + $(this).html() + "</th>";
+						if(thIndex === 1) {
+							/* style += "display:none;"; */
+							text += "					<span class='hide' style='" + style + "'>th</span>";
+						}
+						thIndex++;
+					});
+					text += "					</tr>";
+					text += "				</thead>";
+					text += "				<tbody>";
+					text += "					<tr>";
+					var trIndex = 1;
+					$(this).find("table tbody td").each(function() {
+						style = $(this).attr("style");
+						text += "						<td style='" + style + "'>" + $(this).html() + "</td>";
+						if(trIndex === 1) {
+							/* style += "display:none;"; */
+							text += "					<span class='hide' style='" + style + "'>td</span>";
+						}
+						trIndex++;
+					});
+					text += "					</tr>";
+					text += "				</tbody>";
+					text += "			</table>";
+					text += "		</div>";
+					text += "</div>";
+				} else if($(this).data("section") === "footer") {
+					text += "<div class='previewInnerCta previewInnerCtaFull' data-type='footer' data-section='item'>";
+					text += "	<span style='" + style + "'>";
+					text += "		Footer : type(footer)";
+					text += "	</span>";
+					text += "</div>";
+				} else {
+					if($(this).hasClass("eleRight")) {
+						style = "text-align: right";
+					} else {
+						style = "text-align: left";
+					}
+					
+					var headText = "";
+					var bodyText = "";
+					headText += "<div class='previewInnerCta' style='" + style + "' data-type='text' data-section='item'>";
+					/* headText += "	<h3>" + $(this).find("span").html() + "</h3>"; */
+					$(this).find("div[class='cusInList']").each(function() {
+						if($(this).find("input[type='checkbox']").is(":checked")) {
+							bodyText += "<span style='" + $(this).find("label").attr("style") + "'>" + $(this).find("label").html() + "</span>";
+						}
+					});
+					headText += bodyText;
+					headText += "</div>";
+					if(bodyText !== "") {
+						text += headText;
+					} else {
+						text += "<div class='previewInnerCta'></div>";
+					}
+				}
+				index++;
 			}
-			text += "</div>";
 		});
-		$("#previewItems").append(text); */
+		$("#previewItems").append(text);
 		$("#templatePreview").show();
 		$("body").css("overflow","hidden");
 	}
@@ -1075,40 +978,110 @@
 		$("body").css("overflow","auto");
 	}
 	function saveTemplate() {
+		var index = 1;
+		var items = [];
+		$("#previewItems div[data-section='item']").each(function() {
+			var subItems = [];
+			$(this).find("span").each(function() {
+				subItems.push({
+					
+					value : $(this).parent().data("type") === "image" 
+									? $(this).find("img").attr("src")
+									: $(this).parent().data("type") !== "table" ? $(this).html() : "",
+					style : $(this).attr("style") !== "undefined" ? $(this).attr("style") : ""
+				});
+			});
+			
+			items.push({
+				type : $(this).data("type"),
+				order : index,
+				subItems : subItems
+			});
+			index++;
+		});
 		
+		console.log(JSON.stringify(items));
+		
+ 		var id = $("#dashboardId").val();
+		var data = {"id":id, "jsonData":JSON.stringify(items)};
+		$.ajax({
+	    	type: "POST",
+	    	data: data,
+	        url: sourceleadUrl+"/saveCustomInvoiceTemplate",
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "INVALID_DATA") {
+					showError(response.responseMessage);
+	        		closeConfigurePopup();
+	        	} else if (response.response === "SUCCESS") {
+	        		$(".success_pop").show();
+	        		location.reload();
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        }
+		});
 	}
 </script>
-<!-- <script type="text/javascript" src="/resources/js/custom-invoice/drag.js"></script> -->
 <script type="text/javascript">
-
  	$(function() {
 		$("#configItemsList").sortable({
 			cancel: ".sortable-hidden" 
 		});
-		/* $("#invoiceDetails div").sortable(); */
-		/* $("#invoiceDetails div").draggable({
-			containment : "#invoiceDetails"
-		}); */ 
-		/*
-		$(".customInvoiceGrid").draggable({
-			iframeFix : true,
-			refreshPositions : true,
-			addClasses : false,
-			containment : "#configItemsList",
-			obstacle : "#invoiceLogo",
-			preventCollision : true
-		});
-			*/
 		$("#configItemsList").on("sortactivate", function(event , ui) {
 			$(".sortable-hidden").addClass("sortable-hidden-show");
 		});
-					
 		$("#configItemsList").on("sortdeactivate", function(event, ui) {
 			$(".sortable-hidden").removeClass("sortable-hidden-show");
 			// alert("sortdeactivate");
 			var index = 1;
+			var testIndex = 1;
+			var firstHiddenItemFlag = false;
+			var secondHiddenItemFlag = false;
+			var thirdHiddenItemFlag = false;
 			$("#configItemsList li").each(function() {
-				$(this).find("input").data("order", index++);
+				$(this).find("input").data("order", index);
+				index++;
+				if($(this).data("section") === "text" || $(this).data("section") === "hidden" || $(this).data("section") === "image") {
+					if($(this).data("section") === "hidden" && testIndex === 1) {
+						firstHiddenItemFlag = true;
+						testIndex++;
+						return;
+					}
+					if($(this).data("section") === "hidden" && testIndex === 2) {
+						secondHiddenItemFlag = true;
+						testIndex++;
+						return;
+					}
+					if($(this).data("section") === "hidden" && testIndex === 3) {
+						thirdHiddenItemFlag = true;
+						testIndex++;
+						return;
+					}
+					/* var rightFlag = ((firstHiddenItemFlag && secondHiddenItemFlag) || (firstHiddenItemFlag && !secondHiddenItemFlag) || (!firstHiddenItemFlag && secondHiddenItemFlag))
+									? testIndex % 2 > 0 
+									: testIndex % 2 === 0; */
+					var rightFlag = ((firstHiddenItemFlag && secondHiddenItemFlag && thirdHiddenItemFlag) ||
+									(firstHiddenItemFlag && !secondHiddenItemFlag && thirdHiddenItemFlag) ||
+									(firstHiddenItemFlag && secondHiddenItemFlag && !thirdHiddenItemFlag) ||
+									(firstHiddenItemFlag && !secondHiddenItemFlag && !thirdHiddenItemFlag) ||
+									(!firstHiddenItemFlag && secondHiddenItemFlag && thirdHiddenItemFlag) ||
+									(!firstHiddenItemFlag && secondHiddenItemFlag && !thirdHiddenItemFlag) ||
+									(!firstHiddenItemFlag && !secondHiddenItemFlag && thirdHiddenItemFlag) ||
+									(!firstHiddenItemFlag && !secondHiddenItemFlag && !thirdHiddenItemFlag))
+									? testIndex % 2 === 0 
+									:testIndex % 2 > 0;
+					$(this).find("div[class='cusInList']").css("text-align", rightFlag ? "right" : "left");
+					/* $(this).find("div[class='cusInList']").html(testIndex + " " + firstHiddenItemFlag + " " + secondHiddenItemFlag + " " + thirdHiddenItemFlag); */
+					if(rightFlag)
+						$(this).addClass("eleRight");
+					else
+						$(this).removeClass("eleRight");
+					testIndex++;
+				}
 			});
 		});
 		$("#configItemsList").disableSelection();

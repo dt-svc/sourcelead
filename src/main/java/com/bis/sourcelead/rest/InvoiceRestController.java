@@ -24,6 +24,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dto.BillingDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
@@ -2544,5 +2548,36 @@ return responseList;
 		CreditDebitLineItems lineItem = invoiceService.getCreditDebitLineItemById(Long.parseLong(id));
 		invoiceService.deleteCreditDebitLineItem(lineItem);
 		return "Success";
+	}
+	
+	@RequestMapping(value = "/saveCustomInvoiceTemplate", method = RequestMethod.POST)
+	public Response<String> saveDashboardItems(HttpServletRequest request, CustomInvoiceTemplateDTO customInvoiceTemplateDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				JSONArray jsonArray = new JSONArray(customInvoiceTemplateDTO.getJsonData());
+				if(jsonArray!=null) {
+					for(int i=0;i<jsonArray.length();i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						/*if (!jsonObject.has("name") || !jsonObject.has("checked") || !jsonObject.has("order") || !jsonObject.has("size")) {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+							return response;
+						}*/
+					}
+				}
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, user, orgLocations);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 }

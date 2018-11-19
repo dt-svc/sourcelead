@@ -39,6 +39,8 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -1034,6 +1036,49 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateById(long customInvoiceTemplateId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(CustomInvoiceTemplate.class, customInvoiceTemplateId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(customInvoiceTemplate);
+			return customInvoiceTemplate.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.user.id= :userId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty())
+				return customInvoiceTemplateList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }
