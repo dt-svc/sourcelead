@@ -479,7 +479,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							}else {
 								stmt.setString(7, null);
 							}
-							if(!leaveType.getLeaveEmpType().isEmpty()) {
+							if(StringUtils.isNotBlank(leaveType.getLeaveEmpType())) {
 								stmt.setString(8, leaveType.getLeaveEmpType());
 							}else {
 								stmt.setString(8, null);

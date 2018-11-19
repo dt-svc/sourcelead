@@ -1522,6 +1522,11 @@ public class UserDaoImpl implements UserDao {
 			 subQuery = " and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :orgLocationId and emp.userEmploymentType IN (:empTypes)) ";
 		 }
 		 
+		 String roleSubQuery = "";
+		 if(userDTO.getRoles() != null && userDTO.getRoles().size() >0) {
+			 roleSubQuery = " and userRole.roles.id IN (:roleIds)) ";
+		 }
+		 
 		 
 
 	    List<UserRole> usersRoleList = null;
@@ -1560,14 +1565,30 @@ public class UserDaoImpl implements UserDao {
 	    	 
 	     }
 	     
-	     Query queryObj = session.createQuery(query + query1.toString()+subQuery+qry);
-	     if(userDTO.getEmpTypes() != null && userDTO.getEmpTypes().size() >0) {
+	     Query queryObj = session.createQuery(query + query1.toString()+subQuery+roleSubQuery+qry);
+	     if(userDTO.getEmpTypes() != null && userDTO.getEmpTypes().size() >0 && userDTO.getRoles() != null && userDTO.getRoles().size() >0) {
+	    	 if(searchDates != null) {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameterList("empTypes", userDTO.getEmpTypes()).setParameterList("roleIds", userDTO.getRoles()).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+					 countlist = session.createQuery("select count(*) " + query+subQuery+roleSubQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).setParameterList("roleIds", userDTO.getRoles()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).setParameterList("roleIds", userDTO.getRoles()).list();
+					 countlist = session.createQuery("select count(*) " + query+subQuery+roleSubQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).setParameterList("roleIds", userDTO.getRoles()).list();
+				} 
+	     }else if(userDTO.getEmpTypes() != null && userDTO.getEmpTypes().size() >0) {
 	    	 if(searchDates != null) {
 					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameterList("empTypes", userDTO.getEmpTypes()).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
 					 countlist = session.createQuery("select count(*) " + query+subQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 				}else {
 					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).list();
 					 countlist = session.createQuery("select count(*) " + query+subQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("empTypes", userDTO.getEmpTypes()).list();
+				} 
+	     }else if(userDTO.getRoles() != null && userDTO.getRoles().size() >0) {
+	    	 if(searchDates != null) {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameterList("roleIds", userDTO.getRoles()).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+					 countlist = session.createQuery("select count(*) " + query+roleSubQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("roleIds", userDTO.getRoles()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameterList("roleIds", userDTO.getRoles()).list();
+					 countlist = session.createQuery("select count(*) " + query+roleSubQuery).setLong("orgLocationId", orgLocation.getId()).setParameterList("roleIds", userDTO.getRoles()).list();
 				} 
 	     }else {
 	    	 if(searchDates != null) {
@@ -1922,7 +1943,7 @@ public class UserDaoImpl implements UserDao {
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
 			//List<String> userList = this.getUserHierarchyUserCodeList(userId);
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-				searchQuery = " AND (U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%')";
+				searchQuery = " AND (CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) like '%" + userDTO.getSearchValue() + "%')";
 			}
 			if(teamsList.size()>0 && !teamsList.isEmpty()){
 			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
@@ -2108,9 +2129,7 @@ public class UserDaoImpl implements UserDao {
 			
 			
 			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-				query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
-							
+				query1.append(" (CONCAT (user.firstName,' ',IFNULL(user.lastName,'')) like '%" + userDTO.getSearchValue() + "%')");
 				}
 			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();

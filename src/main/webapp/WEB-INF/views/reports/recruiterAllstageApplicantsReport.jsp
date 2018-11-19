@@ -35,9 +35,9 @@ function getDayWiseReports(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>${recruiterUser.fullName}</h2>
+        <h2>${associateUser.fullName}</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; <a href="<c:url value='${appPath}/recruitersReports'/>">Recruiter(s) Report</a></div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; <a href="<c:url value='${appPath}/recruitersReports'/>">Recruiter(s) Report</a>&raquo; Recruiter(s) Applicants Report</div>
     </section>
     
     <div class="clearfix vendor_wrap">
@@ -58,7 +58,7 @@ function getDayWiseReports(){
 			</select>
 		<div id="runButtonDivJobs" class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="applicantsAllStageList();">Run</button></div> 
           
-          <div class="clearfix customLeaves repCustomDate" id="customSearchJobs">
+          <div class="clearfix customLeaves repCustomDate" id="customSearchApplicants">
               <div class="repCustomDateInn">
                 <input type="text" class="form-control calendar" value="${customStartDate}" id="ReportStartDateJobs" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
 				  <p id="reportsStartDateJobs"></p>
@@ -210,11 +210,11 @@ function getDayWiseReports(){
 function custDatesJobs(){
 	var reportType = $("#reportTypeIdJobs").val();
 	if(reportType=="custom"){
-		 document.getElementById("customSearchJobs").style.display="block";
+		 document.getElementById("customSearchApplicants").style.display="block";
 		 document.getElementById("runButtonDivJobs").style.display="none";
 	}
 	if(reportType != "custom"){
-	    document.getElementById("customSearchJobs").style.display="none";
+	    document.getElementById("customSearchApplicants").style.display="none";
 	    document.getElementById("reportsStartDateJobs").style.display="none";
 		document.getElementById("reportsEndDateJobs").style.display="none";
 		document.getElementById("runButtonDivJobs").style.display="block";
@@ -296,6 +296,7 @@ function associateCandidateDataTableList(){
 		 searchValue = searchValue ? searchValue : "";
 		 var url = sourceleadUrl+"/getAllSubmissionApplicantsForRecruiterReports?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userCode="+userCode+"&toStage="+toStage;
 		 associateCandidateListPagination(url,sourceleadUrl);
+		 $("#customSearchApplicants").hide();
 	 }
 	
 }

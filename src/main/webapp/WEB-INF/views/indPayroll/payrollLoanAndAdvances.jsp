@@ -80,21 +80,23 @@
               </div>
             </div>
             
-            
-            <div class="col-md-5 clearfix mt10">
-              <label class="clearfix">Pay Head</label>
-              <div class="clearfix">
-                 <div class="clearfix dropdown-select">
-							<select  class="form-control select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
-	                			<c:forEach var="list" items="${payheadList}">
-	                				<c:if test="${list.shortCode == 'L&D'}">
-	                					<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
-	                				</c:if>
-								</c:forEach>
-							</select>
-						</div>
-              </div>
+            <c:if test="${SourceLeadWeb_loginCountryName != 'United States'}">
+	            <div class="col-md-5 clearfix mt10">
+	              <label class="clearfix">Pay Head</label>
+	              <div class="clearfix">
+	                 <div class="clearfix dropdown-select">
+								<select  class="form-control select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
+		                			<c:forEach var="list" items="${payheadList}">
+		                				<c:if test="${list.shortCode == 'L&D'}">
+		                					<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
+		                				</c:if>
+									</c:forEach>
+								</select>
+							</div>
+	              </div>
             </div>
+            
+            </c:if>
             
             <div class="col-md-5 clearfix mt10">
 				<label class="clearfix">Applicable For</label>
