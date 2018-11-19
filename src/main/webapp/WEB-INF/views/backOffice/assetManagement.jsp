@@ -1146,6 +1146,7 @@ function closePopup(assetUUID,assetId) {
 <script>
 function saveAssetService(assetId){
 	if ($('#assetService_form').validate(false, validationSettings)) {
+		$("#save_button").attr("disabled", "disabled");
 		var rowHtmlContent =  $("#asset"+assetId).html();
 		var workingState = $("#workingState").val();
 		 $("#asset"+assetId).empty();
