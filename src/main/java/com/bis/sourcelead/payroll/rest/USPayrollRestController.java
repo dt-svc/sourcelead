@@ -816,7 +816,8 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
-		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		
+		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_WEEKLY, orgLocation.getId(), "");
 //			List<String> list = new ArrayList<>();
 //			for(PayrollScheduleCalenderDTO ) {
@@ -826,19 +827,19 @@ public class USPayrollRestController {
 //			int year = now.get(Calendar.YEAR);
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
-		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_MONTHLY, orgLocation.getId(), "");
 //			Calendar now = Calendar.getInstance(); // Gets the current date and
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfMonths(month, orgLocation);
 			
 			
-		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_BI_WEEKLY, orgLocation.getId(), "");
 			//			Calendar now = Calendar.getInstance();
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfBiWeeks(orgLocation);
-		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			Calendar now = Calendar.getInstance(); 
 //			listDates = payrollUtil.getAnnuallyDates(orgLocation);
 		}
@@ -1880,18 +1881,20 @@ public class USPayrollRestController {
 		{
 			List<UserDTO> userList = new ArrayList<>();
 			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-			Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
-			for(PayrollApprover approver :payrollApprover ) {
-				UserDTO userDTO = new UserDTO();
-				userDTO.setId(approver.getId());
-				StringBuilder sb = new StringBuilder();
-				if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
-					sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
-				}else {
-					sb.append(approver.getUser().getFirstName());
+			if(configurePayrollApprover != null) {
+				Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
+				for(PayrollApprover approver :payrollApprover ) {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setId(approver.getId());
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
+						sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
+					}else {
+						sb.append(approver.getUser().getFirstName());
+					}
+					userDTO.setFullName(sb.toString());
+					userList.add(userDTO);
 				}
-				userDTO.setFullName(sb.toString());
-				userList.add(userDTO);
 			}
 			return userList;
 		}

@@ -169,11 +169,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			}
 			
 			String query = "" , countQuery = "";
-			if(payrollReportDTO.getPayGroup() != 0l) {
-				query = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+			if(payrollReportDTO.getPayGroup() != null && payrollReportDTO.getPayGroup() != 0l) {
+				query = "from EmployeePayroll payroll left join fetch payroll.employee left join fetch payroll.employee.user where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 				countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.userGroup.id = :groupId and payroll.paysheetFrequency.orgLocation.id = :orgLocationId and payroll.paysheetFrequency.frequencyStartDate = :freqStartDate and payroll.paysheetFrequency.frequencyEndDate = :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 			}else {
-				query = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
+				query = "from EmployeePayroll payroll left join fetch payroll.employee left join fetch payroll.employee.user where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 				countQuery = "from EmployeePayroll payroll where payroll.paysheetFrequency.orgLocation.id = :orgLocationId and date(payroll.payCheckDate) BETWEEN :freqStartDate and :freqEndDate and payroll.submitForAproverStatus = 'APPROVED'";
 			}
 			
@@ -203,7 +203,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				queryObj.setParameter("toDate", toDate);
 			}
 			queryObj.setLong("orgLocationId", payrollReportDTO.getOrgLocationid());
-			if(payrollReportDTO.getPayGroup() != 0l) {
+			if(payrollReportDTO.getPayGroup() != null && payrollReportDTO.getPayGroup() != 0l) {
 				queryObj.setLong("groupId", payrollReportDTO.getPayGroup());
 			}
 			queryObj.setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
@@ -212,7 +212,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			int filteredCount = 0;
 			List<Long> countlist = null;
 			Query countQueryObj = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", payrollReportDTO.getOrgLocationid());
-			if(payrollReportDTO.getPayGroup() != 0l) {
+			if(payrollReportDTO.getPayGroup() != null &&payrollReportDTO.getPayGroup() != 0l) {
 				countQueryObj.setLong("groupId", payrollReportDTO.getPayGroup());
 			}
 			countQueryObj.setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
@@ -224,7 +224,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			if (payrollReportDTO != null) {
 				List<Long> filteredCountlist  = null;
 				Query filteredCountQueryObj =  session.createQuery("select count(*) " + countQuery + searchQuery.toString()).setLong("orgLocationId", payrollReportDTO.getOrgLocationid());
-				if(payrollReportDTO.getPayGroup() != 0l) {
+				if(payrollReportDTO.getPayGroup() != null && payrollReportDTO.getPayGroup() != 0l) {
 					filteredCountQueryObj.setLong("groupId", payrollReportDTO.getPayGroup());
 				}
 				filteredCountQueryObj.setDate("freqStartDate", freqStartDate).setDate("freqEndDate",freqEndDate);
@@ -363,6 +363,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			queryObj.setLong("deductionId", deductionId);
 			queryObj.setDate("startDate", startDate);
 			queryObj .setDate("endDate", endDate);
+			
 			
 			List<DeductionHistory> deductioHistory = queryObj.list();
 			yTDPayrollDTO.setDeductionYTD(getTotalDeducationYTD(deductioHistory));

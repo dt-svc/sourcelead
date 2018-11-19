@@ -36,7 +36,7 @@
           		<div class="col-md-9 customSetprice">
           				<div class="form-inline">
           					<div class="form-group">
-          						<input type="text" class="form-control" id="amountForAll" placeholder="Enter">
+          						<input type="text" class="form-control" id="amountForAll" onkeypress="return isNumbersPrice(event);" placeholder="Enter">
           					</div>
           					<div class="form-group dropdown-select bgPosition">
           						<select id="priceTypeVal">
@@ -82,10 +82,29 @@
 	$(".selectPrice").text(price);
 	
 }*/
+ 
+
 
 function setValuesForAllMCandidates(){
 	var amount = $("#amountForAll").val();
 	var amountType = $("#priceTypeVal").val();
+	var val = parseFloat($('#amountForAll').val());
+	if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	} 
+	/* var formatDigit = /^\d+\.\d\d$/
+	if(!formatDigit.test(amount)){
+		popupDisplay("Please enter two digits");
+		return false;
+	} */
+	
+	var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
+	if(format.test($('#amountForAll').val())){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
 	if(amount != '' && amountType != ''){
 		$("input[id='priceVal']").each(function() {
 			$(this).val(amount);
@@ -110,6 +129,9 @@ function callValidatePriceAmount(){
 	var flagPriceForSelectedRow = false;
 	var flagPriceTypeForEnteredPrice = false;
 	var flagPriceForEnteredPriceType = false;
+	var flagPriceValueEnterSpecialChar = false;
+	var flagPriceValueEnterZeroValue = false;
+	var flagPriceValueDotTwoDigit = false;
 	if(!$('input[id="sharedcheckbox"]').is(":checked")){
 		flagAtleastOneCheck = true;
 	}
@@ -149,6 +171,41 @@ function callValidatePriceAmount(){
 		}
 	});
 	
+	$("input[id='priceVal']").each(function() {
+		var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
+		if(format.test($(this).val())){
+			flagPriceValueEnterSpecialChar = true;
+		}
+	});
+	
+	$("input[id='priceVal']").each(function() {
+		if(isNaN($(this).val()) || (val === $(this).val())){
+			flagPriceValueEnterZeroValue = true;
+		}
+	});
+	
+	/* $("input[id='priceVal']").each(function() {
+		var formatDigit = /^\d+\.\d\d$/
+		if(!formatDigit.test($(this).val())){
+			flagPriceValueDotTwoDigit = true;
+		}
+	}); */
+	
+	/* if(flagPriceValueDotTwoDigit){
+		popupDisplay("Please enter two digits");
+		return false;
+	} */
+	
+	if(flagPriceValueEnterZeroValue){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+	
+	if(flagPriceValueEnterSpecialChar){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+	
 	if(flagRowForEnteredPrice){
 		popupDisplay("Please select checkbox for entered price");
 		return false;
@@ -173,6 +230,14 @@ function callValidatePriceAmount(){
 		popupDisplay("Please enter amount for amount type");
 		return false;
 	}
+	
+	var val = parseFloat($('#priceVal').val());
+	if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+		
 	var marketCandidateObj = [];
 	$("input:checkbox[id='sharedcheckbox']:checked").each(function(){
 		var objectValue = {};

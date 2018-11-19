@@ -332,7 +332,7 @@ function removeImmigDocumrntDynamic(id){
 	$('#uploadDocumentName'+id).val('');
 	$("#uploadFile"+id).removeAttr("data-validation");
 	$("#uploadFile"+id).removeAttr("data-validation-optional");
-	$("#uploadFile"+id).attr("data-validation", "required");
+	$("#uploadFile"+id).attr("data-validation", "required validatepdf");
 	
 }
 </script>

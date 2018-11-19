@@ -17,11 +17,17 @@ $(document).ready(function(){
 function reviewPayroll(){
 	$("#approveDiv").hide();
 	$("#reviewPayrollDiv").show();
+	
+	$("#approveLiID").removeClass('current'); 
+	$("#reviewLiID").addClass('current');
 }
 
 function approvePayrollTab(){
 	 $("#reviewPayrollDiv").hide();
 	$("#approveDiv").show(); 
+	
+	$("#reviewLiID").removeClass('current'); 
+	$("#approveLiID").addClass('current');
 }
 </script>
 
@@ -36,8 +42,10 @@ function approvePayrollTab(){
     
     <div class="tabsMenu clearfix">
    		<ul class="list-unstyled">
-		   <li class="current"><a onclick="reviewPayroll();">Review Payroll</a></li>
-		   <li><a id="approveDivID"  onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   <li class="current" id="reviewLiID"><a onclick="reviewPayroll();">Review Payroll</a></li>
+		   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+		   <li id="approveLiID"><a id="approveDivID"  onclick="approvePayrollTab();">Approve Payroll</a></li>
+		   </c:if>
 	   </ul>
    </div>
    
@@ -50,7 +58,9 @@ function approvePayrollTab(){
             <nav class="clearfix">
           <ul class="pull-right mr list-unstyled list-inline">
 <!--             <li><a href="#" class="btn btn-primary btnSuccess" onclick="sendPayrollForApproval();">Sent for Approve</a></li> -->
+            <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
             <li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
+            </c:if>
             <li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList'/>">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
@@ -200,6 +210,10 @@ function approvePayrollTab(){
   
  <script>
 function confirmPayroll(){
+	
+	$("#approveLiID").attr("onClick","approvePayrollTab();");
+	$("#reviewLiID").removeClass('current'); 
+	$("#approveLiID").addClass('current'); 
 	
 	var payPeriodNum = $("#payPeriodNum").val();
 	$("#reviewPayrollDiv").hide();

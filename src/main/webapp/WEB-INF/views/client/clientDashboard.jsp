@@ -2224,15 +2224,15 @@ $('#selector').delay(2000).fadeOut('slow');
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
-			$(".advancedsearch-mask").fadeOut();
+			$(".mask").fadeOut();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  $(".advancedsearch-mask").fadeIn();
+		  $(".mask").fadeIn();
 		}
 		function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
-			$(".advancedsearch-mask").fadeOut();
+			$(".mask").fadeOut();
 		};
 </script>
 	
@@ -2435,30 +2435,33 @@ function getClientActions(){
 //Client
 function closeClientFilterPop(){
 	$("#clientFilterId").hide();
-	$(".advancedsearch-mask").fadeOut();
+	$(".mask").fadeOut();
 }
 function clientFileterPopUp(){
 	 $("#clientFilterId").toggle();
-	 $(".advancedsearch-mask").fadeIn();
+	 $(".mask").fadeIn();
 }
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getClientList();
+// 	$(".mask").fadeOut();
 }
 
 //Client Contact
 function closeClientContactFilterPop(){
 	$("#clientContactFilterId").hide();
-	$(".advancedsearch-mask").fadeOut();
+	$(".mask").fadeOut();
 }
 function clientContactFilterPopUp(){
 	 $("#clientContactFilterId").toggle();
-	 $(".advancedsearch-mask").fadeIn();
+	 $(".mask").fadeIn();
 }
 function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getClientContactList();
+// 	 $(".mask").fadeIn();
+	
 }
 </script>
 <!-- clinet related Fileter popup -->
@@ -2554,7 +2557,6 @@ $("#dataTableSearch").keyup(function(event) {
     	var regex =  new RegExp(/[\\]/g);
     	
     	if(regex.test(searchData) == false){
-    		alert("searchData : "+searchData);
     		getClientList();
     	}else{
     		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");

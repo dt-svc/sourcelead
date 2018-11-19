@@ -42,7 +42,7 @@
 													<option value="AttorneyCategory" >Attorney</option>
 											</select>
 											</div>
-                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
+                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName" data-validation="required"/></div>
                                     <div class="col-md-3">
 
                                         <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
@@ -86,7 +86,7 @@
 							        				<option ${item.formCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
 											</select>
 											</div>
-                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
+                                            <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[${rows.count-1}].formName" id="formName0" class="form-control" value = "${item.formName}" field-name="Form Name" placeholder="Form name" data-name="formName" field-name="Form Name" data-validation="required"/></div>
 
                                             <div class="col-md-3 mt10" id="docNameDiv${rows.count-1}">
                                                 <label id="documentName${rows.count-1}"  class="text-primary tbldata-dotdot-vsm pull-left" title="${item.fileName}">${item.fileName}</label>&nbsp;&nbsp;<span id="delete_file${rows.count-1}" onclick = "deleteDoc('${rows.count-1}')"><i class="fa fa-trash removeIcon"></i></span>
@@ -212,7 +212,7 @@
     function deleteDoc(id) {
         $("#docNameDiv" + id).hide();
         $("#showDocDiv" + id).show();
-        $("#uploadFile" + id).attr("data-validation", "required");
+        $("#uploadFile" + id).attr("data-validation", "required validatepdf");
     }
 </script>
 

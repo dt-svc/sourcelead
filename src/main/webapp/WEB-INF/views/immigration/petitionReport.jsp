@@ -63,14 +63,13 @@ $(document).ready(function(){
             </div>
             
             <div class="col-md-5">
-            
             <div class="clearfix mb">
              <div class="form-group">
               <label class="clearfix">Duration</label>
 				<div class="clearfix">
                  <select class="form-control sel" id="dateFrequency" name="dateFrequency" onchange="showCustomFields();">
-						<option value="1_week">This week</option>
-						<option value="1_month">This Month</option>
+						<option value="Last_7_days">This week</option>
+						<option value="current_month">This Month</option>
 						<option value="YTD" selected>This year</option>
 						<option value="Last_Year">Last year</option>
 						<option value="Custom">Custom </option>
@@ -83,7 +82,7 @@ $(document).ready(function(){
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
 		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();" ><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -100,16 +99,9 @@ $(document).ready(function(){
 				</div>
             </div>
             </div>
-            
-            
             <div>
             
             </div>
-            
-            
-            
-
-            
 			</div>
       </div>
 	<div class="clearfix footerstyelsNew">
@@ -117,6 +109,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -295,14 +288,17 @@ $(document).ready(function(){
     var frequency = $("#dateFrequency").val();
     var fromDate = $("#custFromDate").val();
     var toDate = $("#custToDate").val();
+   
     if(frequency == "Custom"){
         if(fromDate == ''){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+            $("input#custFromDate").empty();
         }
         if(toDate == ''){
             $('#custToDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+            $("input#custToDate").val('');
         }
         if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
@@ -421,7 +417,7 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Phone</th>';
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
-        result = result + '<th>On Date</th>';
+        result = result + '<th>Open Date</th>';
         result = result + '<th>Attorney(Vendor Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
@@ -486,7 +482,7 @@ function immigrationReportPagination(url){
           }, {
               "targets": colIndex++,
               "data": "email",
-              "sorting":false,
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	   if(opt.email !=null && opt.email != '' && opt.email !='undefined'){
@@ -499,11 +495,11 @@ function immigrationReportPagination(url){
             },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "phone",
-	    	  	"sorting":false,
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		 if(opt.phone !=null && opt.phone != '' && opt.phone !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phone+'" >'+opt.phone+'</div>';
+	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phoneNumber+'" >'+opt.phoneNumber+'</div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -511,8 +507,8 @@ function immigrationReportPagination(url){
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "type",
-	    	  	"sorting":false,
+	    	  	"data": "petitionType",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		 if(opt.petitionType !=null && opt.petitionType != '' && opt.petitionType !='undefined'){
@@ -525,7 +521,7 @@ function immigrationReportPagination(url){
 	    	  }, {
 		    	  	"targets": colIndex++,
 		    	  	"data": "country",
-		    	  	"sorting":false,
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.country !=null && opt.country != '' && opt.country !='undefined'){
@@ -538,7 +534,7 @@ function immigrationReportPagination(url){
 		    	  },{
                   "targets": colIndex++,
                   "data": "onDate",
-                  "sorting":false,
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
                 	if (opt.openDateStr !== null && opt.openDateStr !== '' && opt.openDateStr !== 'undefined') {
@@ -551,7 +547,7 @@ function immigrationReportPagination(url){
                }, {
                     "targets": colIndex++,
                     "data": "attorneyName",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
@@ -564,7 +560,7 @@ function immigrationReportPagination(url){
                 }, {
                       "targets": colIndex++,
                       "data": "lcaStartDate",
-                      "sorting":false,
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
                    		if(opt.lcaStartDateStr !=null && opt.lcaStartDateStr != '' && opt.lcaStartDateStr !='undefined'){
@@ -577,7 +573,7 @@ function immigrationReportPagination(url){
                 }, {
                     "targets": colIndex++,
                     "data": "lcaEndDate",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
                  		if(opt.lcaEndDateStr !=null && opt.lcaEndDateStr != '' && opt.lcaEndDateStr !='undefined'){
@@ -590,7 +586,7 @@ function immigrationReportPagination(url){
                   }, {
                         "targets": colIndex++,
                         "data": "status",
-                        "sorting":false,
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
                      		if(opt.currUscisStatus !=null && opt.currUscisStatus != '' && opt.currUscisStatus !='undefined'){
@@ -603,7 +599,7 @@ function immigrationReportPagination(url){
                 }],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//     	    	"aaSorting": [[1,'desc']],
+    	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
     	    	"ordering": true,

@@ -8,4 +8,6 @@ public interface PayrollTaxDao {
 	public PayrollTax getPayrollTaxById(long id);
 
 	public PayrollTax getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId, String financialYear);
+
+	public PayrollTax getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId);
 }
