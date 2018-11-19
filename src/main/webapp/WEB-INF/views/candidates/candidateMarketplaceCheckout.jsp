@@ -51,7 +51,7 @@
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
               <li class="mr">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon"></span></li>
                  <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
                 <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary"><i class="fa fa-send paddingRight"></i>Check Out</button>
@@ -149,31 +149,31 @@
             <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div>
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
-              <li class="checkBox positionRelative">
+              <li class=" positionRelative">
                 <input name="orgManagers" value="1883" type="checkbox">
                 <label>Today</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>This Week</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>last Week</label>
               </li>
-             <li class="checkBox positionRelative">
+             <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>One Month</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>One Month Ago</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>This Year</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="orgManagers" value="" type="checkbox">
                 <label>Closed</label>
               </li>
@@ -219,10 +219,10 @@
               <li class="positionRelative mb">
                 <div class="row">
                 <div class="col-md-6">
-                	<input type="text" value="" class="form-control calendar" placeholder="From Date" id="frmDate">
+                	<input type="text" value="" class="form-control calendar" placeholder="From Date" id="creationStartDate">
                 </div>
                 <div class="col-md-6">
-                	<input type="text" value="" class="form-control calendar" placeholder="To Date" id="toDate">
+                	<input type="text" value="" class="form-control calendar" placeholder="To Date" id="creationEndDate">
 				</div>
              </div>
               </li>
@@ -234,7 +234,7 @@
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" type="button">
+        <input value="Apply" id="search_requiremet" onclick="closePop();getCandidateDetailsFromMarketcart();" class="btn btn-sm btn-success" type="button">
         <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
       </div>
     </div>
@@ -283,9 +283,11 @@ function goToOrgMarketPlaceList(){
 
 
 function getCandidateDetailsFromMarketcart(){
+	var creationStartDate = $("#creationStartDate").val();
+	var creationEndDate = $("#creationEndDate").val();
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart",
+		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate,
 		success : function(object) {
 			if(object != null){
 			var result ="";
@@ -398,6 +400,31 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
             }}
 	});
 	}
+	
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+	$("#creationStartDate").datepicker({
+ 	dateFormat: finalDateFormatPetitionSave,
+ 	changeMonth: true,
+	  	changeYear: true, 
+ 	onSelect: function (selected) {
+       var dt = $(this).datepicker('getDate', '+1d');
+       dt.setDate(dt.getDate() + 1);
+       $("#creationEndDate").datepicker("option", "minDate", dt);
+   	}
+		})
+
+	$("#creationEndDate").datepicker({
+ 	dateFormat: finalDateFormatPetitionSave,
+ 	changeMonth: true,
+	  	changeYear: true, 
+   	onSelect: function (selected) {
+       var dt = $(this).datepicker('getDate', '-1d');
+       dt.setDate(dt.getDate() - 1);
+       $("#creationStartDate").datepicker("option", "maxDate", dt);
+   	}
+		})
+
 </script> 
 <script>
 //Window scroll fixed header
@@ -422,9 +449,9 @@ $(window).scroll(function(){
 	}
 //Date Picker
 $( function(){
-	$("#frmDate").datepicker();
-	$("#toDate").datepicker();
- });
+	$("#creationStartDate").datepicker();
+	$("#creationEndDate").datepicker();
+});
 $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })

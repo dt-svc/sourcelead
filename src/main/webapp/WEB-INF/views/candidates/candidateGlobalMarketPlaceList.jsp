@@ -573,7 +573,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	var searchValue = $("#globalMarketSearh").val();
 	searchValue = searchValue ? searchValue : "";
 	var candidateLocation = $("#candidateLocation").val();
-	candidateLocation = (candidateLocation.length > 1) ? candidateLocation : "" ;
+	candidateLocation = (candidateLocation.length != null) ? candidateLocation : "" ;
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
