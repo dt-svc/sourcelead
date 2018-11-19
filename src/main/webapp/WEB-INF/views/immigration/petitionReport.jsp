@@ -68,8 +68,8 @@ $(document).ready(function(){
               <label class="clearfix">Duration</label>
 				<div class="clearfix">
                  <select class="form-control sel" id="dateFrequency" name="dateFrequency" onchange="showCustomFields();">
-						<option value="1_week">This week</option>
-						<option value="1_month">This Month</option>
+						<option value="Last_7_days">This week</option>
+						<option value="current_month">This Month</option>
 						<option value="YTD" selected>This year</option>
 						<option value="Last_Year">Last year</option>
 						<option value="Custom">Custom </option>
@@ -479,7 +479,7 @@ function immigrationReportPagination(url){
           }, {
               "targets": colIndex++,
               "data": "email",
-              "sorting":false,
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	   if(opt.email !=null && opt.email != '' && opt.email !='undefined'){
@@ -492,7 +492,7 @@ function immigrationReportPagination(url){
             },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "phone",
-	    	  	"sorting":false,
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
@@ -504,8 +504,8 @@ function immigrationReportPagination(url){
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "type",
-	    	  	"sorting":false,
+	    	  	"data": "petitionType",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		 if(opt.petitionType !=null && opt.petitionType != '' && opt.petitionType !='undefined'){
@@ -518,7 +518,7 @@ function immigrationReportPagination(url){
 	    	  }, {
 		    	  	"targets": colIndex++,
 		    	  	"data": "country",
-		    	  	"sorting":false,
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
 		    	  		if(opt.country !=null && opt.country != '' && opt.country !='undefined'){
@@ -531,7 +531,7 @@ function immigrationReportPagination(url){
 		    	  },{
                   "targets": colIndex++,
                   "data": "onDate",
-                  "sorting":false,
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
                 	if (opt.openDateStr !== null && opt.openDateStr !== '' && opt.openDateStr !== 'undefined') {
@@ -544,7 +544,7 @@ function immigrationReportPagination(url){
                }, {
                     "targets": colIndex++,
                     "data": "attorneyName",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
@@ -557,7 +557,7 @@ function immigrationReportPagination(url){
                 }, {
                       "targets": colIndex++,
                       "data": "lcaStartDate",
-                      "sorting":false,
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
                    		if(opt.lcaStartDateStr !=null && opt.lcaStartDateStr != '' && opt.lcaStartDateStr !='undefined'){
@@ -570,7 +570,7 @@ function immigrationReportPagination(url){
                 }, {
                     "targets": colIndex++,
                     "data": "lcaEndDate",
-                    "sorting":false,
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
                  		if(opt.lcaEndDateStr !=null && opt.lcaEndDateStr != '' && opt.lcaEndDateStr !='undefined'){
@@ -583,7 +583,7 @@ function immigrationReportPagination(url){
                   }, {
                         "targets": colIndex++,
                         "data": "status",
-                        "sorting":false,
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
                      		if(opt.currUscisStatus !=null && opt.currUscisStatus != '' && opt.currUscisStatus !='undefined'){
@@ -596,7 +596,7 @@ function immigrationReportPagination(url){
                 }],
                 "scrollCollapse": false,
     	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//     	    	"aaSorting": [[1,'desc']],
+    	    	"aaSorting": [[1,'desc']],
     	    	"bLengthChange": true,
     	    	"bDestroy": true,
     	    	"ordering": true,
