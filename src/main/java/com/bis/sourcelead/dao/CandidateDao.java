@@ -199,5 +199,8 @@ public interface CandidateDao {
 	
 	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
 
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
+
 
 }

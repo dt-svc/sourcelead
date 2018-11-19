@@ -1044,7 +1044,7 @@ public class CandidateRestController {
 		return marketCandidates;
 	}
 
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {

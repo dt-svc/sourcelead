@@ -2129,11 +2129,14 @@ public class CandidateDaoImpl implements CandidateDao {
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
 				query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
 				query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' ))");
+				query1.append(" or (concat(marketplace.currentRateCurrency,' ',marketplace.currentRate) like '%" + searchValue + "%' )");
+				query1.append(" or (concat(marketplace.expectedRateCurrencey,' ',marketplace.expectedRate) like '%" + searchValue + "%' )");
+				query1.append(" or (concat(marketplace.experienceYears,'.',marketplace.experienceMonths) like '%" + searchValue + "%' )");
+				query1.append(" or (concat(marketplace.marketRateCurrencey,' ',marketplace.marketPrice) like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
 			}
 			StringBuilder query2 = new StringBuilder("");
 			String sortingQry = "";
@@ -2332,7 +2335,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		session.update(marketPlace);
 	}
-
+	
+	@Override
+	@Transactional
 	public Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception {
 		
 		Integer profilePercentage = 0;
@@ -2540,6 +2545,65 @@ public class CandidateDaoImpl implements CandidateDao {
 			}catch(Exception e){
 					e.printStackTrace();
 			}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
+		List<CandidateMarketPlace> queryList = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<CandidateMarketPlaceDTO> responseList = new ResponseList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		StringBuilder query1 = new StringBuilder();
+		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
+			query1.append(" or (concat(marketplace.currentRateCurrency,' ',marketplace.currentRate) like '%" + searchValue + "%' )");
+			query1.append(" or (concat(marketplace.expectedRateCurrencey,' ',marketplace.expectedRate) like '%" + searchValue + "%' )");
+			query1.append(" or (concat(marketplace.experienceYears,'.',marketplace.experienceMonths) like '%" + searchValue + "%' )");
+			query1.append(" or (concat(marketplace.marketRateCurrencey,' ',marketplace.marketPrice) like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.summary like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+		}
+		String sortingQry = "";
+		if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getSortColumn())) {
+			String sortColumnName = candidateMarketPlaceDTO.getSortColumn();
+			sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+		}
+		List<Long> searchCandiIdsLong = new ArrayList<>();
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+		Query queryObject = session.createQuery(listQuery+query1+sortingQry).setParameter("candidateOrgLocId", orgLocations.getId());
+		queryList = queryObject.list();
+		String countListQuery = "select count(marketplace) ";
+		Query countQueryObject = session.createQuery(countListQuery+listQuery+query1+sortingQry).setParameter("candidateOrgLocId", orgLocations.getId());
+		countlist = countQueryObject.list();
+		int totalCount = 0;
+		if (countlist != null && !countlist.isEmpty()) {
+			totalCount = countlist.iterator().next().intValue();
+			filterCount = totalCount;
+		}
+		responseList.setRecordsTotal(totalCount);
+		if (query1.toString() != null && !query1.toString().isEmpty()) {
+			responseList.setRecordsFiltered(filterCount);
+		} else {
+			responseList.setRecordsFiltered(totalCount);
+		}
+		List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = new ArrayList<>();
+		for (CandidateMarketPlace candidateMarketPlace : queryList) {
+			CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+			BeanUtils.copyProperties(candidateMarketPlace, marketPlaceDTO);
+			int count = getMarketCartStatusByMarketIdOrgId(candidateMarketPlace.getId(), candidateMarketPlace.getOrgLocationId().getId());
+			if(count != 0){
+				marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+			}
+			candidateMarketPlaceDTOs.add(marketPlaceDTO);
+		}
+		responseList.setData(candidateMarketPlaceDTOs);
+		return responseList;
 	}
 	
 }

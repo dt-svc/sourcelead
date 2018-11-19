@@ -42,7 +42,7 @@
 													<option value="AttorneyCategory" >Attorney</option>
 											</select>
 											</div>
-                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName"/></div>
+                                    <div class="col-md-2 padding_right"><input type="text" name="immigrationFormList[0].formName" id="formName0" class="form-control" field-name="Form Name" placeholder="Form name" data-name="formName" data-validation="required"/></div>
                                     <div class="col-md-3">
 
                                         <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">

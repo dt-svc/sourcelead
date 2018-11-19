@@ -66,7 +66,7 @@
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
-					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
+					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="refreshPage();"></a> </span> </li>
                 </ul>
               </div>
            
@@ -620,6 +620,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + ' </ul>';
 							result = result + '<div class="clearfix"></div>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 tbldata-dotdot-verybig inlineBlock">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
@@ -688,7 +692,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 								profilePercentage =object[i].profilePercentage;
 							}
 							result = result + '  <div class="col-md-4 mb">';
-							result = result + '<div class="media profileDetails-Widget">';
+							result = result + '<div class="media profileDetails-Widget overflow_Auto" style="height:350px;">';
 							result = result + '<div class="media-left prfileImg pull-left">';
 							result = result + '<img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '<div class="clearfix mt5 textBold text-center">';
@@ -702,7 +706,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + marketDelelIcon;
 							result = result + '</div><div class="col-md-12 padding_right">';
 							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
-							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
+							result = result + '<h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
 							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+(object[i].currentRateCurrency == null ? "---" : object[i].currentRateCurrency)+'</span>'+(object[i].currentRate == null ? "---" : object[i].currentRate)+'<small class="paddingLeft">/'+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+' (Current)</small></li>';
@@ -710,6 +714,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
 							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + '</ul>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 inlineBlock tbldata-dotdot-200">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
@@ -1132,4 +1140,8 @@ function resetCandidateFilter(){
 	$("#candidateLocation").val("");
 	candidateList('gMarketPlace');
 }
+function refreshPage(){
+  location.reload(); // refresh the page.
+}
+
 </script>
