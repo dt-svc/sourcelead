@@ -82,7 +82,7 @@ $(document).ready(function(){
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
 		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();" ><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -288,14 +288,17 @@ $(document).ready(function(){
     var frequency = $("#dateFrequency").val();
     var fromDate = $("#custFromDate").val();
     var toDate = $("#custToDate").val();
+   
     if(frequency == "Custom"){
         if(fromDate == ''){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+            $("input#custFromDate").empty();
         }
         if(toDate == ''){
             $('#custToDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+            $("input#custToDate").val('');
         }
         if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
@@ -414,7 +417,7 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Phone</th>';
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
-        result = result + '<th>On Date</th>';
+        result = result + '<th>Open Date</th>';
         result = result + '<th>Attorney(Vendor Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
