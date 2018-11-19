@@ -83,44 +83,9 @@ $(document).ready(function(){
 			  </div>
 		</div>
 		
-		<!-- <div id="payperiodCalendarview" class="customEvents-Calendar" style="display: none;">
-			<div class="clearfix mb mt">
-			<div class="col-md-12">
-					<div class="col-md-3 mb">
-						<div class="clearfix">
-							<p class="text-primary">Pay Period</p>
-							<h4 class="text-primary">December 19-25, 2018</h4>
-						</div>
-						<div id="eventCalendar" class="clearfix width100percnt"></div>
-						<div id="eventCalendar" > </div>
-					</div>
-			</div>
-				<div class="col-md-3 mb">
-					<div id="period1"></div>
-					<div class="clearfix"></div>
-				</div>
-				<div class="col-md-3 mb">
-					<div id="period2"></div>
-					<div class="clearfix"></div>
-				</div>
-				<div class="col-md-3 mb">
-					<div id="period3"></div>
-					<div class="clearfix"></div>
-				</div>
-				<div class="col-md-3 mb">
-					<div id="period4"></div>
-					<div class="clearfix"></div>
-				</div>
-			</div>
-		</div> -->
 		
 		<div class="clearfix">
 		<div id="calenderViewDIV" class="mb mt"></div>
-		<!-- <div class="clearfix">
-			<p class="text-primary">Pay Period</p>
-			<h4 class="text-primary">December 19-25, 2018</h4>
-		</div>
-            <div id="eventCalendar" class='eventCalendar customEvents-Calendar'></div> -->
         </div>
 		
 	  </div>
@@ -170,7 +135,7 @@ function calenderPagination(){
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": true,
+    	"ordering": false,
     	"oLanguage": {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
@@ -238,7 +203,7 @@ function callDates(data){
         	 for (var k = 0; k < dates.length; k++) {
         		  eventDates[ new Date(''+dates[k]+'')] = new Date(''+dates[k]+'');
         		} 
-             var dateToday = new Date(''+opt.endDate+'');  // current date calender dates
+             var dateToday = new Date(''+opt.startDate+'');  // current date calender dates
         	  $("#eventCalendar"+i).datepicker({
         		  changeMonth: true,
         	      changeYear: true,
@@ -252,28 +217,27 @@ function callDates(data){
         	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
          }
          
-         for(var i=0;i<data.length;i++){
-        	 var opt = data[i];
-        	 var eventDates = {};
-        	 
+         for(var j=0;j<data.length;j++){
+        	 var opt = data[j];
+        	 var checkEventDates = {};
         	/*  var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
         	 
         	 // Preparing eventDates Array
         	 for (var k = 0; k < dates.length; k++) { */
-        		  eventDates[ new Date('10/15/2018')] = new Date('10/15/2018');
+        		 checkEventDates[ new Date('10/15/2018')] = new Date('10/15/2018');
         		/* }  */
-             var dateToday = new Date(''+opt.startDate+'');  // current date calender dates
-        	  $("#eventCalendar"+i).datepicker({
+             var todayDate = new Date('10/15/2018');  // current date calender dates
+        	  $("#eventCalendar"+j).datepicker({
         		  changeMonth: true,
         	      changeYear: true,
-        	      defaultDate: dateToday,
+        	      defaultDate: todayDate,
         		    beforeShowDay: function(date) {
-        		  	  var hlText = eventDates[date];
-        		  	return (hlText)?[true, "CheckDateHighlighted", '']: [true, '', ''];    
+        		  	  var hlText = checkEventDates[date];
+        		  	return (hlText)?[true, "CheckDateHighlighted", '']:[true, '', ''];    
         		  	}
         	    })
-        	  $("#eventCalendar"+i).removeClass('ui-state-active');
-        	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
+        	  $("#eventCalendar"+j).removeClass('ui-state-active');
+        	  $("#eventCalendar"+j).find("a.ui-state-active").removeClass('ui-state-active'); 
          }
    
     
