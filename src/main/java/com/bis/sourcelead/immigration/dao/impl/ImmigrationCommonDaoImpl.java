@@ -715,7 +715,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 			query.setParameter("searchVal", "%" + searchVal + "%");
 		}
-		
+		// if beneficiary logged in show only beneficiary Documents(Document Type)
 		if(myImmigration.equalsIgnoreCase("Y")) {
 			query.setParameter("docCategory", "Document Type");
 		}
@@ -770,8 +770,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 				query.setParameter("searchVal", "%" + searchVal + "%");
 			}
+			// if beneficiary logged in show only beneficiary forms(Document Type)
 			if(myImmigration.equalsIgnoreCase("Y")) {
-				query.setParameter("formCategory", "PetitionerCategory");
+				query.setParameter("formCategory", "Document Type");
 			}
 			candidateFormLst = query.list();
 			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
