@@ -1079,7 +1079,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 						result = result + '			<div class="col-md-12">';
 						result = result + '				<label class="clearfix">Description<span class="colorRed paddingLeft">*</span></label>';
 						result = result + '				<div class="clearfix validation_p">';
-						result = result + '					<textarea class="form-control" rows="3" name="description" id="description" placeholder="Description" data-validation="required" field-name="Description"></textarea>';
+						result = result + '					<textarea class="form-control" rows="3" name="description" id="description" placeholder="Description" data-validation="required validate_length length2-500" field-name="Description"></textarea>';
 						result = result + '				</div>';
 						result = result + '			</div>';
 					result = result + '	</div>';
