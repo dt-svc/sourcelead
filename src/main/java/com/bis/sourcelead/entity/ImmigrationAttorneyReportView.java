@@ -78,9 +78,14 @@ public class ImmigrationAttorneyReportView implements Serializable {
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	
 	@Column(name = "IMMIGRATION_UUID")
 	private String immigrationUUID;
+	
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
+	
+	@Column(name = "IMMI_TEMPLATE_UUID")
+	private String immiTemplateUUID;
 
 	public Long getId() {
 		return id;
@@ -249,6 +254,21 @@ public class ImmigrationAttorneyReportView implements Serializable {
 	public void setClient(String client) {
 		this.client = client;
 	}
-	
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getImmiTemplateUUID() {
+		return immiTemplateUUID;
+	}
+
+	public void setImmiTemplateUUID(String immiTemplateUUID) {
+		this.immiTemplateUUID = immiTemplateUUID;
+	}
 	
 }
