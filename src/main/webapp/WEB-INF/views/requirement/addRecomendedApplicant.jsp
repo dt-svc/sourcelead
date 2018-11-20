@@ -353,25 +353,29 @@ function init(){
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
 						} else if (response.response === "SUCCESS") {
-							var json = response.object;
-							var name = json.name;
-							var firstName = '';
-							var lastName = '';
-							if(name != null && name != 'undefined' && name != ''){
-								 firstName = name.split(".")[0]; 
-								 lastName = name.split(".")[1]; 
-								 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-										 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-									 firstName = name;
-								 }
+							if(response.object !== null) {
+								var json = response.object;
+								var name = json.name;
+								var firstName = '';
+								var lastName = '';
+								if(name != null && name != 'undefined' && name != ''){
+									 firstName = name.split(".")[0]; 
+									 lastName = name.split(".")[1]; 
+									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+										 firstName = name;
+									 }
+								}
+								
+								
+								 $("input[name=FirstName]").val(firstName);
+					        	 $("input[name=LastName]").val(lastName);
+					        	 $("input[name=EmailId]").val(json.email);
+					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+								 validateCandidateEmail();
+							} else {
+								showError("Resume Parsing Failed");								
 							}
-							
-							
-							 $("input[name=FirstName]").val(firstName);
-				        	 $("input[name=LastName]").val(lastName);
-				        	 $("input[name=EmailId]").val(json.email);
-				        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-							 validateCandidateEmail();
 							 $("#loading").removeAttr("style");
 						} else if (response.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);

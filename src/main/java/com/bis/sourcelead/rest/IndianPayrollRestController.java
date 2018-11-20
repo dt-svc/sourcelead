@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -125,6 +127,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	EmployeesService employeeService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -245,16 +250,6 @@ public class IndianPayrollRestController {
  		 Candidate candidate = candidateService.getCandidateByConsultantUserId(associateUserId, orgLocation.getId());
  		// Employees employees = employeeService.getEmployeeByUserAndOrgLocationId(candidate.getConsultantUser().getId(), orgLocation.getId());
  		 
- 		 Integer candidateExperienceInMonths = 0;
- 		
- 		 if(StringUtils.isNotBlank(candidate.getExperienceYears())) {
- 			candidateExperienceInMonths = (Integer.parseInt(candidate.getExperienceYears()) * 12);
- 		 }
- 		 
- 		 if(StringUtils.isNotBlank(candidate.getExperienceMonths())) {
-				candidateExperienceInMonths = candidateExperienceInMonths+Integer.parseInt(candidate.getExperienceMonths());
-		 }
- 		 
  		List<PayrollLoanAndAdvancesDTO> padvDTOList = new ArrayList<>();
  		HashMap<Long,PayrollLoanAndAdvancesDTO> loanAndAdvMap = new HashMap<>();
  		 try {
@@ -287,15 +282,10 @@ public class IndianPayrollRestController {
  	 	 						 }
  	 					}
  	 					
- 	 					if(candidateExperienceInMonths >= loanAndAdvExperienceInMonths) {
  	 						padvDTO.setId(padv.getId());
  	 	 	 				padvDTO.setName(padv.getName());
  	 	 	 				loanAndAdvMap.put(padv.getId(),padvDTO);
  	 	 	 				padvDTOList.add(padvDTO);
- 	 	 	 				
- 	 					}else {
- 	 						continue;
- 	 					}
  					}
  					
  				}
@@ -421,7 +411,40 @@ public class IndianPayrollRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
-}
+    }
+    
+    
+    @RequestMapping(value = "/app/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
+	public Response<Boolean> verifyLoanEligibilityByAssociateIdAndLoanAdv(HttpServletRequest request, AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
+		 Response<Boolean> resObj = new Response<>();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 try {
+				 boolean isLoanAdvEligible = true;
+				 PayrollLoanAndAdvances payrollLoanAndAdvances = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesById(Long.parseLong(loanAndAdvanceDTO.getLoanAndAdvName()));
+				 Employees employee = employeeService.getEmployeeByUserAndOrgLocationId(Long.parseLong(loanAndAdvanceDTO.getAssociateUserId()), orgLocation.getId());
+				 if(StringUtils.isNotBlank(payrollLoanAndAdvances.getApplicableFor()) && payrollLoanAndAdvances.getApplicableFor().equalsIgnoreCase("Experienced")) {
+						Date joinDate = null;
+						if(employee.getHireDate() != null) {
+							joinDate = employee.getHireDate();
+						}else {
+							joinDate = employee.getCreatedDate();
+						}
+						Date eligibleDate = null;
+						eligibleDate = DateUtils.addYears(joinDate, joinDate !=  null && payrollLoanAndAdvances.getExperienceYears() != null ? payrollLoanAndAdvances.getExperienceYears() : 0 );
+						eligibleDate = DateUtils.addMonths(eligibleDate, payrollLoanAndAdvances.getExperienceMonths() != null ? payrollLoanAndAdvances.getExperienceMonths() : 0);
+						if(eligibleDate != null && eligibleDate.after(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), loanAndAdvanceDTO.getEffectiveDate()))) {
+							isLoanAdvEligible = false;
+						}
+				 }
+			 resObj.setObject(isLoanAdvEligible);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+    }
     
     
     
