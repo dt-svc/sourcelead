@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +54,9 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+
 
 
 /**
@@ -2491,7 +2494,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation) {
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation, String creationStartDate, String creationEndDate) {
 		try{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = ""; 
@@ -2499,8 +2502,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 			createdByQuery = " and marketCartview.createdBy=:createdByuser";
 		}
+		StringBuilder dateQuery = new StringBuilder("");
+		if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate) && !"".equalsIgnoreCase(creationEndDate)) {
+			if(creationStartDate.contains("/") || creationEndDate.contains("/")){
+				creationStartDate = creationStartDate.replaceAll("/", "-");
+				creationEndDate = creationEndDate.replaceAll("/", "-");
+			}
+			Date formattedStartdate = new ConversionUtil().getDateFromString(creationStartDate);
+			Date formattedEnddate = new ConversionUtil().getDateFromString(creationEndDate);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MMMM-dd");
+			String customStartdate = dateFormat.format(formattedStartdate);
+			String customEnddate = dateFormat.format(formattedEnddate);
+			dateQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%M-%d') between '"+customStartdate+"' and '"+customEnddate+"'");
+			}
 		query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
-		Query queryObj = session.createQuery(query + createdByQuery).setLong("orgLocationId", orgLocation.getId());
+		Query queryObj = session.createQuery(query + createdByQuery + dateQuery).setLong("orgLocationId", orgLocation.getId());
+		System.out.println(query + createdByQuery + dateQuery);
 		if(!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 			queryObj.setLong("createdByuser", user.getId());
 		}
