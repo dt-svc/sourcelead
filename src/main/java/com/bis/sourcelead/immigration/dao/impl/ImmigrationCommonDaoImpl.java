@@ -2517,7 +2517,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	
         	ImmigrationReportViewDTO target = new ImmigrationReportViewDTO();
         	target.setId(source.getGeneratedId());
-        	
+        	target.setImmigrationUUID(source.getImmigrationUUID());
+        	target.setImmiTemplateUUID(source.getImmiTemplateUUID());
+        	target.setCandidateUUID(source.getCandidateUUID());
         	target.setPetitionType(Arrays.asList(source.getPetitionType()));
         	if(source.getCurrUscisStatus() != null) {
         	target.setCurrUscisStatus(source.getCurrUscisStatus());

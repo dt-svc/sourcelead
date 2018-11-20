@@ -75,9 +75,17 @@ public class ImmigrationReportView implements Serializable {
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	
 	@Column(name = "IMMIGRATION_UUID")
 	private String immigrationUUID;
+	
+	@Column(name = "IMMIGRATION_TEMPLATE_ID")
+	private Long immTemplateId;
+	
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
+	
+	@Column(name = "IMMI_TEMPLATE_UUID")
+	private String immiTemplateUUID;
 
 	public Long getId() {
 		return id;
@@ -246,5 +254,30 @@ public class ImmigrationReportView implements Serializable {
 	public void setAttorneyOrgLocationId(Long attorneyOrgLocationId) {
 		this.attorneyOrgLocationId = attorneyOrgLocationId;
 	}
+
+	public Long getImmTemplateId() {
+		return immTemplateId;
+	}
+
+	public void setImmTemplateId(Long immTemplateId) {
+		this.immTemplateId = immTemplateId;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getImmiTemplateUUID() {
+		return immiTemplateUUID;
+	}
+
+	public void setImmiTemplateUUID(String immiTemplateUUID) {
+		this.immiTemplateUUID = immiTemplateUUID;
+	}
+	
 	
 }
