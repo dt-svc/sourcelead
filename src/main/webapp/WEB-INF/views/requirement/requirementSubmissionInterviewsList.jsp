@@ -160,41 +160,45 @@ function getInterviewRatings(interviewId){
 	        	   var opt = '';
 	        	   for (var i=0; i<list.length; i++){
 	        		   opt = opt + '<li class="col-md-6 mb">';
-	        		   opt = opt + '	<p class="dotdot-class inlineBlock text-left pull-left">'+list[i].interviewerName+'</p>';
-	        		   opt = opt + '	<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">';
-		        		var details = eval(list[i].interviewerRating);
-		        		   $.each(details, function( k, v ) {
-		    	    		   var value = '';
-		    	    		   if(v['label'].trim() === "Rating"){
-		    	    			   
-		    	    			   switch (v['value']) {
-		    	    			    case 'Inadequate':
-		    	    			    	value = 1;
-		    	    			        break;
-		    	    			    case 'Adequate':
-		    	    			    	value = 2;
-		    	    			        break;
-		    	    			    case 'Good':
-		    	    			    	value = 3;
-		    	    			        break;
-		    	    			    case 'Excellent':
-		    	    			    	value = 4;
-		    	    			        break;
-		    	    			    case 'Outstanding':
-		    	    			    	value = 5;
-		    	    			        break;
-		    	    			    default: value = 0;
-		    	    			}
-		    	    			   for (var j=0; j<5; j++){
-		    	    				   var active = '';
-		    	    				   if(value > j){
-		    	    					   active = 'acivestar-rating';
-		    	    				   }
-		    	    				   opt = opt + '<li><i class="fa fa-star '+active+'"></i></li>';
-		    	    			   }
-		    	    		   }
-		    	    	   });
-	        		   opt = opt + '	</ul>';
+	        		   opt = opt + '	<p class="dotdot-class inlineBlock text-left pull-left">'+ list[i].interviewerName +'</p>';
+	        		   if(list[i].interviewerRating !== null) {
+		        		   opt = opt + '	<ul class="pull-left list-inline list-unstyled star-rating starating-li ml">';
+			        		var details = eval(list[i].interviewerRating);
+			        		   $.each(details, function( k, v ) {
+			    	    		   var value = '';
+			    	    		   if(v['label'].trim() === "Rating"){
+			    	    			   
+			    	    			   switch (v['value']) {
+			    	    			    case 'Inadequate':
+			    	    			    	value = 1;
+			    	    			        break;
+			    	    			    case 'Adequate':
+			    	    			    	value = 2;
+			    	    			        break;
+			    	    			    case 'Good':
+			    	    			    	value = 3;
+			    	    			        break;
+			    	    			    case 'Excellent':
+			    	    			    	value = 4;
+			    	    			        break;
+			    	    			    case 'Outstanding':
+			    	    			    	value = 5;
+			    	    			        break;
+			    	    			    default: value = 0;
+			    	    			}
+			    	    			   for (var j=0; j<5; j++){
+			    	    				   var active = '';
+			    	    				   if(value > j){
+			    	    					   active = 'acivestar-rating';
+			    	    				   }
+			    	    				   opt = opt + '<li><i class="fa fa-star '+active+'"></i></li>';
+			    	    			   }
+			    	    		   }
+			    	    	   });
+		        		   opt = opt + '	</ul>';
+	        		   } else {
+	        			   opt = opt + '<span>(Rejected Applicant)</span>';
+	        		   }
 	        		   opt = opt + '</li>';
 					}
 	        	   $("#"+interviewId+"interviewRatingDiv").empty();

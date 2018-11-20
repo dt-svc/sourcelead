@@ -9,7 +9,7 @@
 <script>
 $(document).ready(function(){
 	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
-	 getAllRelationssByOrgLocation();
+	  getAllRelationssByOrgLocation();
 	  if(loc.match("yyyy-MM-dd")){
 		  locDateFormat = 'YYYY-MM-DD';
 	  }if(loc.match("dd-MM-yyyy")){
@@ -38,16 +38,17 @@ $(document).ready(function(){
     <div class="clearfix minHeightcol5">
         <div class="clearfix row">
           <div class="col-md-5">
-           
+          
+        
            <div class="clearfix mb">
             <div class="form-group">
               <label class="clearfix">Company</label>
 				<div class="clearfix mySkillsUl">
-               <select multiple data-placeholder="Select Attorney" class="chosen-select form-control" name="attorneyId" id="attorneyId"  data-validation-optional="true">
+               <select multiple data-placeholder="Select Company" class="chosen-select form-control" name="attorneyId" id="attorneyId"  field-name="Company" data-validation="required"> 
 				</select>
 				</div>
             </div>
-            </div>
+            </div> 
             
             <div class="clearfix mb">
             <div class="form-group">
@@ -68,7 +69,7 @@ $(document).ready(function(){
            <div class="clearfix mb">
               <label class="clearfix">Petition Type</label>
 				<div class="clearfix">
-                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="required"> 
+                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="validate_Space" data-validation-optional="true"> 
 	                <c:forEach var="visa" items="${petitionTypeList}">
 		                     <option value="${visa.name}">${visa.name}</option>
 	                </c:forEach>
@@ -82,7 +83,7 @@ $(document).ready(function(){
 				<div class="clearfix">
                  <select class="form-control sel" id="dateFrequency" name="dateFrequency" onchange="showCustomFields();">
 						<option value="1_week">This week</option>
-						<option value="1_month">This Month</option>
+						<option value="current_month">This Month</option>
 						<option value="YTD" selected>This year</option>
 						<option value="Last_Year">Last year</option>
 						<option value="Custom">Custom </option>
@@ -317,17 +318,26 @@ $(document).ready(function(){
 <script type="text/javascript">
 function getAllRelationssByOrgLocation(){
 	 console.log(" before function calling ---->");
-	var type = "Vendor";
+	var type = null ;
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		type = "Client";
+	}else{
+		type = "Vendor";
+	}
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	
+		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
+		        	}
 		        	$('#attorneyId').empty();
 		            for(var i=0;i<json.length;i++){
-		            var opt = json[i];
-		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
+		            	  var opt = json[i];
+		            	  
+		            		$('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		        }
@@ -418,7 +428,7 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Phone</th>';
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
-        result = result + '<th>On Date</th>';
+        result = result + '<th>Open Date</th>';
         result = result + '<th>Attorney(Client Org Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
@@ -462,7 +472,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 

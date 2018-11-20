@@ -392,6 +392,7 @@ function getDatePicker(){
 	        	var dt = $(this).datepicker('getDate', '+1d');
 	        	loanAdv.getDetuctAmountDetails();
 	        	loanAdv.clearDateValidations();
+	        	verifyLoanEligibility();
 			}
 			 
 		});
@@ -406,5 +407,31 @@ function getDatePicker(){
 			}
 			 
 		});
+}
+
+function verifyLoanEligibility(){
+	var effectiveDate = $('#effectiveDate').val();
+	var associateUserId = $('#loanAndAdvAssociateUserId').val();
+	var loanAndAdvName = $('#loanAndAdvName').val();
+	if(effectiveDate != 'undefined' && effectiveDate != '' && effectiveDate != null){
+		$.ajax({
+	    	type: "POST",
+	    	url: sourceleadUrl+"/verifyLoanEligibilityByAssociateIdAndLoanAdv?loanAndAdvName="+loanAndAdvName+"&associateUserId="+associateUserId+"&effectiveDate="+effectiveDate,
+	        success: function(json) {
+	        	if(!json.object){
+	        		$('#savePaymentButton').attr('disabled', 'disabled');
+	        		var loginUserId = '${SourceLeadWeb_userId}';
+	        		if(loginUserId == associateUserId){
+	        			$('#effectiveDateDiv').append('<p class="jquery_form_error_message">You are ineligible to apply for this '+$('#loanAndAdvType').val()+'</p>');
+	        		}else{
+	        			$('#effectiveDateDiv').append('<p class="jquery_form_error_message">Associate ineligible to apply for this '+$('#loanAndAdvType').val()+'</p>');
+	        		}
+	        	}else{
+	        		$('#savePaymentButton').removeAttr('disabled');
+	        		$('#effectiveDateDiv').find('p').emplty();
+	        	}
+	        },
+	    });
+	}
 }
 </script>
