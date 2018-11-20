@@ -2727,6 +2727,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	LcaReportViewDTO target = new LcaReportViewDTO();
         	
         	target.setLcaNo(source.getLcaNo());
+        	target.setLcaUuid(source.getLcaUuid());
         	target.setLcaTitle(source.getLcaTitle());
         	target.setNoOfPositions(source.getNoOfPositions());
         	target.setSocCode(source.getSocCode());

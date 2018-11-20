@@ -339,7 +339,7 @@ function lcaReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	 if(opt.lcaNo !=null && opt.lcaNo != '' && opt.lcaNo !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" >'+opt.lcaNo+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/app/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		}  
