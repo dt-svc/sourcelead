@@ -715,7 +715,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 			query.setParameter("searchVal", "%" + searchVal + "%");
 		}
-		
+		// if beneficiary logged in show only beneficiary Documents(Document Type)
 		if(myImmigration.equalsIgnoreCase("Y")) {
 			query.setParameter("docCategory", "Document Type");
 		}
@@ -770,8 +770,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (StringUtils.isNotEmpty(searchVal) && searchVal != null) {
 				query.setParameter("searchVal", "%" + searchVal + "%");
 			}
+			// if beneficiary logged in show only beneficiary forms(Document Type)
 			if(myImmigration.equalsIgnoreCase("Y")) {
-				query.setParameter("formCategory", "PetitionerCategory");
+				query.setParameter("formCategory", "Document Type");
 			}
 			candidateFormLst = query.list();
 			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
@@ -2516,7 +2517,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	
         	ImmigrationReportViewDTO target = new ImmigrationReportViewDTO();
         	target.setId(source.getGeneratedId());
-        	
+        	target.setImmigrationUUID(source.getImmigrationUUID());
+        	target.setImmiTemplateUUID(source.getImmiTemplateUUID());
+        	target.setCandidateUUID(source.getCandidateUUID());
         	target.setPetitionType(Arrays.asList(source.getPetitionType()));
         	if(source.getCurrUscisStatus() != null) {
         	target.setCurrUscisStatus(source.getCurrUscisStatus());
@@ -2724,6 +2727,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	LcaReportViewDTO target = new LcaReportViewDTO();
         	
         	target.setLcaNo(source.getLcaNo());
+        	target.setLcaUuid(source.getLcaUuid());
         	target.setLcaTitle(source.getLcaTitle());
         	target.setNoOfPositions(source.getNoOfPositions());
         	target.setSocCode(source.getSocCode());
