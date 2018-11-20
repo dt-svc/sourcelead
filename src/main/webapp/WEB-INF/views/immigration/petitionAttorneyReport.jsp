@@ -472,7 +472,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
