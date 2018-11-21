@@ -49,6 +49,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dao.CronTrackerDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.dto.FileInfo;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.entity.CandidatesHotListDummy;
 import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
+import com.bis.sourcelead.entity.CronTracker;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -367,6 +369,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private AssetService assetService;
+	
+	@Autowired
+	private CronTrackerDao cronTrackerDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -3859,7 +3864,7 @@ public class EMailJobScheduler {
 	
     //	0 0 8 ? * MON-FRI  Every Day at * AM 
 	@Scheduled(cron = "0 0 8 ? * MON-FRI")
-//	@Scheduled(cron = "0 0/5 * 1/1 * ?") Every 5 min for testing purpose
+	//@Scheduled(cron = "0 0/1 * 1/1 * ?") Every 5 min for testing purpose
 	public void autoMaticPayrollRunning() throws Exception
 	{
 		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
@@ -3951,9 +3956,8 @@ public class EMailJobScheduler {
 					
  			}
 		}
+		saveCronTracker("Payroll","autoMaticPayrollRunning","0 0 8 ? * MON-FRI","Every Day at 8:00 AM");
 	}
-	
-	
 	
 	
 	/**
@@ -3990,5 +3994,28 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	
+	/**
+	 * @author rajat rana
+	 * 
+	 * Tracking cron method like when it called by the server
+	 * 
+	 * @param cronModule
+	 * @param methodName
+	 * @param cronExpression
+	 * @param cronType
+	 * @throws Exception
+	 */
+	
+	private void saveCronTracker(String cronModule,String methodName,String cronExpression,String cronType) throws Exception {
+		CronTracker ct = new CronTracker();
+		ct.setModuleName(cronModule);
+		ct.setMethodName(methodName);
+		ct.setCronExpression(cronExpression);
+		ct.setCrontype(cronType);
+		ct.setCronRunDateTime(new Date());
+		cronTrackerDao.saveCronTracker(ct);
+		
+	}
 	
 }
