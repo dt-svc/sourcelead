@@ -96,7 +96,7 @@ $(document).ready(function(){
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
 		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();"><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -255,31 +255,33 @@ $(document).ready(function(){
       }if(locationDate.match("yyyy-dd-MM")){
           finalDateFormatEndDate = 'yy-dd-mm'; 
       }
-
-      $( "#custFromDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-            maxDate: new Date() ,
-            onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custToDate").datepicker("option", "minDate", dt);
-             removeStartValid();
-            } 
-      });
       
-      $( "#custToDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-          maxDate: new Date() ,
-      onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custFromDate").datepicker("option", "maxDate", dt);
-             removeEndValid();
-            }});
+      
+      $('#custFromDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custToDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+      
+      $('#custToDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custFromDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+      
+
   }
 
 	function removeStartValid(){
