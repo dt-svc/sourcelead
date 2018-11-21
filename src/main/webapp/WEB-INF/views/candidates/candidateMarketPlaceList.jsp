@@ -263,7 +263,7 @@ function callValidatePriceAmount(){
 		 if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === 'SUCCESS') {
-            	location.href = "/app/globalMarketplacePage";
+            	location.href = "/console/globalMarketplacePage";
             }else{
             	 showError("Operation failed, please try again");
             }

@@ -115,12 +115,12 @@ public class HomeController {
 		logger.debug(" *** HomeController init with: ");
 	}
 
-	@RequestMapping(value = {"/app", "/app/**"}, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = {"/console", "/console/**"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public String defaultPage(HttpServletRequest request) {
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (auth != null && auth.getPrincipal() != null) {
-				return "redirect:/app/dashboard";
+				return "redirect:/console/dashboard";
 			} else {
 				return "redirect:/login";
 			}
@@ -136,7 +136,7 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(exception));
 		if (auth != null && auth.getPrincipal() != null) {
-			return "redirect:/app/dashboard";
+			return "redirect:/console/dashboard";
 		} else {
 			return "redirect:/login";
 		}
@@ -150,7 +150,7 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = {"/resetPassword", "/app/resetPassword"})
+	@RequestMapping(value = {"/resetPassword", "/console/resetPassword"})
 	public ModelAndView resetPassword(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("resetPassword");
@@ -206,11 +206,11 @@ public class HomeController {
 				return new ModelAndView("redirect:/logout?allowed=false");
 			}
 			if (isNullOrEmpty(requirementUUID)) {
-				return new ModelAndView("redirect:/app/dashboard");
+				return new ModelAndView("redirect:/console/dashboard");
 			} else {
 				StringBuilder redirectUrl = new StringBuilder();
 				try {
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=")
+					response.sendRedirect(redirectUrl.append("/console/professionalRequirements?requirementUUID=")
 							.append(requirementUUID).toString());
 				} catch (IOException e) {
 
@@ -319,7 +319,7 @@ public class HomeController {
 	}
 
 	
-	/*@RequestMapping(value = { "/ehCacheTest" ,  "/app/ehCacheTest"}, method = RequestMethod.GET)
+	/*@RequestMapping(value = { "/ehCacheTest" ,  "/console/ehCacheTest"}, method = RequestMethod.GET)
 	public ModelAndView ehCachePage() {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("ehCacheTest");
@@ -353,7 +353,7 @@ public class HomeController {
 	 * @return ModelAndView
 	 */
 	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
-	@RequestMapping(value = "/app/uploadForm")
+	@RequestMapping(value = "/console/uploadForm")
 	public ModelAndView fileUploadForm(HttpServletRequest request) {
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
 				.getAttribute("sessionData");

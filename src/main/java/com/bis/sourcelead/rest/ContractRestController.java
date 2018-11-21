@@ -100,7 +100,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
  */
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ContractRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ContractRestController.class);
 	@Value("${static.path}")
@@ -593,7 +593,7 @@ public class ContractRestController {
 		return flag;
 	}
 	
-	@RequestMapping(value = "/approveContract", method = RequestMethod.POST)
+	@RequestMapping(value = "/consoleroveContract", method = RequestMethod.POST)
 	@ResponseBody
 	public String approveContract(@RequestParam(value = "recordId", required = false) String recordId, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "rejectReason", required = false) String rejectReason, HttpServletRequest request) throws Exception
 	{

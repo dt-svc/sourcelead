@@ -492,7 +492,7 @@ function emplyoeesListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		          if(user.userName !=null && user.userName !='' && user.userName !='undefined'){
-						 result = result +"<div class='proj_show divmax-width dotdotwithImage'><a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a><i class='fa fa-binoculars pull-right'></i></div>";
+						 result = result +"<div class='proj_show divmax-width dotdotwithImage'><a href='<c:url value='/console/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a><i class='fa fa-binoculars pull-right'></i></div>";
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}

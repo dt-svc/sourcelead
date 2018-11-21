@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  */
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateCertificationsController {
 
 	/**

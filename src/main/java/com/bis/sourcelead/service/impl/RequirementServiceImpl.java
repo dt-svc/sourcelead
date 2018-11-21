@@ -3994,8 +3994,8 @@ public class RequirementServiceImpl implements RequirementService {
 	private String getloaactionList(Long requirementId) throws Exception {
 		String tempHTML = "";
 		String url = sourceleadUrl;
-		if (sourceleadUrl.indexOf("/app") != -1) {
-			url = sourceleadUrl.split("/app")[0];
+		if (sourceleadUrl.indexOf("/console") != -1) {
+			url = sourceleadUrl.split("/console")[0];
 		}
 		List<RequirementLocations> locationsList = requirementLocationsService
 				.getRequirementLocationsListByRequirementId(requirementId);

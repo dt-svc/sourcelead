@@ -14,7 +14,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ExpensesApprovalController {
 
 	@Value("${sourceleadUrl}")

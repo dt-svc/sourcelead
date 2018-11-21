@@ -103,7 +103,7 @@ background-color: #fcfcfc;
 						        </div>
 						        </form:form>
 			        <div class="pull-left">
-		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+		                 <a href="<c:url value='${appPath}/consolelyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
 		            </div>
              </div>
          </sec:authorize>  
@@ -1602,7 +1602,7 @@ function getEmployeeTotalCounts(){
 	    		   if(report.employeeRequestedCounts == 0){
 	      				$('#empReq').html("Requested");
 	      			   }else{
-	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      				 $('#empReq').html("<a href='/console/employeeRequestedLeaves'>Requested</a>"); 
 	      			   }
     			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
     		   }
@@ -1610,7 +1610,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeApprovedCounts == 0){
     	   				$('#empApp').html("Approved");
     	   			   }else{
-    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   				$('#empApp').html("<a href='/console/employeeApprovedLeaves'>Approved</a>"); 
     	   			   }
     			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
     		   }
@@ -1618,7 +1618,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeRejectedCounts == 0){
     	   				$('#empRej').html("Rejected");
     	   			   }else{
-    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   				$('#empRej').html("<a href='/console/employeeRejectedLeaves'>Rejected</a>");
     	   			   }
     			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
     		   }
@@ -1626,7 +1626,7 @@ function getEmployeeTotalCounts(){
     			   if(report.employeeCancelledCounts == 0){
     				    $('#empCanc').html("Cancelled");
     	   			   }else{
-    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   				$('#empCanc').html("<a href='/console/employeeCancelLeaves'>Cancelled</a>");
     	   			   }
     			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
     		   }
@@ -1649,7 +1649,7 @@ function getSelfTotalCounts(){
 	   		if(report.selfPendingCounts == 0){
    				$("#selfpend").html("Pending"); 
    			   }else{
-   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   				$("#selfpend").html("<a href='/console/pendingLeaves'>Pending</a>"); 
    			   }
    			   $("#selfPendingCounts").html(report.selfPendingCounts); 
    		   }
@@ -1657,7 +1657,7 @@ function getSelfTotalCounts(){
    			if(report.selfApprovedCounts == 0){
    				$("#selfapp").html("Approved"); 
    			   }else{
-   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   				$("#selfapp").html("<a href='/console/consolerovedLeaves'>Approved</a>");
    			   }
    			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
    		   }
@@ -1665,7 +1665,7 @@ function getSelfTotalCounts(){
    			   if(report.selfRejectedCounts == 0){
    				$("#selfrej").html("Rejected"); 
    			   }else{
-   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   				$("#selfrej").html("<a href='/console/rejectedLeaves'>Rejected</a>");
    			   }
    			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
    		   }
@@ -1674,7 +1674,7 @@ function getSelfTotalCounts(){
    			if(report.selfCancelledCounts == 0){
    				$('#selfcanc').html("Cancelled");
    			   }else{
-   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   				$("#selfcanc").html("<a href='/console/cancelLeaves'>Cancelled</a>");
    			   }
    			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
    		   }

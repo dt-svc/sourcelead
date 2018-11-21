@@ -58,7 +58,7 @@ public class ApplicantsBackoutReportDaoImpl implements ApplicantsBackoutReportDa
 			countList = submissionCount.list();
 			if (countList.isEmpty()) {
 				ApplicantsBackoutDTO applicantsBackoutDTO = new ApplicantsBackoutDTO();
-				//applicantsBackoutDTO.setCountFlag("true");
+				//consolelicantsBackoutDTO.setCountFlag("true");
 				countList.add(applicantsBackoutDTO);
 			}
 			return countList;

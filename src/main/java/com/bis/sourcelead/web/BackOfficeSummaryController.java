@@ -19,7 +19,7 @@ import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class BackOfficeSummaryController {
 	
 private static final Logger logger = LoggerFactory.getLogger(BackOfficeSummaryController.class);

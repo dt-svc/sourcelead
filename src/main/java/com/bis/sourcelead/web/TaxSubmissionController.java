@@ -45,7 +45,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class TaxSubmissionController {
 	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionController.class);
 
@@ -131,7 +131,7 @@ public class TaxSubmissionController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				List<SourceleadTaxFormDTO> formList = taxService.getTaxFormTypeList(false);
-				return "redirect:/app/itDeclaration/getForm?uuid=" + formList.get(0).getUuid()
+				return "redirect:/console/itDeclaration/getForm?uuid=" + formList.get(0).getUuid()
 						+ (autoSelectUser ? "&autoSelectUser=" + autoSelectUser: "");
 			}
 		} catch (Exception e) {

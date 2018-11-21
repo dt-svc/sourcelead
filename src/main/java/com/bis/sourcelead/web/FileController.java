@@ -48,7 +48,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class FileController {
 
 	@Value("${static.path}")
@@ -326,7 +326,7 @@ public class FileController {
 
 		if (contentType.startsWith("image/")) {
 			try {
-				response.sendRedirect(sourceleadUrl.replace("/app", "") + documentPath);
+				response.sendRedirect(sourceleadUrl.replace("/console", "") + documentPath);
 				return;
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -70,7 +70,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class PayrollConfigurationRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayrollConfigurationRestController.class);

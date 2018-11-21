@@ -18,7 +18,7 @@ import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class TaxRestController {
 	
 	@Autowired

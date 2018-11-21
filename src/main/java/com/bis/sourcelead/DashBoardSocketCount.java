@@ -24,7 +24,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
-@ServerEndpoint("/app/ws/dashBoardDynamicCount")
+@ServerEndpoint("/console/ws/dashBoardDynamicCount")
 public class DashBoardSocketCount {
 	
 	private UserService userService = BeanUtil.getBean(UserService.class);

@@ -859,7 +859,7 @@ function jobsExport(type){
 		searchValue = searchValue ? searchValue : "";
 		window.location.href = sourceleadUrl+"/getJobsPerformancetListExportByOrgLocationIDAndUserId?jobCreatedDateRange="+jobCreatedDateRange+"&startDateStr="+startDateStr+"&endDateStr="+endDateStr+"&clientIds="+clientIds+"&jobType="+jobType+"&searchValue="+searchValue+"&exportType="+exportType;
 
-// 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
+// 		 window.location.href = sourceleadUrl+"/consolelicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
 	     
 }
 </script>

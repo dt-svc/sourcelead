@@ -119,16 +119,16 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 		 		} 
 		 	    finally{
 		 	    	if(null != UUID && !"".equalsIgnoreCase(UUID) && null != spocUUID && !"".equalsIgnoreCase(spocUUID)){
-		 	    		response.sendRedirect("/app/dashboard?invitation=true");
+		 	    		response.sendRedirect("/console/dashboard?invitation=true");
 		 	    	}else{
 		 	    		if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-		 	    			response.sendRedirect("/app/dashboard?requirementUUID="+requirementUUID);
+		 	    			response.sendRedirect("/console/dashboard?requirementUUID="+requirementUUID);
 		 	    		}
 		 	    		else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-		 	    			response.sendRedirect("/app/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
+		 	    			response.sendRedirect("/console/dashboard?requirementUUID="+requirementUUID+"&referUUID="+referUUID);
 		 	    		}
 		 	    		else{
-		 	    			response.sendRedirect("/app/dashboard");
+		 	    			response.sendRedirect("/console/dashboard");
 		 	    		}
 		 	    		
 		 	    	}

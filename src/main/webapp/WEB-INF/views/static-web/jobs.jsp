@@ -430,7 +430,7 @@
 					<div class="clear"></div>
 				</div>
 				<div class="jobApply">
-					<a href="http://localhost:8080/app/">Apply</a>
+					<a href="http://localhost:8080/console/">Apply</a>
 					<a class="Rcolor" href="javascript:void(0)">Refer</a>
 				</div>
 				
@@ -470,7 +470,7 @@
 				  	</div>
 					<div class="clear"></div>
 				</div>
-				<div class="jobApply"><a href="http://localhost:8080/app/">Apply</a></div>
+				<div class="jobApply"><a href="http://localhost:8080/console/">Apply</a></div>
 				
 			<div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
@@ -510,7 +510,7 @@
 					<div class="clear"></div>
 				</div>
 				<div class="jobApply">
-					<a href="http://localhost:8080/app/">Apply</a>
+					<a href="http://localhost:8080/console/">Apply</a>
 					<a class="Rcolor" href="javascript:void(0)">Refer</a>
 				</div>
 				
@@ -551,7 +551,7 @@
 				  	</div>
 					<div class="clear"></div>
 				</div>
-				<div class="jobApply"><a href="http://localhost:8080/app/">Apply</a></div>
+				<div class="jobApply"><a href="http://localhost:8080/console/">Apply</a></div>
 				
 			<div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>
@@ -590,7 +590,7 @@
 				  	</div>
 					<div class="clear"></div>
 				</div>
-				<div class="jobApply"><a href="http://localhost:8080/app/">Apply</a></div>
+				<div class="jobApply"><a href="http://localhost:8080/console/">Apply</a></div>
 				
 			<div class="filLoad">
 				<h2 class="gradi"></h2><p class="gradi"></p><p class="gradi"></p><p class="gradi"></p><br>

@@ -81,7 +81,7 @@ top:0;
 		   		        	<c:if test="${orgSubscription.isInvoiceAmountPaid == 'N' && orgSubscription.invoiceAmount > 0}">
 		   		        	   <a href='#' onclick='initPayment("${orgSubscription.uuid}","pay")'>Pay</a> |
 		   		        	</c:if>
-		   		        	<a href='<c:url value="/app/upgradeOrgLicenseSubscription/${orgSubscription.uuid}"/>'>Upgrade</a> 
+		   		        	<a href='<c:url value="/console/upgradeOrgLicenseSubscription/${orgSubscription.uuid}"/>'>Upgrade</a> 
 		   		        	<c:if test="${orgSubscription.showRenewal == 'Y' && orgSubscription.isInvoiceAmountPaid == 'Y'}">
 		   		        	   | <a href='#' onclick='initPayment("${orgSubscription.uuid}","renewal")'>Renewal</a>
 		   		        	</c:if>
@@ -104,7 +104,7 @@ top:0;
     	$("#subscription"+uuid).html("<td colspan='10'  id='loading"+uuid+"'></td>");
 		$("#loading"+uuid).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
     	
-    	 $.post("/app/init-payment", {type: actionType, subscriptionUUID: uuid}, function (data) {
+    	 $.post("/console/init-payment", {type: actionType, subscriptionUUID: uuid}, function (data) {
             if (data) {
                 location.href = data;
             }

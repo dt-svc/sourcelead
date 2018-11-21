@@ -42,7 +42,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  * @date: 19-Dec-2017
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class DataMigrationCommonRestController {
 	private static final Logger logger = LoggerFactory.getLogger(DataMigrationCommonRestController.class);
 	@Value("${sourceleadUrl}")

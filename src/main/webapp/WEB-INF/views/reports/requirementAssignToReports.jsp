@@ -202,9 +202,9 @@ function requirementReportPagination(){
 				<ul>
 					<li><a href="<c:url value='${appPath}/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
 					<li><a href="<c:url value='${appPath}/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-					<li><a href="<c:url value='${appPath}/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
-				    <li><a href="<c:url value='${appPath}/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-				    <li><a href="<c:url value='${appPath}/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+					<li><a href="<c:url value='${appPath}/consolelicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='${appPath}/consolelicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='${appPath}/consolelicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
 				    <li><a href="<c:url value='${appPath}/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li>
 				    <li><a href="<c:url value='${appPath}/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				    <li><a href="<c:url value='${appPath}/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>

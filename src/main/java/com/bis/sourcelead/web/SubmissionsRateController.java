@@ -51,7 +51,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller  
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SubmissionsRateController {
 	
 	@Autowired

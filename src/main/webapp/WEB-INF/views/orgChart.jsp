@@ -119,17 +119,17 @@ function filterNodes(keyWord) {
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
-	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
+	          			obj.avatar = sourceleadUrl.replace("/console", "")+ds[i].fileURL;
 	    			else 
-	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
+	    				obj.avatar = sourceleadUrl.replace("/console", "")+"/resources/images/userprofile-img.png";
 	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[j].parentId == obj.id) {
 							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    						ds[j].avatar = sourceleadUrl.replace("/console", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/console", "")+"/resources/images/userprofile-img.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -138,9 +138,9 @@ function filterNodes(keyWord) {
 	    			$.each(ds, function(j) {
 	    				if(ds[i].id == ds[j].parentId) {
 	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    						ds[j].avatar = sourceleadUrl.replace("/console", "")+ds[j].fileURL;
 	    					else
-	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
+	    						ds[j].avatar = sourceleadUrl.replace("/console", "")+"/resources/images/userprofile-img.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});

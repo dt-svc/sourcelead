@@ -32,7 +32,7 @@
                     <input value="Skip" class="btn btn-default mr10" onclick="saveAssociateleave();" type="button">
                     <input value="Save &amp; Finish" class="btn btn-success btnSuccess mr" id="save_assoc_leave" type="button" onclick="saveAssociateleave();">
                    <!--  <input value="Cancel" class="btn btn-default ml10" type="button"> -->
-                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/console/usersList'" type="button">
                     </div>
                   </div>
                 </div>

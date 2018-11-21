@@ -43,7 +43,7 @@ function blogTitles(href){
 	name = name.replace(/[_]/gi, '-');
 	name = name.lastIndexOf("-") === name.length -1 ? name.substring(0, name.length-1) : name;
 	//href = encodeURIComponent(href);
-	var url = sourceleadUrl.split("/app");
+	var url = sourceleadUrl.split("/console");
 	window.location.href = url[0] + "/blog/"+name+".html";
 }
 </script>

@@ -38,7 +38,7 @@ $(document).ready(function(){
                         <select onchange="redirectlocation(this.value);">
                         <option value="/pendingLeaves">Pending Leaves</option>
                         <option value="/withdrawLeaves">Withdraw Leaves</option>
-                        <option value="/approvedLeaves" selected>Approved Leaves</option>
+                        <option value="/consolerovedLeaves" selected>Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
                         <option value="/cancelLeaves">Cancelled Leaves</option>
                     </select>

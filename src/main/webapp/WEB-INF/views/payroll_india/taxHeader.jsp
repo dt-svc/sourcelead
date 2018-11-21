@@ -13,13 +13,13 @@
 	<c:choose>
 		<c:when test="${formTabType == 'createForm' || formTabType == 'viewForm'}">
 			<div class="pull-right brud-crum">
-				<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-				<a href="/app/form/list">Forms List</a> &raquo; 
+				<a href="/console/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
+				<a href="/console/form/list">Forms List</a> &raquo; 
 				${formTabType == 'createForm' ? 'Create Form' :'View Form'}
 			</div>
 		</c:when>
 		<c:otherwise>
-			<div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
+			<div class="pull-right brud-crum"><a href="/console/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
 		</c:otherwise>
 	</c:choose>
 </section>

@@ -12,7 +12,7 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Release Note</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard'/>"> Home </a>  &raquo; Release Note List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/console/dashboard'/>"> Home </a>  &raquo; Release Note List</div>
     </section>
     
     <div class="project_wrap">

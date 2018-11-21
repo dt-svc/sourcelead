@@ -55,7 +55,7 @@ public class UnSubscribeRestController {
 	 private String googleMapsLocationApiKey;
 	  
 	    
-	@RequestMapping(value = "/app/ws/unsubscribe", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/ws/unsubscribe", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView unsubscribe(HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -81,7 +81,7 @@ public class UnSubscribeRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/isActiveUserByUserEmail" , method = RequestMethod.GET)
+	@RequestMapping(value = "/console/isActiveUserByUserEmail" , method = RequestMethod.GET)
 	 public @ResponseBody  UserDTO isActiveUserByUserEmail(@RequestParam(value="EmailId", required=false) String EmailId) throws Exception {
 		 	User user = userService.findByEmail(EmailId);
 		 	UserDTO userDTO = null;
@@ -102,7 +102,7 @@ public class UnSubscribeRestController {
 	
 	
 	
-	@RequestMapping(value = "/app/storeUnsubscriptionPublic", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/storeUnsubscriptionPublic", method = RequestMethod.GET)
 	public String storeUnsubscriptionPublic(UserMailUnsubscribeDTO userMailUnsubscribeDTO) throws Exception
 	{
 		try {
@@ -135,7 +135,7 @@ public class UnSubscribeRestController {
 			}
 	}
 	
-	@RequestMapping(value = "/app/userVerification", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/userVerification", method = RequestMethod.GET)
 	public Boolean userVerification(UserMailUnsubscribeDTO userMailUnsubscribeDTO) throws Exception
 	{
 		try {

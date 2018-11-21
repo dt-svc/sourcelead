@@ -19,7 +19,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-//@RequestMapping("/app")
+//@RequestMapping("/console")
 public class EmailNotificationConfigureController {
 	
 	@Value("${sourceleadUrl}")
@@ -31,7 +31,7 @@ public class EmailNotificationConfigureController {
 	@Autowired
 	EmailScenarioConfigurationService emailconService;
 
-	@RequestMapping(value = "/app/emailNontificationConfigure")
+	@RequestMapping(value = "/console/emailNontificationConfigure")
 	public ModelAndView emailNontificationConfigure(HttpServletRequest request) throws Exception
 	{
 		

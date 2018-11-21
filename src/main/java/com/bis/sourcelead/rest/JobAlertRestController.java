@@ -73,7 +73,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	}
     
     
-    @RequestMapping(value = "/app/getJobAlertList")
+    @RequestMapping(value = "/console/getJobAlertList")
 	 public String getJobAlertList(HttpServletRequest request) throws Exception {
 		String resultJson;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -82,7 +82,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 		return resultJson;
 	 }
 		 
-    @RequestMapping(value = {"/app/ws/storeJobAlert" ,"/app/storeJobAlert"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/console/ws/storeJobAlert" ,"/console/storeJobAlert"}, method = RequestMethod.POST)
     @ResponseBody
    	public Response<String> storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
@@ -105,7 +105,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
    	}
     
     
-	 @RequestMapping(value = "/app/getJobAlertDetails", method = RequestMethod.GET)
+	 @RequestMapping(value = "/console/getJobAlertDetails", method = RequestMethod.GET)
 	 public String getJobAlertDetails(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -116,7 +116,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = "/app/deleteJobAlert", method = RequestMethod.POST)
+	 @RequestMapping(value = "/console/deleteJobAlert", method = RequestMethod.POST)
 	 public String deleteJobAlert(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -132,7 +132,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = {"/app/ws/getJobDetailsForJobAlert" ,"/app/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
+	 @RequestMapping(value = {"/console/ws/getJobDetailsForJobAlert" ,"/console/getJobDetailsForJobAlert"}, method = RequestMethod.GET)
 	 public String getJobDetailsForJobAlert(@RequestParam(value="requirementUUID", required=false) String requirementUUID,HttpServletRequest request) throws Exception{ 
 		 String resultJson;
 		 
@@ -143,7 +143,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 	 
 	 
-	 @RequestMapping(value = {"/app/ws/validateAlertUserEmail","/app/validateAlertUserEmail"}, method = RequestMethod.GET)
+	 @RequestMapping(value = {"/console/ws/validateAlertUserEmail","/console/validateAlertUserEmail"}, method = RequestMethod.GET)
 	 public String validateAlertUserEmail(@RequestParam(value="email", required=false) String email,HttpServletRequest request) throws Exception{ 
 		 
 		 Integer jobAlertCount = jobAlertService.getJobAlertCountByEmail(email);
@@ -155,7 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		
 	 
-	 @RequestMapping(value = {"/getAllJobsAlertList" ,"/app/getAllJobsAlertList"})
+	 @RequestMapping(value = {"/getAllJobsAlertList" ,"/console/getAllJobsAlertList"})
 	 	public String getAllJobsAlertList(@RequestParam(value="jobAlertUUID", required=false) String jobAlertUUID,HttpServletRequest request) throws Exception {
 			    ModelAndView model = new ModelAndView();
 			    String jobAlertsTable = null;

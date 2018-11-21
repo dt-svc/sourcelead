@@ -16,7 +16,7 @@
 					<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Submit Form <i class="fa fa-caret-down"></i></a>
 					<div class="action-pop">
 						<span> 
-							<a href="/app/itDeclaration?autoSelectUser=true">IT Declaration</a>
+							<a href="/console/itDeclaration?autoSelectUser=true">IT Declaration</a>
 							<!-- <a href="javascript:void(0)">IT Challan</a>
 							<a href="javascript:void(0)">Form 16</a> -->
 						</span>

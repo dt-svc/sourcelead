@@ -143,7 +143,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 import opennlp.tools.parser.Cons;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class UsersListRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UsersListRestController.class);
@@ -733,7 +733,7 @@ public class UsersListRestController {
 			associateTagsStr.toString();
 			request.getSession().setAttribute("associateTags", associateTagsStr.substring(0,associateTagsStr.length()-1));
 		}
-		response.sendRedirect(redirectUrl.append("/app/userSummaryDetails?userCode=").append(userCode).toString());
+		response.sendRedirect(redirectUrl.append("/console/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
 

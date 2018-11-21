@@ -74,7 +74,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ProjectsController {
 	
 	

@@ -102,7 +102,7 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 	private Map<String, String>  getBlogSubscriptionTable(Map<String, String> globalVarsMap) throws Exception
 	{
 		String tempHTML = "";
-		String sleadUrl = sourceleadUrl.replace("/app", "");
+		String sleadUrl = sourceleadUrl.replace("/console", "");
 		
 		      //Table Design
 				 tempHTML = tempHTML + "<table style='display:table-cell;vertical-align:middle; margin:0px;'>";

@@ -5,7 +5,7 @@
     <div class="searchWrap"> <span><i class="fa fa-search"></i>
       <input placeholder="Search ..." class="searchHome" type="text">
       </span> <span>
-      <input value="Search" class="searchBtn" onclick="window.location.href='http://localhost:8080/app/openRequirementsRedirect'" type="button">
+      <input value="Search" class="searchBtn" onclick="window.location.href='http://localhost:8080/console/openRequirementsRedirect'" type="button">
       </span>
       <div class="clear"></div>
     </div>

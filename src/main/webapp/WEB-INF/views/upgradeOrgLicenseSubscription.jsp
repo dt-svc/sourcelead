@@ -180,7 +180,7 @@ var validationSettings = {
         			 $.ajax({
                 	      type: "POST",
                 	    	data: formData,
-                      	   url: "/app/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
+                      	   url: "/console/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
                         	success: function(data) {
                         		 if (data) {
                 	                location.href = data;

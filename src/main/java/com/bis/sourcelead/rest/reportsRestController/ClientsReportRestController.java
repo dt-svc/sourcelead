@@ -39,7 +39,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ClientsReportRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

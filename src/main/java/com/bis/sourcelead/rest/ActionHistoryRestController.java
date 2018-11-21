@@ -20,7 +20,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ActionHistoryRestController {
 	
 	@Autowired

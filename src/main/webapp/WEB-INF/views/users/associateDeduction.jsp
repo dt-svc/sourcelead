@@ -138,7 +138,7 @@ getDeductionType();
                    <div class="pull-right">
                    <input value="Skip" class="btn btn-default mr10" onclick="skipAssociateDeductionJsp();" type="button">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/console/usersList'" type="button">
                     </div>
                   </div>
                 </div>

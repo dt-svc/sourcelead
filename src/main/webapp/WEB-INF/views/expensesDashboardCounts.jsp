@@ -17,7 +17,7 @@ $(document).ready(function(){
         <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
-				<a class="pull-left" id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a>
+				<a class="pull-left" id="expensesLink" href="<c:url value="/console/expenses"/>">Expenses &nbsp;&nbsp;</a>
 	            <ul class="nav nav-tabs pull-right">
 	              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" >Self</a></li>
 	             <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
@@ -197,9 +197,9 @@ function expensesCount(expenseType){
 		  });
 		 
 		 if(expenseType == "myExpenses"){
-			 $("#expensesLink").attr("href", "<c:url value='/app/expenses'/>");
+			 $("#expensesLink").attr("href", "<c:url value='/console/expenses'/>");
 		 }else{
-			 $("#expensesLink").attr("href", "<c:url value='/app/expensesApprovalList'/>");
+			 $("#expensesLink").attr("href", "<c:url value='/console/expensesApprovalList'/>");
 		 }
 	}
 </script>

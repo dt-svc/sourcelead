@@ -359,7 +359,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Submitted</span>';
                         
-              result = result +'<img src="/resources/images/applied_icon.png" title="Submitted" alt="Submitted">';
+              result = result +'<img src="/resources/images/consolelied_icon.png" title="Submitted" alt="Submitted">';
               if(json['submittedByMeJobs'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['submittedByMeJobs']+'</span></a>';  
               }else{
@@ -480,7 +480,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Applied</span>';
                         
-              result = result +'<img src="/resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              result = result +'<img src="/resources/images/consolelied_icon.png" title="Applied" alt="Applied">';
               if(json['appliedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
               }else{

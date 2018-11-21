@@ -641,10 +641,10 @@ function preparedContractListDraft(json){
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
-		     			result = result + '| <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			result = result + '| <a href="<c:url value="/console/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(report.typeOfContract == "Custom"){
-		     			result = result + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			result = result + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		'</sec:authorize>';
 	     	  }
@@ -736,10 +736,10 @@ function preparedContractListDraft(json){
 	     		  }
 	     		 '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
-		     			opt = opt + '| <a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '| <a href="<c:url value="/console/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(output.typeOfContract == "Custom"){
-		     			opt = opt + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 	     		'</sec:authorize>';
 	     	  }
@@ -825,10 +825,10 @@ function preparedContractListDraft(json){
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
-		     			res = res + '| <a href="<c:url value="/app/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			res = res + '| <a href="<c:url value="/console/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(appReport.typeOfContract == "Custom"){
-		     			res = res + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			res = res + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		'</sec:authorize>';
 		     		//res = res + '</div>';
@@ -1096,10 +1096,10 @@ function preparedContractListWFA(json){
 	        		  
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	      	     		if(report.typeOfContract == "New"){
-	      	     			result = result + '| <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     			result = result + '| <a href="<c:url value="/console/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 	      	     		}
 	      	     		if(report.typeOfContract == "Custom"){
-	      	     			result = result + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+	      	     			result = result + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 	      	     		}
 	        			'</sec:authorize>';
 	        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1215,10 +1215,10 @@ function preparedContractListWFA(json){
         		  
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
      	     		if(output.typeOfContract == "New"){
-     	     			opt = opt + '| <a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     			opt = opt + '| <a href="<c:url value="/console/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
      	     		}
      	     		if(output.typeOfContract == "Custom"){
-     	     			opt = opt + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+     	     			opt = opt + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
      	     		}
        			'</sec:authorize>';
        			'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -1320,10 +1320,10 @@ function preparedContractListWFA(json){
 		     		'</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(appReport.typeOfContract == "New"){
-		     			res = res + '| <a href="<c:url value="/app/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			res = res + '| <a href="<c:url value="/console/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(appReport.typeOfContract == "Custom"){
-		     			res = res + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			res = res + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		'</sec:authorize>';
 		     		//res = res + '</div>';
@@ -1582,7 +1582,7 @@ function preparedContractListWTS(json){
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		         result += '<div class="tbldata-dotdot_80">';
 		         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
-		        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>';
+		        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/console/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>';
 		        	 result += ' <a title="Revise Contract" onclick="reviseContract(\''+report.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 		         }else if(report.typeOfContract == "Existing"){
 		         result = result + ' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
@@ -1593,10 +1593,10 @@ function preparedContractListWTS(json){
 		         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		         if(report.templateSubmissionStatus == "PENDING"){
 		        	 if(report.typeOfContract == "New"){
-		  	     			result = result + '<a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     			result = result + '<a href="<c:url value="/console/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		  	     		}
 		  	     		if(report.typeOfContract == "Custom"){
-		  	     			result = result + '<a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     			result = result + '<a href="<c:url value="/console/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		  	     		}
 		         }
     			'</sec:authorize>';
@@ -1696,7 +1696,7 @@ function preparedContractListWTS(json){
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/console/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
 	        	 opt += '<a title="Revise Contract" onclick="reviseContract(\''+output.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 	         }else if(output.typeOfContract == "Existing"){
 	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
@@ -1707,10 +1707,10 @@ function preparedContractListWTS(json){
 	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	         if(output.templateSubmissionStatus == "PENDING"){
 	        	 if(output.typeOfContract == "New"){
-		     			opt = opt + '<a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '<a href="<c:url value="/console/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(output.typeOfContract == "Custom"){
-		     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '<a href="<c:url value="/console/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 	         }
  			'</sec:authorize>';
@@ -3320,10 +3320,10 @@ function preparedContractListRejected(json){
 		     		'</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(report.typeOfContract == "New"){
-		     			result = result + '| <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			result = result + '| <a href="<c:url value="/console/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(report.typeOfContract == "Custom"){
-		     			result = result + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			result = result + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
      			'</sec:authorize>';
 		         result = result + '</div></td>';
@@ -3411,10 +3411,10 @@ function preparedContractListRejected(json){
 	     		 '</sec:authorize>';
 	     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		     		if(output.typeOfContract == "New"){
-		     			opt = opt + '| <a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '| <a href="<c:url value="/console/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
 		     		if(output.typeOfContract == "Custom"){
-		     			opt = opt + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     			opt = opt + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		     		}
  				'</sec:authorize>';
 	     		opt = opt + '</div>';
@@ -3489,10 +3489,10 @@ function preparedContractListRejected(json){
 		     		 '</sec:authorize>';
 		     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 			     		if(appReport.typeOfContract == "New"){
-			     			res = res + '| <a href="<c:url value="/app/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     			res = res + '| <a href="<c:url value="/console/addNewContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			     		}
 			     		if(appReport.typeOfContract == "Custom"){
-			     			res = res + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+			     			res = res + '| <a href="<c:url value="/console/addCustomContract?contractUUID='+appReport.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 			     		}
 	 				'</sec:authorize>';
 		     	 res = res + '</div>';
@@ -3719,7 +3719,7 @@ function approveContract(recordId,status){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status+"&rejectReason="+rejectReason,       
+        url: sourceleadUrl+"/consoleroveContract?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status+"&rejectReason="+rejectReason,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();

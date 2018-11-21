@@ -684,7 +684,7 @@ function usersListPagination(url,sourceleadUrl,registeredOrgLocationId){
 	              "render": function ( data, type, opt, meta ) {
 	            	 var result = "";
 	               	 if(opt.userState == 'ACTIVE'){
-	 			    	 result = result +"<td><i class='fa fa-sign-in' aria-hidden='true'></i><a href='<c:url value='/app/productionSupportDashboard/"+registeredOrgLocationId+"/"+opt.id+"/${SourceLeadWeb_userId}'/>' >&nbsp;&nbsp;Switch</a></td>";
+	 			    	 result = result +"<td><i class='fa fa-sign-in' aria-hidden='true'></i><a href='<c:url value='/console/productionSupportDashboard/"+registeredOrgLocationId+"/"+opt.id+"/${SourceLeadWeb_userId}'/>' >&nbsp;&nbsp;Switch</a></td>";
  			          }else{
  			    	     result = result +'<td>-----</td>';
 	 			      }

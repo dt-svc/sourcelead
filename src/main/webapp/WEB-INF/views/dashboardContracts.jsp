@@ -96,9 +96,9 @@ function contractList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-			                     result = result +"<td><div><a href='/app/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>";
+			                     result = result +"<td><div><a href='/console/addNewContract?contractUUID="+opt.contractUUID+"&orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Sow' title='Create Sow'>SOW</a>";
 			                     if(opt.vendorMsaCreated != true){
-			                    	 result = result +"<a href='/app/addNewContract?orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Msa' title='Create Msa'> / MSA</a>";
+			                    	 result = result +"<a href='/console/addNewContract?orgRelationId="+opt.orgRelationId+"&spocUserCode="+opt.spocUserCode+"&type=Msa' title='Create Msa'> / MSA</a>";
 			                     }
 			                     result = result +"</div></td>";
 			                     

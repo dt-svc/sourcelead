@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.AbstractJsonpRespon
  *
  */
 @ControllerAdvice
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class JsonpAdvice extends AbstractJsonpResponseBodyAdvice {
     public JsonpAdvice() {
         super("callback");

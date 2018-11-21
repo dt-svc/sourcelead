@@ -8,7 +8,7 @@
     <div class="pull-left">
       <h2>Release Note Preview</h2>
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='/app/releaseNote'/>">Release Note</a> &raquo;  Release Note Preview</div>
+   <div class="pull-right brud-crum"><a href="<c:url value='/console/releaseNote'/>">Release Note</a> &raquo;  Release Note Preview</div>
   </section>
   
   <div class="project_wrap">

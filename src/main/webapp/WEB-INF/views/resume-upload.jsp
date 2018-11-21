@@ -411,7 +411,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-log", {uploadid: uploadid}, function(data) {
 			if(data !== "")
-				location.href = '/app/downloadFile.html?file='+data;
+				location.href = '/console/downloadFile.html?file='+data;
 			else
 				alert("Unable to locate logs for this upload");
 		});
@@ -422,7 +422,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-failed", {uploadid: uploadid}, function(data) {
 			if(data !== "" && data.indexOf("Resumes Found") === -1)
-				location.href = '/app/downloadFile.html?file='+data;
+				location.href = '/console/downloadFile.html?file='+data;
 			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else
@@ -435,7 +435,7 @@ $(function() {
 			return;
 		$.post("bulk-resume-import-export-duplicate", {uploadid: uploadid}, function(data) {
 			if(data !== "" && data.indexOf("Resumes Found") === -1)
-				location.href = '/app/downloadFile.html?file='+data;
+				location.href = '/console/downloadFile.html?file='+data;
 			else if(data !== "" && data.indexOf("Resumes Found") !== -1)
 				alert(data);
 			else

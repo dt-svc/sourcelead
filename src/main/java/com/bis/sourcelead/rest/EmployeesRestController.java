@@ -14,7 +14,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserService;
 
 @RestController
-@RequestMapping("/app/EmployeesController")
+@RequestMapping("/console/EmployeesController")
 public class EmployeesRestController {
 	
 	

@@ -14,7 +14,7 @@
     <div class="pull-left">
       <h2>Add Blog</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo; Add Blog</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/console/blogs'/>">Blogs</a> &raquo; Add Blog</div>
   </section>
   <div class="content-area content-new clearfix">
    <div id="blogLoading"></div>

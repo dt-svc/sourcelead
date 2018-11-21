@@ -418,11 +418,11 @@ function displyContract(stage){
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/app/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+					result = result +	'	<a href="/console/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				}else if('Existing' == json.typeOfContract){
 					result = result +	'';
 				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/app/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+					result = result +	'	<a href="/console/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				}
 			}
 			

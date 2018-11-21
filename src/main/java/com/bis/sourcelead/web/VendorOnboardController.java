@@ -33,7 +33,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class VendorOnboardController {
 	
 	@Autowired
@@ -169,7 +169,7 @@ public class VendorOnboardController {
 		}
 		
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/app/dashboard/").append(vendorOrgLocations.getId()).toString());
+		response.sendRedirect(redirectUrl.append("/console/dashboard/").append(vendorOrgLocations.getId()).toString());
 		
  	}
 	

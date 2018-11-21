@@ -9,7 +9,7 @@
     <div class="pull-left">
       <h2>Blog Preview</h2>
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Preview</div>
+   <div class="pull-right brud-crum"><a href="<c:url value='/console/blogs'/>">Blogs</a> &raquo;Blog Preview</div>
   </section>
  
 	<section class="testiWrap dashboard-widget clearfix">

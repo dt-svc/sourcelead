@@ -101,7 +101,7 @@ public class OpenJobsController {
 	}
 	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
-			"/app/jobs/{title}/{location}/{experience}" })
+			"/console/jobs/{title}/{location}/{experience}" })
 	public String openRequirementsRedirectMain(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, HttpServletRequest request) throws Exception
 	{
 		List<Countries> countriesList = countriesService.getAllCountries();
@@ -139,7 +139,7 @@ public class OpenJobsController {
 		return false;
 	}
 
-	@RequestMapping(value = { "/app/ws/{postedOrgName}-{companies}"})
+	@RequestMapping(value = { "/console/ws/{postedOrgName}-{companies}"})
 	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String companies,@PathVariable String postedOrgName,HttpServletRequest request) throws Exception
 	{
 		modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
@@ -215,7 +215,7 @@ public class OpenJobsController {
 		return "static-web/about-us";
 	}
 	
-	@RequestMapping(value = { "/app/openJobsPublicPage", "/openJobsPublicPage" })
+	@RequestMapping(value = { "/console/openJobsPublicPage", "/openJobsPublicPage" })
 	public ModelAndView openJobsforApplicants(@RequestParam(value = "requirementUUID", required = false) String requirementUUID) throws Exception
 	{
 		ModelAndView model = new ModelAndView();

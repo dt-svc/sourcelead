@@ -40,11 +40,11 @@
       <h2>Import Candidate</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/console/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="<c:url value='/console/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
   </section>
   <div class="content-area content-new clearfix">
@@ -299,7 +299,7 @@
 			
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="<c:url value="/console/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
 			</div>

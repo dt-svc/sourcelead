@@ -469,7 +469,7 @@ function cancelOrgImg(){
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
 					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
+					<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/console/dashboard/${SourceLeadWeb_orgLocationId}'">
 					</div>
 					</div>
 					</div>

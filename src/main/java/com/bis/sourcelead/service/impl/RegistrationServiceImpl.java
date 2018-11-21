@@ -1000,7 +1000,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
-		 String mailUrl = sourceleadUrl.replace("/app", "");
+		 String mailUrl = sourceleadUrl.replace("/console", "");
 		 globalVarsMap.put("ResetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,new ArrayList<EmailAttachment>());
 

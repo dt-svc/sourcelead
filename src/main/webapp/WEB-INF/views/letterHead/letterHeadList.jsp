@@ -26,7 +26,7 @@ $(document).ready(function(){
 
 	 <div class="reportHead clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
-         	<li><a href="<c:url value="/app/letterHead"/>" title="Create Letterhead" class="newAdBtn mr5">+ Letterhead</a> </li>
+         	<li><a href="<c:url value="/console/letterHead"/>" title="Create Letterhead" class="newAdBtn mr5">+ Letterhead</a> </li>
          	<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='letterHeadTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
 		</ul>
 	</div>	

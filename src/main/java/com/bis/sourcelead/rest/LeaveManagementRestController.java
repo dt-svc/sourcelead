@@ -126,7 +126,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class LeaveManagementRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementRestController.class);
@@ -262,7 +262,7 @@ public class LeaveManagementRestController {
 	 * @param response
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/approvedLeaves")
+	@RequestMapping(value = "/consolerovedLeaves")
 	public ModelAndView approvedLeavesJsp(@RequestParam(value = "notifyLink", required = false) String notifyLink,
 			@RequestParam(value = "leaveUUID", required = false) String leaveUUID,
 			@RequestParam(value = "orgLocationId", required = false) String orgLocationId, HttpServletRequest request,
@@ -272,7 +272,7 @@ public class LeaveManagementRestController {
 		model.addObject("notifyLink", notifyLink);
 		model.addObject("leaveUUID", leaveUUID);
 		model.addObject("orgLocationId", orgLocationId);
-		model.setViewName("leavemanagement/approvedLeaves");
+		model.setViewName("leavemanagement/consolerovedLeaves");
 		return model;
 	}
 
@@ -357,7 +357,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
-	@RequestMapping(value = "/applyLeave")
+	@RequestMapping(value = "/consolelyLeave")
 	public ModelAndView applyLeaveJsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -368,7 +368,7 @@ public class LeaveManagementRestController {
 				loginUser.getId(), roleId, orgLocations.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("usersLis", usersList);
-		model.setViewName("leavemanagement/applyLeave");
+		model.setViewName("leavemanagement/consolelyLeave");
 		return model;
 	}
 
@@ -1924,7 +1924,7 @@ public class LeaveManagementRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPROVE_LEAVE')")
-	@RequestMapping(value = { "/approveRequestedLeave", "/rest/approveRequestedLeave" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/consoleroveRequestedLeave", "/rest/consoleroveRequestedLeave" }, method = RequestMethod.GET)
 	@ResponseBody
 
 	public Response<String> approveRequestedLeave(
@@ -2950,7 +2950,7 @@ public class LeaveManagementRestController {
 			model.addObject("toDate", toDate);
 			model.addObject("currentStage", currentStage);
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("leavemanagement/applyLeave");
+			model.setViewName("leavemanagement/consolelyLeave");
 			return model;
 	}
 	

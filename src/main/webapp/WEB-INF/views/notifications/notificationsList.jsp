@@ -160,15 +160,15 @@ function dynamicNotificationtPaginations(url){
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
 							if(report.mode == "read"){
-								result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
+								result = result +'<span><a  class="visitedAnchor" href="/console/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-								result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
+								result = result +'<span><a href="/console/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
 							if(report.mode == "read"){
-								  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
+								  result = result +'<span><a class="visitedAnchor"  href="/console/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}else{
-							  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
+							  result = result +'<span><a href="/console/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'">'+report.body+'</a></span>';
 							}
 						}else{
 							if(report.mode == "read"){

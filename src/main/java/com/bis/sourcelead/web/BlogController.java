@@ -132,7 +132,7 @@ public class BlogController {
 		String createdDate = dateFormatResult.format(dateFormat.parse(blogDetails.getCreatedDate().toString()));
 		modelAndView.addObject("blogCategoryList", blogCategoryList);
 		modelAndView.addObject("createdDate", createdDate);
-		String sleadUrl = sourceleadUrl.replace("/app", "");
+		String sleadUrl = sourceleadUrl.replace("/console", "");
 		modelAndView.addObject("sleadUrl", sleadUrl);
 		modelAndView.addObject("userRoleDisplayName", userRole.getRoles().getDisplayName());
 		modelAndView.setViewName("/resources/blog-details");
@@ -147,7 +147,7 @@ public class BlogController {
 		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		List<SourceleadBlogs> blogsByCategory = sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
 		modelAndView.addObject("allBlogs", blogsByCategory);
-		String sleadUrl = sourceleadUrl.replace("/app", "");
+		String sleadUrl = sourceleadUrl.replace("/console", "");
 		modelAndView.addObject("sleadUrl", sleadUrl);
 		modelAndView.setViewName("/resources/all-blogs");
 		return modelAndView;

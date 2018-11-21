@@ -10,7 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
- <c:set var='appPath' value="/app" scope="application"></c:set>
+ <c:set var='appPath' value="/console" scope="application"></c:set>
 
  <script type="text/javascript">
     var staticTime='${staticTime}';
@@ -78,7 +78,7 @@ $(document).ready(function(){
  
  </c:if>
  
- <c:if test='${viewPage == "reports/applicantsReport"}'>
+ <c:if test='${viewPage == "reports/consolelicantsReport"}'>
 	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
@@ -86,7 +86,7 @@ $(document).ready(function(){
 	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
-<c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
+<c:if test='${viewPage == "reports/consolelicantsReceivedReport"}'>
 	<script src="/resources/reports/highcharts.js"></script>
 	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
@@ -116,7 +116,7 @@ $(document).ready(function(){
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
+ <c:if test='${viewPage == "leavemanagement/consolelyLeave"}'>
     <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
@@ -381,12 +381,6 @@ function preventTabkey(e){
 	           <c:if test="${userTabs.tabName == 'Candidates'}">
 	                <option ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
-	           <c:if test="${userTabs.tabName == 'Clients'}">
-                 	  <option ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
-               </c:if>
-	           <c:if test="${userTabs.tabName == 'Vendors'}">
-	                  <option ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
-	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
 	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
@@ -456,7 +450,7 @@ function preventTabkey(e){
 				</sec:authorize>	
 				
  				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
-				<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
+				<li><a href="/console/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
 				</sec:authorize>
 				
 	             <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -568,13 +562,13 @@ function preventTabkey(e){
 	                     </sec:authorize>
 	                     
 	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li title="License Upgrade"><a href="<c:url value="/app/orgLicenseSubscriptionList" />">License Upgrade</a></li>
+	                        <li title="License Upgrade"><a href="<c:url value="/console/orgLicenseSubscriptionList" />">License Upgrade</a></li>
 	                     </c:if>
 	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 	                      <li title="Bulk Import"><a id="subMenu" href="javascript:void(0)">Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
-		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a href="<c:url value="/console/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
 	                     	</div>
 	                     </li>
@@ -582,34 +576,34 @@ function preventTabkey(e){
                        </sec:authorize>
 	                     
 
-	                     <li title="Org Chart"><a href="<c:url value="/app/orgChart" />">Org Chart</a></li>
+	                     <li title="Org Chart"><a href="<c:url value="/console/orgChart" />">Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li title="Role Configuration"><a href="<c:url value="/app/orgRolesList" />">Role Configuration</a></li>
+	                        <li title="Role Configuration"><a href="<c:url value="/console/orgRolesList" />">Role Configuration</a></li>
 	                     </sec:authorize>
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li title="Org Settings"><a href="<c:url value="/app/orgSettings" />">Org Settings</a></li>
+	               		      <li title="Org Settings"><a href="<c:url value="/console/orgSettings" />">Org Settings</a></li>
 	               		 </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li title="Templates"><a href="<c:url value="/app/orgTemplates" />">Templates</a></li>
+	                     <li title="Templates"><a href="<c:url value="/console/orgTemplates" />">Templates</a></li>
 						 </sec:authorize>
 
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li title="Expense Category"><a href="<c:url value="/app/expenseCategory" />">Expense Category</a></li>
+						  	<li title="Expense Category"><a href="<c:url value="/console/expenseCategory" />">Expense Category</a></li>
 						  </sec:authorize>
-						  <li title="Bank Accounts"><a href="<c:url value="/app/bankAccountDetails" />">Bank Accounts</a></li>
+						  <li title="Bank Accounts"><a href="<c:url value="/console/bankAccountDetails" />">Bank Accounts</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li title="Leave Configuration"><a href="<c:url value="/app/leaveConfiguration" />">Leave Configuration</a></li>
+						  	<li title="Leave Configuration"><a href="<c:url value="/console/leaveConfiguration" />">Leave Configuration</a></li>
 						  </sec:authorize>
 						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-                              <li title="Job Board Configuration"><a href="<c:url value="/app/job-boards" />">Job Board Configuration</a></li>
+                              <li title="Job Board Configuration"><a href="<c:url value="/console/job-boards" />">Job Board Configuration</a></li>
                            </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-					  	<li title="Custom Fields"><a href="<c:url value="/app/customFields" />">Custom Fields</a></li>
+					  	<li title="Custom Fields"><a href="<c:url value="/console/customFields" />">Custom Fields</a></li>
 					  	</sec:authorize>
 						 
-						 <li><a href="<c:url value="/app/projectAttributes" />">Project Attributes</a></li>
+						 <li><a href="<c:url value="/console/projectAttributes" />">Project Attributes</a></li>
 						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
@@ -623,7 +617,7 @@ function preventTabkey(e){
 						   
 					   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
 						   	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-						  		<li title="Payroll Configuration"><a href="<c:url value="/app/payrollConfiguration" />">Payroll Configuration</a></li>
+						  		<li title="Payroll Configuration"><a href="<c:url value="/console/payrollConfiguration" />">Payroll Configuration</a></li>
 						  	</c:if>
 						  	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 						  		<li title="Payroll Configuration"><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" >Payroll Configuration</a></li>
@@ -656,12 +650,12 @@ function preventTabkey(e){
 						<ul>
 	            	
 		            	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-		            	<li title="Bulk Import"><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a></li>
+		            	<li title="Bulk Import"><a href="<c:url value="/console/bulk-resume-import.html" />" target="_blank">Bulk Import</a></li>
 		            	</c:if> 
 		            	
-		            	<li title="Account"><a href="<c:url value="/app/bankAccountDetails" />">Account</a></li>
+		            	<li title="Account"><a href="<c:url value="/console/bankAccountDetails" />">Account</a></li>
 		            	
-		            	<li title="Alerts"><a class="logColor" href="<c:url value="/app/jobAlertList" />">Alerts</a></li>
+		            	<li title="Alerts"><a class="logColor" href="<c:url value="/console/jobAlertList" />">Alerts</a></li>
 		            	</ul>
 		            	<div class="noDate noDateSm" style="display: none;"></div>
 	            	</div>

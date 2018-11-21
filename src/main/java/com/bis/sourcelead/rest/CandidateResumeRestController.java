@@ -61,7 +61,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 /**
  * 
  * @author root Handles client requests

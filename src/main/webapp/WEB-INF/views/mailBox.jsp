@@ -1147,7 +1147,7 @@ function backToEmailList(){
 								text += "               <div class='AttaCtaAct' title='" + attachment.fileName + "'>";
 								text += "                   <i class='fa fa-paperclip' aria-hidden='true'></i>";
 								text += "                   <p>" + attachment.fileName + "</p>";
-								text += "                   <a href='/app/downloadFile.html?file=" + (attachment.path + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
+								text += "                   <a href='/console/downloadFile.html?file=" + (attachment.path + "/" + attachment.fileName) + "'><span class='fa fa-arrow-down' aria-hidden='true'></span></a>";
 								text += "               </div>";
 							}
 							text += "           </div>";

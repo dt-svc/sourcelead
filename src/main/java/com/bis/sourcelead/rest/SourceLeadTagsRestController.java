@@ -62,7 +62,7 @@ import java.util.function.Function;
  */
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SourceLeadTagsRestController {
 private static final Logger logger = LoggerFactory.getLogger(SourceLeadTagsRestController.class);
 	

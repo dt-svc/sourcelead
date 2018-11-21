@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,6 +28,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,6 +58,7 @@ import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -66,6 +70,7 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -76,6 +81,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -110,9 +116,10 @@ import com.ibm.icu.util.Calendar;
  */
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class DashboardRestController {
 
+	private static final Logger logger = LoggerFactory.getLogger(DashboardRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -191,6 +198,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TeamService teamService;
+	 
+	 @Autowired
+	 CandidateOnBoardingService candidateOnBoardingService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -311,7 +321,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/totalTimesheetList/{status}")
 	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
 		 StringBuilder redirectUrl = new StringBuilder();
-		 response.sendRedirect(redirectUrl.append("/app/timesheetlistByStatus?status=").append(status).toString());
+		 response.sendRedirect(redirectUrl.append("/console/timesheetlistByStatus?status=").append(status).toString());
 	}
 	
 	
@@ -335,7 +345,7 @@ public class DashboardRestController {
 		     SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard").toString());
 			
 	}
 	
@@ -360,7 +370,7 @@ public class DashboardRestController {
 		     SourceLeadSessionManager.setSessionAttribute(request, "productionLoginUserId", productionLoginUserId);
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard").toString());
 			
 	}
 	
@@ -391,7 +401,7 @@ public class DashboardRestController {
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard").toString());
 			
 	}
 	
@@ -426,7 +436,7 @@ public class DashboardRestController {
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard").toString());
 			
 			
 	}
@@ -459,7 +469,7 @@ public class DashboardRestController {
 		     SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		     
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard").toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard").toString());
 			
 	}
 	
@@ -483,7 +493,7 @@ public class DashboardRestController {
  		      }
 				
 		     StringBuilder redirectUrl = new StringBuilder();
-		     response.sendRedirect(redirectUrl.append("/app/dashboard?orgLocationId=").append(orgLocationId).append("&loginOrgLocatonId=").append(loginOrgLocatonId).toString());
+		     response.sendRedirect(redirectUrl.append("/console/dashboard?orgLocationId=").append(orgLocationId).append("&loginOrgLocatonId=").append(loginOrgLocatonId).toString());
 			
 	}
 	
@@ -1576,7 +1586,7 @@ public class DashboardRestController {
 	
 	
 	
-	@RequestMapping(value = "/applicantList")
+	@RequestMapping(value = "/consolelicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
@@ -1824,7 +1834,7 @@ public class DashboardRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/applicantListExport")
+	@RequestMapping(value = "/consolelicantListExport")
 	public void applicantListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
    {
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1937,7 +1947,7 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
-	@RequestMapping(value = "/applicantsJoinedListExport")
+	@RequestMapping(value = "/consolelicantsJoinedListExport")
 	public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
    {
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -2018,5 +2028,45 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
+	
+	/**
+	 * Dashboard onborad list moved from CandidateOnboardRestController to DashBoardRestController
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getOnboardingCandidatesList")
+	public Response<String> getOnboardingCandidatesList(HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			String resultJson;
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<RequirementSubmissionsView> submissionList = requirementSubmissionService.getOfferAcceptedCandidatesListByOrgLocationId(loginOrgLocation.getId());
+			List<RequirementSubmissionsView> requirementSubmissionList = new ArrayList<RequirementSubmissionsView>();
+			
+			if (null != submissionList && submissionList.size() > 0) {
+				for (RequirementSubmissionsView submission : submissionList) {
+					Date date1=new SimpleDateFormat("dd MM yyyy").parse(submission.getOfferJoinDate());  
+					submission.setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1));
+					requirementSubmissionList.add(submission);
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByCandidateIdAndOfferId(submission.getCandidateId(), submission.getOfferId());
+					if (null != candidateOnBoarding) {
+						submission.setOnboardUUId(candidateOnBoarding.getOnboardCandidateUUID());
+						submission.setOnboardStatus(candidateOnBoarding.getCandidateOnBoardStatus());
+					}
+				}
+			}
+			resultJson = commonUtil.toJSON(requirementSubmissionList);
+			response.setObject(resultJson);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
+		}
+		return response;
+	}
 	
 }

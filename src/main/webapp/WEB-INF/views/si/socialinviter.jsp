@@ -328,8 +328,8 @@ var shareObj = {
              path: {
                  css: "/resources/css/",
                  js: "/resources/js/",
-                 authpage : "http://localhost:8080/app/resources/oauth.html",
-                 apiurl:"http://localhost:8080/app/ws/getAPIService"
+                 authpage : "http://localhost:8080/console/resources/oauth.html",
+                 apiurl:"http://localhost:8080/console/ws/getAPIService"
              }
          });
         /*  var shareObj = {

@@ -16,13 +16,13 @@ window.onload = function() {
     <div class="pull-left">
       <h2>Category List</h2>
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='/app/blogs'/>">Blogs</a> &raquo;Blog Category</div>
+   <div class="pull-right brud-crum"><a href="<c:url value='/console/blogs'/>">Blogs</a> &raquo;Blog Category</div>
   </section>
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
 						<ul>
 							<li><a href="javascript:void(0)" title="Add Blog" onClick="addBlogCategory();"><i class="fa fa-plus paddingRight"></i>Add Category</a></li>
-							<li><a href="/app/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
+							<li><a href="/console/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
 							
 						</ul>
 						<div class="clearfix"></div>

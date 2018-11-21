@@ -53,7 +53,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 
 @RestController 
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class TimesheetReportsRestController {
 
 	@Value("${sourceleadUrl}")

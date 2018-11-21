@@ -590,7 +590,7 @@
 		con = con.replace(/[{}]/g, "");
 		//It will escape all the special characters
 		var jsonData = encodeURIComponent(con);
-		window.open('http://localhost:8080/app/testController/' + id
+		window.open('http://localhost:8080/console/testController/' + id
 				+ '', '_newtab');
 
 	}

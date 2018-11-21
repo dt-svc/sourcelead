@@ -279,7 +279,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 }
 		 
 		 String sourceleadUrlWithoutApp = sourceleadUrl;
-		 sourceleadUrlWithoutApp = sourceleadUrlWithoutApp.split("/app")[0];
+		 sourceleadUrlWithoutApp = sourceleadUrlWithoutApp.split("/console")[0];
 			
 		 
 		 globalVarsMap.put("professinalName", professionalName);

@@ -22,7 +22,7 @@ $(document).ready(function(){
              
 	 <div class="reportHead clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
-         	<li><a href="<c:url value="/app/addEmploymentVerificationTemplate"/>" title="Add Template" class="newAdBtn mr5">Add</a></li>
+         	<li><a href="<c:url value="/console/addEmploymentVerificationTemplate"/>" title="Add Template" class="newAdBtn mr5">Add</a></li>
          	<li><input type="text" class="repSearchBar" placeholder='Search' id='employmentTemplateTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
 		</ul>
 	</div>	

@@ -17,7 +17,7 @@
 <div class="reportNewDash">
 
  	<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-		<a href='${appPath}/applicantsjoinedlist'>
+		<a href='${appPath}/consolelicantsjoinedlist'>
 			<div class="repDashCta">
 				<span><i class="fa fa-bar-chart"></i></span>
 				<div class="repDashCtaWrap">
@@ -70,7 +70,7 @@
 	</sec:authorize>		
 	
 	<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-	<a href="${appPath}/applicantDeclineReports">
+	<a href="${appPath}/consolelicantDeclineReports">
 	<div class="repDashCta">
 		<span><i class="fa fa-ban"></i></span>
 		<div class="repDashCtaWrap">
@@ -81,7 +81,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-	<a href="${appPath}/applicantsBackoutReport">
+	<a href="${appPath}/consolelicantsBackoutReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-undo"></i></span>
 		<div class="repDashCtaWrap">
@@ -103,7 +103,7 @@
 	</sec:authorize>
 		
 	<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">	
-	<a href="${appPath}/applicantBySource">		
+	<a href="${appPath}/consolelicantBySource">		
 	<div class="repDashCta">
 		<span><i class="fa fa-group"></i></span>
 		<div class="repDashCtaWrap">
@@ -125,7 +125,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">	
-	<a href="${appPath}/applicantsReceivedListForReports">		
+	<a href="${appPath}/consolelicantsReceivedListForReports">		
 	<div class="repDashCta">
 		<span><i class="fa fa-handshake-o"></i></span>
 		<div class="repDashCtaWrap">

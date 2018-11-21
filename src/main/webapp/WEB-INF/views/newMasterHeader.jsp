@@ -10,7 +10,7 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
- <c:set var='appPath' value="/app" scope="application"></c:set>
+ <c:set var='appPath' value="/console" scope="application"></c:set>
 
  <script type="text/javascript">
     var staticTime='${staticTime}';
@@ -77,7 +77,7 @@ $(document).ready(function(){
  
  </c:if>
  
- <c:if test='${viewPage == "reports/applicantsReport"}'>
+ <c:if test='${viewPage == "reports/consolelicantsReport"}'>
 	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
 	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
@@ -85,7 +85,7 @@ $(document).ready(function(){
 	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
-<c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
+<c:if test='${viewPage == "reports/consolelicantsReceivedReport"}'>
 	<script src="/resources/reports/highcharts.js"></script>
 	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
@@ -115,7 +115,7 @@ $(document).ready(function(){
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
+ <c:if test='${viewPage == "leavemanagement/consolelyLeave"}'>
     <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
@@ -573,13 +573,13 @@ function preventTabkey(e){
 	                     </sec:authorize>
 	                     
 	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-rocket" aria-hidden="true"></i>License Upgrade</a></li>
+	                        <li><a href="<c:url value="/console/orgLicenseSubscriptionList" />"><i class="fa fa-rocket" aria-hidden="true"></i>License Upgrade</a></li>
 	                     </c:if>
 	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
 						 	<div class="subMenuView">
-		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a href="<c:url value="/console/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
 		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
 	                     	</div>
 	                     </li>
@@ -587,31 +587,31 @@ function preventTabkey(e){
                        </sec:authorize>
 	                     
 
-	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
+	                     <li><a href="<c:url value="/console/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
+	                        <li><a href="<c:url value="/console/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li><a href="<c:url value="/app/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		      <li><a href="<c:url value="/console/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li><a href="<c:url value="/app/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     <li><a href="<c:url value="/console/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 						 </sec:authorize>
 
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li><a href="<c:url value="/app/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  	<li><a href="<c:url value="/console/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Bank Accounts</a></li>
+						  <li><a href="<c:url value="/console/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Bank Accounts</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
+						  	<li><a href="<c:url value="/console/leaveConfiguration" />"><i class="fa fa-calendar" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
 						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-briefcase" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                    <li><a href="<c:url value="/console/job-boards" />"><i class="fa fa-briefcase" aria-hidden="true"></i>Job Board Configuration</a></li>
                                                  </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
+					  	<li><a href="<c:url value="/console/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
 						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
@@ -649,12 +649,12 @@ function preventTabkey(e){
             	<ul class="list-unstyled">
             	
             	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-            	<li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+            	<li><a href="<c:url value="/console/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
             	</c:if> 
             	
-            	<li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	<li><a href="<c:url value="/console/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
             	
-            	<li><a href="<c:url value="/app/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
+            	<li><a href="<c:url value="/console/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
             	</ul>
             	</div>
             	</li>
@@ -962,7 +962,7 @@ function preventTabkey(e){
 <!--  Support div -->
  <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
   <div id="mySidenav" class="sidenav">
-	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+	<a href="/console/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
 <!--   <a href="add-ticket.html">Support</a> -->
 </div>
 </sec:authorize>

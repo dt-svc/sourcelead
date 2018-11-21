@@ -48,7 +48,7 @@ public class CareerController {
 
     @RequestMapping("/careers-page.html")
     public String cph(HttpServletRequest request, String key) {
-    	request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/app", ""));
+    	request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/console", ""));
     	request.setAttribute("key", key);
         return "static-web/careers-test";
     }
@@ -65,7 +65,7 @@ public class CareerController {
             } else if (!org.getCareerPageKeyActive()) {
                 return "forward:/ws/careers-error?msg=Key is not active";
             } else {
-                request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/app", ""));
+                request.getSession().setAttribute("sourceleadUrl", sourceleadUrl.replace("/console", ""));
                 map.addAttribute("locations", orgLocationService.getAllOrgLocationsByOrgId(org.getId()));
                 return "careers/jobList";
             }

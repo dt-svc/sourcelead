@@ -46,7 +46,7 @@ import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class JobPipelineReoprtsRestController {
 	
 	@Autowired

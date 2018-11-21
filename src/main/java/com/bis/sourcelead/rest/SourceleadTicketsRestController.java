@@ -45,7 +45,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SourceleadTicketsRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadTicketsRestController.class);

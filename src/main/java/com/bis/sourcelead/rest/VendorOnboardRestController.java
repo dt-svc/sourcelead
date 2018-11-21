@@ -50,7 +50,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class VendorOnboardRestController {
 	
 	protected static boolean isNullOrEmpty(String str) {

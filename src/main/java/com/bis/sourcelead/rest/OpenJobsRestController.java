@@ -82,7 +82,7 @@ public class OpenJobsRestController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 
-	@RequestMapping(value = { "/app/ws/getOpenJobsELK", "/app/getOpenJobsELK" })
+	@RequestMapping(value = { "/console/ws/getOpenJobsELK", "/console/getOpenJobsELK" })
 	public @ResponseBody ResponseList<RequirementIndex> getOpenJobsELK(@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "openJobsRequirementTitle", required = false) String openJobsRequirementTitle,
 			@RequestParam(value = "openJobsLocation", required = false) String openJobsLocation,
@@ -364,7 +364,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = "/app/ws/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/ws/openJobsRequiremetsAdvancedSearch", method = RequestMethod.GET)
 	public @ResponseBody String openJobsRequiremetsAdvancedSearch(
 			@RequestParam(value = "json", required = false) String json,
 			@RequestParam(value = "offset", required = false) Integer offset, HttpServletRequest request,
@@ -687,7 +687,7 @@ public class OpenJobsRestController {
 		}
 	}
 
-	@RequestMapping(value = { "/app/ws/openRequirementsSummary", "/app/openRequirementsSummary" })
+	@RequestMapping(value = { "/console/ws/openRequirementsSummary", "/console/openRequirementsSummary" })
 	public @ResponseBody Response<Requirement> openRequirementsSummary(
 			@RequestParam(value = "requirementsUUID", required = false) String requirementsUUID) throws Exception {
 		Response<Requirement> reponse = new Response<>();
@@ -710,7 +710,7 @@ public class OpenJobsRestController {
 	}
 
 
-	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
+	@RequestMapping(value = { "/console/ws/getOrgsListforOpenJobs", "/console/getOrgsListforOpenJobs" })
 	public @ResponseBody String getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
 			@RequestParam(value = "country", required = false) String country,@RequestParam(value = "type", required = false) String type) throws Exception {

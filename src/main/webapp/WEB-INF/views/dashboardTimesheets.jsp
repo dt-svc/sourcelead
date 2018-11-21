@@ -27,7 +27,7 @@ $(document).ready(function(){
         <div class="dashboardWidget-new dashNewWrap mb">
         	
         	<div class="dashNewWrapHead clearfix">
-        		<a id="timeSheetLink" href="<c:url value="/app/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
+        		<a id="timeSheetLink" href="<c:url value="/console/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
 	        	<input type="hidden" value="" id="timesheetSocketsFor">
 	             <c:if test="${bothTimesheets}">
 		             <ul class="nav nav-tabs pull-right">
@@ -121,14 +121,14 @@ function onMessage(evt) {
          $("#rejectedCountAnchor").html("Rejected");
     }else{
   	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-          $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+          $("#rejectedCountAnchor").html('<a  href="/console/totalTimesheetList/REJECTED">Rejected</a>'); 
     }
 	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
          $("#savedCountAnchor").html("Draft");
      }else{
    	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-         $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
+         $("#savedCountAnchor").html("<a href='/console/totalTimesheetList/DRAFT'>Draft</a>"); 
         
      }
 	 
@@ -137,7 +137,7 @@ function onMessage(evt) {
         $("#waitingCountAnchor").html("Submitted");
     }else{
   	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-         $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+         $("#waitingCountAnchor").html('<a  href="/console/totalTimesheetList/SUBMITTED">Waiting</a>'); 
     }
 	 
 	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
@@ -145,12 +145,12 @@ function onMessage(evt) {
          $("#approvedCountAnchor").html("Approved");
     }else{
    	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-         $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+         $("#approvedCountAnchor").html('<a  href="/console/totalTimesheetList/consoleROVED">Approved</a>'); 
      }
 	 if(timesheetType == "myTimesheets"){
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
+		 $("#timeSheetLink").attr("href", "<c:url value='/console/timesheet'/>");
 	 }else{
-		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
+		 $("#timeSheetLink").attr("href", "<c:url value='/console/timesheetApproval'/>");
 	 }
 }
 </script>  

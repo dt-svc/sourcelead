@@ -75,7 +75,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  * Handles reports for Requirement
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class RequirementReportRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementReportRestController.class);
@@ -567,7 +567,7 @@ public class RequirementReportRestController {
 		return requirementList;
 	 }
 	
-	@RequestMapping(value = "/applicantListForJob")
+	@RequestMapping(value = "/consolelicantListForJob")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantListForJob(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();

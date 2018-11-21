@@ -49,7 +49,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 @PropertySource("${propertyLocation:app.properties}")
 public class CustomFormRestController {
 

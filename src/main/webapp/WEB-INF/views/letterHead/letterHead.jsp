@@ -12,7 +12,7 @@
       <div class="pull-left">
         <h2>Letterhead Template</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo;  Letterhead Template</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/console/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo;  Letterhead Template</div>
     </section>
     <div class="content-area content-new clearfix">
     <form:form id="letterHead_form" name="letterHead_form" method="post">

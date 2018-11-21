@@ -23,7 +23,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SourceleadTicketsController {
 	
 	@Value("${sourceleadUrl}")

@@ -38,7 +38,7 @@ $(function(){
             <h2>Level Three Summary</h2>
           </div>
           <%-- <a href="${appPath}/addUserManual" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
-          <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
+          <%-- <a href="${appPath}/consolelicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
           <div class="pull-right brud-crum" id="level1Bred" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; Level-1 User Manuals </div>
           <div class="pull-right brud-crum" id="level2Bred" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a> &raquo; <a onclick="getUserManualList();" class="paddingLeft">Level-1</a> &raquo; Level-2 User Manuals </div>

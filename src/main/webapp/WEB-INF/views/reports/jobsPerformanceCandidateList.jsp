@@ -78,7 +78,7 @@
     		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
     		searchValue = searchValue ? searchValue : "";
     	      
-    	       var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=All+&tabType="+tab;
+    	       var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=All+&tabType="+tab;
     	       preparecandidateAssignedList(url);
 		
 }
@@ -96,7 +96,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=INTERVIEW&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=INTERVIEW&tabType="+tab;
     		    preparecandidateAssignedList(url);
 		 
 }
@@ -115,7 +115,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SHORTLIST&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SHORTLIST&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }
@@ -133,7 +133,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=OFFERMADE&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=OFFERMADE&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }
@@ -151,7 +151,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SUBMIT_TO_CLIENT&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=SUBMIT_TO_CLIENT&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }
@@ -169,7 +169,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=BACKOUT&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=BACKOUT&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }
@@ -187,7 +187,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=JOINED&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=JOINED&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }
@@ -205,7 +205,7 @@
     		var requirementId = '${requirementId}';
     		searchValue = searchValue ? searchValue : "";
     	     
-    	        var url = sourceleadUrl+"/applicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=REJECTED&tabType="+tab;
+    	        var url = sourceleadUrl+"/consolelicantListForJob?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId+"&submissionStatus=REJECTED&tabType="+tab;
     	        preparecandidateAssignedList(url);
 		 
 }

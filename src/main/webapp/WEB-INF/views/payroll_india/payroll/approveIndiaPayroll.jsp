@@ -89,7 +89,7 @@ function sentForApprove(){
 	var feqUUID = $("#paySheetFrequency").val();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/approveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+        url: sourceleadUrl+"/consoleroveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
          success :function(result) { 
         	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');

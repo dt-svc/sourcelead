@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.service.ActionHistoryService;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ActionHistoryController {
 	
 	@Value("${sourceleadUrl}")

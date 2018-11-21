@@ -79,7 +79,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.RegistrationController;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ProjectPlanningRestController {
 
 	@Autowired

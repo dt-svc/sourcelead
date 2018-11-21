@@ -20,7 +20,7 @@ import com.squareup.okhttp.Request;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 
 public class EmailValidatorCommentsRestController {
 

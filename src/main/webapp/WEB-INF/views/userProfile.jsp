@@ -111,7 +111,7 @@ function getLinkAccounts(){
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/app/professionalProfile'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/console/professionalProfile'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -253,7 +253,7 @@ function getLinkAccounts(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/console/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -307,7 +307,7 @@ function getLinkAccounts(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/console/dashboard'">
 					</div>
 				  </div>
 				  </form:form>

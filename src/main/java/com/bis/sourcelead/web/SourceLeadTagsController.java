@@ -22,7 +22,7 @@ import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SourceLeadTagsController {
 	
 

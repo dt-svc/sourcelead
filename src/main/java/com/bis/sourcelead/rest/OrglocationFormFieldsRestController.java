@@ -25,7 +25,7 @@ import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping(value="/app")
+@RequestMapping(value="/console")
 public class OrglocationFormFieldsRestController {
 
 	@Autowired

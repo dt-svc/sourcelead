@@ -41,7 +41,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping ("/app")
+@RequestMapping ("/console")
 
 public class AssetsReportController {
 

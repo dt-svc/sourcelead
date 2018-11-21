@@ -105,7 +105,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CrowdSourcingRequirementsRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CrowdSourcingRequirementsRestController.class);
@@ -729,7 +729,7 @@ public class CrowdSourcingRequirementsRestController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = "/applyToJobFromCrowdSourcing", method = RequestMethod.POST)
+	@RequestMapping(value = "/consolelyToJobFromCrowdSourcing", method = RequestMethod.POST)
 	public String applyToJobFromCrowdSourcing(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)

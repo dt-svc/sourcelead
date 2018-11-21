@@ -648,7 +648,7 @@ function calculateDuration(){
 	}
 	 
 function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
-	//ApplyLeves piechart
+	//consolelyLeves piechart
 	//
 	AmCharts.makeChart("leavestatsu",
 		{

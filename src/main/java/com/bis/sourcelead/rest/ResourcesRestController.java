@@ -30,7 +30,7 @@ import com.bis.sourcelead.service.SourceleadBlogService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ResourcesRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourcesRestController.class);

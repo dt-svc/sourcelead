@@ -44,7 +44,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class BillingPayableRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BillingPayableRestController.class);

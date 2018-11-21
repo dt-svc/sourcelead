@@ -22,7 +22,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateDocumentsController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersController.class);
 	@Value("${sourceleadUrl}")

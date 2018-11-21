@@ -76,7 +76,7 @@ import gherkin.lexer.Is;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ExpensesRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

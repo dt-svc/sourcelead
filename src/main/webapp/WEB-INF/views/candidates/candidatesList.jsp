@@ -1085,7 +1085,7 @@ function cancel(candidateId){
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/app/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='/console/recruiterDashboard'/>">Home </a> &raquo; Candidate List  </div>
     </c:if> 
     
      <%-- <div class=" pull-left reportsH">

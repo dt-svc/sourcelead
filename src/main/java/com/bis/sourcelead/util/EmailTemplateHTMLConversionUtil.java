@@ -50,7 +50,7 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 												    	  		 tempHTML.append("<td class='text-logo'><span style='font-size: 20px; color: #757575; width: 400px; display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 10px 0px; text-align:center; margin:0 auto; font-weight: 600;'>"+orgLocations.getOrgLocationName()+"</span></td>");
 												    	  	}
 												      }else{
-												    	  url = url.replace("/app", "");
+												    	  url = url.replace("/console", "");
 												    	  tempHTML.append("<td style='text-align: center; height:50px;'><img src='"+url+"/resources/images/SourceLead-logo.png' style='max-height:100%;'></td>");
 												      }
 												           

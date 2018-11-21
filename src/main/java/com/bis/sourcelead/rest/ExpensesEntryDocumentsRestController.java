@@ -21,7 +21,7 @@ import com.bis.sourcelead.web.HomeController;
 */
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ExpensesEntryDocumentsRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);

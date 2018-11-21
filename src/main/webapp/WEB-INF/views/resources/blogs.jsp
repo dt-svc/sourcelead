@@ -23,8 +23,8 @@ window.onload = function() {
   <div class="content-area content-new clearfix">
    <div class="timesheet_head minHeight50 list-borderright">
 		<ul>
-			<li><a href="/app/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
-			<li><a href="/app/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
+			<li><a href="/console/categoryList" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Category</a></li>
+			<li><a href="/console/addBlog" title="Add Blog"><i class="fa fa-plus paddingRight"></i>Add Blog</a></li>
 		</ul>
 	<div class="clearfix"></div>
 	<div class="remove_search">

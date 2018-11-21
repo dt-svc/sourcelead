@@ -949,9 +949,9 @@ function requirementsList(offset){
 			 				result = result +'<div class="OpenJob">';
 			 				
 			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
-			 					result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="<c:url value="/console/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				}else{
-			 					result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="<c:url value="/console/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 					
 			 				}
 			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
@@ -1030,7 +1030,7 @@ function requirementsList(offset){
 			 				
 			 				if(requirementType != "AppliedJobs"){
 			 					var sourceleadShareUrl = sourceleadUrl ;
-			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
+			 					sourceleadShareUrl = sourceleadShareUrl.split("/console")[0];
 			 					result = result +'<div class="openCtaRight">';
 				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 				 				result = result +'<div class="openPostBtns clearfix">';
@@ -1297,7 +1297,7 @@ function searchRequirement(offset){
 									 				link = sourceleadUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
-									 				result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+									 				result = result +'<a href="<c:url value="/console/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 									 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';

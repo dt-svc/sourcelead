@@ -49,7 +49,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateTimelineActivityController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateTimelineActivityController.class);
 	@Value("${sourceleadUrl}")

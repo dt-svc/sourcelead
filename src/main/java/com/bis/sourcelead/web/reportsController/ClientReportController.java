@@ -13,7 +13,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ClientReportController {
 
 	@Value("${sourceleadUrl}")

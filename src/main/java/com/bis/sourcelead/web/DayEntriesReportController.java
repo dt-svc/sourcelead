@@ -18,7 +18,7 @@ import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping(value="/app")
+@RequestMapping(value="/console")
 public class DayEntriesReportController {
 
 	@Autowired

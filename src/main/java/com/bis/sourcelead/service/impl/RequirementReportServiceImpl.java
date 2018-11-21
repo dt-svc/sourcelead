@@ -654,8 +654,8 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				applicantReport.setSubmitToClientCount(applicantReportDto.getSubmitToClientCount().intValue());
 				applicantReport.setOfferedCount(applicantReportDto.getOffermadeCount().intValue());
 				applicantReport.setRejectedCount(applicantReportDto.getRejectedCount().intValue());
-				//applicantReport.setRequestSentCount(requestSentSum);
-				//applicantReport.setOrgName(rs.getVendorLocationId().getOrgLocationName());
+				//consolelicantReport.setRequestSentCount(requestSentSum);
+				//consolelicantReport.setOrgName(rs.getVendorLocationId().getOrgLocationName());
 			}
 		return applicantReport;
 	}

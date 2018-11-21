@@ -49,7 +49,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);

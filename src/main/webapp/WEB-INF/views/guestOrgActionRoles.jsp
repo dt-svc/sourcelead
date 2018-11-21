@@ -76,7 +76,7 @@ function getGuestRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div class="tbldata-dotdot-vsm">';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="<c:url value="/app/guestRoleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="<c:url value="/console/guestRoleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';

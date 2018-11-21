@@ -73,8 +73,8 @@ jQuery(document).ready(function($) {
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
 	var postedOrg='{postedOrg}'
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("/console")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/console")[0];
 	}
 	getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId); 
 	});
@@ -206,8 +206,8 @@ jQuery(document).ready(function($) {
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
-if(sourceleadUrl.indexOf("/app")!=-1){
-	sourceleadUrl = sourceleadUrl.split("/app")[0];
+if(sourceleadUrl.indexOf("/console")!=-1){
+	sourceleadUrl = sourceleadUrl.split("/console")[0];
 }
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
 	var finalDateFormatScript = 'dd-mm-yy'; 
@@ -367,7 +367,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    	var allSkills = $(event.target).val();
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/app/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        url: sourceleadUrl+"/console/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -475,8 +475,8 @@ function uploadAddApplicantCandidateDoc(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
 	 var sourceleadUrl = '${sourceleadUrl}';
-	 if(sourceleadUrl.indexOf("/app")!=-1){
-	 	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 if(sourceleadUrl.indexOf("/console")!=-1){
+	 	sourceleadUrl = sourceleadUrl.split("/console")[0];
 	 }
 	 if(validate_fileupload(this.value)){
 		 var docFileSize = $('#uploadFile');
@@ -588,8 +588,8 @@ function uploadAddApplicantCandidateDoc(){
 	 if(document.getElementById("candidateSubmissionType")){
 		 validation = false;
 	 }
-	 if(sourceleadUrl.indexOf("/app")!=-1){
-			sourceleadUrl = sourceleadUrl.split("/app")[0];
+	 if(sourceleadUrl.indexOf("/console")!=-1){
+			sourceleadUrl = sourceleadUrl.split("/console")[0];
 		}
 	 
 	 if(email != null && email != "" && validation){
@@ -666,8 +666,8 @@ function validate_fileupload(fileName)
  
 <script>
 function guestCancel(){
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("/console")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/console")[0];
 	}
 	 window.location = sourceleadUrl+"/jobs"
 }

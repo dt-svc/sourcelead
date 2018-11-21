@@ -111,11 +111,11 @@
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
 							  
 							  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/professionalDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/console/professionalDashboard'" >
 							  </c:if>
 							  
 							   <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/recruiterDashboard'" >
+							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/console/recruiterDashboard'" >
 							   </c:if>
 							  
 							</div>

@@ -27,7 +27,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class EmailTemplateRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmailTemplateRestController.class);

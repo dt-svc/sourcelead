@@ -1211,9 +1211,9 @@ function validatepopRecruiterEmail(type){
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined' &&
 			        				referUUID != null && referUUID != '' && referUUID != 'undefined'){
-									location.replace("/app/ws/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
+									location.replace("/console/ws/verifyAccount?requirementUUID="+requirementUUID+"&referUUID="+referUUID);  
 			        		}else{
-			        			location.replace("/app/ws/verifyAccount");  
+			        			location.replace("/console/ws/verifyAccount");  
 			        		}
 			        		
 			        	}else if((result == 'login')){
@@ -1283,9 +1283,9 @@ function validatepopRecruiterEmail(type){
                   	success: function(result) {
 			        	if((result == 'success')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){
-			        			location.replace("/app/ws/verifyAccount?requirementUUID="+requirementUUID);  
+			        			location.replace("/console/ws/verifyAccount?requirementUUID="+requirementUUID);  
 			        		}else{
-			        			location.replace("/app/ws/verifyAccount");  
+			        			location.replace("/console/ws/verifyAccount");  
 			        		}
 			        	}else if((result == 'login')){
 			        		if(requirementUUID != null && requirementUUID != '' && requirementUUID != 'undefined'){

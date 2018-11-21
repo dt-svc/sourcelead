@@ -127,7 +127,7 @@ function payheadListPagination(url,sourceleadUrl){
 	    	  	"data": "name",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='<c:url value='/console/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -190,7 +190,7 @@ function payheadListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='<c:url value='/console/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    /* result = result +'<a><span title="Delete Payhead"><i class="glyphicon glyphicon-trash" onClick="deletePayhead(\''+opt.uuid+'\')";></i></span></a>'; */
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";

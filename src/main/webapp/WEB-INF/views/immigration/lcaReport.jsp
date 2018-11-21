@@ -27,7 +27,7 @@
         <h2>LCA Report</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;LCA Report</div>
+					href="<c:url value='/console/reportsDashboard'/>"> Reports Dashboard</a>&raquo;LCA Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -107,7 +107,7 @@
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runLCAReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLcaForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/console/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      

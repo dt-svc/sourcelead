@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
@@ -119,7 +120,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ReportRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportRestController.class);
@@ -1541,4 +1542,5 @@ public class ReportRestController {
 	                if(file!= null){
 	                    file.delete();
 	                }			}
+	
 }

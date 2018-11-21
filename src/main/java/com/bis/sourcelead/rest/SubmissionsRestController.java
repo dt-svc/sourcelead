@@ -166,7 +166,7 @@ public class SubmissionsRestController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 
-	@RequestMapping(value = "/app/getCandidateResumes")
+	@RequestMapping(value = "/console/getCandidateResumes")
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<CandidateResumes> response = new ResponseList<>();
@@ -184,7 +184,7 @@ public class SubmissionsRestController {
 
 	}
 
-	@RequestMapping(value = "/app/getCandidateDetails")
+	@RequestMapping(value = "/console/getCandidateDetails")
 	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -260,7 +260,7 @@ public class SubmissionsRestController {
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/app/validateRequirementCandidateEmail" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/console/validateRequirementCandidateEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateRequirementCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
@@ -292,7 +292,7 @@ public class SubmissionsRestController {
 	   }
 
 	 
-	 @RequestMapping(value = "/app/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/console/validateRequirementRecruiterCandidateEmail" , method = RequestMethod.POST)
 	 public @ResponseBody  String validateRequirementRecruiterCandidateEmail(@RequestParam(value="email", required=false) String email,@RequestParam(value="requirementId", required=false) Long requirementId,HttpServletRequest request) throws Exception {
 		 	
 		 	String result = null;
@@ -309,7 +309,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = "/app/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
@@ -338,7 +338,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/saveAddApplicant", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/saveAddApplicant", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveAddApplicant(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request,
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData)
@@ -449,7 +449,7 @@ public class SubmissionsRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_CANDIDATES')")
-	@RequestMapping(value = "/app/editSubmisionDetails", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/editSubmisionDetails", method = RequestMethod.POST)
 	public String editSubmisionDetails(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "con", required = false) String con, MultipartHttpServletRequest request)
 			throws Exception {
@@ -465,7 +465,7 @@ public class SubmissionsRestController {
 		
 	}
 
-	@RequestMapping(value = "/app/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/getOrgSubmissionTemplatesList", method = RequestMethod.POST)
 	@ResponseBody
 	String getOrgSubmissionTemplatesList(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -476,7 +476,7 @@ public class SubmissionsRestController {
 		return commonUtil.toJSON(submissiontTemplateList);
 	}
 
-	@RequestMapping(value = "/app/saveOrgSubmissionTemplate", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/saveOrgSubmissionTemplate", method = RequestMethod.POST)
 	public String saveClientSubmissionTemplate(@RequestParam(value = "jsonData", required = false) String json,
 			@RequestParam(value = "templateId", required = false) String templateId,
 			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
@@ -519,7 +519,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SHORTLIST')")
-	@RequestMapping(value = "/app/getSubmissionCandidates", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/getSubmissionCandidates", method = RequestMethod.POST)
 	public ResponseList<RequirementSubmission> getSubmissionCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "status", required = false) String status, HttpServletRequest request)
 			throws Exception {
@@ -593,7 +593,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
-	@RequestMapping(value = "/app/getShortListedCandidates", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/getShortListedCandidates", method = RequestMethod.POST)
 	public ResponseList<RequirementSubmission> getShortListedCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmission> response = new ResponseList<>();
@@ -676,7 +676,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
-	@RequestMapping(value = "/app/submitShortlistedToClient", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/submitShortlistedToClient", method = RequestMethod.POST)
 	public String submitShortlistedToClient(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "submissionsList", required = false) String submissionsList,
 			@RequestParam(value = "selectedShortlistsRate", required = false) String selectedShortlistsRate,
@@ -692,7 +692,7 @@ public class SubmissionsRestController {
 		return "success";
 	}
 
-	@RequestMapping(value = "/app/candidateShortList", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/candidateShortList", method = RequestMethod.POST)
 	public Response<String> candidateShortList(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "submissionsList", required = false) String submissionsList,
 			HttpServletRequest request) throws Exception {
@@ -743,7 +743,7 @@ public class SubmissionsRestController {
 	}
 
 	@PreAuthorize("hasRole('ROLE_VIEW_APPLICANT')")
-	@RequestMapping(value = "/app/getSubmissionDetails", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/getSubmissionDetails", method = RequestMethod.POST)
 	public String getSubmissionDetails(@RequestParam(value = "submissionId", required = false) Long submissionId,
 			HttpServletRequest request) throws Exception {
 
@@ -803,7 +803,7 @@ public class SubmissionsRestController {
 	
 	
 	
-	@RequestMapping(value = "/app/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/getSubmittedCandidateDetailsForRequriement", method = RequestMethod.GET)
 	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
@@ -822,7 +822,7 @@ public class SubmissionsRestController {
 	 */
 
 
-	@RequestMapping(value = "/app/rejectApplicant")
+	@RequestMapping(value = "/console/rejectApplicant")
 	public @ResponseBody Response<String> rejectApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, @RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request) throws Exception
 
 	{
@@ -983,7 +983,7 @@ public class SubmissionsRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
-	@RequestMapping(value = "/app/submitToClient", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/submitToClient", method = RequestMethod.POST)
 	public @ResponseBody String submitToClient(@RequestParam(value = "jsonData", required = false) String jsonData,
 			@RequestParam(value = "selectedIds", required = false) String submissionsList,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
@@ -1025,7 +1025,7 @@ public class SubmissionsRestController {
 	// /addEmailtemplate
 
 	@PreAuthorize("hasAnyRole('ROLE_SUBMIT_TO_CLIENT')")
-	@RequestMapping(value = "/app/addEmailtemplate", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/addEmailtemplate", method = RequestMethod.GET)
 	@ResponseBody
 	public Response<Requirement> addEmailtemplate(@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "selectedShortlistsCount", required = false) String submissionIds,
@@ -1156,7 +1156,7 @@ public class SubmissionsRestController {
 	 * from Requirement Pipeline List from any Stage.
 	 */
 
-	@RequestMapping(value = "/app/reActivateRejectedApplicant")
+	@RequestMapping(value = "/console/reActivateRejectedApplicant")
 	public @ResponseBody String reActivateApplicant(
 			@RequestParam(value = "submissionId", required = false) Long submissionId,
 			@RequestParam(value = "type", required = false) String type,HttpServletRequest request)
@@ -1206,7 +1206,7 @@ public class SubmissionsRestController {
 	 */
 
 
-	@RequestMapping(value = "/app/backoutApplicant")
+	@RequestMapping(value = "/console/backoutApplicant")
 	public @ResponseBody String backoutApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
 			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
@@ -1247,7 +1247,7 @@ public class SubmissionsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/saveJoinedRequestForApplicant")
+	@RequestMapping(value = "/console/saveJoinedRequestForApplicant")
 	public @ResponseBody Response<String> saveJoinedRequestForApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
 			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
@@ -1272,7 +1272,7 @@ public class SubmissionsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/saveSelectedOnInterviewStatusForApplicant")
+	@RequestMapping(value = "/console/saveSelectedOnInterviewStatusForApplicant")
 	public @ResponseBody Response<String> saveSelectedOnInterviewStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();
@@ -1311,7 +1311,7 @@ public class SubmissionsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/saveShortlistStatusForApplicant")
+	@RequestMapping(value = "/console/saveShortlistStatusForApplicant")
 	public @ResponseBody Response<String> saveShortlistStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();
@@ -1350,7 +1350,7 @@ public class SubmissionsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/getRequirementOfferSubmissionById")
+	@RequestMapping(value = "/console/getRequirementOfferSubmissionById")
 	public @ResponseBody Response<RequirementOffers> getRequirementOfferSubmissionById(@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
 			throws Exception {
 		Response<RequirementOffers> response = new Response<>();
@@ -1380,7 +1380,7 @@ public class SubmissionsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/saveOnHoldStatusForApplicant")
+	@RequestMapping(value = "/console/saveOnHoldStatusForApplicant")
 	public @ResponseBody Response<String> saveOnHoldStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, @RequestParam(value = "status", required = false) String status,HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();

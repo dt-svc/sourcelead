@@ -36,7 +36,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-//@RequestMapping("/app")
+//@RequestMapping("/console")
 public class ApplicantDeclineRestController {
 
 	@Autowired
@@ -58,7 +58,7 @@ public class ApplicantDeclineRestController {
 
 
 	@SuppressWarnings("unused")
-	@RequestMapping(value = "/app/getDeclinedApplicantsCount", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/getDeclinedApplicantsCount", method = RequestMethod.GET)
 	public Response<ApplicantDeclineDTO> getDeclinedApplicantsCount(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 		Response<ApplicantDeclineDTO> response = new Response<>();
 		try{
@@ -139,7 +139,7 @@ public class ApplicantDeclineRestController {
 	}
 
 	@SuppressWarnings({ "unused", "unchecked" })
-	@RequestMapping(value = "/app/getDeclinedApplicantsList", method = RequestMethod.GET)
+	@RequestMapping(value = "/console/getDeclinedApplicantsList", method = RequestMethod.GET)
 	public ResponseList<ApplicantDeclineDTO> getDeclinedApplicantsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 		
 		ResponseList<ApplicantDeclineDTO> response = new ResponseList<>();

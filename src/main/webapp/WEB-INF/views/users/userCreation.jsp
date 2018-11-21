@@ -284,7 +284,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<a href="<c:url value="/app/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="<c:url value="/console/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                 </div> 
                  </div> 
@@ -318,7 +318,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
                        <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
-			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			             <a href="<c:url value="/console/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			           </sec:authorize>
                 </div>
                 </div> 
@@ -343,7 +343,7 @@
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
                   </div>
 		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-					<a href="<c:url value="/app/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					<a href="<c:url value="/console/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 					</sec:authorize>
                 </div> 
                  </div> 
@@ -368,7 +368,7 @@
 			
 			<span class="col-md-2 noPad clearfix">
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			<a href="<c:url value="/console/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
 			</span>
 		</div>

@@ -122,7 +122,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class RequirementController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementController.class);
@@ -574,11 +574,11 @@ public class RequirementController {
 		List<User> userList = userService.getOwnersByOrgLocationId(orgLocations.getId());
 		model.addObject("spocOwnersList", userList);
 		
-		//approver list
+		//consolerover list
 		List<User> approverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
 		model.addObject("approverList", approverList);
 		
-		//approver list
+		//consolerover list
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		

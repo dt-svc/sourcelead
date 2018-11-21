@@ -68,7 +68,7 @@ public class ApplicantsBackoutReportServiceImpl implements ApplicantsBackoutRepo
 	        	applicantsBackoutDTO.setOther((int)rejectValue.getValue());
 	        }
 	       }*/
-	    //applicantsBackoutDTO.setTotalCount(applicantsBackoutDTO.getBetterOffer() + applicantsBackoutDTO.getColdFeet() + applicantsBackoutDTO.getCompensation() + applicantsBackoutDTO.getCurrentCompany() + applicantsBackoutDTO.getOther() + applicantsBackoutDTO.getPersonal());
+	    //consolelicantsBackoutDTO.setTotalCount(applicantsBackoutDTO.getBetterOffer() + applicantsBackoutDTO.getColdFeet() + applicantsBackoutDTO.getCompensation() + applicantsBackoutDTO.getCurrentCompany() + applicantsBackoutDTO.getOther() + applicantsBackoutDTO.getPersonal());
 	    return countList.get(0);
 	}
 

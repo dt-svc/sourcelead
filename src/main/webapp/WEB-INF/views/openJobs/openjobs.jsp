@@ -999,7 +999,7 @@ function clearcheck(){
 
 function clearFilters(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	sourceleadUrl = sourceleadUrl.split("/console")[0];
 	window.location.href = sourceleadUrl+"/jobs";
 	$('#remainingOrgs').find('input[type=checkbox]:checked').removeAttr('checked');
 	$('#dateFilterId').find('input[type=radio]:checked').removeAttr('checked');
@@ -1103,8 +1103,8 @@ function requirementsFilter(type){
 	if(sourceleadUrl.indexOf("/"+title)!=-1){
 		sourceleadUrl = sourceleadUrl.split(""/"+title")[0];
 	}
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("/console")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/console")[0];
 	}
 	window.location.href = sourceleadUrl+"/jobs"+url;
 }
@@ -1275,8 +1275,8 @@ function prepareOpenJobsElkList(response,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("/console")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/console")[0];
 	}
     var json = response.data;
   	 var experience ="";
@@ -1347,7 +1347,7 @@ function prepareOpenJobsElkList(response,offset){
 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
 				result = result +'<div class="clearfix"></div>';
-				result = result +'<a target="_blank" href="'+sourceleadUrl+'/app/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
+				result = result +'<a target="_blank" href="'+sourceleadUrl+'/console/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';	
 				result = result +'<div class="clearfix"></div>';
 				description =  description+'Posted By :'+requirements.postedOrg+";";
 				}else{
@@ -1580,8 +1580,8 @@ function openPopup(){
 
 function getOpenJobsURL(requirementUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
-	if(sourceleadUrl.indexOf("/app")!=-1){
-		sourceleadUrl = sourceleadUrl.split("/app")[0];
+	if(sourceleadUrl.indexOf("/console")!=-1){
+		sourceleadUrl = sourceleadUrl.split("/console")[0];
 	}
 	window.location.href = sourceleadUrl+"/"+jobTitle+"-"+id;
 } 
@@ -1811,7 +1811,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 
 				result = result +'	<div class="share">';
 				    var sourceleadShareUrl = sourceleadUrl ;
-					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
+					sourceleadShareUrl = sourceleadShareUrl.split("/console")[0];
 					var jobTitle = json.jobTitle;
 					jobTitle = jobTitle.replace(/[^a-zA-Z0-9]+/gi, '-').toLowerCase();
 					 if (jobTitle.startsWith("-")){
@@ -1879,8 +1879,8 @@ function openJobSearchRequirement(){
 		    var jsonData = encodeURIComponent(con);
 			var form = $('#openJobsAdvancedForm')[0];
    		    var formData = new FormData(form);
-   		 if(sourceleadUrl.indexOf("/app")!=-1){
-				sourceleadUrl = sourceleadUrl.split("/app")[0];
+   		 if(sourceleadUrl.indexOf("/console")!=-1){
+				sourceleadUrl = sourceleadUrl.split("/console")[0];
 			}
 			//It will escape all the special characters
 			$("#advancedOpenJobsSearch").attr("disabled", "disabled");
@@ -1893,7 +1893,7 @@ function openJobSearchRequirement(){
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl + "/app/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl + "/console/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
@@ -1945,8 +1945,8 @@ function openJobSearchRequirement(){
 						 				result = result +'	<div class="jobResultsCta">';
 										result = result +'	<div class="jobResultsInn">';
 										result = result +'	<a target="_blank" class="block" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
-// 										result = result +'	<a href="<c:url value="/app/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
-										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/app/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
+// 										result = result +'	<a href="<c:url value="/console/ws/openRequirementsSummary?requirementUUID='+requirements.requirementUUID+'"/>"><h3>'+requirements.jobTitle+'</h3>';
+										result = result +'<a target="_blank" class="block" href="'+sourceleadUrl+'/console/ws/'+requirements.postedOrg+'-'+requirements.orgLocationId+'"><h4 class="orgLink">'+requirements.postedOrg+'</h4></a>';
 // 										result = result +'	<h4>'+requirements.postedOrg+'</h4>';
 
 										result = result +'	<div class="clearfix"></div>';

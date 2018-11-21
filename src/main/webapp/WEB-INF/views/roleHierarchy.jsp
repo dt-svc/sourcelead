@@ -309,7 +309,7 @@ function cancel(){
     $(clonerole).clone().appendTo("ul.hierachy-role")
     };
 
-//Append Role
+//consoleend Role
 var clonerole = $("ul.hierachy-role > li");
 function appendRole(){
    var newrole = $('#addNewrole').val();

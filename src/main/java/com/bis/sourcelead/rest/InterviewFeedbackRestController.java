@@ -47,7 +47,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 @PropertySource("${propertyLocation:app.properties}")
 public class InterviewFeedbackRestController {
 	

@@ -53,7 +53,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateDocumentsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsRestController.class);
 	@Value("${sourceleadUrl}")

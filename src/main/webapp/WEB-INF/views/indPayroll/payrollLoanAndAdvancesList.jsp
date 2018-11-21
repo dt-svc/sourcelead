@@ -186,7 +186,7 @@ function loanAndAdvListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollLoanAndAdvances?uuid="+opt.uuid+"'/>'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='<c:url value='/console/payrollLoanAndAdvances?uuid="+opt.uuid+"'/>'><span title='Edit Loan & Advance'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    result = result +'<a><span title="Delete Loan & Advance"><i class="glyphicon glyphicon-trash" onClick="deleteLoanAndAdv(\''+opt.uuid+'\')";></i></span></a>';
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";

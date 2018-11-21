@@ -50,7 +50,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Controller
-@RequestMapping (value="/app")
+@RequestMapping (value="/console")
 public class LetterHeadController extends PdfPageEventHelper {
 	
 	@Value("${static.path}")

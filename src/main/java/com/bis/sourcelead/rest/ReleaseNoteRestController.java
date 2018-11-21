@@ -31,7 +31,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ReleaseNoteRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReleaseNoteRestController.class);

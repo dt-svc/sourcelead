@@ -13,11 +13,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CampaignDao;
@@ -38,9 +40,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
-public class CampaignRestController {
-	private static final Logger logger = LoggerFactory.getLogger(CampaignRestController.class);
+@RequestMapping("/console")
+public class CampaignReportRestController {
+	private static final Logger logger = LoggerFactory.getLogger(CampaignReportRestController.class);
 	@Autowired
 	private CampaignService campaignService;
 	@Autowired
@@ -55,205 +57,12 @@ public class CampaignRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	/**
-	 * creating sender email identity
-	 * 
-	 * @param createSenderDTO
-	 * @param request
-	 * @param response
-	 * @return json
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/saveCampaignSender")
-	public String createSender(CreateSenderDTO createSenderDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String isSenderCreated = campaignService.createSender(createSenderDTO, user, orgLocation);
-		return isSenderCreated;
-	}
-	
-	/**
-	 * Check the NickName is duplicate or not
-	 * 
-	 * @param nickName
-	 * @param request
-	 * @param response
-	 * @return boolean
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/validateNickName", method = RequestMethod.GET)
-	public boolean validateNickName(@RequestParam(value = "nickName", required = false) String nickName, @RequestParam(value = "senderId", required = false) String senderId, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isSenderCreated = campaignService.validateNickName(nickName, orgLocation, senderId);
-		return isSenderCreated;
-	}
-	
-	/**
-	 * Get list of senders per org
-	 * 
-	 * @param orglocationId
-	 * @param request
-	 * @param response
-	 * @return ResponseList<CreateSenderDTO>
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getSendersByLocationId", method = RequestMethod.GET)
-	public ResponseList<CreateSenderDTO> getSendersList(@RequestParam(value = "orgLocationId", required = false) Long orglocationId, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OrgLocations orgLocation = orgLocationService.getOrgLocations(orglocationId);
-		ResponseList<CreateSenderDTO> createSenderDTOList = campaignService.getSendersListByOrgLocationId(orgLocation);
-		return createSenderDTOList;
-	}
-	
-	/**
-	 * Delete sender identity
-	 * 
-	 * @param orglocationId
-	 * @param request
-	 * @param response
-	 * @return boolean
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/deleteSenderIdentity", method = RequestMethod.GET)
-	public boolean deleteSenderIdentity(@RequestParam(value = "senderId", required = false) Long senderId, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isSenderDeleted = campaignService.deleteSenderIdentity(orgLocation, senderId);
-		return isSenderDeleted;
-	}
-	
-	/**
-	 * To save List , Recipient and add recipient to List 
-	 * @param campaignListDTO
-	 * @param request
-	 * @param response
-	 * @return boolean
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/saveRecipientList", method = RequestMethod.POST)
-	public String saveRecipientList(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String isSenderDeleted = campaignService.saveRecipientList(orgLocation, campaignListDTO, user);
-		return isSenderDeleted;
-	}
-	
-	/**
-	 * Get Senders List
-	 * 
-	 * @param campaignListDTO
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getSenders", method = RequestMethod.GET)
-	public List<CreateSenderDTO> getSenders(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<CreateSenderDTO> createSenderDtoList = campaignService.getSenderIdentityByUserChoice(user, orgLocation);
-		return createSenderDtoList;
-	}
-	
-	/**
-	 * Get Senders List
-	 * 
-	 * @param campaignListDTO
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getRecipientList", method = RequestMethod.GET)
-	public ResponseList<CampaignListDTO> getRecipientList(CampaignListDTO campaignListDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user, orgLocation, campaignListDTO);
-		return cpnDtoList;
-	}
-	
-	/**
-	 * Get campaign recipient list
-	 * @param campaignListDTO
-	 * @param orgLocationId
-	 * @param userId
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getCampaignRecipientList")
-	public @ResponseBody ResponseList<CampaignListDTO> getCampaignRecipientList(CampaignListDTO campaignListDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "user", required = false) Long userId, HttpServletRequest request) throws Exception
-	{
-		List<CampaignListDTO> campaignList = null;
-		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.valueOf(orgLocationId));
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ResponseList<CampaignListDTO> cpnDtoList = campaignService.getRecipientListByUserId(user, orgLocation, campaignListDTO);
-		return cpnDtoList;
-	}
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	
-
-	/**
-	 * Delete single campaign
-	 * @param id
-	 * @param orgLocationId
-	 * @return true/false
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/deleteCampaignContactList")
-	public boolean deleteCampaign(@RequestParam(value = "id", required = false) String id, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
-	{
-		boolean isDeleted = false;
-		CampaignList campaignList = campaignService.getCampaignListById(Long.parseLong(id));
-		int deleteStatusCode = campaignUtil.deleteCampaignConatactList(campaignList.getListId());
-		if (campaignList != null && deleteStatusCode == 204) {
-			campaignList.setStatus(Constants.CANDIDATE_IN_ACTIVE);
-			campaignDao.saveRecipientList(campaignList);
-			isDeleted = true;
-		}
-		return isDeleted;
-	}
 	
-	/**
-	 * validate Campaign unique name
-	 * @param orgLocationId
-	 * @param fromTable
-	 * @param name
-	 * @return boolean
-	 */
-	@RequestMapping(value = "/validateCampaignListName")
-	public boolean validateCampaignListName(@RequestParam(value = "orgLocationId", required = true) Long orgLocationId, @RequestParam(value = "from", required = true) String fromTable, @RequestParam(value = "name", required = true) String name)
-	{
-		boolean flag = false;
-		flag = campaignService.validateNameByOrgLocationIdandFromTable(name, orgLocationId, fromTable);
-		return flag;
-	}
 	
-	@RequestMapping(value = "/listViewPop")
-	public @ResponseBody  List<CampaignListDTO> getlistViewPop(CampaignListDTO campaignListDTO, @RequestParam(value = "viewListId", required = false) String viewListId, HttpServletRequest request) throws Exception
-	{
-		List<CampaignListDTO> campaiList = new ArrayList<>() ; 
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<CampaignRecipient> campList = campaignService.getRecipientListByListIdAndOrgLocationId(viewListId, orgLocation.getId());
-		for (CampaignRecipient campaignRecipient : campList) {
-			CampaignListDTO campaignListdto = new CampaignListDTO(); 
-			campaignListdto.setFirstName(campaignRecipient.getFirstName());
-			if(campaignRecipient.getLastName() !=null) {
-				campaignListdto.setLastName(campaignRecipient.getLastName());
-			}
-			campaignListdto.setEmail(campaignRecipient.getEmail());
-			campaiList.add(campaignListdto);
-		}
-		
-		return campaiList;
-		
-	}
 	
 	/**
 	 * Reading Single campaign stats
@@ -273,7 +82,31 @@ public class CampaignRestController {
 	
 	
 	/**
-	 * Reading Single campaign stats
+	 * returning campaign stats graph
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/campaignStatsGraph")
+	public ModelAndView campaignStatsGraph(@RequestParam(value="campaignName",required=false) String campaignName,HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.addObject("campaignName", campaignName);
+		   model.setViewName("campaign/campaignStatsGraph");
+	       return model;
+	}
+	
+	@RequestMapping(value = "/campaignStats")
+	public ModelAndView campaignStats(HttpServletRequest request,HttpServletResponse response) {
+		   ModelAndView model = new ModelAndView();
+		   model.addObject("sourceleadUrl", sourceleadUrl);
+		   model.setViewName("campaign/campaignStats");
+	       return model;
+	}
+	
+	
+	/**
+	 * Reading Single campaign stats 
 	 * 
 	 * @param orgLocationId
 	 * @param request
@@ -379,24 +212,9 @@ public class CampaignRestController {
 		
 	}
 	
-	/**
-	 * checking campaign duplicate or not
-	 * 
-	 * @param orgLocationId
-	 * @param request
-	 * @return List<CampaignStatsDTO>
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/validateCampaignSubject")
-	public boolean validateCampaignSubject(@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "campaignName", required = false) String subjectName, @RequestParam(value = "campaignType", required = false) int campaignType, HttpServletRequest request) throws Exception
-	{
-		return campaignService.validateCampaignSubject(subjectName, orgLocationId,campaignType);
-	}
-	
-	
 	
 	/**
-	 * Deleteing  campaign stats
+	 * Deleteing  campaign stats   
 	 * 
 	 * @param orgLocationId
 	 * @param request
@@ -410,22 +228,4 @@ public class CampaignRestController {
 	}
 	
 	
-	/**
-	 * Check the From/Reply Mail is duplicate or not
-	 * 
-	 * @param nickName
-	 * @param request
-	 * @param response
-	 * @return boolean
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/validateFromMail", method = RequestMethod.GET)
-	public boolean validateFromMail(@RequestParam(value = "email", required = false) String email, 
-									@RequestParam(value = "toWhom", required = false) String toWhom, 
-									@RequestParam(value = "id", required = false) String id,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		boolean isDuplicate = campaignService.validateFromMail(email,toWhom,id);
-		return isDuplicate;
-	}
 }

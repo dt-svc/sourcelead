@@ -72,7 +72,7 @@ import opennlp.tools.parser.Cons;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class OrgSettingsController {
 	private static final Logger logger = LoggerFactory.getLogger(OrgSettingsController.class);
 	@Value("${sourceleadUrl}")

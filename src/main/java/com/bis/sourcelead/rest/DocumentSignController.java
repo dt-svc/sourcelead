@@ -73,7 +73,7 @@ public class DocumentSignController {
 	private EMailJobScheduler eMailJobScheduler;
 	
 
-	@RequestMapping(value = {"/app/signer","/app/ws/signer"},method = RequestMethod.POST)
+	@RequestMapping(value = {"/console/signer","/console/ws/signer"},method = RequestMethod.POST)
 	@ResponseBody
 	public String upload(HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		UserInfo userInfo =  new UserInfo();
@@ -124,7 +124,7 @@ public class DocumentSignController {
 	}
 
 	
-	@RequestMapping(value ={"/app/saveSignatureCoordinates","/app/ws/saveSignatureCoordinates"}, method = RequestMethod.POST,
+	@RequestMapping(value ={"/console/saveSignatureCoordinates","/console/ws/saveSignatureCoordinates"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String saveSignatureCoordinates(@RequestBody CoordinatesInfo coordinatesInfo,HttpServletRequest req) {
@@ -146,7 +146,7 @@ public class DocumentSignController {
 		
 	}
 
-	@RequestMapping(value = {"/app/signImage", "/app/ws/signImage"}, method = RequestMethod.POST,
+	@RequestMapping(value = {"/console/signImage", "/console/ws/signImage"}, method = RequestMethod.POST,
 			consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedImage(@RequestBody SignedImageInfo signedImageInfo,  HttpServletRequest req) throws FontFormatException {
@@ -160,7 +160,7 @@ public class DocumentSignController {
 		return "{\"SignatureFileName\" : \"signedImage.jpeg\",\"InitialFileName\" : \"initialsImage.jpeg\"}";
 	}
 
-	@RequestMapping(value = {"/app/signDocument", "/app/ws/signDocument"}, method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = {"/console/signDocument", "/console/ws/signDocument"}, method = RequestMethod.POST,consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String signUploadedDocument(@RequestBody CoordinatesInfo coordinatesInfo, HttpServletRequest req,@RequestParam(value="contractId", required=false) Long contractId) throws Exception {
 		

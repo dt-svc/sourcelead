@@ -65,7 +65,7 @@ import java.util.Objects;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@RequestMapping("/app")
+@RequestMapping("/console")
 @Controller
 public class PaymentController {
 
@@ -182,7 +182,7 @@ public class PaymentController {
                 }
             }
         } catch (PayPalRESTException e) {
-            return "redirect:/app/payment-failed.html";
+            return "redirect:/console/payment-failed.html";
         }
         return null;
     }
@@ -250,9 +250,9 @@ public class PaymentController {
                         e.printStackTrace();
                     }
 
-                    return "redirect:/app/payment-success.html";
+                    return "redirect:/console/payment-success.html";
                 } else {
-                    return "redirect:/app/payment-failed.html";
+                    return "redirect:/console/payment-failed.html";
                 }
             } catch (PayPalRESTException e) {
                 return "redirect:/payment-failed.html";
@@ -551,7 +551,7 @@ public class PaymentController {
                 }
             }
         } catch (PayPalRESTException e) {
-            return "redirect:/app/marketplace-payment-failed.html";
+            return "redirect:/console/marketplace-payment-failed.html";
         }
         return null;
     }
@@ -615,9 +615,9 @@ public class PaymentController {
                         e.printStackTrace();
                     }
 
-                    return "redirect:/app/marketplace-payment-success.html";
+                    return "redirect:/console/marketplace-payment-success.html";
                 } else {
-                    return "redirect:/app/marketplace-payment-failed.html";
+                    return "redirect:/console/marketplace-payment-failed.html";
                 }
             } catch (PayPalRESTException e) {
                 return "redirect:/marketplace-payment-failed.html";

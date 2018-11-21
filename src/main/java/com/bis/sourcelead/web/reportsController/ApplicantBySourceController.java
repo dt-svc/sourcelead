@@ -20,7 +20,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ApplicantBySourceController {
 	
 	@Value("${sourceleadUrl}")
@@ -29,7 +29,7 @@ public class ApplicantBySourceController {
 	@Autowired
 	ReportsUtil reportsUtil;
 
-	@RequestMapping(value = "/applicantBySource")
+	@RequestMapping(value = "/consolelicantBySource")
 	public ModelAndView applicantBySource(HttpServletRequest request) throws Exception
 	{
 		 
@@ -42,7 +42,7 @@ public class ApplicantBySourceController {
 	  	 List<RequirementDTO> requirementsDTOList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementsList", requirementsDTOList);
-		 model.setViewName("reports/applicantBySource");
+		 model.setViewName("reports/consolelicantBySource");
 		 return model;
 	}
 	

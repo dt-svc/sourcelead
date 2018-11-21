@@ -142,7 +142,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 var pname = opt.name+" ("+opt.shortCode+")";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='<c:url value='/console/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{

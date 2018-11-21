@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>${sourceleadTicket.ticketTitle}</h2>
       </div>
-         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Ticket List</a> &raquo; View Ticket</div>
+         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/console/sourceleadTicketList'/>"> Ticket List</a> &raquo; View Ticket</div>
     </section>
    <div class="clearfix">
 		<div class="clearfix form-horizontal">

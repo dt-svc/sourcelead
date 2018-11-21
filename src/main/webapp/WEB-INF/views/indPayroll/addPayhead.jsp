@@ -223,7 +223,7 @@
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="Save" class="btn btn-success btnSuccess" id="savePayheadBtn" type="button" onclick="storePayhead();">
-				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
+				<input value="Cancel" onclick="javascript:window.location.href = '/console/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
 	</div>

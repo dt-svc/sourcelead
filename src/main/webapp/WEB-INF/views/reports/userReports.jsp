@@ -109,7 +109,7 @@
                       <h4 class="text-success">Applicants Received</h4>
                       <small class="text-muted">All Received Applicants Report</small>
                       <div class="clearfix mt10">
-                           <a class="btn btn-primary btn-sm" title="View" href="<c:url value="${appPath}/applicantsReceivedListForReports" />">View</a>
+                           <a class="btn btn-primary btn-sm" title="View" href="<c:url value="${appPath}/consolelicantsReceivedListForReports" />">View</a>
                       </div>
                       </div>
                   </div>

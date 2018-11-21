@@ -111,7 +111,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class USPayrollRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollRestController.class);
@@ -1458,7 +1458,7 @@ public class USPayrollRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/approvePayroll","/rest/approvePayroll" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/consolerovePayroll","/rest/consolerovePayroll" }, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<ConfirmPayTotalSumDTO> approvePayroll(ConfirmPayTotalSumDTO confirmPayTotalSumDto ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{

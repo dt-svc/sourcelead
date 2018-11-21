@@ -63,7 +63,7 @@ import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class LeaveManagementReportsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementReportsRestController.class);
 	@Value("${sourceleadUrl}")

@@ -74,7 +74,7 @@ class outlook {
                             int calclen = totalColumnCount - fields.length;
                             //DIFFERENCE >9 THEN ASSUMING THERE IS A LINE BREAK IN MIDDLE OF THE ROW, SO LETS GET THE NEXT ROW
                             if(calclen>9){
-                            	//APPEND THE ROW DATA
+                            	//consoleEND THE ROW DATA
                             	previousValues += line;
  
                             	//SPLIT AND FIND THE DIFFERENCE OF THE COLUMN

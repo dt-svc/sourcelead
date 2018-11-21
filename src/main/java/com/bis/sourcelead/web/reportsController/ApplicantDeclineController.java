@@ -17,7 +17,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ApplicantDeclineController {
 	
 	@Value("${sourceleadUrl}")
@@ -26,7 +26,7 @@ public class ApplicantDeclineController {
 	@Autowired
 	ReportsUtil reportsUtil;
 
-	@RequestMapping(value = "/applicantDeclineReports")
+	@RequestMapping(value = "/consolelicantDeclineReports")
 	public ModelAndView applicantBySource(HttpServletRequest request) throws Exception
 	{
 		
@@ -39,12 +39,12 @@ public class ApplicantDeclineController {
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementsList", requirementsList);
-		 model.setViewName("reports/applicantDecline");
+		 model.setViewName("reports/consolelicantDecline");
 		 
 		 return model;
 	}
 	
-	@RequestMapping(value = "/applicantDeclineList")
+	@RequestMapping(value = "/consolelicantDeclineList")
 	public ModelAndView applicantDeclineList(HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -54,7 +54,7 @@ public class ApplicantDeclineController {
 		 List<RequirementDTO> requirementsList = reportsUtil.getAllRequirementsByOrgLocationId(orgLocation.getId(), user, userRole,request);
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("requirementsList", requirementsList);
-		 model.setViewName("reports/applicantDeclineList");
+		 model.setViewName("reports/consolelicantDeclineList");
 		 
 		 return model;
 	}

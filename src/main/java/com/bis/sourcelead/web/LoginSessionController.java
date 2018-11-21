@@ -188,7 +188,7 @@ public class LoginSessionController {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/app/dashboard" , method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "/console/dashboard" , method = { RequestMethod.GET, RequestMethod.POST })
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response,
@@ -594,17 +594,17 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/console/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				}
 				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					response.sendRedirect(redirectUrl.append("/console/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				}
 				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
 						model.setViewName("professional/professionalPraseCandidate");
-						//response.sendRedirect(redirectUrl.append("/app/professionalPraseCandidate").toString());
+						//response.sendRedirect(redirectUrl.append("/console/professionalPraseCandidate").toString());
 					}else{
 						model.setViewName("professional/professionalDashboard");
 					}
@@ -621,7 +621,7 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/console/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
@@ -976,7 +976,7 @@ public class LoginSessionController {
   
   
 
-  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  @RequestMapping(value = "/console/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
   public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
 	  ModelAndView model = new ModelAndView();
 	  User user = userService.findByUserName(userName);

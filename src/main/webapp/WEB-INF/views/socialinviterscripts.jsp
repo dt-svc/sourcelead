@@ -113,7 +113,7 @@
 	}
 	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
-		 var sourceleadWebUrl = sourceleadUrl.replace('/app','');
+		 var sourceleadWebUrl = sourceleadUrl.replace('/console','');
 		 var cssUrl = sourceleadWebUrl+"/resources/css/";
 		 var jsUrl = sourceleadWebUrl+"/resources/js/";
 		 

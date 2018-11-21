@@ -70,7 +70,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 	@Value("${sourceleadUrl}")
@@ -349,7 +349,7 @@ public class CandidateController {
 		        model.addObject("statesList", statesList);
 			}
 			
-			//approver list
+			//consolerover list
 			List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_CANDIATE));
 			model.addObject("requirementApproverList", requirementApproverList);
 					

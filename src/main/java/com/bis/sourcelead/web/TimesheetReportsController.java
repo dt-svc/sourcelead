@@ -11,7 +11,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class TimesheetReportsController {
 	
 	@Value("${sourceleadUrl}")

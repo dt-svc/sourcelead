@@ -12,7 +12,7 @@ import com.bis.sourcelead.dao.SourceleadFormSectionsDao;
 import com.bis.sourcelead.entity.SourceleadActions;
 
 @Controller
-@RequestMapping (value="/app")
+@RequestMapping (value="/console")
 public class CustomFieldController {
 
 @Autowired

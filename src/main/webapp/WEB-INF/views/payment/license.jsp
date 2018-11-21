@@ -116,7 +116,7 @@
 
 <script type="text/javascript">
     function initPayment(a) {
-        $.post("/app/init-payment", {type: 'license', model: a}, function (data) {
+        $.post("/console/init-payment", {type: 'license', model: a}, function (data) {
             if (data) {
                 location.href = data;
             }

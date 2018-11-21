@@ -887,7 +887,7 @@ public class FileUploadUtil {
 				+ "</span><br/>File Name: " + fileInfo.getFileName() + "<br/>Name: " + resume.getName() + "<br/>Email: "
 				+ (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null") ? "" : resume.getEmail()), candidateService);
 		saveLogMessage(uploadid,
-				"<br/><a href='"+ (sourceleadUrl.replace("/app", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>", candidateService);
+				"<br/><a href='"+ (sourceleadUrl.replace("/console", "")) + fileInfo.getFileURL() + "' target='_blank'>Click here to download the Resume</a>", candidateService);
 		if(session != null)
 			session.setAttribute("uploadstats" + uploadid, i + " of " + count + " Parsed...");
 	}

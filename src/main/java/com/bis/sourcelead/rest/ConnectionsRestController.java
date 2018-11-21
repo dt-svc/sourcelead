@@ -45,7 +45,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class ConnectionsRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ConnectionsRestController.class);
 
@@ -168,7 +168,7 @@ public class ConnectionsRestController {
 				e.printStackTrace();
 			}
 			if (result == "success") {
-				return new ModelAndView("redirect:/app/loadConnectedList?status=connected");
+				return new ModelAndView("redirect:/console/loadConnectedList?status=connected");
 			} else {
 				model.setViewName("login");
 				return model;

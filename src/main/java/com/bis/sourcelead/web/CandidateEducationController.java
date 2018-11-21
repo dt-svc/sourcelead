@@ -17,7 +17,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.service.LookUpDataService;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class CandidateEducationController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersController.class);
 	@Value("${sourceleadUrl}")

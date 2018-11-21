@@ -28,7 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class UserLeaveLinkUpWithTimeSheetOldData {
 
 	 @Autowired

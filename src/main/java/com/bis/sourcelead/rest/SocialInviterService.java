@@ -31,7 +31,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class SocialInviterService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SocialInviterService.class);
@@ -39,7 +39,7 @@ public class SocialInviterService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-    @RequestMapping(value={"/ws/getAPIService", "/app/getAPIService"},  method =  RequestMethod.GET )
+    @RequestMapping(value={"/ws/getAPIService", "/console/getAPIService"},  method =  RequestMethod.GET )
 	@ResponseBody
 	public String getAPIService(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
 

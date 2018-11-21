@@ -22,7 +22,7 @@ $(document).ready(function(){
         <div class="dashboardWidget-new dashNewWrap mb">
             
         	<div class="dashNewWrapHead clearfix">
-        		<a class="pull-left" id="jobsLink" href="<c:url value="/app/jobs"/>">Jobs
+        		<a class="pull-left" id="jobsLink" href="<c:url value="/console/jobs"/>">Jobs
         			<a class="moreLink" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"  id="viewmoresDiv"> View More..</a>
         		</a>
 	            <ul class="nav nav-tabs pull-right">
@@ -161,9 +161,9 @@ function requirementSubmissionsCount(daterange){
 		  });
 		 
 		 if(daterange == "today"){
-			 $("#jobsLink").attr("href", "<c:url value='/app/jobs'/>");
+			 $("#jobsLink").attr("href", "<c:url value='/console/jobs'/>");
 		 }else{
-			 $("#jobsLink").attr("href", "<c:url value='/app/jobs'/>");
+			 $("#jobsLink").attr("href", "<c:url value='/console/jobs'/>");
 		 }
 		 
 	}

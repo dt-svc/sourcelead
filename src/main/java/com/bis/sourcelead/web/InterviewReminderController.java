@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 @PropertySource("${propertyLocation:app.properties}")
 public class InterviewReminderController {
 

@@ -16,7 +16,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class MissingTimesheetsReportsController {
 	
 	@Value("${sourceleadUrl}")

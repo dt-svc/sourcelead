@@ -2105,7 +2105,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
+ 	    	url : sourceleadUrl+"/consolelyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
 	        	

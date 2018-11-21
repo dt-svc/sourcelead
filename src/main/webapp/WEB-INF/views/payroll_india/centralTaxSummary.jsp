@@ -7,7 +7,7 @@
 			<h2>Central Tax</h2>
 		</div>
 	<div class="pull-right brud-crum">
-		<a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/centralTax/list">Centraltax List</a> &raquo;  Central Tax Summary
+		<a href="/console/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/centralTax/list">Centraltax List</a> &raquo;  Central Tax Summary
 	</div>
 	</section>
 

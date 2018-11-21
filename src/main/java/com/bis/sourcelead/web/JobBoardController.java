@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Raja Gopal Reddy P
  */
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class JobBoardController {
 
     @Value("${sourceleadUrl}")
@@ -116,7 +116,7 @@ public class JobBoardController {
         } else {
             List<OrgJobBoardDTO> jobBoardList = jobBoardConfigurationService.getOrgJobBoardList(org.getId(), false);
             if (jobBoardList.isEmpty()) {
-                return "redirect:/app/job-boards?error=true";
+                return "redirect:/console/job-boards?error=true";
             } else {
                 map.addAttribute("jobBoardList", jobBoardList);
                 try {

@@ -64,7 +64,7 @@ public class ApplicantDeclineDaoImpl implements ApplicantDeclineDao{
 			countList = submissionCount.list();
 			if (countList.isEmpty()) {
 				ApplicantDeclineDTO applicantsDeclineDTO = new ApplicantDeclineDTO();
-				//applicantsBackoutDTO.setCountFlag("true");
+				//consolelicantsBackoutDTO.setCountFlag("true");
 				countList.add(applicantsDeclineDTO);
 			}
 	   }

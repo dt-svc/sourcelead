@@ -66,7 +66,7 @@ import com.bis.sourcelead.web.IndianPayrollController;
  */
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class PayrollRestController {
 
 	@Value("${sourceleadUrl}")

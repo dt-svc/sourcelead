@@ -28,7 +28,7 @@ $(document).ready(function(){
         <h2>Petition Attorney Report</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
+					href="<c:url value='/console/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -114,7 +114,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/console/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      

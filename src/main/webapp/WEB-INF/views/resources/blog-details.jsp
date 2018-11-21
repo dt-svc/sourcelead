@@ -183,7 +183,7 @@ function validateBlogSubscriptionEmail(){
 	function recentPosts(href){
 		var sourceleadUrl = '${sourceleadUrl}';
 		href = encodeURIComponent(href);
-		var url = sourceleadUrl.split("/app");
+		var url = sourceleadUrl.split("/console");
 		window.location.href = url[0] + "/blog/"+href+".html";
 	}
 </script>

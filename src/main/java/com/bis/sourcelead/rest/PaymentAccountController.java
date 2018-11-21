@@ -79,7 +79,7 @@ public class PaymentAccountController {
     private String wepayAccessToken;
     
 
-    @RequestMapping(value = "/app/org-location-list", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/org-location-list", method = RequestMethod.POST)
     @ResponseBody
     public ResponseList<OrgLocations> orgLocationList(HttpServletRequest request) {
         ResponseList<OrgLocations> response = new ResponseList<>();
@@ -101,7 +101,7 @@ public class PaymentAccountController {
         return response;
     }
 
-    @RequestMapping(value = "/app/payment-account-list", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/payment-account-list", method = RequestMethod.POST)
     @ResponseBody
     public ResponseList<PaymentAccountDTO> paymentAccountList(HttpServletRequest request) {
         ResponseList<PaymentAccountDTO> response = new ResponseList<>();
@@ -120,7 +120,7 @@ public class PaymentAccountController {
     }
 
     @SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/app/save-payment-account", method = RequestMethod.POST)
+	@RequestMapping(value = "/console/save-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response saveAccount(HttpServletRequest request, PaymentAccountDTO account) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
@@ -165,7 +165,7 @@ public class PaymentAccountController {
     
     
     
-    @RequestMapping(value = "/app/resend-wepay-mail", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/resend-wepay-mail", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response resendWePayMail(HttpServletRequest request, long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
@@ -223,7 +223,7 @@ public class PaymentAccountController {
         return response;
     }
 
-    @RequestMapping(value = "/app/change-default-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/change-default-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeDefaultAccount(HttpServletRequest request, 
             long id, boolean defaultAccount) {
@@ -264,7 +264,7 @@ public class PaymentAccountController {
             json.put("original_ip", ip);
             json.put("original_device", device);
             json.put("tos_acceptance_time", 1209600);
-            json.put("redirect_uri", sourceleadURL.replace("/app", "") + wepaySuccessLink + "?id=" + account.getId() + "&orgId=" + orgId);
+            json.put("redirect_uri", sourceleadURL.replace("/console", "") + wepaySuccessLink + "?id=" + account.getId() + "&orgId=" + orgId);
             RequestBody body = RequestBody.create(JSON, json.toString());
             Request req = new Request.Builder().url(wepayURL + "/v2/user/register")
                     .addHeader("Authorization", "Bearer " + wepayAccessToken)
@@ -327,7 +327,7 @@ public class PaymentAccountController {
         return false;
     }
     
-    @RequestMapping(value = "/app/change-active-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/console/change-active-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();

@@ -116,7 +116,7 @@ import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class TimesheetRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);

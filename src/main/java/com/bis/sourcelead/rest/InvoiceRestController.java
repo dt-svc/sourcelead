@@ -101,7 +101,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);

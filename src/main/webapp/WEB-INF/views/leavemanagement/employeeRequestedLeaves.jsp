@@ -301,7 +301,7 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
+			 $.get(sourceleadUrl+"/consoleroveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
 				 if (response && response.response === "INVALID_DATA") {
 		    		    showError(response.responseMessage);
 		    		} else if (response.response === "AWKWARD") {

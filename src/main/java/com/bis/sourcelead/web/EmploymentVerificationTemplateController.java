@@ -30,7 +30,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class EmploymentVerificationTemplateController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmploymentVerificationTemplateController.class);

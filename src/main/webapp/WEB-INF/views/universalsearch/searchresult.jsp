@@ -79,9 +79,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="/console/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="/console/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		result = result+'          <p><label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
@@ -466,9 +466,9 @@ function getSearchResultsForAll(searchType,searchValue){
 						            	 
 									    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 									    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-									    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+									    		result = result+'<p><label><strong><a href="/console/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 									    	}else{
-									    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
+									    		result = result+'<p><label><strong><a href="/console/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
 									    	}
 									    	
 									    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -502,7 +502,7 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	
 									    	if(opt.length>5 && j==4){
 								                result = result+'  <div class="clearfix">';
-										    	result = result+'      <a href="/app/jobs" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										    	result = result+'      <a href="/console/jobs" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 										    	result = result+'  </div>';
 								             }
 									    	

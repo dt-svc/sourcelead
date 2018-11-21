@@ -41,7 +41,7 @@ import com.itextpdf.tool.xml.XMLWorkerHelper;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class EmploymentVerificationTemplateRestController {
 	
 	

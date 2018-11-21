@@ -29,7 +29,7 @@ $(document).ready(function(){
       <ul class="pull-right list-unstyled list-inline">
 			
         	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/app/addContractTemplate" />" class="newAdBtn mr5">+ Template</a></li>	
+				<li><a href="<c:url value="/console/addContractTemplate" />" class="newAdBtn mr5">+ Template</a></li>	
 			</sec:authorize>      
       
         	<li id="filterContractTypePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>

@@ -190,7 +190,7 @@ function bonusListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollBonus?uuid="+opt.uuid+"'/>'><span title='Edit Bonus'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a href='<c:url value='/console/payrollBonus?uuid="+opt.uuid+"'/>'><span title='Edit Bonus'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    result = result +'<a><span title="Delete Bonus"><i class="glyphicon glyphicon-trash" onClick="deleteBonus(\''+opt.uuid+'\')";></i></span></a>';
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";

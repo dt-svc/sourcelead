@@ -25,7 +25,7 @@ import com.bis.sourcelead.dto.CampaignListDTO;
 import com.bis.sourcelead.dto.CreateSenderDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.rest.CampaignRestController;
+import com.bis.sourcelead.rest.CampaignReportRestController;
 import com.google.gson.JsonObject;
 import com.sendgrid.Method;
 import com.sendgrid.Request;

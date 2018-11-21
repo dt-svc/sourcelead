@@ -16,7 +16,7 @@ import com.bis.sourcelead.service.OrgRequestService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class RequestedOrgsRestController {
 	
 	@Autowired

@@ -17,7 +17,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 
 public class ApplicantsBackoutReportController {
 	@Autowired
@@ -26,7 +26,7 @@ public class ApplicantsBackoutReportController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	@RequestMapping(value = "/applicantsBackoutReport")
+	@RequestMapping(value = "/consolelicantsBackoutReport")
 	public ModelAndView applicantBackout(HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -37,12 +37,12 @@ public class ApplicantsBackoutReportController {
 	  	 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("requirementsList",requirementsList);
-		 model.setViewName("reports/applicantsBackoutReport");
+		 model.setViewName("reports/consolelicantsBackoutReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
 	}
 	
-	@RequestMapping(value = "/applicantBackoutReportsList")
+	@RequestMapping(value = "/consolelicantBackoutReportsList")
 	public ModelAndView applicantBackoutReports(HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -53,7 +53,7 @@ public class ApplicantsBackoutReportController {
 	  	 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("requirementsList",requirementsList);
-		 model.setViewName("reports/applicantsBackoutReportList");
+		 model.setViewName("reports/consolelicantsBackoutReportList");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 return model;
 	}

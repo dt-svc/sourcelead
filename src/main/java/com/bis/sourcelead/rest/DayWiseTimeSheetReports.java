@@ -33,7 +33,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class DayWiseTimeSheetReports {
 
 @Autowired

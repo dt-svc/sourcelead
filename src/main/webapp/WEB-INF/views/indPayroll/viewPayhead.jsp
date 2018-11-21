@@ -20,7 +20,7 @@
 		      <div class="modal-body">
 		          
 		          <div class="viewgrid-header pull-right zIndex">
-		              <a href="<c:url value='/app/payrollPayhead?uuid=${uuid}'/>" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>
+		              <a href="<c:url value='/console/payrollPayhead?uuid=${uuid}'/>" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>
 		          </div>
 		          <div class="row">
 		              <div class="clearfix">

@@ -22,7 +22,7 @@ import com.bis.sourcelead.service.ClassFieldService;
 import com.bis.sourcelead.service.EmailScenarioService;
 
 @Controller
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class EmailTemplateController {
 	
 	

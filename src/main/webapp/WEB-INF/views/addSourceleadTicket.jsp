@@ -28,7 +28,7 @@ $(function() {
     <div class="pull-left">
       <h2>Add New Issue</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Issue List</a> &raquo; Add New Issue</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/console/sourceleadTicketList'/>"> Issue List</a> &raquo; Add New Issue</div>
   </section>
   <div class="content-area content-new clearfix">
   <form:form id="sourceleadTicket_form" name="sourceleadTicket_form" method="post">

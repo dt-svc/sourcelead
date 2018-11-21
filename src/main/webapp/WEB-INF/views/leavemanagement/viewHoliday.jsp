@@ -113,7 +113,7 @@ function getHolidaysList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result +' <span title="Edit" class="paddingRight"><a href="<c:url value="/app/editHoliday?holidayUUID='+opt.holidayUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+			        		 result = result +' <span title="Edit" class="paddingRight"><a href="<c:url value="/console/editHoliday?holidayUUID='+opt.holidayUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 			        		 result = result +' <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteHoliday(\''+opt.holidayUUID+'\');"></i></span> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';

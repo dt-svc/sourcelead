@@ -66,7 +66,7 @@ import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Component
-@RequestMapping("/app")
+@RequestMapping("/console")
 public class DumpPublicRestCalls {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DumpPublicRestCalls.class);

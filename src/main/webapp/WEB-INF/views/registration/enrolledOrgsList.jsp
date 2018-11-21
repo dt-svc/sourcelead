@@ -161,7 +161,7 @@ function dynamicOrgListPagination(url){
     	  		result = result +"<td><div class='tbldata-dotdot-200 UserTextLeft'>";
        	    	result = result +"<img onerror='predefineOrgImage(this);' class='m-t-xs' data-id='orgLogoImage' src="+org.fileUrl+" alt='image'>";
        	    	if(org.registrationStatus != 'Draft' ){
-       	    		result = result +"<a href='<c:url value='/app/orgSummary/"+org.orgCode+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
+       	    		result = result +"<a href='<c:url value='/console/orgSummary/"+org.orgCode+"'/>' title='"+org.orgName+"'>"+org.orgName+" </a>";
        	    	}else{
        	    		result = result +'<a href="'+sourceleadUrl+'/enrollOrg?locationCode='+org.locationCode+'">'+org.orgName+'</a>';
        	    	}

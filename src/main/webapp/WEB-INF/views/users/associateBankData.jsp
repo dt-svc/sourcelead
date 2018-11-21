@@ -56,7 +56,7 @@
                    <div class="pull-right">
                    <input type="button" onclick="skipAssociateBankDataJsp();" class="btn btn-default mr10" value="Skip">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData();" type="button">
-                    <input value="Cancel" onclick="javascript:window.location.href = '/app/usersList'" class="btn btn-default ml10" type="button">
+                    <input value="Cancel" onclick="javascript:window.location.href = '/console/usersList'" class="btn btn-default ml10" type="button">
                     </div>
                   </div>
                 </div>

@@ -28,7 +28,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	@Autowired
 	AuthenticationService authenticationService;
 
-	private  String logoutLink = "/app/rest/logout";
+	private  String logoutLink = "/console/rest/logout";
 	
 	private static final String HEADER_TOKEN = "X-CustomToken";
 	private static final String HEADER_USERNAME = "X-Username";
