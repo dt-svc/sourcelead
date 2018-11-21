@@ -1,6 +1,6 @@
-<jsp:include page="../masterHeader.jsp" />
+<%-- <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+ --%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -158,7 +158,7 @@ function statusvalidating(id){
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
 <div id="popUp"></div>
-<section class="content-wraper">
+<section class="">
 	<section class="content-header clearfix">
 		<div class="pull-left">
         	<h2>Jobs 
@@ -1493,4 +1493,4 @@ $(".overIcon, .newActPop").click(function(e){
 
 </script>
 
-<jsp:include page="../masterFooter.jsp" />
+<%-- <jsp:include page="../masterFooter.jsp" /> --%>

@@ -38,7 +38,8 @@
                     </c:if>
 	                <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+	                   <%-- <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/jobs'/>" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li> --%>
+	                   <li class="${sessionData.nav == 'Requirement' ? 'navActive' : ''}"><a onclick='goToJobs("${appPath}/jobs/");' title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
 	                </c:if> 
 	                
 	                <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER' }">
@@ -377,12 +378,13 @@ $(window).resize(function(){
 var sessionDataNav = "${sessionData.nav}";
 
 function goToJobs(url){
+	alert(url);
 	   $.ajax({
            url: url,
            type: "GET",
            success: function (result) {
-        	   $("#BodyConetentDiv").empty();
-		    	  $("#BodyConetentDiv").html(result);
+        	   $("#contentWrapperSection").empty();
+		    	  $("#contentWrapperSection").html(result);
 		    	  requirementListCheck('','','','http://localhost:8080/app');
                   console.log(" inside success function ==========>")
                	

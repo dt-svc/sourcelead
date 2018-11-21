@@ -73,7 +73,7 @@ function logoutForConfigure() {
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 
-<section class="content-wraper">
+<section class="content-wraper" id="contentWrapperSection">
 	    <section class="content-header clearfix">
 	      
 	      <c:if test="${!empty param.invitation}">
