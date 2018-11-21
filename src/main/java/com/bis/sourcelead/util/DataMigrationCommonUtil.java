@@ -2267,42 +2267,32 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				}*/
 				
-				
-				
 				/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("experience"))) {
 					if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
-						dataMigrationDTOJsonCopy.put("experience", "0");
-					//	candidateDTO.setExperienceYears("0");
-					//	candidateDTO.setExperienceMonths("0");
+						dataMigrationDTOJsonCopy.put("experienceYears", "0");
+						dataMigrationDTOJsonCopy.put("experienceMonths", "0");
 					}else{
 						 String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
 						 if(exp.length >1){
 							 
-							 dataMigrationDTOJsonCopy.put("experience", exp[0]);
-							// candidateDTO.setExperienceYears(exp[0]);
+							 dataMigrationDTOJsonCopy.put("experienceYears", exp[0]);
 								if(!exp[1].matches("[a-zA-Z]+")){
 									if(!"years".equalsIgnoreCase(exp[1])){
 									int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-									candidateDTO.setExperienceMonths(String.valueOf(months));
+									dataMigrationDTOJsonCopy.put("experienceMonths",String.valueOf(months));
 									}
-										
 								} 
 						 }else{
 							 if(exp[0].contains("years") || exp[0].contains("Years") ){
 								 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
 								 
-								 dataMigrationDTOJsonCopy.put("experience", String.valueOf(years));
-								// candidateDTO.setExperienceYears(String.valueOf(years));
-								// candidateDTO.setExperienceMonths("0");
+								 dataMigrationDTOJsonCopy.put("experienceYears", String.valueOf(years));
+								 dataMigrationDTOJsonCopy.put("experienceMonths", "0");
 							 }else{
-								// candidateDTO.setExperienceYears("");
-								// candidateDTO.setExperienceMonths("");
-								 dataMigrationDTOJsonCopy.put("experience", "");
+								 dataMigrationDTOJsonCopy.put("experienceYears", "");
+								 dataMigrationDTOJsonCopy.put("experienceMonths", "");
 							 }
-							 
 						 }
-							
-							
 					}
 				}*/
 				

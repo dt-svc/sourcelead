@@ -304,7 +304,7 @@ function cnfToSaveAssociateSalaryInd(){
 			 url : sourceleadUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
-			  			location.replace(sourceleadUrl+"/usersList");
+			  			location.reload();
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
 				  		$('#associateSalary_form input').attr('disabled','true');
@@ -336,7 +336,7 @@ $('#editAssociateBtn').click(function() {
 $('#cancelAssociateSalaryIndBtn').click(function() {
 	var status = $("#status").val();
 	if(status == "NEW" || status == "NODATA"){
-		location.replace(sourceleadUrl+"/usersList");
+		location.reload();
 	}/* else{
 		var userId = $("#userId").val();
 		$("#tab-30").empty();  
