@@ -163,6 +163,7 @@ public class Org implements Serializable{
 	private Long primaryOrgLocationId;
 	
 	@Transient
+	@JsonProperty
 	private int noOfDays;
 	
 	public Long getId() {

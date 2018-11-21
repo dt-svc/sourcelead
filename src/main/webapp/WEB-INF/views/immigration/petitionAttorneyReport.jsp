@@ -44,7 +44,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="clearfix">Company</label>
 				<div class="clearfix mySkillsUl">
-               <select multiple data-placeholder="Select Attorney" class="chosen-select form-control" name="attorneyId" id="attorneyId"  data-validation-optional="true">
+               <select multiple data-placeholder="Select Company" class="chosen-select form-control" name="attorneyId" id="attorneyId"  field-name="Company" data-validation="required"> 
 				</select>
 				</div>
             </div>
@@ -69,7 +69,7 @@ $(document).ready(function(){
            <div class="clearfix mb">
               <label class="clearfix">Petition Type</label>
 				<div class="clearfix">
-                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="required"> 
+                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="validate_Space" data-validation-optional="true"> 
 	                <c:forEach var="visa" items="${petitionTypeList}">
 		                     <option value="${visa.name}">${visa.name}</option>
 	                </c:forEach>
@@ -329,12 +329,11 @@ function getAllRelationssByOrgLocation(){
 		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$('#attorneyId').empty();
+		        	
 		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
-		        	}else{
-		        		$('#attorneyId').append('<option value="">--Select Attorney --</option>');
 		        	}
+		        	$('#attorneyId').empty();
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  
@@ -473,7 +472,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 

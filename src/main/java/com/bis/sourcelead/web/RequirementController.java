@@ -330,7 +330,9 @@ public class RequirementController {
 			}
 			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
+			if(StringUtils.isNotBlank(requirement.getJobType())){
 			requirement.setJobType(requirement.getJobType().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\t", ""));
+			}
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){

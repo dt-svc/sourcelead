@@ -711,23 +711,24 @@ public class OpenJobsRestController {
 
 
 	@RequestMapping(value = { "/app/ws/getOrgsListforOpenJobs", "/app/getOrgsListforOpenJobs" })
-	public @ResponseBody String getOrgsListforOpenJobs(
+	public @ResponseBody ResponseList<Org> getOrgsListforOpenJobs(
 			@RequestParam(value = "alphabet", required = false) String alphabet,
 			@RequestParam(value = "country", required = false) String country,@RequestParam(value = "type", required = false) String type) throws Exception {
 		List<Org> orgList = null;
-		String json;
+//		String json;
+		ResponseList<Org> resList = new ResponseList<>();
 		if ("none".equalsIgnoreCase(alphabet)) {
 			orgList = orgService.getOpenJobsOrgs();
 		} else {
 			orgList = orgService.getAllOpenJobsOrgsStartsWithAlphabet(alphabet);
 		}
-		List<Org> tobereturnedOrgList = new ArrayList<>();
+		List<Org> toBeReturnedOrgList = new ArrayList<>();
 		if("main".equalsIgnoreCase(type)){
 			int i = 1;
 			for (Org org : orgList) {
 				if(i<=5){
 					org.setNoOfDays(orgList.size());
-					tobereturnedOrgList.add(org);
+					toBeReturnedOrgList.add(org);
 				}else
 					break;
 				i++;
@@ -742,20 +743,16 @@ public class OpenJobsRestController {
 			}
 		}
 		
-		
-
-		
 		if (null != country && !"".equalsIgnoreCase(country)) {
-			json = commonUtil.toJSON(orgList);
+			resList.setData(orgList);
 		}
 		else if("sub".equalsIgnoreCase(type)){
-					
-			json = commonUtil.toJSON(orgList);
-				}
-		else {
-			json = commonUtil.toJSON(tobereturnedOrgList);
+			resList.setData(orgList);
 		}
-		return json;
+		else {
+			resList.setData(toBeReturnedOrgList);
+		}
+		return resList;
 	}
 
 }
