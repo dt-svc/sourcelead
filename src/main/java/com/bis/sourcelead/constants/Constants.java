@@ -356,6 +356,7 @@ public class Constants {
 	public static final String BUDGET_REQUEST_ONHOLD_EMAIL = "Budget Request OnHold";
 	public static final String BUDGET_REQUEST_ONHOLD_NOTIFICATION = "BudgetRequestOnHoldNotification";
 	
+	
 	public static final String UPDATED_SPOC_CONTACT = "SpocPointOfContatChangeEmail";
 	public static final String INVITE_COMPANY = "inviteCompany";
 	public static final String UPDATED_USER_ROLE_EMAIL = "UserRoleChanged";
@@ -1314,4 +1315,9 @@ public class Constants {
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	
+	
+	
+	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
+	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
 }
