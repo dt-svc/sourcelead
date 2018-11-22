@@ -1215,7 +1215,7 @@ function getOpenJobsELKList(orgLocationId,type){
 // 		$("#openJobsOffset").val(offset)
 // 	}
 	
-	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&minOffset=0&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
