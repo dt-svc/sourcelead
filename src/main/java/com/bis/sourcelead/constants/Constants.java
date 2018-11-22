@@ -1314,4 +1314,8 @@ public class Constants {
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	
+	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
+	public static final String CHANGE_REPORTING_MANAGER_NOTIFICATOPN="ChangeReportingManagerNotification";
+	
 }

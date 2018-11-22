@@ -1576,7 +1576,7 @@ public class UsersListRestController {
 	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USERTERMINATEDNOTIFICATIONEMAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 	         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 	         notificationScenario.setBody(notificationbody);
-	        
+	         
 	         //calling the sendEmail method of emailScenerioUtil
 	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.USERTERMINATEDEMAIL,new ArrayList<EmailAttachment>());
 
@@ -2069,8 +2069,10 @@ public class UsersListRestController {
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			user.setSsn(addUserDTO.getSsn());
 			
+			Long existingReportingManager=null;
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
+				existingReportingManager = userRole.getReportingManager().getId(); 
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 				userRole.setReportingManager(reportingManager);
 			} else {
@@ -2171,6 +2173,11 @@ public class UsersListRestController {
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
 				userService.sendEmail(user, loginUser, password, orgLocations.getId());
 			}
+			
+			if(existingReportingManager != null && existingReportingManager != (Long.parseLong(addUserDTO.getReportingManager()))){
+				userService.sendEmailForNewReportingManager(user, loginUser, password, orgLocations.getId(), existingReportingManager, Long.parseLong(addUserDTO.getReportingManager()));
+			}
+			
 		}
 		Employees employees = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
 
