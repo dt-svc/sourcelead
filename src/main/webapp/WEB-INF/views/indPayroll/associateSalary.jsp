@@ -349,14 +349,7 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 	var status = $("#status").val();
 	if(status == "NEW" || status == "NODATA"){
 		location.reload();
-	}/* else{
-		var userId = $("#userId").val();
-		$("#tab-30").empty();  
-	    $("#tab-19").empty();
-	    $("#tab-17").empty();
-	    $("#candidateSideDiv").empty();
-		userDetails(userId);
-	} */
+	}
 });
 </script>
 

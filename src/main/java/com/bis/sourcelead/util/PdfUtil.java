@@ -1440,7 +1440,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
+	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Top_Leave_Taken_Report");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -1489,7 +1489,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("BalanceLeaves Table");
+	        document.addTitle("Balance Leaves Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
