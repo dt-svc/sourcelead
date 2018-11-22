@@ -989,7 +989,11 @@ public class PayrollConfigurationRestController {
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
 				}
 				model.addObject("candidate", candidate);
-				model.addObject("status", "NODATA");
+				if(payrollPayheadDTO.getStatus()!= null && payrollPayheadDTO.getStatus().equalsIgnoreCase("NEW")){
+					model.addObject("status", "NEW");
+				}else{
+					model.addObject("status", "NODATA");
+				}
 			}
 			model.setViewName("indPayroll/associateSalary");
 			model.addObject("sourceleadUrl", sourceleadUrl);
