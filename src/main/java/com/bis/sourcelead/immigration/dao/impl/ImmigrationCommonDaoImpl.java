@@ -2809,41 +2809,42 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		
 		String query = null;
-		if(statusList.size() >0 && attorneyList.size()>0 && !attorneyList.contains("0")) {
+		if(petitionTypeList.size()>0 && !petitionTypeList.contains("null") && statusList.size() >0) {
 			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
 			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if (statusList !=null && statusList.size()>0) {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+		}else if (!petitionTypeList.contains("null") && petitionTypeList.size()>0) {
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if (attorneyList.size()>0 && !attorneyList.contains("0")) {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		}else if (statusList.size()>0 && !statusList.contains("null")) {
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.currUscisStatus IN (:statusList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("statusList", statusList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}else {
-			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1;
+			query = "from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1;
 
-			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}
 		String petitionQueryCount = null;
 		
-		if(statusList.size() >0 && attorneyList.size()>0 && !attorneyList.contains("0")) {
+		if(petitionTypeList.size()>0 && !petitionTypeList.contains("null") && statusList.size() >0) {
 			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
 		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if(statusList.size()>0){
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.currUscisStatus IN (:statusList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+		}else if (!petitionTypeList.contains("null") && petitionTypeList.size()>0) {
 			
-			hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("statusList", statusList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
-		}else if(attorneyList.size()>0 && !attorneyList.contains("0")){
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";	
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-		   hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
+			hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		}else if (statusList.size()>0 && !statusList.contains("null")) {
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.currUscisStatus IN (:statusList) and immRepView.openDate between :startDate and :endDate"+query1+"";	
+			
+		   hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setParameterList("statusList", statusList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}else {
-			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.petitionType IN (:petitionTypeList) and immRepView.openDate between :startDate and :endDate"+query1+"";
+			petitionQueryCount = "select count(*) from ImmigrationAttorneyReportView immRepView  where  immRepView.attorneyOrgLocationId =:orgLocationId and immRepView.client IN (:attorneyList) and immRepView.openDate between :startDate and :endDate"+query1+"";
 			
-		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("petitionTypeList", petitionTypeList).setDate("startDate", startDate).setDate("endDate",endDate);
+		    hqlCountQuery=session.createQuery(petitionQueryCount).setLong("orgLocationId", orgLocations.getId()).setParameterList("attorneyList", attorneyList).setDate("startDate", startDate).setDate("endDate",endDate);
 		}
 		immReportViewList = hqlQuery.setFirstResult(immigrationReportDTO.getStart()).setMaxResults(immigrationReportDTO.getLength()).list();
         int count =0;
@@ -2878,7 +2879,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			
 		//	target.setOrgName(source.getVendor());
 			
-			if (orgLocations.getId().equals(source.getOrgLocationId())) {
+			if (orgLocations.getId().equals(source.getAttorneyOrgLocationId())) {
 				target.setOrgName(source.getClient());
 				target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
 			}
