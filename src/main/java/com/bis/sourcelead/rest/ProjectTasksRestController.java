@@ -223,8 +223,7 @@ public class ProjectTasksRestController {
 		try {
 			if (Validator.validate(projectTasksDTO)) {
 				projectTasksDTO.setStaticPath(staticPath);
-				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,
-						userId);
+				String saveProjectTasks = tasksService.saveProjectTasksDTOByProjectId(projectId, projectTasksDTO,userId);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {

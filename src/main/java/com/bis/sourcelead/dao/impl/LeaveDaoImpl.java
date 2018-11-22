@@ -1408,7 +1408,9 @@ public class LeaveDaoImpl implements LeaveDao{
                                                                 + hrLeaveReportDTO.getSearchValue()
                                                                 + "%' ").append("OR leaveReport.status like '%"
                                                                         + hrLeaveReportDTO.getSearchValue()
-                                                                        + "%') ");
+                                                                        + "%' ").append("OR leaveReport.eid like '%"
+                                                                                + hrLeaveReportDTO.getSearchValue()
+                                                                                + "%') ");
                 /*
                  * if (startDateSqlDate != null) {
                  * query1.append("OR (leaveReport.fromDate <=" +

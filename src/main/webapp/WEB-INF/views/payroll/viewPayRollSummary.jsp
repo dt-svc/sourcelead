@@ -70,12 +70,12 @@
                         </tr>
                         <tr>
                           <td>Regular</td>
-                           <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHours" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
+                           <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="regularHoursView" name="regularHours"  onblur = "editRegularHours();" class="formControl" readOnly></td>
                           <td><i class="fa fa-dollar mr5"></i><input type="text" id="regularHoursAmt" name="regularHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                         <tr>
                           <td>Overtime</td>
-                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHours" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
+                          <td><i class="fa fa-clock-o paddingRight"></i><input type="text" id="overTimeHoursView" name="overTimeHours"   onblur = "editOverTimeHours();" class="formControl" readOnly></td>
                           <td><i class="fa fa-dollar mr5"></i><input type="text" id="overTimeHoursAmt" name="overTimeHoursAmt"  class="formControl" readOnly></td>
                         </tr>
                       </tbody>
@@ -239,9 +239,9 @@
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
-		            	$("#regularHours").val(json.regularHours.toFixed(2));
+		            	$("#regularHoursView").val(json.regularHours.toFixed(2));
 			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-			            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHoursView").val(json.overtimeHours.toFixed(2));
 			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 			            $("#totalHours").text(json.totalHours.toFixed(2));
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));

@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
@@ -388,7 +389,7 @@ public class DynamicReport {
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
-					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.title(cmp.text(Constants.CONTRACT_EMPLOYEE_PAYROLL).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
 					.columns(
 							col.column("Associate Id", "assId", type.stringType()),
 							col.column("Associate Name", "assName", type.stringType()),
