@@ -93,6 +93,7 @@ public class OpenJobsRestController {
 			@RequestParam(value = "country", required = false, defaultValue = "") String country,
 			@RequestParam(value = "companies", required = false, defaultValue = "") String companies,
 			@RequestParam(value = "postedOrgName", required = false, defaultValue = "") String postedOrgName,
+			@RequestParam(value = "minOffset", required = false, defaultValue = "") Integer minOffset,
 			HttpServletRequest request) throws Exception {
 
 		boolean isELKSearchEnable = true;
@@ -297,7 +298,7 @@ public class OpenJobsRestController {
 				else if(offset >= 10)
 					offset += 10;
 				searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX,
-						Constants.ELK_REQUIREMENT_TYPE, 0, offset, boolQueryBuilder).getHits();
+						Constants.ELK_REQUIREMENT_TYPE, minOffset, offset, boolQueryBuilder).getHits();
 			}
 
 			if (null != searchHits && searchHits.length > 0) {
