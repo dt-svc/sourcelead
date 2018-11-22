@@ -623,7 +623,7 @@ function resetValues(){
 	$('#projectList').trigger("chosen:updated");
 	$('#associateList').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
-	window.location.href =sourceleadUrl+"/reportsDashboard"
+	window.location.href =sourceleadUrl+"/hrReportsList"
 }
 </script>
 
@@ -772,6 +772,7 @@ function searchReportCollapse() {
 // 	var fromDate = $("#fromDate").val();
 //     var toDate = $("#toDate").val();
 // 	leaveReport(fromDate,toDate);
+	$("#leaveReportDataTableSearch").val('');
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');
