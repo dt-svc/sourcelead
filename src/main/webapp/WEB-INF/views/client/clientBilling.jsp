@@ -133,7 +133,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                                                                                                                                                                                                                   ';
  
  
- result = result + '			                    <li><a href="' + sourceleadUrl + '/customizeInvoice"><i class="fa fa-cog ml"></i></a></li>';
+ result = result + '			                    <li><a href="' + sourceleadUrl + '/customizeInvoice?orgLocationId=' + clientLocationId + '&orgRelationId=' + orgRelationId +'"><i class="fa fa-cog ml"></i></a></li>';
  
  
  result = result + '			            <div class="pull-right mt40 select-field hidden">                                                                                                                                                      ';

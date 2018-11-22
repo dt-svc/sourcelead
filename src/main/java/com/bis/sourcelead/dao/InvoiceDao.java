@@ -98,6 +98,6 @@ public interface InvoiceDao{
 
 	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
 
-	public CustomInvoiceTemplate getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId);
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long userId, Long orgLocationId);
 
 }

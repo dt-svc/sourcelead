@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.User;
 
@@ -120,9 +121,9 @@ public interface InvoiceService {
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
 
-	Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, User user,
+	Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations,
 			OrgLocations orgLocations);
 
-	CustomInvoiceTemplateDTO getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId);
+	CustomInvoiceTemplateDTO getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId);
 
 }

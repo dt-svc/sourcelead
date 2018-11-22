@@ -606,15 +606,22 @@ public class InvoiceController {
 
 		}*/ 
 	@RequestMapping(value = "/customizeInvoice")
-	public ModelAndView customizeInvoice(HttpServletRequest request) {
+	public ModelAndView customizeInvoice(HttpServletRequest request,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
-			modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateByUserIdAndOrgLocationId(user.getId(), orgLocations.getId()));
-			modelAndView.setViewName("billing/customInvoice");
+			if(user != null) {
+//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
+				modelAndView.addObject("orgLocationId", orgLocationId);
+				modelAndView.addObject("orgRelationId", orgRelationId);
+				modelAndView.setViewName("billing/customInvoice");
+			} else {
+				modelAndView.setViewName("login");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

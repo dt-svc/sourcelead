@@ -2554,7 +2554,10 @@ return responseList;
 	}
 	
 	@RequestMapping(value = "/saveCustomInvoiceTemplate", method = RequestMethod.POST)
-	public Response<String> saveDashboardItems(HttpServletRequest request, CustomInvoiceTemplateDTO customInvoiceTemplateDTO) {
+	public Response<String> saveDashboardItems(HttpServletRequest request,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId,
+			CustomInvoiceTemplateDTO customInvoiceTemplateDTO) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2570,8 +2573,17 @@ return responseList;
 						}*/
 					}
 				}
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, user, orgLocations);
+				OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,loggedInOrgLocations.getId());
+				if(orgLocation != null && orgRelation != null) {
+					response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_USER.name());
+					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

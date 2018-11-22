@@ -4261,7 +4261,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, User user, OrgLocations orgLocations) {
+	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations) {
 		Response<String> response = new Response<>();
 		try {
 			CustomInvoiceTemplate customInvoiceTemplate = null;
@@ -4272,7 +4272,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				customInvoiceTemplate = new CustomInvoiceTemplate();
 			}
 			customInvoiceTemplate.setItems(customInvoiceTemplateDTO.getJsonData());
-			customInvoiceTemplate.setUser(user);
+			customInvoiceTemplate.setOrgRelations(orgRelations);
 			customInvoiceTemplate.setOrgLocations(orgLocations);
 			
 			long result = invoiceDao.saveCustomInvoiceTemplate(customInvoiceTemplate);
@@ -4292,9 +4292,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId) {
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
 		try {
-			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateByUserIdAndOrgLocationId(userId, orgLocationId);
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
 			if (customInvoiceTemplate != null) {
 				CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
 				

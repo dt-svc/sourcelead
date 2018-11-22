@@ -1065,12 +1065,12 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional
-	public CustomInvoiceTemplate getCustomInvoiceTemplateByUserIdAndOrgLocationId(Long userId, Long orgLocationId) {
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.user.id= :userId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.orgRelations.id= :orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgRelationId", orgRelationId);
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
 			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty())

@@ -334,7 +334,7 @@
 				
 				<div class="invBtn">
 					<input class="slBtn md" value="Preview" id="update_user" onclick="showTemplatePreview();" type="button">
-					<input class="slBtn md colorBtn" value="Save" onclick="saveTemplate();" type="button">
+					<input class="slBtn md colorBtn" value="${invoiceTemplate != null ? 'Update' : 'Save'}" onclick="saveTemplate();" type="button">
 				</div>
 				<jsp:include page="../masterFooter.jsp" />
 			</div>
@@ -895,13 +895,14 @@
 				var style = "";
 				if($(this).data("section") === "image") {
 					style = $(this).find("img").attr("style");
-					text += "<div class='previewInnerCta' data-type='image' data-section='item'>";
-					text += "	<span style='" + style + "'>";
+					text += "<div class='previewInnerCta' data-name='" + $(this).data("name") + "' data-type='image' data-section='item'>";
+					var itemChecked = $(this).find("input[type='checkbox']").is(":checked");
+					text += "	<span " + (itemChecked ? "class='active'" : "") + ">";
 					text += "		<img src='" + $(this).find("img").attr("src") + "' style='" + style + "'>";
 					text += "	</span>";
 					text += "</div>";
 				} else if($(this).data("section") === "table") {
-					text += "<div class='previewInnerCta previewInnerCtaFull' data-type='table' data-section='item'>";
+					text += "<div class='previewInnerCta previewInnerCtaFull' data-name='" + $(this).data("name") + "' data-type='table' data-section='item'>";
 					text += "		<div class='project_tabs_inn_table borBot'>";
 					text += "			<table>";
 					text += "				<thead>";
@@ -936,10 +937,9 @@
 					text += "		</div>";
 					text += "</div>";
 				} else if($(this).data("section") === "footer") {
-					text += "<div class='previewInnerCta previewInnerCtaFull' data-type='footer' data-section='item'>";
-					text += "	<span style='" + style + "'>";
-					text += "		Footer : type(footer)";
-					text += "	</span>";
+					text += "<div class='previewInnerCta previewInnerCtaFull' data-name='" + $(this).data("name") + "' data-type='footer' data-section='item'>";
+					var itemChecked = $(this).find("input[type='checkbox']").is(":checked");
+					text += "	<span " + (itemChecked ? "class='active'" : "") + " style='" + $(this).find("label").attr("style") + "'>" + $(this).find("label").html() + "</span>";
 					text += "</div>";
 				} else {
 					if($(this).hasClass("eleRight")) {
@@ -950,12 +950,11 @@
 					
 					var headText = "";
 					var bodyText = "";
-					headText += "<div class='previewInnerCta' style='" + style + "' data-type='text' data-section='item'>";
+					headText += "<div class='previewInnerCta' style='" + style + "' data-name='" + $(this).data("name") + "' data-type='text' data-section='item'>";
 					/* headText += "	<h3>" + $(this).find("span").html() + "</h3>"; */
 					$(this).find("div[class='cusInList']").each(function() {
-						if($(this).find("input[type='checkbox']").is(":checked")) {
-							bodyText += "<span style='" + $(this).find("label").attr("style") + "'>" + $(this).find("label").html() + "</span>";
-						}
+						var itemChecked = $(this).find("input[type='checkbox']").is(":checked");
+						bodyText += "<span " + (itemChecked ? "class='active'" : "") + " style='" + $(this).find("label").attr("style") + "'>" + $(this).find("label").html() + "</span>";
 					});
 					headText += bodyText;
 					headText += "</div>";
@@ -978,21 +977,26 @@
 		$("body").css("overflow","auto");
 	}
 	function saveTemplate() {
+		var orgLocationId = "${orgLocationId}";
+		var orgRelationId = "${orgRelationId}";
 		var index = 1;
 		var items = [];
-		$("#previewItems div[data-section='item']").each(function() {
+		$("#previewItems div[data-section='item']").each(function() {	
 			var subItems = [];
 			$(this).find("span").each(function() {
 				subItems.push({
-					
+					checked : $(this).hasClass("active"),
 					value : $(this).parent().data("type") === "image" 
 									? $(this).find("img").attr("src")
-									: $(this).parent().data("type") !== "table" ? $(this).html() : "",
-					style : $(this).attr("style") !== "undefined" ? $(this).attr("style") : ""
+									: ($(this).parent().data("type") !== "table" ? $(this).html() : ""),
+					style : $(this).parent().data("type") === "image" 
+									? ($(this).find("img").attr("style") !== "undefined" ? $(this).find("img").attr("style") : "")
+									: ($(this).attr("style") !== "undefined" ? $(this).attr("style") : "")
 				});
 			});
 			
 			items.push({
+				name : $(this).data("name"),
 				type : $(this).data("type"),
 				order : index,
 				subItems : subItems
@@ -1002,16 +1006,16 @@
 		
 		console.log(JSON.stringify(items));
 		
- 		var id = $("#dashboardId").val();
+ 		var id = $("#invoiceTemplateId").val();
 		var data = {"id":id, "jsonData":JSON.stringify(items)};
 		$.ajax({
 	    	type: "POST",
 	    	data: data,
-	        url: sourceleadUrl+"/saveCustomInvoiceTemplate",
+	        url: sourceleadUrl+"/saveCustomInvoiceTemplate?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId,
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
-	        	} else if (response.response === "INVALID_DATA") {
+	        	} else if (response.response === "INVALID_DATA" || response.response === "INVALID_USER") {
 					showError(response.responseMessage);
 	        		closeConfigurePopup();
 	        	} else if (response.response === "SUCCESS") {

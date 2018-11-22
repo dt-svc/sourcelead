@@ -1,7 +1,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!-- Logo Part -->
-<li id="invoiceLogoGrid" data-section="image" data-id="invoiceLogo" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
-	<span class="">Logo</span>
+<input type="hidden" id="invoiceTemplateId" value="0"/>
+<li id="invoiceLogoGrid" data-name="Logo" data-section="image" data-id="invoiceLogo" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+	<span class="">Logo (Default)</span>
 	<div>
 		<input class="checkbox-custom" id="cb1" checked="checked" type="checkbox">
 
@@ -35,7 +36,7 @@
 <!-- Logo Part -->
 
 <!-- Company Heading -->
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+<li data-name="Organisation Name" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
 	<span class="">Organisation Name</span>
 	<div class="cusInList">
 		<input class="checkbox-custom" checked="checked" type="checkbox">
@@ -46,7 +47,7 @@
 <li data-section="hidden" class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
 <!-- Company Heading -->
 
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+<li data-name="Client Details" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
 	<span class="">Client Details</span>
 		<div class="cusInList">
 			<input class="checkbox-custom" checked="checked" type="checkbox">
@@ -69,7 +70,7 @@
 </li>
 
 <!-- Invoice Details -->
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
+<li data-name="Invoice Details" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
 	<span class="">Invoice Details</span>
 	<div id="invoiceDetails">
 		<div class="cusInList" style="text-align: right;">
@@ -94,7 +95,7 @@
 <!-- Invoice Details -->
 
 <!-- To -->
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+<li data-name="To" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
 	<span class="">To</span>
 	<div id="invoiceTo">
 		<div class="cusInList">
@@ -119,7 +120,7 @@
 <!-- To -->
 
 <!-- Bank Details -->
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
+<li data-name="Banking Details" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
 	<span class="">Banking Details</span>
 	<div id="bankingDetails">
 		<div class="cusInList" style="text-align: right;">
@@ -153,30 +154,28 @@
 <!-- Banking Details -->
 
 <!-- Invoice Table -->
-<li id="invoiceTableGrid" data-section="table" data-id="invoiceTable" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
+<li data-name="Invoice Table" id="invoiceTableGrid" data-section="table" data-id="invoiceTable" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
 	<span class="">Invoice Table</span>
 	<div class="project_tabs_inn_table">
 		<table onclick="showTableSettingsTab(this)" id="invoiceTable" data-id="invoiceTable">
 			<thead>
 				<tr>
-					<th>Id</th>
-					<th>Name</th>
-					<th>Period</th>
-					<th>Brief Description</th>
-					<th>Qty</th>
-					<th>Rate</th>
-					<th>Total</th>
+					<th>Column 1</th>
+					<th>Column 2</th>
+					<th>Column 3</th>
+					<th>...</th>
+					<th>...</th>
+					<th>Column n</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>0076</td>
-					<td>Mahaveer</td>
-					<td>08/10/2018 to 18/10/2018</td>
-					<td>Description</td>
-					<td>08</td>
-					<td>2800</td>
-					<td>45000.00</td>
+					<td>Value 1</td>
+					<td>Value 2</td>
+					<td>Value 3</td>
+					<td>...</td>
+					<td>...</td>
+					<td>Value n</td>
 				</tr>
 			</tbody>
 		</table>
@@ -187,7 +186,7 @@
 
 <!-- Discount -->
 <li data-section="hidden" class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
+<li data-name="Discount" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
 	<span class="">Discount</span>
 	<div class="cusInList" style="text-align: right;">
 		<input class="checkbox-custom" checked="checked" type="checkbox">
@@ -199,7 +198,7 @@
 
 <!-- Total -->
 <li data-section="hidden" class="positionRelative ui-state-default customInvoiceGrid ui-sortable-handle sortable-hidden"></li>
-<li data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
+<li data-name="Total" data-section="text" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid eleRight">
 	<span class="">Total</span>
 	<div class="cusInList" style="text-align: right;">
 		<input class="checkbox-custom" checked="checked" type="checkbox">
@@ -210,7 +209,7 @@
 <!-- Total -->
 
 <!-- Footer -->
-<li data-section="footer" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
+<li data-name="Footer" data-section="footer" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
 	<span class="">Footer</span>
 	<div>
 		<input class="checkbox-custom" checked="checked" type="checkbox">

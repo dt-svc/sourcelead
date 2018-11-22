@@ -30,8 +30,8 @@ public class CustomInvoiceTemplate implements Serializable {
 	private String items;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-	private User user;
+	@JoinColumn(name = "ORG_RELATION_ID", referencedColumnName = "ID")
+	private OrgRelations orgRelations;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
@@ -53,12 +53,12 @@ public class CustomInvoiceTemplate implements Serializable {
 		this.items = items;
 	}
 
-	public User getUser() {
-		return user;
+	public OrgRelations getOrgRelations() {
+		return orgRelations;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setOrgRelations(OrgRelations orgRelations) {
+		this.orgRelations = orgRelations;
 	}
 
 	public OrgLocations getOrgLocations() {
@@ -68,5 +68,6 @@ public class CustomInvoiceTemplate implements Serializable {
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
 	}
+
 
 }
