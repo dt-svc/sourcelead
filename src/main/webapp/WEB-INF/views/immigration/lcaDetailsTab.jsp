@@ -17,7 +17,7 @@
 				<th>Valid To</th>
 				<th>LCA Status</th>
 				<th title="Total Positions">#Positions</th>
-				<th title="Assigned Positions">#Employment</th>
+				<!-- <th title="Assigned Positions">#Employment</th> -->
 				<th title="Available Positions">#Available</th>
 				<th>Status</th>
 			  </tr>
@@ -32,12 +32,12 @@
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.lcaStatus}"></div>${lcadetails.lcaStatus}</td>
 				
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.noOfPositions}"></div>${lcadetails.noOfPositions}</td>
-				<c:if test="${!empty lcadetails.newEmploymentCount}">
+				<%-- <c:if test="${!empty lcadetails.newEmploymentCount}">
 				<td><div class="tbldata-dotdot-sm" title = "${lcadetails.newEmploymentCount}"></div>${lcadetails.newEmploymentCount}</td>
 				</c:if>
 				<c:if test="${empty lcadetails.newEmploymentCount}">
 				<td><div class="tbldata-dotdot-sm" title = "0"></div>0</td>
-				</c:if>
+				</c:if> --%>
 				
 				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.availablePositions}" /></td>
 				
