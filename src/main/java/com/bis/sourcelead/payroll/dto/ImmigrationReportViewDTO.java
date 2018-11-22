@@ -58,6 +58,14 @@ public class ImmigrationReportViewDTO extends SearchDTO{
 	 private String searchValue;
 	 
 	 private String exportType;
+	 
+	 private String orglocationId;
+	 
+	 private String immigrationUUID;
+	 
+	 private String candidateUUID;
+	 
+	 private String immiTemplateUUID;
 
 	public String getId() {
 		return id;
@@ -66,8 +74,6 @@ public class ImmigrationReportViewDTO extends SearchDTO{
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	
 
 	public List<String> getPetitionType() {
 		return petitionType;
@@ -261,7 +267,38 @@ public class ImmigrationReportViewDTO extends SearchDTO{
 	public void setPetitionTypeName(String petitionTypeName) {
 		this.petitionTypeName = petitionTypeName;
 	}
-	
+
+	public String getOrglocationId() {
+		return orglocationId;
+	}
+
+	public void setOrglocationId(String orglocationId) {
+		this.orglocationId = orglocationId;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
+
+	public String getImmiTemplateUUID() {
+		return immiTemplateUUID;
+	}
+
+	public void setImmiTemplateUUID(String immiTemplateUUID) {
+		this.immiTemplateUUID = immiTemplateUUID;
+	}
+
+	public String getImmigrationUUID() {
+		return immigrationUUID;
+	}
+
+	public void setImmigrationUUID(String immigrationUUID) {
+		this.immigrationUUID = immigrationUUID;
+	}
 	
 	
 }

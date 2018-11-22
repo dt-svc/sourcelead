@@ -53,7 +53,7 @@ public class AssociateNomineeServiceImpl implements AssociateNomineeService {
 		
 		try {
 			if (Validator.validate(associateNomineeDTO)) {
-				associateNominee.setId(associateNomineeDTO.getId());
+//				associateNominee.setId(associateNomineeDTO.getId());
 				associateNominee.setOrgLocationId(orgLocation.getId());
 				associateNominee.setCandidateId(can);
 				associateNominee.setName(associateNomineeDTO.getName());
@@ -109,34 +109,37 @@ public class AssociateNomineeServiceImpl implements AssociateNomineeService {
 		
 		List<AssociateNominee> assNominee = associateNomineeDao.getAssociateNomineeDetails(candidate,orgLocation);
 		try {
-			for(AssociateNominee associateNominee:assNominee) {
-				
-				AssociateNomineeDTO dto = new AssociateNomineeDTO(); 
-				dto.setName(associateNominee.getName());
-//				dto.setDateOfBirth(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), associateNominee.getDateOfBirth()));
-//				dto.setGender(associateNominee.getGender());
-//				dto.setBloodGroup(associateNominee.getBloodGroup());
-				dto.setRelation(associateNominee.getRelation());
-				dto.setNominationFor(associateNominee.getNominationFor());
-				dto.setNominationPercentage(associateNominee.getNominationPercentage());
-//				dto.setAddress(associateNominee.getAddress());
-//				dto.setIllnessGuardianName(associateNominee.getIllnessGuardianName());
-//				dto.setIllnessGuardianRelationName(associateNominee.getIllnessGuardianRelationName());
-//				dto.setIllnessGuardianAddress(associateNominee.getIllnessGuardianAddress());
-//				dto.setIllnessGuardianPhoneNumber(associateNominee.getIllnessGuardianPhoneNumber());
-//				dto.setIllnessGuardianEmail(associateNominee.getIllnessGuardianEmail());
-//				dto.setMinorGuardianName(associateNominee.getMinorGuardianName());
-//				dto.setMinorGuardianRelationName(associateNominee.getMinorGuardianRelationName());
-//				dto.setMinorGuardianAddress(associateNominee.getMinorGuardianAddress());
-//				dto.setMinorGuardianPhoneNumber(associateNominee.getMinorGuardianPhoneNumber());
-//				dto.setMinorGuardianEmail(associateNominee.getMinorGuardianEmail());
-				dto.setStatus(associateNominee.getStatus());
-				dto.setCandidateId(candidate.getId());
-				dto.setOrgLocationId(orgLocation.getId());
-				dto.setId(associateNominee.getId());
-				
-				nomineeDTO.add(dto);
+			if(assNominee != null) {
+				for(AssociateNominee associateNominee:assNominee) {
+					
+					AssociateNomineeDTO dto = new AssociateNomineeDTO(); 
+					dto.setName(associateNominee.getName());
+					dto.setDateOfBirth(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), associateNominee.getDateOfBirth()));
+					dto.setGender(associateNominee.getGender());
+					dto.setBloodGroup(associateNominee.getBloodGroup());
+					dto.setRelation(associateNominee.getRelation());
+					dto.setNominationFor(associateNominee.getNominationFor());
+					dto.setNominationPercentage(associateNominee.getNominationPercentage());
+					dto.setAddress(associateNominee.getAddress());
+					dto.setIllnessGuardianName(associateNominee.getIllnessGuardianName());
+					dto.setIllnessGuardianRelationName(associateNominee.getIllnessGuardianRelationName());
+					dto.setIllnessGuardianAddress(associateNominee.getIllnessGuardianAddress());
+					dto.setIllnessGuardianPhoneNumber(associateNominee.getIllnessGuardianPhoneNumber());
+					dto.setIllnessGuardianEmail(associateNominee.getIllnessGuardianEmail());
+					dto.setMinorGuardianName(associateNominee.getMinorGuardianName());
+					dto.setMinorGuardianRelationName(associateNominee.getMinorGuardianRelationName());
+					dto.setMinorGuardianAddress(associateNominee.getMinorGuardianAddress());
+					dto.setMinorGuardianPhoneNumber(associateNominee.getMinorGuardianPhoneNumber());
+					dto.setMinorGuardianEmail(associateNominee.getMinorGuardianEmail());
+					dto.setStatus(associateNominee.getStatus());
+					dto.setCandidateId(candidate.getId());
+					dto.setOrgLocationId(orgLocation.getId());
+					dto.setId(associateNominee.getId());
+					
+					nomineeDTO.add(dto);
+				}
 			}
+			
 			nomineeList.setData(nomineeDTO);
 				
 		} catch (Exception e) {

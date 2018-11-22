@@ -218,10 +218,10 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							}else {
 								joinDate = employee.getCreatedDate();
 							}
-							Date expDate = joinDate;
-							DateUtils.addYears(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
-							DateUtils.addMonths(expDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
-							if(expDate.before(freqStartDate)) {
+							Date eligibleDate = null;
+							eligibleDate = DateUtils.addYears(joinDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceYears() : "0" ));
+							eligibleDate = DateUtils.addMonths(eligibleDate, Integer.parseInt(org.apache.commons.lang.StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths()) ? associateSalaryPayheadInd.getPayrollPayhead().getExperienceMonths() : "0" ));
+							if(eligibleDate != null && eligibleDate.before(freqStartDate)) {
 								isPayheadApplincable = false;
 							}
 						}
@@ -239,7 +239,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					AssociateLoanAndAdvancesDTO assLoanAndAdvDTO = iNDPayrollCommonUtil.getAssLoanAndAdvanceDedAmountInd(orgLocation,paySheetFreq,loginUser,assoSal.getCandidate(),employeePayroll);
 					boolean isLD = false;
 					Double loanAdvTotal = 0.0;
-					//if payroll in Associate Payroll Payheads
+					//if L&D in Associate Payroll Payheads
 					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
 						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
 							loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
@@ -248,7 +248,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							isLD = true;
 						}
 					}
-					//if payroll not found in Associate Payroll Payheads
+					//if L&D not found in Associate Payroll Payheads
 					if(!isLD) {
 						loanAdvTotal = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
@@ -264,6 +264,37 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						ph.setUpdatedDate(new Date());
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
+					
+					
+					//calculate PT
+					boolean isPT = false;
+					Double ptAmount = 0.0;
+					//if PT in Associate Payroll Payheads
+					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
+						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("PT")) {
+							ptAmount = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
+							ph.setMonthly(new BigDecimal(ptAmount));
+							ph.setAnnualy(new BigDecimal(ptAmount*12));
+							isPT = true;
+						}
+					}
+					//if PT not found in Associate Payroll Payheads
+					if(!isPT) {
+						ptAmount = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
+						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+						ph.setIndEmployeePayrollId(employeePayroll);
+						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("PT", orgLocation.getId()));
+						ph.setMonthly(new BigDecimal(ptAmount));
+						ph.setAnnualy(new BigDecimal(ptAmount*12));
+						ph.setStatus(Constants.RECORD_ACTIVE);
+						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						ph.setCreatedBy(loginUser);
+						ph.setUpdatedBy(loginUser);
+						ph.setCreatedDate(new Date());
+						ph.setUpdatedDate(new Date());
+						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+					}
+					
 					
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());

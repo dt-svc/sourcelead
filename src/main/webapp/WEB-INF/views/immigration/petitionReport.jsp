@@ -82,7 +82,7 @@ $(document).ready(function(){
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
 		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();" ><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -251,30 +251,29 @@ $(document).ready(function(){
           finalDateFormatEndDate = 'yy-dd-mm'; 
       }
 
-      $( "#custFromDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-            maxDate: new Date() ,
-            onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custToDate").datepicker("option", "minDate", dt);
-             removeStartValid();
-            } 
-      });
+      $('#custFromDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custToDate").datepicker("option", "minDate", dt);
+	        }
+	  });
       
-      $( "#custToDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-          maxDate: new Date() ,
-      onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custFromDate").datepicker("option", "maxDate", dt);
-             removeEndValid();
-            }});
+      $('#custToDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custFromDate").datepicker("option", "minDate", dt);
+	        }
+	  });
   }
 
 	function removeStartValid(){
@@ -288,14 +287,17 @@ $(document).ready(function(){
     var frequency = $("#dateFrequency").val();
     var fromDate = $("#custFromDate").val();
     var toDate = $("#custToDate").val();
+   
     if(frequency == "Custom"){
         if(fromDate == ''){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+            $("input#custFromDate").empty();
         }
         if(toDate == ''){
             $('#custToDateDiv').find('p.jquery_form_error_message').remove();
             $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+            $("input#custToDate").val('');
         }
         if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
@@ -414,7 +416,7 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Phone</th>';
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
-        result = result + '<th>On Date</th>';
+        result = result + '<th>Open Date</th>';
         result = result + '<th>Attorney(Vendor Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
@@ -458,7 +460,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=N>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
