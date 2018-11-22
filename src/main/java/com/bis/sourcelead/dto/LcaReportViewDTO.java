@@ -68,6 +68,8 @@ private static final long serialVersionUID = 1L;
 	private String expiredOn;
 	
 	private String exportType;
+	
+	private String lcaUuid;
 
 	public long getId() {
 		return id;
@@ -297,6 +299,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
+	}
+
+	public String getLcaUuid() {
+		return lcaUuid;
+	}
+
+	public void setLcaUuid(String lcaUuid) {
+		this.lcaUuid = lcaUuid;
 	}
 	
 	

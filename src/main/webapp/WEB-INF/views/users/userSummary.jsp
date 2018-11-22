@@ -38,15 +38,6 @@ max-height: inherit !important;
 			</div>
 			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates</a> &raquo; Associate Summary <span id = "fname"></a> </div>				
 		</section>
-		 <div class="cearfix">
-		  <div class="newTagsWrap">
-			 <ul class="clearfix tagsWrap tagsWrapBor">
-				<select multiple class="chosen-select form-control" name="tagName" id="projectTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
-				</select>
-			</ul>
-			 <div class="clearfix"></div>
-		  </div>
-     </div>
 
 		<!-- Timesheet -->
 
