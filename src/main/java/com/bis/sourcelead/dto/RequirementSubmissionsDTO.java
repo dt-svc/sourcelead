@@ -48,6 +48,12 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	
 	private String submissionStatus;
 	
+	private String invoiceGenerateDate;
+	
+	private String paymentTerm;
+	
+	private String joinedDate;
+	
 	private String submissionDate;
 	
 	private String submissionTime;
@@ -55,6 +61,8 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String generatedId;
 	
 	private String submittedBy;
+	
+	private String clientOrVendorName;
 		
 	public long getRequirementId()
 	{
@@ -341,4 +349,31 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	public void setSubmittedBy(String submittedBy) {
 		this.submittedBy = submittedBy;
 	}
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+	public String getPaymentTerm() {
+		return paymentTerm;
+	}
+	public void setPaymentTerm(String paymentTerm) {
+		this.paymentTerm = paymentTerm;
+	}
+	public String getJoinedDate() {
+		return joinedDate;
+	}
+	public void setJoinedDate(String joinedDate) {
+		this.joinedDate = joinedDate;
+	}
+	public String getClientOrVendorName() {
+		return clientOrVendorName;
+	}
+	public void setClientOrVendorName(String clientOrVendorName) {
+		this.clientOrVendorName = clientOrVendorName;
+	}
+	
+	
+	
 }

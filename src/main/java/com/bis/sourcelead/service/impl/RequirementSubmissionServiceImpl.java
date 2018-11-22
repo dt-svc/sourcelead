@@ -5689,4 +5689,36 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	}
 
-}
+	@SuppressWarnings("null")
+	@Override
+	public List<RequirementSubmissionsDTO > getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
+
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		List<RequirementSubmission> submissionList = requirementSubmissionDao.getCandidateForInvoiceDashBoard(orgLocations, user);
+
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setRate(requirementSubmission.getRequirement().getRate());
+
+			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
+
+} 
