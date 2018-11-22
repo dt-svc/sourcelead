@@ -40,6 +40,11 @@ public class OrglocationDepositTaxesServiceImpl implements OrglocationDepositTax
 		
 		return orglocDepTaxes;
 	}
+
+	@Override
+	public OrglocationDepositTaxes getOrglocationDepositTaxesByOrgLocationId(Long locationId) {
+		return orglocationDepositTaxesDao.getOrglocationDepositTaxesByOrgLocationId(locationId);
+	}
 	
 
 }

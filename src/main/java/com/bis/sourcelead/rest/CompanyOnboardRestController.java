@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrglocationDepositTaxesDao;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
@@ -95,6 +96,9 @@ public class CompanyOnboardRestController {
 	@Autowired
 	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 	
+	@Autowired
+	OrglocationDepositTaxesDao orglocationDepositTaxesDao;
+	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<String> saveOrgLocationsFederalAndStatesTax(FederalAndStateTaxDTO federalAndStateTaxDTO, HttpServletRequest request) throws Exception
@@ -112,7 +116,24 @@ public class CompanyOnboardRestController {
 					orgLocationService.updateOrgLocations(loginOrgLocation);
 					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
 					String result = orglocationStateTaxService.addOrglocationStateTax(federalAndStateTaxDTO, loginOrgLocation, user);
-					OrglocationDepositTaxes orglocationDepositTaxes = orglocationDepositTaxesService.saveOrglocationDepositTaxes(federalAndStateTaxDTO, loginOrgLocation, user);
+					
+					OrglocationDepositTaxes orglocationDepositTaxes = (OrglocationDepositTaxes) SourceLeadSessionManager.getSessionAttribute(request, "orglocationDepositTaxes");
+					if(orglocationDepositTaxes == null) {
+						orglocationDepositTaxes = new OrglocationDepositTaxes();
+					}
+//					OrglocationDepositTaxes orglocationDepositTaxes = new OrglocationDepositTaxes();
+					orglocationDepositTaxes.setOrgLocationId(loginOrgLocation);
+					orglocationDepositTaxes.setFillerType(federalAndStateTaxDTO.getFillerType());
+					orglocationDepositTaxes.setTaxDepositSchedule(federalAndStateTaxDTO.getTaxDepositSchedule());
+					orglocationDepositTaxes.setFederalDeposit(federalAndStateTaxDTO.getFederalDeposit());
+					orglocationDepositTaxes.setStatus(Constants.RECORD_ACTIVE);
+					orglocationDepositTaxes.setCreatedBy(user);
+					orglocationDepositTaxes.setUpdatedBy(user);
+					orglocationDepositTaxes.setCreatedDate(commonUtil.currentDate());
+					orglocationDepositTaxes.setUpdatedDate(commonUtil.currentDate());
+					orglocationDepositTaxes = orglocationDepositTaxesDao.saveOrglocationDepositTaxes(orglocationDepositTaxes);
+					
+//					OrglocationDepositTaxes orglocationDepositTaxes = orglocationDepositTaxesService.saveOrglocationDepositTaxes(federalAndStateTaxDTO, loginOrgLocation, user);
 					SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orglocationDepositTaxes);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

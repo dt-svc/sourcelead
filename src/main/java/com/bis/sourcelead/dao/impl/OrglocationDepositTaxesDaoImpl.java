@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrglocationDepositTaxesDao;
 import com.bis.sourcelead.entity.OrglocationDepositTaxes;
+import com.bis.sourcelead.entity.OrglocationFormSubFields;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -51,6 +53,20 @@ public class OrglocationDepositTaxesDaoImpl implements OrglocationDepositTaxesDa
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return orglocationDepositTaxes;
+	}
+
+	@Override
+	@Transactional
+	public OrglocationDepositTaxes getOrglocationDepositTaxesByOrgLocationId(Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrglocationDepositTaxes orglocDepTaxes where orglocDepTaxes.orgLocationId =:orgLocationId";
+		List<OrglocationDepositTaxes> orglocationDepositTaxes = session.createQuery(query).setLong("orgLocationId", locationId).list();
+		if(orglocationDepositTaxes != null && orglocationDepositTaxes.size() > 0) {
+			return orglocationDepositTaxes.get(0);
+		}else {
+			return null;
+		}
+		
 	}
 
 }

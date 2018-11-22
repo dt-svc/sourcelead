@@ -9,4 +9,6 @@ public interface OrglocationDepositTaxesService {
 
 	OrglocationDepositTaxes saveOrglocationDepositTaxes(FederalAndStateTaxDTO federalAndStateTaxDTO,OrgLocations loginOrgLocation, User user) throws Exception;
 
+	OrglocationDepositTaxes getOrglocationDepositTaxesByOrgLocationId(Long locationId);
+
 }
