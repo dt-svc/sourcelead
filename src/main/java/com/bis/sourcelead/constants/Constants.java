@@ -1315,9 +1315,12 @@ public class Constants {
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
-	
-	
-	
+
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
 	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+	public static final String ASSOCIATE_WITH_HOLDING_REPORT = "Associate With Holding Report";
+	public static final String DEDUCTION_SUMMARY_REPORTS = "Deduction Summary Reports";
+	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
+	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
+	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
 }
