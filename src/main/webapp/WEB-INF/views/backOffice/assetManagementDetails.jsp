@@ -380,6 +380,7 @@ function assetDetails(assetUUID) {
 						if (json.description != null && json.description != '' && json.description != 'undefined') {
 							result = result + ' <div class="require_wrap_details_cta width100percnt description80"> <b><strong>Description:</strong></b> <span class = "wordWrap-breakword">'+json.description+'</span>';
 							result = result + ' <div class="clearfix"></div>';
+							result = result + ' </div>';
 						}
 						
 						result = result + ' </div>';

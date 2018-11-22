@@ -87,34 +87,7 @@ public class PayrollTaxServiceImpl implements PayrollTaxService {
 			PayrollTax payrollTax = payrollTaxDao.getPayrollTaxConfigurationByOrgLocationId(orgLocationId, financialYear);
 			if (payrollTax != null) {
 				PayrollTaxDTO payrollTaxDTO = new PayrollTaxDTO();
-				payrollTaxDTO.setId(payrollTax.getId());
-				payrollTaxDTO.setOrgLocationId(payrollTax.getOrgLocations().getId());
-				payrollTaxDTO.setEmployeeESIContribution(payrollTax.getEmployeeESIContribution() + "");
-				payrollTaxDTO.setEmployerESIContribution(payrollTax.getEmployerESIContribution() + "");
-				payrollTaxDTO.setEmployeePFContribution(payrollTax.getEmployeePFContribution() + "");
-				payrollTaxDTO.setEmployerPFContribution(payrollTax.getEmployerPFContribution() + "");
-				payrollTaxDTO.setEdli(payrollTax.getEdli() + "");
-				payrollTaxDTO.setPension(payrollTax.getPension() + "");
-				payrollTaxDTO.setPfAdminCharges(payrollTax.getPfAdminCharges() + "");
-				payrollTaxDTO.setEdliAdminCharges(payrollTax.getEdliAdminCharges() + "");
-				payrollTaxDTO.setPfCeilValue(payrollTax.getPfCeilValue() + "");
-				if (payrollTax.getStateTax() != null) {
-					payrollTaxDTO.setStateTaxId(payrollTax.getStateTax().getId());
-					List<ProfessionalTaxDTO> ptList = new LinkedList<>();
-					for (ProfessionalTax pt : payrollTax.getStateTax().getProfessionalTaxList()) {
-						ProfessionalTaxDTO professionalTaxDTO = new ProfessionalTaxDTO();
-						professionalTaxDTO.setId(pt.getId());
-						professionalTaxDTO.setStateTaxId(pt.getStateTax().getId());
-						professionalTaxDTO.setTaxType(payrollTax.getStateTax().getSourceleadTaxType().getDescription());
-						professionalTaxDTO.setAmount(CommonUtil.toFixed2(pt.getAmount()));
-						professionalTaxDTO.setAmountFrom(CommonUtil.toFixed2(pt.getAmountFrom()));
-						professionalTaxDTO.setAmountTo(CommonUtil.toFixed2(pt.getAmountTo()));
-						professionalTaxDTO.setMonthApplicable(pt.getMonthApplicable());
-						ptList.add(professionalTaxDTO);
-					}
-					payrollTaxDTO.setPtList(ptList);
-				}
-				return payrollTaxDTO;
+				return setPayrollTaxToPayrollTaxDTO(payrollTax, payrollTaxDTO);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,6 +112,53 @@ public class PayrollTaxServiceImpl implements PayrollTaxService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return payrollTaxDTO;
+	}
+	
+	
+	@Override
+	public PayrollTaxDTO getPayrollTaxConfigurationByOrgLocationId(Long orgLocationId) {
+		try {
+			PayrollTax payrollTax = payrollTaxDao.getPayrollTaxConfigurationByOrgLocationId(orgLocationId);
+			if (payrollTax != null) {
+				PayrollTaxDTO payrollTaxDTO = new PayrollTaxDTO();
+				return setPayrollTaxToPayrollTaxDTO(payrollTax, payrollTaxDTO);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public PayrollTaxDTO setPayrollTaxToPayrollTaxDTO(PayrollTax payrollTax, PayrollTaxDTO payrollTaxDTO) {
+			payrollTaxDTO.setId(payrollTax.getId());
+			payrollTaxDTO.setOrgLocationId(payrollTax.getOrgLocations().getId());
+			payrollTaxDTO.setEmployeeESIContribution(payrollTax.getEmployeeESIContribution() + "");
+			payrollTaxDTO.setEmployerESIContribution(payrollTax.getEmployerESIContribution() + "");
+			payrollTaxDTO.setEmployeePFContribution(payrollTax.getEmployeePFContribution() + "");
+			payrollTaxDTO.setEmployerPFContribution(payrollTax.getEmployerPFContribution() + "");
+			payrollTaxDTO.setEdli(payrollTax.getEdli() + "");
+			payrollTaxDTO.setPension(payrollTax.getPension() + "");
+			payrollTaxDTO.setPfAdminCharges(payrollTax.getPfAdminCharges() + "");
+			payrollTaxDTO.setEdliAdminCharges(payrollTax.getEdliAdminCharges() + "");
+			payrollTaxDTO.setPfCeilValue(payrollTax.getPfCeilValue() + "");
+			if (payrollTax.getStateTax() != null) {
+				payrollTaxDTO.setStateTaxId(payrollTax.getStateTax().getId());
+				List<ProfessionalTaxDTO> ptList = new LinkedList<>();
+				for (ProfessionalTax pt : payrollTax.getStateTax().getProfessionalTaxList()) {
+					ProfessionalTaxDTO professionalTaxDTO = new ProfessionalTaxDTO();
+					professionalTaxDTO.setId(pt.getId());
+					professionalTaxDTO.setStateTaxId(pt.getStateTax().getId());
+					professionalTaxDTO.setTaxType(payrollTax.getStateTax().getSourceleadTaxType().getDescription());
+					professionalTaxDTO.setAmount(CommonUtil.toFixed2(pt.getAmount()));
+					professionalTaxDTO.setAmountFrom(CommonUtil.toFixed2(pt.getAmountFrom()));
+					professionalTaxDTO.setAmountTo(CommonUtil.toFixed2(pt.getAmountTo()));
+					professionalTaxDTO.setMonthApplicable(pt.getMonthApplicable());
+					ptList.add(professionalTaxDTO);
+				}
+				payrollTaxDTO.setPtList(ptList);
+			}
 		return payrollTaxDTO;
 	}
 

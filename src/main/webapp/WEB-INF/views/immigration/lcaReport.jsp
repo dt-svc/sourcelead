@@ -128,7 +128,7 @@
 					</span>
        			</div>
    				</li>
-			    <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search LCA No,LCA Title,Start date,End date" type="text" title="Search LCA No,LCA Title,Start date,End date"></span>
+			    <span><input class="immigraTabSerach" id ="lcaSearch" placeholder="Search LCA No,LCA Title,Start date,End date" type="text" title="Search LCA No,LCA Title,SOC Code,SocTitle,Job Title,No. of positions,Start date,End date,LCA Status,Status"></span>
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
@@ -339,7 +339,7 @@ function lcaReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	 if(opt.lcaNo !=null && opt.lcaNo != '' && opt.lcaNo !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" >'+opt.lcaNo+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.lcaNo+'" ><a href=/app/immigration/viewLca?lcaUuid='+opt.lcaUuid+'>'+opt.lcaNo+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		}  

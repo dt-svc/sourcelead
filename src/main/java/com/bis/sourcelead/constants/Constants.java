@@ -1164,6 +1164,7 @@ public class Constants {
 	public static final String ROLE_CREATE_PROJECT_TASKS ="ROLE_CREATE_PROJECT_TASKS";
 	public static final String REPORT_FILTER_LAST_7_DAYS = "Last_7_days";
 	public static final String REPORT_FILTER_LAST_15_DAYS = "Last_15_days";
+	public static final String REPORT_FILTER_CURRENT_MONTH = "current_month";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
@@ -1298,6 +1299,8 @@ public class Constants {
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
+	public static final String[] BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES = { "PF", "ESI" };
+	
 	public static final String[] APPLICANTS_JOINED_LIST_REPORT_HEADERS = { "Recruiter Name", "Date", "No Of Jobs",
 			"Total Offer", "Total Joiners"};
 	
@@ -1311,4 +1314,9 @@ public class Constants {
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	public static final String ASSOCIATE_WITH_HOLDING_REPORT = "Associate With Holding Report";
+	public static final String DEDUCTION_SUMMARY_REPORTS = "Deduction Summary Reports";
+	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
+	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
+	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
 }
