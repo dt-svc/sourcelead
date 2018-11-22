@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.OrglocationIndiaBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.OrglocationSignatory;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationDepositTaxesService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.OrglocationStateTaxService;
@@ -81,6 +83,9 @@ public class CompanyOnboardRestController {
 	@Autowired
 	private CandidateService candidateService;
 	
+	@Autowired
+	private OrglocationDepositTaxesService orglocationDepositTaxesService;
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -94,7 +99,6 @@ public class CompanyOnboardRestController {
 	@ResponseBody
 	public Response<String> saveOrgLocationsFederalAndStatesTax(FederalAndStateTaxDTO federalAndStateTaxDTO, HttpServletRequest request) throws Exception
 	{
-		
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -108,6 +112,8 @@ public class CompanyOnboardRestController {
 					orgLocationService.updateOrgLocations(loginOrgLocation);
 					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", loginOrgLocation);
 					String result = orglocationStateTaxService.addOrglocationStateTax(federalAndStateTaxDTO, loginOrgLocation, user);
+					OrglocationDepositTaxes orglocationDepositTaxes = orglocationDepositTaxesService.saveOrglocationDepositTaxes(federalAndStateTaxDTO, loginOrgLocation, user);
+					SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orglocationDepositTaxes);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
