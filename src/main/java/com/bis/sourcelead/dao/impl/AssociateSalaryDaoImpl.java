@@ -294,6 +294,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			StringBuilder sb = new StringBuilder();
 			sb.append("SELECT ")
 			.append("sal.CANDIDATE_ID as candidateId,")
+			.append("sal.PAY_FREQUENCY as payFrequency,")
 			.append("can.FIRST_NAME as firstName,")
 			.append("can.LAST_NAME as lastName,")
 			.append("can.IS_ASSOCIATE as isTerminated,") 
