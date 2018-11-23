@@ -445,7 +445,7 @@ function associateTaxSummary(userId){
               result = result + ' <div class="col-md-12">';
               result = result + '   <div class="pull-right">';
               result = result + ' <input value="Save" class="btn btn-success btnSuccess" id="associate_tax_button" type="button" onclick="saveAssociateTax('+userId+');">';
-              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButton();" type="button">';
+              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButtonTax('+userId+');" type="button">';
               result = result + '  </div>';
               result = result + '  </div>';
               result = result + '  </div>';
@@ -545,8 +545,10 @@ function getResidenceLocation(userId,localTax){
 </script>
 
 <script>
-function cancelButton(){ 
-	location.replace(sourceleadUrl+ "/usersList");
+function cancelButtonTax(userId){ 
+	$("#editBodyDiv").hide();
+	associateTaxSummary(userId);
+	/* location.replace(sourceleadUrl+ "/usersList"); */
 }
 </script>
 
