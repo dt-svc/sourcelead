@@ -619,8 +619,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		CandidateLcaJobDetails canLcaJobDetails = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		System.out.println("immigration===========>"+immigrationObj.getId());
-		
 		if(immigrationObj.getId() != null) {
 		canLcaJobDetails = immigrationCommonDao.getCandidateLcaJobDetails(immigrationObj.getId());
 		}

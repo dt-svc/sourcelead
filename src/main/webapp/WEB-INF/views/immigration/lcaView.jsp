@@ -20,7 +20,7 @@
 background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 }
 </style>
-<c:set var ="myLcaPage" value = "${myLcaPage}" scope="session"/>
+<c:set var ="myLcaPage" value ="${myLcaPage}" scope="session"/>
 
  <section class="content-wraper content-wraperNew">
 	        <div class="success_pop" id="selector" >
@@ -55,12 +55,12 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   
 	  <div id="lcaDetailsTab" class="immigraTabs_inn">
 	  <div id="lcaLoadingDetailsTab"></div>
-		 	<jsp:include page="lcaViewDetailsTab.jsp" />	  		  		  
+		 	<jsp:include page="lcaViewDetailsTab.jsp"/>	  		  		  
 	  </div>
 	  
 	  <div id="employeeTab" class="immigraTabs_inn">
 	  <div id=""></div>
-		<jsp:include page="employeeDetailsTab.jsp" />	
+		<jsp:include page="employeeDetailsTab.jsp"/>	
 		
 	  </div>
 
@@ -114,11 +114,8 @@ $(document).ready(function() {
 	
 </script> 
     <!-- Script for Linked Invoice pop -->
-   
-   
-   
 
-<<script type="text/javascript">
+<script type="text/javascript">
 function getEmployeeList(lcaId){
 	var lcaId = $("#lcaId").val();
 	$.ajax({

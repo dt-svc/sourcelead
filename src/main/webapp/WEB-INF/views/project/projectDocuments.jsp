@@ -942,8 +942,8 @@ $(".close, .cancel").click(function(){
 	$("#projectDocumentType_form")[0].reset();
 	$("#projectFolder_form")[0].reset();
 	
-	$("#projectDocumentType_form").validate().resetForm();
-	$("#projectFolder_form").validate().resetForm();
+	$("projectDocumentType_form").validate().resetForm();
+	$("projectFolder_form").validate().resetForm();
 	
 });
 function permissionClose(){

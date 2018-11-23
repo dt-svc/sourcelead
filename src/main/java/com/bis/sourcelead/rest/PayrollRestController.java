@@ -227,12 +227,11 @@ public class PayrollRestController {
 	   	}
 		 
 		if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
-			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings"))).collect(Collectors.toList());
+			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))).collect(Collectors.toList());
 			model.addObject("earningPayhead", earningList);
-			List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction")).collect(Collectors.toList());
+			List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)).collect(Collectors.toList());
 			model.addObject("decuctionPayhead", decuctionList);
 		}
-		
 		
 		
 		model.addObject("indPayrollDTO", indPayrollDTO);

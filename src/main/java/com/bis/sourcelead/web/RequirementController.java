@@ -120,6 +120,7 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 //import org.apache.commons.collections.ListUtils;
+import com.ibm.icu.util.Calendar;
 
 @Controller
 @RequestMapping("/app")
@@ -330,6 +331,9 @@ public class RequirementController {
 			}
 			
 			model.addObject("requirementAssignedIds",requirementAssignedIds);
+			if(StringUtils.isNotBlank(requirement.getJobType())){
+			requirement.setJobType(requirement.getJobType().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\t", ""));
+			}
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
@@ -736,6 +740,7 @@ public class RequirementController {
 			@RequestParam(value="type", required=false) String type,@RequestParam(value="candidateUUID", required=false) String candidateUUID,
 			@RequestParam(value="submissionId", required=false) String submissionId,@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,@RequestParam(value="submissionStatus", required=false)String submissionStatus) throws Exception {
 
+		logger.info("EXECUTION START TIME>>>>>" + Calendar.getInstance().getTime());
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
@@ -877,14 +882,14 @@ public class RequirementController {
 		
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
-				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+			/*	List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
 				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
 				
 				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-				model.addObject("documentsList", documentsList);
+				model.addObject("documentsList", documentsList);*/
 		
 				// This code is commented as not in use 
 		
@@ -985,6 +990,8 @@ public class RequirementController {
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
+		
+		logger.info("EXECUTION END TIME>>>>>" + Calendar.getInstance().getTime());
 		return model;
 	}
 	

@@ -25,9 +25,16 @@ public class AssetsReportDTO {
 	private String assetName;
 	private String assignBy;
 	private String fileUrl;
+	private String fileContentType;
 	
 	
 	
+	public String getFileContentType() {
+		return fileContentType;
+	}
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
+	}
 	public String getFileUrl() {
 		return fileUrl;
 	}
