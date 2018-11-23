@@ -281,6 +281,8 @@ public class LoginSessionController {
 					
 					if(tabs.getTabName().equalsIgnoreCase("Reports")){
 						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+					}else {
+						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "N");
 					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
