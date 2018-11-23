@@ -499,4 +499,40 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 			
 	    }
+	 
+	 
+	 	@RequestMapping(value = "/associateJoineReports")
+		public ModelAndView associateJoinedReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		
+		 
+		 
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+		 List<Team> teamsList = null;
+		 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+	     model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/associateJoineReport");
+		 return model;
+			
+	    }
 }

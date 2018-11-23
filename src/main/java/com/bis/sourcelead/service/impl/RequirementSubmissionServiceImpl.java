@@ -52,6 +52,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -5686,6 +5687,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId, String usercode, Long orgLocationId, Date[] searchDates) throws Exception
 	{
 		return requirementSubmissionDao.getRequirementIncentiveByRequirementIdAndLocation(requirementId,usercode,orgLocationId,searchDates);
+
+	}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
 
 	}
 
