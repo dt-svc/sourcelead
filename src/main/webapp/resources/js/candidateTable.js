@@ -141,14 +141,14 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
   function prepareCandidateList(url){
  	     $("#candidateList").removeAttr("style");
      	 $("#candidateList").empty();
-     	 var result = "";
+     	  var result = "";
      	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
           result = result +"<thead>"; 
           result = result +"  <tr>"; 
   	      result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
           result = result +"    <th>&nbsp;</th>";
           result = result +"    <th>Generated ID</th>";
-          result = result +' <div class="tbldata-dotdot-vsm"> <th>Name</th>"</div>'; 
+          result = result +' <div class="tbldata-dotdot-vsm"> <th>Name</th></div>'; 
           result = result +"    <th>Primary Skill</th>"; 
           result = result +"    <th>Employment Type</th>"; 
           result = result +"    <th>Email</th>"; 
@@ -428,8 +428,6 @@ function cpagination(url){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
-	    	"initComplete": function( settings, json ) {
-	    	},
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
