@@ -140,9 +140,10 @@
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
                 <input type="text" style="display:none" id="userId" name="userId" value="${candidate.consultantUser.id}">
-                  
+                  	             <div class="clearfix"></div>
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
+                 <input type="button" value="Previous" onclick="shiftToLoanAndAdvancesDetails();" class="btn btn-default">
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
@@ -163,6 +164,15 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
+</script>
+
+<script type="text/javascript">
+function shiftToLoanAndAdvancesDetails(){
+	var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
+	 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
+	 indLoanAndAdvancesDetails.href="#tab-4";
+	 $("#indLoanAndAdvancesDetails").click();
+}
 </script>
 
 <script>
@@ -337,14 +347,7 @@ $('#cancelAssociateSalaryIndBtn').click(function() {
 	var status = $("#status").val();
 	if(status == "NEW" || status == "NODATA"){
 		location.reload();
-	}/* else{
-		var userId = $("#userId").val();
-		$("#tab-30").empty();  
-	    $("#tab-19").empty();
-	    $("#tab-17").empty();
-	    $("#candidateSideDiv").empty();
-		userDetails(userId);
-	} */
+	}
 });
 </script>
 

@@ -604,17 +604,17 @@ public class IndianPayrollRestController {
    			for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
    	   			
    	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    	   			}
    	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    	   			}
    	   		}
    	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
    	   		
    	   		
-   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    		}
    		//List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
    		
