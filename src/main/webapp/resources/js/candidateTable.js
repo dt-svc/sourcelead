@@ -395,18 +395,9 @@ function cpagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "profilePercentage",
 		    	  	"sortable": false,
-		    	  	"render": function(data, type, full, meta) {
-		    	  		var profilePercentage = "";
-		    	  		var color = "";
-		    	  			profilePercentage = full.profilePercentage + "%";
-		    	  			if(full.profilePercentage >= 50){
-		    	  				color = "text-green";
-		    	  			}else{
-		    	  				color = "colorRed";
-		    	  			}
+		    	  	"render": function(data, type, opt, meta) {
 			            	
-		    	  		return "<div class='tbldata-dotdot-vsm "+color+"'>"+profilePercentage+"</div>";
-		    	  		
+		    	  		return "<div class='profilePercentageClass"+opt.candidateId+"'><div id='"+opt.candidateId+"profilePercentage'><i class='fa fa-spinner fa-pulse'></i></div></div>";
 		    	  		
 		    	  	}
 		    	  }, {
@@ -414,11 +405,7 @@ function cpagination(url){
 	    	    	  	"data": "noOfJobs",
 	    	    		"sortable": false,
 	    	    	  	"render": function(data, type, opt, meta) {
-	    	    	  		if(opt.submittedJobsCount == 0){
-	    	    	  			return "<div class='tbldata-dotdot-vsm'>"+opt.submittedJobsCount+"</div>";
-	    	    	  		}else{
-	    	    	  			return "<div class='tbldata-dotdot-vsm'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'>"+opt.submittedJobsCount+"</div></a></div>";
-	    	    	  		}
+	    	    	  	 return "<div class='tbldata-dotdot-vsm submittedRequirementCount' id='"+opt.candidateId+"'><a href='#' onclick='getSubmittedJobsList("+opt.candidateId+")'><div id='"+opt.candidateId+"submittedRequirementCount'><i class='fa fa-spinner fa-pulse'></i></div></div></a></div>";
 	    	    	  		
 	    	    	  	}
     	    	  },{
@@ -441,6 +428,8 @@ function cpagination(url){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"initComplete": function( settings, json ) {
+	    	},
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
@@ -450,6 +439,7 @@ function cpagination(url){
    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
    	    	candidateSearchHighlight();
 	         }); 
+   	   getCandidateSubmittedJobsCount();
 	   }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -460,6 +450,35 @@ function cpagination(url){
 		candidateSearchHighlight();
     	   }
     	});
+}
+
+
+function getCandidateSubmittedJobsCount(){
+	 $('.submittedRequirementCount').each(function() {
+		 var candidateId = this.id;
+		 if(candidateId != null &&  candidateId !='undefined' && candidateId != ''){
+			 $.ajax({
+		           type : "GET",
+		           url: sourceleadUrl+"/getCandidateSubmittedRequirementCount?candidateId="+candidateId,    
+		            success :function(data) {
+		            	  $("#"+candidateId+"submittedRequirementCount").empty();
+		             	  $("#"+candidateId+"submittedRequirementCount").html(data.submittedJobsCount);
+		             	  
+		             	  $("#"+candidateId+"profilePercentage").empty();
+		             		
+		             	      if(parseInt(data.profilePercentage) >= 50){
+		             	    	 $(".profilePercentageClass"+candidateId).addClass("tbldata-dotdot-vsm text-green");
+			    	  			}else{
+			    	  				 $(".profilePercentageClass"+candidateId).addClass("tbldata-dotdot-vsm colorRed");
+			    	  			}
+		             	  $("#"+candidateId+"profilePercentage").html(data.profilePercentage+ "%");
+		             	  
+		             	 
+		            }
+			    });
+		 }
+			
+   });  
 }
 
 function getSubmittedJobsList(candidateId){
