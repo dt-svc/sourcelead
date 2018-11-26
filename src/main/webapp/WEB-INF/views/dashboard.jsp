@@ -589,72 +589,19 @@ $( document ).ready(function() {
               </div>
               <table id="onboardingPagination" class="display dataTable no-footer" role="grid" aria-describedby="onboardingPagination_info" style="width: 99.9%;" width="99.9%" cellspacing="0">
                 <thead>
-                  <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 146px;" aria-sort="ascending" aria-label="Candidate Name: activate to sort column descending">Candidate Name</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 164px;" aria-label="Email: activate to sort column ascending">Email</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 146px;" aria-label="Title: activate to sort column ascending">Title</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 73px;" aria-label="DOJ(DD-MM-YYYY): activate to sort column ascending">DOJ<br>
+                    <th>Candidate Name</th>
+                    <th>Email</th>
+                    <th>Title</th>
+                    <th>DOJ<br>
                       (<small class="custom-small">DD-MM-YYYY</small>)</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 107px;" aria-label="Rate: activate to sort column ascending">Rate</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 84px;" aria-label="Position Type: activate to sort column ascending">Position Type</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 106px;" aria-label="On-board Status: activate to sort column ascending">On-board Status</th>
-                    <th class="sorting" tabindex="0" aria-controls="onboardingPagination" rowspan="1" colspan="1" style="width: 146px;" aria-label="Actions: activate to sort column ascending">Actions</th>
+                    <th>Rate</th>
+                    <th>Position Type</th>
+                    <th>On-board Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr role="row" class="odd">
-                    <td class="sorting_1"><div class="tbldata-dotdot-sm"><span title=" "> </span></div></td>
-                    <td><div><span title="bkcs45@gmail.com">bkcs45@gmail.com</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=PCofG3iW"><span title="job of the day">job of the day</span></a></div></td>
-                    <td><div><span>12-07-2018</span></div></td>
-                    <td><div><span title="INR 2000 / Weekly">INR 2000 / Weekly</span></div></td>
-                    <td><div><span title="Full Time">Full Time</span></div></td>
-                    <td><div><span>Ready to onboard</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/candidateOnBoardingDetails?candidateUUId=q7kGHvnM&amp;offerUUID=qFIt8MjV"><span class="text-success">Onboard</span></a></div></td>
-                  </tr>
-                  <tr role="row" class="even">
-                    <td class="sorting_1"><div class="tbldata-dotdot-sm"><span title="Aditi Chande">Aditi Chande</span></div></td>
-                    <td><div><span title="aditichande@mail.com">aditichande@mail.com</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=qeu9cFit"><span title="job of the day">job of the day</span></a></div></td>
-                    <td><div><span>25-06-2018</span></div></td>
-                    <td><div><span title="INR 2000 / Hourly">INR 2000 / Hourly</span></div></td>
-                    <td><div><span title="Part Time">Part Time</span></div></td>
-                    <td><div><span>Ready to onboard</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/candidateOnBoardingDetails?candidateUUId=OWStgdCg&amp;offerUUID=fWf8G3CM"><span class="text-success">Onboard</span></a></div></td>
-                  </tr>
-                  <tr role="row" class="odd">
-                    <td class="sorting_1"><div class="tbldata-dotdot-sm"><span title="Aditi Chande">Aditi Chande</span></div></td>
-                    <td><div><span title="aditichande@mail.com">aditichande@mail.com</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Dg5wbdOK"><span title="job@345">job@345</span></a></div></td>
-                    <td><div><span>04-09-2018</span></div></td>
-                    <td><div><span title="INR 2000 / Hourly">INR 2000 / Hourly</span></div></td>
-                    <td><div><span title="Full Time">Full Time</span></div></td>
-                    <td><div><span>Ready to onboard</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/candidateOnBoardingDetails?candidateUUId=OWStgdCg&amp;offerUUID=qyAap7mr"><span class="text-success">Onboard</span></a></div></td>
-                  </tr>
-                  <tr role="row" class="even">
-                    <td class="sorting_1"><div class="tbldata-dotdot-sm"><span title="Archana Samal">Archana Samal</span></div></td>
-                    <td><div><span title="archna@yopmail.com">archna@yopmail.com</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=yAMxucp8"><span title="Software Developer">Software Developer</span></a></div></td>
-                    <td><div><span>25-06-2018</span></div></td>
-                    <td><div><span title="INR 2000 / Hourly">INR 2000 / Hourly</span></div></td>
-                    <td><div><span title="Part Time">Part Time</span></div></td>
-                    <td><div><span>Ready to onboard</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/candidateOnBoardingDetails?candidateUUId=wJrMyadE&amp;offerUUID=YXKijPoU"><span class="text-success">Onboard</span></a></div></td>
-                  </tr>
-                  <tr role="row" class="odd">
-                    <td class="sorting_1"><div class="tbldata-dotdot-sm"><span title="Archana Samal">Archana Samal</span></div></td>
-                    <td><div><span title="archana1@yopmail.com">archana1@yopmail.com</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=keP03gs0"><span title="job of the week">job of the week</span></a></div></td>
-                    <td><div><span>01-08-2018</span></div></td>
-                    <td><div><span title="INR 2000 / Hourly">INR 2000 / Hourly</span></div></td>
-                    <td><div><span title="Full Time">Full Time</span></div></td>
-                    <td><div><span>Ready to onboard</span></div></td>
-                    <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/candidateOnBoardingDetails?candidateUUId=yxJzCYgV&amp;offerUUID=IbhGsk66"><span class="text-success">Onboard</span></a></div></td>
-                  </tr>
-                </tbody>
               </table>
-              <div class="dataTables_info" id="onboardingPagination_info" role="status" aria-live="polite">Showing 1 to 5 of 9 entries</div>
+              <div class="dataTables_info" id="onboardingPagination_info" role="status" aria-live="polite"></div>
               <div class="dataTables_paginate paging_simple_numbers" id="onboardingPagination_paginate"><a class="paginate_button previous disabled" aria-controls="onboardingPagination" data-dt-idx="0" tabindex="0" id="onboardingPagination_previous">Previous</a><span><a class="paginate_button current" aria-controls="onboardingPagination" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="onboardingPagination" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="onboardingPagination" data-dt-idx="3" tabindex="0" id="onboardingPagination_next">Next</a></div>
             </div>
           </div>
