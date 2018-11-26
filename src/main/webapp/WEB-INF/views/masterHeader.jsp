@@ -629,6 +629,8 @@ function preventTabkey(e){
 						  		<li title="Payroll Configuration"><a href="<c:url value='${appPath}/indPayrollConfiguration'/>" >Payroll Configuration</a></li>
 						  	</c:if>
                       </sec:authorize>
+                      
+                      <li><a href="<c:url value="${appPath}/performanceManagementConfiguration"/>">Performance Management</a></li>
                          
                        <li><a href="<c:url value='${sourceleadUrl}/tagList'/>"title="Tags" data-toggle="modal" id="tagsPop">Tags</a></li>
 					  
