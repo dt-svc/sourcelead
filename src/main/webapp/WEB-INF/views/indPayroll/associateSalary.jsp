@@ -143,7 +143,9 @@
                   	             <div class="clearfix"></div>
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
+                 <c:if test="${status == 'NEW'}">
                  <input type="button" value="Previous" onclick="shiftToLoanAndAdvancesDetails();" class="btn btn-default">
+			     </c:if>
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
