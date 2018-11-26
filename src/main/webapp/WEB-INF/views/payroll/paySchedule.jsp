@@ -202,8 +202,8 @@ $('#payCheckDate').datepicker({
     //minDate: 0  this line for to restrict selection of previous dates
     		onSelect : function(selected) {
     			var dt = $(this).datepicker('getDate', '+1d');
-    			dt.setDate(dt.getDate()+1);
-    			$("#runPayrollDate").datepicker("option", "minDate", dt);
+    			dt.setDate(dt.getDate()-1);
+    			$("#runPayrollDate").datepicker("option", "maxDate", dt);
 // 			removeStartValid();
 			}
 });
