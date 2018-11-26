@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Team;
@@ -66,6 +67,7 @@ import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrglocationDepositTaxesService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -182,6 +184,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
+	
+	@Autowired
+	OrglocationDepositTaxesService orglocationDepositTaxesService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -318,7 +323,9 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
 
-			
+			//
+			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
