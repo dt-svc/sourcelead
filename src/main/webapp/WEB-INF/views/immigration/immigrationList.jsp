@@ -841,6 +841,9 @@
 	}
 	function columClose(){
 		$(".colPop").hide();
+		$("#columnsPickerUnCheckAll").prop('checked',false);
+		$("#columnsPickerCheckAll").prop('checked',true);
+		$('.toggle-vis:input:checkbox').prop('checked',true);
 	}
 	$("html").click(function(){
 		$(".colPop").hide();

@@ -81,6 +81,7 @@ $(document).ready(function(){
     
     
      <div class="clearfix"></div>
+     <div id="popUp"></div>	
   	<div class="timesheet_out" id="payrollTaxAndWagesDiv" style="display: none;">
       <div class="clearfix">
         <div class="positionRelative reportHead clearfix">
@@ -176,11 +177,29 @@ function runPayrollTaxAndWagesReport(){
 				$("#payrollTaxAndWagesDiv").show();
 			}
 		}else{
-			$("#fromDate").val("");
-			$("#toDate").val("");
-			payrollTaxAndWagesList(url);
-			$("#payrollTaxAndWagesDiv").show();
+			if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+				$("#fromDate").val("");
+				$("#toDate").val("");
+				payrollTaxAndWagesList(url);
+				$("#payrollTaxAndWagesDiv").show();
+			}else{
+				var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Please select PayGroup and PayPeriod</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();' style='background-color: #FF0000; width : 100%'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#remove_user_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+			}
 		}
+}
+
+function removePopUp(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 
 function payrollTaxAndWagesList(url){
@@ -485,6 +504,12 @@ $(".overIcon, .newActPop").click(function(e){
 <script>
 function resetData(){
 	document.getElementById("payroll_Taxes_Wages_form").reset(); 
+	$("#payrollTaxAndWagesDiv").hide();
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$("#freqStartDate").val('');
+	$("#freqEndDate").val('');
+// 	document.getElementById("payrollTaxAndWagesList").reset();
 }
 </script>
 

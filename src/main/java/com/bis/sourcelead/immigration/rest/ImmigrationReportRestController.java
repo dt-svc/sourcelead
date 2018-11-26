@@ -116,7 +116,7 @@ public class ImmigrationReportRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
 				
-				String[] tableColumns = {"generatedId", "petitionType", "vendor", "firstName", "email", "phone"};
+				String[] tableColumns = {"generatedId", "firstName", "email", "phone","petitionType","country", "onDate",  "attorneyName","lcaStartDate","lcaEndDate","status"};
 				
 			    int sortColumnIndex = 1;		 //by default sorting using updated date
 				String sortColumnOrder = "asc";  //by default descending order
@@ -158,7 +158,7 @@ public class ImmigrationReportRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
 				
-				String[] tableColumns = {"generatedId", "petitionType", "vendor", "firstName", "email", "phone"};
+				String[] tableColumns = {"generatedId", "firstName", "email", "phone","petitionType","country", "onDate",  "attorneyName","lcaStartDate","lcaEndDate","status"};
 				
 			    int sortColumnIndex = 1;		 //by default sorting using updated date
 				String sortColumnOrder = "asc";  //by default descending order
@@ -246,7 +246,7 @@ public class ImmigrationReportRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
 				
-				String[] tableColumns = { "lcaNo", "lcaTitle", "location", "prevailingWage","startDate", "endDate", "lcaStatus","status"};// should be
+				String[] tableColumns = { "lcaNo", "lcaTitle", "noOfPositions", "location", "socCode", "socOccupationTitle", "jobTitle", "wagesLevel", "privilingWageCurrency", "prevailingWage", "privilingWageRateType", "startDate", "endDate", "lcaStatus", "status", "expiredOn"};// should be
 				
 			    int sortColumnIndex = 1;		 //by default sorting using updated date
 				String sortColumnOrder = "asc";  //by default descending order
@@ -290,7 +290,7 @@ public class ImmigrationReportRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (orgLocations != null) { 
 				
-				String[] tableColumns = { "lcaNo", "lcaTitle", "location", "prevailingWage","startDate", "endDate", "lcaStatus","status"};// should be
+				String[] tableColumns = { "lcaNo", "lcaTitle","noOfPositions", "location", "socCode","socOccupationTitle","jobTitle", "wagesLevel","privilingWageCurrency","prevailingWage","privilingWageRateType","startDate", "endDate", "lcaStatus","status","expiredOn"};// should be
 				
 			    int sortColumnIndex = 1;		 //by default sorting using updated date
 				String sortColumnOrder = "asc";  //by default descending order

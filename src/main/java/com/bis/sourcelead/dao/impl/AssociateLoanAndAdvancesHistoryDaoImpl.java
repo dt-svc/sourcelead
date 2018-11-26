@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -121,5 +123,14 @@ public class AssociateLoanAndAdvancesHistoryDaoImpl implements AssociateLoanAndA
 		     return loanAndAdvHistoryList;
 	}
 
-
+	@Override
+	@Transactional
+	public Double getEmpLoansAndAdvancesPaidAmountByOrgLocationIdCandidateIdLoansAndAdId(Long candidateId, Long orgLocationId, Long assLAId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+			query = "from AssociateLoanAndAdvanceHistory ladh left join fetch ladh.associateLoanAndAdvances loansAndAd where loansAndAd.candidateId =:candidateId and loansAndAd.orgLocationId.id =:orgLocationId and loansAndAd.id =:assLAId and loansAndAd.status = '1'";
+			List<AssociateLoanAndAdvanceHistory> outstandingList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setLong("assLAId", assLAId).list();
+			Double paid = outstandingList.stream().mapToDouble(l->l.getDeductAmount()).sum();
+		return paid;
+	}
 }

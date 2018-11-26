@@ -66,7 +66,7 @@
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
-					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a> </span> </li>
+					<li><span id="advanceSearchDiv" class="pull-left refreIcon noPad"> <a href="javascript:void(0)" class="refeIcon noMar" id="resetVendor" title="Refresh" onclick="refreshPage();"></a> </span> </li>
                 </ul>
               </div>
            
@@ -1132,4 +1132,8 @@ function resetCandidateFilter(){
 	$("#candidateLocation").val("");
 	candidateList('gMarketPlace');
 }
+function refreshPage(){
+  location.reload(); // refresh the page.
+}
+
 </script>

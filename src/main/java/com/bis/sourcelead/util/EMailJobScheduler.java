@@ -56,6 +56,8 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Campaign;
 import com.bis.sourcelead.entity.CampaignStats;
@@ -114,6 +116,7 @@ import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.service.PayrollScheduleService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.CampaignService;
@@ -361,6 +364,9 @@ public class EMailJobScheduler {
 	@Autowired
 	private USPaysheetService uSPaysheetService;
 	
+	
+	@Autowired
+	private AssetService assetService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1400,9 +1406,12 @@ public class EMailJobScheduler {
 						}
 					}
 					
-					if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
-								requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
+					if(interviewHistory.getNotificationToApplicant() != null) {
+						if(interviewHistory.getNotificationToApplicant().equalsIgnoreCase("Y")){
+							requirementInterviewService.sendEmailToApplicants(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId().getOrgLocations(),requirementInterview.getSubmissionId(), user, org, requirementInterview);
+						}
 					}
+					
 					if(interviewHistory.getNotificationToSpoc() != null && interviewHistory.getNotificationToSpoc().equalsIgnoreCase("Y")){
 
 						requirementInterviewService.sendEmailToVendors(requirementInterview.getSubmissionId().getCandidate(),requirementInterview.getSubmissionId(), user,org, requirementInterview,requirementInterview.getSubmissionId().getOrgLocations());
@@ -3943,5 +3952,43 @@ public class EMailJobScheduler {
  			}
 		}
 	}
+	
+	
+	
+	
+	/**
+	 * @author Laxman
+	 * cron runs every day at 6:30 AM to get every day stats
+	 * @throws Exception  
+	 */
+//	@Scheduled(cron = "0 0/5 * 1/1 * ?") this crone is testing for every 5 Minits
+	@Scheduled(cron = "0 30 18 1/1 * ?")
+	@Async
+	public void assignAssetReturnOnDateBeforeDateStatusChanging() throws Exception
+	{
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		for (OrgLocations orgLocations : orgLocationsList) {
+			List<Asset> assetList = assetService.getAssetListByLocationId(orgLocations.getId());
+			if(!assetList.isEmpty()) {
+				for(Asset asset: assetList) {
+					List<AssetAssign> assetAssignList = assetService.getAllAssignAssetListByAssetId(asset.getId());
+					if(!assetAssignList.isEmpty()) {
+						for(AssetAssign aa :assetAssignList) {
+							if(aa.getReturnedOn() != null) {
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+								 Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+								 if(aa.getReturnedOn().before(dateWithoutTime)) {
+									 aa.setStatus(Constants.RECORD_INACTIVE);
+									 assetService.saveAssetAssign(aa);
+								 }
+							 }
+						}	
+					}
+				}	
+			}
+		
+		}
+	}
+	
 	
 }
