@@ -7,15 +7,13 @@
 
 
 
-<section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Badges</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/performanceManagementConfiguration">Performance Management</a> &raquo; Badges <span id = "fname"></a> </div>
     </section>
-    <!-- <div class="contentareaInner-styles clearfix"> -->
-      <div class="timesheet_out" id="payrollRegister" style="display: block;">
+      <div class="timesheet_out" style="display: block;">
         <div class="clearfix">
           <div class="positionRelative clearfix">
             <ul class="pull-right list-unstyled list-inline mb0">
@@ -67,9 +65,7 @@
 			
           </div>
         </div>
-      <!-- </div> -->
     </div>
-  </section>
   
   <div class="mask"></div>
 <div class="popupWrap" id="modalTasktype">
