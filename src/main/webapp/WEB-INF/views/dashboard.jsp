@@ -13,35 +13,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
+<c:if test="${staticTime == null || staticTime == 0 }">
+	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+</c:if>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
+<link rel="stylesheet" href="/resources/css/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all"/>
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}">
 <script src="/resources/js/jquery-1.11.1.min.js" /></script>
 <script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/bootstrap-select.min.js"></script>
 <script src="/resources/js/chosen.jquery.min.js"></script>
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/dashboardEvents.js"></script>
+<script src="/resources/js/dashboardEvents.js?staticTime=${staticTime}"></script>
 </head>
 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="bothTimesheets"/>
 <sec:authorize access="!hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyTimesheets"/>
 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
 
-<!--  on boarding candidate list -->
-<c:if test="${staticTime == null || staticTime == 0 }">
-	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
-</c:if>
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style>
 .settPop .form-control {
     height: auto !important; 
+}
+.chosen-container {
+    width: 100% !important;
+}
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
 }
 </style>
 <!--  on boarding candidate list end -->
@@ -58,12 +66,14 @@ $( document ).ready(function() {
 	expensesCount("myExpenses");
 	requirementList(false, -1);
 	onboardingCandidatesList();
-	/*getProjectResourceReqestsListCount();
+	getProjectResourceReqestsListCount();
 	resourceRequestList("Waiting For Approval");
 	requirementApproverList('SUBMITTED');
 	ApplicantAuthorization('requestSent');
-	getInterviewsandTasks();
-	getInterviewsDates(); */
+    getInterviewsandTasks();
+	getInterviewsDates(); 
+	getJobFairDates();
+	getJobFairs();
 	contractList(); 
 });
 </script> 
@@ -7041,6 +7051,15 @@ var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 var orgATS = '${SourceLeadWeb_ats}';
 var orgVMS = '${SourceLeadWeb_vms}';
+var approverUserId = '${SourceLeadWeb_user.id}';
+var loginUser = '${SourceLeadWeb_userName}';
+var date = $("#eventCalendar").val();
+var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
+var requirementId = '${requirementId}';
+var timezoneId = "";
+if(timezone != null && timezone != '' && timezone != 'undefined'){
+	timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
+}
 </script>
 </html>
 
