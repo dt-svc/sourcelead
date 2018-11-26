@@ -579,11 +579,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
+			 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id and sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.getNameByValue(status)+"' )";
 			 statusCountQuery = statusQuery;
          }
 	     else if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("All"))){
-	    	 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id NOT IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
+	    	 statusQuery = " and pm.projectMemberCandidteId.orgLocationId.id NOT IN(select sah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = pm.masterCandidateId.id and sah.hierarchyId.projectId.id = pm.projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"') )";
 	    	 statusCountQuery = statusQuery;
 	     }
 	     
