@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
 
 public interface CandidateDao {
 	public Candidate storeCandidate(Candidate candidate) throws Exception;
@@ -182,6 +183,8 @@ public interface CandidateDao {
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace)throws Exception;
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
+	
+	public int updateMarketplaceCandidates(OrgLocations orgLocations,String companyNameFlag) throws Exception;
 	
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 

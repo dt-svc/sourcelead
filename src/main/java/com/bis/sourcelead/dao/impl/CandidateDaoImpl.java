@@ -2436,6 +2436,15 @@ public class CandidateDaoImpl implements CandidateDao {
 		CandidateMarketPlace marketPlaceCandidate = (CandidateMarketPlace) session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
 		return marketPlaceCandidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "UPDATE CandidateMarketPlace cmp SET cmp.showCompanyName =:setShowCompanyName WHERE cmp.orgLocationId =:orgLocationId";
+		int count= session.createQuery(query).setString("setShowCompanyName", companyNameFlag).setLong("orgLocationId", orgLocations.getId()).executeUpdate();
+	    return count;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

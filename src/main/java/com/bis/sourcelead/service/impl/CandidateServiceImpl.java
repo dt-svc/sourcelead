@@ -560,6 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateList;
 	}
 	
+	
 	/**
 	 * to get Candidate By CandidateId
 	 * 
@@ -2891,6 +2892,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
 		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
 	}
+	
+	@Override
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		return candidateDao.updateMarketplaceCandidates(orgLocations,companyNameFlag);
+	}
+	
 
 
 }
