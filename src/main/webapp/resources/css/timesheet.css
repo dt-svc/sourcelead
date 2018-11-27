@@ -6797,7 +6797,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	float: right; position: relative !important;
 	}
 .popupContent {
-	padding: 20px 40px 15px 35px;
+	padding: 20px 40px 15px 35px; background-color: #fff;
 }
 .popupContent.popupContentFixed {
 	max-height: 460px; overflow: auto;
@@ -8252,7 +8252,7 @@ aside.asideAct {
 	 width: 100%;
 }
 .customInvoiceGrid table th, .customInvoiceGrid table td {
-	border: 1px solid; font-weight: normal; text-align: center; width: 31%; height: 35px;
+	border: 1px solid; font-weight: normal; text-align: center; height: 35px;
 }
 .sortable-hidden {
 	position: relative; opacity: 0; width: 48%; height: 150px;
@@ -8436,11 +8436,25 @@ background-position: center top; width: 60px !important; height: 60px !important
 	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
 }
 .width90percnt {
-width: 90% !important;
-}
-.customErrorTag .phoneValidator p.jquery_form_error_message
-{
+	width: 90% !important;}
+.customErrorTag .phoneValidator p.jquery_form_error_message {
 bottom: auto !important; top: 55px !important;
 }
 .downloadLinks .downloadUL { display: none; }
 .downloadLinks:hover .downloadUL { display: block; }
+
+.infomaskHeight { height: 350px;}
+.infoMask {
+    position: absolute; width: 100%; height: 350px; background-color: rgba(0,0,0,0.075); text-align: center; box-sizing: border-box;
+    padding: 10% 0px 0px 0px; font-size: 25px; top: 0px; left: 0px;
+}
+.infoMask.infoMask1 {
+    position: absolute; width: 100%; height: 100%;
+    }
+.infoMask i {
+    display: inline-block; padding: 0px 9px 0px 0px; font-size: 26px; }
+.ssn_errmsg {padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;}
+.wi40 { float: left; width: 35%;}
+.wi60 { float: left; width: 60%; margin: 0px 0px 0px 4%;}
+
+
