@@ -2239,5 +2239,59 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 	}
 
 
+	@Override
+	public void sendEmailForNewReportingManager(User user, User loginUser, String password, Long locationId, Long existingReportingManagerID, Long currentReportingManagerID) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 UserRole exUserRole = userRoleService.getUserRoleByUserIdAndLocationId(existingReportingManagerID, locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		 if(exUserRole == null){
+			 exUserRole = userRoleService.getLoginUserPrimaryRole(existingReportingManagerID);
+		 }
+		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CHANGE_REPORTING_MANAGER_EMAIL);
+
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(locationId);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuilder builder=new StringBuilder();
+		 if(user.getLastName() != null && user.getLastName() !=""){
+			 globalVarsMap.put("toAssociate",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("toAssociate", user.getFirstName());	 
+		 }
+		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
+		 globalVarsMap.put("loginUser",loginUserFullName);
+		 globalVarsMap.put("LoginOrgName", locations.getOrgLocationName());
+		 globalVarsMap.put("PreviousReportingManager",exUserRole.getUser().getFirstName()+" "+exUserRole.getUser().getLastName());
+		 globalVarsMap.put("NewReportingManager",userRole.getReportingManager().getFullName());
+
+		 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		 
+		 
+		 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_REPORTING_MANAGER_NOTIFICATOPN, Constants.ENTITY_TYPE_NOTIFICATION);
+		 String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		 notificationScenario.setBody(notificationBody);
+
+		 
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
+		
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+	}
+
+	
 }
 
