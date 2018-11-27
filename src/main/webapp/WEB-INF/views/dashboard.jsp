@@ -159,6 +159,49 @@ $('#dasboardTaskDatpicker').datepicker({
       </section>
     </div>
 <div class="row">
+
+<div class="col-md-6 mb10">
+    <div class="dashboardWidget-new dashNewWrap mb">
+      <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="/app/timesheet" class="pull-left"> Timesheets &nbsp;&nbsp;</a>
+        <input type="hidden" value="" id="timesheetSocketsFor">
+        <ul class="nav nav-tabs pull-right">
+          <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
+          <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
+        </ul>
+      </div>
+      <div class="db-widget-sm">
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="savedCountAnchor">Draft</p>
+            <p class="NewCount"><span id="savedTimesheetsSubmissionsCount">0</span></p>
+            <div id="draftLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="waitingCountAnchor">Submitted</p>
+            <p class="NewCount suColor"><span id="waitingTimesheetsSubmissionsCount">0</span></p>
+            <div id="waitingLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="approvedCountAnchor">Approved</p>
+            <p class="NewCount apColor"><span id="approvalTimesheetsSubmissionsCount">0</span></p>
+            <div id="approvedloading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="rejectedCountAnchor">Rejected</p>
+            <p class="NewCount reColor"><span id="rejectTimesheetsSubmissionsCount">0</span></p>
+            <div id="rejectLoading"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
       <div class="dashNewWrapHead clearfix"> <a class="pull-left" id="jobsLink" href="/app/jobs">Jobs </a><a class="moreLink" href="http://localhost:8080/app/requirementApplicantsList?&amp;tab=previous&amp;orgLocationId=971" title="View more" id="viewmoresDiv"> View More..</a>
@@ -354,47 +397,390 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  <div class="col-md-6 mb10">
-    <div class="dashboardWidget-new dashNewWrap mb">
-      <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="/app/timesheet" class="pull-left"> Timesheets &nbsp;&nbsp;</a>
-        <input type="hidden" value="" id="timesheetSocketsFor">
-        <ul class="nav nav-tabs pull-right">
-          <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
-          <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
-        </ul>
-      </div>
-      <div class="db-widget-sm">
-        <div class="col-xs-12 col-sm-3">
-          <div class="dashNewCount">
-            <p id="savedCountAnchor">Draft</p>
-            <p class="NewCount"><span id="savedTimesheetsSubmissionsCount">0</span></p>
-            <div id="draftLoading"></div>
-          </div>
+  
+   <div class="mb clearfix col-md-12"> 
+      <!-- Assigned Requirements -->
+      <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
+        <div class="dashNewWrapHead noBor clearfix">
+          <h4 class="pull-left">Jobs</h4>
         </div>
-        <div class="col-xs-12 col-sm-3">
-          <div class="dashNewCount">
-            <p id="waitingCountAnchor">Submitted</p>
-            <p class="NewCount suColor"><span id="waitingTimesheetsSubmissionsCount">0</span></p>
-            <div id="waitingLoading"></div>
+        <div class="project_side_wrap_inn_tabs newDashPad">
+          <div id="resourceRequestsDivLoading"></div>
+          <div id="requirementListTabHead">
+            <div id="requirementListActions">
+              <div class="pull-right" id="viewmoresDiv"><a href="/app/jobs" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a></div>
+            </div>
+            <div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
+              <div id="requirementLoading" style="position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); top: 0px; left: 0px; z-index: 100; background-image: url(&quot;/resources/images/loading.gif&quot;); background-position: center center; background-repeat: no-repeat; background-size: 75px auto; display: none;"></div>
+              <div id="requirementList">
+                <div class="new_side_wrap">
+                  <div class="new_side_wrap_inn">
+                    <div class="new_side_wrap_cta">
+                      <div id="addApplicantDiv"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="requirementPagination_wrapper" class="dataTables_wrapper no-footer">
+                  <table id="requirementPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementPagination_info" style="width: 99.9%;" width="99.9%" cellspacing="0">
+                    <thead>
+                      <tr role="row">
+                        <th>Actions</th>
+                        <th >Generated ID</th>
+                        <th >Title</th>
+                        <th>Client</th>
+                        <th >Rate</th>
+                        <th>Priority</th>
+                        <th>Applicants</th>
+                        <th>Shortlisted</th>
+                        <th>Submitted</th>
+                        <th>Interview</th>
+                        <th>Offered</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr role="row" class="odd">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10389,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10389);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Ve7pU1Kk"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB45">GDFHJB45</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Ve7pU1Kk"><span title="Sample">Sample</span></a></div></td>
+                        <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/clientDashboard?orgRelationUUID=4Y6vQc0o" title="Dell">Dell</a></div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="10389">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389applicantCount">2</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389shortlistedCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389offeredCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Ve7pU1Kk">
+                          <div id="10389joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="even">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10233,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10233);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=B5uoA1ZT"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB44">GDFHJB44</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=B5uoA1ZT"><span title="job of the day">job of the day</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="10233">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233applicantCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233offeredCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=B5uoA1ZT">
+                          <div id="10233joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="odd">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10178,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10178);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=9IureNjR"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB43">GDFHJB43</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=9IureNjR"><span title="production job">production job</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="10178">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=9IureNjR">
+                          <div id="10178applicantCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=9IureNjR">
+                          <div id="10178shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=9IureNjR">
+                          <div id="10178submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=9IureNjR">
+                          <div id="10178interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=9IureNjR">
+                          <div id="10178offeredCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=9IureNjR">
+                          <div id="10178joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="even">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10172,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10172);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=mgK1siAZ"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB42">GDFHJB42</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=mgK1siAZ"><span title="oct2nd job">oct2nd job</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="10172">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172applicantCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172offeredCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=mgK1siAZ">
+                          <div id="10172joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="odd">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9953,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9953);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=LtEUgkp5"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB41">GDFHJB41</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=LtEUgkp5"><span title="new job list">new job list</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="9953">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953applicantCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953offeredCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=LtEUgkp5">
+                          <div id="9953joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="even">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9948,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9948);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=6zY9W5I2"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB40">GDFHJB40</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=6zY9W5I2"><span title="selenium job">selenium job</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span title="INR&nbsp;2000-3000&nbsp;Monthly">INR&nbsp;2000-3000&nbsp;Monthly</span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="9948">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948applicantCount">2</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948offeredCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=6zY9W5I2">
+                          <div id="9948joinedCount">1</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="odd">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9947,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9947);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Dg5wbdOK"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB39">GDFHJB39</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Dg5wbdOK"><span title="job@345">job@345</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span title="INR&nbsp;2000-4000&nbsp;Monthly">INR&nbsp;2000-4000&nbsp;Monthly</span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="9947">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947applicantCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947offeredCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Dg5wbdOK">
+                          <div id="9947joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="even">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9946,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9946);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=uUCznJKn"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB38">GDFHJB38</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=uUCznJKn"><span title="job@123">job@123</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span title="INR&nbsp;2000-5000&nbsp;Monthly">INR&nbsp;2000-5000&nbsp;Monthly</span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="9946">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=uUCznJKn">
+                          <div id="9946applicantCount">2</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=uUCznJKn">
+                          <div id="9946shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=uUCznJKn">
+                          <div id="9946submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=uUCznJKn">
+                          <div id="9946interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=uUCznJKn">
+                          <div id="9946offeredCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=uUCznJKn">
+                          <div id="9946joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="odd">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9939,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9939);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=z0wc5W7p"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB37">GDFHJB37</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=z0wc5W7p"><span title="Aob">Aob</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span><span>---</span></span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="9939">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939applicantCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939interviewedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939offeredCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=z0wc5W7p">
+                          <div id="9939joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                      <tr role="row" class="even">
+                        <td class="sorting_1"><div class="tblminwidth-75">
+                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(7982,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
+                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(7982);"><i class="fa fa-address-book anchorBlack"></i></a></div>
+                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=DqCBNe52"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
+                          </div></td>
+                        <td><div class=""><span title="GDFHJB36">GDFHJB36</span></div></td>
+                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=DqCBNe52"><span title="job123">job123</span></a></div></td>
+                        <td><div>---</div></td>
+                        <td><div><span title="INR&nbsp;3000-6000&nbsp;Monthly">INR&nbsp;3000-6000&nbsp;Monthly</span></div></td>
+                        <td><div>Medium</div></td>
+                        <td><input type="hidden" class="requirementDashboardCount" id="7982">
+                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=DqCBNe52">
+                          <div id="7982applicantCount">2</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=DqCBNe52">
+                          <div id="7982shortlistedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=DqCBNe52">
+                          <div id="7982submittedCount">0</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=DqCBNe52">
+                          <div id="7982interviewedCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=DqCBNe52">
+                          <div id="7982offeredCount">1</div>
+                          </a></td>
+                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=DqCBNe52">
+                          <div id="7982joinedCount">0</div>
+                          </a></td>
+                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="dataTables_info" id="requirementPagination_info" role="status" aria-live="polite">Showing 1 to 10 of 10 entries</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="col-xs-12 col-sm-3">
-          <div class="dashNewCount">
-            <p id="approvedCountAnchor">Approved</p>
-            <p class="NewCount apColor"><span id="approvalTimesheetsSubmissionsCount">0</span></p>
-            <div id="approvedloading"></div>
-          </div>
-        </div>
-        <div class="col-xs-12 col-sm-3">
-          <div class="dashNewCount">
-            <p id="rejectedCountAnchor">Rejected</p>
-            <p class="NewCount reColor"><span id="rejectTimesheetsSubmissionsCount">0</span></p>
-            <div id="rejectLoading"></div>
-          </div>
+          <div class="vendor_wrap_mask"></div>
         </div>
       </div>
     </div>
-  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="clearfix"></div>
   <div class="col-md-12">
     <div class="mb clearfix col-md-12 noPad">
       <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
@@ -433,7 +819,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  <div class="mb clearfix col-md-12 noPad">
+  <div class="mb clearfix col-md-12">
   <div class="dashNewWrap mb10">
     <div class="dashNewWrapHead clearfix">
       <h4 class="pull-left">Project Requests Test</h4>
@@ -533,6 +919,99 @@ $('#dasboardTaskDatpicker').datepicker({
     </div>
   </div>
 </div>
+  
+  <div class="col-md-6 mb">
+    <div class="dashNewWrap mb10">
+      <div class="dashNewWrapHead clearfix">
+        <h4 class="pull-left">Job Approvals</h4>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
+          <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
+          <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>
+        </ul>
+      </div>
+      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+        <div id="requirementApproverList" class="">
+          <div id="rejectRequirementAlert"></div>
+          <div id="requirementApproverPagination_wrapper" class="dataTables_wrapper no-footer">
+            <div id="requirementApproverPagination_filter" class="dataTables_filter">
+              <label>
+                <input type="search" class="" placeholder="" aria-controls="requirementApproverPagination">
+              </label>
+            </div>
+            <table id="requirementApproverPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementApproverPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
+              <thead>
+                <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 137px;" aria-sort="ascending" aria-label="ID-Title: activate to sort column descending">ID-Title</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 102px;" aria-label="Rate: activate to sort column ascending">Rate</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 89px;" aria-label="Exp: activate to sort column ascending">Exp</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 127px;" aria-label="Action: activate to sort column ascending">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd">
+                  <td colspan="4" class="dataTables_empty" valign="top"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="dataTables_info" id="requirementApproverPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
+            <div class="dataTables_paginate paging_simple_numbers" id="requirementApproverPagination_paginate"><a class="paginate_button previous disabled" aria-controls="requirementApproverPagination" data-dt-idx="0" tabindex="0" id="requirementApproverPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="requirementApproverPagination" data-dt-idx="1" tabindex="0" id="requirementApproverPagination_next">Next</a></div>
+          </div>
+        </div>
+      </div>
+      <!-- Pagenation Ends --> 
+    </div>
+  </div>
+  
+  <div class="col-md-6 mb">
+    <div class="dashNewWrap mb10">
+      <div class="dashNewWrapHead clearfix">
+        <h4 class="pull-left">Applicant Permission</h4>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
+          <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+          <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
+        </ul>
+      </div>
+      <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
+      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+        <div class="tab-content clearfix">
+          <div id="accepted" class=""></div>
+          <div id="requestSent" class="tab-pane fade in active">
+            <div id="rejectApplicantAlert"></div>
+            <div id="applicantsPagination_wrapper" class="dataTables_wrapper no-footer">
+              <div id="applicantsPagination_filter" class="dataTables_filter">
+                <label>
+                  <input type="search" class="" placeholder="" aria-controls="applicantsPagination">
+                </label>
+              </div>
+              <table id="applicantsPagination" class="display dataTable no-footer" role="grid" aria-describedby="applicantsPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
+                <thead>
+                  <tr role="row">
+                    <th class="sorting_asc" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 97px;" aria-sort="ascending" aria-label="Applicant: activate to sort column descending">Applicant</th>
+                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 47px;" aria-label="Job: activate to sort column ascending">Job</th>
+                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 138px;" aria-label="Team Member: activate to sort column ascending">Team Member</th>
+                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Status: activate to sort column ascending">Status</th>
+                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Action: activate to sort column ascending">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="odd">
+                    <td colspan="5" class="dataTables_empty" valign="top"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="dataTables_info" id="applicantsPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
+              <div class="dataTables_paginate paging_simple_numbers" id="applicantsPagination_paginate"><a class="paginate_button previous disabled" aria-controls="applicantsPagination" data-dt-idx="0" tabindex="0" id="applicantsPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="applicantsPagination" data-dt-idx="1" tabindex="0" id="applicantsPagination_next">Next</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   
   <div class="clearfix"></div>
   <div class="col-md-12">
@@ -732,96 +1211,11 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  <div class="col-md-6 mb">
-    <div class="dashNewWrap mb10">
-      <div class="dashNewWrapHead clearfix">
-        <h4 class="pull-left">Job Approvals</h4>
-        <ul class="nav nav-tabs pull-right">
-          <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
-          <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
-          <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>
-        </ul>
-      </div>
-      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
-        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
-        <div id="requirementApproverList" class="">
-          <div id="rejectRequirementAlert"></div>
-          <div id="requirementApproverPagination_wrapper" class="dataTables_wrapper no-footer">
-            <div id="requirementApproverPagination_filter" class="dataTables_filter">
-              <label>
-                <input type="search" class="" placeholder="" aria-controls="requirementApproverPagination">
-              </label>
-            </div>
-            <table id="requirementApproverPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementApproverPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
-              <thead>
-                <tr role="row">
-                  <th class="sorting_asc" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 137px;" aria-sort="ascending" aria-label="ID-Title: activate to sort column descending">ID-Title</th>
-                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 102px;" aria-label="Rate: activate to sort column ascending">Rate</th>
-                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 89px;" aria-label="Exp: activate to sort column ascending">Exp</th>
-                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 127px;" aria-label="Action: activate to sort column ascending">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="odd">
-                  <td colspan="4" class="dataTables_empty" valign="top"></td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="dataTables_info" id="requirementApproverPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
-            <div class="dataTables_paginate paging_simple_numbers" id="requirementApproverPagination_paginate"><a class="paginate_button previous disabled" aria-controls="requirementApproverPagination" data-dt-idx="0" tabindex="0" id="requirementApproverPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="requirementApproverPagination" data-dt-idx="1" tabindex="0" id="requirementApproverPagination_next">Next</a></div>
-          </div>
-        </div>
-      </div>
-      <!-- Pagenation Ends --> 
-    </div>
-  </div>
-  <div class="col-md-6 mb">
-    <div class="dashNewWrap mb10">
-      <div class="dashNewWrapHead clearfix">
-        <h4 class="pull-left">Applicant Permission</h4>
-        <ul class="nav nav-tabs pull-right">
-          <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
-          <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
-          <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
-        </ul>
-      </div>
-      <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
-        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
-        <div class="tab-content clearfix">
-          <div id="accepted" class=""></div>
-          <div id="requestSent" class="tab-pane fade in active">
-            <div id="rejectApplicantAlert"></div>
-            <div id="applicantsPagination_wrapper" class="dataTables_wrapper no-footer">
-              <div id="applicantsPagination_filter" class="dataTables_filter">
-                <label>
-                  <input type="search" class="" placeholder="" aria-controls="applicantsPagination">
-                </label>
-              </div>
-              <table id="applicantsPagination" class="display dataTable no-footer" role="grid" aria-describedby="applicantsPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
-                <thead>
-                  <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 97px;" aria-sort="ascending" aria-label="Applicant: activate to sort column descending">Applicant</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 47px;" aria-label="Job: activate to sort column ascending">Job</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 138px;" aria-label="Team Member: activate to sort column ascending">Team Member</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Status: activate to sort column ascending">Status</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Action: activate to sort column ascending">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="odd">
-                    <td colspan="5" class="dataTables_empty" valign="top"></td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="dataTables_info" id="applicantsPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
-              <div class="dataTables_paginate paging_simple_numbers" id="applicantsPagination_paginate"><a class="paginate_button previous disabled" aria-controls="applicantsPagination" data-dt-idx="0" tabindex="0" id="applicantsPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="applicantsPagination" data-dt-idx="1" tabindex="0" id="applicantsPagination_next">Next</a></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  
+  
+  
+  
+  
   <div class="col-md-12">
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog modal-lg" style="width: 98%;">
@@ -1298,379 +1692,9 @@ $('#assignToPopUpCloseId').submit(function() {
 	$("#usersGrid").empty();
 });
 </script>
-    <div class="mb clearfix col-md-12 noPad"> 
-      <!-- Assigned Requirements -->
-      <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
-        <div class="dashNewWrapHead noBor clearfix">
-          <h4 class="pull-left">Jobs</h4>
-        </div>
-        <div class="project_side_wrap_inn_tabs newDashPad">
-          <div id="resourceRequestsDivLoading"></div>
-          <div id="requirementListTabHead">
-            <div id="requirementListActions">
-              <div class="pull-right" id="viewmoresDiv"><a href="/app/jobs" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a></div>
-            </div>
-            <div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
-              <div id="requirementLoading" style="position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); top: 0px; left: 0px; z-index: 100; background-image: url(&quot;/resources/images/loading.gif&quot;); background-position: center center; background-repeat: no-repeat; background-size: 75px auto; display: none;"></div>
-              <div id="requirementList">
-                <div class="new_side_wrap">
-                  <div class="new_side_wrap_inn">
-                    <div class="new_side_wrap_cta">
-                      <div id="addApplicantDiv"></div>
-                    </div>
-                  </div>
-                </div>
-                <div id="requirementPagination_wrapper" class="dataTables_wrapper no-footer">
-                  <table id="requirementPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementPagination_info" style="width: 99.9%;" width="99.9%" cellspacing="0">
-                    <thead>
-                      <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 65px;" aria-sort="ascending" aria-label="Actions: activate to sort column descending">Actions</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 61px;" aria-label="Generated ID: activate to sort column ascending">Generated ID</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 140px;" aria-label="Title: activate to sort column ascending">Title</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 140px;" aria-label="Client: activate to sort column ascending">Client</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 115px;" aria-label="Rate: activate to sort column ascending">Rate</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 43px;" aria-label="Priority: activate to sort column ascending">Priority</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 63px;" aria-label="Applicants: activate to sort column ascending">Applicants</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 65px;" aria-label="Shortlisted: activate to sort column ascending">Shortlisted</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 61px;" aria-label="Submitted: activate to sort column ascending">Submitted</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 54px;" aria-label="Interview: activate to sort column ascending">Interview</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 44px;" aria-label="Offered: activate to sort column ascending">Offered</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 40px;" aria-label="Joined: activate to sort column ascending">Joined</th>
-                        <th class="sorting" tabindex="0" aria-controls="requirementPagination" rowspan="1" colspan="1" style="width: 39px;" aria-label="Status: activate to sort column ascending">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10389,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10389);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Ve7pU1Kk"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB45">GDFHJB45</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Ve7pU1Kk"><span title="Sample">Sample</span></a></div></td>
-                        <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/clientDashboard?orgRelationUUID=4Y6vQc0o" title="Dell">Dell</a></div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10389">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389shortlistedCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10233,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10233);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=B5uoA1ZT"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB44">GDFHJB44</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=B5uoA1ZT"><span title="job of the day">job of the day</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10233">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10178,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10178);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=9IureNjR"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB43">GDFHJB43</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=9IureNjR"><span title="production job">production job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10178">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=9IureNjR">
-                          <div id="10178applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=9IureNjR">
-                          <div id="10178shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=9IureNjR">
-                          <div id="10178submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=9IureNjR">
-                          <div id="10178interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=9IureNjR">
-                          <div id="10178offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=9IureNjR">
-                          <div id="10178joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10172,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10172);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=mgK1siAZ"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB42">GDFHJB42</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=mgK1siAZ"><span title="oct2nd job">oct2nd job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10172">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9953,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9953);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=LtEUgkp5"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB41">GDFHJB41</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=LtEUgkp5"><span title="new job list">new job list</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9953">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953applicantCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9948,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9948);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=6zY9W5I2"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB40">GDFHJB40</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=6zY9W5I2"><span title="selenium job">selenium job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-3000&nbsp;Monthly">INR&nbsp;2000-3000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9948">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948joinedCount">1</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9947,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9947);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Dg5wbdOK"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB39">GDFHJB39</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Dg5wbdOK"><span title="job@345">job@345</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-4000&nbsp;Monthly">INR&nbsp;2000-4000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9947">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9946,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9946);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=uUCznJKn"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB38">GDFHJB38</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=uUCznJKn"><span title="job@123">job@123</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-5000&nbsp;Monthly">INR&nbsp;2000-5000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9946">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=uUCznJKn">
-                          <div id="9946applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=uUCznJKn">
-                          <div id="9946shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=uUCznJKn">
-                          <div id="9946submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=uUCznJKn">
-                          <div id="9946interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=uUCznJKn">
-                          <div id="9946offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=uUCznJKn">
-                          <div id="9946joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9939,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9939);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=z0wc5W7p"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB37">GDFHJB37</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=z0wc5W7p"><span title="Aob">Aob</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9939">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939applicantCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(7982,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(7982);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=DqCBNe52"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB36">GDFHJB36</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=DqCBNe52"><span title="job123">job123</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;3000-6000&nbsp;Monthly">INR&nbsp;3000-6000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="7982">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=DqCBNe52">
-                          <div id="7982applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=DqCBNe52">
-                          <div id="7982shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=DqCBNe52">
-                          <div id="7982submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=DqCBNe52">
-                          <div id="7982interviewedCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=DqCBNe52">
-                          <div id="7982offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=DqCBNe52">
-                          <div id="7982joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="dataTables_info" id="requirementPagination_info" role="status" aria-live="polite">Showing 1 to 10 of 10 entries</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="vendor_wrap_mask"></div>
-        </div>
-      </div>
-    </div>
+   
+    
+    
     <div class="side_mask">
       <div class="proj_close"></div>
     </div>
