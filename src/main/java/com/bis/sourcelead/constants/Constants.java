@@ -1296,6 +1296,8 @@ public class Constants {
 	
 	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
 	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	public static final String IND_PAYROLL_PAYHEAD_PF = "PF";
+	public static final String IND_PAYROLL_PAYHEAD_ESI = "ESI";
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
