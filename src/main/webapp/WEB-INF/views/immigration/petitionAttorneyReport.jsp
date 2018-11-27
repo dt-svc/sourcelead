@@ -91,10 +91,10 @@ $(document).ready(function(){
                  <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
 		          <div class="pull-left">
 		            <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From Date" class="form-control calendar input-sm" type="text">
 		            </div>
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" placeholder="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
 		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();"><i class="fa fa-search"></i></button>
 		          </div>
@@ -639,6 +639,9 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
+	 $("#dateFrequency").val('');
+	 $("#custFromDate").val('');
+	 $("#custToDate").val('');
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->

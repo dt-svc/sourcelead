@@ -64,6 +64,7 @@ import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -71,12 +72,14 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
@@ -742,12 +745,10 @@ public class CandidateListRestController {
 
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
-					Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
+					/*Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
 					if(can.getCandidateProfilePercentage() != null) {
 						candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
-					}
-					Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateIndex.getCandidateId(), loginOrgLocation.getId());
-					candidateIndex.setSubmittedJobsCount(submittedJobCount);
+					}*/
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
@@ -828,6 +829,20 @@ public class CandidateListRestController {
 		}
 
 		return QueryBuilderList;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getCandidateSubmittedRequirementCount" , method = RequestMethod.GET)
+	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+			
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     CandidateDTO candidateDTO = new CandidateDTO();
+		     Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
+		     Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
+		     candidateDTO.setSubmittedJobsCount(submittedJobCount);
+		     candidateDTO.setProfilePercentage(profilePercentage);
+			 return candidateDTO;
 	}
 
 	@PreAuthorize("hasRole('ROLE_ASSIGN_HOTLIST_TO_TEAM')")
