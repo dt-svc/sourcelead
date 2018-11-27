@@ -338,7 +338,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 	@Transactional
 	public SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId,Date freqStartDate, Date freqEndDate)
 	{
-		SalaryDTO salarylist = null;
+		SalaryDTO salaryDTO = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
@@ -365,11 +365,14 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 //			.setDate("startDate", startDate)
 //			.setDate("endDate", endDate);
 			queryObj.setResultTransformer(Transformers.aliasToBean(SalaryDTO.class));
-			salarylist = (SalaryDTO) queryObj.uniqueResult();
+			List<SalaryDTO> list = queryObj.list();
+			if(list != null && list.size() >0) {
+				salaryDTO = list.get(0);
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return salarylist;
+		return salaryDTO;
 	}
 	
 	@Override

@@ -211,7 +211,7 @@ window.onload = function() {
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
-	                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver">
+	                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation ="required">
 	                  </select>
 	              </div>
             	</div>
