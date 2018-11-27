@@ -99,6 +99,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private List<String> empTypes;
     
     private List<Long> roles;
+    
+    private Integer assignedJobsCount;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -667,6 +669,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setRoles(List<Long> roles) {
 		this.roles = roles;
+	}
+
+	public Integer getAssignedJobsCount() {
+		return assignedJobsCount;
+	}
+
+	public void setAssignedJobsCount(Integer assignedJobsCount) {
+		this.assignedJobsCount = assignedJobsCount;
 	}
 	
 }
