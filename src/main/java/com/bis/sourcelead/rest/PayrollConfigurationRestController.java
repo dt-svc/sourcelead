@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateNomineeDTO;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
@@ -34,11 +35,13 @@ import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
@@ -51,6 +54,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.AssociateNomineeService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -125,6 +129,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	AssociateLoanAndAdvancesService associateLoanAndAdvancesService;
+	
+	@Autowired
+	AssociateNomineeService associateNomineeService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -1036,5 +1043,43 @@ public class PayrollConfigurationRestController {
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/addNomineeDetails")
+	public ModelAndView addNomineeDetails(AssociateNomineeDTO associateNomineeDTO, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		ModelAndView model = new ModelAndView();
+		AssociateNominee associateNominee = new AssociateNominee();
+		if(associateNomineeDTO.getId() != null){
+			associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
+			associateNomineeDTO.setName(associateNominee.getName());
+			associateNomineeDTO.setDateOfBirth(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), associateNominee.getDateOfBirth()));
+			associateNomineeDTO.setGender(associateNominee.getGender());
+			associateNomineeDTO.setBloodGroup(associateNominee.getBloodGroup());
+			associateNomineeDTO.setRelation(associateNominee.getRelation());
+			associateNomineeDTO.setNominationFor(associateNominee.getNominationFor());
+			associateNomineeDTO.setNominationPercentage(associateNominee.getNominationPercentage());
+			associateNomineeDTO.setAddress(associateNominee.getAddress());
+			associateNomineeDTO.setIllnessGuardianName(associateNominee.getIllnessGuardianName());
+			associateNomineeDTO.setIllnessGuardianRelationName(associateNominee.getIllnessGuardianRelationName());
+			associateNomineeDTO.setIllnessGuardianAddress(associateNominee.getIllnessGuardianAddress());
+			associateNomineeDTO.setIllnessGuardianPhoneNumber(associateNominee.getIllnessGuardianPhoneNumber());
+			associateNomineeDTO.setIllnessGuardianEmail(associateNominee.getIllnessGuardianEmail());
+			associateNomineeDTO.setMinorGuardianName(associateNominee.getMinorGuardianName());
+			associateNomineeDTO.setMinorGuardianRelationName(associateNominee.getMinorGuardianRelationName());
+			associateNomineeDTO.setMinorGuardianAddress(associateNominee.getMinorGuardianAddress());
+			associateNomineeDTO.setMinorGuardianPhoneNumber(associateNominee.getMinorGuardianPhoneNumber());
+			associateNomineeDTO.setMinorGuardianEmail(associateNominee.getMinorGuardianEmail());
+			associateNomineeDTO.setStatus(associateNominee.getStatus());
+			associateNomineeDTO.setCandidateId(associateNominee.getCandidateId().getId());
+			associateNomineeDTO.setOrgLocationId(associateNominee.getOrgLocationId());
+			associateNomineeDTO.setId(associateNominee.getId());
+		}
+		model.addObject("nominee", associateNomineeDTO);
+		
+		model.setViewName("indPayroll/addNomineeDetails");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+	    return model;
 	}
 }
