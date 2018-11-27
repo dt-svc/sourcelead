@@ -28,15 +28,15 @@
 		            <div class="col-md-12 mb mt">
 					 <div class="media profileDetails-Widget">
 		              <div class="media-left rewardImage">
-						  <img src="../images/rewards_badges.svg" class="media-object" alt="Image">
+						  <img onerror='predefineBadgeImage(this);' src='${badges.fileURL}' class="media-object" alt="Image">
 						</div>
 		              <div class="media-body">
 		                <div class="col-md-11">
 		                <h4 class="media-heading">
-							Best Developer of the Year
+							${badges.name}
 						</h4>
 		                <p class="text-muted fontSmall mt10">
-						Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.	
+						    ${badges.description}	
 						</p>
 		                  <div class="clearfix"></div>
 		               </div>
@@ -80,9 +80,9 @@
 	                </div>
 	            </div>
 				<div class="clearfix mb" id="badgeImageDiv">
-	                <label class="noPad">Image<span class="text-danger">&nbsp;*</span></label>
+	                <label class="noPad">Image</label>
 	                <div class="clearfix">
-						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation="required validate_Space validateImg ">
+						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation-optional="true" data-validation="validate_Space validateImg ">
 	        		</div>
 	        		 <label id="newUploadFile"></label> 
 					 <input type="text" hidden readonly id="dataFilePath" value="" >
@@ -104,6 +104,11 @@
 	 </form:form>
 </div>
 
+<script>
+	function predefineBadgeImage(imageId){
+		$(imageId).attr('src','/resources/images/rewards_badges.svg');
+	}
+</script>
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
@@ -123,6 +128,9 @@ document.getElementById("uploadBtn").onchange = function () {
 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
+	  $('#newUploadFile').text('');
+	  $('#uploadBtn').val('');
+	  
   }
   </script>
   
