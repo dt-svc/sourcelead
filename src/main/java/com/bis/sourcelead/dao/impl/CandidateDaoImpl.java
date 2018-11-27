@@ -2375,6 +2375,15 @@ public class CandidateDaoImpl implements CandidateDao {
 																				.setLong("orgLocationId", orgLocationId).uniqueResult();
 		return marketPlaceCandidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateMarketPlace marketplace where marketplace.id IN(:id) and marketplace.orgLocationId = :orgLocationId";
+		List<CandidateMarketPlace> marketPlaceCandidateList = session.createQuery(query).setParameterList("id", id).setLong("orgLocationId", orgLocationId).list();
+		return marketPlaceCandidateList;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

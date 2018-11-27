@@ -2798,6 +2798,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception{
+		return candidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
 		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
 		marketplace.setWithdrawReason(withdrawReason);

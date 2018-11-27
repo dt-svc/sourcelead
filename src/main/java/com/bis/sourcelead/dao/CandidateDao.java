@@ -180,6 +180,8 @@ public interface CandidateDao {
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
 	
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception;
+	
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace)throws Exception;
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
@@ -204,6 +206,8 @@ public interface CandidateDao {
 
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
+
+	
 
 
 }

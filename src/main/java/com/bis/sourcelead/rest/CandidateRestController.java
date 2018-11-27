@@ -1170,6 +1170,41 @@ public class CandidateRestController {
 		}
 		return response;
 	}	
+	
+	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/withdrawCandidatesFromMarketPlace")
+	public Response<String> withdrawCandidatesFromMarketPlace(@RequestParam(value = "id", required = true) List<Long> candidateIds,
+			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
+			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CandidateMarketPlace> marketplace = candidateService.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(candidateIds, orgLocation.getId());
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (null != marketplace) {
+					for(CandidateMarketPlace cmp:marketplace){
+						candidateService.withdrawCandidateFromMarketplace(cmp, withdrawReason);
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in withdrawCandidateFromMarketPlace controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}	
+	
+	
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")
