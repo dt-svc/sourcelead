@@ -909,7 +909,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			c.setTime(freqEndDate);
 			String fromYear = "";
 			String toYear = "";
-			if(c.MONTH <= 3) {
+			if(c.get(Calendar.MONTH) <= 3) {
 				toYear = c.get(Calendar.YEAR) + "";
 				c.roll(Calendar.YEAR, -1);
 				fromYear = c.get(Calendar.YEAR) + "";
@@ -928,7 +928,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						ptAmount = Double.valueOf(ptDTO.getAmount());
 				}
 			}catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return ptAmount;
 			}
 		}
