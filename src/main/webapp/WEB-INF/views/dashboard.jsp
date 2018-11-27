@@ -81,7 +81,6 @@ $( document ).ready(function() {
 	 if(settingsConfigured == "N"){
 		configureDiv();
 	 }
-	 alert('completed')
 });
 function logoutForConfigure() {
 	document.getElementById("logoutForm").submit();
