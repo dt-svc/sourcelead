@@ -1056,6 +1056,7 @@ function resourceRequestList(requestType) {
 	 * 
 	 * var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';
 	 */
+	orgLocationId = locationId // replaced with common variable in jsp.
 	if (locationList.match("yyyy-MM-dd")) {
 		resListDate = 'YYYY-MM-DD';
 	}
@@ -1068,21 +1069,15 @@ function resourceRequestList(requestType) {
 	if (locationList.match("yyyy-dd-MM")) {
 		resListDate = 'YYYY-DD-MM';
 	}
-	$
-			.ajax({
+	$.ajax({
 				type : "GET",
-				url : sourceleadUrl
-						+ "/getPlanningRequestListByApproverIdAndOrgLocationId?"
-						+ approverUserId + "&orgLocationId=" + orgLocationId
-						+ "&requestType=" + requestType,
+				url : sourceleadUrl	+ "/getPlanningRequestListByApproverIdAndOrgLocationId?approverUserId=" + approverUserId + 
+				                           "&orgLocationId=" + orgLocationId + "&requestType=" + requestType,
 				success : function(json) {
-
 					var result = "";
 
-					result = result
-							+ '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
-					result = result
-							+ '		<table id="planningRequestsPaginationList" cellspacing="0" width="100%">';
+					result = result	+ '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint">';
+					result = result	+ '		<table id="planningRequestsPaginationList" cellspacing="0" width="100%">';
 					result = result + '	    <thead>';
 					result = result + '	     	<tr>';
 					result = result + '	         	<th>Request Id</th>';
@@ -1091,21 +1086,17 @@ function resourceRequestList(requestType) {
 					result = result + '	             <th>Est Budget</th>';
 					result = result + '	             <th>Type</th>';
 					result = result + '	             <th>Initiator</th>';
-					result = result
-							+ '	             <th>Date<br>(<small class="custom-small">'
-							+ resListDate + '</small>)</th>';
+					result = result	+ '	             <th>Date<br>(<small class="custom-small">'	+ resListDate + '</small>)</th>';
 					result = result + '	             <th>Action</th>';
 					result = result + '	         </tr>';
 					result = result + '	    </thead>';
 					result = result + '	 	<tbody>';
-
 					for (var i = 0; i < json.length; i++) {
 						var report = json[i];
 
 						result = result + '<tr>';
 						if (report.requestType == 'Associate Request') {
-							result = result
-									+ '<td><div  class="tbldata-dotdot-vsm"><a href="'
+							result = result + '<td><div  class="tbldata-dotdot-vsm"><a href="'
 									+ sourceleadUrl
 									+ '/requestedAssociatesList?requestUUID='
 									+ report.requestUUID + '">'
@@ -1209,12 +1200,201 @@ function resourceRequestList(requestType) {
 						$("#requestRejected").removeClass("current");
 
 					}
-
 				}
 
 			});
 
-}// end resource request list end here.
+}
+function planningRequestsPagination(){  
+    $('#planningRequestsPaginationList').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 25, 30, -1], [5, 15, 25, 30, "All"]],
+		"aaSorting": [[4,'desc']],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    });
+    $('#planningRequestsList').wrap("<div class='overflow_Auto'></div>");
+}
+function acceptAssociateRequest(requestUUID){
+	// var sourceleadUrl ='${sourceleadUrl}';
+	// var userId = '${SourceLeadWeb_userId}';
+    var orglocationId = locationId;
+	 $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+		    type : "POST",
+	    	url: sourceleadUrl+"/acceptAssociateRequest?requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
+	        success: function(result) {
+	        	location.replace(sourceleadUrl+"/dashboard/"+orglocationId);  
+	        },
+	    });
+	 
+}
+function onholdAssociateRequest(requestUUID,Initiator){
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '	<div id="loading"></div>';
+	result = result + '<form id="onHold_form" name="onHold_form" method="post">';
+	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
+	result = result + '	<h3>Associate Request On Hold Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Initiator Name">Initiator :</label> ';
+	result = result + '		  <label class="col-md-8 paddingRight">'+Initiator+'</label> ';
+	result = result + '		</div>  ';
+
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" id="submit_onHold"  onclick="saveOnHoldRequest(\''+requestUUID+'\');" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRequestRejectedReason();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#requestOnHoldReasonDiv").empty();
+    $("#requestOnHoldReasonDiv").append(result);
+    
+    $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+	 
+}
+function saveOnHoldRequest(requestUUID){
+	
+	if ($('#onHold_form').validate(false, validationSettings)){ 
+		  	
+			var frm = $('#onHold_form').serializeFormJSON();
+			var jsonData = JSON.stringify(frm);
+		    var form = $('#onHold_form')[0];
+		    var formData = new FormData(form);
+		  	formData.append("json",jsonData)
+		  	
+	      //  var sourceleadUrl ='${sourceleadUrl}';
+	       // var userId = '${SourceLeadWeb_userId}';
+	        var orglocationId = locationId; // replaced with dashboard jsp variable.
+	        
+	        $("#submit_onHold").attr("disabled", "disabled");
+	        $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	 	 $.ajax({
+		 		    type : "POST",
+		    	    data: formData,
+		    	    contentType : 'application/json; charset=utf-8',
+			        processData: false,
+			        contentType:false, 
+		    	    dataType : 'json',
+			    	url: sourceleadUrl+"/onholdAssociateRequest?requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+			        success: function(result) {
+			        	cancelRejectedReason();
+			        	location.replace(sourceleadUrl+"/dashboard/"+orglocationId);  
+			        },
+			    });  
+	      return true; 
+			
+		}else{
+			return false;
+		  }
+		
+		  $('body').on('blur', '#onHold_form', function() {
+		   		$("#onHold_form").showHelpOnFocus();
+		   		$("#onHold_form").validateOnBlur(false, validationSettings);
+		   	});
+	}
+function rejectAssociateRequest(requestUUID,Initiator){
+	
+	var result = "";
+	result = result + '	<div class="settPop">';
+	result = result + '	<div id="loading"></div>';
+	result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
+	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
+	result = result + '	<h3>Associate Request Rejected Reason<i class="fa fa-times" onclick="cancelRejectedReason();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Initiator Name">Initiator :</label> ';
+	result = result + '		  <label class="col-md-8 paddingRight">'+Initiator+'</label> ';
+	result = result + '		</div>  ';
+
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" id="submit_rejectedReason"  onclick="saveRejectAssociateRequest(\''+requestUUID+'\');" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRequestRejectedReason();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#requestRejectedReasonDiv").empty();
+    $("#requestRejectedReasonDiv").append(result);
+    
+    $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+}
+function cancelRequestRejectedReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
+}
+function saveRejectAssociateRequest(requestUUID){
+	
+	if ($('#rejectedReason_form').validate(false, validationSettings)){ 
+	  	
+		var frm = $('#rejectedReason_form').serializeFormJSON();
+		var jsonData = JSON.stringify(frm);
+		
+	    var form = $('#rejectedReason_form')[0];
+	    var formData = new FormData(form);
+	  	formData.append("json",jsonData)
+       // var sourceleadUrl ='${sourceleadUrl}';
+       // var userId = '${SourceLeadWeb_userId}';
+        
+        var orglocationId = locationId // replaced with dashboard jps variable
+        $("#submit_rejectedReason").attr("disabled", "disabled");
+		
+        $("#resourceRequestsDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 	 $.ajax({
+	 		    type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+		        processData: false,
+		        contentType:false, 
+	    	    dataType : 'json',
+		    	url: sourceleadUrl+"/rejectAssociatesRequest?userId="+userId+"&orglocationId="+orglocationId,
+		        success: function(result) {
+		        	cancelRejectedReason();
+		        	location.replace(sourceleadUrl+"/dashboard/"+orglocationId);  
+		        },
+		    });  
+      return true; 
+		
+	}else{
+		return false;
+	  }
+	
+	  $('body').on('blur', '#rejectedReason_form', function() {
+	   		$("#rejectedReason_form").showHelpOnFocus();
+	   		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
+	   	});
+	
+}
+// end resource request list end here.
 // requirementApproverList('SUBMITTED');
 function requirementApproverList(statusType) {
 
@@ -2123,12 +2303,11 @@ var jobFairDates = {};
 function getJobFairDates() {
 //	var sourceleadUrl = '${sourceleadUrl}';
 	var dates = {}
-	$
-			.ajax({
+	$.ajax({
 				type : "POST",
-				url : sourceleadUrl
-						+ "/getJobFairDatesForCalendar?",
+				url : sourceleadUrl	+ "/getJobFairDatesForCalendar?",
 				success : function(result) {
+				
 					if (result.response === "FAILED") {
 						showError(result.responseMessage);
 					} else if (result.response === "AWKWARD") {
@@ -2436,6 +2615,7 @@ function getJobsForSelectedFairDate() {
 	//var sourceleadUrl = '${sourceleadUrl}';
 	var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 	$("#fairJobsDiv").empty();
+	locationDate = locationList; //replaced with dashboard jsp common variable.  
 	$("#fairJobsDiv")
 			.attr(
 					'style',
@@ -2475,11 +2655,9 @@ function getJobsForSelectedFairDate() {
 								var text = "<div class='eventList clearfix'>";
 								text += "	<div class='pull-left event_details form-horizontal dashboard_fair_table'>";
 								text += "		<p>";
-								text += "			<a target='_blank' href='"
-										+ sourceleadUrl
-										+ "/requirementSummary?requirementUUID="
-										+ data[e].requirementUUID + "'>"
-										+ data[e].jobTitle + "</a>";
+								text += "			<a target='_blank' href='"	+ sourceleadUrl	+ "/requirementSummary?requirementUUID=" 
+													+ data[e].requirementUUID + "'>"
+													+ data[e].jobTitle + "</a>";
 								text += "		</p>";
 								if (data[e].clientId != null) {
 									text += "		<p>";
@@ -2507,6 +2685,7 @@ function getJobsForSelectedFairDate() {
 								/* $("#fairJobsDiv").append(text); */
 								jobFairsText += text;
 							}
+							
 							$("#fairJobsDiv").append(jobFairsText);
 						} else {
 							var text = '<div class="row">';

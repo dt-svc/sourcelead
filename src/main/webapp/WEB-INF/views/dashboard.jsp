@@ -63,23 +63,25 @@ $( document ).ready(function() {
 	  } 
 	// contractList(); 
 	requirementApproverList('SUBMITTED');
-	contractList(); 
+	
 	requirementSubmissionsCount("today");
 	expensesCount("myExpenses");
 	requirementList(false, -1);
 	onboardingCandidatesList();
 	getProjectResourceReqestsListCount();
+	contractList(); 
 	resourceRequestList("Waiting For Approval");
 	ApplicantAuthorization('requestSent');
     getInterviewsandTasks();
 	getInterviewsDates(); 
-	getJobFairDates();
+	//getJobFairDates();
 	getJobFairs();
 	contractList(); 
 	 var settingsConfigured = '${SourceLeadWeb_settingsConfigured}';
 	 if(settingsConfigured == "N"){
 		configureDiv();
 	 }
+	 alert('completed')
 });
 function logoutForConfigure() {
 	document.getElementById("logoutForm").submit();
