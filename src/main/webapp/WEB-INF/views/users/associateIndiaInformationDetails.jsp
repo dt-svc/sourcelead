@@ -301,6 +301,8 @@
                       <div class="col-md-4 mb checkbox-new">
                         <label>&nbsp;</label>
                         <div class="clearfix">
+
+                          <input id="illness" class="checkbox-custom" name="esi" type="checkbox" onclick="validateIllness();">
                           <input id="illness" class="checkbox-custom" name="illness" type="checkbox" onClick="illnessFunction()">
                           <label for="illness" class="checkbox-custom-label"><span class="ml10">Illness</span></label>
                         </div>
@@ -308,6 +310,8 @@
                       <div class="col-md-4 mb checkbox-new">
                         <label>&nbsp;</label>
                         <div class="clearfix">
+                          <input id="minor" class="checkbox-custom" name="esi" type="checkbox" onclick="validateMinor();">
+
                           <input id="minor" class="checkbox-custom" name="minor" type="checkbox" onClick="minorFunction()">
                           <label for="minor" class="checkbox-custom-label"><span class="ml10">Minor</span></label>
                         </div>
@@ -319,14 +323,13 @@
                   <h4 class="col-md-12 margin-top0 ml">Illness</h4>
                     <div class="col-md-5">
                       <label>Guardian Name<span class="text-danger paddingLeft">*</span></label>
-                      <div>
-                        <input type="text" id="illnessGuardianName" class="form-control" name="illnessGuardianName" field-name="Guardian Name" data-validation="required">
-                      </div>
-                    </div>
+                      <div id="illnessguardianNameDiv">
+                                            <input type="text" id="illnessGuardianName" class="form-control" name="illnessGuardianName" field-name="Guardian Name" data-validation="required">
+                     </div>
                     <div class="col-md-5">
                       <label>Relation<span class="text-danger paddingLeft">*</span></label>
-                      <div>
-                        <select class="sel" id="illnessGuardianRelationName" name="illnessGuardianRelationName" field-name="Relation" data-validation="required">
+                      <div id="illnessGuardianRelationNameDiv">
+                        <select class="sel" id="illnessGuardianRelationName" name="illnessGuardianRelationName" field-name="Relation" >
                           <option value="">Select</option>
                             <option value="Father">Father</option>
 	                        <option value="Mother">Mother</option>
@@ -363,14 +366,13 @@
                   <!--  Minor Div -->
                   <div class="clearfix" id="minorDiv" style="display: none;">
                   <h4 class="col-md-12 margin-top0 ml">Minor</h4>
-                    <div class="col-md-5">
+                    <div class="col-md-5" id="minorGuardianNameDiv">
                       <label>Guardian Name<span class="text-danger paddingLeft">*</span></label>
-                      <div>
-                        <input type="text" id="minorGuardianName" class="form-control" name="minorGuardianName" field-name="Guardian Name" data-validation="required">
-                      </div>
+                        <input type="text" id="minorGuardianName" class="form-control" name="minorGuardianName" field-name="Guardian Name">
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5" id="minorGuardianRelationNameDiv">
                       <label>Relation<span class="text-danger paddingLeft">*</span></label>
+                        <select class="sel" name="minorGuardianRelationName" id="minorGuardianRelationName" field-name="Relation">
                       <div>
                         <select class="sel" id="minorGuardianRelationName" name="minorGuardianRelationName" field-name="Relation" data-validation="required">
                           <option value="">Select</option>
@@ -383,7 +385,6 @@
 	                        <option value="Son">Son</option>
 	                        <option value="Daughter">Daughter</option>
                         </select>
-                      </div>
                     </div>
                     <div class="col-md-5">
                       <label>Address</label>
@@ -453,6 +454,36 @@
  }
  
 </script>
+ 
+ 
+ <<script>
+function validateIllness(){
+	if($("#illness").is(':checked')){
+		$("#illnessguardianName").attr("data-validation","required");
+		$("#illnessGuardianRelationName").attr("data-validation","required");
+	}else{
+		 $("#illnessguardianNameDiv").find('p.jquery_form_error_message').remove();
+		 $("#illnessGuardianRelationNameDiv").find('p.jquery_form_error_message').remove();
+		$("#illnessguardianName").removeAttr("data-validation");
+		$("#illnessGuardianRelationName").removeAttr("data-validation");
+	}
+}
+ </script>
+ 
+ 
+ <script>
+function validateMinor(){
+	if($("#minor").is(':checked')){
+		$("#minorGuardianName").attr("data-validation","required");
+		$("#minorGuardianRelationName").attr("data-validation","required");
+	}else{
+		 $("#minorGuardianNameDiv").find('p.jquery_form_error_message').remove();
+		 $("#minorGuardianRelationNameDiv").find('p.jquery_form_error_message').remove();
+		$("#minorGuardianName").removeAttr("data-validation");
+		$("#minorGuardianRelationName").removeAttr("data-validation");
+	}
+}
+ </script>
  
  
  <script>
