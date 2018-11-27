@@ -8374,39 +8374,30 @@ color: #666 !important; border: none;}
 
 .positionRelative .newdate { position: absolute; top: 12px; z-index: 1000;}
 
-
-
-
 .petitionReport {
 width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
 background: url(../images/immi.svg); background-repeat: no-repeat; background-size: 70px; background-position: top;
 }
-
 .navIcons.assIconImport {
 background: url("../images/associates.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
 .navIcons.jobIconImport {
 background: url("../images/jobs.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
 .navIcons.canIconImport {
 background: url("../images/candidates.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
 .navIcons.projIconImport {
 background: url("../images/project.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
 .navIcons.asstIconImport {
 background: url("../images/asset.svg"); background-size: 80px; opacity: 0.7;
 background-position: center top; width: 60px !important; height: 60px !important;
 }
-
 .navIcons.immIconImport {
 	background: url("../images/immi.svg"); background-size: 80px; opacity: 0.7;
 	background-position: center top; width: 60px !important; height: 60px !important;
