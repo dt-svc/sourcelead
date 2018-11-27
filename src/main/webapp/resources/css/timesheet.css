@@ -8444,3 +8444,7 @@ bottom: auto !important; top: 55px !important;
 }
 .downloadLinks .downloadUL { display: none; }
 .downloadLinks:hover .downloadUL { display: block; }
+
+
+.ssn_errmsg {
+	padding: 0px 0px 0px 15px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500;}
