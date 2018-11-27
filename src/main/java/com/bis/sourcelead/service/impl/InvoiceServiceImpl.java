@@ -708,7 +708,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				}
 				
 				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getRequirementSubmissionId())){
-					RequirementSubmission requirementSubmission = requirementSubmissionDao.getClientRequierementSubmission(Long.parseLong(invoiceLineItemsDTO.getRequirementSubmissionId()));
+					RequirementSubmission requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(invoiceLineItemsDTO.getRequirementSubmissionId()));
 					invoiceLineItems.setRequirementSubmissionId(requirementSubmission);
 				}
 				

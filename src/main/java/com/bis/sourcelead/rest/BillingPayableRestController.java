@@ -158,6 +158,10 @@ public class BillingPayableRestController {
 		    			 }
 		    			lineItems.setCandidateId(lineItems.getCandidate().getId());
 		    			
+		    			if(lineItems.getRequirementSubmissionId() !=null){
+		    				lineItems.setSubmissionId(lineItems.getRequirementSubmissionId().getId());	
+		    			}
+		    			
 		    			if(null != lineItems.getContract()){
 			    			lineItems.setContractId(lineItems.getContract().getId());
 			    			lineItems.setSowContractName(lineItems.getContract().getContractTitle());

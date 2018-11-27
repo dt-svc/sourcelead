@@ -131,6 +131,9 @@ public class InvoiceLineItems {
 
 	@Transient
 	private Long candidateId;
+	
+	@Transient
+	private Long submissionId;
 		
 	@Transient
 	@JsonProperty
@@ -451,6 +454,14 @@ public class InvoiceLineItems {
 
 	public void setRequirementSubmissionId(RequirementSubmission requirementSubmissionId) {
 		this.requirementSubmissionId = requirementSubmissionId;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
 	}
 	
 	

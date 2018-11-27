@@ -799,8 +799,6 @@ if(selectedTextInvoice =='percentage'){
 				var divTsTd6Str = document.getElementById("divTaskTd8").innerHTML;
 				divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 				cell1.innerHTML = divTsTd6Str;
-				
-				
 				$('#'+maxRowNum+'candidateId').val(opt.candidateId);
 				$('#'+maxRowNum+'candidateName').val(opt.candidateName);
 				$('#'+maxRowNum+'rate').val(opt.rate);
@@ -809,7 +807,7 @@ if(selectedTextInvoice =='percentage'){
 				$('#'+maxRowNum+'lineItemId').val(opt.id);
 				$('#'+maxRowNum+'amount').val(opt.amount);
 				$('#'+maxRowNum+'billRateType').val(opt.billRateType);
-				//$('#'+maxRowNum+'requirementSubmissionId').val(checkbox_value[4]);
+				$('#'+maxRowNum+'requirementSubmissionId').val(opt.submissionId);
 				getSow(opt.candidateId,maxRowNum,opt.contractId); 
 				maskme(); 
 		 }
