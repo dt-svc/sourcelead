@@ -73,13 +73,13 @@
          <div id="badgeDetailsLoading"></div>
         <form:form id="performance_badge_form" name="performance_badge_form" method="post">
 	        <div class="popupContent">
-	            <div class="clearfix mb">
+	            <div class="clearfix mb" id="badgeNameDiv">
 	                <label class="noPad">Badge Name <span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
 			                    <input type="text" name="name" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
 	                </div>
 	            </div>
-				<div class="clearfix mb">
+				<div class="clearfix mb" id="badgeImageDiv">
 	                <label class="noPad">Image<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
 						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation="required validate_Space validateImg ">
@@ -88,7 +88,7 @@
 					 <input type="text" hidden readonly id="dataFilePath" value="" >
 	                </div>
 	
-	            <div class="clearfix mb">
+	            <div class="clearfix mb" id="badgeDescriptionDiv">
 	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
 						<textarea field-name="Description" name="description" class="form-control" data-validation="required validate_Space" rows="2"></textarea>
@@ -120,6 +120,9 @@ document.getElementById("uploadBtn").onchange = function () {
   
   function closeBadgePopup(){
 	  $(".mask, #modalTasktype").fadeOut();
+	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
+	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   

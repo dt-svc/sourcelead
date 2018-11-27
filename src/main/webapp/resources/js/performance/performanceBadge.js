@@ -25,6 +25,7 @@ function PerformanceBadge(){
 			        	else if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (response.response === "SUCCESS") {
+			        		closeBadgePopup();
 			        		getBadgesList();
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else if (response.indexOf('Sign In') !== -1) {
