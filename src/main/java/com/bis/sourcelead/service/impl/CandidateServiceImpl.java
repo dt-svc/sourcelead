@@ -18,6 +18,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -68,6 +70,7 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -76,6 +79,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -113,7 +117,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -2876,8 +2882,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate)throws Exception {
-	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray)throws Exception {
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray);
 	}
 
 	@Override
@@ -2892,5 +2898,51 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
 	}
 
+	@Override
+	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
+		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
+		return marketCartIds;
+	}
+	
+	@Override
+	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
+		List<CandidateDTO> candidate = candidateDao.getCandidatesListByIds(Ids);
+		return candidate;
+	}
+
+	@Override
+	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
+		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
+	}
+
+	@Override
+	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds) throws Exception {
+		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
+			tranHistory.setId(orgLicensePaymentTransactionHistory.getId());
+			OrgLocations orgLocation = new OrgLocations();
+			orgLocation.setId(orgLocationId);
+			tranHistory.setOrgLocationId(orgLocation);
+			if(marketCartIds != null && marketCartIds.size() > 0){
+				String ids = StringUtils.join(marketCartIds, ",");
+				tranHistory.setMarketPlaceCartIds(ids);
+			}
+			tranHistory.setCurrency(orgLicensePaymentTransactionHistory.getCurrency());
+			tranHistory.setInvoiceAmount(orgLicensePaymentTransactionHistory.getInvoiceAmount());
+			tranHistory.setPaymentId(orgLicensePaymentTransactionHistory.getPaymentId());
+			tranHistory.setOrderId(orgLicensePaymentTransactionHistory.getOrderId());
+			tranHistory.setInvoiceNumber(orgLicensePaymentTransactionHistory.getInvoiceNumber());
+			tranHistory.setTransactionId(orgLicensePaymentTransactionHistory.getTransactionId());
+			tranHistory.setTransactionPayerId(orgLicensePaymentTransactionHistory.getTransactionPayerId());
+			tranHistory.setTransactionUser(orgLicensePaymentTransactionHistory.getTransactionUser());
+			tranHistory.setTransactionUserEmail(orgLicensePaymentTransactionHistory.getTransactionUserEmail());
+			tranHistory.setTransactionDate(orgLicensePaymentTransactionHistory.getTransactionDate());
+		 candidateDao.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
+	}
+
+	@Override
+	public void saveTransactionCompletedCandidates(CandidateDTO candidateDto, OrgLocations orgLocations, User user)throws Exception {
+			storeCandidate(candidateDto, orgLocations, user);
+	}
+	
 
 }
