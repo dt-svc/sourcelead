@@ -5697,4 +5697,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	}
 
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
 }

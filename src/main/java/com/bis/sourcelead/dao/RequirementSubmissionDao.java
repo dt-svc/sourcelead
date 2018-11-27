@@ -239,5 +239,6 @@ public interface RequirementSubmissionDao {
 
 	ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
 
+	ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
 
 }

@@ -2133,4 +2133,126 @@ public class DashboardRestController {
 		
     }
 	
+	
+	@RequestMapping(value = "/associateTerminatedReport")
+	public @ResponseBody ResponseList<AssociateJoineReportDTO> associateTerminateReport(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
+   {
+		ResponseList<AssociateJoineReportDTO> responseList = new ResponseList<>();
+		try {
+				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+				
+				String[] tableColumns = {"empId","empName", "empType","hireDate","reportingManager", "terminateDate","terminatedReason","userRole", "gender", "shiftName", "deptName", "rate"};
+
+				   int sortColumnIndex = 1; //by default sorting using updated date
+				   String sortColumnOrder = "desc"; //by default descending order
+				if(associateJoineReportDTO.getOrder() != null && !associateJoineReportDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(associateJoineReportDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = associateJoineReportDTO.getOrder().get(0).get("dir");
+				}
+				associateJoineReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				associateJoineReportDTO.setSortOrder(sortColumnOrder);
+				
+				Date[] freqDates = new Date[2];
+				String userType = null;
+				Date startUTCDate = null;
+				Date endUTCDate = null;
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+				 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+				 if("Custom".equalsIgnoreCase(associateJoineReportDTO.getFrequency())){
+					 Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getFromDate());
+						Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),associateJoineReportDTO.getToDate());
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+						endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }else {
+					 freqDates = reportsUtil.getJobFilterDate(associateJoineReportDTO.getFrequency(),loginOrgLocations);
+					 String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+					 String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+				 }
+				 
+				
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+				} 
+				
+			   ResponseList<AssociateJoineReportDTO> toDayReqApplicantscount =requirementSubmissionDao.getAssociateTerminateReport(associateJoineReportDTO, loginOrgLocations.getId(),startUTCDate,endUTCDate);
+				
+			   List<AssociateJoineReportDTO> rshDTOList = new ArrayList<>();
+			   if(toDayReqApplicantscount.getData() != null)
+				for(AssociateJoineReportDTO rsh: toDayReqApplicantscount.getData()){
+					AssociateJoineReportDTO rshDTO = new AssociateJoineReportDTO();
+					StringBuilder sb = new StringBuilder();
+					if(rsh.getEmpId() !=null){
+						rshDTO.setEmpId(rsh.getEmpId());
+					}
+					if(rsh.getEmpName() !=null){
+						rshDTO.setEmpName(rsh.getEmpName());
+					}
+					if(rsh.getEmpType() !=null){
+						rshDTO.setEmpType(rsh.getEmpType());
+					}
+					if(rsh.getDeptName() !=null){
+						rshDTO.setDeptName(rsh.getDeptName());
+					}
+					if(rsh.getUserRole() !=null){
+						rshDTO.setUserRole(rsh.getUserRole());
+					}
+					if(rsh.getHireDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getHireDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setFromDate(date);
+					}
+					
+					if(rsh.getTerminateDate() !=null){
+						String date=commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getTerminateDate());
+//						rshDTO.setHireDate(date);
+						rshDTO.setTerminateStringDate(date);
+					}
+					
+					
+					if(rsh.getTerminatedReason() !=null){
+						rshDTO.setTerminatedReason(rsh.getTerminatedReason());
+					}
+					
+					if(rsh.getGender() !=null){
+						rshDTO.setGender(rsh.getGender());
+					}
+					if(rsh.getReportingManager() !=null){
+						rshDTO.setReportingManager(rsh.getReportingManager());
+					}
+					if(rsh.getRate() !=null){
+						rshDTO.setRate(rsh.getRate());
+					}
+					if(rsh.getRatePer() !=null){
+						rshDTO.setRatePer(rsh.getRatePer());
+					}
+					if(rsh.getCurrency() !=null){
+						rshDTO.setCurrency(rsh.getCurrency());
+					}
+					if(rsh.getShiftName() !=null){
+						rshDTO.setShiftName(rsh.getShiftName());
+					}
+					
+					rshDTOList.add(rshDTO);
+				}
+				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
+				responseList.setRecordsTotal(toDayReqApplicantscount.getRecordsTotal());
+				responseList.setData(rshDTOList);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+		
+    }
+	
+	
 }
