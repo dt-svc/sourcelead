@@ -4537,5 +4537,110 @@ public class RequirementServiceImpl implements RequirementService {
 			String userCode,Date startDateUTC,Date endDateUTC,JobFilterDTO jobFilterDTO) throws Exception {
 		return requirementDao.getAssignedJobsPerformanceList(orgLocationId,userType,userId,userCode,startDateUTC,endDateUTC,jobFilterDTO);
 	}
+
+	//-----------------------------code for email sending when job status changed and mail send to primaryRecruiter--------------------------------------------------
+	
+	@Override
+	public void sendMailToPrimaryRecruiter(Requirement requirement,User loginUser,User toUser) throws Exception {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(toUser.getFirstName());
+		emailMessage.setLastName(toUser.getLastName());
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(
+				msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
+			globalVarsMap.put("jobName", requirement.getJobTitle());
+		} else {
+			globalVarsMap.put("jobName", "--");
+		}
+		
+		if (requirement.getRequirementSubmissionPreviousStatus() != null) {
+			globalVarsMap.put("PreviousStatus", requirement.getRequirementSubmissionPreviousStatus().toString());
+		} else {
+			globalVarsMap.put("PreviousStatus", "--");
+		}
+		
+		if (requirement.getRequirementSubmissionStatus() != null) {
+			globalVarsMap.put("CurrentStatus", requirement.getRequirementSubmissionStatus().toString());
+		} else {
+			globalVarsMap.put("CurrentStatus", "--");
+		}
+		
+		if (requirement.getOrgLocationId().getOrgLocationName() != null && !"".equalsIgnoreCase(requirement.getOrgLocationId().getOrgLocationName())) {
+			globalVarsMap.put("LoginOrgName", requirement.getOrgLocationId().getOrgLocationName());
+		} else {
+			globalVarsMap.put("LoginOrgName", "--");
+		}
+		
+		if (toUser.getLastName() != null && !"".equalsIgnoreCase(toUser.getLastName())) {
+			StringBuilder sb = new StringBuilder();
+			globalVarsMap.put("toUser", sb.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("toUser", toUser.getFirstName());
+		}
+		
+		
+		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder loginSb = new StringBuilder();
+			globalVarsMap.put("loginUser", loginSb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("loginUser", loginUser.getFirstName());
+		}
+
+		
+		StringBuilder linkBuild = new StringBuilder();
+		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+				.toString());
+		
+	for(RequirementAssignTo reqAssignto : requirement.getRequirementAssignTo()) {
+		
+	}
+		 
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_JOB_STATUS_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+
+		 
+
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+				notificationScenario);
+		notificationScenario.setBody(notificationbody);
+		
+		UserRole toUserOrg = userRoleService.getUserByUserId(toUser.getId());
+
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, requirement.getOrgLocationId().getOrg(), requirement.getOrgLocationId(),Constants.CHANGE_JOB_STATUS_EMAIL, new ArrayList<EmailAttachment>());
+
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/")
+				.append("requirementSummary?requirementUUID=" + requirement.getRequirementUUID()).toString();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, toUserOrg.getOrgLocations(), notificationScenario,
+				new HashMap<String, String>());	
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
