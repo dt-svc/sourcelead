@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
@@ -65,11 +66,18 @@ public class InvoiceLineItems {
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID", nullable = false)
+	private RequirementSubmission requirementSubmissionId;
+	
 	@Column(name = "RATE")
 	private String rate;
 	
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
+	
+	@Column(name = "BILL_RATE_TYPE")
+	private String billRateType;
 	
 	@Column(name = "EXPENSES")
 	private String expenses;
@@ -427,6 +435,22 @@ public class InvoiceLineItems {
 
 	public void setExpenseCategory(String expenseCategory) {
 		this.expenseCategory = expenseCategory;
+	}
+
+	public String getBillRateType() {
+		return billRateType;
+	}
+
+	public void setBillRateType(String billRateType) {
+		this.billRateType = billRateType;
+	}
+
+	public RequirementSubmission getRequirementSubmissionId() {
+		return requirementSubmissionId;
+	}
+
+	public void setRequirementSubmissionId(RequirementSubmission requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
 	}
 	
 	

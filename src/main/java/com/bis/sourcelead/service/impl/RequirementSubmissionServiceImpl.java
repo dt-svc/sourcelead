@@ -5721,4 +5721,47 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return listOfApplicants;
 	}
 
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations, User user,
+			Long orgRelationId) {
+		
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		List<RequirementSubmission> submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocations, user,orgRelationId);
+
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setEmail(requirementSubmission.getCandidate().getEmail());
+			applicantsDto.setRequirementId(requirementSubmission.getRequirement().getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
+			
+			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
+
 } 

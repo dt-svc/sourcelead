@@ -8,6 +8,8 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private long requirementId;
 	private long orgLocationId;
 	private long userId;
+	private long id;
+	private long submissionId;
 	private String submissionType;
 	private String loginUserRole;
 	private String userCode;
@@ -372,6 +374,18 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	}
 	public void setClientOrVendorName(String clientOrVendorName) {
 		this.clientOrVendorName = clientOrVendorName;
+	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public long getSubmissionId() {
+		return submissionId;
+	}
+	public void setSubmissionId(long submissionId) {
+		this.submissionId = submissionId;
 	}
 	
 	

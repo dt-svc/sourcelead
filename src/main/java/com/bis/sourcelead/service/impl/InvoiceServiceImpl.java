@@ -60,6 +60,7 @@ import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
@@ -96,6 +97,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
 import com.bis.sourcelead.entity.Timezone;
@@ -159,6 +161,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -325,6 +330,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		if (StringUtils.isNotBlank(invoiceDTO.getBillingAddress())) {
 			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
+		}
+		
+		if (StringUtils.isNotBlank(invoiceDTO.getIsJobClosure())) {
+			invoice.setIsJobClosure(invoiceDTO.getIsJobClosure());
 		}
 		/*
 		 * if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
@@ -557,6 +566,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		parentInvoice.setDiscountValue(invoice.getDiscountValue());
 		parentInvoice.setAfterDiscountValue(invoice.getAfterDiscountValue());
 		parentInvoice.setSubTotal(invoice.getSubTotal());
+		parentInvoice.setIsJobClosure(invoice.getIsJobClosure());
 		parentInvoice.setInvoiceComment(invoice.getInvoiceComment());
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
@@ -691,6 +701,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 					updatedInvoiceLineItems.add(Long.valueOf(invoiceLineItemsDTO.getLineItemId()));
 				}
 
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getBillRateType())){
+					invoiceLineItems.setBillRateType(invoiceLineItemsDTO.getBillRateType());
+				}else{
+					invoiceLineItems.setBillRateType(null);	
+				}
+				
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getRequirementSubmissionId())){
+					RequirementSubmission requirementSubmission = requirementSubmissionDao.getClientRequierementSubmission(Long.parseLong(invoiceLineItemsDTO.getRequirementSubmissionId()));
+					invoiceLineItems.setRequirementSubmissionId(requirementSubmission);
+				}
+				
 				if (StringUtils.isNotBlank(invoiceLineItemsDTO.getInvoiceStartDate())) {
 					Date invoiceStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
 							invoiceLineItemsDTO.getInvoiceStartDate());
@@ -729,7 +750,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 				} else {
 					invoiceLineItems.setContract(null);
 				}
-
+				
+				if(StringUtils.isNotBlank(invoiceLineItemsDTO.getQuantity())){
+					invoiceLineItems.setQuantity(invoiceLineItemsDTO.getQuantity());	
+				}
+				
 				if (StringUtils.isNotBlank(invoiceLineItemsDTO.getRate())) {
 					invoiceLineItems.setRate(invoiceLineItemsDTO.getRate());
 				}

@@ -48,6 +48,7 @@ import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -90,6 +91,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
@@ -159,6 +161,9 @@ public class InvoiceRestController {
 	private OrgRelationsService orgRelationsService;
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	protected static boolean isNullOrEmpty(String str)
 	{
@@ -262,6 +267,47 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveInvoiceForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveInvoiceForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
 	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
 			@RequestParam(value = "saveType", required = false) String saveType, 
@@ -336,6 +382,21 @@ public class InvoiceRestController {
 		}
 //		resultJson = commonUtil.toJSON(associateList);
 		responseList.setData(associateList);
+		return responseList;
+	}
+	
+	
+	@RequestMapping(value = "/getInvoiceCandidatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getInvoiceCandidatesListForJobClosure(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId);
+		
+		responseList.setData(applicantsList);
 		return responseList;
 	}
 	
