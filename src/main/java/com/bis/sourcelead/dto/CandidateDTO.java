@@ -259,6 +259,8 @@ public class CandidateDTO extends SearchDTO{
 		
 	private String customEndDate;
 	
+	private Integer submittedJobsCount;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1237,6 +1239,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCustomEndDate(String customEndDate) {
 		this.customEndDate = customEndDate;
+	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
 	}
 
 	
