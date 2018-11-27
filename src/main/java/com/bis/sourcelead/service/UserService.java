@@ -269,6 +269,7 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 
 public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat);
 
+public void sendEmailForNewReportingManager(User user, User loginUser, String password, Long locationId, Long existingReportingManagerID, Long currentReportingManagerID) throws Exception;
 
 }	
 
