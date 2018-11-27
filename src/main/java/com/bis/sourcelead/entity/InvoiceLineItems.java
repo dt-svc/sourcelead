@@ -139,6 +139,9 @@ public class InvoiceLineItems {
 	@JsonProperty
 	private String startDateStr;
 	
+	@Transient
+	@JsonProperty
+	private String requirementName;
 	
 	
 	@Transient
@@ -462,6 +465,14 @@ public class InvoiceLineItems {
 
 	public void setSubmissionId(Long submissionId) {
 		this.submissionId = submissionId;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
 	}
 	
 	

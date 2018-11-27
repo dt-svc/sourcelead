@@ -1087,6 +1087,9 @@ return responseList;
 				if (null != inviceLine.getContract()) {
 					inviceLine.setSowName(inviceLine.getContract().getContractTitle());
 				}
+				if(inviceLine.getRequirementSubmissionId() !=null){
+					inviceLine.setRequirementName(inviceLine.getRequirementSubmissionId().getRequirement().getJobTitle());
+				}
 				inviceLine.setRate(inviceLine.getRate());
 				inviceLine.setInlineDescription(inviceLine.getInlineDescription());
 				// inviceLine.setEmployeeId(inviceLine.getEmployeeId());
