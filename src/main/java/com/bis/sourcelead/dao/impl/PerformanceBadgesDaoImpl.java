@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PerformanceBadgesDao;
-import com.bis.sourcelead.entity.PerformanceBagdes;
+import com.bis.sourcelead.entity.PerformanceBadges;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
 @Transactional
@@ -42,10 +44,26 @@ public class PerformanceBadgesDaoImpl implements PerformanceBadgesDao{
 	private String schema;
 
 	@Override
-	public List<PerformanceBagdes> getPerformanceBadgesList(Long orgLocationId) throws Exception {
+	public List<PerformanceBadges> getPerformanceBadgesList(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from PerformanceBagdes badges where badges.orgLocationId.id =:orgLocationId and badges.status ='1' ";
+		String query = "from PerformanceBadges badges where badges.orgLocationId.id =:orgLocationId and badges.status ='1' ";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
+
+	@Override
+	public PerformanceBadges storePerformanceBadges(PerformanceBadges performanceBadges) throws Exception {
+		logger.debug("Adding PerformanceBadges");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceBadges != null) {
+				session.saveOrUpdate(performanceBadges);
+			}
+			logger.debug("PerformanceBadges Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_BADGES"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return performanceBadges;
 	}
 
 }

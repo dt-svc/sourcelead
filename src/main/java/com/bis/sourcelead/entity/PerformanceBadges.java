@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "PERFORMANCE_BADGES")
-public class PerformanceBagdes implements Serializable{
+public class PerformanceBadges implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 

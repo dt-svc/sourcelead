@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PerformanceBagdes;
+import com.bis.sourcelead.entity.PerformanceBadges;
 import com.bis.sourcelead.service.PerformanceBadgesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -56,7 +53,7 @@ public class PerformanceManagementController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 List<PerformanceBagdes> badgesList = performanceBadgesService.getPerformanceBadgesList(orgLocation.getId());
+		 List<PerformanceBadges> badgesList = performanceBadgesService.getPerformanceBadgesList(orgLocation.getId());
 		 model.addObject("badgesList", badgesList);
 		 model.addObject("badgesListSize", badgesList.size());
 		 model.setViewName("performance/performanceBadgesList");

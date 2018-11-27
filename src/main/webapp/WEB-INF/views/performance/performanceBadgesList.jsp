@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<script type="text/javascript" src="/resources/js/performance/performanceBadge.js"></script>
 
 
 
@@ -70,36 +70,47 @@
   <div class="mask"></div>
 <div class="popupWrap" id="modalTasktype">
       <div class="popupHead"><span>Add Badge</span><i class="closePop pull-right popClose" onclick="closeBadgePopup();"></i></div>
+         <div id="badgeDetailsLoading"></div>
         <form:form id="performance_badge_form" name="performance_badge_form" method="post">
 	        <div class="popupContent">
 	            <div class="clearfix mb">
 	                <label class="noPad">Badge Name <span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-			                    <input type="text" class="form-control" placeholder="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
+			                    <input type="text" name="name" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
 	                </div>
 	            </div>
 				<div class="clearfix mb">
 	                <label class="noPad">Image<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-						<input type="file" multiple id="uploadBtn" class="upload">
+						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation="required validate_Space validateImg ">
 	        		</div>
+	        		 <label id="newUploadFile"></label> 
+					 <input type="text" hidden readonly id="dataFilePath" value="" >
 	                </div>
 	
 	            <div class="clearfix mb">
-	                <label class="noPad">Description</label>
+	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-						<textarea placeholder="Description" class="form-control" rows="2"></textarea>
+						<textarea field-name="Description" name="description" class="form-control" data-validation="required validate_Space" rows="2"></textarea>
 	                </div>
 	            </div>
 	
 	        </div>
         
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="savePerformanceBadgeDetails();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceBadge.savePerformanceBadgeDetails();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="closeBadgePopup();" >Cancel</button>
 	        </div>
 	 </form:form>
 </div>
+
+
+<script type="text/javascript">
+document.getElementById("uploadBtn").onchange = function () {
+	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	   fileUpload("uploadBtn", "badgeImages", "performance_badge_form");
+};
+</script>
   
   
   <script>
