@@ -1313,6 +1313,9 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
 	
+	public static final String SEND_MAIL_TO_INDPAYROLL_APPROVER = "sendMailToIndPayrollApprover";
+	public static final String SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER = "sendNotificationToIndPayrollApprover";
+
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
