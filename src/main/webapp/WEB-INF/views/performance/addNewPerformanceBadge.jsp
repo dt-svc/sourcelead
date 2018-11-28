@@ -25,7 +25,7 @@
 	                <div class="clearfix">
 						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation-optional="true" data-validation="validate_Space validateImg ">
 	        		</div>
-	        		 <label id="newUploadFile"></label> 
+	        		<!--  <label id="newUploadFile"></label> --> 
 					 <input type="text" hidden readonly id="dataFilePath" value="" >
 					 
 					 <img id="badgeImg" onerror='predefineBadgeImage(this);' src='' class="mediaObject" alt="Image">
@@ -55,7 +55,7 @@
 
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
-	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	/* $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, '')); */
 	   fileUpload("uploadBtn", "badgeImages", "performance_badge_form");
 };
 </script>
@@ -71,7 +71,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
-	  $('#newUploadFile').text('');
+	/*   $('#newUploadFile').text(''); */
 	  $('#uploadBtn').val('');
 	  
 	     $("#badgeId").val('');
