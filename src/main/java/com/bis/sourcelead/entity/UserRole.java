@@ -209,6 +209,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String dateofBirthStr;
+	
+	@Transient
+	@JsonProperty
+	private String panNumber;
 
 	@Transient
 	@JsonProperty
@@ -1062,6 +1066,14 @@ public class UserRole implements Serializable {
 	public void setDateofBirthStr(String dateofBirthStr) {
 		this.dateofBirthStr = dateofBirthStr;
 	}
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public String getOrgName()
 	{
 		return orgName;

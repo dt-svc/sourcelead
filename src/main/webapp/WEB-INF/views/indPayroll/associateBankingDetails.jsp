@@ -27,18 +27,26 @@
 			</tr>
 		</thead>
 		<tbody>
+		<c:set var="hasCash" value="0" scope="page" />
+		<c:set var="hasCheque" value="0" scope="page" />
 		<c:if test="${paymentListSize > 0}">
 		   <c:forEach var="payment" items="${paymentList}">
+			   	<c:if test="${payment.accountType == 'CASH'}">
+			   		<c:set var="hasCash" value="${hasCash + 1}" scope="page"/>
+			   	</c:if>
+			   	<c:if test="${payment.accountType == 'CHEQUE'}">
+			   		<c:set var="hasCheque" value="${hasCheque + 1}" scope="page"/>
+			   	</c:if>
 				<tr>
-				<td><div class="tblminwidth-50">${!empty payment.accountType ? payment.accountType : "--"}</div></td>
-			    <td><div class="tbldata-dotdot-100" title="${payment.bankName}">${!empty payment.bankName ? payment.bankName : "--"}</div></td>
-			    <td><div class="tblminwidth-30" title="${payment.accountNumber}" >${!empty payment.accountNumber ? payment.accountNumber : "--"}</div></td>
-			    <td><div class="tblminwidth-30" title="${payment.routingNumber}">${!empty payment.routingNumber ? payment.routingNumber : "--"}</div></td>
-			    <td><div class="tbldata-dotdot-100" title="${payment.firstName}">${!empty payment.firstName ? payment.firstName : "--"}</div></td>
-				<td><div class="tbldata-dotdot-100" title="${payment.lastName}">${!empty payment.lastName ? payment.lastName : "--"}</div></td>
-				<td><div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeDefaultPaymentAccount(this, '${payment.id}')" type="checkbox" ${payment.defaultAccount ?  'checked' : ''}/> <div class="slider round" style="position:absolute !important;"></div> </label> </div></div> </td>
-				<td><div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeActivePaymentAccount('${payment.id}')" type="checkbox" ${!payment.disabled ?  'checked' : '' }/> <div class="slider round" style="position:absolute !important;"></div> </label> </div></div></td>
-				<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editPaymentAccount('${payment.accountType}','${payment.id}','${payment.orgLocationId}','${payment.firstName}','${payment.lastName}','${payment.accountNumber}','${payment.routingNumber}','${payment.bankName}','${payment.bsrNumber}','${payment.micrCode}')">Edit</a></div></td>
+					<td><div class="tblminwidth-50">${!empty payment.accountType ? payment.accountType : "--"}</div></td>
+				    <td><div class="tbldata-dotdot-100" title="${payment.bankName}">${!empty payment.bankName ? payment.bankName : "--"}</div></td>
+				    <td><div class="tblminwidth-30" title="${payment.accountNumber}" >${!empty payment.accountNumber ? payment.accountNumber : "--"}</div></td>
+				    <td><div class="tblminwidth-30" title="${payment.routingNumber}">${!empty payment.routingNumber ? payment.routingNumber : "--"}</div></td>
+				    <td><div class="tbldata-dotdot-100" title="${payment.firstName}">${!empty payment.firstName ? payment.firstName : "--"}</div></td>
+					<td><div class="tbldata-dotdot-100" title="${payment.lastName}">${!empty payment.lastName ? payment.lastName : "--"}</div></td>
+					<td><div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeDefaultPaymentAccount(this, '${payment.id}')" type="checkbox" ${payment.defaultAccount ?  'checked' : ''}/> <div class="slider round" style="position:absolute !important;"></div> </label> </div></div> </td>
+					<td><div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeActivePaymentAccount('${payment.id}')" type="checkbox" ${!payment.disabled ?  'checked' : '' }/> <div class="slider round" style="position:absolute !important;"></div> </label> </div></div></td>
+					<td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editPaymentAccount('${payment.accountType}','${payment.id}','${payment.orgLocationId}','${payment.firstName}','${payment.lastName}','${payment.accountNumber}','${payment.routingNumber}','${payment.bankName}','${payment.bsrNumber}','${payment.micrCode}')">Edit</a></div></td>
 				</tr>
 			</c:forEach>
 		</c:if>
@@ -72,10 +80,11 @@
 		 		<div class="col-md-5" id="accountTypeDiv">
 		                <label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
 		                <div>
-		                  <select class="form-control chosen-select" id="accountType" name="accountType" data-validation="required" field-name="Payment Mode">
+		                  <select class="form-control" id="accountType" name="accountType" data-validation="required" field-name="Payment Mode" onChange="changeAccType();">
 		                        <option value="">--Select Payment Mode--</option>
 			                    <option value="SAVINGS" data-type="1">Savings</option>
 			                    <option value="CHEQUE" data-type="2">Cheque</option>
+			                    <option value="CASH" data-type="3">Cash</option>
 		                  </select>
 		                </div>
 		         </div>
@@ -95,37 +104,37 @@
 		          </div>
 		          
 		          <div class="col-md-5" id="bsrNumberDiv">
-		                  <label>BSR Number<span class="text-danger">&nbsp;*</span></label>
+		                  <label>BSR Number</label>
 		                  <div>
-		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="required validate_Space validate_length length9-15"/>
+		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="micrCodeDiv">
-		                  <label>MICR Code<span class="text-danger">&nbsp;*</span></label>
+		                  <label>MICR Code</label>
 		                  <div>
-		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="required validate_Space validate_length length9-15"/>
+		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="routingNumberDiv">
 		                  <label>IFSC Code<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
-		                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length9-9" />
+		                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_Alphanumeric fixed_length length11"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="firstNameDiv">
 		                  <label>First Name<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
-		                  <input type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" field-name="First Name" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
+		                  <input type="text" id="firstName" name="firstName" pattern="[A-Za-z\s]*" field-name="First Name" class="form-control" value="${canFirstName}" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="lastNameDiv">
 		                  <label>Last Name<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
-		                  <input type="text" id="lastName" name="lastName" pattern="[A-Za-z\s]*" field-name="Last Name" class="form-control" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
+		                  <input type="text" id="lastName" name="lastName" pattern="[A-Za-z\s]*" field-name="Last Name" class="form-control" value="${canLastName}" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"/>
 		                  </div>
 		          </div>
 		          
@@ -198,6 +207,7 @@ function editPaymentAccount(type, id, locationId, firstName, lastName, accountNu
 	$("#bsrNumber").val(bsrNumber);
 	$("#micrCode").val(micrCode);
 	$("#routingNumber").val(routingNumber);
+	changeAccType();
 }
 
 function clearPaymentAccount() {
@@ -245,6 +255,17 @@ var sourceleadUrl = '${sourceleadUrl}';
 function showIndiaPaymentAccountPopup() {
     $(".modal.paymentaccount-modal").fadeIn();
     $(".comMask").fadeIn();
+    if('${hasCheque}' > 0){
+    	$("#accountType option[value='CHEQUE']").attr("disabled",true);
+    }else{
+    	$("#accountType option[value='CHEQUE']").attr("disabled",false);
+    }
+	if('${hasCash}' > 0){
+		$("#accountType option[value='CASH']").attr("disabled",true);
+    }else{
+    	$("#accountType option[value='CASH']").attr("disabled",false);
+    }
+	changeAccType();
 }
 </script>
 
@@ -254,4 +275,49 @@ function closePaymentAccountPopup() {
     $(".comMask").fadeOut();
     clearPaymentAccount();
 }
+</script>
+
+<script>
+function changeAccType()
+	{
+ 		if($('#accountType').val() == 'CHEQUE' || $('#accountType').val() == 'CASH'){
+ 			$('#bankNameDiv').hide();
+ 			$('#accountNumberDiv').hide();
+ 			$('#bsrNumberDiv').hide();
+ 			$('#micrCodeDiv').hide();
+ 			$('#routingNumberDiv').hide();
+ 			$('#firstNameDiv').hide();
+ 			$('#lastNameDiv').hide();
+ 			
+ 			$('#bankName').val('');
+ 			$('#accountNumber').val('');
+ 			$('#bsrNumber').val('');
+ 			$('#micrCode').val('');
+ 			$('#routingNumber').val('');
+ 			$('#firstName').val('');
+ 			$('#lastName').val('');
+ 			
+ 			$('#bankName').attr('data-validation-optional','true');
+ 			$('#accountNumber').attr('data-validation-optional','true');
+ 			$('#routingNumber').attr('data-validation-optional','true');
+ 			$('#firstName').attr('data-validation-optional','true');
+ 			$('#lastName').attr('data-validation-optional','true');
+ 		}else{
+ 			$('#bankNameDiv').show();
+ 			$('#accountNumberDiv').show();
+ 			$('#bsrNumberDiv').show();
+ 			$('#micrCodeDiv').show();
+ 			$('#routingNumberDiv').show();
+ 			$('#firstNameDiv').show();
+ 			$('#lastNameDiv').show();
+ 			
+ 			$('.col-md-5').find('p.jquery_form_error_message').remove();
+ 			
+ 			$('#bankName').removeAttr('data-validation-optional');
+ 			$('#accountNumber').removeAttr('data-validation-optional');
+ 			$('#routingNumber').removeAttr('data-validation-optional');
+ 			$('#firstName').removeAttr('data-validation-optional');
+ 			$('#lastName').removeAttr('data-validation-optional');
+ 		}
+	}
 </script>
