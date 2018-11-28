@@ -275,6 +275,15 @@
                         </div>
                   </div>
                   
+                  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+		         		<div class="form-group">
+		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
+		                  <div class="col-md-9">
+		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    </div>
+		                </div>
+		          </c:if>
+                  
                <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
                   <div class="col-md-9 chooRadius" id="chosen-role">

@@ -53,7 +53,6 @@ public class AssociateNomineeServiceImpl implements AssociateNomineeService {
 		
 		try {
 			if (Validator.validate(associateNomineeDTO)) {
-//				associateNominee.setId(associateNomineeDTO.getId());
 				associateNominee.setOrgLocationId(orgLocation.getId());
 				associateNominee.setCandidateId(can);
 				associateNominee.setName(associateNomineeDTO.getName());
