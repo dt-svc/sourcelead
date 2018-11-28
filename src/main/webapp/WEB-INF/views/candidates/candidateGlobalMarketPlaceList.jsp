@@ -13,11 +13,7 @@
       <h2 id="headerLbl">Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-<<<<<<< HEAD
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List </label> </div>
-=======
 	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
->>>>>>> 621ed34be702c20a75e1346ce1ec063e24101dc8
 	  </c:if>
 	  </section>
     <div class="clearfix"></div>
