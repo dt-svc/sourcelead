@@ -2,6 +2,9 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
+
+import com.bis.sourcelead.entity.Contracts;
 
 public class RequirementSubmissionsDTO extends SearchDTO implements Serializable {
 
@@ -65,6 +68,8 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String submittedBy;
 	
 	private String clientOrVendorName;
+	
+	private List<Contracts>contractsList;
 		
 	public long getRequirementId()
 	{
@@ -386,6 +391,12 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	}
 	public void setSubmissionId(long submissionId) {
 		this.submissionId = submissionId;
+	}
+	public List<Contracts> getContractsList() {
+		return contractsList;
+	}
+	public void setContractsList(List<Contracts> contractsList) {
+		this.contractsList = contractsList;
 	}
 	
 	

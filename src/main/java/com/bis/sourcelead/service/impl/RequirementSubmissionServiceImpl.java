@@ -45,6 +45,7 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
@@ -66,6 +67,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -184,6 +186,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private InvoiceDao  invoiceDao;
 	
 	@Autowired
 	CandidateService candidateService;
@@ -5723,7 +5728,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations, User user,
-			Long orgRelationId) {
+			Long orgRelationId,String contractType) {
 		
 		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
 		List<RequirementSubmission> submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocations, user,orgRelationId);
@@ -5758,10 +5763,34 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
+			try{
+				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					applicantsDto.setContractsList(contractsList);
+				}	
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+				
+			
 			listOfApplicants.add(applicantsDto);
 		});
 		
 		return listOfApplicants;
+	}
+	
+	private List<Contracts> getSowContract(Long candidateId, OrgLocations orgLocation, Long orgRelationId, String contractType) throws Exception
+	{
+		List<Contracts> contractsList = null;
+		if (null != orgRelationId) {
+			if (contractType.equalsIgnoreCase("vendorSow")) {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Vendor_SOW);
+			}
+			else {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Client_SOW);
+			}
+		}
+		return contractsList;
 	}
 
 } 

@@ -1010,7 +1010,7 @@ function cancelPopup(){
 	  $('.action-pop').slideUp();
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getInvoiceCandidatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId,
+	        url: sourceleadUrl+"/getInvoiceCandidatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&orgRelationId="+orgRelationId+"&contractType=clientSow",
 	        success: function(json) {
 	        	
 	        	var result = '';
@@ -1639,14 +1639,14 @@ function getSowRate(id){
         success: function(json) {
         	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
+	        	 $ ('#'+id+'quantity').val(json.object.billingAmount);
 	        	 totalCalculateAmount(id);
         	} 
         },
         
     });
 }else{
-	$ ('#'+id+'rate').val(0);
+	$ ('#'+id+'quantity').val(0);
 	totalCalculateAmount(id);
 }
 }

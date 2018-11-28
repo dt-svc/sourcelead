@@ -1770,7 +1770,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Override
 	public Integer getAutomaticInvoiceForJobClosure(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,
-			User user, String globalUser) throws Exception {
+			User user,String contractType, String globalUser) throws Exception {
 		int count = 0;
 		List<OrgRelations> clientVendorList = null;
 		OrgLocations vendorOrgLocation = null;
@@ -1827,7 +1827,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 					invoice.setInvoiceType(invoiceType);
 					invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
-					Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItemsForJobClosure(applicantsList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user);
+					Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItemsForJobClosure(applicantsList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user,contractType);
 					invoice.setInvoiceLineItems(invoiceLineItemSet);
 					invoice.setCurrencyCode(loginOrgCurrencyCode);
 					invoice.setContactUser(contactUser);
@@ -1996,15 +1996,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 	
 	private Set<InvoiceLineItems> populateInvoiceInlineItemsForJobClosure(List<RequirementSubmission> submissionList,
-			OrgLocations orgLocation, Long orgRelationId, String loginOrgCurrencyCode, Invoice invoice, User user)
+			OrgLocations orgLocation, Long orgRelationId, String loginOrgCurrencyCode, Invoice invoice, User user,String contratType)
 			throws Exception {
 		Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
 		float subTotal = 0;
 		for (RequirementSubmission submission : submissionList) {
-			String rate = null;
-			String ratePer = null;
-			String rateCurrencyType = null;
 			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			
 			if (submission.getCandidate() != null) {
 				Candidate candidate = candidateService.getCandidateByCandidateId(submission.getCandidate().getId());
 				invoiceLineItems.setCandidate(candidate);
@@ -2018,6 +2016,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 						}
 					}
 					
+				}
+				try{
+					List<Contracts> contractsList = getSowContract(submission.getCandidate().getId(), orgLocation, orgRelationId, contratType);
+					if (null != contractsList && contractsList.size() > 0) {
+						Contracts contract = contractsList.get(0);
+						invoiceLineItems.setContract(contract);
+					}	
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
 				
 			invoiceLineItems.setOrgLocation(orgLocation);

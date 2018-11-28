@@ -1623,7 +1623,7 @@ function generateAutomaticInvoiceForJobClosure(){
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable", 
+	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
             success: function(json) {
            	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");

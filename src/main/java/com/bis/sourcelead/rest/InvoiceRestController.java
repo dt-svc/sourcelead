@@ -370,15 +370,16 @@ public class InvoiceRestController {
 				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
 			}
 			associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(), associateIds);
-			for (Candidate candidate : associateList) {
-				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
-				if (null != contractsList && contractsList.size() > 0) {
-					candidate.setContractsList(contractsList);
-				}
-			}
+			
 		}
 		else {
 			associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
+		}
+		for (Candidate candidate : associateList) {
+			List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
+			if (null != contractsList && contractsList.size() > 0) {
+				candidate.setContractsList(contractsList);
+			}
 		}
 //		resultJson = commonUtil.toJSON(associateList);
 		responseList.setData(associateList);
@@ -388,13 +389,14 @@ public class InvoiceRestController {
 	
 	@RequestMapping(value = "/getInvoiceCandidatesListForJobClosure", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getInvoiceCandidatesListForJobClosure(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
-			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, 
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId);
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId,contractType);
 		
 		responseList.setData(applicantsList);
 		return responseList;
@@ -2111,7 +2113,9 @@ return responseList;
 	
 	@RequestMapping(value = "/generateAutomaticInvoiceForJobClosure", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<InvoiceDTO> generateAutomaticInvoiceForJobClosure(@RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
+	public Response<InvoiceDTO> generateAutomaticInvoiceForJobClosure(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request) throws Exception
 	{
 		Response<InvoiceDTO> response = new Response<>();
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
@@ -2122,7 +2126,7 @@ return responseList;
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,isGlobalAccess);
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
 		response.setObject(invoiceDTO);
