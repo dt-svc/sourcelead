@@ -202,7 +202,7 @@
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
+                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN number" onblur="validateSSNNumber();">
                   </div>
                   </div>
                   </c:if>
@@ -607,6 +607,8 @@ function validateSSNNumber(){
 	}
 }
 function calculateSSNLength(length,ssnNumber){
+	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	$("#ssnNumber").removeAttr("data-validation");
 	if(length == 0){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");

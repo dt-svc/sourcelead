@@ -25,9 +25,12 @@ import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
+import com.bis.sourcelead.dto.ProfessionalTaxDTO;
+import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
@@ -47,6 +50,7 @@ import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollTaxService;
+import com.bis.sourcelead.service.TaxService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -91,6 +95,9 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	PayrollTaxService payrollTaxService;
+	
+	@Autowired
+	private TaxService taxService;
 	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
@@ -510,11 +517,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(payHead.getPayrollPayhead() != null 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
 						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
 						allDeductions = allDeductions.add(payHead.getAnnualy());
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
 						allDeductions = allDeductions.add(payHead.getMonthly());
 					}else  {
+						if(payHead.getAnnualy() != null)
 						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
@@ -886,6 +894,45 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			loanAdvTotal = loanAdvTotal + la.getDeductAmount();
 		}
 		return loanAdvTotal;
+	}
+	
+	
+	@SuppressWarnings("static-access")
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
+		Double ptAmount = 0.0;
+		
+		AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
+		
+		if(asph != null) {
+			String financialYear = "";
+			Calendar c = Calendar.getInstance();
+			c.setTime(freqEndDate);
+			String fromYear = "";
+			String toYear = "";
+			if(c.get(Calendar.MONTH) <= 3) {
+				toYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, -1);
+				fromYear = c.get(Calendar.YEAR) + "";
+			}else {
+				fromYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, 1);
+				toYear = c.get(Calendar.YEAR) + "";
+			}
+			financialYear = fromYear + "-" + toYear;
+			
+			StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+			try {
+				if(taxDTO != null) {
+					ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(asph.getMonthly()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(asph.getMonthly()) >= 0 ).findAny().get();
+					if(ptDTO != null)
+						ptAmount = Double.valueOf(ptDTO.getAmount());
+				}
+			}catch (Exception e) {
+				//e.printStackTrace();
+				return ptAmount;
+			}
+		}
+		return ptAmount;
 	}
 	
 	

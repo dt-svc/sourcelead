@@ -272,6 +272,7 @@ public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date 
 
 List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate, Long orgLocationId);
 
+public void sendEmailForNewReportingManager(User user, User loginUser, String password, Long locationId, Long existingReportingManagerID, Long currentReportingManagerID) throws Exception;
 
 }	
 

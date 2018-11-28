@@ -1271,7 +1271,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payrollDTO.setTaxes(payroll.getTaxes());
 			payrollDTO.setPayPerSal(payroll.getPayPerSalary());
 			payrollDTO.setOvertimeHours(otHrs);
-			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
+			totalHours = commonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
 			BigDecimal overTimeAmount = BigDecimal.ZERO;
 			if(payroll.getOverTimeAmount() != null) {

@@ -391,6 +391,7 @@ function listTypePagination(count) {
 		"bLengthChange" : true,
 		"bDestroy" : true,
 		"ordering" : true,
+		"order" : [[6, "desc"]],
 		"mark" : true,
 		"oLanguage" : {
 			"sSearch" : "",
@@ -594,6 +595,7 @@ function resetFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#leaveTypeUL > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
 	
 	document.getElementById("activeStatus").checked = true;

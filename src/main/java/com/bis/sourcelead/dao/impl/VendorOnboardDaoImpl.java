@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -109,6 +111,21 @@ public class VendorOnboardDaoImpl implements VendorOnboardDao{
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public String getVendorOnboardingUUIDByOrgRelationId(Long orgRelationId) {
+		String uuid = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT " + " VO.ON_BOARD_UUID " + " FROM VENDOR_ON_BOARDING VO " + " WHERE "
+				+ " VO.ORG_RELATION_ID = :orgRelationId ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgRelationId", orgRelationId);
+		uuid = (String) queryObj.uniqueResult();
+		return uuid;
+
 	}
 
 }

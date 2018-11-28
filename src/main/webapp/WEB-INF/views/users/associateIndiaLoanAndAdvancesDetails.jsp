@@ -144,7 +144,14 @@
      </form:form>
   
 </div>
-
+<script>
+function shiftToInformationTab(){
+	 var indInformationDetails = document.getElementById("indInformationDetails");
+	 document.getElementById("indInformationDetails").removeAttribute("class");
+	 indInformationDetails.href="#tab-3";
+	 $("#indInformationDetails").click();
+}
+</script>
 <script>
 function skipToSalaryTab(){
 	var indSalaryDetails = document.getElementById("indSalaryDetails");
