@@ -543,7 +543,7 @@
 										placeholder="Select Color Picker" readonly="readonly"
 										value="${leaveType.colorCode}" class="form-control" id="colorCode" 
 										data-validation="required"> 
-											<span class="input-group-addon colPicBox"><input type="color" class="" value="" id="favcolor" onclick="validateColor(); colorPicker();"></span>
+											<span class="input-group-addon colPicBox"><input type="color" class="" value="${leaveType.colorCode}" id="favcolor" onclick="validateColor(); colorPicker();"></span>
 								</div>
 								<div>
 								

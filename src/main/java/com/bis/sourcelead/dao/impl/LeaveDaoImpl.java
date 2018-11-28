@@ -989,6 +989,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			int i = qry.executeUpdate();
 			return i;
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("Delete Approvers By Leave Id Failed Due to "
 					+ e.getLocalizedMessage());
 		}

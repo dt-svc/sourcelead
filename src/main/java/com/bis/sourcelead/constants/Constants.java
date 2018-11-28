@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 
-
 /**
  * 
  * @author Rajashekar
@@ -1297,6 +1296,8 @@ public class Constants {
 	
 	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
 	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	public static final String IND_PAYROLL_PAYHEAD_PF = "PF";
+	public static final String IND_PAYROLL_PAYHEAD_ESI = "ESI";
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
@@ -1312,12 +1313,22 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
 	
+	public static final String SEND_MAIL_TO_INDPAYROLL_APPROVER = "sendMailToIndPayrollApprover";
+	public static final String SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER = "sendNotificationToIndPayrollApprover";
+
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
 
+
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
 	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+
+	
+	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
+	public static final String CHANGE_REPORTING_MANAGER_NOTIFICATOPN="ChangeReportingManagerNotification";
+	
+
 	public static final String ASSOCIATE_WITH_HOLDING_REPORT = "Associate With Holding Report";
 	public static final String DEDUCTION_SUMMARY_REPORTS = "Deduction Summary Reports";
 	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
