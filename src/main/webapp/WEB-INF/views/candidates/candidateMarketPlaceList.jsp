@@ -67,10 +67,10 @@
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
-        <sec:authorize access="hasRole(\'ROLE_SHARE_PROFILE\',\'ROLE_ADD_PROFILE\')">
+        <%-- <sec:authorize access="hasRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')"> --%>
         <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
-        </sec:authorize>
-        <input type="button" class="btn btn-default ml" value="Cancel">
+        <%-- </sec:authorize> --%>
+        <input type="button" class="btn btn-default ml" onclick="cancelPriceAmount();" value="Cancel">
         </div>
         </div>
         </div>
@@ -555,6 +555,19 @@ function setPrice(){
 			$("#priceTypeVal").val('');
 		}
 	});
+}
+
+function cancelPriceAmount(){
+	$("input[id='priceVal']").each(function() {
+		$(this).val('');
+	});
+	$("select[id='amountTypeEach']").each(function(){
+		$(this).val('');
+	});
+	$('input[id="sharedcheckbox"]').removeProp('checked');
+	$('input[id="sharedcheckboxAll"]').removeProp('checked');
+	$("#amountForAll").val('');
+	$("#priceTypeVal").val('');
 }
 </script>	
 <jsp:include page="../masterFooter.jsp" /> 	

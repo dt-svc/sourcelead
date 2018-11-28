@@ -272,4 +272,10 @@ public interface CandidateService {
 
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
 
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception;
+
+	//public void updateMarketplaceDataFromCandidate(Long id, User user) throws Exception;
+
+	//public void updateMarketplaceDataFromCandidateGlobal(Long id, User user) throws Exception;
+
 }

@@ -202,5 +202,14 @@ public interface CandidateDao {
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
 
+	//public List<Long> getMyMarketplaceCandidateIds(Long id);
+
+	//public List<Candidate> getCandidatesListByCandidateIds(List<Long> marketplaceCandidateIds);
+
+	//public List<Long> getGlobalMarketplaceCandidateIds(Long id);
+
+	//void updateMarketPlace(CandidateMarketPlace marketPlace);
+
+	List<CandidateMarketPlace> getGlobalMarketplaceDataByOrgId(Long id, Long marketplaceId);
 
 }

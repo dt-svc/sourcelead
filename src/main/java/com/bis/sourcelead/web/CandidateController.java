@@ -781,4 +781,15 @@ public class CandidateController {
 			}}
 			return candidatesFromMarketplace;
 		}
+		
+		@RequestMapping(value = "/globalCandidateSummary")
+		public ModelAndView globalCandidateSummary(@RequestParam(value = "marketplaceUUID", required = false) String marketplaceUUID, HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        CandidateMarketPlaceDTO marketPlaceDTO = candidateService.getCandidateMarketPlaceDTODetailsByUUId(marketplaceUUID,orgLocations);
+	        model.addObject("marketplaceDTO", marketPlaceDTO);
+	        model.setViewName("candidates/globalCandidateProfileSummary");
+	        model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 }
