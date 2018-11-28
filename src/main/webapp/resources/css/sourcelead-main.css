@@ -9182,6 +9182,9 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .rewardImage {
 	width: 55px; height: 55px; padding-right: 0;
 }
+.media-object {
+	width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}
 .prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img, .rewardImage img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
@@ -9565,7 +9568,12 @@ input[type=range]::-moz-range-track {
 .fullTimebg .joinedValue {
 background-color: #e84393; padding: 15px;
 }
-
+.assignedImages {
+	width: 35px; height:35px; float: left;
+}
+.assignedImages img {
+	max-height: 100%; max-width: 100%; border-radius: 50%;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
@@ -9994,6 +10002,9 @@ transition: all ease-in-out 0.5s; display: none;
 .level-second.level-second-active {
 display: block;
 }
+
+
+
 .browseProgress {
         position: absolute; width: 100%; height: 100%; z-index: 100;
         border-radius: 3px; display:none;

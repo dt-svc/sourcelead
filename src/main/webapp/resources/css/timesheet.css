@@ -8426,8 +8426,7 @@ background-position: center top; width: 60px !important; height: 60px !important
 	width: 20px; height: 20px; display: block; background: url("../images/logoutSVG.svg"); background-repeat: no-repeat;
 	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
 }
-.width90percnt {
-	width: 90% !important;}
+.width90percnt {width: 90% !important;}
 .customErrorTag .phoneValidator p.jquery_form_error_message {
 bottom: auto !important; top: 55px !important;
 }
