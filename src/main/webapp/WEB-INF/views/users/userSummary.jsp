@@ -478,9 +478,10 @@ window.onload = function () {
 				     
 				     // Confirm Probation
 				     if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Probation'){
-				     	result = result + ' <input class="us-btn" id="confirmButton" type="button" value="Confirm Probation" onclick="confirmProbation('+userId+');"/>';
+				     	result = result + '<div class="clearfix"><input class="btn btn-primary btn-sm pull-right" id="confirmButton" type="button" value="Confirm Probation" onclick="confirmProbation('+userId+',\''+json.confirmationDateStr+'\',\''+json.designation+'\');"/></div>';
+				     }else if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Confirmed'){
+				    	 result = result + '<div class="clearfix"><input class="btn btn-success btn-sm pull-right" id="confirmButton" type="button" value="Probation Confirmed"></div>';
 				     }
-				     
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
 				     result = result + ' <div class="user_summary_edit_cta">';
@@ -2296,10 +2297,32 @@ $("#editRoleDetailsList").empty();
 					}
 					result = result + ' </div></div>';	
 					
-					
+					if(json.probationStatus == "Confirmed"){
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Probation Period </label>';
+							result = result + '<input class="form-control" id="probationPeriod" value="'+json.probationPeriod+'" name="probationPeriod" readonly="readonly" field-name="Probation Period">';
+						result = result + ' </div>';	
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Status</label>';
+							
+							result = result + '<input class="form-control" id="probationStatus" value="'+json.probationStatus+'" name="probationStatus" readonly="readonly" field-name="Status">';
+						result = result + ' </div>';
+						
+						
+							result = result + ' <div class="user_summary_edit_cta">';
+							result = result + ' <label>Confirmation Date</label>';
+							result = result + ' <div class="input-group">';
+							result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" class="calendar" readonly="readonly" field-name="Confirmation Date">';
+							result = result + '   <span class="input-group-addon" onClick=""></span> ';
+							result = result + ' </div>';
+							result = result + ' </div>';
+						
+					}else{
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Probation Period </label>';
-					if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != "undefined"){
+// 					if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != "undefined"){
 						result = result + '<select class="form-control" id="probationPeriod" name="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">';
 						result = result + '<option value="">--Select Probation Period--</option>';
 						result = result + ' <option value="15 Days" '+(json.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
@@ -2308,33 +2331,33 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <option value="90 Days" '+(json.probationPeriod == "90 Days" ? "selected" : '') +'>3 Months</option>';
 						result = result + ' </select>';
 
-					}
+// 					}
 					result = result + ' </div>';	
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Status</label>';
-					if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != "undefined"){
+// 					if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != "undefined"){
 						
 						result = result + '<select class="form-control" id="probationStatus" name="probationStatus" field-name="Status">';
 						result = result + '<option value="">--Select Status--</option>';
 						result = result + ' <option value="Probation" '+(json.probationStatus == "Probation" ? "selected" : '') +'>Probation</option>';
 						result = result + ' <option value="Confirmed" '+(json.probationStatus == "Confirmed" ? "selected" : '') +'>Confirmed</option>';
 						result = result + ' </select>';
-					}
+// 					}
 					result = result + ' </div>';
 					
 					
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Confirmation Date</label>';
 						result = result + ' <div class="input-group">';
-					if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != "undefined"){
+// 					if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != "undefined"){
 						result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" readonly="readonly" class="calendar" field-name="Confirmation Date">';
 						result = result + '   <span class="input-group-addon" onClick=""></span> ';
+// 					}
+						result = result + ' </div>';
+						result = result + ' </div>';
+					
 					}
-						result = result + ' </div>';
-						result = result + ' </div>';
-					
-					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of Birth</label>';
@@ -4735,26 +4758,57 @@ function calculateConfirmationDate(){
 
 
 <script>
-function confirmProbation(userId){
-	
+function confirmProbation(userId,confirmationDate,designation){
     $.ajax({
 		type : "POST",
 		url: sourceleadUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success :function() {
-			
-		  $("#confirmButton").val("Confirmed");
-		  $("#confirmButton").attr("disabled",true);
-		  $("#selectoruser").removeAttr("style");
-   		  $("#selectoruser").css({ display: "block" });
-   		  $("#userMsgDiv").html("Probation Confirmed..");
-    	  userMsgFadein();
+		$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
+  	    $("#confirmButton").val("Probation Confirmed");
+  	    $("#confirmButton").attr("onclick", "").unbind("click");
+    	  confirmPopUp(userId,confirmationDate,designation);
     	  
 		}
+	});
+}
+
+function confirmPopUp(userId,confirmationDate,designation){
+	var result = "";
+	result = result + "	<div class='project_inn_mask'></div>";
+	result = result + "	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"		<p>Send Confirmation Email</p>";
+	result = result + "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='confirm' onclick='sendMailConfirmation("+userId+",\""+confirmationDate+"\",\""+designation+"\")'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
+	result = result + "	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
+
+function sendMailConfirmation(userId,confirmationDate,designation){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/sendMailConfirmationToAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&confirmationDate="+confirmationDate+"&designation="+designation,        
+        success :function() {
+        $("#selectoruser").removeAttr("style");
+        $("#selectoruser").css({ display: "block" });
+ 		$("#userMsgDiv").html("Mail Sent Sucessfully");
+  	  	userMsgFadein();
+  	  	cancelRejectPopup();
+        },
 	});
 	
 }
 
+function cancelRejectPopup() {
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+
+}
 </script>
+<script>
+
+</script>
+
 
 
 <jsp:include page="candidatesProfile.jsp"></jsp:include>

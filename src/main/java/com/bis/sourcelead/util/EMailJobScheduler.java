@@ -2897,9 +2897,9 @@ public class EMailJobScheduler {
 	 * cron runs every day at 9:00 AM to remind the approver about pending leaves
 	 * @throws Exception  
 	 */
-//	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
-	@Scheduled(cron = "0/30 * * * * *")
+//	@Scheduled(cron = "0/30 * * * * *")
 	@Async
 	public void appliedLeaveRemainder() throws Exception
 	{

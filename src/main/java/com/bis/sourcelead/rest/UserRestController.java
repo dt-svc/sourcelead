@@ -1882,12 +1882,17 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(userId, orgLocations.getId());
 		
 		if(emp != null) {
+			String previousStatus = emp.getProbationStatus();
+			emp.setProbationStatus(Constants.CONFIRMED);
+			emp.setUpdatedDate(new Date());
+			emp.setUpdatedBy(loginUser.getUserCode());
+			employeesService.updateEmployee(emp);
 			
 			ProbationHistory probationHistory = new ProbationHistory();
 			probationHistory.setEmployeeId(emp);
 			probationHistory.setDateOfJoin(emp.getHireDate());
 			probationHistory.setProbationPeriod(emp.getProbationPeriod());
-			probationHistory.setFromStatus(emp.getProbationStatus());
+			probationHistory.setFromStatus(previousStatus);
 			probationHistory.setToStatus(Constants.CONFIRMED);
 			probationHistory.setActualConfirmationDate(emp.getConfirmationDate());
 			probationHistory.setConfirmedDate(new Date());
@@ -1899,14 +1904,17 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			probationHistory.setUpdatedBy(loginUser.getId());
 			probationHistoryService.saveProbationHistory(probationHistory);
 			
-			
-			emp.setProbationStatus(Constants.CONFIRMED);
-			emp.setUpdatedDate(new Date());
-			emp.setUpdatedBy(loginUser.getUserCode());
-			employeesService.updateEmployee(emp);
-			
 		}
 	}
 	
-	
+	@RequestMapping(value = "/sendMailConfirmationToAssociate", method = RequestMethod.POST)
+	public void sendMailConfirmationToAssociate(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "confirmationDate", required = false) String confirmationDate,
+			@RequestParam(value = "designation", required = false) String designation,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User fromUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		User toUser = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+		userService.sendEmployemntConfirmationMailToAssocaite(fromUser,toUser,orgLocations,confirmationDate,designation);
+	}
 }

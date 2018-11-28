@@ -274,5 +274,7 @@ List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanag
 
 public void sendEmailForNewReportingManager(User user, User loginUser, String password, Long locationId, Long existingReportingManagerID, Long currentReportingManagerID) throws Exception;
 
+void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser, OrgLocations orgLocations, String confirmationDate, String designation) throws Exception;
+
 }	
 

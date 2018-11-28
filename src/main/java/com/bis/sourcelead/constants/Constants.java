@@ -1334,4 +1334,6 @@ public class Constants {
 	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
+	
+	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
 }

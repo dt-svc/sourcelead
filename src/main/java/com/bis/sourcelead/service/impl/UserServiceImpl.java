@@ -2351,6 +2351,49 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
 	}
 
+	@Override
+	public void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser,OrgLocations orgLocations,String confirmationDate, String designation) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(toUser.getFirstName());
+		 emailMessage.setLastName(toUser.getLastName());
+		 emailMessage.setToEmail(toUser.getEmail());
+		 emailMessage.setFromEmail(fromUser.getEmail());
+		 
+		 StringBuilder from=new StringBuilder();
+		 if(fromUser.getLastName() != null && fromUser.getLastName() !=""){
+			 emailMessage.setFromName(from.append(fromUser.getFirstName()).append(" ").append(fromUser.getLastName()).toString()); 
+		 }else{
+			 emailMessage.setFromName(fromUser.getFirstName());
+		 }
+		 emailMessage.setEmailType(Constants.CONFIRMATION_OF_EMPLOYMENT_MAIL);
+
+		 emailMessage.setCreatedBy(fromUser.getUserCode());
+		 emailMessage.setOrgLocationId(orgLocations.getId());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuilder builder=new StringBuilder();
+		 if(toUser.getLastName() != null && toUser.getLastName() !=""){
+			 globalVarsMap.put("associateName",builder.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("associateName", toUser.getFirstName());	 
+		 }
+		 globalVarsMap.put("loginUser",emailMessage.getFromName());
+		 globalVarsMap.put("associateEmail", toUser.getEmail());
+		 globalVarsMap.put("associateRole",designation);
+		 globalVarsMap.put("confirmationDate",commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), confirmationDate).toString());
+		 globalVarsMap.put("loginOrgName",orgLocations.getOrgLocationName());
+
+		 List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 
+		 UserRole uRole = userRoleService.getUserRoleByUserId(toUser.getId());
+		 
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,uRole.getOrgLocations().getOrg(),uRole.getOrgLocations(),Constants.CONFIRMATION_OF_EMPLOYMENT_MAIL,attachmentList);
+		
+		
+	}
+
 	
 }
 

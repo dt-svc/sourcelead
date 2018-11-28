@@ -2255,32 +2255,9 @@ public class UsersListRestController {
 			}
 			
 			
-			//saving probation history
-			
-			ProbationHistory probationHistory = new ProbationHistory();
-			probationHistory.setEmployeeId(employees);
-			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
-			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
-			probationHistory.setFromStatus(employees.getProbationStatus());
-			probationHistory.setToStatus(addUserDTO.getProbationStatus());
-			if(addUserDTO.getConfirmationDate() != null)
-				probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
-			else
-				probationHistory.setActualConfirmationDate(null);
-						
-			if(employees.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
-				probationHistory.setConfirmedDate(new Date());
-			}else {
-				probationHistory.setConfirmedDate(null);
-			}
-			probationHistory.setStatus(1);
-			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
-			probationHistory.setUpdatedDate(new Date());
-			probationHistory.setUpdatedBy(loginUser.getId());
-			probationHistoryService.saveProbationHistory(probationHistory);
-			
-			
 			//updating probation data in employee
+			
+			String previousStatus = employees.getProbationStatus();
 			
 			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
 				try {
@@ -2310,6 +2287,32 @@ public class UsersListRestController {
 			employees.setUpdatedBy(loginUser.getUserCode());
 			employees.setUpdatedDate(commonUtil.currentDate());
 			employeesService.updateEmployee(employees);
+			
+			
+			
+			//saving probation history
+			
+			ProbationHistory probationHistory = new ProbationHistory();
+			probationHistory.setEmployeeId(employees);
+			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
+			probationHistory.setFromStatus(previousStatus);
+			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			if(addUserDTO.getConfirmationDate() != null)
+				probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			else
+				probationHistory.setActualConfirmationDate(null);
+						
+			if(addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+				probationHistory.setConfirmedDate(new Date());
+			}else {
+				probationHistory.setConfirmedDate(null);
+			}
+			probationHistory.setStatus(1);
+			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+			probationHistory.setUpdatedDate(new Date());
+			probationHistory.setUpdatedBy(loginUser.getId());
+			probationHistoryService.saveProbationHistory(probationHistory);
 			
 		}
 		
