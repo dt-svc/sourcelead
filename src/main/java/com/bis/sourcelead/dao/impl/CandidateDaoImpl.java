@@ -2427,16 +2427,14 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryList = new ArrayList<>();
 		} else {
 			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
-<<<<<<< HEAD
 				//System.out.println(listQuery+query1+query2);
-			Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
-			if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
-=======
-			System.out.println(listQuery + query1 + query2);
+			//Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
+			//if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
+			//System.out.println(listQuery + query1 + query2);
 			Query queryObject = session.createQuery(listQuery + query1 + query2).setParameter("candidateOrgLocId",
 					orgId);
+			
 			if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
->>>>>>> 621ed34be702c20a75e1346ce1ec063e24101dc8
 				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
 			}
 			queryList = queryObject.list();
@@ -2648,7 +2646,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		return responseList;
 	}
 
-<<<<<<< HEAD
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Long> getMyMarketplaceCandidateIds(Long id) {
@@ -2675,7 +2672,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<Long> candidateMarketplaceCandidateIds = session.createQuery(listQuery).setParameter("candidateOrgLocId", id).list();
 		return candidateMarketplaceCandidateIds;
 	}*/
-=======
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) {
@@ -2737,7 +2734,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}}
 
->>>>>>> 621ed34be702c20a75e1346ce1ec063e24101dc8
 	
 	/*@Override
 	@Transactional
