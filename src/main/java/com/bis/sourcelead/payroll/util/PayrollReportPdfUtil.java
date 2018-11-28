@@ -1329,7 +1329,7 @@ public class PayrollReportPdfUtil {
 		file.setReadable(true);
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 		report().setTemplate(Templates.reportTemplate)
-				.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+				.title(cmp.text(Constants.EMPLOYEE_PAYROLL_REPORTS).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
 				.columns(
 						col.column("Employee Id", "empId", type.stringType()),
 						col.column("Employee Name", "empName", type.stringType()),
@@ -1456,7 +1456,7 @@ public class PayrollReportPdfUtil {
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
-					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.title(cmp.text(Constants.ASSOCIATE_WITH_HOLDING_REPORT).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
 					.columns(
 							col.column("Associate Id", "id", type.stringType()),
 							col.column("Associate Name", "name", type.stringType()),
@@ -1565,16 +1565,19 @@ public class PayrollReportPdfUtil {
 		File file = null;
 		try {
 		    StringBuilder fileSB = new StringBuilder();
+		    String title = "";
 		    if(Constants.DEDUCTION.equalsIgnoreCase(reportType)) {
 		    	file = File.createTempFile(fileSB.append("deductionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    	title = Constants.DEDUCTION_SUMMARY_REPORTS;
 		    }else {
 		    	file = File.createTempFile(fileSB.append("contributionSummary").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    	title = Constants.CONTRIBUTION_SUMMARY_REPORTS;
 		    }
 			
 			file.setReadable(true);
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
-					.title(cmp.text(orgLocation.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.title(cmp.text(title).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
 					.columns(
 							col.column("Type", "type", type.stringType()),
 							col.column("No of Employees", "noOfEmployees", type.integerType()),

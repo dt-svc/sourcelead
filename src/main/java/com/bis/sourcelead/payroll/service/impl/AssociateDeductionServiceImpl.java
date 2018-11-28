@@ -133,6 +133,7 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 					deductionDTO.setDescription(ad.getDeductionTypeId().getDescription());
 					deductionDTO.setAssociateDeductionUUID(ad.getAssociateDeductionUuid());
 					deductionDTO.setDedTaxType(ad.getDeductionTypeId().getTaxType());
+					if(ad.getDeductionTypeId().getStatus() == 1)
 					list.add(deductionDTO);
 				});
 				res.setData(list);

@@ -174,7 +174,7 @@ public class AssetDaoImpl implements AssetDao{
 	public List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception {
 		
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Asset asset   where asset.orgLocations.id = :orgLocationId"; 
+		String query = "from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1'"; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return assetList;
 	}
@@ -663,55 +663,55 @@ public class AssetDaoImpl implements AssetDao{
 
 	@Override
 	@Transactional
-	public List<Asset> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId) {
-
-		
+	public List<AssetAssign> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId) {
 		try {
-			
 			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(assetsReportDTO.getConvertedFromDate().getTime());
 			java.sql.Timestamp toDate1 = new java.sql.Timestamp(assetsReportDTO.getConvertedToDate().getTime());
 			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
 			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
-			
+
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select asset from Asset asset join asset.assetAssign assetAssign ";
-			if(assetsReportDTO.getCategories()!= null && !assetsReportDTO.getCategories().isEmpty()) {
+			String query = "from AssetAssign assetAssign ";
+			/*if (assetsReportDTO.getCategories() != null && !assetsReportDTO.getCategories().isEmpty()) {
 				query += " join asset.assetCategory assetCategory";
-			}
-			
-			if(assetsReportDTO.getDateType() == 1) {
-				query += " where DATE_FORMAT(assetAssign.assignedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate + "'";
+			}*/
+			query += " where assetAssign.asset.orgLocations.id = :orgLocationId";
+			if (assetsReportDTO.getDateType() == 1) {
+				query += " and DATE_FORMAT(assetAssign.assignedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate
+						+ "'";
 			} else {
-				query += " where DATE_FORMAT(assetAssign.returnedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate + "'";
+				query += " and DATE_FORMAT(assetAssign.returnedOn,'%Y-%m-%d') between '" + fromDate + "' and '" + toDate
+						+ "'";
 			}
-			if(assetsReportDTO.getCategories()!= null && !assetsReportDTO.getCategories().isEmpty()) {
+			if (assetsReportDTO.getCategories() != null && !assetsReportDTO.getCategories().isEmpty()) {
 				String catIdString = "";
-				for(long catId : assetsReportDTO.getCategories()) {
+				for (long catId : assetsReportDTO.getCategories()) {
 					catIdString += (catIdString.isEmpty() ? "" : ",") + catId;
 				}
-				query += " and assetCategory.id in (" + catIdString + ")";
+				query += " and assetAssign.asset.assetCategory.id in (" + catIdString + ")";
 			}
-			if(assetsReportDTO.getShiftsIds() != null && !assetsReportDTO.getShiftsIds().isEmpty()) {
+			if (assetsReportDTO.getShiftsIds() != null && !assetsReportDTO.getShiftsIds().isEmpty()) {
 				String shiftIds = "";
-				for(long shiftid : assetsReportDTO.getShiftsIds()) {
-					shiftIds += (shiftIds.isEmpty() ? "" :",") + shiftid;
+				for (long shiftId : assetsReportDTO.getShiftsIds()) {
+					shiftIds += (shiftIds.isEmpty() ? "" : ",") + shiftId;
 				}
 				query += " and assetAssign.shift.id in (" + shiftIds + ")";
 			}
-			if(assetsReportDTO.getAssetNames()!= null && !assetsReportDTO.getAssetNames().isEmpty()) {
-				String assetid = "";
-				for(long assetsId : assetsReportDTO.getAssetNames()) {
-					assetid += (assetid.isEmpty() ? "" :",") + assetsId;
+			if (assetsReportDTO.getAssetNames() != null && !assetsReportDTO.getAssetNames().isEmpty()) {
+				String assetIds = "";
+				for (long assetId : assetsReportDTO.getAssetNames()) {
+					assetIds += (assetIds.isEmpty() ? "" : ",") + assetId;
 				}
-				query += " and asset.id in (" + assetid + ")";
+				query += " and assetAssign.asset.id in (" + assetIds + ")";
 			}
-			
+
 			Query queryObj = session.createQuery(query);
-			
-			List<Asset> assetList = queryObj.list();
-			
-			if(assetList!= null && !assetList.isEmpty()) {
-				return assetList;
+			queryObj.setLong("orgLocationId", orgLocationId);
+
+			List<AssetAssign> assetAssignList = queryObj.list();
+
+			if (assetAssignList != null && !assetAssignList.isEmpty()) {
+				return assetAssignList;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

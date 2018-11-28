@@ -15,6 +15,8 @@ public class PayrollScheduleCalenderDTO {
 	private String endDate;
 	
 	private String dateFormat;
+	
+	private int month;
 
 	public String getPayPeriod()
 	{
@@ -84,6 +86,16 @@ public class PayrollScheduleCalenderDTO {
 	public void setDateFormat(String dateFormat)
 	{
 		this.dateFormat = dateFormat;
+	}
+
+	public int getMonth()
+	{
+		return month;
+	}
+
+	public void setMonth(int month)
+	{
+		this.month = month;
 	}
 	
 	

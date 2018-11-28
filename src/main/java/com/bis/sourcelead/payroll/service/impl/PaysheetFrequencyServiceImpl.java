@@ -655,7 +655,6 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			try {
 				uRole = userRoleService.getUserRoleByUserIdAndLocationId(emp.getEmployee().getUser().getId(), emp.getEmployee().getOrgLocations().getId());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -673,7 +672,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				PayrollReportDTO repoDto = new PayrollReportDTO();
 				BigDecimal totalDed = ded.getPreDeductionAmount().add(ded.getPostDeductionAmount());
 				repoDto.setDeductions(totalDed);
-				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getId(), orgLocations);
+				YTDPayrollDTO ytd = payrollUtil.getDeductionYTD(emp, ded.getDeductionId().getId(), orgLocations);
 				repoDto.setYtdDeductions(ytd.getDeductionYTD());
 				dedList.add(repoDto);
 			}
@@ -975,11 +974,14 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 					else
 						nameSb.append(invLine.getCandidate().getFirstName());
 					dto.setEmpName(nameSb.toString());
-					Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(invLine.getCandidate().getConsultantUser().getId(), orgLocation.getId());
-					if(StringUtils.isNotBlank(emp.getEmployeeId()))
-						dto.setEmpId(emp.getEmployeeId());
-					else
-						dto.setEmpId("");
+					if(invLine.getCandidate().getConsultantUser()!= null) {
+						Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(invLine.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+						if(StringUtils.isNotBlank(emp.getEmployeeId()))
+							dto.setEmpId(emp.getEmployeeId());
+						else
+							dto.setEmpId("");
+					}
+					
 					if(orgLocation.getId().longValue() == invoice.getOrgRelationID().getLocationId().getId().longValue()) {
 						dto.setVendorName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					}else {

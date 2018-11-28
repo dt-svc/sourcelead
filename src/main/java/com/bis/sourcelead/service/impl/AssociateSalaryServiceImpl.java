@@ -331,6 +331,11 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 	public ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO dto) {
 		return associateSalaryDao.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, groupId,dto);
 	}
+	
+	@Override
+	public ResponseList<AssociateSalaryInd> getAssociateSalaryIndListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId,CandidateDTO dto) {
+		return associateSalaryDao.getAssociateSalaryIndListByLocationIdAndGroupId(orgLocation, groupId,dto);
+	}
 
 	@Override
 	public List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long groupId) {

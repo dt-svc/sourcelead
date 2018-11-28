@@ -303,19 +303,13 @@ $(document).ready(function () {
 									<div class="col-md-9">
 										<select class="selectpicker" id="jobType" name="jobType"
 											onChange="getJobType(this);">
-											<option value="" disabled selected>--- Select
-												Employment Type ---</option>
+											<option value="" disabled selected>--- Select Employment Type ---</option>
 											<option ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 											<option ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
 											<option ${requirement.jobType  == 'C2H' ? 'selected' : ''}>C2H</option>
-											<option
-												${requirement.jobType  == 'Contract' ? 'selected' : ''}>Contract</option>
-											<option
-												${requirement.jobType  == 'Part Time' ? 'selected' : ''}>Part
-												Time</option>
-											<option
-												${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full
-												Time</option>
+											<option ${requirement.jobType  == 'Contract' ? 'selected' : ''}>Contract</option>
+											<option ${requirement.jobType  == 'Part Time' ? 'selected' : ''}>Part Time</option>
+											<option ${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full Time</option>
 											<option ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
 										</select>
 									</div>
@@ -2529,7 +2523,6 @@ function validateProfilePercentage(){
 				}
 			});
 		});
-		/* alert("DatePicker initialized"); */
 	}
 	var requirementId = "";
 	$(document).ready(function () {
@@ -2562,7 +2555,6 @@ function validateProfilePercentage(){
 	
 	function getSavedJobFairsForRequirement() {
 		if(requirementId > 0) {
-			/* alert("getSavedJobFairsForRequirement()"); */
 			$.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/jobFairsByRequirementId?requirementId="+requirementId, 	   
@@ -2619,6 +2611,8 @@ function validateProfilePercentage(){
 				    	} 
 				    }
 				});
+		} else {
+			$("#jobFairDatesDiv").empty();
 		}
 	}
 	
@@ -4147,9 +4141,7 @@ function refreshRequirementClientContactList(){
 
 <script>
 function getJobLocations(){
-	
 	var requirementUUID = '${requirementUUID}';
-	
 	if(requirementUUID){
 		$("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
