@@ -1,6 +1,5 @@
-<%-- <jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
- --%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -1493,4 +1492,4 @@ $(".overIcon, .newActPop").click(function(e){
 
 </script>
 
-<%-- <jsp:include page="../masterFooter.jsp" /> --%>
+<jsp:include page="../masterFooter.jsp" />

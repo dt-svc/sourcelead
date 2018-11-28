@@ -39,6 +39,16 @@
 <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
 
 <style>
+.chosen-container {
+    width: 100% !important;
+}
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
+
 .settPop .form-control {
     height: auto !important; 
 }
@@ -50,6 +60,9 @@ width: 100% !important;
 }
 .validationError p.jquery_form_error_message {
 width: 75px; padding: 0 !important;
+}
+.fa.pull-right {
+    margin-left: -1.7em !important;
 }
 </style>
 <!--  on boarding candidate list end -->
@@ -820,104 +833,79 @@ $('#dasboardTaskDatpicker').datepicker({
     </div>
   </div>
   <div class="mb clearfix col-md-12">
+  <div class="mb clearfix col-md-12">
   <div class="dashNewWrap mb10">
-    <div class="dashNewWrapHead clearfix">
-      <h4 class="pull-left">Project Requests Test</h4>
-      <ul class="nav nav-tabs pull-right">
-        <li class="active" id="associateDiv"><a onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
-        <li id="newResourceDiv"><a href="javascript:void(0)" onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
-        <li id="budgetDiv"><a href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Budget</a></li>
-        <div class="clearfix"></div>
-      </ul>
-    </div>
-    <div class="clearfix newDashPad">
-      <div class="project_side_wrap_inn_tabs" id="assocaiteRequestsTabDiv" style="display: block;">
-        <div id="resourceRequestsDivLoading"></div>
-        <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
-          <li class="activeIcon" id="waiting"><a title="Waiting" onclick="resourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="waitingCount">0</span>)</a></li>
-          <li id="requestApproved"><a title="Approved" onclick="resourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="approvedCount">9</span>)</a></li>
-          <li id="requestRejected"><a title="Rejected" onclick="resourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="rejectedCount">0</span>)</a></li>
-          <li id="requestOnhold"><a title="On-Hold" onclick="resourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i>(<span id="onholdCount">0</span>)</a></li>
-          <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix mb5"></div>
-        <div id="resourceRequestList">
-          <div class="remove_search">
-            <input type="text" class="repSearchBar" placeholder="Associate search" id="requestAssociatesTableSearch">
-          </div>
-          <div class="clearfix popupFilter">
-            <div class="clearfix popupFilter datatable_filter">
-              <div id="requestAssociates_wrapper" class="dataTables_wrapper no-footer">
-                <div class="dataTables_length" id="requestAssociates_length">
-                  <label>Show
-                    <select name="requestAssociates_length" aria-controls="requestAssociates" class="">
-                      <option value="10">10</option>
-                      <option value="15">15</option>
-                      <option value="20">20</option>
-                    </select>
-                    entries</label>
-                </div>
-                <div id="requestAssociates_processing" class="dataTables_processing" style="display: none;"><img src="/resources/images/loading.gif" style="width: 75px; height: 75px;"></div>
-                <div class="clearfix require_wrap_table">
-                  <table id="requestAssociates" class="display dataTable no-footer" cellspacing="0" width="100%" role="grid" aria-describedby="requestAssociates_info" style="width: 100%;">
-                    <thead>
-                      <tr role="row">
-                        <th>Request Id</th>
-                        <th>Project</th>
-                        <th>Associate</th>
-                        <th>Initiator</th>
-                        <th>Approver</th>
-                        <th>Consulting</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="odd">
-                        <td valign="top" colspan="7" class="dataTables_empty"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="dataTables_info" id="requestAssociates_info" role="status" aria-live="polite"></div>
-                <div class="dataTables_paginate paging_simple_numbers" id="requestAssociates_paginate"><a class="paginate_button previous disabled" aria-controls="requestAssociates" data-dt-idx="0" tabindex="0" id="requestAssociates_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="requestAssociates" data-dt-idx="1" tabindex="0" id="requestAssociates_next">Next</a></div>
-              </div>
-            </div>
-            <div class="clearfix"></div>
-          </div>
-        </div>
-        <div class="vendor_wrap_mask"></div>
-        <div id="requestedAssociatesDivLoading"></div>
-        <div id="requestOnHoldReasonDiv"></div>
-        <div id="rejectedReasonDiv"></div>
-      </div>
-      <div class="project_side_wrap_inn_tabs" id="newResourceRequestTabDiv" style="display: none;">
-        <div id="resourceRequestsDivLoading"></div>
-        <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
-          <li class="activeIcon" id="newReqWaiting"><a title="Waitig" onclick="newResourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i>(<span id="newWaitingCount"></span>)</a></li>
-          <li id="newRequestApproved"><a title="Approved" onclick="newResourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="newApprovedCount"></span>)</a></li>
-          <li id="newRequestRejected"><a title="Rejected" onclick="newResourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="newRejectedCount"></span>)</a></li>
-          <li id="newRequestOnhold"><a title="On-Hold" onclick="newResourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="newOnholdCount"></span>)</a></li>
-          <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix mb5"></div>
-        <div id="newResourceRequestList"></div>
-        <div class="vendor_wrap_mask"></div>
-        <div id="requestedNewAssociatesDivLoading"></div>
-        <div id="newRequestOnHoldReasonDiv"></div>
-        <div id="resourceRejectedReasonDiv"></div>
-      </div>
-      <div class="project_side_wrap_inn_tabs" id="budgetTabDiv" style="display: none;">
-        <div id="resourceRequestsDivLoading"></div>
-        <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
-          <li class="activeIcon" id="budgetWaiting"><a title="Waiting" onclick="getBudgetRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="budgetWaitingCount"></span>)</a></li>
-          <li id="budgetApproved"><a title="Approved" onclick="getBudgetRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="budgetApprovedCount"></span>)</a></li>
-          <li id="budgetRejected"><a title="Rejected" onclick="getBudgetRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="budgetRejectedCount"></span>)</a></li>
-          <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
-          <div class="clearfix"></div>
-        </ul>
-      </div>
-    </div>
-  </div>
+ <div class="dashNewWrap mb10">
+        	<div class="dashNewWrapHead clearfix">
+				<h4 class="pull-left">Project Requests</h4>
+	     	    <ul class="nav nav-tabs pull-right">
+	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
+				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
+				       </sec:authorize> 
+				       <sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
+				        <li id="budgetDiv"><a href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Budget</a></li>
+				       </sec:authorize>
+			        <div class="clearfix"></div>
+			    </ul>				
+        	</div>       	  
+      	  
+      	    
+      	    <div class="clearfix newDashPad">
+      	    
+      	    <div class="project_side_wrap_inn_tabs" id="assocaiteRequestsTabDiv" style="display: block;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="waiting"><a title="Waiting" onclick="resourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="waitingCount"></span>)</a></li>
+			        <li id="requestApproved"><a title="Approved"  onclick="resourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="approvedCount"></span>)</a></li>
+			        <li id="requestRejected"><a title="Rejected" onclick="resourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="rejectedCount"></span>)</a></li>
+			        <li id="requestOnhold"><a title="On-Hold" onclick="resourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i>(<span id="onholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="resourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestedAssociatesDivLoading"></div>
+   				<div id="requestOnHoldReasonDiv"></div>
+   				<div id="rejectedReasonDiv"></div>
+           </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="newResourceRequestTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="newReqWaiting"><a title="Waitig" onclick="newResourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i>(<span id="newWaitingCount"></span>)</a></li>
+			        <li id="newRequestApproved"><a title="Approved" onclick="newResourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="newApprovedCount"></span>)</a></li>
+			        <li id="newRequestRejected"><a title="Rejected" onclick="newResourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="newRejectedCount"></span>)</a></li>
+			        <li id="newRequestOnhold"><a title="On-Hold" onclick="newResourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="newOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="newResourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestedNewAssociatesDivLoading"></div>
+   				<div id="newRequestOnHoldReasonDiv"></div>
+   				<div id="resourceRejectedReasonDiv"></div>
+           </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="budgetTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="budgetWaiting"><a title="Waiting" onclick="getBudgetRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="budgetWaitingCount"></span>)</a></li>
+			        <li id="budgetApproved"><a title="Approved"  onclick="getBudgetRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="budgetApprovedCount"></span>)</a></li>
+			        <li id="budgetRejected"><a title="Rejected" onclick="getBudgetRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="budgetRejectedCount"></span>)</a></li>
+			        <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="budgetRequestListDiv"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="budgetRejectedReasonDiv" ></div>
+   				<div id="budgetOnHoldReasonDiv"></div>
+           </div>
+           
+           </div>
+      	  </div>
+</div>
 </div>
   
   <div class="col-md-6 mb">
@@ -6956,6 +6944,22 @@ if(timezone != null && timezone != '' && timezone != 'undefined'){
 	timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}';
 }
 var country = '${SourceLeadWeb_orgLocations.country}';
+
+var locationDate = locationList; // locationList is unique variable using for date format.
+var finalDateFormatEDashboardeventCalendar = '';
+//$(document).ready(function() {
+	if (locationDate.match("yyyy-MM-dd")) {
+		finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
+	}
+	if (locationDate.match("dd-MM-yyyy")) {
+		finalDateFormatEDashboardeventCalendar = 'dd-mm-yy';
+	}
+	if (locationDate.match("MM-dd-yyyy")) {
+		finalDateFormatEDashboardeventCalendar = 'mm-dd-yy';
+	}
+	if (locationDate.match("yyyy-dd-MM")) {
+		finalDateFormatEDashboardeventCalendar = 'yy-dd-mm';
+	}
 </script>
 </html>
 

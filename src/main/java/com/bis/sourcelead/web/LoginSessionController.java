@@ -239,6 +239,10 @@ public class LoginSessionController {
 		Integer expensesTabCount = 0;
 		Integer resourcesTabCount = 0;
 		Integer paryrollTabCount = 0;
+		boolean isJobsTabAccessable = false;
+		SourceLeadSessionManager.setSessionAttribute(request, "isJobsTabAccessable", "N");
+		boolean isReportTabAccessable = false;
+		SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "N");
 		
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		if(userLoginSession != null){
@@ -284,12 +288,21 @@ public class LoginSessionController {
 						resourcesTabCount = resourcesTabCount+1;
 					}
 					
-					if(tabs.getTabName().equalsIgnoreCase("Reports")){
-						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+					if(isReportTabAccessable == false) {
+						if(tabs.getTabName().equalsIgnoreCase("Reports")){
+							isReportTabAccessable = true;
+							SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+						}
 					}
-					
 					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
 						paryrollTabCount = paryrollTabCount+1;
+					}
+					
+					if(isJobsTabAccessable == false) {
+						if(tabs.getTabName().equalsIgnoreCase("Jobs")){
+							isJobsTabAccessable = true;
+							SourceLeadSessionManager.setSessionAttribute(request, "isJobsTabAccessable", "Y");
+						}
 					}
 				}
 				
@@ -487,7 +500,6 @@ public class LoginSessionController {
 						model.setViewName("professional/professionalRequirements");
 					}
 					else{
-						System.out.print("check heree ===========>");
 						model.setViewName("dashboard");
 //						model.setViewName("masterPage");
 					}
