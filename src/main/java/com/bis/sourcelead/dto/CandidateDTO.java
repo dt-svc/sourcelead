@@ -46,6 +46,8 @@ public class CandidateDTO extends SearchDTO{
 	private String middleName;
 	
 	private String dateofBirth;
+	
+	private String panNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -1128,6 +1130,14 @@ public class CandidateDTO extends SearchDTO{
 		this.dateofBirth = dateofBirth;
 	}
 
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
 
 	public Long getUserId() {
 		return userId;

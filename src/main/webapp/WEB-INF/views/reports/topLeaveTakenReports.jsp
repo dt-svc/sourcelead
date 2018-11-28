@@ -391,6 +391,7 @@ function listTypePagination(count) {
 		"bLengthChange" : true,
 		"bDestroy" : true,
 		"ordering" : true,
+		"order" : [[6, "desc"]],
 		"mark" : true,
 		"oLanguage" : {
 			"sSearch" : "",
