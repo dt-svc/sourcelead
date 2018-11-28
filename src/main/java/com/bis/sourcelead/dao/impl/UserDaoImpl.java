@@ -1803,12 +1803,6 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		
-		// Commented By Rakshith
-		/*Note : In some scenario we are using the same query to get resource Managers list 
-			   based on only orglocationId and we are passing tabId as 0.
-			   if you are going to pass the tabId please do inform.*/
-		
-		
 /*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 */	     
