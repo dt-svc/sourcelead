@@ -60,4 +60,14 @@ public class PerformanceManagementController {
 		return model;
 	}
 	
+	
+	@RequestMapping(value = "/addNewFeedbackTemplate")
+	public ModelAndView addNewFeedbackTemplate(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("performance/addNewFeedbackTemplate");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 }

@@ -37,7 +37,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Feedback</h3>
-				<span><a href="#" class="colB">Add</a><a href="#" class="">View</a></span>
+				<span><a onclick="addFeedbackTemplate();" class="colB">Add</a><a href="#" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
@@ -52,7 +52,7 @@
 		</div>	
 	</div>
     
-<jsp:include page="../performance/addNewPerformanceBadge.jsp" />       
+<jsp:include page="../performance/addNewPerformanceBadge.jsp" />      
 </section>
 
 
@@ -65,6 +65,19 @@ function getBadgesList(){
 		     success :function(response) {
 		    	    $("#performanceManagementDiv").empty();  
 		    	    $("#performanceManagementDiv").append(response);
+				},
+			}); 
+			
+}
+
+function addFeedbackTemplate(){
+	$.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/addNewFeedbackTemplate",
+		     success :function(response) {
+		    	    $("#performanceManagementDiv").empty();  
+		    	    $("#performanceManagementDiv").append(response);
+		    	    customizeFields('${sourceleadUrl}');
 				},
 			}); 
 			

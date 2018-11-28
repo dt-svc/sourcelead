@@ -1,0 +1,106 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<link rel="stylesheet" href="/resources/css/style.css" />
+ <script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+
+<style>
+.dropdown-menu.pull-right {
+    right: 0;
+    left: auto;
+    width: 180px;
+}
+</style>
+
+    <section class="content-header clearfix">
+	    <div class="pull-left">
+	      <!-- <h2>Submission Templates</h2> -->
+	      <h2 class="pull-left">Feedback Template</h2>
+	    </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/performanceManagementConfiguration'/>">Performance Management Configuration</a> &raquo; Feedback Template</div>
+	 	<div class="clearfix"></div>
+    </section>
+    
+     <div class="tab-pane" >
+              <div class="form-horizontal assignTemplate">
+                <h4 class="clearfix">Check List</h4>
+    
+    <div id="sjfb-wrap">
+	           <form id="sjfb" novalidate>
+	           
+     		      <div class="row mb">
+		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
+		           <label>Template Name<span class="text-danger">&nbsp;*</label>
+			    	<div class="mt10">
+			    			<input type="text" class="form-control input-sm"  onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">
+			    	</div>
+			    	</div>
+			    	
+			    	<div class="col-xs-12 col-md-6">
+			    	 <label>Description<span class="text-danger">&nbsp;*</label>
+			    			 <textarea rows="3" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>
+			    	 </div>
+			    	</div>
+			    	
+		    	
+			    	<div class="clearfix mb mt">
+			    	
+			    	<div class="col-md-10">
+			    	<p>Add Check List</p>
+			    	</div>
+					    	<div class="col-md-2">
+						        <div class="dropdown">
+						        <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;
+						        <span class="caret"></span></button>
+							        <ul id="add-field" class="dropdown-menu pull-right">
+								        <li><a id="add-text" data-type="text"  href="javascript:void(0)">Text Box</a>
+								        <li><a id="add-select" data-type="select"   href="javascript:void(0)">Select Box</a></li>
+								        <li><a id="add-checkbox" data-type="checkbox"  href="javascript:void(0)">Check Box</a></li>
+								        <li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>
+								        <li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>
+								        <li><a id="add-star" data-type="star" href="javascript:void(0)">Star</a></li>
+								        <li><a id="add-scale" data-type="scale" href="javascript:void(0)">Scale</a></li>
+								        <li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>
+							        </ul>
+						        </div>
+					        </div>
+			        </div>
+		       
+	           
+	           <div id="form-fields">
+	           </div>
+	           <div class="form-footer clearfix mt">
+	           <div class="clearfix"></div>
+	           <div class="pull-right mr">
+	           
+	           
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="" >Save</button>
+	           <button type="button" class="slBtn md popClose"  onclick="" >Cancel</button>
+	           
+	           </div>
+
+	           </div>
+	           </form>
+          </div>
+	 </div>
+	</div>   
+	
+	
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+
+ <script>
+// Back To Top 
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.backtotop').fadeIn('slow');
+        } else {
+            $('.backtotop').fadeOut('slow');
+        }
+    });
+    $('.backtotop').click(function() {
+        $("html, body").animate({scrollTop: 0}, 500);
+        return false;
+    });
+</script>        
