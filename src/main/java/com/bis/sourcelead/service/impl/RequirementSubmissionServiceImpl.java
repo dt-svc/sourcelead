@@ -5706,8 +5706,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
 			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
 			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
-			applicantsDto.setRate(requirementSubmission.getRequirement().getRate());
-
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
 			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
