@@ -1315,6 +1315,9 @@ public class Constants {
 	
 	public static final String SEND_MAIL_TO_INDPAYROLL_APPROVER = "sendMailToIndPayrollApprover";
 	public static final String SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER = "sendNotificationToIndPayrollApprover";
+	
+	public static final String SEND_APPROVED_MAIL_TO_REQUESTED_USERIND = "sendApprovedMailToRequestedUserInd";
+	public static final String SEND_APPROVED_NOTIFICATION_TO_REQUESTE_DUSERIND = "sendApprovedNotificationToRequestedUserInd";
 
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
