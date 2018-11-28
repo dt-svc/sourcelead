@@ -17,6 +17,7 @@ import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -268,6 +269,8 @@ public Sheet exportAllApplicantJoinedList(Sheet createExcelsheet, Workbook creat
 public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations,Date[] searchDates) throws Exception;
 
 public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat);
+
+List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate, Long orgLocationId);
 
 
 }	

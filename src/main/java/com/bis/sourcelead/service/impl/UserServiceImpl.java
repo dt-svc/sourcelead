@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -79,6 +80,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProbationHistory;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -104,6 +106,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.ProbationHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
@@ -240,6 +243,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private ProbationHistoryService probationHistoryService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -438,6 +445,29 @@ public class UserServiceImpl implements UserService {
 			user1 = userDao.addUser(user);
 		} catch (Exception e1) {
 			e1.printStackTrace();
+		}
+		
+		
+		
+		if(employee != null) {
+			ProbationHistory probationHistory = new ProbationHistory();
+			probationHistory.setEmployeeId(employee);
+			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
+			probationHistory.setFromStatus(employee.getProbationStatus());
+			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			
+			if(addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+				probationHistory.setConfirmedDate(new Date());
+			}else {
+				probationHistory.setConfirmedDate(null);
+			}
+			probationHistory.setStatus(1);
+			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+			probationHistory.setCreatedDate(new Date());
+			probationHistory.setCreatedBy(loginuser.getId());
+			probationHistoryService.saveProbationHistory(probationHistory);
 		}
 
 		if(addUserDTO.getCustomFormData() !=null && !responderType.equalsIgnoreCase("vendor") && !responderType.equalsIgnoreCase("client")) {
@@ -986,6 +1016,30 @@ public class UserServiceImpl implements UserService {
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
+			try {
+				 employees.setConfirmationDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getConfirmationDate()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}else {
+				employees.setConfirmationDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getProbationPeriod())){
+				  employees.setProbationPeriod(addUserDTO.getProbationPeriod());
+		}else {
+				  employees.setProbationPeriod(null);
+		}
+		
+		
+		if(StringUtils.isNotBlank(addUserDTO.getProbationStatus())){
+				  employees.setProbationStatus(addUserDTO.getProbationStatus());
+		}else {
+				  employees.setProbationStatus(null);
 		}
 		employees.setCreatedBy(userCode);
 		employees.setCreatedDate(commonUtil.currentDate());
@@ -2236,6 +2290,11 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 			}
 		}
 		return datesMap;
+	}
+
+	@Override
+	public List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate,Long orgLocationId) {
+		return userDao.getAllProbationUsersListForResourceManager(resourcemanagerId,futureDate,orgLocationId);
 	}
 
 

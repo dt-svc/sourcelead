@@ -78,6 +78,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProbationHistory;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -110,6 +111,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.ProbationHistoryService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -268,6 +270,9 @@ public class UsersListRestController {
 	
 	@Autowired
 	StatesService statesService;
+	
+	@Autowired
+	private ProbationHistoryService probationHistoryService;
 	
 	
 	/**
@@ -779,6 +784,25 @@ public class UsersListRestController {
 			} else {
 				userRole.setHireDateStr("");
 			}
+			
+			if (employee.getConfirmationDate() != null) {
+				userRole.setConfirmationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getConfirmationDate()));
+			} else {
+				userRole.setConfirmationDateStr("");
+			}
+			
+			if (employee.getProbationPeriod() != null) {
+				userRole.setProbationPeriod(employee.getProbationPeriod());
+			} else {
+				userRole.setProbationPeriod("");
+			}
+			
+			if (employee.getProbationStatus() != null) {
+				userRole.setProbationStatus(employee.getProbationStatus());
+			} else {
+				userRole.setProbationStatus("");
+			}
+			
 			if(userRole != null) {
 				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
 			}
@@ -2222,9 +2246,64 @@ public class UsersListRestController {
 			}else{
 				employees.setHireDate(null);
 			}
+			
+			
+			//saving probation history
+			
+			ProbationHistory probationHistory = new ProbationHistory();
+			probationHistory.setEmployeeId(employees);
+			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
+			probationHistory.setFromStatus(employees.getProbationStatus());
+			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			if(addUserDTO.getConfirmationDate() != null)
+				probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			else
+				probationHistory.setActualConfirmationDate(null);
+						
+			if(employees.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+				probationHistory.setConfirmedDate(new Date());
+			}else {
+				probationHistory.setConfirmedDate(null);
+			}
+			probationHistory.setStatus(1);
+			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+			probationHistory.setUpdatedDate(new Date());
+			probationHistory.setUpdatedBy(loginUser.getId());
+			probationHistoryService.saveProbationHistory(probationHistory);
+			
+			
+			//updating probation data in employee
+			
+			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
+				try {
+					 employees.setConfirmationDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getConfirmationDate()));
+					  
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}else {
+					employees.setConfirmationDate(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getProbationPeriod())){
+					  employees.setProbationPeriod(addUserDTO.getProbationPeriod());
+			}else {
+					  employees.setProbationPeriod(null);
+			}
+			
+			
+			if(StringUtils.isNotBlank(addUserDTO.getProbationStatus())){
+					  employees.setProbationStatus(addUserDTO.getProbationStatus());
+			}else {
+					  employees.setProbationStatus(null);
+			}
+			
+			
 			employees.setUpdatedBy(loginUser.getUserCode());
 			employees.setUpdatedDate(commonUtil.currentDate());
 			employeesService.updateEmployee(employees);
+			
 		}
 		
 		Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());

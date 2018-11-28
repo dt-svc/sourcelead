@@ -38,8 +38,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
@@ -1801,6 +1803,11 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		
+		// Commented By Rakshith
+		/*Note : In some scenario we are using the same query to get resource Managers list 
+			   based on only orglocationId and we are passing tabId as 0.
+			   if you are going to pass the tabId please do inform.*/
+		
 		
 /*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
@@ -2688,6 +2695,45 @@ String sortingQry ="";
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate,Long orgLocationId) {
+		
+		List<ProbationDTO> usersList = null;
+		try {
+			
+			java.sql.Date startDate = new java.sql.Date(futureDate.getTime()); 
+			
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT " + 
+					"(select u.FIRST_NAME from USER u where u.ID = urole.USER_ID) as associateFirstName," + 
+					"(select u.LAST_NAME from USER u where u.ID = urole.USER_ID) as associateLastName," + 
+					"(select dep.DEPARTMENT_NAME from DEPARTMENT dep where dep.ID = emp.DEPARTMENT_ID) as departmentName, " + 
+					"urole.USER_TYPE as associateRole," + 
+					"emp.HIRE_DATE as hireDate," + 
+					"emp.PROBATION_PERIOD as probationPeriod," + 
+					"emp.CONFIRMATION_DATE as confirmationDate," + 
+					"urole.RESOURCE_MANAGER_ID as resourceManagerId " + 
+					" from EMPLOYEE emp, USER_ROLE urole where emp.USER_ID = urole.USER_ID and emp.ORG_LOCATIONS_ID = urole.ORG_LOCATIONS_ID and " +
+					" urole.RESOURCE_MANAGER_ID = :resourcemanagerId and emp.CONFIRMATION_DATE =:futureDate and urole.ORG_LOCATIONS_ID =:orgLocationId" ; 
+			
+			Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("resourcemanagerId", resourcemanagerId)
+			.setLong("orgLocationId", orgLocationId)
+			.setDate("futureDate", startDate);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ProbationDTO.class));
+			
+			usersList = queryObj.list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	return usersList;
+	
 	}
 
 	
