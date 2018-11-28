@@ -276,11 +276,10 @@ public interface CandidateService {
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray)throws Exception;
 	
 	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
 
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
-
-
-	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
 
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
 	
