@@ -1080,12 +1080,16 @@ public class CandidateRestController {
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
 		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidateGlobal(orgLocations.getId(),user);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("candidates/candidateGlobalMarketPlaceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 
+	 
 	// Note this method is Global marketplace Candidate method
 	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/OrgMarketplace")
@@ -1093,6 +1097,9 @@ public class CandidateRestController {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
 		System.out.println("inisde OrgMarketplace  conroller =========>");
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidate(orgLocations.getId(),user);
 		model.setViewName("candidates/candidateMarketPlaceView");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

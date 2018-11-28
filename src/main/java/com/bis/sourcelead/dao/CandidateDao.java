@@ -206,6 +206,16 @@ public interface CandidateDao {
 	
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
 
+	//public List<Long> getMyMarketplaceCandidateIds(Long id);
+
+	//public List<Candidate> getCandidatesListByCandidateIds(List<Long> marketplaceCandidateIds);
+
+	//public List<Long> getGlobalMarketplaceCandidateIds(Long id);
+
+	//void updateMarketPlace(CandidateMarketPlace marketPlace);
+
+	List<CandidateMarketPlace> getGlobalMarketplaceDataByOrgId(Long id, Long marketplaceId);
+
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
 	
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;

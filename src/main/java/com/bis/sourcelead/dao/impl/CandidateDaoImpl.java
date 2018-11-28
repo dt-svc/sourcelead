@@ -2427,10 +2427,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			queryList = new ArrayList<>();
 		} else {
 			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+<<<<<<< HEAD
+				//System.out.println(listQuery+query1+query2);
+			Query queryObject = session.createQuery(listQuery+query1+query2).setParameter("candidateOrgLocId", orgId);
+			if(searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined") ){
+=======
 			System.out.println(listQuery + query1 + query2);
 			Query queryObject = session.createQuery(listQuery + query1 + query2).setParameter("candidateOrgLocId",
 					orgId);
 			if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
+>>>>>>> 621ed34be702c20a75e1346ce1ec063e24101dc8
 				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
 			}
 			queryList = queryObject.list();
@@ -2642,6 +2648,34 @@ public class CandidateDaoImpl implements CandidateDao {
 		return responseList;
 	}
 
+<<<<<<< HEAD
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getMyMarketplaceCandidateIds(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select marketplace.candidateId.id from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.orgLocationId.id = :orgId and marketplace.candidateMarketStatus = :marketStatus ";
+		List<Long> candidateMarketplaces = session.createQuery(query).setParameter("orgId", id).setParameter("marketStatus", Constants.ACTIVE).list();
+		return candidateMarketplaces;
+	}*/
+
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesListByCandidateIds(List<Long> marketplaceCandidateIds) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
+		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", marketplaceCandidateIds).list();
+		return candidates;
+	}*/
+
+	/*@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getGlobalMarketplaceCandidateIds(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "select marketplace.candidateId.id from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
+		List<Long> candidateMarketplaceCandidateIds = session.createQuery(listQuery).setParameter("candidateOrgLocId", id).list();
+		return candidateMarketplaceCandidateIds;
+	}*/
+=======
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) {
@@ -2703,5 +2737,24 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}}
 
+>>>>>>> 621ed34be702c20a75e1346ce1ec063e24101dc8
 	
+	/*@Override
+	@Transactional
+	public void updateMarketPlace(CandidateMarketPlace marketPlace) {
+		Session session = this.sessionFactory.getCurrentSession();
+		if(marketPlace != null && marketPlace.getId() != null){
+			session.saveOrUpdate(marketPlace);
+		}
+	}*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlace> getGlobalMarketplaceDataByOrgId(Long id, Long marketplaceId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.id <> :marketplaceId";
+		List<CandidateMarketPlace> candidateMarketplaceCandidates = session.createQuery(listQuery).setParameter("candidateOrgLocId", id).setParameter("marketplaceId", marketplaceId).list();
+		return candidateMarketplaceCandidates;
+	}
+
 }

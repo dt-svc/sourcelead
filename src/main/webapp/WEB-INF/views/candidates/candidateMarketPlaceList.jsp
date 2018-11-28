@@ -555,5 +555,18 @@ function setPrice(){
 		}
 	});
 }
+
+function cancelPriceAmount(){
+	$("input[id='priceVal']").each(function() {
+		$(this).val('');
+	});
+	$("select[id='amountTypeEach']").each(function(){
+		$(this).val('');
+	});
+	$('input[id="sharedcheckbox"]').removeProp('checked');
+	$('input[id="sharedcheckboxAll"]').removeProp('checked');
+	$("#amountForAll").val('');
+	$("#priceTypeVal").val('');
+}
 </script>	
 <jsp:include page="../masterFooter.jsp" /> 	

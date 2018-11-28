@@ -8,11 +8,15 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -51,7 +55,10 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -62,6 +69,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -123,6 +131,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * 
@@ -2900,6 +2910,140 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception {
+		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
+		CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+		BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+		if(marketPlace.getSkillsName() != null){
+			String[] skills = marketPlace.getSkillsName().split(",");
+			marketPlaceDTO.setSkills(skills);
+		}
+		Set<CandidateEmployers> candidateEmployers = marketPlace.getCandidateId().getCandidateEmployers();
+		Set<CandidateEmployerDTO> candidateEmployerDTOs = new HashSet();
+		for(CandidateEmployers employers : candidateEmployers){
+			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
+			BeanUtils.copyProperties(employers, employerDTO);
+			if(employers.getStartMonth()!= null && !employers.getStartMonth().equals("")){
+				String[] startMonth = employers.getStartMonth().split("&");
+				employerDTO.setStartMonth(startMonth[1]);
+			}
+			if(employers.getEndMonth() != null && !employers.getEndMonth().equals("")){
+				String[] endMonth = employers.getEndMonth().split("&");
+				employerDTO.setEndMonth(endMonth[1]);
+			}
+			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+				employerDTO.setEndMonth("Present");
+				employerDTO.setEndYear("");
+			}
+			candidateEmployerDTOs.add(employerDTO);
+		}
+		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
+		Set<CandidateEducation> educations = marketPlace.getCandidateId().getCandidateEducation();
+		Set<CandidateEducationDTO> educationDTOs = new HashSet<>();
+		for(CandidateEducation education : educations){
+			CandidateEducationDTO educationDTO = new CandidateEducationDTO();
+			BeanUtils.copyProperties(education, educationDTO);
+			
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dtf2 = new SimpleDateFormat("MMM");
+			SimpleDateFormat dtf3 = new SimpleDateFormat("yyyy");
+			if(education.getStartDate() != null  && !education.getStartDate().equals("")){
+				String startDateString = dtf.format(education.getStartDate());
+				String startMonthName = dtf2.format(dtf.parse(startDateString));
+				String startYear = dtf3.format(dtf3.parse(startDateString));
+				educationDTO.setStartYear(startYear);
+				educationDTO.setStartMonth(startMonthName);
+			}
+			if(education.getEndDate() != null  && !education.getEndDate().equals("")){
+				String endDateString = dtf.format(education.getEndDate());
+				String endMonthName = dtf2.format(dtf.parse(endDateString));
+				String endYear = dtf3.format(dtf3.parse(endDateString));
+				educationDTO.setEndYear(endYear);
+				educationDTO.setEndMonth(endMonthName);
+			}
+			educationDTOs.add(educationDTO);
+		}
+		marketPlaceDTO.setCandidateEducation(educationDTOs);
+		Set<CandidateCertifications> certifications = marketPlace.getCandidateId().getCandidateCertifications();
+		Set<CandidateCertificationDTO> certificationDTOs = new HashSet<>();
+		for(CandidateCertifications certification : certifications){
+			CandidateCertificationDTO certificationDTO = new CandidateCertificationDTO();
+			BeanUtils.copyProperties(certification, certificationDTO);
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			if(certification.getValidFrom()!= null  && !certification.getValidFrom().equals("")){
+				certificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidFrom()));
+			}
+			if(certification.getValidTo()!= null  && !certification.getValidTo().equals("")){
+				certificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidTo()));
+			}
+			certificationDTOs.add(certificationDTO);
+		}
+		marketPlaceDTO.setCandidateCertifications(certificationDTOs);
+		int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+		if(count != 0){
+			marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+		}
+		if(marketPlace.getSkillsName() != null && !marketPlace.getSkillsName().equals("")){
+			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
+			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
+			String[] marketPlaceSkills = marketPlace.getSkillsName().split(",");
+			for (int j = 0; j < marketPlaceSkills.length; j++){
+				marketPlaceSkills[j] = marketPlaceSkills[j].trim();
+			}
+			for(CandidateMarketPlace place : globalCandidatesMarketplaceData){
+				String[] placeSkills = null;
+				if(place.getSkillsName() != null && !place.getSkillsName().equals("")){
+					placeSkills = place.getSkillsName().split(",");
+					for (int i = 0; i < placeSkills.length; i++){
+						placeSkills[i] = placeSkills[i].trim();
+					}
+				if(!Collections.disjoint(Arrays.asList(placeSkills), Arrays.asList(marketPlaceSkills))){
+					CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
+					BeanUtils.copyProperties(place, dto);
+					marketPlaceDTOs.add(dto);
+				}
+			}
+			}
+			marketPlaceDTO.setCandidateMarketPlaceDTOs(marketPlaceDTOs);
+		}
+		return marketPlaceDTO;
+	}
+
+	/*@Override
+	public void updateMarketplaceDataFromCandidate(Long id, User user) throws Exception {
+		List<Long> marketplaceData = candidateDao.getMyMarketplaceCandidateIds(id);
+		List<Candidate> candidates = candidateDao.getCandidatesListByCandidateIds(marketplaceData);
+		updateMarketplaceData(candidates,user);
+	}*/
+	
+	/*public void updateMarketplaceData(List<Candidate> candidates, User user) throws Exception{
+		if(candidates != null && candidates.size() != 0){
+			for(Candidate candidate : candidates){
+				CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceByCandidateId(candidate.getId());
+				BeanUtils.copyProperties(candidate, marketPlace);
+				marketPlace.setCandidateId(candidate);
+				marketPlace.setOrgLocationId(candidate.getOrgLocationId());
+				marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
+				marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
+				marketPlace.setEmploymentType(candidate.getDesignationType());
+				marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
+				marketPlace.setExpectedRateType(candidate.getRateType());
+				marketPlace.setImageUrl(candidate.getFileUrl());
+				marketPlace.setUpdatedDate(new Date());
+				marketPlace.setUpdatedBy(user);
+				//saveOrUpdateCandidateElkDocument(candidate);
+				candidateDao.updateMarketPlace(marketPlace);
+			}
+		}
+	}*/
+
+	/*@Override
+	public void updateMarketplaceDataFromCandidateGlobal(Long id, User user) throws Exception {
+		List<Long> marketplaceCandidateIds = candidateDao.getGlobalMarketplaceCandidateIds(id);
+		List<Candidate> candidates = candidateDao.getCandidatesListByCandidateIds(marketplaceCandidateIds);
+		updateMarketplaceData(candidates,user);
+	}*/
+
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
 		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
 		return marketCartIds;
@@ -2944,6 +3088,5 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void saveTransactionCompletedCandidates(CandidateDTO candidateDto, OrgLocations orgLocations, User user)throws Exception {
 			storeCandidate(candidateDto, orgLocations, user);
 	}
-	
 
 }

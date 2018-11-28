@@ -2329,6 +2329,5 @@ public class CandidateListRestController {
 		return candidateDTOList;
 		
 	}
-	
 
 }
