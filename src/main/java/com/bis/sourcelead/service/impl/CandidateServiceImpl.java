@@ -2821,7 +2821,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		saveOrUpdateCandidateElkDocument(candidate);
 		candidateDao.storeCandidate(candidate);
 		candidateDao.withdrawCandidateFromMarketplace(marketplace);
-		
+		//Deleting the record from the cart if already added in cart by the user.
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
 	}
 
 	@Override
