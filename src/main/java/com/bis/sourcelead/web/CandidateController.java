@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -66,6 +67,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -91,6 +93,9 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
+	@Autowired
+	ReportsUtil reportsUtil;
+		
 	
 	@Autowired
 	private RolesService roleService;
@@ -768,16 +773,21 @@ public class CandidateController {
 		
 		@RequestMapping(value = "/getCandidateDetailsFromMarketcart", method = RequestMethod.POST)
 		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(
-				@RequestParam(value = "creationStartDate", required = true)String creationStartDate,
-				@RequestParam(value = "creationEndDate", required = true)String creationEndDate,
+				@RequestParam(value = "creationStartDate", required = false)String creationStartDate,
+				@RequestParam(value = "creationEndDate", required = false)String creationEndDate,
+				@RequestParam(value = "checkedDate", required = false)String checkedDate,
 				HttpServletRequest request) throws Exception{
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
+			Date[] checkedDateArray = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate);
+					if(checkedDate != null && !"".equalsIgnoreCase(checkedDate)){
+					 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocation);
+					 }
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray);
 			}}
 			return candidatesFromMarketplace;
 		}
