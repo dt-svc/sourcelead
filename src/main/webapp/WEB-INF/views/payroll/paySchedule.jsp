@@ -10,6 +10,7 @@ $(document).ready(function(){
 	var payrollScheduleUUID = "${payScheduleUUID}";
 	/* getApproverList(); */
 	getPayrollSchedule(payrollScheduleUUID);
+	$("#endDateDIV").hide();
 });
 
 </script>
@@ -40,7 +41,7 @@ $(document).ready(function(){
                 <div class="dropdown-select" id="scheduleFreDIV">
                   <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" onchange="weekOnChange();" field-name="Pay Frequency">
                     <option value="">Select Frequency</option>
-                    <option value="Weekly">Weekly</option>
+                    <option value="Weekly">Weekly</option> 
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Monthly">Monthly</option>
                   </select>
@@ -54,6 +55,8 @@ $(document).ready(function(){
 				<label class="col-md-4">Pay Period Start Date</label>
               <div class="col-md-8" id="payperiodDiv1">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
+              	<div class="clearfix mt5"></div>
+              	
               </div>
 			  <div class="clearfix"></div>
           </div>
@@ -63,20 +66,6 @@ $(document).ready(function(){
 				<label class="col-md-4">Next Pay Month</label>
               <div class="col-md-8" id="nextPayrollMonth">
 				  <select class="sel" id="nextPayMonth" name="nextPayMonth"  field-name="Next Pay Month">
-				  <!-- 	<option value="">Slect Month</option>
-				  	<option value="JANUARY">January</option>
-				  	<option value="FEBRUARY">February</option>
-				  	<option value="MARCH">March</option>
-				  	<option value="APRIL">April</option>
-				  	<option value="MAY">May</option>
-				  	<option value="JUNE">June</option>
-				  	<option value="JULY">July</option>
-				  	<option value="AUGUST">August</option>
-				  	<option value="SEPTEMBER">September</option>
-				  	<option value="OCTOBER">October</option>
-				  	<option value="NOVEMBER">November</option>
-				  	<option value="DECEMBER">December</option> -->
-					  
 				  </select>
               </div>
 			  <div class="clearfix"></div>
@@ -96,6 +85,15 @@ $(document).ready(function(){
           <div class="col-md-6">
 			 <h5 class="col-md-12 clearfix margin-top0">Pay Period Frequency</h5>
 			  <div class="clearfix"></div>
+			  
+			  <div class="form-group clearfix mt text-primary textBold" id="endDateDIV">
+				<label class="col-md-4">Pay Period End Date</label>
+              <div class="col-md-8">
+              		<span id="payPeriodEndDate"></span>
+              </div>
+			  <div class="clearfix"></div>
+            </div>
+			  
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
               <div class="col-md-8">
@@ -127,7 +125,7 @@ $(document).ready(function(){
 			  <div class="col-md-12 mb mt">
 			  	<div class="pull-right mr">
 					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
-					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="">Cancel</button>  
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/app/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -189,13 +187,6 @@ function savePayrollSchedule(){
 }
 </script>
   
-<!--   <script type="text/javascript">
-$(function() {
-	$("#payCheckDate").datepicker();
-	$("#runPayrollDate").datepicker();
-	$("#payPeriodStartDate").datepicker();
-})
- -->
 
 
 
@@ -211,8 +202,8 @@ $('#payCheckDate').datepicker({
     //minDate: 0  this line for to restrict selection of previous dates
     		onSelect : function(selected) {
     			var dt = $(this).datepicker('getDate', '+1d');
-    			dt.setDate(dt.getDate()+1);
-    			$("#runPayrollDate").datepicker("option", "minDate", dt);
+    			dt.setDate(dt.getDate()-1);
+    			$("#runPayrollDate").datepicker("option", "maxDate", dt);
 // 			removeStartValid();
 			}
 });
@@ -236,10 +227,19 @@ $('#payPeriodStartDate').datepicker({
 	  changeYear: true, 
 	  onSelect : function(selected) {
 		  var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate()+1);
+		  var frequency = $("#payFrequency").val();
+			if(frequency == "Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}if(frequency == "Bi-Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}
+			var dd = new Date(finalDateFormat);
+			dd.setDate(dt);
+			$("#payPeriodEndDate").html(dt);
+			$("#endDateDIV").show();
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
-    //minDate: 0  this line for to restrict selection of previous dates
+    //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
 	 
 	

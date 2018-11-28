@@ -578,9 +578,10 @@ $('.chosen-select').chosen().on('change', function() {
 	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
+	var projectId =  "${projectId}";
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&projectId="+projectId, 	   
 	 		    success: function(data) {
 		    }
 	 });  

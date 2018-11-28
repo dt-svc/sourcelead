@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -2065,7 +2066,7 @@ public class ClientRestController {
 			/*
 			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 			 */
-		 
+		 logger.info("List from Elk Starts>>>>>"+Calendar.getInstance().getTime());
 		    String[] tableColumns1 = null;
 			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 					Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
@@ -2347,11 +2348,14 @@ public class ClientRestController {
 
 				SearchHit searchHits[] = searchResponse.getHits().getHits();
 				
+				
+				logger.info("List from Elk Ends>>>>>"+Calendar.getInstance().getTime());
+				
 				List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
-				
+				logger.info("List Of contacts Starts>>>>>"+Calendar.getInstance().getTime());
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
@@ -2431,26 +2435,35 @@ public class ClientRestController {
 									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
 								}
 								
-								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
-								if(onboard != null) {
-									clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
-								}
-								
-								
-								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
-								if(orgSpoc != null) {
-									Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
-									if(notifications != null) {
-										clientVendorContactsIndex.setNotificationUUID(notifications.getUuId());
+								if((clientVendorContactsIndex.getSpocUserId() != null && clientVendorContactsIndex.getSpocUserId().longValue() == loginUser.getId().longValue())  &&  StringUtils.isNotBlank(clientVendorContactsIndex.getInvitationStatus()) && clientVendorContactsIndex.getInvitationStatus().equalsIgnoreCase("Sent")) {
+									String onboardUUID = vendorOnboardService.getVendorOnboardingUUIDByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
+									if(onboardUUID != null) {
+										clientVendorContactsIndex.setOnboardUUID(onboardUUID);
 									}
 									
+									
+								/*	OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
+									if(orgSpoc != null) {
+										Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+										if(notifications != null) {
+											clientVendorContactsIndex.setNotificationUUID(notifications.getUuId());
+										}
+										
+									}*/
+									
+									String notificationUUID = notificationsService.getNotificationUUIDByOrgSpocId(39L);
+									if(notificationUUID != null) {
+										clientVendorContactsIndex.setNotificationUUID(notificationUUID);
+									}
 								}
+								
 								
 								
 						 }
 					}	
 					
 				}
+				logger.info("List Of contacts Ends>>>>>"+Calendar.getInstance().getTime());
 				if(spocStatus != null){
 					response.setRecordsFiltered(clientVendorContactsList.size());
 				}else{

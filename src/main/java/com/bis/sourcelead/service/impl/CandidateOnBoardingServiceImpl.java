@@ -637,8 +637,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
         }
 	    
 	    user.setLocation(candidateOnBoarding.getAddress1());
-	   
-	    
+	    user.setGender(candidateOnBoarding.getGender());
 	    user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());

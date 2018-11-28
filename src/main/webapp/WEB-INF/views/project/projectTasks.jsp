@@ -313,8 +313,8 @@ function projectTaskPaginations(url){
               "data": "assignedTo",
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
-            	  if(opt.taskAssignedUsers != null && opt.taskAssignedUsers != "" && opt.taskAssignedUsers !="undefined"){
-						taskAssignedUsers = opt.taskAssignedUsers;
+            	  if(opt.assignedTaskUsers != null && opt.assignedTaskUsers != "" && opt.assignedTaskUsers !="undefined"){
+						taskAssignedUsers = opt.assignedTaskUsers;
 					}else{
 						taskAssignedUsers = "--"
 					}

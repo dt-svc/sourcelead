@@ -42,6 +42,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -816,7 +817,8 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String [] str = groupUUID.split(",");
 		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(str[0]);
-		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		
+		if (userGroup.getObject() != null && PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_WEEKLY, orgLocation.getId(), "");
 //			List<String> list = new ArrayList<>();
 //			for(PayrollScheduleCalenderDTO ) {
@@ -826,19 +828,19 @@ public class USPayrollRestController {
 //			int year = now.get(Calendar.YEAR);
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfWeeks(year, month, orgLocation);
-		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_MONTHLY, orgLocation.getId(), "");
 //			Calendar now = Calendar.getInstance(); // Gets the current date and
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfMonths(month, orgLocation);
 			
 			
-		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			 usPayrollSchedule = payrollScheduleService.findScheduleByFrequency(PayrollConstant.PAY_BI_WEEKLY, orgLocation.getId(), "");
 			//			Calendar now = Calendar.getInstance();
 //			int month = now.get(Calendar.MONTH);
 //			listDates = payrollUtil.getNumberOfBiWeeks(orgLocation);
-		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
+		}else if(userGroup.getObject() != null && PayrollConstant.ANNUALLY.equalsIgnoreCase(userGroup.getObject().getPayFrequency()) && userGroup.getObject().getPayFrequency() != null) {
 			Calendar now = Calendar.getInstance(); 
 //			listDates = payrollUtil.getAnnuallyDates(orgLocation);
 		}
@@ -1748,30 +1750,58 @@ public class USPayrollRestController {
 			
 			ResponseList<CandidateDTO> resList = new ResponseList<>();
 			List<CandidateDTO> listDto = new ArrayList<>();
-			ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
-			for (AssociateSalary associateSalary : assSalList.getData()) {
-				 dto = new CandidateDTO();
-				
-				StringBuilder name = new StringBuilder();
-				if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
-					name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
-				}else {
-					name.append(associateSalary.getCandidate().getFirstName());
+			
+			if(orgLocation.getCountry().equalsIgnoreCase("India")) {
+				ResponseList<AssociateSalaryInd> assSalIndList = associateSalaryService.getAssociateSalaryIndListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
+				for (AssociateSalaryInd associateSalary : assSalIndList.getData()) {
+					 dto = new CandidateDTO();
+					
+					StringBuilder name = new StringBuilder();
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else {
+						name.append(associateSalary.getCandidate().getFirstName());
+					}
+					dto.setCandidateName(name.toString());
+					dto.setEmail(associateSalary.getCandidate().getEmail());
+					dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+					if(associateSalary.getCandidate().getDesignationType() != null) {
+						dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+					}else {
+						dto.setDesignationType("--");
+					}
+					
+					listDto.add(dto);
 				}
-				dto.setCandidateName(name.toString());
-				dto.setEmail(associateSalary.getCandidate().getEmail());
-				dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
-				if(associateSalary.getCandidate().getDesignationType() != null) {
-					dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
-				}else {
-					dto.setDesignationType("--");
+				resList.setData(listDto);
+				resList.setRecordsFiltered(assSalIndList.getRecordsFiltered());
+				resList.setRecordsTotal(assSalIndList.getRecordsTotal());
+			}else {
+				ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
+				for (AssociateSalary associateSalary : assSalList.getData()) {
+					 dto = new CandidateDTO();
+					
+					StringBuilder name = new StringBuilder();
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else {
+						name.append(associateSalary.getCandidate().getFirstName());
+					}
+					dto.setCandidateName(name.toString());
+					dto.setEmail(associateSalary.getCandidate().getEmail());
+					dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+					if(associateSalary.getCandidate().getDesignationType() != null) {
+						dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+					}else {
+						dto.setDesignationType("--");
+					}
+					
+					listDto.add(dto);
 				}
-				
-				listDto.add(dto);
+				resList.setData(listDto);
+				resList.setRecordsFiltered(assSalList.getRecordsFiltered());
+				resList.setRecordsTotal(assSalList.getRecordsTotal());
 			}
-			resList.setData(listDto);
-			resList.setRecordsFiltered(assSalList.getRecordsFiltered());
-			resList.setRecordsTotal(assSalList.getRecordsTotal());
 			return resList;
 		}
 		
@@ -1880,18 +1910,20 @@ public class USPayrollRestController {
 		{
 			List<UserDTO> userList = new ArrayList<>();
 			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
-			Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
-			for(PayrollApprover approver :payrollApprover ) {
-				UserDTO userDTO = new UserDTO();
-				userDTO.setId(approver.getId());
-				StringBuilder sb = new StringBuilder();
-				if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
-					sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
-				}else {
-					sb.append(approver.getUser().getFirstName());
+			if(configurePayrollApprover != null) {
+				Set<PayrollApprover>  payrollApprover = configurePayrollApprover.getPayrollApprover();
+				for(PayrollApprover approver :payrollApprover ) {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setId(approver.getId());
+					StringBuilder sb = new StringBuilder();
+					if(StringUtils.isNotBlank(approver.getUser().getLastName())) {
+						sb.append(approver.getUser().getFirstName()).append(" ").append(approver.getUser().getLastName());
+					}else {
+						sb.append(approver.getUser().getFirstName());
+					}
+					userDTO.setFullName(sb.toString());
+					userList.add(userDTO);
 				}
-				userDTO.setFullName(sb.toString());
-				userList.add(userDTO);
 			}
 			return userList;
 		}

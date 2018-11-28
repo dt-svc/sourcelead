@@ -240,7 +240,7 @@ public class PayrollConfigurationController {
 
 				Calendar c = Calendar.getInstance();
 				String fromYear = c.get(Calendar.YEAR) + "";
-				c.roll(Calendar.YEAR, 1);
+				c.roll(Calendar.MONTH, 11);
 				String toYear = c.get(Calendar.YEAR) + "";
 //				String financialYear = fromYear + "-" + toYear;
 				

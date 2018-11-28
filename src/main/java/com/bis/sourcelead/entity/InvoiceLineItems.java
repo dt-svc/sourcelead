@@ -38,7 +38,7 @@ public class InvoiceLineItems {
 	private Date endDate;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidate;
 	

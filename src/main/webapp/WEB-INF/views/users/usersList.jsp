@@ -628,7 +628,7 @@ function exportUserData(){
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+// 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <!-- script for flush advanced search form -->

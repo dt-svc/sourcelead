@@ -2080,7 +2080,7 @@ function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
 		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(json) {
 			var result = "";
-// 			   result = result +"<option>-- Select Account --</option>";
+			   result = result +"<option value=''>-- Select Account --</option>";
 			   for (var i=0; i<json.length; i++)
 				{
 				  var report = json[i];
