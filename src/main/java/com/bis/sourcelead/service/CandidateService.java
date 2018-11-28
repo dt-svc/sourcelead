@@ -280,7 +280,7 @@ public interface CandidateService {
 	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
 
 	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
-
+	
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
 	
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
