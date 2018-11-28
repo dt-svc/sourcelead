@@ -3,11 +3,16 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -190,7 +195,15 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		
 		
 		String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
-		List<AssociateSalary> assSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
+		List<AssociateSalary> totalAssSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
+		List<AssociateSalary> assSallist = new ArrayList<>();
+		for(AssociateSalary ass : totalAssSallist) {
+			Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(ass.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+			List<Long> list = Arrays.stream(ass.getGroupId().getDepartmentId().split(",")).map(Long::parseLong).collect(Collectors.toList());
+			if(list.contains(emp.getDepartmentId().getId())) {
+				assSallist.add(ass);
+			}
+		}
 		
 		UserGroup userGroup = userGroupDao.findUserGroupById(groupId[0]);
 		
@@ -256,7 +269,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					boolean isExisted = isPayrollRunForSameFrequency(existedData,assoSal);
 					if(!isExisted) {
 						SalaryDTO sal = checkCandidateTermination(orgLocation,assoSal.getCandidate(),freqStartDate,freqEndDate);
-						if("NO".equalsIgnoreCase(sal.getIsTerminated())) {
+						if(("NO".equalsIgnoreCase(sal.getIsTerminated()) && sal.getJoiningDate().before(freqEndDate)) && (sal.getTerminatedDate() == null || sal.getTerminatedDate().after(freqStartDate))) {
 							 EmployeePayroll employeePayroll = new EmployeePayroll();
 							    employeePayroll.setPaysheetFrequency(paySheetFreq);
 							    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getCandidate().getId(), orgLocation);
@@ -424,12 +437,37 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	   int noOfDays = 0;
 	   try {
 		   SalaryDTO salaryDto = associateSalaryService.getSalaryByGroupId(orgLocation,candidate.getId(),freqStartDate,freqEndDate);
+		   SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+			String joiningMonth = month_date.format(salaryDto.getJoiningDate());
+			String payrollRunningMonth = month_date.format(freqStartDate);
+			String terminatingMonth = "";
+			if(salaryDto.getTerminatedDate() != null)
+			 terminatingMonth = month_date.format(salaryDto.getTerminatedDate());
+		   
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
 						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
 						if(terminated) {
-							noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
+								if(joiningMonth.equals(payrollRunningMonth)) {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+								}else if(terminatingMonth.equals(payrollRunningMonth)) {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+								}else {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,freqEndDate);
+								}
+								
+							}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(salaryDto.getPayFrequency()) || PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(salaryDto.getPayFrequency())) {
+								
+								if(salaryDto.getJoiningDate().after(freqStartDate) && salaryDto.getJoiningDate().before(freqEndDate)) {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+								}else if(salaryDto.getTerminatedDate().after(freqStartDate) && salaryDto.getTerminatedDate().before(freqEndDate)) {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,salaryDto.getTerminatedDate());
+								}else {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,freqEndDate);
+								}
+							}
 						}else {
 							isTerminated = "YES";	
 						}
@@ -439,7 +477,19 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					if(salaryDto.getJoiningDate() != null) {
 					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
 					    	if(terminated) {
-								noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
+					    		if(joiningMonth.equals(payrollRunningMonth)) {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+								}else {
+									noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,freqEndDate);
+								}
+					    		}else if(PayrollConstant.PAY_WEEKLY.equalsIgnoreCase(salaryDto.getPayFrequency()) || PayrollConstant.PAY_BI_WEEKLY.equalsIgnoreCase(salaryDto.getPayFrequency())) {
+					    			if(salaryDto.getJoiningDate().after(freqStartDate) && salaryDto.getJoiningDate().before(freqEndDate)) {
+										noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(salaryDto.getJoiningDate(),freqEndDate);
+					    			}else {
+										noOfDays = commonUtil.getNumberOfDaysBetweenTwoDates(freqStartDate,freqEndDate);
+									}
+					    		}
 					    	}else {
 					    		if(salaryDto.getJoiningDate().before(freqStartDate)) {
 					    			isTerminated = "NO";
@@ -453,6 +503,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			}
 		   salary.setIsTerminated(isTerminated);
 		   salary.setNoOfDays(noOfDays);
+		   salary.setJoiningDate(salaryDto.getJoiningDate());
+		   salary.setTerminatedDate(salaryDto.getTerminatedDate());
 	   }catch (Exception e) {
 		   e.printStackTrace();
 	    }
@@ -471,7 +523,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	{
 	   boolean isTerminated = false;
 //	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
-	   if(date.after(freqStartDate) && date.before(freqEndDate)) {
+	   if(date.after(freqStartDate) || date.before(freqEndDate)) {
 		   isTerminated = true;
 		}
 		return isTerminated;
@@ -1219,7 +1271,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payrollDTO.setTaxes(payroll.getTaxes());
 			payrollDTO.setPayPerSal(payroll.getPayPerSalary());
 			payrollDTO.setOvertimeHours(otHrs);
-			totalHours = CommonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
+			totalHours = commonUtil.getTotalRegularOverTimeHours(regHrs, otHrs);
 			payrollDTO.setTotalHours(totalHours);
 			BigDecimal overTimeAmount = BigDecimal.ZERO;
 			if(payroll.getOverTimeAmount() != null) {

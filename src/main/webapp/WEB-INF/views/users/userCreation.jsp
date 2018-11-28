@@ -164,7 +164,7 @@
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN" onblur="validateSSNNumber();">
+                    <input type="text" class="form-control" id="ssnNumber" name="ssn" field-name="SSN number" onblur="validateSSNNumber();">
                   </div>
                   </div>
                   </c:if>
@@ -274,6 +274,15 @@
                            </div>
                         </div>
                   </div>
+                  
+                  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+		         		<div class="form-group">
+		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
+		                  <div class="col-md-9">
+		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    </div>
+		                </div>
+		          </c:if>
                   
                <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
@@ -569,6 +578,8 @@ function validateSSNNumber(){
 	}
 }
 function calculateSSNLength(length,ssnNumber){
+	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	$("#ssnNumber").removeAttr("data-validation");
 	if(length == 0){
 		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");

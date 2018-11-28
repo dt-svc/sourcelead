@@ -989,6 +989,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			int i = qry.executeUpdate();
 			return i;
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("Delete Approvers By Leave Id Failed Due to "
 					+ e.getLocalizedMessage());
 		}
@@ -1408,7 +1409,9 @@ public class LeaveDaoImpl implements LeaveDao{
                                                                 + hrLeaveReportDTO.getSearchValue()
                                                                 + "%' ").append("OR leaveReport.status like '%"
                                                                         + hrLeaveReportDTO.getSearchValue()
-                                                                        + "%') ");
+                                                                        + "%' ").append("OR leaveReport.eid like '%"
+                                                                                + hrLeaveReportDTO.getSearchValue()
+                                                                                + "%') ");
                 /*
                  * if (startDateSqlDate != null) {
                  * query1.append("OR (leaveReport.fromDate <=" +

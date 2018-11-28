@@ -6,10 +6,8 @@ import com.bis.sourcelead.annotations.Required;
 public class IndAssociatePaymentAccountDTO {
     private long id;
     
-    @Required(desc = "firstName")
     private String firstName;
     
-    @Required(desc = "lastName")
     private String lastName;
     
     private boolean defaultAccount;
@@ -24,18 +22,13 @@ public class IndAssociatePaymentAccountDTO {
     private long associateUserId;
     private long candidateId;
     
-    @Required(desc = "bankName")
     private String bankName;
     
-    @Required(desc = "accountNumber")
     private String accountNumber;
     
-    @Required(desc = "routingNumber")
     private String routingNumber;
     
-    @Required(desc = "bsrNumber")
     private String bsrNumber;
-    @Required(desc = "micrCode")
     private String micrCode;
     private boolean disabled;
     private String paymentAccountId;

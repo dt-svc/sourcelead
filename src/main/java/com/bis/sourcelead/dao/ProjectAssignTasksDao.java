@@ -13,7 +13,7 @@ public interface ProjectAssignTasksDao {
 	 
 	 public List<ProjectAssignTask> getProjectAssignTaskListByProjectTaskId(Long projectTaskId) throws Exception;
 	
-	 List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId) throws Exception;
+	 List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId,List<Long> assignedMembersIds) throws Exception;
 	
 	 ProjectAssignTask deleteProjectAssignTask(ProjectAssignTask ProjectAssignTask) throws Exception;
 }

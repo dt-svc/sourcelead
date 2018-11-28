@@ -830,7 +830,7 @@ public class PayrollConfigurationRestController {
 				if(payrollTaxDTO.getId() == 0) {
 					Calendar c = Calendar.getInstance();
 					String fromYear = c.get(Calendar.YEAR) + "";
-					c.roll(Calendar.YEAR, 1);
+					c.roll(Calendar.MONTH, 11);
 					String toYear = c.get(Calendar.YEAR) + "";
 					String financialStartMonth = orgLocations.getStartMonth() != null && !orgLocations.getStartMonth().isEmpty() 
 							? orgLocations.getStartMonth()
@@ -870,6 +870,8 @@ public class PayrollConfigurationRestController {
 		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidateId, false);
 		 model.addObject("paymentList", paymentList);
 		 model.addObject("candidateId", candidateId);
+		 model.addObject("canFirstName", candidate.getFirstName());
+		 model.addObject("canLastName", StringUtils.isNotBlank(candidate.getLastName()) ? candidate.getLastName() : "");
 		 model.addObject("paymentListSize", paymentList.size());
 		 model.addObject("userId",candidate.getConsultantUser().getId());
 		 model.setViewName("indPayroll/associateBankingDetails");
@@ -989,7 +991,11 @@ public class PayrollConfigurationRestController {
 			        model.addObject("candidateCTCPerYear", candidateCTCPerYear);
 				}
 				model.addObject("candidate", candidate);
-				model.addObject("status", "NODATA");
+				if(payrollPayheadDTO.getStatus()!= null && payrollPayheadDTO.getStatus().equalsIgnoreCase("NEW")){
+					model.addObject("status", "NEW");
+				}else{
+					model.addObject("status", "NODATA");
+				}
 			}
 			model.setViewName("indPayroll/associateSalary");
 			model.addObject("sourceleadUrl", sourceleadUrl);

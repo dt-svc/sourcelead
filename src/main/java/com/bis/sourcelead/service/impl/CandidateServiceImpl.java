@@ -1481,6 +1481,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateUser.getDateOfBirth() != null){
 			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
 			}
+		if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+			candidate.setPanNumber(candidateDTO.getPanNumber());
+		}else{
+			candidate.setPanNumber(null);
+		}
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}

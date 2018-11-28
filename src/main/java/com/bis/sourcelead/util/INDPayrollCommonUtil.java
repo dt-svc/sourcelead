@@ -4,10 +4,13 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,11 +26,18 @@ import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.PayrollTaxDTO;
+import com.bis.sourcelead.dto.ProfessionalTaxDTO;
+import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
@@ -44,6 +54,9 @@ import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.PayrollTaxService;
+import com.bis.sourcelead.service.TaxService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -86,6 +99,18 @@ public class INDPayrollCommonUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	PayrollTaxService payrollTaxService;
+	
+	@Autowired
+	private TaxService taxService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
 		if(payrollPayheadList != null && !payrollPayheadList.isEmpty()) {
@@ -99,8 +124,21 @@ public class INDPayrollCommonUtil {
 				payheadDTO.setComponent(payRollPayhead.getComponent());
 				payheadDTO.setTax(payRollPayhead.getTax());
 				payheadDTO.setUuid(payRollPayhead.getUuid());
-				payheadDTO.setMethod(payRollPayhead.getMethod());
-				payheadDTO.setFormula(payRollPayhead.getFormula());
+				
+				
+				if(Arrays.asList(Constants.BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES).contains(payRollPayhead.getShortCode())) {
+					payheadDTO.setMethod("% of Payheads");
+					PayrollTaxDTO payrollTaxDTO = 	payrollTaxService.getPayrollTaxConfigurationByOrgLocationId(orgLocations.getId());
+					if(payrollTaxDTO != null && payRollPayhead.getShortCode().equalsIgnoreCase("ESI")) {
+						payheadDTO.setFormula(payrollTaxDTO.getEmployeeESIContribution()+"%(BA)+"+payrollTaxDTO.getEmployerESIContribution()+"%(BA)");
+					}
+					if(payrollTaxDTO != null && payRollPayhead.getShortCode().equalsIgnoreCase("PF")) {
+						payheadDTO.setFormula(payrollTaxDTO.getEmployeePFContribution()+"%(BA)+"+payrollTaxDTO.getEmployerPFContribution()+"%(BA)");
+					}
+				}else {
+					payheadDTO.setMethod(payRollPayhead.getMethod());
+					payheadDTO.setFormula(payRollPayhead.getFormula());
+				}
 				payrollPayheadDTOList.add(payheadDTO);
 			}
 		}
@@ -491,11 +529,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(payHead.getPayrollPayhead() != null 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
 						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
 						allDeductions = allDeductions.add(payHead.getAnnualy());
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
 						allDeductions = allDeductions.add(payHead.getMonthly());
 					}else  {
+						if(payHead.getAnnualy() != null)
 						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
@@ -870,6 +909,45 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
+	@SuppressWarnings("static-access")
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
+		Double ptAmount = 0.0;
+		
+		AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
+		
+		if(asph != null) {
+			String financialYear = "";
+			Calendar c = Calendar.getInstance();
+			c.setTime(freqEndDate);
+			String fromYear = "";
+			String toYear = "";
+			if(c.get(Calendar.MONTH) <= 3) {
+				toYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, -1);
+				fromYear = c.get(Calendar.YEAR) + "";
+			}else {
+				fromYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, 1);
+				toYear = c.get(Calendar.YEAR) + "";
+			}
+			financialYear = fromYear + "-" + toYear;
+			
+			StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+			try {
+				if(taxDTO != null) {
+					ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(asph.getMonthly()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(asph.getMonthly()) >= 0 ).findAny().get();
+					if(ptDTO != null)
+						ptAmount = Double.valueOf(ptDTO.getAmount());
+				}
+			}catch (Exception e) {
+				//e.printStackTrace();
+				return ptAmount;
+			}
+		}
+		return ptAmount;
+	}
+	
+	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
 	{
@@ -884,9 +962,79 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
-	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency savedPF) throws Exception {
-		
-		
+	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency frequency) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(payrollApprover.getUser().getFirstName());
+		emailMessage.setLastName(payrollApprover.getUser().getLastName());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setFirstName(loginUser.getLastName());
+
+		if(payrollApprover.getUser().getUserId() != loginUser.getUserId()){
+		emailMessage.setToEmail(payrollApprover.getUser().getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		}
+
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(
+		msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+
+
+		// setting the class field values...............
+
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (loginUser.getLastName() != null && !"".equalsIgnoreCase(loginUser.getLastName())) {
+		StringBuilder loginSb = new StringBuilder();
+		globalVarsMap.put("loginUser", loginSb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+		globalVarsMap.put("loginUser", loginUser.getFirstName());
+		}
+		if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
+		globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+		} else {
+		globalVarsMap.put("LoginOrgName", "--");
+		}
+		if(payrollApprover.getUser().getLastName() != null && !"".equalsIgnoreCase(payrollApprover.getUser().getLastName())) {
+		StringBuilder apsb=new StringBuilder();
+		globalVarsMap.put("ApproverName",apsb.append(payrollApprover.getUser().getFirstName()).append(" ").append(payrollApprover.getUser().getLastName()).toString());
+		} else {
+		globalVarsMap.put("ApproverName",payrollApprover.getUser().getFirstName());
+		}
+
+		globalVarsMap.put("Frequency", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyStartDate()) + " " + commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyEndDate()));
+
+		globalVarsMap.put("GetTheBatchName",frequency.getUserGroup().toString());
+
+		globalVarsMap.put("GetTheCountNoOfAssociates",""+frequency.getIndEmployeepayroll().size());
+
+		BigDecimal totAmount = new BigDecimal(0.0);
+		for(IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+		totAmount.add(indEmployeepayroll.getNetPay());
+		}
+		// Set the login link when user click this link the page goes to redirect the sourcelead login page..
+
+		StringBuilder loginLinkBuild = new StringBuilder();
+		globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+		"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		.toString());
+
+		// Set the notification link when user click this link the page goes to respective payroll summary.......
+
+		StringBuilder notifyBuild = new StringBuilder();
+		globalVarsMap.put("NotificationLink",notifyBuild.append(sourceleadUrl).append("/").append("employeePayrollList?paySheetFrequencyUUID="+frequency.getPaySheetFrequencyUUID()).toString());
+
+		// getting the current email scenario by uniqueNotification
+
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER, Constants.ENTITY_TYPE_NOTIFICATION);
+
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+		notificationScenario);
+		notificationScenario.setBody(notificationbody);
+
+		// getting the current email scenario by uniqueEmail 
+
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_MAIL_TO_INDPAYROLL_APPROVER, new ArrayList<EmailAttachment>());
+
 	}
 	
 	

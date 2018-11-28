@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ASSOCIATE_NOMINEE")
@@ -98,6 +101,10 @@ public class AssociateNominee implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
     private Long updatedBy;
+	
+	@Transient
+	@JsonProperty
+	private String dob;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -310,6 +317,12 @@ public class AssociateNominee implements Serializable{
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	
-	
+
+	public String getDob() {
+		return dob;
+	}
+
+	public void setDob(String dob) {
+		this.dob = dob;
+	}
 }
