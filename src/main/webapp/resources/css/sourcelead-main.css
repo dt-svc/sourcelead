@@ -9543,6 +9543,12 @@ input[type=range]::-moz-range-track {
   min-height: 150px; max-height: 250px;
 }
 
+.media-object {
+    width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}
+.mediaObject {
+    width: 45px; height: 45px; margin: 5px 0px 0px 0px; position: absolute; right: 10%; top: 0px;
+}
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {

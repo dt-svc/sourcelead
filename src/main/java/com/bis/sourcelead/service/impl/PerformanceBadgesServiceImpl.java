@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.PerformanceBadges;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.PerformanceBadgesService;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class PerformanceBadgesServiceImpl implements PerformanceBadgesService{
@@ -31,7 +32,24 @@ public class PerformanceBadgesServiceImpl implements PerformanceBadgesService{
 	public PerformanceBadges storePerformanceBadges(PerformanceBadgesDTO performanceBadgesDTO, Long orgLocationId, 
 			Long userId) throws Exception {
 		
-		PerformanceBadges performanceBadges = new PerformanceBadges();
+		User user = new User();
+		user.setId(userId);
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		
+		PerformanceBadges performanceBadges = null;
+		if(performanceBadgesDTO.getBadgeId() != null) {
+			performanceBadges = performanceBadgesDao.getPerformanceBadgesById(performanceBadgesDTO.getBadgeId());
+			performanceBadges.setUpdatedBy(user);
+			performanceBadges.setUpdatedDate(new Date());
+		}else {
+			performanceBadges = new PerformanceBadges();
+			performanceBadges.setCreatedBy(user);
+			performanceBadges.setCreatedDate(new Date());
+			performanceBadges.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		
 		performanceBadges.setName(performanceBadgesDTO.getName());
 		performanceBadges.setDescription(performanceBadgesDTO.getDescription());
 		
@@ -45,17 +63,32 @@ public class PerformanceBadgesServiceImpl implements PerformanceBadgesService{
 					FileUploadUtil.moveFile(performanceBadgesDTO.getStaticPath(), fileInfo, "badgeImages");
 				}
 			}
-		performanceBadges.setStatus(Constants.CANDIDATE_ACTIVE);
-		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(orgLocationId);
+		performanceBadges.setStatus(Constants.RECORD_ACTIVE);
 		performanceBadges.setOrgLocationId(orgLocations);
 		
-		User user = new User();
-		user.setId(userId);
-		performanceBadges.setCreatedBy(user);
-		performanceBadges.setCreatedDate(new Date());
-		
 		return performanceBadgesDao.storePerformanceBadges(performanceBadges);
+	}
+
+	@Override
+	public PerformanceBadgesDTO getPerformanceBadgesById(Long id) throws Exception {
+		PerformanceBadges performanceBadges = performanceBadgesDao.getPerformanceBadgesById(id);
+		PerformanceBadgesDTO badgeDTO = new PerformanceBadgesDTO();
+		badgeDTO.setBadgeId(performanceBadges.getId());
+		badgeDTO.setName(performanceBadges.getName());
+		badgeDTO.setDescription(performanceBadges.getDescription());
+		badgeDTO.setFileURL(performanceBadges.getFileURL());
+		return badgeDTO;
+	}
+
+	@Override
+	public PerformanceBadges savePerformanceBadges(PerformanceBadges performanceBadges) throws Exception {
+		return performanceBadgesDao.storePerformanceBadges(performanceBadges);
+	}
+
+	@Override
+	public PerformanceBadges getPerformanceBadgesDetailsById(Long id) throws Exception {
+		 PerformanceBadges badge = performanceBadgesDao.getPerformanceBadgesById(id);
+		 return badge;
 	}
 
 }

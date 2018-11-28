@@ -18,6 +18,10 @@ public class PerformanceBadgesDTO implements Serializable{
 	 private String staticPath;
 	 
 	 private List<FileInfo> fileInfo;
+	 
+	 private String fileURL;
+	 
+	 private Long badgeId;
 
 	public String getName() {
 		return name;
@@ -49,6 +53,22 @@ public class PerformanceBadgesDTO implements Serializable{
 
 	public void setStaticPath(String staticPath) {
 		this.staticPath = staticPath;
+	}
+
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
+
+	public Long getBadgeId() {
+		return badgeId;
+	}
+
+	public void setBadgeId(Long badgeId) {
+		this.badgeId = badgeId;
 	}
 
 	 

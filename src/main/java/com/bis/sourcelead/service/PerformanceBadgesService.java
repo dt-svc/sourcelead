@@ -10,4 +10,10 @@ public interface PerformanceBadgesService {
 	List<PerformanceBadges> getPerformanceBadgesList(Long orgLocationId) throws Exception;
 	
 	PerformanceBadges storePerformanceBadges(PerformanceBadgesDTO performanceBadgesDTO, Long orgLocationId, Long userId) throws Exception;
+	
+	PerformanceBadgesDTO getPerformanceBadgesById(Long id) throws Exception;
+	
+	PerformanceBadges savePerformanceBadges(PerformanceBadges performanceBadges) throws Exception;
+	
+	PerformanceBadges getPerformanceBadgesDetailsById(Long id) throws Exception;
 }

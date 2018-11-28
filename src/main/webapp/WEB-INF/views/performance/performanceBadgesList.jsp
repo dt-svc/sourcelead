@@ -3,7 +3,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<script type="text/javascript" src="/resources/js/performance/performanceBadge.js"></script>
 
 
 
@@ -42,8 +41,8 @@
 		               </div>
 						  <div class="col-md-1">
 							  <ul class="list-unstyled list-inline text-center mt25">
-							  	<li><a href="javascript:void(0)" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	<li><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	<li><a onclick="editBadge('${badges.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							  	<li><a onclick="deleteBadge('${badges.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 							  </ul>
 						  </div>
 		              </div>
@@ -67,70 +66,33 @@
         </div>
     </div>
   
-  <div class="mask"></div>
-<div class="popupWrap" id="modalTasktype">
-      <div class="popupHead"><span>Add Badge</span><i class="closePop pull-right popClose" onclick="closeBadgePopup();"></i></div>
-         <div id="badgeDetailsLoading"></div>
-        <form:form id="performance_badge_form" name="performance_badge_form" method="post">
-	        <div class="popupContent">
-	            <div class="clearfix mb" id="badgeNameDiv">
-	                <label class="noPad">Badge Name <span class="text-danger">&nbsp;*</span></label>
-	                <div class="clearfix">
-			                    <input type="text" name="name" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
-	                </div>
-	            </div>
-				<div class="clearfix mb" id="badgeImageDiv">
-	                <label class="noPad">Image</label>
-	                <div class="clearfix">
-						<input type="file" multiple id="uploadBtn" class="upload" field-name="Image" data-validation-optional="true" data-validation="validate_Space validateImg ">
-	        		</div>
-	        		 <label id="newUploadFile"></label> 
-					 <input type="text" hidden readonly id="dataFilePath" value="" >
-	                </div>
-	
-	            <div class="clearfix mb" id="badgeDescriptionDiv">
-	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
-	                <div class="clearfix">
-						<textarea field-name="Description" name="description" class="form-control" data-validation="required validate_Space" rows="2"></textarea>
-	                </div>
-	            </div>
-	
-	        </div>
-        
-	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceBadge.savePerformanceBadgeDetails();" >Save</button>
-	           <button type="button" class="slBtn md popClose"  onclick="closeBadgePopup();" >Cancel</button>
-	        </div>
-	 </form:form>
-</div>
-
-<script>
-	function predefineBadgeImage(imageId){
-		$(imageId).attr('src','/resources/images/rewards_badges.svg');
-	}
-</script>
-
-<script type="text/javascript">
-document.getElementById("uploadBtn").onchange = function () {
-	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
-	   fileUpload("uploadBtn", "badgeImages", "performance_badge_form");
-};
-</script>
-  
-  
-  <script>
-  function addBadgePopup(){
-	  $(".mask, #modalTasktype").fadeIn();
-  }
-  
-  function closeBadgePopup(){
-	  $(".mask, #modalTasktype").fadeOut();
-	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
-	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
-	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
-	  $('#newUploadFile').text('');
-	  $('#uploadBtn').val('');
-	  
+   <jsp:include page="../performance/addNewPerformanceBadge.jsp" />
+   
+   
+   
+   <script>
+  function deleteBadge(badgeId){
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deletePerformanceRewardsAndBadgeById?badgeId="+badgeId,
+			     success :function(response) {
+			    	 
+			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		   // $("#badgeDetailsLoading").removeAttr('style');
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		getBadgesList();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				}); 
   }
   </script>
   

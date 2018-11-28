@@ -44,6 +44,9 @@ public class PerformanceBadges implements Serializable{
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -157,6 +160,14 @@ public class PerformanceBadges implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 

@@ -47,11 +47,12 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Rewards & Badges</h3>
-				<span><a href="${appPath}/addPerformanceBadge" class="colB">Add</a><a onclick="getBadgesList();" class="">View</a></span>
+				<span><a onclick="addBadgePopup();" class="colB">Add</a><a onclick="getBadgesList();" class="">View</a></span>
 			</div>															
 		</div>	
 	</div>
-        
+    
+<jsp:include page="../performance/addNewPerformanceBadge.jsp" />       
 </section>
 
 

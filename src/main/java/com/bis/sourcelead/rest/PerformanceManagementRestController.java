@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PerformanceBadges;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.PerformanceBadgesService;
@@ -61,5 +64,41 @@ public class PerformanceManagementRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
+    }
+    
+    
+    
+    @RequestMapping(value = "/getPerformanceRewardsAndBadgeDetailsById", method = RequestMethod.GET)
+	public Response<PerformanceBadgesDTO> getPerformanceRewardsAndBadgeDetailsById(HttpServletRequest request, 
+			@RequestParam(value = "badgeId", required = true) Long badgeId){
+		 Response<PerformanceBadgesDTO> resObj = new Response<>();
+		 try {
+			 PerformanceBadgesDTO badgesDTO =  performanceBadgesService.getPerformanceBadgesById(badgeId);
+			 resObj.setObject(badgesDTO);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		    
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+    }
+    
+    
+    @RequestMapping(value = "/deletePerformanceRewardsAndBadgeById", method = RequestMethod.POST)
+  	public String deletePerformanceRewardsAndBadgeById(HttpServletRequest request, 
+  			@RequestParam(value = "badgeId", required = true) Long badgeId){
+  		 String resObj = null;
+  		 try {
+  			 PerformanceBadges badges =  performanceBadgesService.getPerformanceBadgesDetailsById(badgeId);
+  			 badges.setStatus(Constants.RECORD_INACTIVE);
+  			 performanceBadgesService.savePerformanceBadges(badges);
+  			 resObj = Result.SUCCESS.name();
+  		    
+  		 }catch (Exception e) {
+  			resObj = Result.AWKWARD.name();
+  		}
+  		 return resObj;
     }
 }

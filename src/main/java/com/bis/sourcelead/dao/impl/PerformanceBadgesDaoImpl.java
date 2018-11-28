@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PerformanceBadgesDao;
 import com.bis.sourcelead.entity.PerformanceBadges;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -64,6 +66,20 @@ public class PerformanceBadgesDaoImpl implements PerformanceBadgesDao{
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return performanceBadges;
+	}
+
+	@Override
+	public PerformanceBadges getPerformanceBadgesById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceBadges> performanceBadges = new ArrayList<PerformanceBadges>();
+		logger.debug("getPerformanceBadgesById  start");
+		performanceBadges = session.createQuery("from PerformanceBadges badges where badges.id = :id " ).setLong( "id", id).list();
+		logger.debug("getPerformanceBadgesById  end");
+		if (performanceBadges.size() > 0) {
+			return performanceBadges.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }
