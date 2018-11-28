@@ -69,6 +69,7 @@ import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.USPayrollAssociateTaxHistoryDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
@@ -79,6 +80,7 @@ import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
+import com.bis.sourcelead.payroll.entity.USPayrollAssociateTaxHistory;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
@@ -94,6 +96,7 @@ import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.PayrollScheduleService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.USPayPeriodService;
+import com.bis.sourcelead.payroll.service.USPayrollAssociateTaxHistoryService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.payroll.service.USPaysheetService;
 import com.bis.sourcelead.payroll.service.UsMyPayrollFormService;
@@ -214,6 +217,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	USPayrollAssociateTaxHistoryService usPayrollAssociateTaxHistoryService;
 
 	
 	/**
@@ -1913,6 +1919,17 @@ public class USPayrollRestController {
 			return isPayFrequencyExisted;
 		}
 		
+		@RequestMapping(value = {"/getAssociateTaxHistoryByUserId","/rest/getAssociateTaxHistoryByUserId"}, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<USPayrollAssociateTaxHistoryDTO> getAssociateTaxHistoryByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request,HttpServletResponse response) throws Exception
+		{
+			ResponseList<USPayrollAssociateTaxHistoryDTO> res = new ResponseList<>();
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
+			List<USPayrollAssociateTaxHistoryDTO> hisList = usPayrollAssociateTaxHistoryService.getAssociateTaxHistoryByCandidateId(candidate.getId());
+			res.setData(hisList);
+			return res;
+		}
 		
 
 }
