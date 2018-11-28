@@ -15,7 +15,7 @@
       <h2 id="headerLbl">Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart View</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
@@ -31,7 +31,7 @@
     <div class="col-md-12">
       <div class="profileDetails">
         <div class="row reportHead">
-          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a></span>
+          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a><h4 style="display:inline-block">Cart View</h4></span>
             <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
               <li>
 				  <i class="inlineBlock pull-left mr10 trashIcon" title="Cart"></i>
@@ -150,31 +150,31 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
               <li class=" positionRelative">
-                <input name="orgManagers" value="1883" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="today" type="checkbox">
                 <label>Today</label>
               </li>
               <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="1_week" type="checkbox">
                 <label>This Week</label>
               </li>
               <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="Last_Week" type="checkbox">
                 <label>last Week</label>
               </li>
              <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="1_month" type="checkbox">
                 <label>One Month</label>
               </li>
               <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value=1_Month_Ago type="checkbox">
                 <label>One Month Ago</label>
               </li>
               <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="YTD" type="checkbox">
                 <label>This Year</label>
               </li>
               <li class="positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="closed" type="checkbox">
                 <label>Closed</label>
               </li>
             </ul>
@@ -186,19 +186,19 @@
             <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div>
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="userRole" value="2366" type="checkbox">
                 <label>Admin De</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="userRole" value="2367" type="checkbox">
                 <label>Client</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="userRole" value="2367" type="checkbox">
                 <label>Customer</label>
               </li>
-              <li class="checkBox positionRelative">
+              <li class="positionRelative">
                 <input name="userRole" value="2367" type="checkbox">
                 <label>Other</label>
               </li>
@@ -252,7 +252,7 @@ $(document).ready(function () {
 function initMarketplacePayment() {
      $.ajax({
       type: "POST",
-	   url: "/app/init-marketplace-payment?cartId=1234",
+	   url: "/app/init-marketplace-payment",
   	success: function(data) {
   		 if (data) {
                 location.href = data;
@@ -283,11 +283,18 @@ function goToOrgMarketPlaceList(){
 
 
 function getCandidateDetailsFromMarketcart(){
+	var checkedDate = $('.dateCheckBox:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
-	var creationEndDate = $("#creationEndDate").val();
+	var creationEndDate = $("#creationEndDate").val(); 
+	if(checkedDate != null){
+		creationStartDate = "";
+		creationEndDate = "";
+	}else{
+		checkedDate = "";
+	}
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate,
+		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
 		success : function(object) {
 			if(object != null){
 			var result ="";
