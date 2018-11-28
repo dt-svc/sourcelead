@@ -2257,7 +2257,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
 						boolean isValidated = isMobileNumberValid(mobileNumber);
 						if (isValidated == false) {
-							errorSet.put("beneficiaryPhone", "Phone Number is not a valid");
+							errorSet.put("beneficiaryPhone", "Phone Number is not valid");
 						}
 					}
 				}
