@@ -53,6 +53,7 @@ import com.bis.sourcelead.dao.CronTrackerDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Immigration;
@@ -96,6 +98,8 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -110,6 +114,7 @@ import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
@@ -129,6 +134,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.JobAlertService;
@@ -371,7 +377,11 @@ public class EMailJobScheduler {
 	private AssetService assetService;
 	
 	@Autowired
+	private EmployeesService employeesService;
+
+	@Autowired
 	private CronTrackerDao cronTrackerDao;
+
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2887,106 +2897,235 @@ public class EMailJobScheduler {
 	 * cron runs every day at 9:00 AM to remind the approver about pending leaves
 	 * @throws Exception  
 	 */
-	@Scheduled(cron = "0 0 9 1/1 * ?")
+//	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
+	@Scheduled(cron = "0/30 * * * * *")
 	@Async
 	public void appliedLeaveRemainder() throws Exception
 	{
-		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
-		for(OrgLocations orgLocation : orgLocationsList){
-			List<LeaveApproveHierarchy> lahList = leaveService.getAllLeaveApproversList(orgLocation.getId());
+		
+		try {
 			
-			Collection<LeaveApproveHierarchy> filteredLahList = lahList.stream().<Map<Long, LeaveApproveHierarchy>> collect(HashMap::new,(m,e)->m.put(e.getApproverUserId().getId(), e), Map::putAll).values();
-			
-			for (LeaveApproveHierarchy lah : filteredLahList) {
-				if(Constants.LEAVE_PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())){
-					DateTime zoned = new DateTime(lah.getLeaveid().getCreatedDate());
-					DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-					DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-					DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					
-					DateTime week = zoned.plusDays(3);
-					String startDate = outputFormatter1.print(week);
-					String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
-					Date leaveStartDate = ts.parse(startDateString);
-					String endDate = outputFormatter.print(week);
-					String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
-					Date leaveEndDate = ts.parse(endDateString);
-					
-					User user = lah.getApproverUserId();
-					OrgLocations orgLocations = lah.getLeaveid().getOrgLocations();
-					
-					List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
-					
-					EmailMessage emailMessage = new EmailMessage();
-					emailMessage.setFirstName(user.getFirstName());
-					if (StringUtils.isNotBlank(user.getLastName()))
-						emailMessage.setLastName(user.getLastName());
-					emailMessage.setToEmail(user.getEmail());
-					emailMessage.setFromEmail("defaultFromEmailAddressForProd");
-					String fromEmail = null;
-					EmailConfigurationFromMail confFromMail = null;
-					List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
-					if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
-						for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
-							if (fromMail.getEmailModules() != null) {
-								String[] jobIds = fromMail.getEmailModules().split(",");
-								for (int j = 0; j < jobIds.length; j++) {
-									if (Long.valueOf(jobIds[j]) == 31L) {
-										confFromMail = fromMail;
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+			for(OrgLocations orgLocation : orgLocationsList){
+				List<LeaveApproveHierarchy> lahList = leaveService.getAllLeaveApproversList(orgLocation.getId());
+				
+				Collection<LeaveApproveHierarchy> filteredLahList = lahList.stream().<Map<Long, LeaveApproveHierarchy>> collect(HashMap::new,(m,e)->m.put(e.getApproverUserId().getId(), e), Map::putAll).values();
+				
+				for (LeaveApproveHierarchy lah : filteredLahList) {
+					if(Constants.LEAVE_PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())){
+						DateTime zoned = new DateTime(lah.getLeaveid().getCreatedDate());
+						DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+						DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
+						DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						
+						DateTime week = zoned.plusDays(3);
+						String startDate = outputFormatter1.print(week);
+						String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
+						Date leaveStartDate = ts.parse(startDateString);
+						String endDate = outputFormatter.print(week);
+						String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
+						Date leaveEndDate = ts.parse(endDateString);
+						
+						User user = lah.getApproverUserId();
+						OrgLocations orgLocations = lah.getLeaveid().getOrgLocations();
+						
+						List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+						
+						EmailMessage emailMessage = new EmailMessage();
+						emailMessage.setFirstName(user.getFirstName());
+						if (StringUtils.isNotBlank(user.getLastName()))
+							emailMessage.setLastName(user.getLastName());
+						emailMessage.setToEmail(user.getEmail());
+						emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+						String fromEmail = null;
+						EmailConfigurationFromMail confFromMail = null;
+						List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
+						if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
+							for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
+								if (fromMail.getEmailModules() != null) {
+									String[] jobIds = fromMail.getEmailModules().split(",");
+									for (int j = 0; j < jobIds.length; j++) {
+										if (Long.valueOf(jobIds[j]) == 31L) {
+											confFromMail = fromMail;
+										}
 									}
 								}
 							}
-						}
-						if (confFromMail == null) {
-							confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
-							if (confFromMail != null) {
+							if (confFromMail == null) {
+								confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+								if (confFromMail != null) {
+									fromEmail = confFromMail.getEmail();
+								}
+							}
+							else {
 								fromEmail = confFromMail.getEmail();
 							}
 						}
-						else {
-							fromEmail = confFromMail.getEmail();
+						if (StringUtils.isNotBlank(fromEmail)) {
+							emailMessage.setFromEmail(fromEmail);
 						}
+						StringBuilder msgBuild = new StringBuilder();
+						emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+						// setting the class filed values
+						Map<String, String> globalVarsMap = new HashMap<String, String>();
+						StringBuilder name = new StringBuilder();
+						if (user.getLastName() != null && user.getLastName() != ""
+								&& user.getLastName() != "undefined") {
+							globalVarsMap.put("approverName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+						}
+						else {
+							globalVarsMap.put("approverName", user.getFirstName());
+						}
+						globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
+						globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
+						StringBuilder loginBuilder = new StringBuilder();
+						globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+						
+						InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+						EmailScenario emailScenario = null;
+						if (orgLocations != null)
+							emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+						if (emailScenario == null) {
+							emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+						}
+						// configured Email
+						String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+						if (StringUtils.isNotBlank(fromMail)) {
+							emailMessage.setFromEmail(fromMail);
+						}
+						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
+						
 					}
-					if (StringUtils.isNotBlank(fromEmail)) {
-						emailMessage.setFromEmail(fromEmail);
-					}
-					StringBuilder msgBuild = new StringBuilder();
-					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-					// setting the class filed values
-					Map<String, String> globalVarsMap = new HashMap<String, String>();
-					StringBuilder name = new StringBuilder();
-					if (user.getLastName() != null && user.getLastName() != ""
-							&& user.getLastName() != "undefined") {
-						globalVarsMap.put("approverName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-					}
-					else {
-						globalVarsMap.put("approverName", user.getFirstName());
-					}
-					globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
-					globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
-					StringBuilder loginBuilder = new StringBuilder();
-					globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-					
-					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-					EmailScenario emailScenario = null;
-					if (orgLocations != null)
-						emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
-					if (emailScenario == null) {
-						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
-					}
-					// configured Email
-					String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-					if (StringUtils.isNotBlank(fromMail)) {
-						emailMessage.setFromEmail(fromMail);
-					}
-					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
-					
 				}
 			}
+			
+			sendProbationPeriodMail();
+			
+		} catch (Exception e2) {
+			e2.printStackTrace();
 		}
+		
 	}
 	
+	
+	@Async
+	private void sendProbationPeriodMail() throws Exception {
+		
+		List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+		
+		for (OrgLocations orgLocations : orgLocationsList) {
+			
+			List<User> resourceManagersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, 2);
+			Date futureDate = cal.getTime();
+			for (User user : resourceManagersList) {
+				List<ProbationDTO> probationUsersList = userService.getAllProbationUsersListForResourceManager(user.getId(),futureDate,orgLocations.getId());
+				if(probationUsersList != null && probationUsersList.size() > 0)
+					mailForwardProbationaryAssociatesToResourceManager(probationUsersList,user,orgLocations);
+			
+			}
+			
+		}
+		
+		
+	}
+
+	private void mailForwardProbationaryAssociatesToResourceManager(List<ProbationDTO> probationUsersList, User toUser, OrgLocations orgLocations) {
+		
+
+		EmailMessage emailMessage = new EmailMessage();
+		
+			if(toUser.getFirstName()!=null){
+				 emailMessage.setFirstName(toUser.getFirstName());
+			}
+			else{
+				 emailMessage.setFirstName("");
+			}
+			if(toUser.getLastName()!=null){
+				 emailMessage.setLastName(toUser.getLastName());
+			}
+			else{
+				 emailMessage.setLastName("");
+			}
+			
+			 emailMessage.setToEmail(toUser.getEmail());
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+			 emailMessage.setCreatedBy("sladmin");
+			 if(StringUtils.isNotBlank(toUser.getLastName())){
+				 StringBuilder sb=new StringBuilder();
+				 emailMessage.setFromName(sb.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());
+			 }else{
+				 emailMessage.setFromName(toUser.getFirstName());
+			 }
+
+			 
+			 StringBuilder  associateTable  = buildProbationAssociatesTable(probationUsersList,toUser);
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 globalVarsMap.put("resourceManager", emailMessage.getFromName());
+				 globalVarsMap.put("associateTable", associateTable.toString());
+				 
+			 //calling the sendEmail method of emailScenerioUtil
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.PROBATIONARY_ASSOCiATES_EMAIL,new ArrayList<EmailAttachment>());
+		
+	}
+
+	private StringBuilder buildProbationAssociatesTable(List<ProbationDTO> probationUsersList, User toUser) {
+		
+
+		StringBuilder tempHTML = new StringBuilder();
+        tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+        tempHTML.append("<tr>");
+        tempHTML.append("<th> Associates Name </th>");
+        tempHTML.append("<th> Date of Join </th>");
+        tempHTML.append("<th> Role </th>");
+        tempHTML.append("<th> Department </th>");
+        tempHTML.append("<th> Probation Period </th>");
+        tempHTML.append("</tr>");
+       
+    		for(ProbationDTO prob:probationUsersList){
+    			 
+    			tempHTML.append("<tr>");
+		         
+		         if(prob.getAssociateLastName() != null && !"".equalsIgnoreCase(prob.getAssociateLastName())){
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getAssociateFirstName()).append(" ").append(prob.getAssociateLastName()).append("</td>");
+	        	 }else{
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getAssociateFirstName()).append("</td>");
+	        	 }
+		         
+		         if(prob.getHireDate() != null){
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getHireDate()).append("</td>");
+	        	 }else{
+	        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+	        	 }
+		         if(prob.getAssociateRole() != null && !"".equalsIgnoreCase(prob.getAssociateRole())){
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getAssociateRole()).append("</td>");
+	        	 }else{
+	        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+	        	 }
+		         if(prob.getDepartmentName() != null && !"".equalsIgnoreCase(prob.getDepartmentName())){
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getDepartmentName()).append("</td>");
+	        	 }else{
+	        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+	        	 }
+		         
+		         if(prob.getProbationPeriod() != null && !"".equalsIgnoreCase(prob.getProbationPeriod())){
+	        		 tempHTML.append("<td style='text-align: center;'>").append(prob.getProbationPeriod()).append("</td>");
+	        	 }else{
+	        		 tempHTML.append("<td style='text-align: center;'>").append("--").append("</td>");
+	        	 }
+		         
+			}
+        tempHTML.append("</tr>");
+	     tempHTML.append("</table> ");
+	return tempHTML;
+		
+		
+	}
+
 	/**
 	 * cron runs every day at 6:30 AM to get every day stats
 	 * @throws Exception  

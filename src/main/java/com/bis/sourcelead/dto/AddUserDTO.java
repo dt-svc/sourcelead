@@ -207,6 +207,12 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private Long candidateId;
 		
+		private String probationPeriod;
+		
+		private String confirmationDate;
+		
+		private String probationStatus;
+		
 		
 		public String getFirstName() {
 			return firstName;
@@ -958,4 +964,29 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCandidateId(Long candidateId) {
 			this.candidateId = candidateId;
 		}
+
+		public String getProbationPeriod() {
+			return probationPeriod;
+		}
+
+		public void setProbationPeriod(String probationPeriod) {
+			this.probationPeriod = probationPeriod;
+		}
+
+		public String getConfirmationDate() {
+			return confirmationDate;
+		}
+
+		public void setConfirmationDate(String confirmationDate) {
+			this.confirmationDate = confirmationDate;
+		}
+
+		public String getProbationStatus() {
+			return probationStatus;
+		}
+
+		public void setProbationStatus(String probationStatus) {
+			this.probationStatus = probationStatus;
+		}
+		
 }
