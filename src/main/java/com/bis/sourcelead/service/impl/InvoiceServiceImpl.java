@@ -62,17 +62,16 @@ import com.bis.sourcelead.dao.InvoiceLineItemDao;
 import com.bis.sourcelead.dao.InvoiceTaxDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
-
 import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
-
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -97,6 +96,7 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -113,11 +113,13 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -164,7 +166,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Autowired
 	private RequirementSubmissionDao requirementSubmissionDao;
-
+	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 
@@ -1764,6 +1766,100 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 		return count;
 	}
+	
+	
+	@Override
+	public Integer getAutomaticInvoiceForJobClosure(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,
+			User user, String globalUser) throws Exception {
+		int count = 0;
+		List<OrgRelations> clientVendorList = null;
+		OrgLocations vendorOrgLocation = null;
+		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+			clientVendorList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
+		} else {
+			clientVendorList = getVendorsList(orgLocation);
+		}
+		User contactUser = null;
+		for (OrgRelations client : clientVendorList) {
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(client.getId());
+
+			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+				vendorOrgLocation = orgRelation.getLocationId();
+				if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+						contactUser = orgSpocList.get(0).getClientUser();
+					} else {
+						contactUser = orgSpocList.get(0).getVendorUser();
+					}
+
+				}
+				// populateClientDetails(vendorOrgLocation,invoice);
+			}
+			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelation.getId());
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+				if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					if (Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
+						contactUser = orgSpocList.get(0).getVendorUser();
+					} else {
+						contactUser = orgSpocList.get(0).getClientUser();
+					}
+
+				}
+			}
+			List<RequirementSubmission> applicantsList = null;
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			 applicantsList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocation, user, client.getId());
+			 if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+ 					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
+ 					applicant.add(applicantsList.get(0));
+ 				   applicantsList = applicant;
+ 				}	
+			}else{
+			}
+			if(applicantsList.size()>0){
+				Invoice invoice = new Invoice();
+				populateClientDetails(vendorOrgLocation,invoice,orgRelation);
+					invoice.setOrgRelationID(orgRelation);
+					invoice.setOrgLocation(orgLocation);
+					invoice.setInvoiceType(invoiceType);
+					invoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					invoice.setInvoiceId(SourceLeadRandomCodeHelper.generateSubmissionXlsRandomCode());
+					Set<InvoiceLineItems> invoiceLineItemSet = populateInvoiceInlineItemsForJobClosure(applicantsList,orgLocation,client.getId(),loginOrgCurrencyCode,invoice,user);
+					invoice.setInvoiceLineItems(invoiceLineItemSet);
+					invoice.setCurrencyCode(loginOrgCurrencyCode);
+					invoice.setContactUser(contactUser);
+					invoice.setContactUsers(contactUser.getId().toString());
+					invoice.setOwnerUsers(user.getId().toString());
+					invoice.setCreatedBy(user.getUserCode());
+					invoice.setStatus(Constants.RECORD_ACTIVE.toString());
+					invoice.setInvoiceStatus(Constants.DRAFT);
+					invoice.setUpdatedBy(user.getUserCode());
+					invoice.setCreatedDate(commonUtil.currentDate());
+					invoice.setUpdatedDate(commonUtil.currentDate());
+					invoice.setInvoiceDate(commonUtil.currentDate());
+					invoice.setPaymentStatus("Unpaid");
+					invoice.setIsJobClosure(Constants.YES);
+					invoice.setDiscountType(Constants.PERCENTAGE);
+					invoice.setIsAutomaticGenerateInvoice(Constants.YES);
+					float convertedAmount = conversionUtil.convert(loginOrgCurrencyCode, vendorCurrencyCode, Float.valueOf(invoice.getTotal()));
+					float exchangeRate = conversionUtil.convert(loginOrgCurrencyCode,vendorCurrencyCode,1f);
+	  		      	float roundAmount = Float.parseFloat((new DecimalFormat(".###").format(((convertedAmount * 100.0) / 100.0))));
+	  		      	exchangeRate = roundAmount *Float.valueOf(invoice.getTotal());
+	  		      	invoice.setConvertCurrencyCode(vendorCurrencyCode);
+	  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
+	  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
+	  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
+	  		      if(savedInvoice !=null){
+ 		  		         count++;
+ 		  		        }
+			}
+  			
+		}
+		return count;
+	}
 
 	/**
 	 * used to update submission approver hieararchy
@@ -1881,6 +1977,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
 			invoiceLineItems.setCreatedBy(user.getUserCode());
 			invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+			invoiceLineItems.setUpdatedBy(user.getUserCode());
+			invoiceLineItems.setUpdatedDate(commonUtil.currentDate());
 			invoiceLineItems.setInvoice(invoice);
 			invoiceLineItemsSet.add(invoiceLineItems);
 			submissionApproverHiearachyIds.add(String.valueOf(projectMember.getSubmissionApproverHierarchyId()));
@@ -1894,6 +1992,48 @@ public class InvoiceServiceImpl implements InvoiceService {
 		invoice.setDueAmount(String.valueOf(subTotal));
 		invoice.setTotal(String.valueOf(subTotal));
 		invoice.setSubmissionApproverHierarchyIds(submissionApproverHiearachyIds);
+		return invoiceLineItemsSet;
+	}
+	
+	private Set<InvoiceLineItems> populateInvoiceInlineItemsForJobClosure(List<RequirementSubmission> submissionList,
+			OrgLocations orgLocation, Long orgRelationId, String loginOrgCurrencyCode, Invoice invoice, User user)
+			throws Exception {
+		Set<InvoiceLineItems> invoiceLineItemsSet = new HashSet<>();
+		float subTotal = 0;
+		for (RequirementSubmission submission : submissionList) {
+			String rate = null;
+			String ratePer = null;
+			String rateCurrencyType = null;
+			InvoiceLineItems invoiceLineItems = new InvoiceLineItems();
+			if (submission.getCandidate() != null) {
+				Candidate candidate = candidateService.getCandidateByCandidateId(submission.getCandidate().getId());
+				invoiceLineItems.setCandidate(candidate);
+				
+				invoiceLineItems.setRequirementSubmissionId(submission);
+				
+				if(submission.getRequirementOffersList().size()>0){
+					for(RequirementOffers offer : submission.getRequirementOffersList()){
+						if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+							invoiceLineItems.setRate(offer.getAmount());	
+						}
+					}
+					
+				}
+				
+			invoiceLineItems.setOrgLocation(orgLocation);
+			invoiceLineItems.setBillRateType("Flat");
+			invoiceLineItems.setStatus(Constants.RECORD_ACTIVE.toString());
+			invoiceLineItems.setCreatedBy(user.getUserCode());
+			invoiceLineItems.setCreatedDate(commonUtil.currentDate());
+			invoiceLineItems.setInvoice(invoice);invoiceLineItems.setUpdatedBy(user.getUserCode());
+			invoiceLineItems.setUpdatedDate(commonUtil.currentDate());
+			invoiceLineItemsSet.add(invoiceLineItems);
+		}
+		
+		invoice.setSubTotal(String.valueOf(subTotal));
+		invoice.setDueAmount(String.valueOf(subTotal));
+		invoice.setTotal(String.valueOf(subTotal));
+		}
 		return invoiceLineItemsSet;
 	}
 

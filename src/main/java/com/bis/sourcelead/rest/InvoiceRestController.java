@@ -2109,6 +2109,26 @@ return responseList;
 		return response;
 	}
 	
+	@RequestMapping(value = "/generateAutomaticInvoiceForJobClosure", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateAutomaticInvoiceForJobClosure(@RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+//		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,isGlobalAccess);
+//		resultJson = commonUtil.toJSON(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
+	}
+	
 	@RequestMapping(value = "/getBillingReportByFrequency", method = RequestMethod.GET)
 	@ResponseBody
 	public Response<BillingReportDTO> getBillingReportByFrequency(@RequestParam(value = "billingReportType", required = false) String billingReportType, @RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate, HttpServletRequest request) throws Exception
