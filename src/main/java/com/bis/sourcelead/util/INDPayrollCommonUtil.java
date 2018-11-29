@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,9 @@ import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
@@ -49,8 +54,10 @@ import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -98,6 +105,15 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	private TaxService taxService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	UserService userService;
 	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
@@ -950,9 +966,77 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
-	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency savedPF) throws Exception {
-		
-		
+	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency frequency) throws Exception {
+		if(payrollApprover.getUser().getId() != loginUser.getId()){
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(payrollApprover.getUser().getFirstName());
+			emailMessage.setLastName(payrollApprover.getUser().getLastName());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setFirstName(loginUser.getLastName());
+			emailMessage.setToEmail(payrollApprover.getUser().getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+
+			emailMessage.setFromName(loginUser.getFullName());
+
+			// setting the class field values...............
+
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
+				globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+			} else {
+				globalVarsMap.put("LoginOrgName", "--");
+			}
+			globalVarsMap.put("ApproverName", payrollApprover.getUser().getFullName());
+
+			globalVarsMap.put("Frequency",
+					commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+							frequency.getFrequencyStartDate()) + " to "
+							+ commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+									frequency.getFrequencyEndDate()));
+
+			globalVarsMap.put("GetTheBatchName", frequency.getUserGroup().getGroupName());
+
+			globalVarsMap.put("GetTheCountNoOfAssociates", "" + frequency.getIndEmployeepayroll().size());
+
+			BigDecimal totAmount = new BigDecimal(0.0);
+			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+				totAmount.add(indEmployeepayroll.getNetPay());
+			}
+			
+			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
+			// Set the login link when user click this link the page goes to redirect the
+			// sourcelead login page..
+
+			StringBuilder loginLinkBuild = new StringBuilder();
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+					.toString());
+
+			// Set the notification link when user click this link the page goes to
+			// respective payroll summary.......
+
+			StringBuilder notifyBuild = new StringBuilder();
+			globalVarsMap.put("NotificationLink",
+					notifyBuild.append(sourceleadUrl).append("/")
+							.append("employeePayrollList?paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID())
+							.toString());
+
+			// getting the current email scenario by uniqueNotification
+
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+					notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			// getting the current email scenario by uniqueEmail
+
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+					Constants.SEND_MAIL_TO_INDPAYROLL_APPROVER, new ArrayList<EmailAttachment>());
+		}
 	}
 	
 	
@@ -967,10 +1051,60 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
-	public void sendApprovedMailToRequestedUserInd(OrgLocations orgLocation, IndPaysheetFrequency savedPF, User loginUser){
-		
-		
+	public void sendApprovedMailToRequestedUserInd(OrgLocations orgLocation, IndPaysheetFrequency frequency, User loginUser) throws Exception{
+		if (frequency.getCreatedBy() != loginUser.getId()) {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setFirstName(loginUser.getLastName());
+			User user = userService.getUserById(frequency.getCreatedBy());
+			emailMessage.setToEmail(user.getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setFromName(loginUser.getFullName());
+
+			// setting the class field values...............
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+				globalVarsMap.put("RequestUsername", user.getFullName());
+			if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
+				globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+			} else {
+				globalVarsMap.put("LoginOrgName", "--");
+			}
+			globalVarsMap.put("loginUser",loginUser.getFullName());
+
+			globalVarsMap.put("Frequency", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyStartDate()) + " to " + commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyEndDate()));
+
+			globalVarsMap.put("GetTheBatchName",frequency.getUserGroup().getGroupName());
+
+			globalVarsMap.put("GetTheCountNoOfAssociates",""+frequency.getIndEmployeepayroll().size());
+
+			BigDecimal totAmount = new BigDecimal(0.0);
+			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+				totAmount.add(indEmployeepayroll.getNetPay());
+			}
+			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
+			// Set the login link when user click this link the page goes to redirect the sourcelead login page..
+
+			StringBuilder loginLinkBuild = new StringBuilder();
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+
+			// Set the notification link when user click this link the page goes to respective payroll summary.......
+
+			StringBuilder notifyBuild = new StringBuilder();
+			globalVarsMap.put("NotificationLink",notifyBuild.append(sourceleadUrl).append("/").append("employeePayrollList?paySheetFrequencyUUID="+frequency.getPaySheetFrequencyUUID()).toString());
+
+			// getting the current email scenario by uniqueNotification
+
+			EmailScenario notificationScenario = null;
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_APPROVED_NOTIFICATION_TO_REQUESTE_DUSERIND, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			String notificationbody = null;
+			notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_APPROVED_MAIL_TO_REQUESTED_USERIND, new ArrayList<EmailAttachment>());
+		}
 	}
-	
 }
 

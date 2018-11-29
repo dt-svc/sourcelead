@@ -907,7 +907,11 @@ public class UsersListRestController {
 				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
 				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
 			  }
-			  
+			  if(candidate.getPanNumber() != null) {
+				  userRole.setPanNumber(candidate.getPanNumber());
+			  }else {
+				  userRole.setPanNumber("");
+			  }
 		  }
 		  
 		 
@@ -2382,7 +2386,10 @@ public class UsersListRestController {
 				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
 			}
-			  
+			
+			if(StringUtils.isNotBlank(addUserDTO.getPanNumber())){
+				   candidate.setPanNumber(addUserDTO.getPanNumber());
+			}
 			   
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);

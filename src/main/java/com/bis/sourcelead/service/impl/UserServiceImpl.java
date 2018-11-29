@@ -502,6 +502,11 @@ public class UserServiceImpl implements UserService {
 				candidate.setEmail(addUserDTO.getEmail());
 				candidate.setFirstName(addUserDTO.getFirstName());
 				candidate.setLastName(addUserDTO.getLastName());
+				if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+					candidate.setPanNumber(candidateDTO.getPanNumber());
+				}else{
+					candidate.setPanNumber(null);
+				}
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
@@ -598,6 +603,11 @@ public class UserServiceImpl implements UserService {
 				    	}
 				    	
 				    }
+					if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+						candidate.setPanNumber(candidateDTO.getPanNumber());
+					}else{
+						candidate.setPanNumber(null);
+					}
 					candidate.setIsAssociate(Constants.YES);
 					candidateService.addCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -616,6 +626,11 @@ public class UserServiceImpl implements UserService {
 			 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
 				
 			}else{
+				if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+					candidate.setPanNumber(candidateDTO.getPanNumber());
+				}else{
+					candidate.setPanNumber(null);
+				}
 				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.YES);
 				candidateService.addCandidate(candidate);
