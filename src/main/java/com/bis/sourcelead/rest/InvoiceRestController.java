@@ -308,6 +308,47 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveBillForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveBillForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
 	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
 			@RequestParam(value = "saveType", required = false) String saveType, 

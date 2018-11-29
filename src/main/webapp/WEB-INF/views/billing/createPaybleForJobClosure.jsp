@@ -211,7 +211,9 @@ function errRemoveVendorContact(){
 		<input type="hidden" class="form-control input-sm"
 			id="REPLACEROWIDlineItemId" name="lineItems[REPLACEROWID].lineItemId">
 		</inmput>
-		<input type= "hidden" class="form-control input-sm" id="REPLACEROWIDsubmissionInvoiceId" name = "lineItems[REPLACEROWID].submissionInvoiceId">
+		<input type="hidden" class="form-control input-sm"
+			id="REPLACEROWIDrequirementSubmissionId" name="lineItems[REPLACEROWID].requirementSubmissionId">
+		</inmput>
 		
 	</div>
 </div>
@@ -964,7 +966,6 @@ function cancelPopup(){
 	                    
                 	for (var i = 0; i < json.data.length; i++) { 
                    	 var opt = json.data[i];
-	                    	 
 	                    	 result = result +'<tr>';
 	                    	 if(invoiceCreateType == "Bulk"){
 	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+opt.candidateName+','+opt.requirementName+','+opt.rate+','+opt.submissionId+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
@@ -1779,13 +1780,12 @@ function saveInvoice(saveType){
 		    	        
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.ajax({
-			        	  url: sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable",
+			        	  url: sourceleadUrl+"/saveBillForJobClosure?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=payable"+"&isJobClosure=Y",
 		        		  type: "POST",
 		        		  data: formData,
 		        		  processData: false,
 		        		  contentType: false,
 		        		  success: function (result) {
-		        	  //$.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
 		        	 		  if (result && result.response === "INVALID_DATA") {
 			          		    showError(result.responseMessage);
 			          		} else if (result.response === "AWKWARD") {

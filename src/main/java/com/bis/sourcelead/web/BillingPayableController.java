@@ -141,8 +141,8 @@ public class BillingPayableController {
 	}
 	
 	
-	@RequestMapping(value = "/createPayablesForJobClosure")
-	public ModelAndView createPayablesForJobClosure(@RequestParam(value="type", required=false) String type ,HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
+	@RequestMapping(value = "/createPaybleForJobClosure")
+	public ModelAndView createPaybleForJobClosure(@RequestParam(value="type", required=false) String type ,HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
@@ -201,6 +201,8 @@ public class BillingPayableController {
 			model.setViewName("billing/createExpensesPayableBill");
 		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectPayableInvoice");
+		}else if(invoice.getIsJobClosure().equals("Y")){
+			model.setViewName("billing/createPaybleForJobClosure");
 		}else{
 			model.setViewName("billing/createPayables");
 		}
