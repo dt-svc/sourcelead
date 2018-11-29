@@ -232,9 +232,9 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
        
        
        includeHintMsgHTML = ''+
-	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Hint:</div>' +
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Help Text:</div>' +
        ' <div class="col-md-9" id="hint'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Hint" class="field-hint form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-hint form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '

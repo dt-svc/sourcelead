@@ -5,6 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
+<script type="text/javascript" src="/resources/js/performance/performanceBadge.js"></script>
 
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
     <section class="content-header clearfix">

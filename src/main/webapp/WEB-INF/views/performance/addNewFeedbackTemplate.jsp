@@ -51,7 +51,7 @@
 			    	</div>
 					    	<div class="col-md-2">
 						        <div class="dropdown">
-						        <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;
+						        <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Question &nbsp;&nbsp;
 						        <span class="caret"></span></button>
 							        <ul id="add-field" class="dropdown-menu pull-right">
 								        <li><a id="add-text" data-type="text"  href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>
@@ -91,4 +91,18 @@
 	
 <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 
+<script>
+//Back To Top 
+$(window).scroll(function() {
+    if ($(this).scrollTop() > 200) {
+        $('.backtotop').fadeIn('slow');
+    } else {
+        $('.backtotop').fadeOut('slow');
+    }
+});
+$('.backtotop').click(function() {
+    $("html, body").animate({scrollTop: 0}, 500);
+    return false;
+});
 
+</script>
