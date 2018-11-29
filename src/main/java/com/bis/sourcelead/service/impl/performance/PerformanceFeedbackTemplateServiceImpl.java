@@ -19,5 +19,10 @@ public class PerformanceFeedbackTemplateServiceImpl implements PerformanceFeedba
 		return performanceFeedbackTemplateDao.savePerformanceFeedbackTemplate(performanceFeedbackTemplate);
 	}
 
+	@Override
+	public PerformanceFeedbackTemplate getPerformanceFeedbackTemplateById(Long id) throws Exception {
+		return performanceFeedbackTemplateDao.getPerformanceFeedbackTemplateById(id);
+	}
+
 	
 }

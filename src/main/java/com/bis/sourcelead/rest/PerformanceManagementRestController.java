@@ -1,7 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +21,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -38,6 +46,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceBadgesService performanceBadgesService;
+	
+	@Autowired
+	PerformanceFeedbackTemplateService performanceFeedbackTemplateService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -100,4 +111,51 @@ public class PerformanceManagementRestController {
   		}
   		 return resObj;
     }
+    
+	
+	
+	@RequestMapping(value = "/savePerformanceFeedbackTemplate", method = RequestMethod.POST)
+	public String savePerformanceFeedbackTemplate(@RequestParam(value = "jsonData", required = false) String json,
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
+			throws Exception {
+
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String result = null;
+
+		String json1 = "{" + json + "}";
+		JSONObject jsonObj = new JSONObject(json1);
+
+		try {
+			PerformanceFeedbackTemplate template = null;
+			if (StringUtils.isNotBlank(templateId)) {
+				template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+			} else {
+				template = new PerformanceFeedbackTemplate();
+				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				template.setCreatedBy(user);
+				template.setCreatedDate(new Date());
+			}
+
+			template.setName(jsonObj.getString("templateName").trim());
+			template.setDescription(jsonObj.getString("description"));
+			template.setOrgLocationId(orgLocations);
+			template.setJsonString(jsonStringData);
+			template.setStatus(Constants.RECORD_ACTIVE);
+			
+			template.setUpdatedBy(user);
+			template.setUpdatedDate(new Date());
+			performanceFeedbackTemplateService.savePerformanceFeedbackTemplate(template);
+			result = Result.SUCCESS.name();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = Result.AWKWARD.name();
+		}
+		return result;
+
+	}
+	
 }

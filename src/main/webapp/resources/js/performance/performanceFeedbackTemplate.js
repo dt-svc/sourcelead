@@ -101,17 +101,18 @@ $('body').on('submit', '#sjfb', function(e){
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
         
+        
         if(submitTemplate){
-        	  /* $( "#save_button" ).addClass('button').val('Processing..');
+         $( "#save_button" ).addClass('button').val('Processing..');
       	  $.ajax({
       	    	type: "POST",
-      	        url: sourceleadUrl+"/saveOrgSubmissionTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+      	        url: sourceleadUrl+"/savePerformanceFeedbackTemplate?templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
       	        success: function(result) {
       	        	if((result == 'home')){
-      	        		location.replace(sourceleadUrl+"/orgSubmissionTemplate"); 
+      	        		location.replace(sourceleadUrl+"/performanceManagementConfiguration"); 
       		        } 
       	        },
-      	    });   */
+      	    });   
               return true;
         }else{
         	alertMessage("Provide choice for "+fieldLabel)

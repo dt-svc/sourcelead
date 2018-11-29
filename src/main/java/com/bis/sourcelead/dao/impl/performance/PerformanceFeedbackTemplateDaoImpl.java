@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceFeedbackTemplateDao;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -57,5 +60,19 @@ public class PerformanceFeedbackTemplateDaoImpl implements PerformanceFeedbackTe
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return performanceFeedbackTemplate;
+	}
+
+	@Override
+	public PerformanceFeedbackTemplate getPerformanceFeedbackTemplateById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceFeedbackTemplate> performanceFeedbackTemplate = new ArrayList<PerformanceFeedbackTemplate>();
+		logger.debug("getPerformanceFeedbackTemplateById  start");
+		performanceFeedbackTemplate = session.createQuery("from PerformanceFeedbackTemplate template where template.id = :id " ).setLong( "id", id).list();
+		logger.debug("getPerformanceFeedbackTemplateById  end");
+		if (performanceFeedbackTemplate.size() > 0) {
+			return performanceFeedbackTemplate.get(0);
+		} else {
+			return null;
+		}
 	}
 }
