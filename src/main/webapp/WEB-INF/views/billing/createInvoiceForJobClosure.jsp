@@ -245,7 +245,7 @@ function errRemoveClientContact(){
 	<div class="tbldata-dotdot_80 validationTxt whiteSpace">
 		<input type="text"
 			class="form-control input-sm allownumericwithdecimal"
-			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate" readonly="readonly
+			placeholder="Rate" id="REPLACEROWIDrate" name="lineItems[REPLACEROWID].rate" readonly="readonly"
 			onblur="totalCalculateAmount(REPLACEROWID);" data-validation="required validate_float" field-name="Rate">
 	</div>
 </div>
@@ -1257,31 +1257,6 @@ function pagination(){
 	 
   }
   </script>
-
-<!-- Converting minutes to hours if minutes >60 -->
-<script>
-function setHours(finalmin,rowId){
-	 var actualHours = Math.floor(finalmin / 60); 
-     var actualMinutes = finalmin % 60;
-     var actualTotal = 0;
-     if (actualHours >= 10 && actualHours < 100) {
-			actualHours = '0' + actualHours;
-	  }
-     if (actualHours < 10) {
-			actualHours = '00' + actualHours;
-	  }
-	 if (actualMinutes < 10) {
-		actualMinutes = '0' + actualMinutes;
-	 }
-	 if(!isNaN(actualHours) && !isNaN(actualMinutes)){
-		 actualTotal = actualHours +":"+ actualMinutes;
-	 }else{
-		 actualTotal =  "000:00";
-	 }
-	 $('#'+rowId+'totalHours').empty();
-     $('#'+rowId+'totalHours').val(actualTotal);
-}
-</script>
 
 
 <script>

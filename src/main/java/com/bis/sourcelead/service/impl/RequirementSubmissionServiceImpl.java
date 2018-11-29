@@ -5809,5 +5809,57 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		}
 		return contractsList;
 	}
+	
+	
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateForBillsJobClosure(OrgLocations orgLocations, User user,
+			Long orgRelationId,String contractType,String selectedAssociates) {
+		
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		
+		List<RequirementSubmission> submissionList = null;
+		List<Long> associateIds = new ArrayList<>();
+		if(!isNullOrEmpty(selectedAssociates)){
+			String[] selectedAssoicatesIds = selectedAssociates.split(",");
+			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
+				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+			}
+			//submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
+		}else{
+			submissionList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocations, user,orgRelationId);
+		}
+		
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setEmail(requirementSubmission.getCandidate().getEmail());
+			applicantsDto.setRequirementId(requirementSubmission.getRequirement().getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
+			
+			if (requirementSubmission.getCandidate().getOrgRelationId().getResponderType().equalsIgnoreCase("Vendor")) {
+				if (requirementSubmission.getCandidate().getOrgRelationId().getResponderType() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getCandidate().getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getJoinedDate() != null) {
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
 
 } 

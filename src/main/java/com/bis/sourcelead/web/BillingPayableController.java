@@ -141,6 +141,38 @@ public class BillingPayableController {
 	}
 	
 	
+	@RequestMapping(value = "/createPayablesForJobClosure")
+	public ModelAndView createPayablesForJobClosure(@RequestParam(value="type", required=false) String type ,HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		//SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
+		Date currentDate = new Date();
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+		model.addObject("currentDate", convertedDate);
+		model.setViewName("billing/createPaybleForJobClosure");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Payables);
+		request.getSession().setAttribute("sessionData",sessionData);
+	    return model;
+	}
+	
+	
 	@RequestMapping(value = "/getInvoiceByUUID")
 	public ModelAndView getInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID ,@RequestParam(value="projectId", required=false) String projectId,HttpServletRequest request) throws Exception {
 		

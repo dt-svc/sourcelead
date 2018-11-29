@@ -402,6 +402,21 @@ public class InvoiceRestController {
 		return responseList;
 	}
 	
+	@RequestMapping(value = "/getVendorInvoiceAssociatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForBillsJobClosure(loginOrgLocation, user, vendorOrgRelationId,contractType,selectedAssociates);
+		
+		responseList.setData(applicantsList);
+		return responseList;
+	}
+	
 	@RequestMapping(value = "/getClientProjectsByOrgRelationId", method = RequestMethod.GET)
 	public @ResponseBody ResponseList<Projects> getUserList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
