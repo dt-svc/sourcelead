@@ -279,10 +279,6 @@ public interface CandidateService {
 
 	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception;
 
-	//public void updateMarketplaceDataFromCandidate(Long id, User user) throws Exception;
-
-	//public void updateMarketplaceDataFromCandidateGlobal(Long id, User user) throws Exception;
-
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
 	
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;

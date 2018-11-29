@@ -138,7 +138,7 @@
 											<div class="col-md-12">
 												<div class="media">
 									  <div class="media-left">
-										<img src="images/org-logo.jpg" class="media-object" alt="Image" style="width: 100px;">
+										<img src="/resources/images/professionalExperinece.svg" class="media-object" alt="Image" style="width: 100px;">
 									  </div>
 									  	<div class="media-body">
 											<div class="row">
@@ -176,7 +176,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="images/andhraUniversity.jpg" class="media-object" alt="Image" style="width: 75px;">
+						<img src="/resources/images/graduate-cap.svg" class="media-object" alt="Image" style="width: 75px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">
@@ -214,7 +214,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="images/diploma.svg" class="media-object" alt="Image" style="width:75px; height: 75px;">
+						<img src="/resources/images/diploma.svg" class="media-object" alt="Image" style="width:75px; height: 75px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">
