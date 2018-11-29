@@ -5734,11 +5734,22 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations, User user,
-			Long orgRelationId,String contractType) {
+			Long orgRelationId,String contractType,String selectedAssociates) {
 		
 		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
-		List<RequirementSubmission> submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocations, user,orgRelationId);
-
+		
+		List<RequirementSubmission> submissionList = null;
+		List<Long> associateIds = new ArrayList<>();
+		if(!isNullOrEmpty(selectedAssociates)){
+			String[] selectedAssoicatesIds = selectedAssociates.split(",");
+			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
+				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+			}
+			submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
+		}else{
+			submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocations, user,orgRelationId);
+		}
+		
 		submissionList.forEach(requirementSubmission -> {
 
 			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();

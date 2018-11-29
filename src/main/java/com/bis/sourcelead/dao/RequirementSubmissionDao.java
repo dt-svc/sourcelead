@@ -239,6 +239,8 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
 	
 	List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations,User user,Long orgRelationId,List<Long> selectedAssociates);
 
 
 }

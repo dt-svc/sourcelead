@@ -396,7 +396,7 @@ public class InvoiceRestController {
 		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId,contractType);
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId,contractType,selectedAssociates);
 		
 		responseList.setData(applicantsList);
 		return responseList;
