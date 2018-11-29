@@ -6797,7 +6797,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	float: right; position: relative !important;
 	}
 .popupContent {
-	padding: 20px 40px 15px 35px;
+	padding: 20px 40px 15px 35px; background-color: #fff;
 }
 .popupContent.popupContentFixed {
 	max-height: 460px; overflow: auto;
