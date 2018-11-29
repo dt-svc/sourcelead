@@ -9268,6 +9268,11 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/sortIcon.svg); background-repeat: no-repeat; width: 25px; height: 28px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.walletSvg {
+	background-image: url(../images/walletexpenses.svg); background-repeat: no-repeat; width: 50px; height: 50px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9408,6 +9413,12 @@ background: url("../images/invitationSVG.svg"); background-repeat: no-repeat; ba
 .tagSVG {
 background: url("../images/tagSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
 }
+.assenDesendingIC {
+background: url("../images/sortIC.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:22px; text-align: center; display: block; height: 32px;
+}
+.printIC {
+background: url("../images/printIC.svg"); background-repeat: no-repeat; background-size: 22px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9542,7 +9553,18 @@ input[type=range]::-moz-range-track {
 .descriptionTxtarea .note-editable {
   min-height: 150px; max-height: 250px;
 }
-
+.tdVmiddle tr td {
+	vertical-align: middle !important;
+}
+.fullTimebg {
+	min-height: 40px; color: #fff; font-size: 18px;
+}
+.fullTimebg .joinedTime {
+	background-color: #2980b9; padding: 15px;
+}
+.fullTimebg .joinedValue {
+background-color: #e84393; padding: 15px;
+}
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {
