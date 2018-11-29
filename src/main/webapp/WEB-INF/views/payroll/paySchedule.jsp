@@ -231,7 +231,7 @@ $('#payPeriodStartDate').datepicker({
 			if(frequency == "Weekly"){
 				dt.setDate(dt.getDate()+6);
 			}if(frequency == "Bi-Weekly"){
-				dt.setDate(dt.getDate()+6);
+				dt.setDate(dt.getDate()+13);
 			}
 			var dd = new Date(finalDateFormat);
 			dd.setDate(dt);
