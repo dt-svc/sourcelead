@@ -553,8 +553,8 @@ function lcaReportPagination(url){
                         "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                      		var result = "";
-                     		if(opt.expiredOn !=null && opt.expiredOn != '' && opt.expiredOn !='undefined'){
-    		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.expiredOn+'" >'+opt.expiredOn+'</div>';
+                     		if(opt.expired !=null && opt.expired != '' && opt.expired !='undefined'){
+    		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.expired+'" >'+opt.expired+'</div>';
     		        		}else{
     		        			result = result + '     <div class="tblminwidth-75">---</div>';
     		        		} 

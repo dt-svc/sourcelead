@@ -570,6 +570,15 @@ window.onload = function () {
 					result = result + '<div class="clearfix"></div>';
 				}
 				
+				if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
+				}
+				
 		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 			
 			if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
@@ -1963,6 +1972,13 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
+					
+					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+					}
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					var ssn = '';	

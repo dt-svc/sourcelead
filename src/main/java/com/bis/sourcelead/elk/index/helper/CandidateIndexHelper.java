@@ -69,6 +69,10 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
+			if(StringUtils.isNotBlank(candidate.getPanNumber())){
+				candidateIndex.setPanNumber(candidate.getPanNumber());
+			}
+			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
 			}
