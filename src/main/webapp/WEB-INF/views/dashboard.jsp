@@ -74,22 +74,26 @@ $( document ).ready(function() {
 	  else{
 		  timeSheetSubmissionStatusCount("employes");
 	  } 
-	// contractList(); 
-	requirementApproverList('SUBMITTED');
-	
-	requirementSubmissionsCount("today");
-	expensesCount("myExpenses");
-	requirementList(false, -1);
-	onboardingCandidatesList();
-	getProjectResourceReqestsListCount();
-	contractList(); 
-	resourceRequestList("Waiting For Approval");
-	ApplicantAuthorization('requestSent');
-    getInterviewsandTasks();
-	getInterviewsDates(); 
-	//getJobFairDates();
-	getJobFairs();
-	contractList(); 
+	 getSelfTotalCounts(); // leave self count need to check authorizarion
+	 expensesCount("myExpenses"); // expenses self need to check authorizarion
+	// contractList();
+	var isJobsTabAccessable = '${SourceLeadWeb_isJobsTabAccessable}';
+		if(isJobsTabAccessable=="Y" ){
+			requirementApproverList('SUBMITTED');
+			requirementSubmissionsCount("today");
+			requirementList(false, -1);
+			onboardingCandidatesList();
+			getProjectResourceReqestsListCount();
+			contractList(); 
+			resourceRequestList("Waiting For Approval");
+			ApplicantAuthorization('requestSent');
+		    getInterviewsandTasks();
+			getInterviewsDates(); 
+			//getJobFairDates();
+			getJobFairs();
+			contractList();
+	} 
+	 
 	 var settingsConfigured = '${SourceLeadWeb_settingsConfigured}';
 	 if(settingsConfigured == "N"){
 		configureDiv();
@@ -166,10 +170,24 @@ $('#dasboardTaskDatpicker').datepicker({
   <section class="content-wraper">
     <div class="dashboard_loaded">
       <section class="content-header clearfix">
-        <div class="pull-left">
-          <h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
-        </div>
-      </section>
+	      
+	      <c:if test="${!empty param.invitation}">
+	        <div class="success_pop" id="selector"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>You accepted invitation successfully.</span>
+			</div>
+	     </c:if>
+	     
+	     <c:if test="${!empty msg}">
+	        <div class="success_pop" id="selector1"  style="display: block;">
+		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+			</div>
+	     </c:if>
+	    
+	      <div class="pull-left">
+	        <h2>Dashboard<a  onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
+	      </div>
+	    </section>
+	    
     </div>
 <div class="row">
 
@@ -256,12 +274,15 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
+  <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
       <div class="dashNewWrapHead clearfix"> <a class="pull-left" id="expensesLink" href="/app/expenses">Expenses &nbsp;&nbsp;</a>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');">Self</a></li>
-          <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');">Employees</a></li>
+         <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
+	              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
+	       </sec:authorize>
         </ul>
       </div>
       <div id="today-req" class="tab-pane fade in active">
@@ -294,13 +315,17 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
+  </sec:authorize>
+  <sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
   <div class="col-md-6 mb10">
     <div class="dashboardWidget-new dashNewWrap mb">
       <div class="dashNewWrapHead clearfix"> <a class="pull-left" href="/app/leaveManagementReports" title="Leave Management">Leaves</a>
         <div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves">0</span></div>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
+          <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
           <li><a data-toggle="tab" href="#employee" onclick="getEmployeeTotalCounts();">Employees</a></li>
+          </sec:authorize>
         </ul>
       </div>
       <div class="clearfix">
@@ -410,7 +435,8 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  
+  </sec:authorize>
+  <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
    <div class="mb clearfix col-md-12"> 
       <!-- Assigned Requirements -->
       <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
@@ -452,330 +478,8 @@ $('#dasboardTaskDatpicker').datepicker({
                         <th>Status</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10389,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10389);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Ve7pU1Kk"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB45">GDFHJB45</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Ve7pU1Kk"><span title="Sample">Sample</span></a></div></td>
-                        <td><div class="tbldata-dotdot-sm"><a href="http://localhost:8080/app/clientDashboard?orgRelationUUID=4Y6vQc0o" title="Dell">Dell</a></div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10389">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389shortlistedCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Ve7pU1Kk">
-                          <div id="10389joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10233,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10233);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=B5uoA1ZT"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB44">GDFHJB44</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=B5uoA1ZT"><span title="job of the day">job of the day</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10233">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=B5uoA1ZT">
-                          <div id="10233joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10178,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10178);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=9IureNjR"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB43">GDFHJB43</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=9IureNjR"><span title="production job">production job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10178">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=9IureNjR">
-                          <div id="10178applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=9IureNjR">
-                          <div id="10178shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=9IureNjR">
-                          <div id="10178submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=9IureNjR">
-                          <div id="10178interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=9IureNjR">
-                          <div id="10178offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=9IureNjR">
-                          <div id="10178joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(10172,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(10172);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=mgK1siAZ"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB42">GDFHJB42</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=mgK1siAZ"><span title="oct2nd job">oct2nd job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="10172">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=mgK1siAZ">
-                          <div id="10172joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9953,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9953);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=LtEUgkp5"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB41">GDFHJB41</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=LtEUgkp5"><span title="new job list">new job list</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9953">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953applicantCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=LtEUgkp5">
-                          <div id="9953joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9948,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9948);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=6zY9W5I2"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB40">GDFHJB40</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=6zY9W5I2"><span title="selenium job">selenium job</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-3000&nbsp;Monthly">INR&nbsp;2000-3000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9948">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=6zY9W5I2">
-                          <div id="9948joinedCount">1</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9947,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9947);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=Dg5wbdOK"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB39">GDFHJB39</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=Dg5wbdOK"><span title="job@345">job@345</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-4000&nbsp;Monthly">INR&nbsp;2000-4000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9947">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947applicantCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=Dg5wbdOK">
-                          <div id="9947joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9946,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9946);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=uUCznJKn"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB38">GDFHJB38</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=uUCznJKn"><span title="job@123">job@123</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;2000-5000&nbsp;Monthly">INR&nbsp;2000-5000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9946">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=uUCznJKn">
-                          <div id="9946applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=uUCznJKn">
-                          <div id="9946shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=uUCznJKn">
-                          <div id="9946submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=uUCznJKn">
-                          <div id="9946interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=uUCznJKn">
-                          <div id="9946offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=uUCznJKn">
-                          <div id="9946joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="odd">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(9939,'3 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(9939);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=z0wc5W7p"><i class="fa fa-bullhorn" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB37">GDFHJB37</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=z0wc5W7p"><span title="Aob">Aob</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span><span>---</span></span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="9939">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939applicantCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939interviewedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939offeredCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=z0wc5W7p">
-                          <div id="9939joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                      <tr role="row" class="even">
-                        <td class="sorting_1"><div class="tblminwidth-75">
-                            <div class="text-center pull-left"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant(7982,'6 Months');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>
-                            <div class="text-center pull-left ml10 mr10"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv(7982);"><i class="fa fa-address-book anchorBlack"></i></a></div>
-                            <div class="pull-left"><a href="/app/releaseRequirementToClientOrVendors?requirementUUID=DqCBNe52"><i class="fa fa-bullhorn success" title="Release Job"></i></a></div>
-                          </div></td>
-                        <td><div class=""><span title="GDFHJB36">GDFHJB36</span></div></td>
-                        <td><div class="tbldata-dotdot-sm"> <a href="http://localhost:8080/app/requirementSummary?requirementUUID=DqCBNe52"><span title="job123">job123</span></a></div></td>
-                        <td><div>---</div></td>
-                        <td><div><span title="INR&nbsp;3000-6000&nbsp;Monthly">INR&nbsp;3000-6000&nbsp;Monthly</span></div></td>
-                        <td><div>Medium</div></td>
-                        <td><input type="hidden" class="requirementDashboardCount" id="7982">
-                          <a href="/app/requirementSummary?type=applicants&amp;requirementUUID=DqCBNe52">
-                          <div id="7982applicantCount">2</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SHORTLIST&amp;requirementUUID=DqCBNe52">
-                          <div id="7982shortlistedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=SUBMIT_TO_CLIENT&amp;requirementUUID=DqCBNe52">
-                          <div id="7982submittedCount">0</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=INTERVIEW&amp;requirementUUID=DqCBNe52">
-                          <div id="7982interviewedCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=OFFERMADE&amp;requirementUUID=DqCBNe52">
-                          <div id="7982offeredCount">1</div>
-                          </a></td>
-                        <td><a href="/app/requirementSummary?type=JOINED&amp;requirementUUID=DqCBNe52">
-                          <div id="7982joinedCount">0</div>
-                          </a></td>
-                        <td><div class=""><span title="OPEN">OPEN</span></div></td>
-                      </tr>
-                    </tbody>
                   </table>
-                  <div class="dataTables_info" id="requirementPagination_info" role="status" aria-live="polite">Showing 1 to 10 of 10 entries</div>
+                  <div class="dataTables_info" id="requirementPagination_info" role="status" aria-live="polite"></div>
                 </div>
               </div>
             </div>
@@ -784,14 +488,7 @@ $('#dasboardTaskDatpicker').datepicker({
         </div>
       </div>
     </div>
-  
-  
-  
-  
-  
-  
-  
-  
+  </sec:authorize>
   
   <div class="clearfix"></div>
   <div class="col-md-12">
