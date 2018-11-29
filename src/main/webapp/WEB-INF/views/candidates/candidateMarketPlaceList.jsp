@@ -7,9 +7,6 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
-<!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
 <title>Welcome to Source Lead :: Marketplace List</title>
 <div id="popUp"></div>
     <section class="content-wraper contentWraper">
@@ -56,9 +53,6 @@
           </div>
           
           </div>
-         <!--  <div class="remove_search">
-            <input type="text" placeholder="Search"/>
-          </div> -->
         </div>
         <div class="clearfix mt"></div>
         	<div id="marketPlaceTableDiv" class="project_wrap_table datatable_filter"></div>
@@ -71,22 +65,13 @@
 
         <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
          </sec:authorize> 
-        <input type="button" class="btn btn-default ml" value="Cancel">
+        <input type="button" class="btn btn-default ml" onclick="cancelPriceAmount();" value="Cancel">
         </div>
         </div>
         </div>
       </div>
-    </div>
   </section>
 <script type="text/javascript">
-/*function funPrice(event){
-	var price = event.target.text || event.srcElement.text;
-	$(".selectPrice").text(price);
-	
-}*/
- 
-
-
 function setValuesForAllMCandidates(){
 	var amount = $("#amountForAll").val();
 	var amountType = $("#priceTypeVal").val();
@@ -250,7 +235,6 @@ function callValidatePriceAmount(){
 		}
 		marketCandidateObj.push(objectValue);
  	});
-	//console.log("List of object :"+marketCandidateObj);
 	
 	$.ajax({
 		url : sourceleadUrl + "/saveMarketPlaceData",		
@@ -281,7 +265,6 @@ function popupDisplay(message){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
-	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
 	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
@@ -304,12 +287,6 @@ function toggleMarketPlaceAllCheck(source){
 		  $('input[id="sharedcheckbox"]').removeProp('checked');
 	}
 }
-
-/* $("").keyup(function(){
-    $(this).closest('tr').find("input").each(function() {
-        alert(this.value)
-    });
-}); */
 
 $(document).ready(function() {
 	loadMarketPlaceDraftData();
@@ -336,19 +313,10 @@ function loadMarketPlaceDraftData(){
     result = result +"</table>";
     $("#marketPlaceTableDiv").append(result);
     marketPlacePagination();
-	/* $.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/getMarketPlaceDraftList",
-		success : function(result) {
-			
-		}
-	}); */
 }
 
 function marketPlacePagination(){
 	var colIndex = 0;
-	//var countIndex = 0;
-	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#marketPlaceTable').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -356,7 +324,6 @@ function marketPlacePagination(){
         "searchHighlight": true,
         "ajax": $.fn.dataTable.pipeline( {
             url: sourceleadUrl + "/getMarketPlaceCandidateMovedList",
-            //data: "candidateIds = ${movedCandidateIds}",
             method: 'POST',
             pages: 10
         }),
@@ -376,8 +343,6 @@ function marketPlacePagination(){
     	  	"sortable": false,
     	  	"data": "id",
     	  	"render": function(data, type, full, meta) {
-    	  		//countIndex++;
-    	  		//alert(countIndex);
 				var result = "";
     	  		 result = result + '<input type="checkbox" id="sharedcheckbox" />';
 	        		result = result + "<input type='hidden' id='candidateId' value='"+full.id+"'/>";
@@ -385,7 +350,6 @@ function marketPlacePagination(){
     	  	}
         	},  {
 	    	  	"targets": colIndex++,
-	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "generatedId",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -505,7 +469,6 @@ function marketPlacePagination(){
     	    	  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	//"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -514,20 +477,7 @@ function marketPlacePagination(){
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
-	     /* drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	candidateSearchHighlight();
-	         }); 
-	   } */
     } );
-    // $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-    //$("input[type=search]").hide();
-    //$("#dataTableSearch").keyup(function(e) {
-    	//   if(e.which === 13) {
-		//candidateList();
-		//candidateSearchHighlight();
-    	 //  }
-    	//}); 
     // Removing pagination for market place list 
      $('#marketPlaceTable_length').remove(); // removes the pagination values.
     $('#marketPlaceTable_info').remove(); // removes the pagination information.
@@ -540,9 +490,6 @@ $(".funPrice").on("click", "li", function(){
 });
 function setPrice(){
 	$(".customSetprice").toggle(function(){
-		/* if($(this).is(":visible")){
-			
-		} */
 		if($(this).is(":hidden")){
 			$("input[id='priceVal']").each(function() {
 				$(this).val('');

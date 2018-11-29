@@ -2198,6 +2198,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			for (CandidateMarketPlace source : globalMarketCandList) {
 				CandidateMarketPlaceDTO target = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(source, target);
+				target.setFullName(source.getCandidateId().getFullName());
+				target.setLocation(source.getCandidateId().getLocation());
+				target.setSkillsName(source.getCandidateId().getSkillsName());
+				target.setCurrentRate(source.getCandidateId().getCurrentRate());
+				target.setCurrentRateCurrency(source.getCandidateId().getCurrentRateCurrency());
+				target.setExpectedRate(source.getCandidateId().getExpectedRate());
+				target.setExpectedRateCurrencey(source.getCandidateId().getExpectedRateCurrencey());
+				target.setProfilePercentage(source.getCandidateId().getCandidateProfilePercentage());
+				target.setMarketPrice(source.getMarketPrice());
+				target.setMarketRateCurrencey(source.getMarketRateCurrencey());
 				globalMarketCandDTOList.add(target);
 			}
 			logger.debug(" After executing query result  list size is :::>>" + globalMarketCandList.size());
@@ -2669,33 +2679,6 @@ public class CandidateDaoImpl implements CandidateDao {
 		return responseList;
 	}
 
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getMyMarketplaceCandidateIds(Long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select marketplace.candidateId.id from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.orgLocationId.id = :orgId and marketplace.candidateMarketStatus = :marketStatus ";
-		List<Long> candidateMarketplaces = session.createQuery(query).setParameter("orgId", id).setParameter("marketStatus", Constants.ACTIVE).list();
-		return candidateMarketplaces;
-	}*/
-
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByCandidateIds(List<Long> marketplaceCandidateIds) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
-		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", marketplaceCandidateIds).list();
-		return candidates;
-	}*/
-
-	/*@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<Long> getGlobalMarketplaceCandidateIds(Long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String listQuery = "select marketplace.candidateId.id from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
-		List<Long> candidateMarketplaceCandidateIds = session.createQuery(listQuery).setParameter("candidateOrgLocId", id).list();
-		return candidateMarketplaceCandidateIds;
-	}*/
-
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) {
@@ -2757,15 +2740,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}}
 
-	
-	/*@Override
-	@Transactional
-	public void updateMarketPlace(CandidateMarketPlace marketPlace) {
-		Session session = this.sessionFactory.getCurrentSession();
-		if(marketPlace != null && marketPlace.getId() != null){
-			session.saveOrUpdate(marketPlace);
-		}
-	}*/
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

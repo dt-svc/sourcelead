@@ -93,6 +93,7 @@
 	     
 	     dynamicGlobalMarketCandidateListPagination(url);
 	 }
+
 	
 	   function toggleShareCandidates(source){
 			  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
@@ -154,6 +155,7 @@
 		}
 			
 	 //var count = 0;
+
 	 function dynamicGlobalMarketCandidateListPagination(url) {
 		 var colIndex = 0;
 	    $('#dynamicGlobalMarketCandidateListTbl').DataTable({
@@ -354,13 +356,7 @@
 	
 </script>
 <script type="text/javascript">
-/*function funPrice(event){
-	var price = event.target.text || event.srcElement.text;
-	$(".selectPrice").text(price);
-	
-}*/
 function editMarketPriceFun(id, marketPrice, marketPriceCurrency, obj){
-	//alert(marketPrice+" "+marketPriceCurrency);
 	$(obj).closest('tr').find("div[id='marketPlacePriceValDiv']").empty();
 	var result = "";
 		result = result + '<div class="tblminwidth-100 clearfix"><div class="dropdown-inputbox"><input type="text" id="priceVal" value="'+marketPrice+'" placeholder="Enter" class="form-control input-sm"><select id="amountTypeEach" value="" class="form-control input-sm sel">';
@@ -431,10 +427,6 @@ function saveEditMarketPriceFun(id, obj){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
-				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")				
-				//$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tbldata-dotdot-sm' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
-				//$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a>")
 				getDynamicGlobalMarketCandidateList();
 			}else{
             	 showError("Operation failed, please try again");

@@ -9565,7 +9565,9 @@ input[type=range]::-moz-range-track {
 .fullTimebg .joinedValue {
 background-color: #e84393; padding: 15px;
 }
-
+.headerCartCountShow {
+	position: absolute; top: 2px; font-size: 10px; right: 0; width: 50px; text-align: center;	
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

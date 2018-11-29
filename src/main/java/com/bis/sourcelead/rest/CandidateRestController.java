@@ -1047,7 +1047,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
-		// System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		if (user != null) {
