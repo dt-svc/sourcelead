@@ -1,8 +1,8 @@
-package com.bis.sourcelead.dao;
+package com.bis.sourcelead.dao.performance;
 
 import java.util.List;
 
-import com.bis.sourcelead.entity.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 
 public interface PerformanceBadgesDao {
 	

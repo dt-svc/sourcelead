@@ -75,6 +75,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
 
     var hasRequired, hasChoices,fieldName,hasStar,hasScale;
     var includeRequiredHTML = '';
+    var includeHintMsgHTML = '';
     var includeChoicesHTML = '';
     var includeStarHTML = '';
     var includeScaleHTML = '';
@@ -99,43 +100,57 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
             hasRequired = true;
             hasChoices = false;
             fieldName = "Text Box";
+            fieldImg = "fa fa-text-width"
             break;
         case 'textarea':
             hasRequired = true;
             hasChoices = false;
             fieldName = "Text Area";
+            fieldImg = "fa fa-text-width"
             break;
         case 'select':
             hasRequired = true;
             hasChoices = true;
             fieldName = "Select Box";
+            fieldImg = "fa fa-caret-down"
             break;
         case 'radio':
             hasRequired = true;
             hasChoices = true;
             fieldName = "Radio Button";
+            fieldImg = "fa fa-check-circle-o"
             break;
         case 'checkbox':
             hasRequired = true;
             hasChoices = true;
             fieldName = "Check Box";
+            fieldImg = "fa fa-check-square-o"
             break;
         case 'calendar':
             hasRequired = true;
             hasChoices = false;
             fieldName = "Calendar";
+            fieldImg = "fa fa-calendar"
             break;
         case 'star':
         	hasStar = true;
             hasRequired = true;
             hasChoices = false;
             fieldName = "Star";
+            fieldImg = "fa fa-star-o"
             break;
         case 'scale':
         	hasScale = true;
             hasRequired = true;
             hasChoices = false;
             fieldName = "Scale";
+            fieldImg = "fa fa-sliders"
+            break;
+        case 'comments':
+            hasRequired = true;
+            hasChoices = false;
+            fieldName = "Comments";
+            fieldImg = "fa fa-comment-o"
             break;
             
     }
@@ -174,7 +189,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     
     if(hasStar){
     	includeStarHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
-        ' <div class="col-md-9"> ' +
+        ' <div class="col-md-5"> ' +
         '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Star">'+
         '<option value="3">3</option>      '+
         '<option value="4">4</option>      '+
@@ -183,7 +198,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
         '<option value="7">7</option>      '+
         '<option value="8">8</option>      '+
         '<option value="9">9</option>      '+
-        '<option value="10">10</option>      '+
+        '<option value="10">10</option>    '+
         '</select>'+
         ' </div> ' +
         '</label>'
@@ -191,7 +206,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     
     if(hasScale){
     	includeScaleHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
-        ' <div class="col-md-9"> ' +
+        ' <div class="col-md-5"> ' +
         '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Star">'+
         '<option value="10">10</option>      '+
         '<option value="20">20</option>      '+
@@ -201,30 +216,39 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
         '<option value="70">70</option>      '+
         '<option value="80">80</option>      '+
         '<option value="90">90</option>      '+
-        '<option value="100">100</option>      '+
+        '<option value="100">100</option>    '+
         '</select>'+
         ' </div> ' +
         '</label>'
      }
     
-    else{
-    	 includeTextHTML = ''+
-		   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
-	       ' <div class="col-md-9" id="label'+addField.i+'"> ' +
-	       '<input type="text" '+readOnly+' onblur="validateLabelName('+addField.i+','+templateId+',\''+sourceleadUrl+'\',\''+labelValidationCheck+'\')" id="textLabel'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Label" class="field-label form-control input-sm" >' +
-	       ' </div> ' +
-	       '</label>' 
-    }
+	   includeTextHTML = ''+
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Question:</div>' +
+	   ' <div class="col-md-9" id="label'+addField.i+'"> ' +
+	   '<input type="text" '+readOnly+'  id="textLabel'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Question" class="field-label form-control input-sm" >' +
+	   ' </div> ' +
+	   '</label>' +
+	   '<div class="clearfix mt10"> ' 
+       
+       
+       includeHintMsgHTML = ''+
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Hint:</div>' +
+       ' <div class="col-md-9" id="hint'+addField.i+'"> ' +
+       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Hint" class="field-label form-control input-sm" >' +
+       ' </div> ' +
+       '</label>' +
+	   '<div class="clearfix"> '
 
     return '' +
         '<div class="field" data-type="' + fieldType + '">' +
         DeleteButtion +
         ' <div class="clearfix"> ' + 
-        '<h3>' + '<i class="fa fa-check-circle"></i>&nbsp;'  + fieldName + '</h3>' +
+        '<h3>' + '<i class="'+fieldImg+'"></i>&nbsp;&nbsp;'  + fieldName + '</h3>' +
         ' </div> ' +
         ' <div class="row"> ' +
         includeTextHTML+
         includeRequiredHTML +
+        includeHintMsgHTML +
         includeChoicesHTML +
         includeStarHTML+
         includeScaleHTML+
@@ -379,4 +403,38 @@ function validateLabelName(i,templateId,sourceleadUrl,labelValidationCheck){
 	    });
 	}
 }
+
+
+
+//Removes fields and choices with animation
+$("#sjfb").on("click", ".delete", function() {
+	
+	var $this = $(this);
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p>Are you sure you want to delete?</p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Ok' /><input class='u_can_color' type='button' id='cancelDelete' value='Cancel'></b>";
+	result = result +"</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+	$("#deleteCustomField").on("click", function() {
+         $this.parent().slideUp( "slow", function() {
+             $this.parent().remove()
+         });
+        $("#popUp").empty();
+     	$(".project_inn_mask").fadeOut(200);
+	});
+	
+	$("#cancelDelete").on("click", function() {
+       $("#popUp").empty();
+       $(".project_inn_mask").fadeOut(200);
+	});
+	
+	
+  
+});
 

@@ -1,9 +1,9 @@
-package com.bis.sourcelead.service;
+package com.bis.sourcelead.service.performance;
 
 import java.util.List;
 
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
-import com.bis.sourcelead.entity.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 
 public interface PerformanceBadgesService {
 

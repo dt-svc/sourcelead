@@ -1,4 +1,4 @@
-package com.bis.sourcelead.dao.impl;
+package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.PerformanceBadgesDao;
-import com.bis.sourcelead.entity.PerformanceBadges;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.dao.performance.PerformanceBadgesDao;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository

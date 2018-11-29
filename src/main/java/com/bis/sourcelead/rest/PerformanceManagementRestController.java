@@ -16,12 +16,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PerformanceBadges;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController

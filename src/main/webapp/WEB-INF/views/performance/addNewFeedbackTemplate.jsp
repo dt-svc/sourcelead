@@ -4,8 +4,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <link rel="stylesheet" href="/resources/css/style.css" />
- <script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-
+<script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 <style>
 .dropdown-menu.pull-right {
     right: 0;
@@ -29,7 +29,7 @@
     
     <div id="sjfb-wrap">
 	           <form id="sjfb" novalidate>
-	           
+	           <input type="hidden" id="templateId">
      		      <div class="row mb">
 		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
 		           <label>Template Name<span class="text-danger">&nbsp;*</label>
@@ -55,14 +55,15 @@
 						        <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown">Add Field &nbsp;&nbsp;
 						        <span class="caret"></span></button>
 							        <ul id="add-field" class="dropdown-menu pull-right">
-								        <li><a id="add-text" data-type="text"  href="javascript:void(0)">Text Box</a>
-								        <li><a id="add-select" data-type="select"   href="javascript:void(0)">Select Box</a></li>
-								        <li><a id="add-checkbox" data-type="checkbox"  href="javascript:void(0)">Check Box</a></li>
-								        <li><a id="add-radio" data-type="radio" href="javascript:void(0)">Radio Button</a></li>
-								        <li><a id="add-textarea" data-type="textarea" href="javascript:void(0)">Text Area</a></li>
-								        <li><a id="add-star" data-type="star" href="javascript:void(0)">Star</a></li>
-								        <li><a id="add-scale" data-type="scale" href="javascript:void(0)">Scale</a></li>
-								        <li><a id="calendar" data-type="calendar" href="javascript:void(0)">Calendar</a></li>
+								        <li><a id="add-text" data-type="text"  href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>
+								        <li><a id="add-textarea" data-type="textarea" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Area</a></li>
+								        <li><a id="add-select" data-type="select"   href="javascript:void(0)"><span class="fa fa-caret-down">&nbsp;&nbsp;&nbsp;</span>Select Box</a></li>
+								        <li><a id="add-checkbox" data-type="checkbox"  href="javascript:void(0)"><span class="fa fa-check-square-o">&nbsp;&nbsp;</span>Check Box</a></li>
+								        <li><a id="add-radio" data-type="radio" href="javascript:void(0)"><span class="fa fa-check-circle-o">&nbsp;&nbsp;</span>Radio Button</a></li>
+								        <li><a id="add-comments" data-type="comments" href="javascript:void(0)"><span class="fa fa-comment-o">&nbsp;&nbsp;</span>Comments</a></li>
+								        <li><a id="add-star" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>
+								        <li><a id="add-scale" data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>
+								        <li><a id="add-calendar" data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>
 							        </ul>
 						        </div>
 					        </div>
@@ -76,8 +77,8 @@
 	           <div class="pull-right mr">
 	           
 	           
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="" >Save</button>
-	           <button type="button" class="slBtn md popClose"  onclick="" >Cancel</button>
+	           <button type="submit" class="slBtn md colorBtn" id="save_button" onclick="" >Save</button>
+	           <button type="button" class="slBtn md popClose"  onClick="javascript:window.location.href = '<c:url value='${appPath}/performanceManagementConfiguration'/>'"  onclick="" >Cancel</button>
 	           
 	           </div>
 
@@ -86,21 +87,9 @@
           </div>
 	 </div>
 	</div>   
-	
+	<div id="popUp"></div>
+    <div id="choicepopUp"></div>
 	
 <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 
- <script>
-// Back To Top 
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 200) {
-            $('.backtotop').fadeIn('slow');
-        } else {
-            $('.backtotop').fadeOut('slow');
-        }
-    });
-    $('.backtotop').click(function() {
-        $("html, body").animate({scrollTop: 0}, 500);
-        return false;
-    });
-</script>        
+

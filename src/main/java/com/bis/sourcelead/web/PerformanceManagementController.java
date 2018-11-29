@@ -14,8 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PerformanceBadges;
-import com.bis.sourcelead.service.PerformanceBadgesService;
+import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 

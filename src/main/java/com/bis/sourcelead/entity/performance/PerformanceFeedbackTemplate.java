@@ -1,4 +1,4 @@
-package com.bis.sourcelead.entity;
+package com.bis.sourcelead.entity.performance;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,13 +13,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+
 @Entity
-@Table(name = "PERFORMANCE_BADGES")
-public class PerformanceBadges implements Serializable{
-	
+@Table(name = "PERFORMANCE_FEEDBACK_TEMPLATE")
+public class PerformanceFeedbackTemplate implements Serializable{
+
 	private static final long serialVersionUID = 1L;
-
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -28,17 +30,11 @@ public class PerformanceBadges implements Serializable{
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
-	private String fileURL;
-	
-	@Column(name = "FILE_CONTENT_TYPE", columnDefinition = "TEXT default NULL")
-	private String fileContentType;
-	
-	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
-	private String fileName;
-	
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description ;
+	
+	@Column(name = "JSON_STRING", columnDefinition = "LONGTEXT default NULL")
+	private String jsonString ;
 		
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
@@ -64,7 +60,6 @@ public class PerformanceBadges implements Serializable{
     @JoinColumn(name="UPDATED_BY", nullable=false )        
     private User updatedBy;
 	
-	
 
 	public Long getId() {
 		return id;
@@ -82,30 +77,6 @@ public class PerformanceBadges implements Serializable{
 		this.name = name;
 	}
 
-	public String getFileURL() {
-		return fileURL;
-	}
-
-	public void setFileURL(String fileURL) {
-		this.fileURL = fileURL;
-	}
-
-	public String getFileContentType() {
-		return fileContentType;
-	}
-
-	public void setFileContentType(String fileContentType) {
-		this.fileContentType = fileContentType;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -114,12 +85,28 @@ public class PerformanceBadges implements Serializable{
 		this.description = description;
 	}
 
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
+	}
+
 	public OrgLocations getOrgLocationId() {
 		return orgLocationId;
 	}
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public Integer getStatus() {
@@ -161,14 +148,4 @@ public class PerformanceBadges implements Serializable{
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-	
-
 }
