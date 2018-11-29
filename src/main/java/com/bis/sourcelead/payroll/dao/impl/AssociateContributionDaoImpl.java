@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
@@ -46,7 +47,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<AssociateContribution>  associateContributionList = session.createQuery("from AssociateContribution contri where contri.candidate.id=:candidateId and contri.orgLocationId.id= :orgLocationId and contri.status = 1" ).setLong( "candidateId", candidateId).setLong("orgLocationId", orgLocation.getId()).list();
-		return associateContributionList;
+		return associateContributionList.stream().filter(ad ->ad.getContributionTypeId().getStatus() == 1).collect(Collectors.toList());
 	}
 
 	@Override

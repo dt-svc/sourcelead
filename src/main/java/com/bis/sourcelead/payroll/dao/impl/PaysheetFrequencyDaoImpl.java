@@ -364,10 +364,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			queryObj.setDate("startDate", startDate);
 			queryObj .setDate("endDate", endDate);
 			
-			
 			List<DeductionHistory> deductioHistory = queryObj.list();
 			yTDPayrollDTO.setDeductionYTD(getTotalDeducationYTD(deductioHistory));
-			
 			
 			
 			BigDecimal QTDTotal = BigDecimal.ZERO;

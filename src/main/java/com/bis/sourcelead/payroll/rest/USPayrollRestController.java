@@ -42,11 +42,13 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
@@ -105,6 +107,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -214,6 +217,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 
 	
 	/**
@@ -1749,30 +1755,58 @@ public class USPayrollRestController {
 			
 			ResponseList<CandidateDTO> resList = new ResponseList<>();
 			List<CandidateDTO> listDto = new ArrayList<>();
-			ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
-			for (AssociateSalary associateSalary : assSalList.getData()) {
-				 dto = new CandidateDTO();
-				
-				StringBuilder name = new StringBuilder();
-				if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
-					name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
-				}else {
-					name.append(associateSalary.getCandidate().getFirstName());
+			
+			if(orgLocation.getCountry().equalsIgnoreCase("India")) {
+				ResponseList<AssociateSalaryInd> assSalIndList = associateSalaryService.getAssociateSalaryIndListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
+				for (AssociateSalaryInd associateSalary : assSalIndList.getData()) {
+					 dto = new CandidateDTO();
+					
+					StringBuilder name = new StringBuilder();
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else {
+						name.append(associateSalary.getCandidate().getFirstName());
+					}
+					dto.setCandidateName(name.toString());
+					dto.setEmail(associateSalary.getCandidate().getEmail());
+					dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+					if(associateSalary.getCandidate().getDesignationType() != null) {
+						dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+					}else {
+						dto.setDesignationType("--");
+					}
+					
+					listDto.add(dto);
 				}
-				dto.setCandidateName(name.toString());
-				dto.setEmail(associateSalary.getCandidate().getEmail());
-				dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
-				if(associateSalary.getCandidate().getDesignationType() != null) {
-					dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
-				}else {
-					dto.setDesignationType("--");
+				resList.setData(listDto);
+				resList.setRecordsFiltered(assSalIndList.getRecordsFiltered());
+				resList.setRecordsTotal(assSalIndList.getRecordsTotal());
+			}else {
+				ResponseList<AssociateSalary> assSalList = associateSalaryService.getAssociateSalaryListByLocationIdAndGroupId(orgLocation, userGroup.getId(),dto);
+				for (AssociateSalary associateSalary : assSalList.getData()) {
+					 dto = new CandidateDTO();
+					
+					StringBuilder name = new StringBuilder();
+					if(StringUtils.isNotBlank(associateSalary.getCandidate().getLastName())){
+						name.append(associateSalary.getCandidate().getFirstName()).append(" ").append(associateSalary.getCandidate().getLastName());
+					}else {
+						name.append(associateSalary.getCandidate().getFirstName());
+					}
+					dto.setCandidateName(name.toString());
+					dto.setEmail(associateSalary.getCandidate().getEmail());
+					dto.setMobilePhone(associateSalary.getCandidate().getMobilePhone());
+					if(associateSalary.getCandidate().getDesignationType() != null) {
+						dto.setDesignationType(associateSalary.getCandidate().getDesignationType());
+					}else {
+						dto.setDesignationType("--");
+					}
+					
+					listDto.add(dto);
 				}
-				
-				listDto.add(dto);
+				resList.setData(listDto);
+				resList.setRecordsFiltered(assSalList.getRecordsFiltered());
+				resList.setRecordsTotal(assSalList.getRecordsTotal());
 			}
-			resList.setData(listDto);
-			resList.setRecordsFiltered(assSalList.getRecordsFiltered());
-			resList.setRecordsTotal(assSalList.getRecordsTotal());
 			return resList;
 		}
 		
@@ -1876,8 +1910,9 @@ public class USPayrollRestController {
 		 * populate approvers for notifying payroll schedule time
 		 * @param orgLocation
 		 * @return
+		 * @throws Exception 
 		 */
-		private List<UserDTO> getApproverData(OrgLocations orgLocation)
+		private List<UserDTO> getApproverData(OrgLocations orgLocation) throws Exception
 		{
 			List<UserDTO> userList = new ArrayList<>();
 			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
@@ -1892,7 +1927,10 @@ public class USPayrollRestController {
 					}else {
 						sb.append(approver.getUser().getFirstName());
 					}
+					
+					UserRole uRole = userRoleService.getUserDetailsByUserIdAndLocationId(approver.getUser().getId(), orgLocation.getId());
 					userDTO.setFullName(sb.toString());
+					userDTO.setRole(uRole.getRoles().getDisplayName());
 					userList.add(userDTO);
 				}
 			}

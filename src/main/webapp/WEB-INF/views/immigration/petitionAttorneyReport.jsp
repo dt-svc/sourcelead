@@ -91,12 +91,12 @@ $(document).ready(function(){
                  <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
 		          <div class="pull-left">
 		            <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From Date" class="form-control calendar input-sm" type="text">
 		            </div>
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" placeholder="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();"><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -255,31 +255,33 @@ $(document).ready(function(){
       }if(locationDate.match("yyyy-dd-MM")){
           finalDateFormatEndDate = 'yy-dd-mm'; 
       }
-
-      $( "#custFromDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-            maxDate: new Date() ,
-            onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custToDate").datepicker("option", "minDate", dt);
-             removeStartValid();
-            } 
-      });
       
-      $( "#custToDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-          maxDate: new Date() ,
-      onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custFromDate").datepicker("option", "maxDate", dt);
-             removeEndValid();
-            }});
+      
+      $('#custFromDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custToDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+      
+      $('#custToDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custFromDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+      
+
   }
 
 	function removeStartValid(){
@@ -472,7 +474,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -637,6 +639,9 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
+	 $("#dateFrequency").val('');
+	 $("#custFromDate").val('');
+	 $("#custToDate").val('');
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->
