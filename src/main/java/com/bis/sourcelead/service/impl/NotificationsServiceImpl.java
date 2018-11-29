@@ -109,5 +109,10 @@ public class NotificationsServiceImpl implements NotificationsService{
 		return notificationDao.getTopTenNotificationsListByUserId(userId, orgCode, locationCode);
 	}
 
+	@Override
+	public String getNotificationUUIDByOrgSpocId(Long orgSpocId) throws Exception {
+		return notificationDao.getNotificationUUIDByOrgSpocId(orgSpocId);
+	}
+
 
 }

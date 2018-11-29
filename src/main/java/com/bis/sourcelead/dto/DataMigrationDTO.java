@@ -264,11 +264,13 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	// immigration import fields starts here date 17 May 2018. Srinivas Sabbu.
 	
-private String beneficiaryFirstName;
+    private String beneficiaryFirstName;
     
     private String beneficiaryLastName;
     
     private String beneficiaryEmail;
+    
+    private String beneficiaryPhone;
     
     private String experience;
     
@@ -2492,6 +2494,14 @@ private String beneficiaryFirstName;
 
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
+	}
+
+	public String getBeneficiaryPhone() {
+		return beneficiaryPhone;
+	}
+
+	public void setBeneficiaryPhone(String beneficiaryPhone) {
+		this.beneficiaryPhone = beneficiaryPhone;
 	}
    
 }

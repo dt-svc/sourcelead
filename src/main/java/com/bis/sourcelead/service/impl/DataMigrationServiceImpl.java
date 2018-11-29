@@ -1025,6 +1025,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 				immDto.setEmail(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"));
 			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"))) {
+				immDto.setMobile(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"));
+			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("experience"))) {
 				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
@@ -1056,6 +1062,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				}
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("ssn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
 				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
