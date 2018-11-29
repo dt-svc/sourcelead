@@ -2756,32 +2756,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
 			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
 			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
-			marketPlace.setImageUrl(candidate.getFileUrl());
+			//marketPlace.setFullName(candidate.getFullName());
+			//marketPlace.setGender(candidate.getGender());
+			//marketPlace.setEmail(candidate.getEmail());
+			//marketPlace.setAlternateEmail(candidate.getAlternateEmail());
+			//marketPlace.setMobilePhone(candidate.getMobilePhone());
+			//marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+			//marketPlace.setDesignation(candidate.getDesignation());
+			//marketPlace.setEmploymentType(candidate.getDesignationType());
+			//marketPlace.setLocation(candidate.getLocation());
+			//marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
+			//marketPlace.setSkillsName(candidate.getSkillsName());
+			//marketPlace.setExperienceYears(candidate.getExperienceYears());
+			//marketPlace.setExperienceMonths(candidate.getExperienceMonths());
+			//marketPlace.setCurrentRate(candidate.getCurrentRate());
+			//marketPlace.setCurrentRateType(candidate.getCurrentRateType());
+			//marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+			//marketPlace.setExpectedRate(candidate.getExpectedRate());
+			//marketPlace.setExpectedRateType(candidate.getRateType());
+			//marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+			//marketPlace.setNoticePeriod(candidate.getNoticePeriod());
+			//marketPlace.setNationality(candidate.getNationality());
+			//marketPlace.setMaritalStatus(candidate.getMaritalStatus());
+			//marketPlace.setImageUrl(candidate.getFileUrl());
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
-			marketPlace.setSummary(candidate.getSummary());
+			//marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
@@ -2869,6 +2869,27 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+				marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+				marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+				marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+				marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+				marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+				marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+				marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+				marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+				marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+				marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+				marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+				marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+				marketPlaceDTO.setShowCompanyName(marketPlace.getShowCompanyName());
+				marketPlaceDTO.setCompanyName(marketPlace.getCompanyName());
+				marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
+				marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+				marketPlaceDTO.setMarketRateCurrencey(marketPlace.getMarketRateCurrencey());
+				marketPlaceDTO.setMarketPrice(marketPlace.getMarketPrice());
+				marketPlaceDTO.setMarketplaceUUID(marketPlace.getMarketplaceUUID());
+				marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+				
 				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
 				if(count != 0){
 					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
@@ -2919,8 +2940,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
 		CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 		BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
-		if(marketPlace.getSkillsName() != null){
-			String[] skills = marketPlace.getSkillsName().split(",");
+		marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+		marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+		marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+		marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+		marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+		marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+		marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+		marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+		marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+		marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+		marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+		marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+		marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+		marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+		if(marketPlace.getCandidateId().getSkillsName() != null){
+			String[] skills = marketPlace.getCandidateId().getSkillsName().split(",");
 			marketPlaceDTO.setSkills(skills);
 		}
 		Set<CandidateEmployers> candidateEmployers = marketPlace.getCandidateId().getCandidateEmployers();
@@ -2948,7 +2983,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		for(CandidateEducation education : educations){
 			CandidateEducationDTO educationDTO = new CandidateEducationDTO();
 			BeanUtils.copyProperties(education, educationDTO);
-			
 			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat dtf2 = new SimpleDateFormat("MMM");
 			SimpleDateFormat dtf3 = new SimpleDateFormat("yyyy");
@@ -2991,20 +3025,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(marketPlace.getSkillsName() != null && !marketPlace.getSkillsName().equals("")){
 			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
-			String[] marketPlaceSkills = marketPlace.getSkillsName().split(",");
+			String[] marketPlaceSkills = marketPlace.getCandidateId().getSkillsName().split(",");
 			for (int j = 0; j < marketPlaceSkills.length; j++){
 				marketPlaceSkills[j] = marketPlaceSkills[j].trim();
 			}
 			for(CandidateMarketPlace place : globalCandidatesMarketplaceData){
 				String[] placeSkills = null;
-				if(place.getSkillsName() != null && !place.getSkillsName().equals("")){
-					placeSkills = place.getSkillsName().split(",");
+				if(place.getCandidateId().getSkillsName() != null && !place.getCandidateId().getSkillsName().equals("")){
+					placeSkills = place.getCandidateId().getSkillsName().split(",");
 					for (int i = 0; i < placeSkills.length; i++){
 						placeSkills[i] = placeSkills[i].trim();
 					}
 				if(!Collections.disjoint(Arrays.asList(placeSkills), Arrays.asList(marketPlaceSkills))){
 					CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
 					BeanUtils.copyProperties(place, dto);
+					dto.setImageUrl(place.getCandidateId().getFileUrl());
+					dto.setFullName(place.getCandidateId().getFullName());
+					dto.setLocation(place.getCandidateId().getLocation());
 					marketPlaceDTOs.add(dto);
 				}
 			}
@@ -3013,41 +3050,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return marketPlaceDTO;
 	}
-
-	/*@Override
-	public void updateMarketplaceDataFromCandidate(Long id, User user) throws Exception {
-		List<Long> marketplaceData = candidateDao.getMyMarketplaceCandidateIds(id);
-		List<Candidate> candidates = candidateDao.getCandidatesListByCandidateIds(marketplaceData);
-		updateMarketplaceData(candidates,user);
-	}*/
-	
-	/*public void updateMarketplaceData(List<Candidate> candidates, User user) throws Exception{
-		if(candidates != null && candidates.size() != 0){
-			for(Candidate candidate : candidates){
-				CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceByCandidateId(candidate.getId());
-				BeanUtils.copyProperties(candidate, marketPlace);
-				marketPlace.setCandidateId(candidate);
-				marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-				marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
-				marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
-				marketPlace.setEmploymentType(candidate.getDesignationType());
-				marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-				marketPlace.setExpectedRateType(candidate.getRateType());
-				marketPlace.setImageUrl(candidate.getFileUrl());
-				marketPlace.setUpdatedDate(new Date());
-				marketPlace.setUpdatedBy(user);
-				//saveOrUpdateCandidateElkDocument(candidate);
-				candidateDao.updateMarketPlace(marketPlace);
-			}
-		}
-	}*/
-
-	/*@Override
-	public void updateMarketplaceDataFromCandidateGlobal(Long id, User user) throws Exception {
-		List<Long> marketplaceCandidateIds = candidateDao.getGlobalMarketplaceCandidateIds(id);
-		List<Candidate> candidates = candidateDao.getCandidatesListByCandidateIds(marketplaceCandidateIds);
-		updateMarketplaceData(candidates,user);
-	}*/
 
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
 		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
