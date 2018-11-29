@@ -5824,7 +5824,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
 				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
 			}
-			//submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
+			submissionList = requirementSubmissionDao.getCandidateForBillJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
 		}else{
 			submissionList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocations, user,orgRelationId);
 		}
