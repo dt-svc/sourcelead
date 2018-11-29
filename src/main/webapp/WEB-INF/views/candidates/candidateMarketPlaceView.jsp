@@ -38,6 +38,9 @@
 		<!-- Filter Global market place-->
 		<div class="positionRelative reportHead clearfix">
      	 <ul class="pull-right list-unstyled list-inline">
+	       <li class="tableShare" style="display: none;">
+	       <a class="marketplaceIcon mr5" title="Withdraw" onclick="withdrawCandidatesFromMarketPlace()"></a>
+	        </li>
 		   <span><input class="immigraTabSerach" id ="globalMarketSearh" placeholder="Search" type="text"></span>
         </ul>
       </div>
@@ -51,6 +54,7 @@
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
 	}
+  
   </script>
   <script type="text/javascript">
 	$(document).ready(function () {
@@ -63,6 +67,7 @@
 	     result = result + '<table id="dynamicGlobalMarketCandidateListTbl">';
 	     result = result + '<thead>';
 	     result = result + '<tr>';
+	    result = result +'  <th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>';
 	     result = result + '<th>Name</th>';
 	     result = result + '<th>Location</th>';
 	     result = result + '<th>Primary Skills</th>';
@@ -88,6 +93,69 @@
 	     
 	     dynamicGlobalMarketCandidateListPagination(url);
 	 }
+
+	
+	   function toggleShareCandidates(source){
+			  var checkboxes = document.querySelectorAll('input[class="contactscheckbox"]');
+			  if($(source).is(":checked")){
+				  $('input[class="contactscheckbox"]').prop('checked', 'checked');
+				  $(".tableShare").show();
+			  }
+			  else {
+				  $('input[class="contactscheckbox"]').removeProp('checked');
+				  $(".tableShare").hide();
+			  }
+				 
+			  $('input[class="contactscheckbox"]').each(function(i) {
+				  if($(this).is(":checked")) {
+				      shareCandidates[$(this).data("id")] = $(this).val();
+				  } else {
+					  shareCandidates[$(this).data("id")] = "";
+				  }
+			  });
+		}
+
+		function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
+			$("#"+checkboxId).removeProp("checked");
+			   var count = 0;
+			   var data = $("#"+tableId).DataTable().data();
+			 for(var e in selectedItems) {
+			   if(!e || !selectedItems[e] || selectedItems[e] === "")
+				   continue;
+			   
+			   for(var f in data) {
+		 	   if(e === data[f].id+"") {
+		 		count ++;
+		 	   }
+				}
+			 }
+			 if(count == data.count()) {
+				$("#"+checkboxId).prop("checked", "checked");
+			 }
+		}
+		
+		var shareCandidates = {};
+		function checkShareCandidates(elem) {
+			if($(elem).is(":checked")) {
+				shareCandidates[$(elem).data("id")] = $(elem).val();
+				$(".tableShare").show();
+			} else{
+				 var candidateIds = new Array();
+				 for(var e in shareCandidates) {
+					 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+						   continue;
+					 candidateIds.push(shareCandidates[e]);
+				 } 
+				 if(candidateIds.length - 1 == 0){
+					 $(".tableShare").hide();
+				 }
+				$("#sharedcheckbox").removeProp('checked');
+				shareCandidates[$(elem).data("id")] = "";
+			}
+		}
+			
+	 //var count = 0;
+
 	 function dynamicGlobalMarketCandidateListPagination(url) {
 		 var colIndex = 0;
 	    $('#dynamicGlobalMarketCandidateListTbl').DataTable({
@@ -100,6 +168,7 @@
 	             pages: 10
 	         }), 
 	         "columns": [
+	        	 {"data": ""},
 	             {"data": "Name"},
 	             {"data": "Location"},
 	             {"data": "Primary Skills"},
@@ -110,6 +179,34 @@
 	             {"data": "Action"}
 	         ],
 	         "columnDefs": [
+	        	  {
+	        	    "targets": colIndex++,
+	        	    "sortable": false,
+	        	    "render": function(data, type, opt, meta){
+	        	    	 var result = "";
+		    	  		 var shareflag = false;
+		        		 for(var e in shareCandidates) {
+	   	     	    	   if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+	   	     				   continue;
+	   	     	    	   if(e === opt.id+"") {
+	   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+	   	     	    		 	checkOrUncheckParent("dynamicGlobalMarketCandidateListTbl",shareCandidates, "sharedcheckbox"); 
+	   	     	    		    shareflag = true;
+	   	     	    	   	break;
+	   	     	    	   }
+	   	        		 }
+		        		 if(!shareflag)
+	   	        			$("#sharedcheckbox").removeAttr('checked');
+		        		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
+		        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
+	    	  		
+		        			if(opt.isAssociate == 'Y'){
+				            	  result = result +"<i class='fa fa-black-tie pull-right mt2' title='Added as Associate'></i> ";  
+				             }
+		        			 result = result +"</div>";
+		        			return result;
+	        	    }
+	        	 }, 
 	             {
 	                 "targets": colIndex++,
 	                 "data": "fullName", 
@@ -340,7 +437,7 @@ function saveEditMarketPriceFun(id, obj){
 function cancelEditMarketPriceFun(marketPrice, marketPriceCurrency, id, obj){
 	$(obj).closest('tr').find("div[id='marketPlacePriceDiv']").empty().append("<div id='marketPlacePriceValDiv' class='tblminwidth-100' title = '"+marketPrice+" "+ marketPriceCurrency+"'>" + marketPrice + " "+ marketPriceCurrency+"</div>");
 	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_PROFILE\',\'ROLE_WITHDRAW_PROFILE\')">'; 
-	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'withdrawCandidateFromMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")//
+	$(obj).closest('tr').find("div[id='marketLinkDiv']").empty().append("<a href='#' id='editMarketLink' onclick='editMarketPriceFun(\""+id+"\",\""+marketPrice+"\",\""+marketPriceCurrency+"\", this);' title='Edit'>Edit</a><a onclick = 'withdrawCandidateFromMarketPlace(\""+id+"\")'>&nbsp;Withdraw</a>")
 	'</sec:authorize>'
 }
 $(".funPrice").on("click", "li", function(){
@@ -367,6 +464,58 @@ function cancelMarketPlace(){
 	$("#reasonForMarketPlaceDiv").find("p.jquery_form_error_message").remove();
 	$("#reasonForMarketPlaceDiv").empty(); 
 }
+
+function withdrawCandidatesFromMarketPlace(){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
+	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='withdrawCandidates();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
+	result = result +"	</div>";
+	$("#popUp").empty().append(result);
+	$("#remove_marketPlace_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
+
+function withdrawCandidates() {
+    var reason = $("#reasonForMarketPlace").val();
+    var candidateIds = new Array();
+	 for(var e in shareCandidates) {
+		 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(shareCandidates[e]);
+	 }
+	 
+    if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
+    $("#reasonForMarketPlaceDiv").empty();
+   $.ajax({
+        url: sourceleadUrl + "/withdrawCandidatesFromMarketPlace?id="+candidateIds+"&withdrawReason="+reason,
+        type: "GET",
+        data: candidateIds,
+        success: function (result) {
+        	if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
+              	$("#remove_marketPlace_pop").fadeOut(200);
+	    		$(".project_inn_mask").fadeOut(200);
+	    		dynamicGlobalMarketCandidateListPagination(sourceleadUrl + "/getOrgMarketplaceList?searchValue="+$("#globalMarketSearh").val());
+	    		location.reload();
+            }else{
+           	 showError("Operation failed, please try again");
+           }}
+    });
+    }else if (reason.length >= 251){
+    	$("#reasonForMarketPlaceDiv").find('p.jquery_form_error_message').remove();
+		$("#reasonForMarketPlaceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250 characters</font>") ; 
+    }else{
+    	$("#reasonForMarketPlaceDiv").find('p.jquery_form_error_message').remove();
+		$("#reasonForMarketPlaceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+    }
+}
+
 function withdrawCandidateFromMarketPlace(id){ 
 	$(".project_inn_mask").remove();
 	var result = "";

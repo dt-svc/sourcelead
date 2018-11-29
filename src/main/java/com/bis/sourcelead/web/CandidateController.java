@@ -773,6 +773,7 @@ public class CandidateController {
 		
 		@RequestMapping(value = "/getCandidateDetailsFromMarketcart", method = RequestMethod.POST)
 		public @ResponseBody List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(
+				@RequestParam(value = "searchValue", required = true)String searchValue,
 				@RequestParam(value = "creationStartDate", required = false)String creationStartDate,
 				@RequestParam(value = "creationEndDate", required = false)String creationEndDate,
 				@RequestParam(value = "checkedDate", required = false)String checkedDate,
@@ -787,7 +788,7 @@ public class CandidateController {
 					if(checkedDate != null && !"".equalsIgnoreCase(checkedDate)){
 					 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocation);
 					 }
-					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray);
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray, searchValue);
 			}}
 			return candidatesFromMarketplace;
 		}

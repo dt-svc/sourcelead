@@ -2394,6 +2394,15 @@ public class CandidateDaoImpl implements CandidateDao {
 				.setLong("orgLocationId", orgLocationId).uniqueResult();
 		return marketPlaceCandidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateMarketPlace marketplace where marketplace.id IN(:id) and marketplace.orgLocationId = :orgLocationId";
+		List<CandidateMarketPlace> marketPlaceCandidateList = session.createQuery(query).setParameterList("id", id).setLong("orgLocationId", orgLocationId).list();
+		return marketPlaceCandidateList;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2461,6 +2470,15 @@ public class CandidateDaoImpl implements CandidateDao {
 				.setParameter("uuid", uuid).uniqueResult();
 		return marketPlaceCandidate;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "UPDATE CandidateMarketPlace cmp SET cmp.showCompanyName =:setShowCompanyName WHERE cmp.orgLocationId =:orgLocationId";
+		int count= session.createQuery(query).setString("setShowCompanyName", companyNameFlag).setLong("orgLocationId", orgLocations.getId()).executeUpdate();
+	    return count;
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2525,13 +2543,18 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole,
-			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray) {
+			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
 			String createdByQuery = " ";
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				createdByQuery = " and marketCartview.createdBy=:createdByuser";
+			}
+			StringBuilder query1 = new StringBuilder("");
+			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+				query1.append(" and ((marketCartview.fullName like '%" + searchValue + "%' )");
+				query1.append(" or (marketCartview.skillsName like '%" + searchValue + "%' ))");
 			}
 			StringBuilder dateQuery = new StringBuilder("");
 			if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate)
@@ -2557,7 +2580,7 @@ public class CandidateDaoImpl implements CandidateDao {
 						+ customStartdate + "' and '" + customEnddate + "'");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
-			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery)
+			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {

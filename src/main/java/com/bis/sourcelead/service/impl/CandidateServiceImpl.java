@@ -576,6 +576,7 @@ public class CandidateServiceImpl implements CandidateService {
 		return candidateList;
 	}
 	
+	
 	/**
 	 * to get Candidate By CandidateId
 	 * 
@@ -2818,6 +2819,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception{
+		return candidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
 		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
 		marketplace.setWithdrawReason(withdrawReason);
@@ -2919,8 +2925,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray)throws Exception {
-		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception {
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);
 	}
 
 	@Override
@@ -2934,6 +2940,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
 		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
 	}
+	
+	@Override
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		return candidateDao.updateMarketplaceCandidates(orgLocations,companyNameFlag);
+	}
+	
 
 	@Override
 	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception {
