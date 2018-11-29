@@ -76,22 +76,21 @@ $( document ).ready(function() {
 	  } 
 	 getSelfTotalCounts(); // leave self count need to check authorizarion
 	 expensesCount("myExpenses"); // expenses self need to check authorizarion
+	 getJobFairs();//Events need to check authorizarion
 	// contractList();
 	var isJobsTabAccessable = '${SourceLeadWeb_isJobsTabAccessable}';
 		if(isJobsTabAccessable=="Y" ){
-			requirementApproverList('SUBMITTED');
-			requirementSubmissionsCount("today");
-			requirementList(false, -1);
-			onboardingCandidatesList();
-			getProjectResourceReqestsListCount();
-			contractList(); 
-			resourceRequestList("Waiting For Approval");
-			ApplicantAuthorization('requestSent');
-		    getInterviewsandTasks();
-			getInterviewsDates(); 
+			requirementSubmissionsCount("today");//need to check authorizarion
+			requirementList(false, -1);//need to check authorizarion
+			onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
+			getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
+			resourceRequestList("Waiting For Approval");// Project Requests Resource Associate  need to check authorizarion
+			requirementApproverList('SUBMITTED'); //need to check authorizarion
+			ApplicantAuthorization('requestSent');//need to check authorizarion
+		    getInterviewsandTasks();//need to check authorizarion
+			getInterviewsDates(); //need to check authorizarion
 			//getJobFairDates();
-			getJobFairs();
-			contractList();
+			contractList();//need to check authorizarion
 	} 
 	 
 	 var settingsConfigured = '${SourceLeadWeb_settingsConfigured}';
@@ -295,8 +294,8 @@ $('#dasboardTaskDatpicker').datepicker({
           </div>
           <div class="col-xs-12 col-sm-3" id="submittedId">
             <div class="dashNewCount">
-              <p id="dial2txt"><a onclick="myExpensesListByStage(&quot;submitted&quot;);">Submitted</a></p>
-              <p class="NewCount suColor"><span id="expensesSubmittedForApprovalCount"><a onclick="myExpensesListByStage(&quot;submitted&quot;);">1</a></span></p>
+              <p id="dial2txt"><a onclick="myExpensesListByStage('submitted');">Submitted</a></p>
+              <p class="NewCount suColor"><span id="expensesSubmittedForApprovalCount"><a onclick="myExpensesListByStage('submitted');">1</a></span></p>
             </div>
           </div>
           <div class="col-xs-12 col-sm-3">
@@ -489,7 +488,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </sec:authorize>
-  
+  <sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
   <div class="clearfix"></div>
   <div class="col-md-12">
     <div class="mb clearfix col-md-12 noPad">
@@ -529,6 +528,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
+  </sec:authorize>
   <div class="mb clearfix col-md-12">
   <div class="mb clearfix col-md-12">
   <div class="dashNewWrap mb10">
@@ -602,9 +602,36 @@ $('#dasboardTaskDatpicker').datepicker({
            
            </div>
       	  </div>
+      	  <!-- projectPopupDetails.jsp included  -->
+      	  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+			<div id="projectPopupDetailsLoading"></div>
+				<h5 class="headerAdsrch" id="ProjectDetailsDiv">Project Details
+					<a href="javascript:void(0)" class="close-div" onClick="closeProjectDetailsPopup()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						
+						<div class="col-md-4">
+						<div class="row">
+						   <div id="projectDetailsDiv"></div>
+						</div>
+						</div>
+						
+						
+					</div>
+				</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Close" id="search_requiremet"
+								onclick="closeProjectDetailsPopup();" class="btn btn-sm btn-success" />
+						</div>
+					</div>
+				</div>
 </div>
 </div>
-  
+   <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
   <div class="col-md-6 mb">
     <div class="dashNewWrap mb10">
       <div class="dashNewWrapHead clearfix">
@@ -640,7 +667,7 @@ $('#dasboardTaskDatpicker').datepicker({
                 </tr>
               </tbody>
             </table>
-            <div class="dataTables_info" id="requirementApproverPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
+            <div class="dataTables_info" id="requirementApproverPagination_info" role="status" aria-live="polite"></div>
             <div class="dataTables_paginate paging_simple_numbers" id="requirementApproverPagination_paginate"><a class="paginate_button previous disabled" aria-controls="requirementApproverPagination" data-dt-idx="0" tabindex="0" id="requirementApproverPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="requirementApproverPagination" data-dt-idx="1" tabindex="0" id="requirementApproverPagination_next">Next</a></div>
           </div>
         </div>
@@ -648,7 +675,8 @@ $('#dasboardTaskDatpicker').datepicker({
       <!-- Pagenation Ends --> 
     </div>
   </div>
-  
+  </sec:authorize>
+  <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
   <div class="col-md-6 mb">
     <div class="dashNewWrap mb10">
       <div class="dashNewWrapHead clearfix">
@@ -672,23 +700,18 @@ $('#dasboardTaskDatpicker').datepicker({
                   <input type="search" class="" placeholder="" aria-controls="applicantsPagination">
                 </label>
               </div>
-              <table id="applicantsPagination" class="display dataTable no-footer" role="grid" aria-describedby="applicantsPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
+              <table id="applicantsPagination">
                 <thead>
                   <tr role="row">
-                    <th class="sorting_asc" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 97px;" aria-sort="ascending" aria-label="Applicant: activate to sort column descending">Applicant</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 47px;" aria-label="Job: activate to sort column ascending">Job</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 138px;" aria-label="Team Member: activate to sort column ascending">Team Member</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Status: activate to sort column ascending">Status</th>
-                    <th class="sorting" tabindex="0" aria-controls="applicantsPagination" rowspan="1" colspan="1" style="width: 71px;" aria-label="Action: activate to sort column ascending">Action</th>
+                    <th >Applicant</th>
+                    <th>Job</th>
+                    <th>Team Member</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr class="odd">
-                    <td colspan="5" class="dataTables_empty" valign="top"></td>
-                  </tr>
-                </tbody>
               </table>
-              <div class="dataTables_info" id="applicantsPagination_info" role="status" aria-live="polite">Showing 0 to 0 of 0 entries</div>
+              <div class="dataTables_info" id="applicantsPagination_info" role="status" aria-live="polite"></div>
               <div class="dataTables_paginate paging_simple_numbers" id="applicantsPagination_paginate"><a class="paginate_button previous disabled" aria-controls="applicantsPagination" data-dt-idx="0" tabindex="0" id="applicantsPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="applicantsPagination" data-dt-idx="1" tabindex="0" id="applicantsPagination_next">Next</a></div>
             </div>
           </div>
@@ -696,7 +719,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  
+  </sec:authorize>
   
   <div class="clearfix"></div>
   <div class="col-md-12">
@@ -862,6 +885,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
+  <sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
   <div class="clearfix"></div>
   <div class="col-md-12">
     <div class="col-md-12 mb clearfix noPad" id="contractListDiv" style="display: block;">
@@ -896,8 +920,7 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  
-  
+  </sec:authorize>
   
   
   
