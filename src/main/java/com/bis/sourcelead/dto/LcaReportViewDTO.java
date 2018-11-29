@@ -65,7 +65,7 @@ private static final long serialVersionUID = 1L;
 	
 	private String availability;
 	
-	private String expiredOn;
+	private String expired;
 	
 	private String exportType;
 	
@@ -269,12 +269,12 @@ private static final long serialVersionUID = 1L;
 		this.availability = availability;
 	}
 
-	public String getExpiredOn() {
-		return expiredOn;
+	public String getExpired() {
+		return expired;
 	}
 
-	public void setExpiredOn(String expiredOn) {
-		this.expiredOn = expiredOn;
+	public void setExpired(String expired) {
+		this.expired = expired;
 	}
 
 	public String getPrivilingWageCurrency() {

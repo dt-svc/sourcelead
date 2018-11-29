@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LeaveTypeHistory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -309,7 +310,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		
 		leaveType = leaveTypeDao.addLeaveType(leaveType);
-		
+		storeLeaveTypeHistory(leaveType);
 		if (leaveTypeDTO.getRoles() == null || leaveTypeDTO.getRoles().isEmpty()) {
 			leaveService.deleteAllLeaveRolesByParticularTableId(Constants.LEAVE_TYPE,leaveType.getId());
 		} 
@@ -321,6 +322,73 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		return leaveType;
 	}
 	 
+	public void storeLeaveTypeHistory(LeaveType leaveType)
+	{
+		LeaveTypeHistory lt= new LeaveTypeHistory();
+		lt.setLeaveTypeId(leaveType.getId());
+		lt.setOrgLocations(leaveType.getOrgLocations().getId());
+		if(leaveType.getDepartmentId()!=null)
+			lt.setDepartmentId(leaveType.getDepartmentId().getId());
+		lt.setName(leaveType.getName());
+		lt.setDuration(leaveType.getDuration());
+		lt.setHours(leaveType.getHours());
+		lt.setTypeOfHours(leaveType.getTypeOfHours());
+		lt.setLeaveType(leaveType.getLeaveType());
+		lt.setApplicableToUsers(leaveType.getApplicableToUsers());
+		lt.setLeavesCarryforward(leaveType.getLeavesCarryforward());
+		lt.setNumbefrOfLeavesPerMonth(leaveType.getNumbefrOfLeavesPerMonth());
+		lt.setNumbefrOfLeavesPeryear(leaveType.getNumbefrOfLeavesPeryear());
+		lt.setDescription(leaveType.getDescription());
+		lt.setStatus(leaveType.getStatus());
+		lt.setColorCode(leaveType.getColorCode());
+		lt.setDepartmentIds(leaveType.getDepartmentIds());
+		lt.setCreatedDate(leaveType.getCreatedDate());
+		lt.setCreatedBy(leaveType.getCreatedBy());
+		lt.setUpdatedBy(leaveType.getUpdatedBy());
+		lt.setUpdatedDate(leaveType.getUpdatedDate());
+		lt.setLeaveTypeUUID(leaveType.getLeaveTypeUUID());
+		lt.setDeleteReason(leaveType.getDeleteReason());
+		lt.setLeavePolicy(leaveType.getLeavePolicy());
+		lt.setPolicyDescription(leaveType.getPolicyDescription());
+		lt.setPolicyName(leaveType.getPolicyName());
+		lt.setVisibilityToAllUsers(leaveType.getVisibilityToAllUsers());
+		lt.setPeriod(leaveType.getPeriod());
+		lt.setLeaveEffective(leaveType.getLeaveEffective());
+		lt.setNewJoinee(leaveType.getNewJoinee());
+		lt.setExperiencedType(leaveType.getExperiencedType());
+		lt.setExperiencedDuration(leaveType.getExperiencedDuration());
+		lt.setExperiencedApplicableDays(leaveType.getExperiencedApplicableDays());
+		lt.setReasonRequired(leaveType.getReasonRequired());
+		lt.setAttachmentRequired(leaveType.getAttachmentRequired());
+		lt.setOverdrawLeaves(leaveType.getOverdrawLeaves());
+		lt.setDonateLeave(leaveType.getDonateLeave());
+		lt.setPriorLeaveApplying(leaveType.getPriorLeaveApplying());
+		lt.setPriorDays(leaveType.getPriorDays());
+		lt.setLeaveDuration(leaveType.getLeaveDuration());
+		lt.setMinDays(leaveType.getMinDays());
+		lt.setMaxDays(leaveType.getMaxDays());
+		lt.setNoOfDays(leaveType.getNoOfDays());
+		lt.setNoOfDaysPerPeriod(leaveType.getNoOfDaysPerPeriod());
+		lt.setAutoApprove(leaveType.getAutoApprove());
+		lt.setAutoApproveType(leaveType.getAutoApproveType());
+		lt.setAutoApproveTypeList(leaveType.getAutoApproveTypeList());
+		lt.setTimeSheetAutofill(leaveType.getTimeSheetAutofill());
+		lt.setEffectiveGender(leaveType.getEffectiveGender());
+		lt.setIncludeHolidays(leaveType.getIncludeHolidays());
+		lt.setVisibleInBalanceLeaves(leaveType.getVisibleInBalanceLeaves());
+		lt.setLeaveEmpType(leaveType.getLeaveEmpType());
+		lt.setAllowability(leaveType.getAllowability());
+		lt.setMaxDaysToCarryforward(leaveType.getMaxDaysToCarryforward());
+		lt.setIncludeInPayroll(leaveType.getIncludeInPayroll());
+		lt.setLeaveEncashment(leaveType.getLeaveEncashment());
+		lt.setLeaveEncashMaxDays(leaveType.getLeaveEncashMaxDays());
+		lt.setLeaveEncashMinDays(leaveType.getLeaveEncashMinDays());
+		lt.setAccuralPolicy(leaveType.getAccuralPolicy());
+		lt.setNewJoinee(leaveType.getNewJoinee());
+		lt.setExperiencedPerPeriod(leaveType.getExperiencedPerPeriod());
+		leaveTypeDao.storeLeaveTypeHistory(lt);
+	}
+	
 		private void deleteLeaveRoleIds(long leaveTypeId) {
 		// TODO Auto-generated method stub
 		

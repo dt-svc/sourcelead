@@ -300,6 +300,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "DATE_OF_BIRTH")
 	private Date dateOfBirth;
+	
+	@Column(name = "PAN_NUMBER")
+	private String panNumber;
 
 	@Column(name = "PLACE_OF_BIRTH")
 	private String placeOfBirth;
@@ -1418,6 +1421,14 @@ public class Candidate implements Serializable {
 
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
 	}
 
 	public String getGender() {
