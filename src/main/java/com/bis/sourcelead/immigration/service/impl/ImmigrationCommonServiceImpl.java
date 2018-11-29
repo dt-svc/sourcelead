@@ -1981,6 +1981,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getEmail() !=null){
 			 writeRow.createCell(3).setCellValue(exportView.getEmail()); 
 		}
+		if(exportView.getPhone() !=null){
+			 writeRow.createCell(4).setCellValue(exportView.getPhone()); 
+		}
+		
 		String totalExperience = null;
 		String experienceMonths = null;
 		String experienceYears = null;
@@ -1995,106 +1999,106 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			experienceMonths = " 0 months";
 		}
 		totalExperience = experienceYears+experienceMonths;
-		writeRow.createCell(4).setCellValue(totalExperience);
+		writeRow.createCell(5).setCellValue(totalExperience);
 		if(exportView.getSsnNumber() !=null){
-			 writeRow.createCell(5).setCellValue(exportView.getSsnNumber()); 
+			 writeRow.createCell(6).setCellValue(exportView.getSsnNumber()); 
 		}
 		if(exportView.getI94No() !=null){
-			 writeRow.createCell(6).setCellValue(exportView.getI94No()); 
+			 writeRow.createCell(7).setCellValue(exportView.getI94No()); 
 		}
 		if(exportView.getI20SevisNo() !=null){
-			 writeRow.createCell(7).setCellValue(exportView.getI20SevisNo()); 
+			 writeRow.createCell(8).setCellValue(exportView.getI20SevisNo()); 
 		}
 		if(exportView.getEadNo() !=null){
-			 writeRow.createCell(8).setCellValue(exportView.getEadNo()); 
+			 writeRow.createCell(9).setCellValue(exportView.getEadNo()); 
 		}
 		if(exportView.getDateOfBirth() !=null){
-			 writeRow.createCell(9).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getDateOfBirth())); 
 		}
 		if(exportView.getMaritalStatus() !=null){
-			 writeRow.createCell(10).setCellValue(exportView.getMaritalStatus()); 
+			 writeRow.createCell(11).setCellValue(exportView.getMaritalStatus()); 
 		}
 		if(exportView.getPetitionType() !=null){
-			 writeRow.createCell(11).setCellValue(exportView.getPetitionType()); 
+			 writeRow.createCell(12).setCellValue(exportView.getPetitionType()); 
 		}
 		if(exportView.getTemplateName() !=null){
-			 writeRow.createCell(12).setCellValue(exportView.getTemplateName()); 
+			 writeRow.createCell(13).setCellValue(exportView.getTemplateName()); 
 		}
 		if(exportView.getArrivalDate() !=null){
-			 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(14).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getArrivalDate())); 
 		}
 		if(exportView.getOpenDate() !=null){
-			 writeRow.createCell(14).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(15).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getOpenDate())); 
 		}
 		if(exportView.getCurrUscisStatus() !=null){
-			 writeRow.createCell(15).setCellValue(exportView.getCurrUscisStatus()); 
+			 writeRow.createCell(16).setCellValue(exportView.getCurrUscisStatus()); 
 		}
 		if(exportView.getVisaIdNumber() !=null){
-			 writeRow.createCell(16).setCellValue(exportView.getVisaIdNumber()); 
+			 writeRow.createCell(17).setCellValue(exportView.getVisaIdNumber()); 
 		}
 		if(exportView.getVisaValidFromDate() !=null){
-			 writeRow.createCell(17).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(18).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getVisaValidFromDate())); 
 		}
 		if(exportView.getVisaValidToDate() !=null){
-			 writeRow.createCell(18).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(19).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getVisaValidToDate())); 
 		}
 		 if(exportView.getOrgLocationId().equals(orgLocations.getId())){
-             writeRow.createCell(19).setCellValue(exportView.getVendor()); 
-             writeRow.createCell(20).setCellValue(exportView.getSpocNameVendor()); 
-             writeRow.createCell(21).setCellValue(exportView.getSpocEmailVendor()); 
+             writeRow.createCell(20).setCellValue(exportView.getVendor()); 
+             writeRow.createCell(21).setCellValue(exportView.getSpocNameVendor()); 
+             writeRow.createCell(22).setCellValue(exportView.getSpocEmailVendor()); 
         }else {
-             writeRow.createCell(19).setCellValue(exportView.getClient());
-             writeRow.createCell(20).setCellValue(exportView.getSpocNameClient()); 
-             writeRow.createCell(21).setCellValue(exportView.getSpocEmailClient());
+             writeRow.createCell(20).setCellValue(exportView.getClient());
+             writeRow.createCell(21).setCellValue(exportView.getSpocNameClient()); 
+             writeRow.createCell(22).setCellValue(exportView.getSpocEmailClient());
         }
 		if(exportView.getReceiptNo() !=null){
-			 writeRow.createCell(22).setCellValue(exportView.getReceiptNo()); 
+			 writeRow.createCell(23).setCellValue(exportView.getReceiptNo()); 
 		}
 		if(exportView.getLocation() !=null){
-			 writeRow.createCell(23).setCellValue(exportView.getLocation()); 
+			 writeRow.createCell(24).setCellValue(exportView.getLocation()); 
 		}
 		if(exportView.getLcaStartDate() !=null){
-			 writeRow.createCell(24).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(25).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getLcaStartDate())); 
 		}
 		if(exportView.getLcaEndDate() !=null){
-			 writeRow.createCell(25).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(26).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getLcaEndDate())); 
 		}
 		if(exportView.getLcaNumber() !=null){
-			 writeRow.createCell(26).setCellValue(exportView.getLcaNumber()); 
+			 writeRow.createCell(27).setCellValue(exportView.getLcaNumber()); 
 		}
 		if(exportView.getLcaRate() !=null){
-			 writeRow.createCell(27).setCellValue(exportView.getLcaRate()); 
+			 writeRow.createCell(28).setCellValue(exportView.getLcaRate()); 
 		}
 		if(exportView.getEmployerLocation() !=null){
-			 writeRow.createCell(28).setCellValue(exportView.getEmployerLocation()); 
+			 writeRow.createCell(30).setCellValue(exportView.getEmployerLocation()); 
 		}
 		if(exportView.getJobName() !=null){
-			 writeRow.createCell(30).setCellValue(exportView.getJobName()); 
+			 writeRow.createCell(31).setCellValue(exportView.getJobName()); 
 		}
 		if(exportView.getJobId() !=null){
-			 writeRow.createCell(31).setCellValue(exportView.getJobId()); 
+			 writeRow.createCell(32).setCellValue(exportView.getJobId()); 
 		}
 		// dont remove
 		if(exportView.getPreviousLcaStartDate() !=null){
-			 writeRow.createCell(32).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(33).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
 		if(exportView.getPreviousLcaEndDate() !=null){
-			 writeRow.createCell(33).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(34).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
 		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(34).setCellValue(exportView.getPreviousLcaNumber()); 
+			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaNumber()); 
 		}
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(36).setCellValue(exportView.getPreviousLcaRate()); 
 		}
 		/*if(exportView.getPreviousEmployerLocation() !=null){
 			 writeRow.createCell(37).setCellValue(exportView.getPreviousEmployerLocation()); 
