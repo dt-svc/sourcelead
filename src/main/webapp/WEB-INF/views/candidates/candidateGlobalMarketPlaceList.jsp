@@ -818,26 +818,7 @@ function addCandidateToMarketCart(candidateName, UUID, viewModel) {
 	    });
 	}
 	
-	//INR,AUD,USD,GBP,SGD,EUR
-	//style: 'currency', currency: 'INR'
-	function updateMarketplaceCartCountAndPrice(){
-		var totalPriceInCurrency;
-		$.ajax({
-			 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
-		        type: 'GET',
-		        success: function (object) {
-		        	if(object != null){
-		        		$("#cartCount").html(object[0]);
-		        		if(object[0] === 0){
-			        		$("#cartCount").bind("click", false);
-			        		}else{
-			        		$("#cartCount").unbind("click", false);
-				        	}
-		        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
-		        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
-		        	}}
-		        });
-		}
+	
 	
 	
 $(".funPrice").on("click", "li", function(){

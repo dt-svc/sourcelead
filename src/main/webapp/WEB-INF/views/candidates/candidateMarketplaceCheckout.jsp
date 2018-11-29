@@ -51,7 +51,7 @@
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
               <li class="mr">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon"></span></li>
+                <span class="repSearchIcon" onclick="getCandidateDetailsFromMarketcart()"></span></li>
                  <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
                 <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary"><i class="fa fa-send paddingRight"></i>Check Out</button>
@@ -286,6 +286,8 @@ function getCandidateDetailsFromMarketcart(){
 	var checkedDate = $('.dateCheckBox:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
+	var searchValue = $("#dynamicUserDataTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
 	if(checkedDate != null){
 		creationStartDate = "";
 		creationEndDate = "";
@@ -294,7 +296,7 @@ function getCandidateDetailsFromMarketcart(){
 	}
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
 		success : function(object) {
 			if(object != null){
 			var result ="";
