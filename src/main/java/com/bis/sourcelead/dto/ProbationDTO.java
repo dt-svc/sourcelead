@@ -20,6 +20,8 @@ public class ProbationDTO extends CommonDTO {
 	private Date confirmationDate;
 	
 	private BigInteger resourceManagerId;
+	
+	private int noOfDays;
 
 	
 
@@ -86,6 +88,13 @@ public class ProbationDTO extends CommonDTO {
 	public void setResourceManagerId(BigInteger resourceManagerId) {
 		this.resourceManagerId = resourceManagerId;
 	}
-	
+
+	public int getNoOfDays() {
+		return noOfDays;
+	}
+
+	public void setNoOfDays(int noOfDays) {
+		this.noOfDays = noOfDays;
+	}
 	
 }

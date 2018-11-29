@@ -186,7 +186,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
-        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff(); getProfilePercentage();">Configure</a></li>
+        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();getProbationPeriod();">Configure</a></li>
         <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
        
         <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
@@ -884,6 +884,21 @@ function cancelOrgImg(){
 							</form>
             			</div>
            			      <!-- Recommendations Configure ends -->     		
+           			      
+           			      
+           			      <!-- Probation Period Starts -->
+           			      
+           			       <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="probationPer">Probation Period</h4>
+                                    <div id="probationPeriodLoading"></div>
+                                </div>
+                            </div>
+                			<div id="probationPeriodDiv"></div>            
+            			</div>
+            			
+            			<!-- Probation Period Ends -->
            			           			
         			</div>
     			</div>
@@ -1842,7 +1857,7 @@ function configCoolingOff(){
 					result = result + '<div class="form-group">';
 					result = result + '<label class="col-md-3">Cooling Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for Jobs, because of applied recently."></i></label>';
 					result = result + '<div class="col-md-4 select-field selectChosen">';
-					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
+					result = result + '<select class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
 					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
 					result = result + '		<option value="0 Days">0 Days</option>';
                     result = result + '		<option value="1 Week">1 Week</option>';
@@ -3918,6 +3933,118 @@ function financialYear(){
         $('#selector1').delay(2000).fadeOut(100);
 	}
 </script> 
+
+
+
+
+<script>
+function getProbationPeriod(){
+	
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProbationData?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	
+					showOrgprobationData(data);
+	        }    
+	 	});
+}
+
+function showOrgprobationData(data){
+	var result = "";
+	result = result + '<form id="probation_form"  name="probation_form" method="post">'; 
+	
+	result = result + '<div class="form-group">';
+	result = result + '<label class="col-md-3">Probation Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="This will represent the probation period for a associate in organisation."></i></label>';
+	result = result + '<div class="col-md-4 select-field selectChosen">';
+	result = result + '<select class="form-control chosen-select" id="probationPeriod" name="probationPeriod" field-name="Probation Period">';
+	
+	result = result + '<option value="">--Select Probation Period--</option>';
+	result = result + ' <option value="15 Days" '+(data.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+	result = result + ' <option value="30 Days" '+(data.probationPeriod == "30 Days" ? "selected" : '') +'>1 Month</option>';
+	result = result + '	<option  value="60 Days" '+ (data.probationPeriod == "60 Days" ? "selected" : '') +'>2 Months</option>';
+	result = result + ' <option value="90 Days" '+(data.probationPeriod == "90 Days" ? "selected" : '') +'>3 Months</option>';
+	
+	result = result + ' </select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="form-group">';
+	result = result + '<label class="col-md-3">No of Days &nbsp;&nbsp;</label>  ';
+	result = result + '<div class="col-md-4"><input type="text" name="noOfDays" value="'+data.noOfDays+'" id="noOfDays" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="No of Days">';
+		result = result + '</div>';
+	result = result + '</div> ';
+	
+	
+	result = result + '<div class="pull-right">';
+	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr">';
+	result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+	result = result + '</div>';
+	result = result + ' </form>';
+	$("#probationPeriodDiv").empty(); 
+	$("#probationPeriodDiv").append(result);
+	
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  $('.chosen-container').css({'width': '100%'});
+	 
+       $("#probationPeriod").chosen();
+       $("#probationPeriod").trigger('chosen:update');
+}
+
+
+$('body').on('submit', '#probation_form', function(e){
+ 	  if ($(this).validate(false, validationSettings)){
+ 		e.preventDefault();
+ 		var formData = getFormData("probation_form");
+  		var probationPeriod = document.getElementById("probationPeriod").value;
+  		var noOfDays = document.getElementById("noOfDays").value;
+  		 	
+   		 $.ajax({
+				type : "POST",
+				data : formData,
+				url : sourceleadUrl+"/saveProbationData?${_csrf.parameterName}=${_csrf.token}",
+				success : function(result) {
+					
+					 if (result && result.response === "INVALID_DATA") {
+                     showError(result.responseMessage);
+                 }else if (result.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (result.response === "SUCCESS") {
+		        		$('#successMsgDiv').html("Probation Data Updated Successfully");
+		        		 $("#profilePercentageSelector").fadeIn(200);
+		        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+		        	} else if (result.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	} 
+				},
+			});    
+         
+     	    return true;
+     }
+     else{
+     	return false;	
+        }
+     });
+     
+  /* $('body').on('blur', '#probation_form', function() {
+		$("#probation_form").showHelpOnFocus();
+		$("#probation_form").validateOnBlur(false, validationSettings);
+	}); */
+
+</script>
 
 <!-- <script>
 function loadEmailConfig(){
