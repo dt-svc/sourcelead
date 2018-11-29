@@ -12,6 +12,7 @@ $('body').on('submit', '#sjfb', function(e){
         var fields = [];
         var submitTemplate = true;
         var fieldLabel = '';
+        var fieldhint = '';
         var myArray = new Array();
         $('.field').each(function() {
             var $this = $(this);
@@ -25,6 +26,8 @@ $('body').on('submit', '#sjfb', function(e){
 
             //field label
             fieldLabel = $this.find('.field-label').val();
+            
+            fieldhint = $this.find('.field-hint').val(); 
 
             //field required
             var fieldReq = $this.hasClass('required') ? 1 : 0;
@@ -67,6 +70,7 @@ $('body').on('submit', '#sjfb', function(e){
             fields.push({
             		type: fieldType,
 	                label: fieldLabel,
+	                hint: fieldhint,
 	                req: fieldReq,
 	                choices: choices,
 	                isRemoved : isRemoved,
@@ -108,9 +112,14 @@ $('body').on('submit', '#sjfb', function(e){
       	    	type: "POST",
       	        url: sourceleadUrl+"/savePerformanceFeedbackTemplate?templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
       	        success: function(result) {
-      	        	if((result == 'home')){
-      	        		location.replace(sourceleadUrl+"/performanceManagementConfiguration"); 
-      		        } 
+      	           if (result === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (result === "SUCCESS") {
+		        		getFeedbackList();
+		        		$(".mask, #modalTasktype").fadeOut();
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
       	        },
       	    });   
               return true;
@@ -160,4 +169,43 @@ $('body').on('submit', '#sjfb', function(e){
     function cancel(){
     	$("#choicepopUp").empty();
     	$(".project_inn_mask").fadeOut(200);
+    }
+    
+    
+    
+   function getBadgesList(){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/getPerformanceRewardsAndBadgesList",
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    				},
+    			}); 
+    			
+    }
+
+    function addFeedbackTemplate(){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/addNewFeedbackTemplate",
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    		    	    customizeFields('${sourceleadUrl}');
+    				},
+    			}); 
+    			
+    }
+
+
+    function getFeedbackList(){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/getPerformanceFeedbackTemplateList",
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    				},
+    			}); 
     }

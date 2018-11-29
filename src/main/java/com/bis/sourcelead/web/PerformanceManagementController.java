@@ -15,7 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -33,6 +35,9 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceBadgesService performanceBadgesService;
+	
+	@Autowired
+	PerformanceFeedbackTemplateService performanceFeedbackTemplateService;
 	
 	
 	
@@ -67,6 +72,19 @@ public class PerformanceManagementController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("performance/addNewFeedbackTemplate");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/getPerformanceFeedbackTemplateList")
+	public ModelAndView getPerformanceFeedbackTemplateList(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 List<PerformanceFeedbackTemplate> feedbackList = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateList(orgLocation.getId());
+		 model.addObject("feedbackList", feedbackList);
+		 model.addObject("feedbackListSize", feedbackList.size());
+		 model.setViewName("performance/performanceFeedbackTemplateList");
 		return model;
 	}
 	

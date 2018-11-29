@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
     <section class="content-header clearfix">
@@ -37,7 +37,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Feedback</h3>
-				<span><a onclick="addFeedbackTemplate();" class="colB">Add</a><a href="#" class="">View</a></span>
+				<span><a onclick="addFeedbackTemplate();" class="colB">Add</a><a onclick="getFeedbackList();" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
@@ -54,35 +54,6 @@
     
 <jsp:include page="../performance/addNewPerformanceBadge.jsp" />      
 </section>
-
-
-
-<script>
-function getBadgesList(){
-	$.ajax({
-		  type: "GET",
-		    url: sourceleadUrl+"/getPerformanceRewardsAndBadgesList",
-		     success :function(response) {
-		    	    $("#performanceManagementDiv").empty();  
-		    	    $("#performanceManagementDiv").append(response);
-				},
-			}); 
-			
-}
-
-function addFeedbackTemplate(){
-	$.ajax({
-		  type: "GET",
-		    url: sourceleadUrl+"/addNewFeedbackTemplate",
-		     success :function(response) {
-		    	    $("#performanceManagementDiv").empty();  
-		    	    $("#performanceManagementDiv").append(response);
-		    	    customizeFields('${sourceleadUrl}');
-				},
-			}); 
-			
-}
-</script>
 
 
 <jsp:include page="../masterFooter.jsp" />

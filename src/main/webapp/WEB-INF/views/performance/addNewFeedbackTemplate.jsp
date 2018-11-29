@@ -5,7 +5,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <link rel="stylesheet" href="/resources/css/style.css" />
 <script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 <style>
 .dropdown-menu.pull-right {
     right: 0;

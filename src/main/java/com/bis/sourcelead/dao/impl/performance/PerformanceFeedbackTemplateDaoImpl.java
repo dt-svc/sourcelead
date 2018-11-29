@@ -75,4 +75,11 @@ public class PerformanceFeedbackTemplateDaoImpl implements PerformanceFeedbackTe
 			return null;
 		}
 	}
+
+	@Override
+	public List<PerformanceFeedbackTemplate> getPerformanceFeedbackTemplateList(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PerformanceFeedbackTemplate template where template.orgLocationId.id =:orgLocationId and template.status ='1' ";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
 }
