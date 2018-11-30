@@ -7,12 +7,8 @@
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <style type="text/css">
-.columnfields-custom .col-md-9 {
-	width: 100%;
-}
-.popinnerdiv  {
-min-height: 100px; max-height: 450px; overflow-y:auto; 
-}
+.columnfields-custom .col-md-9 { width: 100%;}
+.popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
 </style>
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
@@ -77,6 +73,8 @@ $(document).ready(function(){
   <div class="pull-left"><h2>Asset Management</h2></div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
+
+<div class="project_wrap">
 <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li class="current"><a href="#tab-8" onclick="getDynamicAssetList()" id="asset">Assets</a></li>
@@ -245,6 +243,7 @@ $(document).ready(function(){
         </div>
       </div>
     </div>
+    
     <!-- Project -->
   </div>
   </section>
@@ -252,6 +251,7 @@ $(document).ready(function(){
    <div class="comMask"></div>
   		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
  		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
+ 	</div>
  	</div>
 
 <script>
