@@ -48,7 +48,7 @@ $(document).ready(function(){
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
- 
+
 <jsp:include page="masterJs.jsp" />
 
 <!-- This requirement.css for only requirement.jsp  -->
