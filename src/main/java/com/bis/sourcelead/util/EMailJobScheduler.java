@@ -3018,7 +3018,7 @@ public class EMailJobScheduler {
 			
 			List<User> resourceManagersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 			Calendar cal = Calendar.getInstance();
-			if(orgLocations.getNoOfDays() != null) {
+			if(orgLocations.getNoOfDays() != null && orgLocations.getNoOfDays() > 0) {
 				cal.add(Calendar.DATE, orgLocations.getNoOfDays());
 			}else {
 				cal.add(Calendar.DATE, 2);

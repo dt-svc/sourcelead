@@ -3957,7 +3957,7 @@ function showOrgprobationData(data){
 	result = result + '<div class="form-group">';
 	result = result + '<label class="col-md-3">Probation Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="This will represent the probation period for a associate in organisation."></i></label>';
 	result = result + '<div class="col-md-4 select-field selectChosen">';
-	result = result + '<select class="form-control chosen-select" id="probationPeriod" name="probationPeriod" field-name="Probation Period">';
+	result = result + '<select class="form-control chosen-select" id="probationPeriod" name="probationPeriod" field-name="Probation Period" data-validation = "required">';
 	
 	result = result + '<option value="">--Select Probation Period--</option>';
 	result = result + ' <option value="15 Days" '+(data.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
