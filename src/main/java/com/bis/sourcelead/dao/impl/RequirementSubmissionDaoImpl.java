@@ -4262,8 +4262,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						return associateJoineReportDTO;
 				}
 				
-				}
-	
+				
 	@Override
 	@Transactional
 	public List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
