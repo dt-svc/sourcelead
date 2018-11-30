@@ -1085,7 +1085,11 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	   
 	//Project Task createby Email
 	   if(projectTask.getCreatedBy() != null) {
-		   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
+		   if(projectTasks.getOwnerUserId() != null) {
+			   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
+					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
+			   }
+		   }else if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
 				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
 		   }
 	   }
@@ -1183,5 +1187,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	@Override
 	public List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception {
 		return tasksDao.getTasksListByLookupIdAndCategoryType(lookupId, taskType);
+	}
+
+	@Override
+	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO,Date[] searchDates) throws Exception {
+		return tasksDao.getOverdueTaskReportListByOrglocationId(projectTasksDTO,searchDates);
 	}
 }
