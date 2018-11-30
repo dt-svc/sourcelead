@@ -31,61 +31,7 @@ public class CandidateMarketPlace implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
-	
-	@Column(name = "NAME")
-	private String  fullName;
 
-	@Column(name = "EMAIL")
-	private String email;
-
-	@Column(name = "ALTERNATE_EMAIL")
-	private String alternateEmail;
-
-	@Column(name = "ALTERNATE_MOBILE_PHONE")
-	private String alternateMobilePhone;
-
-	@Column(name = "MOBILE_PHONE")
-	private String mobilePhone;
-
-	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
-	private String location;
-	
-	@Column(name = "PROFILE_PERCENTAGE")
-	private Integer profilePercentage;
-	
-	@Column(name = "EXPERIENCE_YEARS")
-	private String experienceYears;
-
-	@Column(name = "EXPERIENCE_MONTHS")
-	private String experienceMonths;
-
-	@Column(name = "NOTICE_PERIOD")
-	private String noticePeriod;
-
-	@Column(name = "DESIGNATION")
-	private String designation;
-
-	@Column(name = "EMPLOYEMENT_TYPE")
-	private String employmentType;
-
-	@Column(name = "CURRENT_RATE")
-	private String currentRate;
-
-	@Column(name = "CURRENT_RATE_TYPE")
-	private String currentRateType;
-
-	@Column(name = "CURRENT_RATE_CURRENCY")
-	private String currentRateCurrency;
-
-	@Column(name = "EXPECTED_RATE")
-	private String expectedRate;
-
-	@Column(name = "EXPECTED_RATE_TYPE")
-	private String expectedRateType;
-
-	@Column(name = "EXPECTED_RATE_CURRENCY")
-	private String expectedRateCurrencey;
-	
 	@Column(name = "MARKET_PRICE")
 	private String marketPrice;
 
@@ -112,18 +58,6 @@ public class CandidateMarketPlace implements Serializable {
 	@Column(name = "CANDIDATE_UUID")
 	private String candidateUUID;
 
-	@Column(name = "SKILLS_NAME", columnDefinition = "TEXT default NULL")
-	private String skillsName;
-	
-	@Column(name = "GENDER")
-	private String gender;
-
-	@Column(name = "NATIONALITY")
-	private String nationality;
-
-	@Column(name = "MARITAL_STATUS")
-	private String maritalStatus;
-	
 	@Column(name = "CAN_MARKET_STATUS")
 	private String candidateMarketStatus;
 	
@@ -137,14 +71,8 @@ public class CandidateMarketPlace implements Serializable {
 	@Column(name = "WITHDRAW_REASON")
 	private String withdrawReason;
 	
-	@Column(name = "IMAGE_URL")
-	private String imageUrl;
-
 	@Column(name = "UUID")
 	private String marketplaceUUID;
-	
-	@Column(name = "SUMMARY", columnDefinition = "TEXT default NULL")
-	private String summary;
 	
 	public Long getId() {
 		return id;
@@ -160,154 +88,6 @@ public class CandidateMarketPlace implements Serializable {
 
 	public void setCandidateId(Candidate candidateId) {
 		this.candidateId = candidateId;
-	}
-
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getAlternateEmail() {
-		return alternateEmail;
-	}
-
-	public void setAlternateEmail(String alternateEmail) {
-		this.alternateEmail = alternateEmail;
-	}
-
-	public String getAlternateMobilePhone() {
-		return alternateMobilePhone;
-	}
-
-	public void setAlternateMobilePhone(String alternateMobilePhone) {
-		this.alternateMobilePhone = alternateMobilePhone;
-	}
-
-	public String getMobilePhone() {
-		return mobilePhone;
-	}
-
-	public void setMobilePhone(String mobilePhone) {
-		this.mobilePhone = mobilePhone;
-	}
-
-	
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-
-	public Integer getProfilePercentage() {
-		return profilePercentage;
-	}
-
-	public void setProfilePercentage(Integer profilePercentage) {
-		this.profilePercentage = profilePercentage;
-	}
-
-	public String getExperienceYears() {
-		return experienceYears;
-	}
-
-	public void setExperienceYears(String experienceYears) {
-		this.experienceYears = experienceYears;
-	}
-
-	public String getExperienceMonths() {
-		return experienceMonths;
-	}
-
-	public void setExperienceMonths(String experienceMonths) {
-		this.experienceMonths = experienceMonths;
-	}
-
-	public String getNoticePeriod() {
-		return noticePeriod;
-	}
-
-	public void setNoticePeriod(String noticePeriod) {
-		this.noticePeriod = noticePeriod;
-	}
-
-	public String getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
-
-	public String getEmploymentType() {
-		return employmentType;
-	}
-
-	public void setEmploymentType(String employmentType) {
-		this.employmentType = employmentType;
-	}
-
-	public String getCurrentRate() {
-		return currentRate;
-	}
-
-	public void setCurrentRate(String currentRate) {
-		this.currentRate = currentRate;
-	}
-
-	public String getCurrentRateType() {
-		return currentRateType;
-	}
-
-	public void setCurrentRateType(String currentRateType) {
-		this.currentRateType = currentRateType;
-	}
-
-	public String getCurrentRateCurrency() {
-		return currentRateCurrency;
-	}
-
-	public void setCurrentRateCurrency(String currentRateCurrency) {
-		this.currentRateCurrency = currentRateCurrency;
-	}
-
-	public String getExpectedRate() {
-		return expectedRate;
-	}
-
-	public void setExpectedRate(String expectedRate) {
-		this.expectedRate = expectedRate;
-	}
-
-	public String getExpectedRateType() {
-		return expectedRateType;
-	}
-
-	public void setExpectedRateType(String expectedRateType) {
-		this.expectedRateType = expectedRateType;
-	}
-
-	public String getExpectedRateCurrencey() {
-		return expectedRateCurrencey;
-	}
-
-	public void setExpectedRateCurrencey(String expectedRateCurrencey) {
-		this.expectedRateCurrencey = expectedRateCurrencey;
 	}
 
 	public String getMarketPrice() {
@@ -359,38 +139,6 @@ public class CandidateMarketPlace implements Serializable {
 		this.candidateUUID = candidateUUID;
 	}
 
-	public String getSkillsName() {
-		return skillsName;
-	}
-
-	public void setSkillsName(String skillsName) {
-		this.skillsName = skillsName;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public String getNationality() {
-		return nationality;
-	}
-
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
-
-	public String getMaritalStatus() {
-		return maritalStatus;
-	}
-
-	public void setMaritalStatus(String maritalStatus) {
-		this.maritalStatus = maritalStatus;
-	}
-
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -439,28 +187,12 @@ public class CandidateMarketPlace implements Serializable {
 		this.withdrawReason = withdrawReason;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
 	public String getMarketplaceUUID() {
 		return marketplaceUUID;
 	}
 
 	public void setMarketplaceUUID(String marketplaceUUID) {
 		this.marketplaceUUID = marketplaceUUID;
-	}
-
-	public String getSummary() {
-		return summary;
-	}
-
-	public void setSummary(String summary) {
-		this.summary = summary;
 	}
 
 	public OrgLocations getOrgLocationId() {
@@ -471,7 +203,4 @@ public class CandidateMarketPlace implements Serializable {
 		this.orgLocationId = orgLocationId;
 	}
 
-
-	
-	
 }
