@@ -247,6 +247,9 @@ public class OrgLocations implements Serializable{
 	@Column(name = "PROFILE_PERCENTAGE")
 	private Integer profilePercentage;
     
+	@Column(name = "SHOW_COMPANY_NAME_IN_MARKETPLACE")
+	private String showCompanyNameInMarkeplace;
+	
     @Transient
     private String orgName;
     
@@ -1058,6 +1061,14 @@ public class OrgLocations implements Serializable{
 
 	public void setProfilePercentage(Integer profilePercentage) {
 		this.profilePercentage = profilePercentage;
+	}
+
+	public String getShowCompanyNameInMarkeplace() {
+		return showCompanyNameInMarkeplace;
+	}
+
+	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
+		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
 	}
 
 	

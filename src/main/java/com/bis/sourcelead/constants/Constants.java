@@ -247,6 +247,7 @@ public class Constants {
 	public static final String ACTIVE = "Active";
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
+	public static final String PURCHASED = "Purchased";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
@@ -1169,6 +1170,8 @@ public class Constants {
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+	public static final String REPORT_FILTER_Last_Week = "Last_Week";
+	public static final String REPORT_FILTER_1_Month_Ago = "1_Month_Ago";
 	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
 	public static final String GENERAL = "General";
