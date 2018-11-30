@@ -264,8 +264,8 @@
 	          <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn">
-			<button type="button" class="btn btn-primary btn-sm" id="customDateApplicant" onclick="getAssociatesJoinedList();" style="display: none">Run</button>
-	        <button type="button" class="btn btn-primary btn-sm" id="customDateRecurter" onclick="filter(); getAssociatesTerminatedList();" style="display: block">Run</button>
+			<button type="button" class="btn btn-primary btn-sm" id="customDateApplicant" onclick="getAssociatesJoinedList();" style="display: block">Run</button>
+	        <button type="button" class="btn btn-primary btn-sm" id="customDateRecurter" onclick="filter(); getAssociatesTerminatedList();" style="display: none">Run</button>
         </div> 
           
           <div class="clearfix customLeaves repCustomDate" id="customSearch">
@@ -344,8 +344,8 @@
 						<div class="clearfix"></div>
 					</div>
 					<div class="fullTimebg clearfix mb10">
-						<div class="pull-left joinedTime" style="width: 70%;"></div>
-						<div class="pull-left joinedValue" style="width: 30%;"></div>
+						<div class="pull-left joinedTime" id="fullTimeMaleProgress"></div>
+						<div class="pull-left joinedValue" id="fullTimeFeMaleProgress"></div>
 					</div>
 					<div class="col-md-6 text-center">
 						<img src="/resources/images/male.svg" style=" width: 50px; height: 50px;" alt="womanimage">
@@ -369,8 +369,8 @@
 						<div class="clearfix"></div>
 					</div>
 					<div class="fullTimebg clearfix mb10">
-						<div class="pull-left joinedTime" style="width: 10%;"></div>
-						<div class="pull-left joinedValue" style="width: 10%;"></div>
+						<div class="pull-left joinedTime" id="partTimeMaleProgress"></div>
+						<div class="pull-left joinedValue" id="partTimeFeMaleProgress"></div>
 					</div>
 					<div class="col-md-6 text-center">
 						<img src="/resources/images/male.svg" style=" width: 50px; height: 50px;" alt="womanimage">
@@ -1007,21 +1007,7 @@ function offerpagination(url){
 
 </script>
   
-<script>
-function viewInterviewListResumes(resumeUUID,title){
-	if(resumeUUID != null && resumeUUID != ""){
-		window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
-	}  
-}
-</script>
 
-<script>
-function viewOffersListAttachment(offerId,title){
-	if(offerId != null && offerId != ""){
-		window.open(sourceleadUrl+'/viewOffersListAttachment/'+title+'?offerId='+offerId,title,"height=600,width=600");
-	}  
-}
-</script>
 
 <script>
 function showCustomFields(e){
@@ -1131,281 +1117,9 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 </script>
-   
-   <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="invoiceFilterId">
-				<h5 class="headerAdsrch">Filter Search
-					<a href="javascript:void(0)" class="close-div" onClick="closeApplicantFilterPop()"><i
-						class="fa fa-close"></i></a>
-				</h5>
-				<div class="addInner">
-					<div class="row">
-					  <div class="col-md-3 hidden">
-						<div class="row">
-						<!-- <div class="col-md-12 mb">
-								<label><strong>Search for</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="searchTypeFilter">
-									     <li class="radioIput positionRelative" ><input  type="radio" name="searchType"  value ="MY" ><label for="Yes">My Jobs</label></li>
-										 <li class="radioIput positionRelative" ><input  type="radio" name="searchType" value ="ALL" checked ><label for="No">All Jobs</label></li>
-				                    </ul>
-								 </div>
-						   </div> -->
-						  <%--   <div class="col-md-12 mb">
-								<label><strong>Duration</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="durationFilter">
-									<c:if test="${tab == 'today'}">
-									<li class="radioIput positionRelative" ><input type="radio"  value="today" checked  name="customDates" checked onclick="showCustomFields(this);" ><label for="applicant">Today</label></li>
-									</c:if>
-									<c:if test="${tab != 'today'}">
-									<li class="radioIput positionRelative" ><input type="radio"  value="today"  name="customDates" checked onclick="showCustomFields(this);" ><label for="applicant">Today</label></li>
-									</c:if>
-									<li class="radioIput positionRelative" ><input type="radio"  value="Last_7_days"   name="customDates" onclick="showCustomFields(this);" ><label for="applicant">Last 7 days</label></li>
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="Last_15_days" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last 15 days</label></li>
-	                                <c:if test="${tab == 'previous'}">
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" checked onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
-	                                </c:if>
-	                                <c:if test="${tab != 'previous'}">
-	                                <li class="radioIput positionRelative" ><input type="radio"  value="1_month" name="customDates" onclick="showCustomFields(this);"><label for="applicant">1 month</label></li>
-	                                </c:if>
-	                                <li class="radioIput positionRelative" ><input type="radio" value="3_months" name="customDates" onclick="showCustomFields(this);"><label for="applicant">3 months</label></li>
-   	                                <li class="radioIput positionRelative" ><input type="radio" value="Last_Year" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Last Year</label></li>
-   	                                <li class="radioIput positionRelative" ><input type="radio" value="Custom" name="customDates" onclick="showCustomFields(this);"><label for="applicant">Custom</label></li>
-	                                
-			                        </ul>
-							      </div>
-						     </div> --%> 
-						  </div>
-						  <div class="clearfix pull-left" id="custom-selects" style="display: none; width: 346px;" >
-							<div class="pull-left">
-							<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-							<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
-							</div>
-							<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-							<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
-							</div>
-							</div>
-					    </div>
-						</div>
-						
-						 
-						<div class="col-md-3 hidden">
-						<div class="row">
-						  <!--   <div class="col-md-12 mb">
-								<label><strong>Employment Type</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="empFilter">
-									<li class="checkBox positionRelative" ><input type="checkbox" value="C2C" name="employmentType"><label for="applicant">C2C</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="W-2" name="employmentType"><label for="applicant">W-2</label></li>
-                                    <li class="checkBox positionRelative" ><input type="checkbox" value="C2H" name="employmentType"><label for="applicant">C2H</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Contract" name="employmentType"><label for="applicant">Contract</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Part Time" name="employmentType"><label for="applicant">Part Time</label></li>
-	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Full Time" name="employmentType"><label for="applicant">Full Time</label></li>
-			                        </ul>
-							      </div>
-						     </div> -->
-						 <!--     <div class="col-md-12 mb">
-								<label><strong>Incentivized</strong></label>
-								 <div class="clearfix">
-									<ul class="list-unstyled" id="incentivizedFilter">
-									     <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType"  value ="Y" ><label for="Yes">Yes</label></li>
-										 <li class="checkBox positionRelative" ><input  type="checkbox" name="incentivizedType" value ="N" ><label for="No">No</label></li>
-				                    </ul>
-								 </div>
-						   </div>  -->
-						  </div>
-						</div>
-	                 
-						<div class="col-md-3 positionRelative mb">
-							<div class="clearfix dynamic_search filterDynamicsearch">
-																<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
-								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
-							</div>
-							 <div class="clearfix filterSearch-ul">
-									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
-			                        </ul>
-							 </div> 
-						</div>
-						
-						<div class="col-md-3 positionRelative mb">
-							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
-								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
-							</div>
-							 <div class="clearfix filterSearch-ul">
-								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClinetListUL">
-								</ul>
-							 </div> 
-						</div>
-					  </div>
-					  
-					  
-					  
-					</div>
-					<div class="clearfix advancedsearch-footer">
-						<div class="pull-right mr">
-							<input type="button" value="Apply" id="applicant_search_requiremet" onclick="closeApplicantFilterPop();getAssociatesJoinedList();" style="display: none" class="btn btn-sm btn-success mr" />
-							<input type="button" value="Apply" id="recruiter_search_requiremet" onclick="closeApplicantFilterPop();getAssociatesTerminatedList();" style="display: inline-block" class="btn btn-sm btn-success mr" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetApplicantFilter();" class="btn btn-sm btn-primary" />
-						</div>
-					</div>
-				</div>
-
-<script>
-function getClientList(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
-		success : function(data) {
-			var result = "";
-			  for (var i=0; i<data.length; i++)
-				{
-				var report = data[i];
-				result = result + '<li class="checkBox positionRelative">';
-				result = result + '<input  type="checkbox" name="clientNameById" value ='+report.orgRelId+'><label>'+report.clientName+'</label>';
-				result = result + '</li>';
-				}
-			  $("#myClinetListUL").empty();
-			  $("#myClinetListUL").append(result);
-
-		}
-	});
-}
-function myClientFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myClientInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myClinetListUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
-    }
-}
-
-function getTeamsList(){
-	var sourceleadUrl = '${sourceleadUrl}';
-	$.ajax({
-		type : "POST",
-		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
-		success : function(data) {
-			var result = "";
-			  for (var i=0; i<data.length; i++)
-				{
-					var report = data[i];
-					result = result + '<li class="checkBox positionRelative">';
-					result = result + '<input  type="checkbox" name="teamNameById" value ='+report.id+'><label>'+report.name+'</label>';
-					result = result + '</li>';
-				}
-			  $("#myTeamsListUL").empty();
-			  $("#myTeamsListUL").append(result);
-		}
-	});
-}
-
-function myTeamsFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myTeamsInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myTeamsListUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
-    }
-}
-</script>
+ 
 
 
-<!-- =============== Pdf and  Excel Export scripts writen by Laxman =================== -->
-<script>
-function projectExport(type){
-	if(type == "Pdf"){
-		exportType = "pdf";
-	}else{
-		exportType = "xls";
-	}
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var frequency=$("#reportTypeId").val();
-	 var noApplicantJoinedList= $("#noApplicantJoinedList").val();
-	   var tab = '${tab}';
-    	    var fromDate='';
-    	    var toDate='';
-		var searchValue = $("#dataTableSearch").val();
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		searchValue = searchValue ? searchValue : "";
-		var employmentType = [];
-		 $('input:checkbox[name=employmentType]:checked').each(function() 
-		 {
-			employmentType.push($(this).val());
-		 });
-		 var clientNameById = [];
-		 $('input:checkbox[name=clientNameById]:checked').each(function() 
-		 {
-			 clientNameById.push($(this).val());
-		 });
-		 var teamNameById = [];
-		 $('input:checkbox[name=teamNameById]:checked').each(function() 
-		 {
-			 teamNameById.push($(this).val());
-		 });
-		 var incentivizedType = [];
-		 $('input:checkbox[name=incentivizedType]:checked').each(function() 
-		 {
-			 incentivizedType.push($(this).val());
-		 });
-		 var searchType = $('input[name=searchType]:checked').val();
-
-		    if(frequency == "custom"){
-    	        var fromDate = $("#ReportStartDate").val();
-    	  		  var toDate = $("#ReportEndDate").val();
-    	    	if(fromDate == ''){
-    	    		  document.getElementById("reportsStartDate").style.display="block";
-    				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
-    	        }
-    	        if(toDate == ''){
-    	        	 document.getElementById("reportsEndDate").style.display="block";
-   				  $("#reportsEndDate").empty().append("End Date is Required") ; 
-    	        }
-    	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-   	    		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
-    	        }
-    	    }else{
-      	        if(noApplicantJoinedList !=	 0){
-      	        	document.getElementById("reportsStartDate").style.display="none";
-       			 document.getElementById("reportsEndDate").style.display="none";
-      	 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType+"&type=applicantReport";
-      	        }
-      	        else{
-      	        	var result = "";
-      				result = result +"	<div class='project_inn_mask'></div>";
-      				result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-      				result = result +"		<p>Applicants List is Empty</p>";
-      				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-      				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-      				result = result +"	</div>";
-      				$("#emptyPopup").append(result);
-      				$("#candidate_user_pop").slideDown(200);
-      				$(".project_inn_mask").fadeIn(200);
-      	        }
-    	    	 
-    	    } 
-// 		 window.location.href = sourceleadUrl+"/applicantsJoinedListExport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&exportType="+exportType;
-	     
-}
-</script>
 <script type="text/javascript">
 function candidtaeCancel(){
 	$("#emptyPopup").empty();
@@ -1475,6 +1189,8 @@ $(function() {
 			$("#associateJoined").hide();
 			$("#associateTerminated").show();
 			
+			$("#customDateRecurter").show();
+			$("#customDateApplicant").hide();
 
 			$("#applicantJoinedDiv").hide();
 			$("#associateTerminatedDiv").show();
@@ -1517,128 +1233,7 @@ $(function() {
     });
 });
 </script> 
-<script>
-function exportToPdf(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	 var searchValue = $("#associateJoinedListDataTableSearch").val();
-	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val(); 
-	var exportType = "pdf";
-	 var flag = true;
-	 var startDate = '';
-	 var endDate = '';
-   if(timePeriod == 'custom'){
-   	startDate = $("#ReportStartDate").val();
-		  endDate = $("#ReportEndDate").val();
-		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
-			  if(startDate == null || startDate == ''){
-				  document.getElementById("reportsStartDate").style.display="block";
-				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
-			  }
-			  
-			  if(endDate == null || endDate == ''){
-				  document.getElementById("reportsEndDate").style.display="block";
-				  $("#reportsEndDate").empty().append("End Date is Required") ; 
-			  }
-			  flag = false;
-		  }
-	 }else{
-		 document.getElementById("reportsStartDate").style.display="none";
-		 document.getElementById("reportsEndDate").style.display="none";
-	 } 
-   var orgTeams = [];
-	$('input:checkbox[name=orgTeams]:checked').each(function() 
-		    {
-		orgTeams.push($(this).val());
-    });
-	 var orgTeams = [];
-		$('input:checkbox[name=teamNameById]:checked').each(function() 
-			    {
-			orgTeams.push($(this).val());
-	     });
-		var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
-		});
-	if(noRecruiterApplicantJoinedList != 0){
-		window.location.href = sourceleadUrl + "/exportAllApplicantJoinedList?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&exportType="+exportType;
 
-	}else{
-	  	var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
-			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Applicants List is Empty</p>";
-			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-			result = result +"	</div>";
-			$("#emptyPopup").append(result);
-			$("#candidate_user_pop").slideDown(200);
-			$(".project_inn_mask").fadeIn(200);
-	}
-	
-}
-</script>
-<script>
-function exportUserData(){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var searchValue = $("#associateJoinedListDataTableSearch").val();
-	 var timePeriod = $("#reportTypeId").val();
-	 var  noRecruiterApplicantJoinedList=$("#noRecruiterApplicantJoinedList").val();
-	var exportType = "xls";
-	 var flag = true;
-	 var startDate = '';
-	 var endDate = '';
-   if(timePeriod == 'custom'){
-   	startDate = $("#ReportStartDate").val();
-		  endDate = $("#ReportEndDate").val();
-		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
-			  if(startDate == null || startDate == ''){
-				  document.getElementById("reportsStartDate").style.display="block";
-				  $("#reportsStartDate").empty().append("Start Date is Required") ; 
-			  }
-			  
-			  if(endDate == null || endDate == ''){
-				  document.getElementById("reportsEndDate").style.display="block";
-				  $("#reportsEndDate").empty().append("End Date is Required") ; 
-			  }
-			  flag = false;
-		  }
-	 }else{
-		 document.getElementById("reportsStartDate").style.display="none";
-		 document.getElementById("reportsEndDate").style.display="none";
-	 } 
-   var orgTeams = [];
-	$('input:checkbox[name=orgTeams]:checked').each(function() 
-		    {
-		orgTeams.push($(this).val());
-    });
-	 var orgTeams = [];
-		$('input:checkbox[name=teamNameById]:checked').each(function() 
-			    {
-			orgTeams.push($(this).val());
-	     });
-		var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
-		});
-	if(noRecruiterApplicantJoinedList != 0){
-		window.location.href = sourceleadUrl + "/exportAllApplicantJoinedList?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&exportType="+exportType;
-
-	}else{
-		var result = "";
-		result = result +"	<div class='project_inn_mask'></div>";
-		result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +"		<p>Applicants List is Empty</p>";
-		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
-		result = result +"	</div>";
-		$("#emptyPopup").append(result);
-		$("#candidate_user_pop").slideDown(200);
-		$(".project_inn_mask").fadeIn(200);
-	}
-	
-}
-</script>
 <script type="text/javascript">
 
 	function columPop(type){
@@ -1795,12 +1390,15 @@ function exportUserData(){
 	        	    			$("#ttJoinedCount").text(totalJoinedCount);	
 	        	    			$("#ttTerminatedCount").text(totalTerminatedCount);
 	        	    			
-	        	    			/* alert("fullTimeCount "+fullTimeCount);
-	        	    			alert("partTimeCount "+partTimeCount);
-	        	    			alert("ftMaleCount "+ftMaleCount);
-	        	    			alert("ftFeMaleCount "+ftFeMaleCount);
-	        	    			alert("ptMaleCount "+ptMaleCount);
-	        	    			alert("ptFeMaleCount "+ptFeMaleCount); */
+	        	    			var fullTimeSize = 100 / fullTimeCount;
+	        	    			var partTimeSize = 100 / partTimeCount;
+	        	    			
+	        	    			
+	        	    			$("#fullTimeMaleProgress").attr("style", "width:" + (ftMaleCount * fullTimeSize) + "%");
+	        	    			$("#fullTimeFeMaleProgress").attr("style", "width:" + (ftFeMaleCount * fullTimeSize) + "%");
+	        	    			$("#partTimeMaleProgress").attr("style", "width:" + (ptMaleCount * partTimeSize) + "%");
+	        	    			$("#partTimeFeMaleProgress").attr("style", "width:" + (ptFeMaleCount * partTimeSize) + "%");
+
         	    			}
         	    		}
         	    	});
@@ -1906,22 +1504,76 @@ function associateGraph(data){
 			$("#customDateRecurter").hide();
 			$("#year").show();
 			$("#customize_btn").show();
-			$("#reportTypeId").val(null);
+// 			$("#reportTypeId").val(null);
+			$("#associateTerminatedDiv").hide();
+			
+			$("#terminatedCustomFields").hide();
+			$("#customDateApplicant").hide();
+				$("#terminatedCustomFieldscolPopMid").hide();
+				$("#associateTeminateSearchId").hide();
+				$("#customDateRecurter").hide();
+				$("#customDatesDropdown").hide();
+				$("#associateTerminatedDiv").hide();
+
 
 		});
 		
 		$("#ListView").click(function() {
 			$(this).removeClass("btn-default").addClass("btn-primary");
 			$("#GraphView").removeClass("btn-primary").addClass("btn-default");
-			$("#applicantJoinedDiv").show();
+// 			$("#applicantJoinedDiv").show();
 			$(".GraView").hide();
 			$("#araginglistSel").show();
-			$("#joinedCustomFields").show();
-			$("#associateJoinSearchId").show();
-			$("#reportTypeId").show();
-			$("#customDateRecurter").show();
+// 			$("#joinedCustomFields").show();
+// 			$("#associateJoinSearchId").show();
+// 			$("#reportTypeId").show();
+// 			$("#customDateRecurter").show();
 			$("#year").hide();
 			$("#customize_btn").hide();
+			
+			
+			var optval=$("#araginglistSel").val();
+			if(optval === "associateTerminated") {
+				getAssociatesTerminatedList();
+				$("#associateJoined").hide();
+				$("#associateTerminated").show();
+				
+
+				$("#applicantJoinedDiv").hide();
+				$("#associateTerminatedDiv").show();
+				$("#associateJoinSearchId").hide();
+				$("#associateTeminateSearchId").show();
+				
+				$("#joinedCustomFields").hide();
+				$("#terminatedCustomFields").show();
+				$("#joinedCustomFieldscolPopMid").hide();
+				$("#terminatedCustomFieldscolPopMid").show();
+				$("#reportTypeId").show();
+				$("#customDateRecurter").show();
+				$("#customDateApplicant").hide();
+
+			}else if(optval === "associateJoined"){
+				getAssociatesJoinedList();
+				
+				$("#associateJoinSearchId").show();
+				$("#associateTeminateSearchId").hide();
+				
+				
+				$("#joinedCustomFields").show();
+				$("#terminatedCustomFields").hide();
+				$("#joinedCustomFieldscolPopMid").show();
+				$("#terminatedCustomFieldscolPopMid").hide();
+				
+//					$("#associateTerminatedDiv").empty();
+				$("#customDateRecurter").hide();
+				$("#customDateApplicant").show();
+				$("#associateJoined").show();
+				$("#associateTerminatedDiv").hide();
+				$("#customDatesDropdown").hide();
+				$("#associateTerminatedDiv").hide();
+				$("#applicantJoinedDiv").show();
+				$("#reportTypeId").show();
+			}
 		});
 		});
 		</script>
