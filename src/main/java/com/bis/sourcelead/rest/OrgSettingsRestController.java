@@ -72,6 +72,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
@@ -107,6 +108,8 @@ public class OrgSettingsRestController {
 	private String sourceleadUrl;
 	@Autowired
 	private OrgService orgService;
+	@Autowired
+	private CandidateService candidateService;
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	@Autowired
@@ -1190,6 +1193,7 @@ public class OrgSettingsRestController {
 						orgLocations.setShowCompanyNameInMarkeplace("N");
 					}
 					orgLocationService.updateOrgLocations(orgLocations);
+					candidateService.updateMarketplaceCandidates(orgLocations,orgLocations.getShowCompanyNameInMarkeplace());
 					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
