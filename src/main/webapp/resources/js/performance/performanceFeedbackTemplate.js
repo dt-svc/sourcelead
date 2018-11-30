@@ -199,3 +199,17 @@ $('body').on('submit', '#sjfb', function(e){
     				},
     			}); 
     }
+    
+    
+    function viewFeedbackTemplate(templateId){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/viewPerformanceFeedbackTemplate",
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    		    	    generateForm(sourceleadUrl,templateId);
+    				},
+    			}); 
+    			
+    }

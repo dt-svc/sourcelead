@@ -4,8 +4,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 <script type="text/javascript" src="/resources/js/performance/performanceBadge.js"></script>
+<script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
     <section class="content-header clearfix">
