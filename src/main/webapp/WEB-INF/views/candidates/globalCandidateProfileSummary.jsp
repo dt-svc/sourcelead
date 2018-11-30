@@ -268,24 +268,6 @@
 							</c:forEach>
 						</c:otherwise>
 				</c:choose>
-					<!-- <div class="media profileDetails-Widget clearfix">
-					  <div class="media">
-						  <div class="media-left">
-							<img src="images/24.jpg" class="media-object" style="width:40px; border-radius: 50%;" alt="Image">
-						  </div>
-						  <div class="media-body">
-							<div class="row">
-								<div class="col-md-12">
-									<h5 class="margin-top0"><a href="#">Rajkumar Santoshi Alapati</a></h5>
-							<p class="text-muted small mb5">Software Development Engineer</p>
-															  	<p class="text-muted small mb5">PromoKap IT Solutions Pvt Ltd</p>
-							<p class="text-muted small">Bhimavaram Area, India</p>
-
-								</div>
-							</div>
-						  </div>
-					  </div>
-				</div> -->
 			</div>
 			</div>
 		</div>
