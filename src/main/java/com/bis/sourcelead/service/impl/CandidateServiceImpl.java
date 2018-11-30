@@ -2690,32 +2690,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setMarketPrice(null);
 			marketPlace.setMarketRateCurrencey(null);
-			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
 			marketPlace.setCreatedBy(user);
@@ -2757,32 +2734,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
 			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
 			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
-			//marketPlace.setFullName(candidate.getFullName());
-			//marketPlace.setGender(candidate.getGender());
-			//marketPlace.setEmail(candidate.getEmail());
-			//marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			//marketPlace.setMobilePhone(candidate.getMobilePhone());
-			//marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			//marketPlace.setDesignation(candidate.getDesignation());
-			//marketPlace.setEmploymentType(candidate.getDesignationType());
-			//marketPlace.setLocation(candidate.getLocation());
-			//marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			//marketPlace.setSkillsName(candidate.getSkillsName());
-			//marketPlace.setExperienceYears(candidate.getExperienceYears());
-			//marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			//marketPlace.setCurrentRate(candidate.getCurrentRate());
-			//marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			//marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			//marketPlace.setExpectedRate(candidate.getExpectedRate());
-			//marketPlace.setExpectedRateType(candidate.getRateType());
-			//marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			//marketPlace.setNoticePeriod(candidate.getNoticePeriod());
-			//marketPlace.setNationality(candidate.getNationality());
-			//marketPlace.setMaritalStatus(candidate.getMaritalStatus());
-			//marketPlace.setImageUrl(candidate.getFileUrl());
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
-			//marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
@@ -3034,7 +2987,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(count != 0){
 			marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
 		}
-		if(marketPlace.getSkillsName() != null && !marketPlace.getSkillsName().equals("")){
+		if(marketPlace.getCandidateId().getSkillsName() != null && !marketPlace.getCandidateId().getSkillsName().equals("")){
 			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
 			String[] marketPlaceSkills = marketPlace.getCandidateId().getSkillsName().split(",");
