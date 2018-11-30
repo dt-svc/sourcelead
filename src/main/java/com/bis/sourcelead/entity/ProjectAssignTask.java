@@ -64,6 +64,38 @@ public class ProjectAssignTask implements Serializable{
 	@Transient
 	private String assignedUserName;
 	
+	@JsonProperty
+	@Transient
+	private String projctName;
+	
+	@JsonProperty
+	@Transient
+	private String taskName;
+
+	@JsonProperty
+	@Transient
+	private String priority;
+	
+	@JsonProperty
+	@Transient
+	private String colorPic;
+	
+	@JsonProperty
+	@Transient
+	private Integer percentage;
+	
+	@JsonProperty
+	@Transient
+	private String dueDate;
+	
+	@JsonProperty
+	@Transient
+	private String taskStatus;
+	
+	@JsonProperty
+	@Transient
+	private String assignedUserUrl;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -134,5 +166,69 @@ public class ProjectAssignTask implements Serializable{
 
 	public void setAssignedUserName(String assignedUserName) {
 		this.assignedUserName = assignedUserName;
+	}
+
+	public String getProjctName() {
+		return projctName;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public String getPriority() {
+		return priority;
+	}
+
+	public String getColorPic() {
+		return colorPic;
+	}
+
+	public Integer getPercentage() {
+		return percentage;
+	}
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public String getTaskStatus() {
+		return taskStatus;
+	}
+
+	public void setProjctName(String projctName) {
+		this.projctName = projctName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public void setPriority(String priority) {
+		this.priority = priority;
+	}
+
+	public void setColorPic(String colorPic) {
+		this.colorPic = colorPic;
+	}
+
+	public void setPercentage(Integer percentage) {
+		this.percentage = percentage;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public void setTaskStatus(String taskStatus) {
+		this.taskStatus = taskStatus;
+	}
+
+	public String getAssignedUserUrl() {
+		return assignedUserUrl;
+	}
+
+	public void setAssignedUserUrl(String assignedUserUrl) {
+		this.assignedUserUrl = assignedUserUrl;
 	}
 }

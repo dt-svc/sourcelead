@@ -21,6 +21,10 @@
 </div>
 
 <script type="text/javascript">
+function resetInformation(){
+	$("informationDetails_form").validate().resetForm();
+}
+
 $(function(){
 	       var config = {
 			  '.chosen-select'           : {},
