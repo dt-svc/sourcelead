@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,9 +18,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,11 +50,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
@@ -59,6 +67,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Employees;
@@ -67,6 +77,8 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -74,6 +86,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
@@ -84,6 +97,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementReportService;
@@ -100,6 +115,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -205,6 +221,15 @@ public class ReportRestController {
 	@Autowired 
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
+	
+	@Autowired
+	DynamicReport dynamicReport;
+	
+	@Autowired
+	ProjectTasksService projectTasksService;
+	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
 		int count = requirementSubmissionHistoryService.updateSourceUserCodeForSubmissionHistory();
@@ -231,10 +256,8 @@ public class ReportRestController {
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 	      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	    
 			
 			Date[] searchDates = null;
-			
 				if(!"custom".equalsIgnoreCase(timePeriod)){
 					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
 				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
@@ -1540,5 +1563,267 @@ public class ReportRestController {
 	                response.getOutputStream().flush();    
 	                if(file!= null){
 	                    file.delete();
-	                }			}
+	                }			
+	    }
+		
+		
+		@RequestMapping(value ="/getEmployeeTaskRepotList")
+		public @ResponseBody List<ProjectassignTasksDTO> getEmployeeTaskRepotList(HttpServletRequest request)throws Exception{
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  List<ProjectassignTasksDTO> projectAssignTaskList = projectAssignTasksService.getProjectAssignTaskListByOrglocationId(orgLocations.getId());
+		  Map<String, List<ProjectassignTasksDTO>> map = projectAssignTaskList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getTaskStatus,Collectors.toList()));
+		  Map<BigInteger, List<ProjectassignTasksDTO>> canMap = projectAssignTaskList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getCandidateId,Collectors.toList()));
+		  List<ProjectassignTasksDTO> mp = new ArrayList<>();
+			  for (Map.Entry<BigInteger, List<ProjectassignTasksDTO>> entry : canMap.entrySet())  {
+				  ProjectassignTasksDTO dty = new ProjectassignTasksDTO();
+				  Map<String,String> innerMap = new HashMap<>();
+				  ProjectassignTasksDTO dto = entry.getValue().get(0);
+				  dty.setFirstName(dto.getFirstName());
+				  dty.setLastName(dto.getLastName());
+				  dty.setFileUrl(dto.getFileUrl());
+				  dty.setMemberId(dto.getMemberId());
+				  dty.setCandidateId(dto.getCandidateId());
+				  for (Map.Entry<String, List<ProjectassignTasksDTO>> canEntry : map.entrySet())  {
+				  List<ProjectassignTasksDTO> s = entry.getValue().stream().filter(pd->canEntry.getKey().equalsIgnoreCase(pd.getTaskStatus())).collect(Collectors.toList());
+				  innerMap.put(canEntry.getKey(), String.valueOf(s.size()));
+				  }
+				  dty.setAssignMembersMap(innerMap);
+				  mp.add(dty);
+			  }
+		  return mp;
+		
+		}
+		
+		
+		 @RequestMapping(value = "/employeeTasksReportSummaryList")
+		 public @ResponseBody ResponseList<ProjectassignTasksDTO> employeeTasksReportSummaryList(ProjectassignTasksDTO projectassignTasksDTO,HttpServletRequest request)throws Exception{
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 ResponseList<ProjectassignTasksDTO> responseList = new ResponseList<>();
+			 try {
+						
+				   String[] tableColumns = {"taskName","priority","projectName","dueDate","percentage","taskStatus"};
+				    int sortColumnIndex = 1; //by default sorting using updated date
+					String sortColumnOrder = "asc"; //by default referContactsDTO order
+					if(projectassignTasksDTO.getOrder() != null && !projectassignTasksDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(projectassignTasksDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = projectassignTasksDTO.getOrder().get(0).get("dir");
+					}
+					projectassignTasksDTO.setOrgLocationId(orgLocations.getId());
+					projectassignTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					projectassignTasksDTO.setSortOrder(sortColumnOrder);
+					ResponseList<ProjectAssignTask> projectResponseList = projectAssignTasksService.getProjectAssignTaskListByCandidateIdOrglocationId(projectassignTasksDTO);
+					List<ProjectassignTasksDTO> patDTOList = new LinkedList<>();
+					for(ProjectAssignTask pat: projectResponseList.getData()) {
+						ProjectassignTasksDTO patDTO = new ProjectassignTasksDTO();
+						patDTO.setProjctName(pat.getProjectTaskId().getProjectId().getProjectName());
+						 if(pat.getProjectTaskId().getPriority() != null) {
+							 patDTO.setPriority(pat.getProjectTaskId().getPriority().getName());
+							 if(pat.getProjectTaskId().getPriority().getColorPic() != null) {
+								 patDTO.setColorPic(pat.getProjectTaskId().getPriority().getColorPic());
+							 }
+						 }
+						 patDTO.setTaskName(pat.getProjectTaskId().getTaskName());
+						 if(pat.getProjectTaskId().getDueDate()  != null) {
+							 patDTO.setDueDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pat.getProjectTaskId().getDueDate()));
+						 }
+						 if(pat.getProjectTaskId().getSeverity() != null) {
+							 patDTO.setTaskSeverity(pat.getProjectTaskId().getSeverity().getName());
+						 }
+						 if(pat.getProjectTaskId().getOwnerUserId() != null) {
+							 patDTO.setTaskOwnerName(pat.getProjectTaskId().getOwnerUserId().getFullName());
+						 }
+						 if(pat.getProjectTaskId().getEstimateTime() != null) {
+							 patDTO.setEstimatedTime(pat.getProjectTaskId().getEstimateTime());
+						 }
+						 patDTO.setPercentage(pat.getProjectTaskId().getPercentage());
+						 patDTO.setTaskStatus(pat.getProjectTaskId().getTaskStatus().getName());
+						 
+						 patDTOList.add(patDTO);
+					}
+					responseList.setData(patDTOList);
+					responseList.setRecordsTotal(projectResponseList.getRecordsTotal());
+					responseList.setRecordsFiltered(projectResponseList.getRecordsFiltered());
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+					responseList.setResponse(Result.AWKWARD.name());
+					responseList.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			 return responseList;
+		 }
+		 
+		 
+		@RequestMapping(value = "/getEmployeeTaskExport")
+		@ResponseBody
+		public void getEmployeeTaskExport(ProjectassignTasksDTO projectassignTasksDTO,HttpServletResponse response,HttpServletRequest request) throws Exception {
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			  String[] tableColumns = {"taskName","priority","projectName","dueDate","percentage","taskStatus"};
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				String sortColumnOrder = "asc"; //by default referContactsDTO order
+				if(projectassignTasksDTO.getOrder() != null && !projectassignTasksDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(projectassignTasksDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = projectassignTasksDTO.getOrder().get(0).get("dir");
+				}
+				projectassignTasksDTO.setOrgLocationId(orgLocations.getId());
+				projectassignTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				projectassignTasksDTO.setSortOrder(sortColumnOrder);
+			  ResponseList<ProjectAssignTask> projectResponseList = projectAssignTasksService.getProjectAssignTaskListByCandidateIdOrglocationId(projectassignTasksDTO);
+
+			    File file = null;
+			    if(projectassignTasksDTO.getExportType().equalsIgnoreCase("pdf")) {
+			    	 file=  dynamicReport.employeeTaskReportPdfExport(projectResponseList,orgLocations);
+			    }else {
+			    	 file=  dynamicReport.employeeTaskReportExcelExport(projectResponseList,orgLocations);
+			    }
+			    
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+			}
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOverDueTaskReportList")
+		 public @ResponseBody ResponseList<ProjectTasksDTO> getOverDueTaskReportList(ProjectTasksDTO projectTasksDTO,HttpServletRequest request)throws Exception{
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 ResponseList<ProjectTasksDTO> responseList = new ResponseList<>();
+			 try {
+						
+				   String[] tableColumns = {"taskName","priority","taskType","","projectName","dueDate","percentage"};
+				    int sortColumnIndex = 1; //by default sorting using updated date
+					String sortColumnOrder = "asc"; //by default referContactsDTO order
+					if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+					}
+					projectTasksDTO.setOrgLocationId(orgLocations.getId());
+					projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					projectTasksDTO.setSortOrder(sortColumnOrder);
+					
+					Date[]  searchDates = reportsUtil.last1MonthDates(orgLocations);
+					
+					ResponseList<ProjectTasks> projectTaskReportList = projectTasksService.getOverdueTaskReportListByOrglocationId(projectTasksDTO,searchDates);
+					List<ProjectTasksDTO> taskDTOList = new LinkedList<>();
+					for(ProjectTasks tasks:projectTaskReportList.getData()) {
+						ProjectTasksDTO taskDTO = new ProjectTasksDTO();
+						
+						taskDTO.setTaskName(tasks.getTaskName());
+						if(tasks.getPriority() != null) {
+							taskDTO.setTaskPriority(tasks.getPriority().getName());
+						}
+						
+						taskDTO.setTaskType(tasks.getTaskType().getName());
+						taskDTO.setProjectName(tasks.getProjectId().getProjectName());
+						if(tasks.getDueDate() != null) {
+							taskDTO.setDueDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), tasks.getDueDate()));
+						}
+						if(tasks.getPercentage() != null) {
+							taskDTO.setCompletion(tasks.getPercentage());
+						}
+						
+						long diff = commonUtil.currentDate().getTime() - tasks.getDueDate().getTime();
+						long diffSeconds = diff / 1000 % 60;
+						long diffMinutes = diff / (60 * 1000) % 60;
+						long diffHours = diff / (60 * 60 * 1000) % 24;
+						long diffDays = diff / (24 * 60 * 60 * 1000);
+						StringBuilder timeBuilder = new StringBuilder();
+						if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+							taskDTO.setActionTimeStr(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+						} else if (diffDays == 0 && diffHours == 0) {
+							tasks.setActionTimeStr(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+						} else if (diffDays == 0) {
+							taskDTO.setActionTimeStr(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes)
+									.append(" minutes ago").toString());
+						} else {
+							taskDTO.setActionTimeStr(timeBuilder.append(diffDays).append(" days ").append(diffHours)
+									.append(" hours ago").toString());
+						}
+
+						List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(tasks.getId());
+						for(ProjectAssignTask pat:assignUser) {
+							if(pat.getProjectMemberId() != null) {
+								if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
+									 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+									 pat.setAssignedUserUrl(pat.getProjectMemberId().getProjectMemberCandidteId().getFileUrl());
+								}
+							}
+						 }
+						 
+						taskDTO.setAssignedTaskUsers(assignUser);
+						taskDTOList.add(taskDTO);
+					}
+					responseList.setData(taskDTOList);
+					responseList.setRecordsTotal(projectTaskReportList.getRecordsTotal());
+					responseList.setRecordsFiltered(projectTaskReportList.getRecordsFiltered());
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+					responseList.setResponse(Result.AWKWARD.name());
+					responseList.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			 return responseList;
+		 }
+		 
+		 
+		 
+		 @RequestMapping(value = "/getOverdueTaskExport")
+			@ResponseBody
+			public void getOverdueTaskExport(ProjectTasksDTO projectTasksDTO,HttpServletResponse response,HttpServletRequest request) throws Exception {
+				  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				  String[] tableColumns = {"taskName","priority","taskType","","projectName","dueDate","percentage"};
+				    int sortColumnIndex = 1; //by default sorting using updated date
+					String sortColumnOrder = "asc"; //by default referContactsDTO order
+					if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(projectTasksDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = projectTasksDTO.getOrder().get(0).get("dir");
+					}
+					projectTasksDTO.setOrgLocationId(orgLocations.getId());
+					projectTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					projectTasksDTO.setSortOrder(sortColumnOrder);
+					
+					Date[]  searchDates = reportsUtil.last1MonthDates(orgLocations);
+					
+					ResponseList<ProjectTasks> overdueTaskReportList = projectTasksService.getOverdueTaskReportListByOrglocationId(projectTasksDTO,searchDates);
+					
+				    File file = null;
+				    if(projectTasksDTO.getExportType().equalsIgnoreCase("pdf")) {
+				    	 file=  dynamicReport.overdueTaskReportPdfExport(overdueTaskReportList,orgLocations);
+				    }else {
+				    	 file=  dynamicReport.overdueTaskReportExcelExport(overdueTaskReportList,orgLocations);
+				    }
+				    
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileNameSB = new StringBuilder();
+					response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();	
+					if(file!= null){
+						file.delete();
+					}
+				}
 }

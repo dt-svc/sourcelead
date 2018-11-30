@@ -789,18 +789,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			assetMigDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), AssetsDataImportDTO.class);
 
-			List<AssetAssignDTO> assignAssetList = new ArrayList<>();
+		/*	List<AssetAssignDTO> assignAssetList = new ArrayList<>();
 			if (StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
 				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-				for (String as : assignUsere) {
-					AssetAssignDTO aDTO = new AssetAssignDTO();
-					String[] email = as.split("#");
-					aDTO.setShiftEmp(email[0]);
-					aDTO.setShift(email[1]);
-					assignAssetList.add(aDTO);
+				if(assignUsere != null && assignUsere[0] != null) {
+					for (String as : assignUsere) {
+						AssetAssignDTO aDTO = new AssetAssignDTO();
+						String[] email = as.split("#");
+						aDTO.setShiftEmp(email[0]);
+						aDTO.setShift(email[1]);
+						assignAssetList.add(aDTO);
+					}
 				}
+				
 			}
-			assetDTO.setAssignAsset(assignAssetList);
+			assetDTO.setAssignAsset(assignAssetList);*/
 			assetDTO.setCategory(assetMigDTO.getCategory());
 			assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
 			assetDTO.setCpu(assetMigDTO.getCpu());
