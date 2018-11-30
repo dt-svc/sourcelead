@@ -44,6 +44,7 @@ import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgSettingsDTO;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
@@ -1370,6 +1371,66 @@ public class OrgSettingsRestController {
 		}
  
 		return response;
+	}
+	
+	
+	@RequestMapping(value = "/app/getProbationData")
+	public ProbationDTO getProbationData(HttpServletRequest request) throws Exception
+	{
+		ProbationDTO probation = new ProbationDTO();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLocations != null) {
+			probation.setProbationPeriod(orgLocations.getProbationPeriod());
+			probation.setNoOfDays(orgLocations.getNoOfDays());
+		}
+		return probation;
+	}
+	
+	
+	@RequestMapping(value = "/app/saveProbationData", method = RequestMethod.POST)
+	public Response<String> saveProbationData(ProbationDTO probationDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		if(user != null) {
+			try {
+				if (Validator.validate(probationDTO)) {
+				
+					if(StringUtils.isNotBlank(probationDTO.getProbationPeriod())) {
+						orgLocation.setProbationPeriod(probationDTO.getProbationPeriod());
+					}
+					
+					orgLocation.setNoOfDays(probationDTO.getNoOfDays());
+				
+					orgLocationService.updateOrgLocations(orgLocation);
+					
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocation);
+					
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			
+		} catch (Exception e) {
+			
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+			e.printStackTrace();
+		}
+			
+	}else {
+		
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	}
+		return response;
+		
 	}
 	
 

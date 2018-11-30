@@ -3018,7 +3018,12 @@ public class EMailJobScheduler {
 			
 			List<User> resourceManagersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 2);
+			if(orgLocations.getNoOfDays() != null && orgLocations.getNoOfDays() > 0) {
+				cal.add(Calendar.DATE, orgLocations.getNoOfDays());
+			}else {
+				cal.add(Calendar.DATE, 2);
+			}
+			
 			Date futureDate = cal.getTime();
 			for (User user : resourceManagersList) {
 				List<ProbationDTO> probationUsersList = userService.getAllProbationUsersListForResourceManager(user.getId(),futureDate,orgLocations.getId());

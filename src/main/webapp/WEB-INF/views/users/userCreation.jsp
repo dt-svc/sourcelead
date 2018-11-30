@@ -166,10 +166,19 @@
                   <div class="col-md-9">
                       <select class="form-control chosen-select" name="probationPeriod" id="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">
                         <option value="">-Select Probation Period-</option>
-                        <option value="15 Days">15 Days</option>
-                        <option value="30 Days">1 Month</option>
-                        <option value="60 Days" selected>2 Months</option>
-                        <option value="90 Days">3 Months</option>
+                        <c:if test="${!empty probationPeriod}">
+	                        <option value="15 Days" ${probationPeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+	                        <option value="30 Days" ${probationPeriod  == '30 Days' ? 'selected' : ''}>1 Month</option>
+	                        <option value="60 Days" ${probationPeriod  == '60 Days' ? 'selected' : ''}>2 Months</option>
+	                        <option value="90 Days" ${probationPeriod  == '90 Days' ? 'selected' : ''}>3 Months</option>
+                        </c:if>
+                        <c:if test="${empty probationPeriod}">
+	                        <option value="15 Days">15 Days</option> 
+	                  		<option value="30 Days">1 Month</option>
+	                  		<option value="60 Days" selected>2 Months</option> 
+	                        <option value="90 Days">3 Months</option>
+                        </c:if>
+                        
                       </select>
                   </div>
             </div>
