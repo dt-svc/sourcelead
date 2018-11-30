@@ -1818,6 +1818,12 @@ public class InvoiceServiceImpl implements InvoiceService {
  				   applicantsList = applicant;
  				}	
 			}else{
+				applicantsList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocation, user, client.getId());
+				 if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+	 					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
+	 					applicant.add(applicantsList.get(0));
+	 				   applicantsList = applicant;
+	 				}
 			}
 			if(applicantsList.size()>0){
 				Invoice invoice = new Invoice();
@@ -1852,6 +1858,21 @@ public class InvoiceServiceImpl implements InvoiceService {
 	  		      	invoice.setConvertAmount(String.valueOf(roundAmount));
 	  		      	invoice.setExchangeRate(String.valueOf(exchangeRate));
 	  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
+	  		   // update requirement submission 
+					if(savedInvoice !=null){
+					Set<InvoiceLineItems> lineItemsList = savedInvoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionDao.storeRequirementSubmission(submission);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+						}
+					});
+					}
 	  		      if(savedInvoice !=null){
  		  		         count++;
  		  		        }
