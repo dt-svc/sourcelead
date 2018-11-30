@@ -180,14 +180,15 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Taxes</a></li>
         </c:if>
         <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-        <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
+        <li><a data-toggle="tab" href="#informationDetails" onclick="resetInformation();">Information</a></li>
         </c:if>
          
-        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments" onclick="resetDocument();">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
+
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();getProbationPeriod();">Configure</a></li>
-        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
+		<li><a data-toggle="tab" href="#emailNotifications" onclick="resetEmailConfguration();">Email Configuration</a></li> 
        
         <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
          <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
@@ -2155,6 +2156,13 @@ function loadSignature(){
 </script>
 
 <script>
+function resetDocument(){
+	$("documents_form").validate().resetForm();
+}
+
+function resetEmailConfguration(){
+	$("email_configuration_form").validate().resetForm();
+}
 function colourpicker(){
 	$('#cp2, #cp3').colorpicker();
 }

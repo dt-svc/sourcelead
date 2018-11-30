@@ -113,8 +113,7 @@ function logoutForConfigure() {
 			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
 				<jsp:include page="leaveManagement.jsp"></jsp:include>
 			</sec:authorize>
-			 
-		 
+			
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -125,6 +124,11 @@ function logoutForConfigure() {
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
 					</sec:authorize>
+					
+					<!-- Candidates for Invoice -->
+			<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+				<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
+			</sec:authorize> 
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>

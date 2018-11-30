@@ -212,7 +212,8 @@ $(document).ready(function(){
   
       
       <div class="clearfix"></div>
-      
+      <input type="hidden" id="assetmanagementPdfFile" name="assetmanagementPdfFile">
+      <input type="hidden" id="assetAssignFileSize" name="assetAssignFileSize">
     <!-- list Table -->
     <div class="require_wrap_table table-wrap datatable_filter overflow_inherint project_tabs_inn" id="tab-8">
 	    <div id= "assetManagementLoderDiv"></div>
@@ -671,6 +672,7 @@ function projectAssetPaginations(url){
 		  	"display": "none",
 		  	"render": function(data, type, report) {
 		  		var result = "";
+		  		$("#assetmanagementPdfFile").val(1);
 			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
 
 	             return result;
@@ -891,6 +893,7 @@ function assignAssetPagination(url){
 		  	"display": "none",
 		  	"render": function(data, type, report) {
 		  		var result = "";
+		  		   $("#assetAssignFileSize").val(1);
 			  		if(report.employeeId != null && report.employeeId != "" && report.employeeId !="undefined"){
 					   	result = result+'<td><div class="tbldata-dotdot_80" title="'+report.employeeId+'">'+report.employeeId+'</div></td>';
 			  		}else{
@@ -1631,10 +1634,22 @@ function assetExport(type){
     {
 		tags.push($(this).val());
     });
-	
+	var emptyFileSize = $('#assetmanagementPdfFile').val();
 	var searchValue = $("#assetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 if(emptyFileSize > 0 ){
+	 	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 }else{
+		   $('.mask').show();
+		    var result = "";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+	 }
 }
 </script>
 <!-- ==================================  Asset Export script Written By Laxman Ends==============================  -->
@@ -1671,10 +1686,22 @@ function assignAssetExport(type){
     {
 		tags.push($(this).val());
     });
-	
+	var fileSize = $("#assetAssignFileSize").val();
 	var searchValue = $("#assignAssetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 if(fileSize > 0){
+		 window.location.href = sourceleadUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 }else{
+		 $('.mask').show();
+		 var result = "";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+	 }
 }
 </script>
 <!-- ================================== AssigneAsset Export script Written By Laxman Ends==============================  -->
@@ -1719,6 +1746,7 @@ function deleteAsset(assetUUID){
 
 <script type="text/javascript">
 function cancel(){
+	$('.mask').hide();
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
