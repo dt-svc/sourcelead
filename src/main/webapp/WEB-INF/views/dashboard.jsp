@@ -80,7 +80,7 @@ $( document ).ready(function() {
 	// contractList();
 	var isJobsTabAccessable = '${SourceLeadWeb_isJobsTabAccessable}';
 		if(isJobsTabAccessable=="Y" ){
-			//requirementSubmissionsCount("today");//need to check authorizarion
+			requirementSubmissionsCount("today");//need to check authorizarion
 			requirementList(false, -1);//need to check authorizarion
 			onboardingCandidatesList();// onboarding candidate list , need to check authorizarion
 			getProjectResourceReqestsListCount();// Project Requests Resource Associate  need to check authorizarion
