@@ -172,5 +172,22 @@ public class PerformanceManagementRestController {
 		return templateDTO;
     
    }
+   
+   
+   @RequestMapping(value = "/deletePerformanceFeedbackTemplate", method = RequestMethod.POST)
+ 	public String deletePerformanceFeedbackTemplate(HttpServletRequest request, 
+ 			@RequestParam(value = "templateId", required = true) Long templateId){
+ 		 String resObj = null;
+ 		 try {
+ 			 PerformanceFeedbackTemplate template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(templateId);
+ 			template.setStatus(Constants.RECORD_INACTIVE);
+ 			performanceFeedbackTemplateService.savePerformanceFeedbackTemplate(template);
+ 			 resObj = Result.SUCCESS.name();
+ 		    
+ 		 }catch (Exception e) {
+ 			resObj = Result.AWKWARD.name();
+ 		}
+ 		 return resObj;
+   }
 
 }

@@ -213,3 +213,24 @@ $('body').on('submit', '#sjfb', function(e){
     			}); 
     			
     }
+    
+    
+    function deleteFeedbackTemplate(templateId){
+    	$.ajax({
+    		  type: "POST",
+    		    url: sourceleadUrl+"/deletePerformanceFeedbackTemplate?templateId="+templateId,
+    		     success :function(response) {
+    		    	 
+    		           if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		getFeedbackList();	
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+    		     },
+			}); 
+    			
+    }

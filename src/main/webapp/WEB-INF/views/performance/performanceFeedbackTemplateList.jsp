@@ -38,7 +38,7 @@
 							  <ul class="list-unstyled list-inline text-center mt25">
 							  	<li><a onclick="addFeedbackTemplate('${feedback.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
 							    <li><a onclick="viewFeedbackTemplate('${feedback.id}');" title="View"><i class="fa fa-eye"></i></a></li>
-							  	<li><a onclick="" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	<li><a onclick="deleteFeedbackTemplate('${feedback.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 							  </ul>
 						  </div>
 		              </div>
