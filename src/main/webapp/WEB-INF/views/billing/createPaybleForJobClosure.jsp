@@ -939,7 +939,7 @@ function cancelPopup(){
 	  
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorInvoiceAssociatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&vendorOrgRelationId="+vendorOrgRelationId,
+	        url: sourceleadUrl+"/getVendorInvoiceAssociatesListForJobClosure?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&vendorOrgRelationId="+vendorOrgRelationId+"&contractType=vendorSow",
 	        success: function(json) {
 	        	
 	        	var result = '';

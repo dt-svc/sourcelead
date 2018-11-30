@@ -5856,6 +5856,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			
+			try{
+				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					applicantsDto.setContractsList(contractsList);
+				}	
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			listOfApplicants.add(applicantsDto);
 		});
 		
