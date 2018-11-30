@@ -41,13 +41,18 @@ function generateForm(sourceleadUrl,templateId) {
                      if (v['choices']) {
 
                          var uniqueID = Math.floor(Math.random()*999999)+1;
-
+                         var selectChoice = 1;
+                         var selectChoiceHTML = '<option>----Select-----</option>';
                          $.each( v['choices'], function( k, v ) {
 
                              if (fieldType == 'select') {
-                                 var selected = v['sel'] ? ' selected' : '';
-                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
-                                 $currentField.find(".choices").append(choiceHTML);
+                                 //var selected = v['sel'] ? ' selected' : '';
+                            	 if(selectChoice > 1){
+                            		 selectChoiceHTML = '';
+                            	 }
+                                 var choiceHTML = '<option>' + v['label'] + '</option>';
+                                 $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                 selectChoice = selectChoice+1;
                              }
 
                              else if (fieldType == 'radio') {
