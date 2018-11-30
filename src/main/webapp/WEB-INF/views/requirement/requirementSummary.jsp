@@ -91,18 +91,10 @@ function duplicateCount(requirementId){
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Job Details</div>
   </section>
   
-  <div class="cearfix">
-	  <div class="newTagsWrap">
-			<ul class="clearfix tagsWrap tagsWrapBor">
-			<select multiple class="chosen-select form-control" name="tagName" id="jobsTagName" data-placeholder="Add Tags" data-validation="validate_Space"  data-validation-optional="true">
-			</select>
-			</ul>
-			<div class="clearfix"></div>
-	  </div>
- </div>
+
  
   <div class="success_pop tagStyles" id="addJobTagAlert">
 		<i class="fa fa-check-circle"></i>
@@ -118,8 +110,21 @@ function duplicateCount(requirementId){
     
     
      <div class="clients_side_wrap_inn no_pad">
+     <div class="project_wrap">
         <div id="requirementSideDiv"> <jsp:include page="requirementQuickView.jsp" /> </div>
           <div id="loading"></div>
+          </div>
+          
+  <div class="cearfix">
+	  <div class="newTagsWrap">
+			<ul class="clearfix tagsWrap tagsWrapBor">
+			<select multiple class="chosen-select form-control" name="tagName" id="jobsTagName" data-placeholder="Add Tags" data-validation="validate_Space"  data-validation-optional="true">
+			</select>
+			</ul>
+			<div class="clearfix"></div>
+	  </div>
+ </div>          
+          
         <input type="hidden" id="emptyPipelinelist" name="emptyPipelinelist">
        <!--  <div id="requirementStatusDiv"> </div>  -->
       </div>   
@@ -1889,7 +1894,7 @@ function clientSideBar(candidateId,recScore){
 				             result = result+'               </div>';
 				             result = result+'			</div>';
 				             result = result+'   <div class="proj_close"></div>';
-				             result = result+'   <div class="project_side_wrap_inn_tabs">';
+				             result = result+'   <div class="project_side_wrap_inn_tabs ">';
 				             result = result+'     <ul class="canreq-tabs-menu">';
 				             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
 				             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
