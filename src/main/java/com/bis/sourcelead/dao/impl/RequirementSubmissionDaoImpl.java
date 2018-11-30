@@ -3944,7 +3944,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	public List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission> finalList = null;
-		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
 				+ "and req.isClientJob = 'Y'";
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId());
 		finalList =finalQuery.list();
@@ -3957,7 +3957,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Long orgRelationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission> finalList = null;
-		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
 				+ "and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId";
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId);
 		finalList =finalQuery.list();
@@ -3970,7 +3970,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Long orgRelationId, List<Long> selectedAssociates) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission> finalList = null;
-		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
 				+ "and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId and can.id NOT IN(:selectedAssociates)";
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
 		finalList =finalQuery.list();
@@ -3982,7 +3982,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	public List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission> finalList = null;
-		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
 				+ "and can.orgRelationId.id =:orgRelationId";
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId);
 		finalList =finalQuery.list();
@@ -3996,7 +3996,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Long orgRelationId, List<Long> selectedAssociates) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission> finalList = null;
-		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated <> 'Y' and (req.jobType ='Full Time' or req.jobType ='W-2') "
 				+ "and can.orgRelationId.id =:orgRelationId and can.id NOT IN(:selectedAssociates)";
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
 		finalList =finalQuery.list();

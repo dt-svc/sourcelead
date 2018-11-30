@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -287,6 +289,23 @@ public class InvoiceRestController {
 						invoiceDTO.setIsJobClosure(isJobClosure);	
 					}
 					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
@@ -328,6 +347,23 @@ public class InvoiceRestController {
 						invoiceDTO.setIsJobClosure(isJobClosure);	
 					}
 					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
