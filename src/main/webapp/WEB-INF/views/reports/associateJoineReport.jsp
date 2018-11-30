@@ -24,13 +24,20 @@
                         <option value="associateTerminated" sel>Associate Terminated Report</option>
                     </select>
                 </div>
-	      
-	      <span class="pull-left refreIcon" id="advanceSearchDiv">
+<!-- 	      <span class="rAct" title="Graphical View" id="GView"><i class="fa fa-pie-chart"></i></span>
+ -->	      
+ <div class="listGridWrap reqListBtn">
+        	<button type="button" title="List View" id="ListView" value="list" class="btn btn-primary"><i class="fa fa-list"></i></button>
+			<button type="button" title="Reports View" id="GraphView" value="grid" class="btn btn-default" onclick=""><i class="fa fa-pie-chart"></i></button>
+		</div>
+ 
+ <span class="pull-left refreIcon" id="advanceSearchDiv">
 <!-- 	      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetApplicantFilter();"></a> -->
-	            		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
+	            		<a href="javascript:void(0)" onclick="columPop('joined');" title="Column Chooser" class="columIcon" style="display: block;" id="joinedCustomFields"></a>
+	            		<a href="javascript:void(0)" onclick="columPop('terminated');" title="Column Chooser" class="columIcon" style="display: none;" id="terminatedCustomFields"></a>
 	            		
-	            		 <div class="colPop">
-	<div class="colPopMid coldropdown-parent">
+	            		 <div class="colPop" id="joinedColumnPopup">
+	<div class="colPopMid coldropdown-parent" style="display: block;" id="joinedCustomFieldscolPopMid">
 	<div class="clearfix">
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
@@ -46,10 +53,10 @@
 		</div>
 	<div class="clearfix"></div>
 		<div class="coldropdown-inner">
-		<ul id="jobCustomColumns">
+		<ul id="joinedCustomColumns">
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="" data-name="empId">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="" data-name="joinedempId">
 					<label for="a" class="checkbox-custom-label" >Employee ID</label>
 				</span>
 			</li>
@@ -117,15 +124,129 @@
 					<label for="j" class="checkbox-custom-label">Shift</label>
 										</span>
 			</li>
-
+		</ul>
 		</div>
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
 		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
 	</div>
-</div>				
+</div>			
 			</div> 
+			<div class="colPop" id="terminatedColumnPopup">
+			
+	<div class="colPopMid coldropdown-parent" style="display: none;" id="terminatedCustomFieldscolPopMid">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+<!-- 				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerUnCheckAll" class="checkbox-custom-label">Uncheck All</label>
+				</span> -->
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerCheckAll" class="checkbox-custom-label" >Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul id="terminatedCustomColumns">
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="" data-name="terminatedempId">
+					<label for="k" class="checkbox-custom-label" >Associate ID</label>
+				</span>
+			</li>
+			
+						<li>
+				<span class="checkbox-new clearfix">
+					<input id="l" class="checkbox-custom toggle-vis" name="paidComponent" data-column="1" type="checkbox" checked="" data-name="empName">
+					<label for="l" class="checkbox-custom-label" >Employee Name</label>
+				</span>
+			</li>
+															<li>
+				<span class="checkbox-new clearfix">
+					<input id="m" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="" data-name="empType">
+					<label for="m" class="checkbox-custom-label" >Emp Type</label>
+				</span>
+			</li>
+			
+						
+																								<li>
+				<span class="checkbox-new clearfix">
+					<input id="n" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="" data-name="fromDate">
+					<label for="n" class="checkbox-custom-label" >Date Of Join</label>
+				</span>
+			</li>
+			
+																											<li>
+				<span class="checkbox-new clearfix">
+					<input id="o" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="" data-name="reportingManager">
+					<label for="o" class="checkbox-custom-label">Manager</label>
+										</span>
+			</li>
+			
+			
+												<li>
+				<span class="checkbox-new clearfix">
+					<input id="p" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="" data-name="terminatedDate">
+					<label for="p" class="checkbox-custom-label">Terminated On</label>
+										</span>
+			</li>
+									<li>
+				<span class="checkbox-new clearfix">
+					<input id="q" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="" data-name="terminatedReason">
+					<label for="q" class="checkbox-custom-label">Reason</label>
+										</span>
+			</li>
+			
+																					<li>
+				<span class="checkbox-new clearfix">
+					<input id="r" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox"  data-name="userRole">
+					<label for="r" class="checkbox-custom-label" >Role</label>
+				</span>
+			</li>
+			
+			
+			
+									<li>
+				<span class="checkbox-new clearfix">
+					<input id="s" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" data-name="gender">
+					<label for="s" class="checkbox-custom-label" >Gender</label>
+				</span>
+			</li>
+			
+			
+						<li>
+				<span class="checkbox-new clearfix">
+					<input id="t" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="shift">
+					<label for="t" class="checkbox-custom-label">Shift</label>
+										</span>
+			</li>
+			
+															<li>
+				<span class="checkbox-new clearfix">
+					<input id="u" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox"  data-name="deptName">
+					<label for="u" class="checkbox-custom-label" >Department</label>
+				</span>
+			</li>
+																					<li>
+				<span class="checkbox-new clearfix">
+					<input id="v" class="checkbox-custom toggle-vis" name="paidComponent" data-column="11" type="checkbox" data-name="rate">
+					<label for="v" class="checkbox-custom-label" >Rate</label>
+				</span>
+			</li>
+
+			</ul>
+		</div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>	
+			</div>
 	      </span>
 	      <ul class="pull-right list-unstyled list-inline">
 	      	  <li>
@@ -143,8 +264,8 @@
 	          <option value="custom">Custom</option> 
 			</select>
 		<div id="runButtonDiv" class="repSelBtn">
-			<button type="button" class="btn btn-primary btn-sm" id="customDateApplicant" onclick="getApplicantsJoinList();" style="display: none">Run</button>
-	        <button type="button" class="btn btn-primary btn-sm" id="customDateRecurter" onclick="filter(); getAssociatesJoinedList();" style="display: block">Run</button>
+			<button type="button" class="btn btn-primary btn-sm" id="customDateApplicant" onclick="getAssociatesJoinedList();" style="display: none">Run</button>
+	        <button type="button" class="btn btn-primary btn-sm" id="customDateRecurter" onclick="filter(); getAssociatesTerminatedList();" style="display: block">Run</button>
         </div> 
           
           <div class="clearfix customLeaves repCustomDate" id="customSearch">
@@ -163,8 +284,15 @@
           </div>
           
         </div>
+		          <select class="form-control repSelFiled" name="year" id="year"  style="display: none;" onchange="getAssociatesJoinedGraph();">
+		            <option value=''>--Select Year--</option>
+		            <c:forEach var="option" items="${yearList}">
+						<option value="${option.year}">${option.year}</option>
+					</c:forEach>
+		          </select>          
+<!-- 				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getAssociatesJoinedList();" style="display: none;">Run</button></div>  -->
 	      	  </li>
-					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
+<!-- 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop" style="display: none;">
@@ -176,7 +304,7 @@
 								<a href="javascript:void(0)" id="recurterExportExcel" onclick="exportUserData();" title="Excel" style="display: block">Export Excel</a>           
 							</span>
 						</div>
-					</li>
+					</li> -->
 			  <li class="" id="associateTeminateSearchId" style="display: none" ><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch" ><span class="repSearchIcon" onclick="getAssociatesTerminatedList();"></span></li>
 	     	 <li class="" id="associateJoinSearchId" style="display: block;"><input type="text" class="repSearchBar" placeholder="Search" id="associateJoinedListDataTableSearch"><span class="repSearchIcon" onclick="getAssociatesJoinedList();"></span></li>
 	        </ul>
@@ -189,9 +317,89 @@
         
         <div id="applicantJoinedDiv" style="display: block"></div>
 	           <div id="associateTerminatedDiv" style="display: none"></div>
-<input type="hidden" id="noApplicantJoinedList" name="noApplicantJoinedList"  value="0"/>
-<input type="hidden" id="noRecruiterApplicantJoinedList" name="noRecruiterApplicantJoinedList"  value="0"/>        
+				<input type="hidden" id="noApplicantJoinedList" name="noApplicantJoinedList"  value="0"/>
+			    <input type="hidden" id="noRecruiterApplicantJoinedList" name="noRecruiterApplicantJoinedList"  value="0"/>        
         </div>
+        
+        
+        <div class="GraView" style="display: none;">
+      <div class="clearfix row mt">
+        <div class="col-md-12">
+        <div class="projectDashboad clearfix positionRelative">
+			<div id="associateJoineereport" style="width: 100%; height: 375px;" class="amchartAnchor-Hide"></div>
+	    <div class="clearfix">
+			<hr>
+			<div class="clearfix row">
+			<div class="col-md-3">
+				<div class="form-group">
+					<label class="textBold width90px">Joined:</label>
+					<span class="textBold text-green" id="ttJoinedCount"></span>
+				</div>							
+				<div class="clearfix">
+					<div class="clearfix row">
+						<label class="col-md-5 textBold text-primary">Full Time:</label>
+						<div class="col-md-7">
+						   <span id="fullTimeCount"></span>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="fullTimebg clearfix mb10">
+						<div class="pull-left joinedTime" style="width: 70%;"></div>
+						<div class="pull-left joinedValue" style="width: 30%;"></div>
+					</div>
+					<div class="col-md-6 text-center">
+						<img src="/resources/images/male.svg" style=" width: 50px; height: 50px;" alt="womanimage">
+						<div class="clearfix mt5"></div>
+						<span class="textBold clearfix" id="ftMale"></span>
+					</div>
+					<div class="col-md-6 text-center">
+						<img src="/resources/images/woman.svg" style=" width: 50px; height: 50px;" alt="womanimage">
+						<div class="clearfix mt5"></div>
+						<span class="textBold clearfix" id="ftFeMale"></span>
+					</div>
+				</div>
+				
+				<div class="clearfix">
+					<hr>
+					<div class="clearfix row">
+						<label class="col-md-5 textBold text-danger">Part Time:</label>
+						<div class="col-md-7">
+						   <span id="partTimeCount"></span>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="fullTimebg clearfix mb10">
+						<div class="pull-left joinedTime" style="width: 10%;"></div>
+						<div class="pull-left joinedValue" style="width: 10%;"></div>
+					</div>
+					<div class="col-md-6 text-center">
+						<img src="/resources/images/male.svg" style=" width: 50px; height: 50px;" alt="womanimage">
+						<div class="clearfix mt5"></div>
+						<span class="textBold clearfix" id="ptMale"></span>
+					</div>
+					<div class="col-md-6 text-center">
+						<img src="/resources/images/woman.svg" style=" width: 50px; height: 50px;" alt="womanimage">
+						<div class="clearfix mt5"></div>
+						<span class="textBold clearfix" id="ptFemale"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<label class="textBold">Terminated:</label>
+					<span class="textBold colorRed" id="ttTerminatedCount"></span>
+				</div>
+			</div>
+				</div>
+		</div>
+		</div>
+        </div>
+      </div>
+    </div>
+        
+        
+        
+        
       </div>
       <div class="side_mask">
         <div class="proj_close"></div>
@@ -201,9 +409,8 @@
   
   <script>
  $(document).ready(function() {
-// 	 getAssociatesTerminatedList();
 	 getAssociatesJoinedList();
-	 getAssociatesTerminatedList();
+//	 getAssociatesTerminatedList();
 // 	 getClientList();
 // 	 getTeamsList();
  });
@@ -302,7 +509,7 @@ function daywiseLeaveReportsListPagination(url){
           pages: 10
         }),
         "columns": [
-            { "data": "empID" },
+            { "data": "terminatedempId" },
             { "data": "empName"},
             { "data": "empType"},
             { "data": "DateOfJoin"},
@@ -318,9 +525,9 @@ function daywiseLeaveReportsListPagination(url){
         ],
         "columnDefs": [ {
     	  	"targets": colIndex++,
-    	  	"data": "empID",
+    	  	"data": "terminatedempId",
     	  	"sortable": true,
-//     	  	"visible": $("input[data-name='empId']").is(":checked"),
+    	  	"visible": $("input[data-name='terminatedempId']").is(":checked"),
     	  	"render": function(data, type, opt, meta) {
     	  		 $("#noApplicantJoinedList").val(1); 
     	  		var result = "";
@@ -334,7 +541,7 @@ function daywiseLeaveReportsListPagination(url){
       },{
     	  "targets": colIndex++,
           "data": "empName",
-//           "visible": $("input[data-name='empName']").is(":checked"),
+          "visible": $("input[data-name='empName']").is(":checked"),
           "render": function ( data, type, opt, meta ) {
         	  var result = "";
         	  if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
@@ -352,7 +559,7 @@ function daywiseLeaveReportsListPagination(url){
           {
         	  "targets": colIndex++,
               "data": "empType",
-//               "visible": $("input[data-name='empType']").is(":checked"),
+              "visible": $("input[data-name='empType']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.empType !=null && opt.empType !='' && opt.empType !='undefined'){
@@ -368,7 +575,7 @@ function daywiseLeaveReportsListPagination(url){
               {
                   "targets": colIndex++,
                   "data": "DateOfJoin",
-//                   "visible": $("input[data-name='fromDate']").is(":checked"),
+                  "visible": $("input[data-name='fromDate']").is(":checked"),
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
                   		if(opt.fromDate !=null && opt.fromDate !='' && opt.fromDate !='undefined'){
@@ -382,7 +589,7 @@ function daywiseLeaveReportsListPagination(url){
             {
                 "targets": colIndex++,
                 "data": "manager",
-//                 "visible": $("input[data-name='reportingManager']").is(":checked"),
+                "visible": $("input[data-name='reportingManager']").is(":checked"),
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.reportingManager !=null && opt.reportingManager !='' && opt.reportingManager !='undefined'){
@@ -396,7 +603,7 @@ function daywiseLeaveReportsListPagination(url){
           {
               "targets": colIndex++,
               "data": "terminatedOn",
-//               "visible": $("input[data-name='fromDate']").is(":checked"),
+              "visible": $("input[data-name='terminatedDate']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
               		var result = "";
               		if(opt.terminateStringDate !=null && opt.terminateStringDate !='' && opt.terminateStringDate !='undefined'){
@@ -410,7 +617,7 @@ function daywiseLeaveReportsListPagination(url){
         {
             "targets": colIndex++,
             "data": "reason",
-//             "visible": $("input[data-name='fromDate']").is(":checked"),
+            "visible": $("input[data-name='terminatedReason']").is(":checked"),
             "render": function ( data, type, opt, meta ) {
             		var result = "";
             		if(opt.terminatedReason !=null && opt.terminatedReason !='' && opt.terminatedReason !='undefined'){
@@ -424,7 +631,7 @@ function daywiseLeaveReportsListPagination(url){
       {
           "targets": colIndex++,
           "data": "Role",
-//           "visible": $("input[data-name='userRole']").is(":checked"),
+          "visible": $("input[data-name='userRole']").is(":checked"),
           "render": function ( data, type, opt, meta ) {
         	  var result = "";
     	  		   if(opt.userRole != null && opt.userRole !='' && opt.userRole != 'undefined'){
@@ -438,7 +645,7 @@ function daywiseLeaveReportsListPagination(url){
           {
               "targets": colIndex++,
               "data": "gender",
-//               "visible": $("input[data-name='gender']").is(":checked"),
+              "visible": $("input[data-name='gender']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
               		var result = "";
               		if(opt.gender !=null && opt.gender !='' && opt.gender !='undefined'){
@@ -452,7 +659,7 @@ function daywiseLeaveReportsListPagination(url){
         {
             "targets": colIndex++,
             "data": "shift",
-//             "visible": $("input[data-name='shift']").is(":checked"),
+            "visible": $("input[data-name='shift']").is(":checked"),
             "render": function ( data, type, opt, meta ) {
             		var result = "";
             		if(opt.shiftName !=null && opt.shiftName !='' && opt.shiftName !='undefined'){
@@ -466,7 +673,7 @@ function daywiseLeaveReportsListPagination(url){
  {
         "targets": colIndex++,
         "data": "Department",
-//         "visible": $("input[data-name='deptName']").is(":checked"),
+        "visible": $("input[data-name='deptName']").is(":checked"),
         "render": function ( data, type, opt, meta ) {
         	var result = "";
         	
@@ -481,7 +688,7 @@ function daywiseLeaveReportsListPagination(url){
         {
             "targets": colIndex++,
             "data": "Rate",
-//             "visible": $("input[data-name='rate']").is(":checked"),
+            "visible": $("input[data-name='rate']").is(":checked"),
             "render": function ( data, type, opt, meta ) {
           	  var result = "";
 	    	  		   if(opt.rate != null && opt.rate !='' && opt.rate != 'undefined'){
@@ -506,6 +713,7 @@ function daywiseLeaveReportsListPagination(url){
     } );
     $("#recruiterReportsListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+    initializeTerminatedTable();
 }
 
 $("#associateJoinedListDataTableSearch").keydown(function(e) {
@@ -521,6 +729,8 @@ $("#associateJoinedListDataTableSearch").keydown(function(e) {
     	   var sourceleadUrl ='${sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency=$("#reportTypeId").val();
+    	   var graphFrequency=$("#year").val();
+    	   
     	  var  noApplicantJoinedList=$("#noApplicantJoinedList").val(0); 
     	    var fromDate='';
     	    var toDate='';
@@ -560,20 +770,19 @@ $("#associateJoinedListDataTableSearch").keydown(function(e) {
    				  $("#reportsEndDate").empty().append("End Date is Required") ; 
     	        }
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-        	        var url = sourceleadUrl+"/associateJoinedReport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&type=applicantReport";
+        	        var url = sourceleadUrl+"/associateJoinedReport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&type=applicantReport";
         		    prepareOfferList(url);
     	        }
     	    }else{
     	    	 document.getElementById("reportsStartDate").style.display="none";
     			 document.getElementById("reportsEndDate").style.display="none";
-    	        var url = sourceleadUrl+"/associateJoinedReport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&type=applicantReport";
+    	        var url = sourceleadUrl+"/associateJoinedReport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&type=applicantReport";
     		    prepareOfferList(url);
     	    } 
  
 }
 </script> 
-
-
+ 
 <script>
 function prepareOfferList(url){
 	var result = "";
@@ -604,9 +813,10 @@ function prepareOfferList(url){
 </script>
 
 <script>
+var joinedtable = '';
 function offerpagination(url){
 	var colIndex = 0;
-    $('#offerpagination').DataTable( { 
+	joinedtable = $('#offerpagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
         "searching": false,
@@ -616,7 +826,7 @@ function offerpagination(url){
             pages: 10
         }),
         "columns": [
-            { "data": "empID" },
+            { "data": "joinedempId" },
             { "data": "empName"},
             { "data": "gender"},
             { "data": "empType"},
@@ -629,9 +839,9 @@ function offerpagination(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "empID",
+	    	  	"data": "joinedempId",
 	    	  	"sortable": true,
-	    	  	"visible": $("input[data-name='empId']").is(":checked"),
+	    	  	"visible": $("input[data-name='joinedempId']").is(":checked"),
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 $("#noApplicantJoinedList").val(1); 
 	    	  		var result = "";
@@ -792,6 +1002,7 @@ function offerpagination(url){
     		   getAssociatesJoinedList();
     	   }
     	});
+    initializeJoinedTable();
 }
 
 </script>
@@ -1260,6 +1471,7 @@ $(function() {
     $('#araginglistSel').change(function(){
     	var optval = $(this).val();
 		if(optval === "associateTerminated") {
+			getAssociatesTerminatedList();
 			$("#associateJoined").hide();
 			$("#associateTerminated").show();
 			
@@ -1268,7 +1480,13 @@ $(function() {
 			$("#associateTerminatedDiv").show();
 			$("#associateJoinSearchId").hide();
 			$("#associateTeminateSearchId").show();
+			
+			$("#joinedCustomFields").hide();
+			$("#terminatedCustomFields").show();
+			$("#joinedCustomFieldscolPopMid").hide();
+			$("#terminatedCustomFieldscolPopMid").show();
 		}else if(optval === "associateJoined"){
+			getAssociatesJoinedList();
 			$("#recruiter_search_requiremet").hide();
 			$("#applicant_search_requiremet").show();
 			$("#recurterExportPdf").hide();
@@ -1278,6 +1496,12 @@ $(function() {
 			
 			$("#associateJoinSearchId").show();
 			$("#associateTeminateSearchId").hide();
+			
+			
+			$("#joinedCustomFields").show();
+			$("#terminatedCustomFields").hide();
+			$("#joinedCustomFieldscolPopMid").show();
+			$("#terminatedCustomFieldscolPopMid").hide();
 			
 //				$("#associateTerminatedDiv").empty();
 			$("#customDateRecurter").hide();
@@ -1417,8 +1641,12 @@ function exportUserData(){
 </script>
 <script type="text/javascript">
 
-	function columPop(){
-		$(".colPop").show();
+	function columPop(type){
+		if(type === "joined") {
+			$("#joinedColumnPopup").show();
+		} else {
+			$("#terminatedColumnPopup").show();
+		}
 	}
 	function columClose(){
 		$(".colPop").hide();
@@ -1432,18 +1660,32 @@ function exportUserData(){
 		
 	function columHide(){
 		hideColumns=[]; // reset the array object.
-		$(".toggle-vis").each(function() {
+		$("#joinedCustomColumns input").each(function() {
+			joinedtable.column($(this).attr('data-column'))
+		});
+		
+		$("#joinedCustomColumns input").each(function() {
+			columClose();// 
+		   var chkdVal= $(this).prop('checked');
+// 		alert("chkdVal "+chkdVal);
+		   var column = joinedtable.column($(this).attr('data-column'));
+			  if(chkdVal == true){
+			         column.visible(true);
+			    }
+			    else{
+			      column.visible(false);
+			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+			  }
+	    });
+		$("#terminatedCustomColumns input").each(function() {
 			columClose();// 
 		   var chkdVal= $(this).prop('checked');
 // 		alert("chkdVal "+chkdVal);
 		   var column = table.column($(this).attr('data-column'));
-// 		   alert("column "+column);
 			  if(chkdVal == true){
-// 				  alert("1");
 			         column.visible(true);
 			    }
 			    else{
-// 			    	 alert("2");
 			      column.visible(false);
 			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 			  }
@@ -1468,12 +1710,219 @@ function exportUserData(){
 	}
 	</script>
 	<script>
-	$(document).on( 'init.dt.dth', function (e, settings, json) {
+/* 	$(document).on( 'init.dt.dth', function (e, settings, json) {
     table = new $.fn.dataTable.Api( settings );
     var body = $( table.table().body() );
 //     if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
 	
 // 	}
-} );
+} ); */
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+		joinedtable = new $.fn.dataTable.Api( settings );
+	    var body = $( joinedtable.table().body() );
+	    
+	    table = new $.fn.dataTable.Api( settings );
+	    
+//	     if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+		
+//	 	}
+	} );
+	
+	var tableSettings = ""
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+		tableSettings = settings;
+	});
+	
+	function initializeJoinedTable() {
+		joinedtable = new $.fn.dataTable.Api( tableSettings );
+	    var body = $( joinedtable.table().body() );
+	}
+	
+	function initializeTerminatedTable() {
+		 table = new $.fn.dataTable.Api( tableSettings );
+		 var body = $( table.table().body() );
+	}
+	
 	</script>
+	
+	
+<script src="js/bootstrap-datetimepicker.min.js"></script> 
+<script src="js/jquery.timepicker.js"></script> 
+<script src="js/jquery-1.11.3.min.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/bootstrap-select.min.js"></script> 
+<script src="js/masterHeaderAction.js"></script> 
+<script src="js/jquery-ui.min.js"></script> 
+<script src="js/chosen.jquery.min.js"></script> 
+
+<script type="text/javascript" src="js/jquery.mousewheel.js"></script> 
+<script type="text/javascript" src="js/jquery.jscrollpane.min.js"></script> 
+<!-- amCharts javascript sources --> 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
+	
+	
+	<script type="text/javascript">
+       function getAssociatesJoinedGraph(){
+    	   var sourceleadUrl ='${sourceleadUrl}';
+   		   var tab = '${tab}';
+    	   var graphFrequency=$("#year").val();
+    		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        	    	$.ajax({
+        	    		type : "POST",
+        	    		url : sourceleadUrl+"/getAssociatesJoinedGraph?graphFrequency="+graphFrequency,
+        	    		success : function(data) {
+        	    			if(data.length > 0) {
+        	    				
+	        	    			associateGraph(data)
+        	    			
+	        	    			var fullTimeCount = data[0].empFullTimeCountTotal;
+	        	    			var partTimeCount = data[0].empPartTimeCountTotal;
+	        	    			var ftMaleCount = data[0].empFtMaleCountTotal;
+	        	    			var ftFeMaleCount = data[0].empFtFeMaleCountTotal;
+	        	    			var ptMaleCount = data[0].empPtMaleCountTotal;
+	        	    			var ptFeMaleCount = data[0].empPtFeMaleCountTotal;
+	        	    			var totalJoinedCount = data[0].totalJoinedCount;
+	        	    			var totalTerminatedCount = data[0].totalTerminatedCount;
+	        	    			
+	        	    			
+	        	    			$("#partTimeCount").text(partTimeCount);
+	        	    			$("#ptMale").text(ptMaleCount);
+	        	    			$("#ptFemale").text(ptFeMaleCount);
+	        	    			$("#ftMale").text(ftMaleCount);
+	        	    			$("#ftFeMale").text(ftFeMaleCount);
+	        	    			$("#fullTimeCount").text(fullTimeCount);
+	        	    			$("#ttJoinedCount").text(totalJoinedCount);	
+	        	    			$("#ttTerminatedCount").text(totalTerminatedCount);
+	        	    			
+	        	    			/* alert("fullTimeCount "+fullTimeCount);
+	        	    			alert("partTimeCount "+partTimeCount);
+	        	    			alert("ftMaleCount "+ftMaleCount);
+	        	    			alert("ftFeMaleCount "+ftFeMaleCount);
+	        	    			alert("ptMaleCount "+ptMaleCount);
+	        	    			alert("ptFeMaleCount "+ptFeMaleCount); */
+        	    			}
+        	    		}
+        	    	});
+ 
+}
+</script> 
+	
+<script type="text/javascript">
+function associateGraph(data){
+	
+	var chartData = [];
+	   for (var i = 0; i < data.length; i++) { 
+	 		 var opt = data[i]; 
+	         chartData.push({
+	        		date: opt.month,
+	        		column2: opt.terminatedCount,
+	        		column1: opt.hiredCount
+	       });
+	   }
+	   
+	AmCharts.makeChart("associateJoineereport",
+			{
+				"type": "serial",
+				"categoryField": "date",
+				"dataDateFormat": "YYYY-MM",
+				"theme": "default",
+				"categoryAxis": {
+					"minPeriod": "MM",
+					"parseDates": true,
+					"twoLineMode": true,
+					"axisColor": "#AAB3B3",
+					"gridThickness": 0,
+					"markPeriodChange": false
+				},
+				"trendLines": [],
+				"graphs": [
+					{
+						"balloonText": "[[title]]:  [[value]]",
+						"bullet": "round",
+						"bulletSize": 10,
+						"id": "joined",
+						"legendAlpha": 1,
+						"legendColor": "#2ECC71",
+						"lineColor": "#2ECC71",
+						"markerType": "circle",
+						"title": "Joined",
+						"type": "smoothedLine",
+						"valueField": "column1"
+					},
+					{
+						"balloonText": "[[title]]:  [[value]]",
+						"bullet": "round",
+						"bulletSize": 10,
+						"id": "terminated",
+						"legendAlpha": 1,
+						"legendColor": "#FF0000",
+						"lineColor": "#FF0000",
+						"markerType": "circle",
+						"title": "Terminated",
+						"type": "smoothedLine",
+						"valueField": "column2"
+					}
+				],
+				"guides": [],
+				"valueAxes": [
+					{
+						"id": "ValueAxis-1",
+						"axisColor": "#AAB3B3",
+						"gridThickness": 0,
+						"title": "",
+						"titleBold": false
+					}
+				],
+				"allLabels": [],
+				"balloon": {},
+				"legend": {
+					"enabled": true,
+					"equalWidths": false,
+					"markerBorderAlpha": 0,
+					"markerSize": 12,
+					"useGraphSettings": true
+				},
+				"titles": [],
+				"dataProvider": chartData
+			}
+		);
+	}
+			
+</script>
+	
+
+		<script>
+		$(function(){
+		$("#GraphView").click(function() {
+			$(this).removeClass("btn-default").addClass("btn-primary");
+			$("#ListView").removeClass("btn-primary").addClass("btn-default");
+			$("#applicantJoinedDiv").hide();
+			$(".GraView").show();
+			$("#araginglistSel").hide();
+			$("#joinedCustomFields").hide();
+			$("#associateJoinSearchId").hide();
+			$("#reportTypeId").hide();
+			$("#customDateRecurter").hide();
+			$("#year").show();
+			$("#customize_btn").show();
+			$("#reportTypeId").val(null);
+
+		});
+		
+		$("#ListView").click(function() {
+			$(this).removeClass("btn-default").addClass("btn-primary");
+			$("#GraphView").removeClass("btn-primary").addClass("btn-default");
+			$("#applicantJoinedDiv").show();
+			$(".GraView").hide();
+			$("#araginglistSel").show();
+			$("#joinedCustomFields").show();
+			$("#associateJoinSearchId").show();
+			$("#reportTypeId").show();
+			$("#customDateRecurter").show();
+			$("#year").hide();
+			$("#customize_btn").hide();
+		});
+		});
+		</script>
 <jsp:include page="../masterFooter.jsp" />

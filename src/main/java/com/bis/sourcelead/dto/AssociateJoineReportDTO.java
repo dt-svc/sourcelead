@@ -26,6 +26,27 @@ public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	private Date terminateDate;
 	private String terminateStringDate;
 	private String terminatedReason;
+	private String graphFrequency;
+	private Long terminatedCount;
+	private Long hiredCount;
+	private String monthStr;
+	private String month;
+	private Long empTypeFullTimeCount;
+	private Long empTypePartTimeCount;
+	private Long ftMaleCnt;
+	private Long ftFemaleCnt;
+	private Long ptMaleCnt;
+	private Long ptFemaleCnt;
+	
+	private long empFullTimeCountTotal;
+	private long empPartTimeCountTotal;
+	private long empFtMaleCountTotal;
+	private long empFtFeMaleCountTotal;
+	private long empPtMaleCountTotal;
+	private long empPtFeMaleCountTotal;
+	
+	private long totalJoinedCount;
+	private long totalTerminatedCount;
 	
 	
 	
@@ -197,5 +218,156 @@ public class AssociateJoineReportDTO extends SearchDTO implements Serializable{
 	{
 		this.terminatedReason = terminatedReason;
 	}
-	
+	public String getGraphFrequency()
+	{
+		return graphFrequency;
+	}
+	public void setGraphFrequency(String graphFrequency)
+	{
+		this.graphFrequency = graphFrequency;
+	}
+	public Long getTerminatedCount()
+	{
+		return terminatedCount;
+	}
+	public void setTerminatedCount(Long terminatedCount)
+	{
+		this.terminatedCount = terminatedCount;
+	}
+	public Long getHiredCount()
+	{
+		return hiredCount;
+	}
+	public void setHiredCount(Long hiredCount)
+	{
+		this.hiredCount = hiredCount;
+	}
+	public String getMonthStr()
+	{
+		return monthStr;
+	}
+	public void setMonthStr(String monthStr)
+	{
+		this.monthStr = monthStr;
+	}
+	public String getMonth()
+	{
+		return month;
+	}
+	public void setMonth(String month)
+	{
+		this.month = month;
+	}
+	public Long getEmpTypeFullTimeCount()
+	{
+		return empTypeFullTimeCount;
+	}
+	public void setEmpTypeFullTimeCount(Long empTypeFullTimeCount)
+	{
+		this.empTypeFullTimeCount = empTypeFullTimeCount;
+	}
+	public Long getEmpTypePartTimeCount()
+	{
+		return empTypePartTimeCount;
+	}
+	public void setEmpTypePartTimeCount(Long empTypePartTimeCount)
+	{
+		this.empTypePartTimeCount = empTypePartTimeCount;
+	}
+	public Long getFtMaleCnt()
+	{
+		return ftMaleCnt;
+	}
+	public void setFtMaleCnt(Long ftMaleCnt)
+	{
+		this.ftMaleCnt = ftMaleCnt;
+	}
+	public Long getFtFemaleCnt()
+	{
+		return ftFemaleCnt;
+	}
+	public void setFtFemaleCnt(Long ftFemaleCnt)
+	{
+		this.ftFemaleCnt = ftFemaleCnt;
+	}
+	public Long getPtMaleCnt()
+	{
+		return ptMaleCnt;
+	}
+	public void setPtMaleCnt(Long ptMaleCnt)
+	{
+		this.ptMaleCnt = ptMaleCnt;
+	}
+	public Long getPtFemaleCnt()
+	{
+		return ptFemaleCnt;
+	}
+	public void setPtFemaleCnt(Long ptFemaleCnt)
+	{
+		this.ptFemaleCnt = ptFemaleCnt;
+	}
+	public long getEmpFullTimeCountTotal()
+	{
+		return empFullTimeCountTotal;
+	}
+	public void setEmpFullTimeCountTotal(long empFullTimeCountTotal)
+	{
+		this.empFullTimeCountTotal = empFullTimeCountTotal;
+	}
+	public long getEmpPartTimeCountTotal()
+	{
+		return empPartTimeCountTotal;
+	}
+	public void setEmpPartTimeCountTotal(long empPartTimeCountTotal)
+	{
+		this.empPartTimeCountTotal = empPartTimeCountTotal;
+	}
+	public long getEmpFtMaleCountTotal()
+	{
+		return empFtMaleCountTotal;
+	}
+	public void setEmpFtMaleCountTotal(long empFtMaleCountTotal)
+	{
+		this.empFtMaleCountTotal = empFtMaleCountTotal;
+	}
+	public long getEmpFtFeMaleCountTotal()
+	{
+		return empFtFeMaleCountTotal;
+	}
+	public void setEmpFtFeMaleCountTotal(long empFtFeMaleCountTotal)
+	{
+		this.empFtFeMaleCountTotal = empFtFeMaleCountTotal;
+	}
+	public long getEmpPtMaleCountTotal()
+	{
+		return empPtMaleCountTotal;
+	}
+	public void setEmpPtMaleCountTotal(long empPtMaleCountTotal)
+	{
+		this.empPtMaleCountTotal = empPtMaleCountTotal;
+	}
+	public long getEmpPtFeMaleCountTotal()
+	{
+		return empPtFeMaleCountTotal;
+	}
+	public void setEmpPtFeMaleCountTotal(long empPtFeMaleCountTotal)
+	{
+		this.empPtFeMaleCountTotal = empPtFeMaleCountTotal;
+	}
+	public long getTotalJoinedCount()
+	{
+		return totalJoinedCount;
+	}
+	public void setTotalJoinedCount(long totalJoinedCount)
+	{
+		this.totalJoinedCount = totalJoinedCount;
+	}
+	public long getTotalTerminatedCount()
+	{
+		return totalTerminatedCount;
+	}
+	public void setTotalTerminatedCount(long totalTerminatedCount)
+	{
+		this.totalTerminatedCount = totalTerminatedCount;
+	}
 }

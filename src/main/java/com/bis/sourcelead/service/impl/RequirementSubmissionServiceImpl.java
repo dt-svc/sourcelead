@@ -5704,4 +5704,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	}
 
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoinedGraph(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
 }
