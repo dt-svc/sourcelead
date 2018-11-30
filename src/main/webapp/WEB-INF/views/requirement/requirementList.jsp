@@ -823,12 +823,15 @@ function changeStatusAuthorisation(requirementId){
 function changeStatus(requirementId, requirementStatus){
 	var status = document.getElementById('changeStatusId' + requirementId).value;
 	$("tr").find("td.sorting_1").removeClass("sorting_1");
-	if(status == "FILLEDCLOSED" || status == "OPEN"){
+	if(status == "FILLEDCLOSED" ||  status == "UNFILLEDCLOSED" || status == "ONHOLD" || status == "OPEN" ){
 		$("#job_"+requirementId).addClass("row-success");
+		location.reload();
 	}else if(status == "CANCEL"){
 		$("#job_"+requirementId).addClass("row-danger");
+		location.reload();
 	}else{
 		$("#job_"+requirementId).addClass("row-warning");
+		location.reload();
 	}
 
 	 var userId ='${SourceLeadWeb_userId}';

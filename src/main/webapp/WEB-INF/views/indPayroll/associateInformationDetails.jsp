@@ -65,18 +65,16 @@
                   </div>
                </div>
               
-              
-              
               <div class="clearfix"></div>
                   
                   <div class="col-md-6 mb checkbox-new noPad">
                    <c:if test="${associateNominee.nominee eq 'Y'}">
-                             <input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
+                             <input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox">
                    </c:if>
                    <c:if test="${empty associateNominee.nominee}">
-                   			<input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
+                   			<input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" >
                    </c:if>
-					<label for="nomineeShow" class="checkbox-custom-label" onClick="nomineeDetails()"><span class="ml10">Nominee</span></label>
+					<label for="nomineeShow" class="checkbox-custom-label"><span class="ml10">Nominee</span></label>
                     <div>
                     </div>
            </div>
@@ -92,51 +90,6 @@
 		             </div>
 			</div> 
                   
-                  
-<!--                 <div class="clearfix col-md-12"> <a href="javascript:void(0)" id="nomineeShow">Nominee</a> </div> -->
-                <!-- <div class="clerfix project_wrap_table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Relation</th>
-                        <th>Nomination For</th>
-                        <th>Nomination %</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-					  <tbody>
-				<tr>
-				<td><div class="ExpShow"><i class="fa fa-plus-squa<div id="informationDetailsLoading"></div>re-o" aria-hidden="true"></i>Category 1</div></td>
-				<td><div>20/09/2017</div></td>
-				<td><div>Cash</div></td>
-				<td><div>USD</div></td>
-				<td><div>5055</div></td>				
-			</tr>
-			<tr class="ExpDe">
-				<td colspan="6">
-					<div class="expDetails">
-						<ul>
-							<li><strong>Exp Category :</strong><span> Category 1</span><div class="clearfix"></div></li>
-							<li><strong>Date :</strong><span> 20/09/2017</span><div class="clearfix"></div></li>
-							<li><strong>Payment Mode :</strong><span> Cash</span><div class="clearfix"></div></li>
-							<li><strong>Currency :</strong><span> USD</span><div class="clearfix"></div></li>
-							<li><strong>Amount :</strong><span> 20,000</span><div class="clearfix"></div></li>
-							<li><strong>Purpose :</strong><span> Purpose text</span><div class="clearfix"></div></li>
-							<li><strong>Description :</strong><p> Description Description Description Description</p>
-							<div class="clearfix"></div>
-							</li>
-							<div class="clearfix"></div>
-						</ul>
-					</div>
-				</td>			
-			</tr>
-						  
-					  </tbody>
-                  </table>
-                </div> -->
-                
-                
                 <div class="clearfix"></div>
                 
                   
@@ -198,12 +151,9 @@
     	    						
     	    						result = result + '  </tbody>';
     	    						result = result + ' </table>';
-    								$("#nomineeDeta").show();
-    								$("#nomineeDetaDiv").show();
-    								$("#nomineeDetails").hide();
-    								
     	    						$("#nomineeDeta").empty();
     	    						$("#nomineeDeta").append(result);
+    	    						$("#nomineeDetaDiv").show();
     	    						$("#loading").removeAttr("style");
     	    						nomineeDetailsPagination();
     				        }
@@ -358,9 +308,15 @@ function getDatePicker(){
 	}
 
 $("#nomineeShow").click(function() {
-	$("#nomineeDetails").toggle();
-	$("#nomineeDetails_form").show();
-	getNomineeDetailsList();
+	var chkdVal=$("#nomineeShow").is(':checked')
+	if(chkdVal == true){
+		$("#nomineeDetaDiv").show();
+		$("#addButton").show();
+		getNomineeDetailsList();	
+	}else{
+		$("#nomineeDeta").empty();
+		$("#nomineeDetaDiv").hide();
+	}
 });
 </script>
 
@@ -380,7 +336,10 @@ $("#nomineeShow").click(function() {
 		    	data: formData,
 		    	 url: sourceleadUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
 		        success: function(response) {
-                        $("#nomineeDetails").hide();
+                        //$("#nomineeDetails").hide();
+                        $("#nomineeDeta").empty();
+						$("#nomineeDetaDiv").hide();
+						$("#addButton").hide();
                         getNomineeDetailsList();
 		        },
 		    });  
@@ -430,12 +389,12 @@ function nomineeDetailsPagination(){
 		    success: function(data) {
 		    	$('#nomineePopUpDiv').empty();
 		    	$('#nomineePopUpDiv').append(data);
-// 		    	$('#illnessGuardianName').val('');
 		    },
 		});
  }
  
 function closeNomineePopUp() {
+		$('#nomineePopUpDiv').empty();
 		$(".salarySetup, .comMask").fadeOut();
 }
  </script>
@@ -454,14 +413,6 @@ function deleteNominee(nomineeId,candidateId){
 
  </script>
  
-<script>
-function cancelNomineeDetails(){
-   $("#nomineeDetails").toggle();
-   $("#nomineeDetails_form").hide();
-   $('input[name=nominee]').attr('checked', false);
-}
-</script>
-
 <script>
 function illnessFunction(){
 	var checkBox = document.getElementById("illness");
