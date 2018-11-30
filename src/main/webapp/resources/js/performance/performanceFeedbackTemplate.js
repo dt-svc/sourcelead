@@ -7,12 +7,12 @@ $('body').on('submit', '#sjfb', function(e){
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var isRemoved = '';
-        var isLabelModified = 'N';
         //Loop through fields and save field data to array
         var fields = [];
         var submitTemplate = true;
         var fieldLabel = '';
         var fieldhint = '';
+        var fieldDropDown = '';
         var myArray = new Array();
         $('.field').each(function() {
             var $this = $(this);
@@ -27,7 +27,11 @@ $('body').on('submit', '#sjfb', function(e){
             //field label
             fieldLabel = $this.find('.field-label').val();
             
+           //field hint
             fieldhint = $this.find('.field-hint').val(); 
+            
+            //field type dropdown
+            fieldDropDown = $this.find('.field-dropdown').val(); 
 
             //field required
             var fieldReq = $this.hasClass('required') ? 1 : 0;
@@ -71,10 +75,10 @@ $('body').on('submit', '#sjfb', function(e){
             		type: fieldType,
 	                label: fieldLabel,
 	                hint: fieldhint,
+	                dropdown : fieldDropDown,
 	                req: fieldReq,
 	                choices: choices,
 	                isRemoved : isRemoved,
-	                isLabelModified : isLabelModified
             });
 
         });
@@ -171,14 +175,14 @@ $('body').on('submit', '#sjfb', function(e){
     			
     }
 
-    function addFeedbackTemplate(){
+    function addFeedbackTemplate(templateId){
     	$.ajax({
     		  type: "GET",
     		    url: sourceleadUrl+"/addNewFeedbackTemplate",
     		     success :function(response) {
     		    	    $("#performanceManagementDiv").empty();  
     		    	    $("#performanceManagementDiv").append(response);
-    		    	    customizeFields('${sourceleadUrl}');
+    		    	    customizeFields(sourceleadUrl,templateId);
     				},
     			}); 
     			

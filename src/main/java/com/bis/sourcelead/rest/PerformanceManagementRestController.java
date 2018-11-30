@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionTemplate;
@@ -158,4 +159,18 @@ public class PerformanceManagementRestController {
 
 	}
 	
+	
+	
+   @RequestMapping(value = "/loadSavedPerformanceFeedbackTemplate" , method = RequestMethod.GET)
+   public PerformanceFeedbackTemplateDTO loadSavedPerformanceFeedbackTemplate(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+		
+	    PerformanceFeedbackTemplateDTO templateDTO = new PerformanceFeedbackTemplateDTO();
+	    PerformanceFeedbackTemplate template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(templateId);
+	    templateDTO.setTemplateName(template.getName());
+	    templateDTO.setDescription(template.getDescription());
+	    templateDTO.setJsonString(template.getJsonString());
+		return templateDTO;
+    
+   }
+
 }

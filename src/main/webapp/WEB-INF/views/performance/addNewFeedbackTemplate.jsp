@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <link rel="stylesheet" href="/resources/css/style.css" />
 <script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+
 <style>
 .dropdown-menu.pull-right {
     right: 0;
@@ -39,7 +40,7 @@
 			    	
 			    	<div class="col-xs-12 col-md-6">
 			    	 <label>Description<span class="text-danger">&nbsp;*</label>
-			    			 <textarea rows="3" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>
+			    			 <textarea rows="3" id="templateDescription" name="description" field-name="Description" data-validation="required" class="form-control"></textarea>
 			    	 </div>
 			    	</div>
 			    	

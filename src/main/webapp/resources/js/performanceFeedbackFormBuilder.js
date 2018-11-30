@@ -11,7 +11,7 @@ function customizeFields(sourceleadUrl,templateId){
     //Adds new field with animation
     $("#add-field a").click(function(e) {
         e.preventDefault();
-        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateId,'Y')).appendTo('#form-fields').hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateId)).appendTo('#form-fields').hide().slideDown('fast');
         $('#form-fields').sortable();
     });
 
@@ -71,7 +71,7 @@ function customizeFields(sourceleadUrl,templateId){
 
 
 //Add field to builder
-function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,labelValidationCheck) {
+function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId) {
 
     var hasRequired, hasChoices,fieldName,hasStar,hasScale;
     var includeRequiredHTML = '';
@@ -162,12 +162,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     	
     }
     
-    if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
-    	readOnly = 'readonly="readonly"'
-    	dataValidation = 'data-validation="required validate_Space';
-    }else{
-    	dataValidation = 'data-validation="required validate_Space validate_AlphaNumber';
-    }
+    dataValidation = 'data-validation="required validate_Space validate_AlphaNumber';
    
     
     if (hasRequired) {
@@ -190,7 +185,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     if(hasStar){
     	includeStarHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
         ' <div class="col-md-5"> ' +
-        '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Star">'+
+        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Star">'+
         '<option value="3">3</option>      '+
         '<option value="4">4</option>      '+
         '<option value="5">5</option>      '+
@@ -207,7 +202,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId,
     if(hasScale){
     	includeScaleHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
         ' <div class="col-md-5"> ' +
-        '<select  class="field-label form-control input-sm" data-validation="required"  field-name="Star">'+
+        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Star">'+
         '<option value="10">10</option>      '+
         '<option value="20">20</option>      '+
         '<option value="30">40</option>      '+
@@ -295,17 +290,13 @@ function selectedChoice($this) {
 
 //Builder HTML for select, radio, and checkbox choices
 function addChoice(labelValue) {
-	var readOnly = '';
-	  if(labelValue == 'N' || labelValue == 'undefined' || null == labelValue || labelValue == ''){
-	    	readOnly = 'readonly="readonly"'
-	    }
 	  
     return '' +
         '<li>' +
         '<div class="row">' +
         '<label class="col-md-5 lblClass"> <div class="col-md-3 lblHeight">Option: </div> ' +
         '<div class="col-md-9">' +
-        '<input type="text" '+readOnly+' data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
+        '<input type="text" data-validation="required validate_Space" placeholder="Required *" field-name="Option Label" class="choiceInput choice-label form-control input-sm">' +
         '</div>' +
         '</label>' +
         
@@ -324,11 +315,16 @@ function addChoice(labelValue) {
 
 
 function loadSavedForm(templateId,sourceleadUrl) {
+	
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
-        success: function(data) {
-        	 var data = eval(data);
+        url: sourceleadUrl+"/loadSavedPerformanceFeedbackTemplate?templateId="+templateId, 
+        success: function(result) {
+        	 $("#templateName").val(result.templateName);
+        	 $("textarea[id='templateDescription']").text(result.description);
+        	 $("#templateId").val(templateId);
+        	 
+        	 var data = eval(result.jsonString);
         	 if (data) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
@@ -338,6 +334,13 @@ function loadSavedForm(templateId,sourceleadUrl) {
 
                      //Add the label
                      $currentField.find('.field-label').val(v['label']);
+                     
+                    //Add the hint
+                     $currentField.find('.field-hint').val(v['hint']);
+                     
+                    //Add the type dropdown
+                     $currentField.find('.field-dropdown').val(v['dropdown']);
+                     
 
                      //Is it required?
                      if (v['req']) {
@@ -374,7 +377,7 @@ function loadSavedForm(templateId,sourceleadUrl) {
 
 function validateLabelName(i,templateId,sourceleadUrl,labelValidationCheck){
 	var labelName = $("#textLabel"+i).val();
-	if(labelName && labelValidationCheck == 'Y'){
+	if(labelName){
 		$.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/validateSubmissionTemplateLabelName?templateId="+templateId+"&labelName="+labelName, 
