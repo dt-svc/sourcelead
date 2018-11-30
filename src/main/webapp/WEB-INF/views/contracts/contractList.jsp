@@ -147,30 +147,7 @@ padding: 2px 300px 2px 0px;
    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Contracts</div>
 </section>
 
-<section class="contrHead"> 
-<ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
-<input type="hidden" name="contractStage" id="contractStage" >
-<div class="conBtn">
-  <span onclick="addContracts();">+ Contracts</span>
-<%--   <ul>  
-	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
-	  </sec:authorize>
-	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
-	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
-  	  </sec:authorize>
-  </ul> --%>
-</div>
-<div class="clearfix"></div>
-</ul>
-</section>
+
 
 <!-- Add candidate Popup -->
   <div class="addcandidate-popup">
@@ -219,6 +196,34 @@ padding: 2px 300px 2px 0px;
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
+ 
+ 
+ <section class="contrHead"> 
+<ul> 
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
+<input type="hidden" name="contractStage" id="contractStage" >
+<div class="conBtn">
+  <span onclick="addContracts();">+ Contracts</span>
+<%--   <ul>  
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
+	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
+	  </sec:authorize>
+	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
+	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
+  	  </sec:authorize>
+  </ul> --%>
+</div>
+<div class="clearfix"></div>
+</ul>
+</section>
+ 
+ 
 	<div class="timesheet_head">
 		<div class="ContrBut">
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>

@@ -53,15 +53,19 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
     
-    <div class="project_side_wrap_inn_tabs clearfix">
+    
+
+    
+    <div class="project_wrap clearfix">
+    
+    <div class="project_side_wrap_inn_tabs clearfix dfsfdsd">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="${appPath}/invoiceList">Invoice List</a></li>
 		    <li class=""><a href="${appPath}/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>    
     
-    <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
         <!-- <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">

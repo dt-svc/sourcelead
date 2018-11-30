@@ -68,15 +68,18 @@ $(document).ready(function(){
 		</div>
 	</section>
 	
+
+	
+	<div class="project_wrap clearfix">
+	
 	<div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="${appPath}/payablesList">Bill List</a></li>
 		    <li class=""><a href="${appPath}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>	
 	
-	<div class="content-area content-new clearfix">
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
 				<!-- <div class="onboardcreateButtons">
@@ -2115,6 +2118,5 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 </script>				
-				
-<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" />				
+<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js" ></script>
