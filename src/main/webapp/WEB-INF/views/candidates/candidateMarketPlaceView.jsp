@@ -28,6 +28,10 @@
          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
          <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+           
+         
          <div class="clearfix"></div>
      </ul>
 </div>
@@ -455,6 +459,13 @@ function cardModel() {
 }
 function goToGlobalMarketPlaceList(){
 	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
 }
 
 
