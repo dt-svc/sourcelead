@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ public interface ExpensesDao {
 	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId);
 	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long orglocationId,Date startDate, Date endDate);
+	public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate);
 }
 	
 
