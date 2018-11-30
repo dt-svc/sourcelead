@@ -490,8 +490,15 @@ public class DumpPublicRestCalls {
 		for(OrgLocations loc : orgLocList){
 			List<PayrollPayhead> existed = payrollPayheadDao.getPayrollPayheadList(loc);
 			for(PayrollPayhead payHead : payheadList) {
-				if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
-				}else {
+				boolean phNew = true;
+				if(existed.size() > 0) {
+					for(PayrollPayhead pHeadOld : existed) {
+						if(payHead.getShortCode().equalsIgnoreCase(pHeadOld.getShortCode())) {
+							phNew = false;
+						}
+					}
+				}
+				if(phNew) {
 					PayrollPayhead newPayhead = new PayrollPayhead();
 					newPayhead.setName(payHead.getName());
 					newPayhead.setShortCode(payHead.getShortCode());
@@ -518,6 +525,36 @@ public class DumpPublicRestCalls {
 					newPayhead.setOrgLocationId(loc);
 					payrollPayheadDao.savePayrollPayhead(newPayhead);
 				}
+				
+				
+				/*if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
+				}else {
+					PayrollPayhead newPayhead = new PayrollPayhead();
+					newPayhead.setName(payHead.getName());
+					newPayhead.setShortCode(payHead.getShortCode());
+					newPayhead.setEffectiveDate(payHead.getEffectiveDate());
+					newPayhead.setType(payHead.getType());
+					newPayhead.setPayType(payHead.getPayType());
+					newPayhead.setForm16(payHead.getForm16());
+					newPayhead.setTax(payHead.getTax());
+					newPayhead.setApplicableFor(payHead.getApplicableFor());
+					newPayhead.setExperienceYears(payHead.getExperienceYears());
+					newPayhead.setExperienceMonths(payHead.getExperienceMonths());
+					newPayhead.setFbpComponent(payHead.getFbpComponent());
+					newPayhead.setPaidComponent(payHead.getPaidComponent());
+					newPayhead.setComponent(payHead.getComponent());
+					newPayhead.setPartOfGratitutiy(payHead.getPartOfGratitutiy());
+					newPayhead.setLeaveDependent(payHead.getLeaveDependent());
+					newPayhead.setShowInPayslip(payHead.getShowInPayslip());
+					newPayhead.setPfApplicable(payHead.getPfApplicable());
+					newPayhead.setEsiApplicable(payHead.getEsiApplicable());
+					newPayhead.setMethod(payHead.getMethod());
+					newPayhead.setFormula(payHead.getFormula());
+					newPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					newPayhead.setStatus(payHead.getStatus());
+					newPayhead.setOrgLocationId(loc);
+					payrollPayheadDao.savePayrollPayhead(newPayhead);
+				}*/
 			}
 			logger.info("Org Payhead>> "+java.time.LocalDateTime.now());
 		}
