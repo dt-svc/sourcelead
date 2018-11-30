@@ -73,6 +73,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.AddExpensesService;
 import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
@@ -108,6 +109,8 @@ public class OrgSettingsRestController {
 	private String sourceleadUrl;
 	@Autowired
 	private OrgService orgService;
+	@Autowired
+	private CandidateService candidateService;
 	@Autowired
 	private OrgRelationsService orgRelationsService;
 	@Autowired
@@ -1160,6 +1163,38 @@ public class OrgSettingsRestController {
 				if (user != null) {
 					orgLocations.setProfilePercentage(profilePercentage);
 					orgLocationService.updateOrgLocations(orgLocations);
+					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+		
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	@RequestMapping(value = "/app/configShowCompanyNameInMarkeplace")
+	public Response<String> configShowCompanyNameInMarkeplace(@RequestParam(value = "showCompnayName", required = true) String showCompnayName,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		try {
+				if (user != null) {
+					if(StringUtils.isNotBlank(showCompnayName)
+							&&showCompnayName.equalsIgnoreCase("true")) {
+					orgLocations.setShowCompanyNameInMarkeplace("Y");
+					}else {
+						orgLocations.setShowCompanyNameInMarkeplace("N");
+					}
+					orgLocationService.updateOrgLocations(orgLocations);
+					candidateService.updateMarketplaceCandidates(orgLocations,orgLocations.getShowCompanyNameInMarkeplace());
 					SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

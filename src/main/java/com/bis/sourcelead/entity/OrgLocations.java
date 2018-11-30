@@ -253,6 +253,9 @@ public class OrgLocations implements Serializable{
 	@Column(name = "PROBATION_NO_OF_DAYS")
 	private Integer noOfDays;
     
+	@Column(name = "SHOW_COMPANY_NAME_IN_MARKETPLACE")
+	private String showCompanyNameInMarkeplace;
+	
     @Transient
     private String orgName;
     
@@ -1080,6 +1083,14 @@ public class OrgLocations implements Serializable{
 
 	public void setNoOfDays(Integer noOfDays) {
 		this.noOfDays = noOfDays;
+	}
+
+	public String getShowCompanyNameInMarkeplace() {
+		return showCompanyNameInMarkeplace;
+	}
+
+	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
+		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
 	}
 	
 }

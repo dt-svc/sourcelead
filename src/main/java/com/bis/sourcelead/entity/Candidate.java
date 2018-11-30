@@ -376,6 +376,9 @@ public class Candidate implements Serializable {
 	
 	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
+	
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateCertifications> candidateCertifications = new HashSet<CandidateCertifications>();
 
 	@Transient
 	@JsonProperty
@@ -1904,6 +1907,14 @@ public class Candidate implements Serializable {
 
 	public void setCandidateAssignedJobsCount(String candidateAssignedJobsCount) {
 		this.candidateAssignedJobsCount = candidateAssignedJobsCount;
+	}
+
+	public Set<CandidateCertifications> getCandidateCertifications() {
+		return candidateCertifications;
+	}
+
+	public void setCandidateCertifications(Set<CandidateCertifications> candidateCertifications) {
+		this.candidateCertifications = candidateCertifications;
 	}
 
 	
