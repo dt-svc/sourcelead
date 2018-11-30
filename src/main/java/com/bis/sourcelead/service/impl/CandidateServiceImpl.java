@@ -2990,6 +2990,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(marketPlace.getCandidateId().getSkillsName() != null && !marketPlace.getCandidateId().getSkillsName().equals("")){
 			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
 			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
+			marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
 			String[] marketPlaceSkills = marketPlace.getCandidateId().getSkillsName().split(",");
 			for (int j = 0; j < marketPlaceSkills.length; j++){
 				marketPlaceSkills[j] = marketPlaceSkills[j].trim();
