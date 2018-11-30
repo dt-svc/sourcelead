@@ -56,12 +56,13 @@ background-color: #fcfcfc;
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
-    <div class="">
+    
+    <div class="project_wrap">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
-             <div class="pull-right tblminwidth-125">
+             <div class="pull-right tblminwidth-125 paddingTop mr">
              <div class="success_pop" id="msgDiv" style="display: none;"></div>
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
