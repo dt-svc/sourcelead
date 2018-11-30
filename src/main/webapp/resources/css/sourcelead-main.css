@@ -6570,7 +6570,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
     color: #333; bottom: 45px;
 }
 .project-tabs-menu.projecttabs-custom li a {
-    padding: 6px 25px;
+    padding: 10px 25px;
 }
 .project-tabs-menu.projecttabs-custom li {
     border-radius: 5px 5px 0 0;
@@ -9182,6 +9182,9 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .rewardImage {
 	width: 55px; height: 55px; padding-right: 0;
 }
+.media-object {
+	width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}
 .prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img, .rewardImage img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
@@ -9447,13 +9450,16 @@ background: url("../images/printIC.svg"); background-repeat: no-repeat; backgrou
 	min-height: 75px; max-height: 325px; overflow:auto;
 }
 .circular-chart {
-  display: block; margin:0 auto; max-width: 50%; max-height: 50px;
+display: block; margin:0 auto; max-width: 50%; max-height: 50px;
 }
 .circle-bg {
-  fill: none; stroke: #fff; stroke-width: 4;
+fill: none; stroke: #ccc; stroke-width: 4;
 }
 .circle {
-  fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+}
+.circle0 {
+fill: none; stroke-width: 0; stroke-linecap: round; animation: progress 1s ease-out forwards;
 }
 @keyframes progress {
   0% {
@@ -9565,7 +9571,12 @@ input[type=range]::-moz-range-track {
 .fullTimebg .joinedValue {
 background-color: #e84393; padding: 15px;
 }
-
+.assignedImages {
+	width: 35px; height:35px; display: inline-block; margin: 0 auto;
+}
+.assignedImages img {
+	max-height: 100%; max-width: 100%; border-radius: 50%;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

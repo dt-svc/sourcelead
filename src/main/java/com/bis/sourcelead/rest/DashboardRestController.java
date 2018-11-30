@@ -49,6 +49,7 @@ import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -2020,11 +2021,7 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
-	
-	
-	
-	
-	
+
 	@RequestMapping(value = "/associateJoinedReport")
 	public @ResponseBody ResponseList<AssociateJoineReportDTO> associateJoineReport(AssociateJoineReportDTO associateJoineReportDTO, HttpServletRequest request)throws Exception
    {
@@ -2437,5 +2434,20 @@ public class DashboardRestController {
 		
     }
 	
-	
+
+	/**
+	 * @author ajith
+	 * @param request
+	 * @return RequirementSubmissionsDTO list
+	 * @throws Exception
+	 * This method is used to retrieve candidate for Invoice list in Dashboard 
+	 */
+	@RequestMapping(value = "/getCandidateInvoiceForDashboard", method = RequestMethod.POST)
+	public List<RequirementSubmissionsDTO> getCandidateInvoiceForDashboard(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<RequirementSubmissionsDTO > dtoList = requirementSubmissionService.getCandidateForInvoiceDashBoard(orgLocations,user);
+		return dtoList; 
+	}
+
 }
