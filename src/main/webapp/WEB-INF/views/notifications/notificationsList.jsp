@@ -311,7 +311,6 @@ $("#selectall").change(function () {
 
 <script>
 function totalCheck1() {
-	alert("totalCheck1 .... START");
 	if($("input[name='check[]']").is(':checked')){
 		
 		var checked = $("input[name='check[]']:checked"); 
@@ -324,7 +323,6 @@ function totalCheck1() {
 		
 	}
 }
-	alert("totalCheck1 .... END");
 }
 </script>
 

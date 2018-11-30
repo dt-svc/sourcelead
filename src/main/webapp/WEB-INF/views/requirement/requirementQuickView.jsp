@@ -28,7 +28,7 @@
 		<div class="col-md-12">
 			<div class="row">
 				<div class="col-md-3">
-					<div class="company-logo">
+					<div class="company-logo jobComLogo">
 						<div class="imageParent">
 							<img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${requirement.orgLocationId.org.fileUrl}"
 								alt="Company" title="Company Logo" class="img-responsive">
@@ -51,7 +51,7 @@
 									</c:forEach>
 									</li> --%>
 									
-									<li><i class="fa fa-map-marker pull-left mt5" title="Locations"></i>
+									<li class="clearfix"><i class="fa fa-map-marker pull-left mt5" title="Locations"></i>
 									<ul class="list-unstyled joblocations-public col-md-10">
 									<c:forEach var ="reqLocs" items="${locationsList}">
 									 <li title="${reqLocs.location}">${reqLocs.location}</li>
@@ -128,7 +128,7 @@
 	<div class="clearfix"></div>
 	<div class="project_tabs">
       <div id="tab-1" class="project_tabs_inn">
-        <div id="details-div" class="require_wrap_details">
+        <div id="details-div" class="require_wrap_details paddingTop">
             	<c:if test="${requirement.requirementSubmissionStatus == 'REJECTED' }">
             	    <div class="anchor-inline">
             	     <h5>Rejected Reason:</h5> 
