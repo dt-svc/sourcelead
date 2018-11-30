@@ -367,7 +367,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" data-validation-optional="true" field-name="Custom Amount" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
@@ -432,12 +432,8 @@ function removeErr(){
 }
 function removeMask(){
 	 $("#customeAmount, #customeAmountOnline").removeAttr("readonly");
-	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
-	                event.preventDefault();
-	            }
-	        }); */
+	 $('#customeAmount').removeAttr('data-validation-optional');
+	 $('#customeAmount').attr("data-validation","required"); 
 	        
 	 $("#customeAmount, #customeAmountOnline").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
@@ -458,14 +454,20 @@ function removeMask(){
 function validMask(){
 	  $('#customeAmount, #customeAmountOnline').attr("readonly","readonly");  
 }
-/* function amountCal(){
+ function amountCal(){
 	var totalAmount =  $("#totalAmount").val();
 	var customAmount =  $("#customeAmount").val();
-	if(totalAmount > customAmount){
-		var exceededAmount = customAmount - totalAmount
-		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	 var totalValue=0.00;
+	 finalAmount = totalValue+parseFloat(customAmount);
+	if(finalAmount > totalAmount){
+		var exceededAmount = customAmount - totalAmount;
+		alert("your payment is exceeded by ); 
+		$('#customeAmount').removeAttr('data-validation-optional');
+		 $('#customeAmount').attr("data-validation","required");
+	}else{
+		$('#customeAmount').removeAttr('data-validation-optional');
 	}
-} */
+}
 </script>
 <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
