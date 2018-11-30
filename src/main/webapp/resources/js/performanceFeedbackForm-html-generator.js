@@ -104,6 +104,13 @@ function generateForm(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
+            	 
+            	 if(fieldType == "star"){
+            		 var StarHtml = '';
+            		 for(var i=1; i<=dropdown; i++){
+            			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+','+uniqueID+')" id="star-select'+i+uniqueID+'"></li>';
+  					}
+            	 }
                 
 
                  switch (fieldType) {
@@ -176,7 +183,11 @@ function generateForm(sourceleadUrl,templateId) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" id="text-' + uniqueID + '">' +
+                             '<input type="hidden" id="starValue'+ uniqueID +'"></span>' +
+                             '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
+                             '<div class="clearfix mt"></div>'+
+                             StarHtml+
+                             '</ul>' +
                              '</div>'; 
                          
                      case 'file':
@@ -202,7 +213,18 @@ function evaluateSlider(uniqueID){
 	
 }
 
-
+function fillStarValues(i,uniqueID){
+	
+	$("#starValue"+uniqueID).val(i);
+	
+	for(var k=1; k<=i; k++){
+		$("#star-select"+k+uniqueID).removeClass('text-muted').addClass('textWarning');
+	}
+	
+	for(var k=i+1; k<=6; k++){
+		$("#star-select"+k+uniqueID).removeClass('textWarning').addClass('text-muted');
+	}
+}
 
 function getRadioValue(id,name){
 	   $('#'+name+"radio").val(id.value); 
