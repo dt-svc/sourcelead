@@ -2738,7 +2738,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	target.setLcaStatus(source.getLcaStatus());
         	target.setPrivilingWageCurrency(source.getPrivilingWageCurrency());
         	target.setPrivilingWageRateType(source.getPrivilingWageRateType());
-        	
+        	target.setExpired(String.valueOf(source.getExpired()));
         	target.setLocationsList(Arrays.asList(source.getLocation().split("\n")));
         	target.setLocation(source.getLocation().replaceAll("", ""));
         	
