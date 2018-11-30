@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
@@ -109,6 +110,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -221,6 +223,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	USPayrollAssociateTaxHistoryService usPayrollAssociateTaxHistoryService;
+
+	@Autowired
+	private UserRoleService userRoleService;
 
 	
 	/**
@@ -1911,8 +1916,9 @@ public class USPayrollRestController {
 		 * populate approvers for notifying payroll schedule time
 		 * @param orgLocation
 		 * @return
+		 * @throws Exception 
 		 */
-		private List<UserDTO> getApproverData(OrgLocations orgLocation)
+		private List<UserDTO> getApproverData(OrgLocations orgLocation) throws Exception
 		{
 			List<UserDTO> userList = new ArrayList<>();
 			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
@@ -1927,7 +1933,10 @@ public class USPayrollRestController {
 					}else {
 						sb.append(approver.getUser().getFirstName());
 					}
+					
+					UserRole uRole = userRoleService.getUserDetailsByUserIdAndLocationId(approver.getUser().getId(), orgLocation.getId());
 					userDTO.setFullName(sb.toString());
+					userDTO.setRole(uRole.getRoles().getDisplayName());
 					userList.add(userDTO);
 				}
 			}
