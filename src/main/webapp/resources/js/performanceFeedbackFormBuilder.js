@@ -73,12 +73,13 @@ function customizeFields(sourceleadUrl,templateId){
 //Add field to builder
 function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId) {
 
-    var hasRequired, hasChoices,fieldName,hasStar,hasScale;
+    var hasRequired, hasChoices,fieldName,hasStar,hasScale,hasFileType;
     var includeRequiredHTML = '';
     var includeHintMsgHTML = '';
     var includeChoicesHTML = '';
     var includeStarHTML = '';
     var includeScaleHTML = '';
+    var includeFileTypeHTML = '';
     var includeTextHTML = '';
     var DeleteButtion = '';
     var readOnly = '';
@@ -152,6 +153,13 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
             fieldName = "Comments";
             fieldImg = "fa fa-comment-o"
             break;
+        case 'file':
+            hasRequired = true;
+            hasChoices = false;
+            hasFileType = true;
+            fieldName = "File Upload";
+            fieldImg = "fa fa-cloud-upload"
+            break;
             
     }
 
@@ -185,7 +193,8 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
     if(hasStar){
     	includeStarHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
         ' <div class="col-md-5"> ' +
-        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Star">'+
+        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Star Type">'+
+        '<option value="">--Select--</option>      '+
         '<option value="3">3</option>      '+
         '<option value="4">4</option>      '+
         '<option value="5">5</option>      '+
@@ -202,7 +211,8 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
     if(hasScale){
     	includeScaleHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
         ' <div class="col-md-5"> ' +
-        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Star">'+
+        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="Scale Type">'+
+        '<option value="">--Select--</option>      '+
         '<option value="10">10</option>      '+
         '<option value="20">20</option>      '+
         '<option value="30">40</option>      '+
@@ -216,6 +226,19 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
         ' </div> ' +
         '</label>'
      }
+    
+    if(hasFileType){
+    	includeFileTypeHTML = ''+ '<label class="col-md-5"><div class="col-md-3 lblHeight">Type:</div>' +
+        ' <div class="col-md-5"> ' +
+        '<select  class="field-dropdown form-control input-sm" data-validation="required"  field-name="File Type">'+
+        '<option value="">--Select--</option>      '+
+        '<option value="docx">docx | doc | pdf | txt</option>'+
+        '<option value="xls">csv | xls | xlsx</option>'+
+        '<option value="png">jpg | jpeg | png | gif</option>'+
+        '</select>'+
+        '</div>' +
+        '</label>'
+    }
     
 	   includeTextHTML = ''+
 	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Question:</div>' +
@@ -247,6 +270,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
         includeChoicesHTML +
         includeStarHTML+
         includeScaleHTML+
+        includeFileTypeHTML+
         ' </div> ' +
         '</div>'
         

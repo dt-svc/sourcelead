@@ -80,6 +80,7 @@ function generateForm(sourceleadUrl,templateId) {
                          else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
                          else if (fieldType == 'scale') { $currentField.find("scale").prop('required',true).addClass('required-choice') }
                          else if (fieldType == 'star') { $currentField.find("star").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'file') { $currentField.find("file").prop('required',true).addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
 
@@ -176,8 +177,16 @@ function generateForm(sourceleadUrl,templateId) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<input type="text" id="text-' + uniqueID + '">' +
-                             '</div>';      
-
+                             '</div>'; 
+                         
+                     case 'file':
+                    	 return '' +
+                         '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                         '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+                         '<label for="text-' + uniqueID + '"></label>' +
+                         '<div class="clearfix mt"></div>'+
+                         '<input type="file" id="text-' + uniqueID + '">' +
+                         '</div>'; 
                  }
                  
              }

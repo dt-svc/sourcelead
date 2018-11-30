@@ -64,6 +64,7 @@
 								        <li><a id="add-star" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>
 								        <li><a id="add-scale" data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>
 								        <li><a id="add-calendar" data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>
+								        <li><a id="add-file" data-type="file" href="javascript:void(0)"><span class="fa fa-cloud-upload">&nbsp;&nbsp;</span>File Upload</a></li>
 							        </ul>
 						        </div>
 					        </div>
@@ -77,7 +78,7 @@
 	           <div class="pull-right mr">
 	           
 	           
-	           <button type="submit" class="slBtn md colorBtn" id="save_button" onclick="" >Save</button>
+	           <button type="submit" class="slBtn md colorBtn" id="save_button"  onclick="">Save</button>
 	           <button type="button" class="slBtn md popClose"  onClick="javascript:window.location.href = '<c:url value='${appPath}/performanceManagementConfiguration'/>'"  onclick="" >Cancel</button>
 	           
 	           </div>
