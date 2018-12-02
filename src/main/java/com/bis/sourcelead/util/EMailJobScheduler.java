@@ -4150,7 +4150,13 @@ public class EMailJobScheduler {
 				List<UsPayrollSchedule> scheduleList = payrollScheduleService.getAllPayrollScheduleByOrgLocationId(orgLocation.getId());
 				if(scheduleList != null) {
 					for(UsPayrollSchedule usPayrollSchedule : scheduleList) {
-						if(Integer.parseInt(usPayrollSchedule.getNotifyMember())>0){
+						int beforeDay=0;
+						try {
+							beforeDay = Integer.parseInt(usPayrollSchedule.getNotifyMember());
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						if(usPayrollSchedule.getNotifyMember() != null && beforeDay > 0){
 							List<PayrollScheduleCalenderDTO> scheduleDates = payrollUtil.getPayScheduleWeeksByDate(usPayrollSchedule,orgLocation);
 							Set<PayrollApprover> NotifyApprover= configurePayroll.getPayrollApprover();
 							for (PayrollApprover NotifyApproverObj : NotifyApprover) {

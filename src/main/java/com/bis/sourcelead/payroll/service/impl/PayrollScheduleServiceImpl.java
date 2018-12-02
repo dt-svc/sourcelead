@@ -71,6 +71,12 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 				usPayrollSchedule.setCreatedDate(new Date());
 				usPayrollSchedule.setUpdatedDate(new Date());
 				usPayrollSchedule.setPayrollScheduleUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				
+				if(payrollScheduleDTO.getNotifyMember() != null)
+					usPayrollSchedule.setNotifyMember(payrollScheduleDTO.getNotifyMember());
+				else
+					usPayrollSchedule.setNotifyMember("0");
+				
 				UsPayrollSchedule savedUsPayrollSchedule = payrollScheduleDao.savePayrollSchedule(usPayrollSchedule, orgLocations);
 				if (savedUsPayrollSchedule != null) {
 					resObj.setResponse(Result.SUCCESS.name());
