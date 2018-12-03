@@ -11,22 +11,11 @@
 
 
 <style>
-.user_summary_edit_cta p{
-    margin: -5px 15px;
-}
-.remove_user_pop input{
-	color: #333;
-}
-#editUserDiv .user_summary_edit_cta {
-min-height: 65px;
-}
-.edit_role_pop.editrole-custom {
-height: 450px; overflow-y: auto;
-}
-.assignroles.changeRole {
-max-height: inherit !important;
-}
-
+.user_summary_edit_cta p{ margin: -5px 15px;}
+.remove_user_pop input{ color: #333;}
+#editUserDiv .user_summary_edit_cta { min-height: 65px;}
+.edit_role_pop.editrole-custom { height: 450px; overflow-y: auto;}
+.assignroles.changeRole { max-height: inherit !important;}
 </style>
 
 <div class="wraper">
@@ -78,31 +67,30 @@ $(document).ready(function(){
 	 
 });
 </script>
- 
-		<div class="cearfix">
-				  <div class="newTagsWrap">
-					 <ul class="clearfix tagsWrap tagsWrapBor">
-						<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
-						</select>
-					</ul>
-					 <div class="clearfix"></div>
-				  </div>
-		     </div>
-	     <div class="success_pop tagStyles" id="addProjectTagAlert">
-				<i class="fa fa-check-circle"></i>
-		   		<span></span>
-	     </div>
-		 <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
-			<i class="fa fa-times"></i>
-			<span></span>
-		 </div>
 
-
-
-		<div id="loadingSummary"></div>
-		<div id="projectSideDiv"></div>
-		<div id="baningDetailsDiv"></div> 
-		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+<div class="project_wrap">
+	<div id="loadingSummary"></div>
+	<div id="projectSideDiv"></div>
+	<div id="baningDetailsDiv"></div> 
+	<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+</div>	
+<div class="cearfix">
+  <div class="newTagsWrap">
+	 <ul class="clearfix tagsWrap tagsWrapBor">
+		<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
+		</select>
+	</ul>
+	 <div class="clearfix"></div>
+  </div>
+   </div>
+  <div class="success_pop tagStyles" id="addProjectTagAlert">
+		<i class="fa fa-check-circle"></i>
+ 		<span></span>
+  </div>
+ <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
+	<i class="fa fa-times"></i>
+	<span></span>
+ </div>		
 
 
 
@@ -580,6 +568,15 @@ window.onload = function () {
 					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
 				}
 				
 		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
@@ -1975,6 +1972,13 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
+					
+					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+					}
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
 					var ssn = '';	
@@ -4268,7 +4272,6 @@ function deleteProfileImage(candidateId){
      }); 
 }
 </script>
-s')
 <%-- 
      @author : Laxman.
      this script is for refresh image block

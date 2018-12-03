@@ -36,7 +36,7 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	@Column(name = "FULLNAME")
 	private String  fullName;
 
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 
 	@Column(name = "IMAGEURL")

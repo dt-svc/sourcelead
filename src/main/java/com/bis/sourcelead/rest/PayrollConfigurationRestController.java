@@ -877,6 +877,8 @@ public class PayrollConfigurationRestController {
 		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidateId, false);
 		 model.addObject("paymentList", paymentList);
 		 model.addObject("candidateId", candidateId);
+		 model.addObject("canFirstName", candidate.getFirstName());
+		 model.addObject("canLastName", StringUtils.isNotBlank(candidate.getLastName()) ? candidate.getLastName() : "");
 		 model.addObject("paymentListSize", paymentList.size());
 		 model.addObject("userId",candidate.getConsultantUser().getId());
 		 model.setViewName("indPayroll/associateBankingDetails");

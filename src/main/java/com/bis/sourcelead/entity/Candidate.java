@@ -300,6 +300,9 @@ public class Candidate implements Serializable {
 
 	@Column(name = "DATE_OF_BIRTH")
 	private Date dateOfBirth;
+	
+	@Column(name = "PAN_NUMBER")
+	private String panNumber;
 
 	@Column(name = "PLACE_OF_BIRTH")
 	private String placeOfBirth;
@@ -373,6 +376,9 @@ public class Candidate implements Serializable {
 	
 	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
+	
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateCertifications> candidateCertifications = new HashSet<CandidateCertifications>();
 
 	@Transient
 	@JsonProperty
@@ -1420,6 +1426,14 @@ public class Candidate implements Serializable {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public String getGender() {
 		return gender;
 	}
@@ -1893,6 +1907,14 @@ public class Candidate implements Serializable {
 
 	public void setCandidateAssignedJobsCount(String candidateAssignedJobsCount) {
 		this.candidateAssignedJobsCount = candidateAssignedJobsCount;
+	}
+
+	public Set<CandidateCertifications> getCandidateCertifications() {
+		return candidateCertifications;
+	}
+
+	public void setCandidateCertifications(Set<CandidateCertifications> candidateCertifications) {
+		this.candidateCertifications = candidateCertifications;
 	}
 
 	
