@@ -18,7 +18,7 @@ $(document).ready(function(){
 </section>
 
 
-<div class="clearfix">
+<div class="project_wrap clearfix">
 
 <div class="project_side_wrap_inn_tabs">
 	<ul class="project-tabs-menu">

@@ -312,5 +312,10 @@ public interface RequirementSubmissionService {
 	
 	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String userCode,Long orgLocationId, Date[] searchDates) throws Exception;
 
+	List<RequirementSubmissionsDTO> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
+	
+	List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId,String contractType,String selectedAssociates);
+	
+	public List<RequirementSubmissionsDTO> getCandidateForBillsJobClosure(OrgLocations orgLocations, User user,Long orgRelationId,String contractType,String selectedAssociates);
 
 }

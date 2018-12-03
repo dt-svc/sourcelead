@@ -5,12 +5,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <style>
- .clsDatePicker {
-   z-index: 100000 !important;
-}
-.user_summary_edit_cta {
-margin: 0.1% 2%;
-}
+ .clsDatePicker { z-index: 100000 !important;}
+.user_summary_edit_cta { margin: 0.1% 2%;}
  </style>
  
  <!-- <script>
@@ -35,6 +31,8 @@ margin: 0.1% 2%;
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
         </section>
 	   
+<div id="projectSideDiv" class="project_wrap"></div>   	   
+	   
 	   <div class="cearfix">
 		  <div class="newTagsWrap">
 			 <ul class="clearfix tagsWrap tagsWrapBor">
@@ -53,9 +51,7 @@ margin: 0.1% 2%;
    		<span></span>
    </div>
  
-		   
-		     <div id="projectSideDiv">
-		     </div>   
+		     
 			<div class="project_error">
 				<p>Employee delete message here ....</p>
 				<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> 
