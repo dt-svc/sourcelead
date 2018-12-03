@@ -1043,11 +1043,10 @@ public class CandidateRestController {
 		return marketCandidates;
 	}
 
-	// @PreAuthorize("hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')")
+	@PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/saveMarketPlaceData", method = RequestMethod.POST)
 	public Response<String> saveMarketPlaceData(@RequestBody List<CandidateMarketPlaceDTO> marketPlaceList,
 			HttpServletRequest request) throws NumberFormatException, Exception {
-		// System.out.println(marketPlaceList.size());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
 		if (user != null) {
@@ -1079,12 +1078,16 @@ public class CandidateRestController {
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
 		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidateGlobal(orgLocations.getId(),user);
 		ModelAndView model = new ModelAndView();
 		model.setViewName("candidates/candidateGlobalMarketPlaceList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 
+	 
 	// Note this method is Global marketplace Candidate method
 	 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/OrgMarketplace")
@@ -1092,6 +1095,9 @@ public class CandidateRestController {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
 		System.out.println("inisde OrgMarketplace  conroller =========>");
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		//candidateService.updateMarketplaceDataFromCandidate(orgLocations.getId(),user);
 		model.setViewName("candidates/candidateMarketPlaceView");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
@@ -1169,6 +1175,41 @@ public class CandidateRestController {
 		}
 		return response;
 	}	
+	
+	@PreAuthorize("hasRole('ROLE_WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/withdrawCandidatesFromMarketPlace")
+	public Response<String> withdrawCandidatesFromMarketPlace(@RequestParam(value = "id", required = true) List<Long> candidateIds,
+			@RequestParam(value = "withdrawReason", required = true) String withdrawReason, HttpServletRequest request)
+			throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CandidateMarketPlace> marketplace = candidateService.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(candidateIds, orgLocation.getId());
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (null != marketplace) {
+					for(CandidateMarketPlace cmp:marketplace){
+						candidateService.withdrawCandidateFromMarketplace(cmp, withdrawReason);
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in withdrawCandidateFromMarketPlace controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}	
+	
+	
 
 	 @PreAuthorize("hasRole('ROLE_ADD_PROFILE')")
 	@RequestMapping(value = "/app/addCandidateToMarketCart")

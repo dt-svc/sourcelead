@@ -145,6 +145,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String EmailId;
 		
+		private String panNumber;
+		
 		private String phoneNumber;
 		
 		private String extensionNumber;
@@ -623,6 +625,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setEmailId(String emailId) {
 			EmailId = emailId;
+		}
+
+		public String getPanNumber() {
+			return panNumber;
+		}
+
+		public void setPanNumber(String panNumber) {
+			this.panNumber = panNumber;
 		}
 
 		public String getPhoneNumber() {

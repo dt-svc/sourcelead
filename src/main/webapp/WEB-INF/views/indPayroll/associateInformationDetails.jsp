@@ -28,14 +28,14 @@
 		                   <div class="col-md-5">
 		                    <label>UAN Number<span class="text-danger">&nbsp;*</span></label>
 		                    <div>
-		                     <input type="text" class="form-control" name="uanNumber" id="pfUan" value="${pfesiDTO.uanNumber}" ${pfesiDTO.eligibleForPf == 'Y' ? 'data-validation="required validate_int validate_length length1-12"' : ''}  field-name="UAN Number"  field-name="PF UAN">
+		                     <input type="text" class="form-control" name="uanNumber" id="pfUan" value="${pfesiDTO.uanNumber}" ${pfesiDTO.eligibleForPf == 'Y' ? 'data-validation="required validate_int fixed_length length12"' : ''}  field-name="UAN Number"  field-name="PF UAN">
 		                    </div>
 		                  </div>
 		                  
 		                  <div class="col-md-5">
 		                    <label>PF Number<span class="text-danger">&nbsp;*</span></label>
 		                    <div>
-		                       <input type="text" class="form-control" name="pfNumber" value="${pfesiDTO.pfNumber}" id="pfNumber" ${pfesiDTO.eligibleForPf == 'Y' ? 'data-validation="required validate_AlphaNumber validate_length length1-19"' : ''} field-name="PF Number" field-name="PF Number">
+		                       <input type="text" class="form-control" name="pfNumber" value="${pfesiDTO.pfNumber}" id="pfNumber" ${pfesiDTO.eligibleForPf == 'Y' ? 'data-validation="required validate_AlphaNumber fixed_length length19"' : ''} field-name="PF Number" field-name="PF Number">
 		                    </div>
 		                  </div>
 		                  <div class="col-md-5">
@@ -60,7 +60,7 @@
                   <div class="col-md-5" id="esiEligible" ${pfesiDTO.eligibleForEsi == 'Y' ? '' : 'style="display: none;"'}>
                     <label>ESI Number</label>
                     <div>
-                      <input type="text" class="form-control" name="esinumber"  id="esiNumber" value="${pfesiDTO.esinumber}" data-validation="validate_int validate_length length1-17" data-validation-optional="true" field-name="ESI Number">
+                      <input type="text" class="form-control" name="esinumber"  id="esiNumber" value="${pfesiDTO.esinumber}" data-validation="validate_int fixed_length length17" data-validation-optional="true" field-name="ESI Number">
                     </div>
                   </div>
                </div>
@@ -253,7 +253,7 @@ function associateEsiFunction() {
     if (checkBox.checked == true){
        esiEl.style.display = "block";
        $("#esi").val('Y');
-       $("#esiNumber").attr("data-validation", "validate_int validate_length length1-17");
+       $("#esiNumber").attr("data-validation", "validate_int fixed_length length17");
     } else {
        esiEl.style.display = "none";
        $("#esiNumber").val('');
