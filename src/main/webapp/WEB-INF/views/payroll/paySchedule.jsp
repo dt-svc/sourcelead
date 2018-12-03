@@ -149,7 +149,7 @@ $(document).ready(function(){
   
   <script>
 	function msgFadein() {
-		$("#selector2").fadeIn(2000);
+		$("#selector2").fadeIn(200);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script>
@@ -172,7 +172,7 @@ function savePayrollSchedule(){
 		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
-				     			$(".success_pop span").html("Added Successfully");
+				     			 $("#messageFadeDIV ").html("Added Successfully");
 				     			msgFadein();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
@@ -234,7 +234,7 @@ $('#payPeriodStartDate').datepicker({
 			if(frequency == "Weekly"){
 				dt.setDate(dt.getDate()+6);
 			}if(frequency == "Bi-Weekly"){
-				dt.setDate(dt.getDate()+6);
+				dt.setDate(dt.getDate()+13);
 			}
 			var dd = new Date(finalDateFormat);
 			dd.setDate(dt);
