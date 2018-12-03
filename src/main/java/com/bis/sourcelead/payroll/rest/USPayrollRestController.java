@@ -1964,7 +1964,7 @@ public class USPayrollRestController {
 			ResponseList<USPayrollAssociateTaxHistoryDTO> res = new ResponseList<>();
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Candidate candidate = candidateDao.getCandidateByConsultantUserId(userId,orgLocation.getId());
-			List<USPayrollAssociateTaxHistoryDTO> hisList = usPayrollAssociateTaxHistoryService.getAssociateTaxHistoryByCandidateId(candidate.getId());
+			List<USPayrollAssociateTaxHistoryDTO> hisList = usPayrollAssociateTaxHistoryService.getAssociateTaxHistoryByCandidateId(candidate.getId(),orgLocation.getDateFormat());
 			res.setData(hisList);
 			return res;
 		}

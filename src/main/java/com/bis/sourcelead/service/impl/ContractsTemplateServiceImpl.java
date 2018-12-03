@@ -952,7 +952,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 					ownerUserIds.add(coh.getOwnerUserId().getId());
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
-						ownerName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" ").append((coh.getOwnerUserId().getLastName())).append(" , ");
 					}else{
 						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
 					}
@@ -961,7 +961,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else{
 				ownerUserIds.add(contracts.getOwnerUserId().getId());
 				if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
-					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append(" ").append((contracts.getOwnerUserId().getLastName()));
 				}else{
 					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
@@ -981,14 +981,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
-					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+					vendorName.append(contracts.getContactUser().getFirstName()).append(" ").append((contracts.getContactUser().getLastName()));
 				}else{
 					vendorName.append(contracts.getContactUser().getFirstName());	
 				}
 			}else{
 				for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
-						vendorName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" ").append((coh.getOwnerUserId().getLastName())).append(" , ");
 					}else{
 						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
 					}
@@ -1121,7 +1121,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 					ownerUserIds.add(coh.getOwnerUserId().getId());
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
-						ownerName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" ").append((coh.getOwnerUserId().getLastName())).append(" , ");
 					}else{
 						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
 					}
@@ -1130,7 +1130,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			}else if(contracts.getOwnerUserId() != null){
 				ownerUserIds.add(contracts.getOwnerUserId().getId());
 				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
-					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append(" ").append((contracts.getOwnerUserId().getLastName()));
 				}else{
 					ownerName.append(contracts.getOwnerUserId().getFirstName());
 				}
@@ -1146,14 +1146,14 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			
 			if(null != contracts.getContactUser()){
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
-					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
+					vendorName.append(contracts.getContactUser().getFirstName()).append(" ").append((contracts.getContactUser().getLastName()));
 				}else{
 					vendorName.append(contracts.getContactUser().getFirstName());
 				}
 			}else{
 				for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
-						vendorName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" ").append((coh.getOwnerUserId().getLastName())).append(" , ");
 					}else{
 						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
 					}
@@ -1289,7 +1289,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 					ownerUserIds.add(coh.getOwnerUserId().getId());
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
-						ownerName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" ").append((coh.getOwnerUserId().getLastName())).append(" , ");
 					}else{
 						ownerName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
 					}

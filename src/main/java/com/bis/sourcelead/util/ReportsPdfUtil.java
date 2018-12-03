@@ -474,8 +474,8 @@ public class ReportsPdfUtil {
             	status = lca.getStatus();
             }
             
-            if(lca.getExpiredOn() != null) {
-            	expiredOn = lca.getExpiredOn();
+            if(lca.getExpired() != null) {
+            	expiredOn = lca.getExpired();
             }
             
 			dataSource.add(lcaNo,lcaTitle,noOfPositions,location,socCode,socOccupationTitle,jobTitle,wagesLevel,privilingWageCurrency,prevailingWage,privilingWageRateType,startDateStr,endDateStr,lcaStatus,status,expiredOn);

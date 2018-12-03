@@ -16,13 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
@@ -52,6 +57,12 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	
 	@Autowired
 	private RolesService rolesService;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	ProjectsService projectsService;
 	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -499,4 +510,72 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 return model;
 			
 	    }
+	 
+	 
+	 
+	 @RequestMapping(value = "/employeeTasksReport")
+		public ModelAndView employeeTasksReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/employeeTasksReportList");
+		 return model;
+	 }
+	 
+	 @RequestMapping(value = "/projectReportList")
+		public ModelAndView projectReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/projectReportList");
+		 return model;
+	 }
+	 
+	 @RequestMapping(value = "/overdueTaskReport")
+		public ModelAndView overdueTaskReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 
+		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		 model.addObject("projectList", projectList);
+		 
+		 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
+		 model.addObject("taskTypeList", taskTypeList);
+		 
+		 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
+		 model.addObject("taskPriorityList", taskPriorityList);
+		 
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/overdueTaskReport");
+		 return model;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/employeeTasksReportSummary")
+		public ModelAndView employeeTasksReportSummary(ProjectassignTasksDTO projectassignTasksDTO,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 
+		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		 model.addObject("projectList", projectList);
+		 
+		 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
+		 model.addObject("taskTypeList", taskTypeList);
+		 
+		 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY,orgLocations.getId());
+		 model.addObject("taskSeverityList", taskSeverityList);
+		 
+		 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
+		 model.addObject("taskPriorityList", taskPriorityList);
+		 
+		 List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS,orgLocations.getId());
+		 model.addObject("taskStatusList", taskStatusList);
+		 
+		 model.addObject("candidateId", projectassignTasksDTO.getCandidateId());
+		 model.addObject("taskStatus", projectassignTasksDTO.getTaskType());
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/employeeTasksReportSummary");
+		 return model;
+	 }
+	 
 }
