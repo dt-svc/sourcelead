@@ -236,5 +236,14 @@ public interface RequirementSubmissionDao {
 	
 	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId, Date[] searchDates) throws Exception;
 
+	List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations,User user,Long orgRelationId,List<Long> selectedAssociates);
+
+    List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId);
+    
+    List<RequirementSubmission> getCandidateForBillJobClosureEdit(OrgLocations orgLocations, User user,Long orgRelationId, List<Long> selectedAssociates);
 
 }

@@ -1637,7 +1637,7 @@ $(document).ready(function() {
         $("#loading").removeAttr('style');
         $(tab).fadeIn();
     });
-})
+});
 </script> 
 
 

@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -153,6 +156,16 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 					}
 				}
 			}
+	}
+
+	@Override
+	public List<ProjectassignTasksDTO> getProjectAssignTaskListByOrglocationId(Long orglocationId) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByOrglocationId(orglocationId);
+	}
+
+	@Override
+	public ResponseList<ProjectAssignTask> getProjectAssignTaskListByCandidateIdOrglocationId(ProjectassignTasksDTO projectassignTasksDTO) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByCandidateIdOrglocationId(projectassignTasksDTO);
 	}
 	
 	 

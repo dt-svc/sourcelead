@@ -180,14 +180,14 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Taxes</a></li>
         </c:if>
         <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-        <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
+        <li><a data-toggle="tab" href="#informationDetails" onclick="resetInformation();">Information</a></li>
         </c:if>
          
-        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
+        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments" onclick="resetDocument();">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff(); getProfilePercentage();">Configure</a></li>
-        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
+        <li><a data-toggle="tab" href="#emailNotifications" onclick="resetEmailConfguration();">Email Configuration</a></li> 
        
         <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
          <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
@@ -574,15 +574,32 @@ function cancelOrgImg(){
                 				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
              			    </div>
              			    </div>
-                			</div> 
-                			<div class="pull-right">
+                			</div>
+                			        
+                			<div class="clearfix"></div>
+                			 <div class="pull-right">
 								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
 								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
 							</div> 
-                			</form>       
-            			</div> 
+                			<div class="clearfix"></div> 
+                			</form>
+                			
+            			</div>
             			
-            			
+            			<sec:authorize access="hasRole('ROLE_SHARE_PROFILE')">
+            			<div class="tab-content panel-body">
+                			<h4>Marketplace</h4>
+                			<div class="form-group">
+	                			<label class="col-md-3">Display company name on marketplace profiles</label>  
+	                			<div class="col-md-4">
+	                				<label class="switch" style="position:relative; top:5px;">
+	                				 <input onclick="changeMarketplaceCompanyNameConfig(this)" type="checkbox"  ${orgLocations.showCompanyNameInMarkeplace == "Y"? 'checked' : ''}>
+	                				 <span class="slider round"></span>
+									</label>
+	                			</div>
+                			</div>
+                		</div>
+            			</sec:authorize>
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
@@ -2140,6 +2157,13 @@ function loadSignature(){
 </script>
 
 <script>
+function resetDocument(){
+	$("documents_form").validate().resetForm();
+}
+
+function resetEmailConfguration(){
+	$("email_configuration_form").validate().resetForm();
+}
 function colourpicker(){
 	$('#cp2, #cp3').colorpicker();
 }
@@ -3917,6 +3941,27 @@ function financialYear(){
 		$("#selector1").fadeIn(100);
         $('#selector1').delay(2000).fadeOut(100);
 	}
+function changeMarketplaceCompanyNameConfig(ele) {
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/configShowCompanyNameInMarkeplace?${_csrf.parameterName}=${_csrf.token}&showCompnayName="+$(ele).is(":checked"),
+			success : function(result) {
+				if (result && result.response === "INVALID_DATA") {
+                showError(result.responseMessage);
+            }else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		$('#successMsgDiv').html("Display company name on marketplace updated successfully");
+        		 $("#profilePercentageSelector").fadeIn(200);
+        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+			},
+		});    
+}
 </script> 
 
 <!-- <script>

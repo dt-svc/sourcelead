@@ -48,7 +48,7 @@ $(document).ready(function(){
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
- 
+
 <jsp:include page="masterJs.jsp" />
 
 <!-- This requirement.css for only requirement.jsp  -->
@@ -189,6 +189,7 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
+	updateMarketplaceCartCountAndPrice();
 });
 </script>
 <!-- notification related include jsp -->
@@ -300,7 +301,6 @@ function preventTabkey(e){
 			document.getElementById("logoutForm").submit();
 		}
 </script>
-
 
 <body>
 <c:url var="logoutUrl" value="/logout"/>
@@ -541,8 +541,16 @@ function preventTabkey(e){
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
-         </c:if>		
-		
+         </c:if>
+         
+         <sec:authorize access="hasRole('ROLE_VIEW_CART')">
+         <li>
+         		<a href="${appPath}/candidateMarketplaceCheckout" class="" href="javascript:void(0)">
+         		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
+         		</a>
+         </li>	
+        </sec:authorize>
+        
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
          	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
@@ -1927,5 +1935,27 @@ $(document).ready(function(){
     
     });
 });
+</script>
+
+<script>
+function updateMarketplaceCartCountAndPrice(){
+	var totalPriceInCurrency;
+	$.ajax({
+		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+	        type: 'GET',
+	        success: function (object) {
+	        	if(object != null){
+	        		$("#headerCartCount").html(object[0]);
+	        		$("#cartCount").html(object[0]);
+	        		if(object[0] === 0){
+		        		$("#headerCartCount").bind("click", false);
+		        		}else{
+		        		$("#headerCartCount").unbind("click", false);
+			        	}
+	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+	        	}}
+	        });
+	}
 </script>
 
