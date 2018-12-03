@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,10 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,7 @@ import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.Org;
@@ -34,6 +38,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -67,6 +72,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
@@ -528,6 +534,7 @@ public class PaymentController {
         return "payment/failed";
     }
    //===================== Marketplace Payment Process Starts Here=========================
+    @PreAuthorize("hasRole('ROLE_PURCHASE_PROFILE')")
     @RequestMapping("/init-marketplace-payment")
     @ResponseBody
     public String initMarketplacePayment(HttpServletRequest request, @RequestParam(defaultValue = "") String cartId) {
@@ -676,7 +683,7 @@ public class PaymentController {
             User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+			EmailMessage emailMessage = new EmailMessage();
           //  String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
             if (org != null) {
                 try {
@@ -702,7 +709,64 @@ public class PaymentController {
                 	}
                 	
                 	System.out.println("org value is "+org.getId());
+                	
+                	//sending Email..
+                	List<Candidate> candidates = new ArrayList<Candidate>();
+                	if(candidateIds != null && candidateIds.size() > 0){
+                	 candidates = candidateService.getCandidateDetailsListById(candidateIds);
+                	}
+                	StringBuilder sb = new StringBuilder();
+                	StringBuilder bodyBuilder = new StringBuilder();
+                	Map<String, String> globalVarsMap = new HashMap<String, String>();
+                		if(candidates !=null && candidates.size() > 0){
+                		for(int i=0; i< candidates.size(); i++){
+                			emailMessage.setFirstName(candidates.get(i).getFullName());
+                			emailMessage.setToEmail(candidates.get(i).getEmail());
+                			emailMessage.setFromEmail(loginUser.getEmail());
+                			 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+                				 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+                				 globalVarsMap.put("currentUser", sb.toString());
+                			 }else{
+                				 emailMessage.setFromName(loginUser.getFirstName());
+                				 globalVarsMap.put("currentUser", loginUser.getFirstName());
+                			 }	                			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+                			 emailMessage.setCreatedBy(loginUser.getUserCode());
+                			 emailMessage.setOrgLocationId(orgLocations.getId());
+                			 globalVarsMap.put("otherUser", candidates.get(i).getFullName());
+                			 globalVarsMap.put("dateAndTime", candidates.get(i).getUpdatedDate().toString());
+                			 globalVarsMap.put("htmlBody", 
+                				bodyBuilder.append("<table width='100%' style='border-collapse:collapse; border: 1px solid #ddd; font-family: 'Helvetica Neue', Helvetica, Arial;'>"+
+                								   "<tr><td style='width: 20%; vertical-align: top; border-right:1px solid #f5f5f5;'> "+	 
+                								   "<div style='width: 75px; height: 75px; margin: 10px auto 5px; padding: 0; text-align: center;'>"+
+                								   "<img src='"+globalVarsMap.put("candidateName", candidates.get(i).getFileUrl())+"' style='max-height: 100%; max-width: 100%' alt='img'>"+
+                								   "</div><div style='font-size: 14px; clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>"+
+                								   "<span>Price: </span><strong style='color: #f60;'>&#36; 250</strong></div>"+
+                								   "<div style='clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>"+
+                								   "<button type='button' style='background-color: #fff; border: 1px solid #0277BD; color: #0277BD; padding:3px 10px; border-radius: 3px; cursor: pointer;'>&#43; Add</button>"+
+                								   "</div></td><td style='width:80%; vertical-align: top;'>"+
+                								   "<div style='display: inline-block; clear: both; width: 100%; ertical-align: top; padding: 10px;'>"+
+                								   "<h4 style='margin: 0 0 5px 0; padding: 0; color:#368ee0; font-size: 18px'>"+globalVarsMap.put("candidateName", candidates.get(i).getFullName())+"</h4>"+
+                								   "<p style='margin:0 0 10px 0; padding: 0; color: #777; font-size: 14px;'>Designation</p>"+
+                								   "<ul style='list-style-position: inside; margin: 0; padding: 0; font-size: 14px;'>"+
+                								   "<li style='float: left; padding-right: 20px;'>"+
+                								   "<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Current:100</strong>/ hr"+
+                								   "</li><li style='float: left; padding-right: 20px;'>"+
+                								   "<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Expected:500</strong>/ earned"+
+                								   "</li><li style='float: left; padding-right: 20px;'>"+
+                								   "<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Location:Hyderabad</strong>"+
+                								   "</li></ul><div style='display: inline-block; clear: both; width: 100%; margin-top: 15px;'>"+
+                								   "<ul style='color: #333; list-style-type: none; margin: 0; padding: 0; font-size: 14px;'>"+
+                								   "<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>"+
+                								   "React Js</li>"+
+                								   ""+
+                								   "</ul></div></div></td></tr></table>").toString());
+                			 if(emailMessage !=null && globalVarsMap != null){
+                			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES, new ArrayList<EmailAttachment>());	
+                			 }
+                			 }
+                	}
 
+                	
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

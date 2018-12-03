@@ -292,5 +292,7 @@ public interface CandidateService {
 	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds)throws Exception;
 
 	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
+	
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
 
 }
