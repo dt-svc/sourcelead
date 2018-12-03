@@ -10,6 +10,6 @@ public interface USPayrollAssociateTaxHistoryService {
 
 	USPayrollAssociateTaxHistory storeUSPayrollAssociateTaxHistory(AssociateTax savedAssociateTax, AssociateTax previousAssociateTax);
 
-	List<USPayrollAssociateTaxHistoryDTO> getAssociateTaxHistoryByCandidateId(Long candidateId);
+	List<USPayrollAssociateTaxHistoryDTO> getAssociateTaxHistoryByCandidateId(Long candidateId, String dateFormatString);
 
 }

@@ -60,16 +60,16 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 				if(associateTaxDTO.getUserId() != null) {
 					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateTaxDTO.getUserId()),orgLocation.getId());
 					associateTax = associateTaxDao.findAssociateTaxSummaryByCandidateId(candidate.getId(),orgLocation);
-					previousAssociateTax = setPreviousAssociateTaxData(associateTax);
 					if(associateTax != null) {
-						associateTax.setUpdatedBy(loginUser.getUserCode());
-						associateTax.setUpdatedDate(new Date());
+						previousAssociateTax = setPreviousAssociateTaxData(associateTax);
 					}else {
 						associateTax = new AssociateTax();
 //						Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
 						associateTax.setCandidate(candidate);
 						associateTax.setCreatedBy(loginUser.getUserCode());
 						associateTax.setCreatedDate(new Date());
+						associateTax.setUpdatedBy(loginUser.getUserCode());
+						associateTax.setUpdatedDate(new Date());
 					}
 				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
