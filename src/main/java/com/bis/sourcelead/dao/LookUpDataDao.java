@@ -42,6 +42,8 @@ public interface LookUpDataDao {
 	LookUpData getLookUpDataById(long id);
 	
 	List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
+	
+	List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
 
 	void deleteLookupDateByLookupId(LookUpData lookUpData) throws Exception;
 	
