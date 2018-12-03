@@ -149,7 +149,7 @@ $(document).ready(function(){
   
   <script>
 	function msgFadein() {
-		$("#selector2").fadeIn(200);
+		$("#selector2").fadeIn(2000);
         $('#selector2').delay(2000).fadeOut('slow');
 	}
 </script>
@@ -172,7 +172,7 @@ function savePayrollSchedule(){
 		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
-				     			 $("#messageFadeDIV ").html("Added Successfully");
+				     			$(".success_pop span").html("Added Successfully");
 				     			msgFadein();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
