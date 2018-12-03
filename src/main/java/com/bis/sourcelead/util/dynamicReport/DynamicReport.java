@@ -9,8 +9,10 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +24,17 @@ import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.util.CommonUtil;
 
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.JasperProperty;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
@@ -45,6 +51,9 @@ public class DynamicReport {
 	
 	@Autowired
 	EmployeesService employeesService;
+	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
 	
 	/**
 	 * @author Laxman
@@ -454,5 +463,268 @@ public class DynamicReport {
 			}
 		return file;
 	}
-  
+
+
+	/**
+	 * @author Laxman
+	 *  this is method using for Employee task reports pdf
+	 * @param projectResponseList
+	 * @param orgLocations
+	 * @return file
+	 * @throws Exception
+	 */
+	public File employeeTaskReportPdfExport(ResponseList<ProjectAssignTask> projectResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("EmployeeTaskReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			TextColumnBuilder<String> taskTitle = col.column("Task Name", "taskName", type.stringType())
+                    .setWidth(300)
+                    .setStretchWithOverflow(true).addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							taskTitle,
+							col.column("Priority", "priority", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Project Name", "projectName", type.stringType()),
+							col.column("Due Date", "dueDate", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Completion", "completion", type.integerType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Status", "status", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createEmployeeTaskDataSource(projectResponseList)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+	/**
+	 * @author Laxman
+	 * this is method using for Employee task reports excel
+	 * @param projectResponseList
+	 * @param orgLocations
+	 * @return file
+	 * @throws Exception
+	 */
+
+	public File employeeTaskReportExcelExport(ResponseList<ProjectAssignTask> projectResponseList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("EmployeeTaskReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			TextColumnBuilder<String> taskTitle = col.column("Task Name", "taskName", type.stringType())
+                    .setFixedWidth(550)
+                    .setStretchWithOverflow(true)
+                    .addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			TextColumnBuilder<String> projectName = col.column("Project Name", "projectName", type.stringType())
+                    .setFixedWidth(200)
+                    .setStretchWithOverflow(true)
+                    .addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							taskTitle,
+							col.column("Priority", "priority", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							projectName,
+							col.column("Due Date", "dueDate", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Completion", "completion", type.integerType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Status", "status", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					
+					.setDataSource(createEmployeeTaskDataSource(projectResponseList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+	
+	/**
+	 * @author Laxman
+	 * this method is EmployeeTask report implementation
+	 * @param projectResponseList
+	 * @return dataSource
+	 */
+	private DRDataSource createEmployeeTaskDataSource(ResponseList<ProjectAssignTask> projectResponseList)
+	{
+		DRDataSource dataSource = new DRDataSource("taskName","priority", "projectName", "dueDate", "completion", "status");
+		for(ProjectAssignTask pat:projectResponseList.getData()) {
+			String  priority = "--";
+			String dueDate = "--";
+			Integer completion = 0;
+			  if(pat.getProjectTaskId().getPriority() != null) {
+				  priority  = pat.getProjectTaskId().getPriority().getName();
+			  }
+			  if(pat.getProjectTaskId().getDueDate() != null) {
+				  dueDate = commonUtil.dateStrFromOrgDateFormatter(pat.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat(), pat.getProjectTaskId().getDueDate());
+			  }
+			  if(pat.getProjectTaskId().getDueDate() != null) {
+				  completion =   pat.getProjectTaskId().getPercentage();
+			  }
+			  
+			dataSource.add(pat.getProjectTaskId().getTaskName(),priority,pat.getProjectTaskId().getProjectId().getProjectName(),dueDate,completion,pat.getProjectTaskId().getTaskStatus().getName());
+		}
+		return dataSource;
+	}
+
+
+	/**
+	 * @author Laxman
+	 * this method is Within the org overdue tasks list report pdf
+	 * @param overdueTaskReportList
+	 * @param orgLocations
+	 * @return file
+	 * @throws Exception
+	 */
+	public File overdueTaskReportPdfExport(ResponseList<ProjectTasks> overdueTaskReportList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("OverdueTaskReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			TextColumnBuilder<String> taskTitle = col.column("Task Name", "taskName", type.stringType())
+                    .setWidth(150)
+                    .setStretchWithOverflow(true).addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			TextColumnBuilder<Integer> completion = col.column("Completion", "completion", type.integerType()).setHorizontalAlignment(HorizontalAlignment.CENTER)
+                    .setWidth(50)
+                    .setStretchWithOverflow(true).addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			TextColumnBuilder<String> priority = col.column("Priority", "priority", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER)
+                    .setWidth(100)
+                    .setStretchWithOverflow(true).addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			
+			TextColumnBuilder<String> assignTo = col.column("Assign To", "assignTo", type.stringType())
+                    .setWidth(200)
+                    .setStretchWithOverflow(true).addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							taskTitle,
+							priority,
+							col.column("Task Type", "taskType", type.stringType()),
+							assignTo,
+							col.column("Project Name", "projectName", type.stringType()),
+							col.column("Due Date", "dueDate", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							completion)
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createOverdueTaskDataSource(overdueTaskReportList)).toPdf(pdfExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+
+	/**
+	 * @author Laxman
+	 * this method is Within the org overdue tasks list report xls
+	 * @param overdueTaskReportList
+	 * @param orgLocations
+	 * @return file
+	 * @throws Exception
+	 */
+	public File overdueTaskReportExcelExport(ResponseList<ProjectTasks> overdueTaskReportList, OrgLocations orgLocations) throws Exception {
+		File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("OverdueTaskReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
+			
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                    .setIgnorePageMargins(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+
+			TextColumnBuilder<String> taskTitle = col.column("Task Name", "taskName", type.stringType())
+                    .setFixedWidth(550)
+                    .setStretchWithOverflow(true)
+                    .addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			TextColumnBuilder<String> projectName = col.column("Project Name", "projectName", type.stringType())
+                    .setFixedWidth(200)
+                    .setStretchWithOverflow(true)
+                    .addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			TextColumnBuilder<String> assignTo = col.column("Assign To", "assignTo", type.stringType())
+                    .setFixedWidth(300)
+                    .setStretchWithOverflow(true)
+                    .addProperty(JasperProperty.PRINT_KEEP_FULL_TEXT, "true");
+			
+			report().setTemplate(Templates.reportTemplate)
+					.setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+					.ignorePageWidth()
+					.ignorePagination()
+					.columns(
+							taskTitle,
+							col.column("Priority", "priority", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Task Type", "taskType", type.stringType()),
+							assignTo,
+							projectName,
+							col.column("Due Date", "dueDate", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
+							col.column("Completion", "completion", type.integerType()).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					
+					.setDataSource(createOverdueTaskDataSource(overdueTaskReportList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+	
+
+	/**
+	 * @author Laxman
+	 * this method is Within the org overdue tasks list report pdf & xls functionality
+	 * @param overdueTaskReportList
+	 * @return dataSource
+	 * @throws Exception 
+	 */
+	private DRDataSource createOverdueTaskDataSource(ResponseList<ProjectTasks> overdueTaskReportList) throws Exception {
+		DRDataSource dataSource = new DRDataSource("taskName","priority", "taskType","assignTo", "projectName", "dueDate", "completion");
+		for(ProjectTasks pt:overdueTaskReportList.getData()) {
+			String  priority = "--";
+			String dueDate = "--";
+			String assignTo = "--";
+			Integer completion = 0;
+			  if(pt.getPriority() != null) {
+				  priority  = pt.getPriority().getName();
+			  }
+			  if(pt.getDueDate() != null) {
+				  dueDate = commonUtil.dateStrFromOrgDateFormatter(pt.getProjectId().getOrgLocationsId().getDateFormat(), pt.getDueDate());
+			  }
+			  if(pt.getDueDate() != null) {
+				  completion =   pt.getPercentage();
+			  }
+			  
+			  List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(pt.getId());
+			  List<String> assignedTaskUsersList =  new ArrayList<>();
+				for(ProjectAssignTask pat:assignUser) {
+					if(pat.getProjectMemberId() != null) {
+						if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
+							assignedTaskUsersList.add(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+						}
+					}
+				 }
+				 String citiesCommaSeparated = String.join(",", assignedTaskUsersList);
+			dataSource.add(pt.getTaskName(),priority,pt.getTaskType().getName() ,citiesCommaSeparated,pt.getProjectId().getProjectName(),dueDate,completion);
+		}
+		return dataSource;
+	}
+	
 }
