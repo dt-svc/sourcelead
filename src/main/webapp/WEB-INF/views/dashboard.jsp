@@ -1838,6 +1838,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	    	});
 	    //Adding Customized Skills to the list
 			
+<<<<<<< HEAD
 	$("#candidateSkills").val('').trigger("chosen:updated");
 	    
 		for (var selector in config) {
@@ -2045,6 +2046,56 @@ function discordApplicant(){
 	     $("#candidateId").append(output);
 	     $('#candidateId').trigger("chosen:updated");
 	     $("#selectCandidateDiv").css("display","none");
+=======
+			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
+				<jsp:include page="leaveManagement.jsp"></jsp:include>
+			</sec:authorize>
+			
+	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+	    		<c:if test="${userTabs.tabName == 'Jobs'}">
+	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
+					</sec:authorize>
+				</c:if>	
+				</c:forEach>
+					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
+					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
+					</sec:authorize>
+					
+					<!-- Candidates for Invoice -->
+			<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+				<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
+			</sec:authorize> 
+					
+					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
+					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
+					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
+					 </sec:authorize>
+					
+					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
+					   <jsp:include page="budgetRequest.jsp"></jsp:include>
+					</sec:authorize>
+					
+			    
+			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			    	<c:if test="${userTabs.tabName == 'Jobs'}">
+				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
+				   	 	 </sec:authorize>
+			   	 	 </c:if>	
+			   	 </c:forEach>
+		     	
+		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+			     	<c:if test="${userTabs.tabName == 'Jobs'}">
+			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
+			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
+			     		</sec:authorize>
+			     	</c:if>
+		     	</c:forEach>
+		     
+		     <div class="clearfix"></div>
+>>>>>>> ad50c2a6b97d7e69fc03033e67737f88da14e408
 	     
 	     $("#candidateId").removeAttr("data-validation");
 	     $('#candidateId').attr("data-validation-optional","true"); 

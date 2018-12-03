@@ -101,6 +101,9 @@ public interface ProjectTasksService {
 	
 	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
 	
-	List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId,String taskType)throws Exception;;
+	List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId,String taskType)throws Exception;
+	
+	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO, Date[] searchDates)throws Exception;
+
  	 
 }

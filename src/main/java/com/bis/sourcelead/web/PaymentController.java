@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.Org;
@@ -37,6 +42,7 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionHistoryService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -62,8 +68,11 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import java.util.Objects;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 
 @RequestMapping("/app")
 @Controller
@@ -92,6 +101,9 @@ public class PaymentController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+	private CandidateService candidateService;
+    
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
 
@@ -537,8 +549,20 @@ public class PaymentController {
         request.getSession().setAttribute("apiContext", apiContext);
        
         System.out.println("Code is updated :::::::::::::::>");
-        // here need to update amount for the marketplace transaction.
-        payment.setTransactions(getTransactions(guid, "markeplace",3000.00));
+        
+        try{
+        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+        String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 if(user != null){
+			if(StringUtils.isNotBlank(userRoleName)) {
+				Object[] countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocation.getId(), userRoleName, user);
+		        Double totalprice = Double.parseDouble(countAndSum[1].toString());
+		        payment.setTransactions(getTransactions(guid, "markeplace", totalprice));
+			}}
+			}catch(Exception e){
+        	e.printStackTrace();}
+		
         try {
             Payment createdPayment = payment.create(apiContext);
             request.getSession().setAttribute(guid, createdPayment.getId());
@@ -557,14 +581,27 @@ public class PaymentController {
     }
     @RequestMapping(value = "/marketplace-process-payment.html")
     public String processMarketplacePayment(HttpServletRequest req, HttpServletResponse resp, String guid) {
-        if (req.getParameter("PayerID") != null) {
+        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
+        String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(req, "loginUserRole");
+        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+
+    	if (req.getParameter("PayerID") != null) {
             Payment payment = new Payment();
             if (req.getParameter("guid") != null) {
                 payment.setId(req.getSession().getAttribute(req.getParameter("guid")).toString());
             }
             	// need to update the actual amount for the transaction for the marketplace.
-            payment.setTransactions(getTransactions(guid, "marketplace", 3000.00));
-
+            try{
+            if(loginUser != null){
+				if(StringUtils.isNotBlank(userRoleName)) {
+					Object[] countAndSum = candidateService.updateMarketplaceCartCountAndPrice(orgLocations.getId(), userRoleName, loginUser);
+			        Double totalprice = Double.parseDouble(countAndSum[1].toString());
+			        payment.setTransactions(getTransactions(guid, "marketplace", totalprice));
+				}}}catch(Exception e){
+            	e.printStackTrace();
+            }
+            
             PaymentExecution paymentExecution = new PaymentExecution();
             paymentExecution.setPayerId(req.getParameter("PayerID"));
             APIContext apiContext = (APIContext) req.getSession().getAttribute("apiContext");
@@ -573,15 +610,20 @@ public class PaymentController {
                 Payment createdPayment = payment.execute(apiContext, paymentExecution);
                 if (createdPayment != null && createdPayment.getState().equalsIgnoreCase("approved")) {
 
-                    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
-                    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
-                    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 
                     req.getSession().setAttribute("createdPayment", createdPayment);
                     OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment, req);
                     try {
                         orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
-                    } catch (Exception e) {
+                        List<CandidateMarketCart> marketCartList = candidateService.getMarketCartIdsFromMarketcart(orgLocations.getId());
+                        List<Long> marketCartIds = new ArrayList<Long>();
+                    	for(CandidateMarketCart cartItem : marketCartList){
+                    		marketCartIds.add(cartItem.getId());
+                    	}
+                    	if(marketCartIds != null && marketCartIds.size() > 0){
+                        candidateService.saveCandidateMarketplacePaymentTranscationHistory(paymentHistory, orgLocations.getId(), marketCartIds);
+                    	}
+                    	} catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -633,12 +675,33 @@ public class PaymentController {
         if (payment != null && success == true && payment.getState().equalsIgnoreCase("approved")) {
             User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
           //  String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
             if (org != null) {
                 try {
                     // need to copy the candidate to buyer/target organization location.
-                    System.out.println("org value is "+org.getId());
+                	
+                	List<CandidateMarketCart>  marketCartList = candidateService.getMarketCartIdsFromMarketcart(orgLocations.getId());
+                	List<Long> candidateIds = new ArrayList<Long>();
+                	List<Long> cartIds = new ArrayList<Long>();
+                	for(CandidateMarketCart cartItem : marketCartList){
+                		cartIds.add(cartItem.getId());
+                		candidateIds.add(cartItem.getCandidateId().getId());
+                	}
+                	List<CandidateDTO> candidateDto = null;
+                	if(candidateIds != null && candidateIds.size() > 0){
+                	candidateDto = candidateService.getCandidatesListByIds(candidateIds); 
+                	}
+                	Boolean flag = candidateService.updateMarketCartStatus(cartIds, orgLocations.getId());
+                	
+                	if(flag == true){
+                		for(int i = 0; i < candidateDto.size(); i++){
+                    		candidateService.saveTransactionCompletedCandidates(candidateDto.get(i), orgLocations, loginUser);
+                    	}
+                	}
+                	
+                	System.out.println("org value is "+org.getId());
 
                 } catch (Exception e) {
                     e.printStackTrace();

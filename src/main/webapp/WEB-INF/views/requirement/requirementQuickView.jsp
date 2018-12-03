@@ -119,6 +119,9 @@
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
 			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
+			<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+			 <li id=""><a  href="#tab-5" onclick="globalDataRecommendations();">Global Data Recommendations</a></li>
+			 </sec:authorize>
 			<li><a  href="#tab-4" onclick="requirementNotes('${requirement.id}');">Notes</a></li>
 		</c:if>
 	</ul>
@@ -795,6 +798,9 @@
 	<div id="tab-3" class="project_tabs_inn overflow-data datatable_filter"></div>
 	<div id="recommendationsLoading"></div>
 	<div id="tab-4" class="project_tabs_inn overflow-data datatable_filter"></div>
+	<div id="globalRecommendationsLoading"></div>
+	<div id="tab-5" class="project_tabs_inn overflow-data datatable_filter"></div>
+	
 	
 	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
@@ -885,7 +891,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();
@@ -909,7 +915,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();
