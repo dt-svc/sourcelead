@@ -13,7 +13,7 @@
       <h2 id="headerLbl">Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Marketplace List </label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
 	  </c:if>
 	  </section>
     <div class="clearfix"></div>
@@ -528,7 +528,6 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, gridType
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 		result = result +" <b>Do you want to remove "+candidateName+" from the cart!</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+gridType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
@@ -573,7 +572,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 	var searchValue = $("#globalMarketSearh").val();
 	searchValue = searchValue ? searchValue : "";
 	var candidateLocation = $("#candidateLocation").val();
-	candidateLocation = (candidateLocation.length > 1) ? candidateLocation : "" ;
+	candidateLocation = (candidateLocation.length != null) ? candidateLocation : "" ;
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl +"/getGlobalMarketplaceListGridCard?searchValue="+searchValue+"&candidateLocation="+candidateLocation+"&searchCandidateIds="+globalCandidateIds,
@@ -610,7 +609,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '</div>';
 							result = result + '<div class="media-body">';
 							result = result + '<div class="col-md-9">';
-							result = result + ' <h4 class="media-heading mb10"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
+							result = result + ' <h4 class="media-heading mb10"><a href="/app/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
 							result = result + ' <h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + ' <div class="clearfix"></div>';
 							result = result + '  <ul class="list-unstyled list-inline mt10">';
@@ -620,6 +619,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '   <li class="mr mb5" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + ' </ul>';
 							result = result + '<div class="clearfix"></div>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 tbldata-dotdot-verybig inlineBlock">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
@@ -688,7 +691,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 								profilePercentage =object[i].profilePercentage;
 							}
 							result = result + '  <div class="col-md-4 mb">';
-							result = result + '<div class="media profileDetails-Widget">';
+							result = result + '<div class="media profileDetails-Widget overflow_Auto" style="height:350px;">';
 							result = result + '<div class="media-left prfileImg pull-left">';
 							result = result + '<img src="'+object[i].imageUrl+'" onerror="predefineProfileImage(this);" class="media-object" alt="Image">';
 							result = result + '<div class="clearfix mt5 textBold text-center">';
@@ -701,8 +704,8 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '<div class="media-body"><div id="deleteIconCardModel'+object[i].marketplaceUUID+'">';
 							result = result + marketDelelIcon;
 							result = result + '</div><div class="col-md-12 padding_right">';
-							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="profileSummary.html">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
-							result = result + '<h5 class="text-muted mb5">'+object[i].designation+'</h5>';
+							result = result + '<h4 class="media-heading mb0 tbldata-dotdot-me inlineBlock"><a href="/app/globalCandidateSummary?marketplaceUUID='+object[i].marketplaceUUID+'">'+(object[i].fullName == null ? "---" : object[i].fullName)+'</a></h4>';
+							result = result + '<h5 class="text-muted mb5">'+(object[i].designation == null ? "---" : object[i].designation)+'</h5>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<ul class="list-unstyled list-inline mt10">';
 							result = result + '<li class="mb10 text-info" title="Current Rate"><span class="paddingRight">'+(object[i].currentRateCurrency == null ? "---" : object[i].currentRateCurrency)+'</span>'+(object[i].currentRate == null ? "---" : object[i].currentRate)+'<small class="paddingLeft">/'+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+' (Current)</small></li>';
@@ -710,6 +713,10 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							result = result + '<li class="mr mb10" title="Experience"><span class="paddingRight"><i class="fa fa-briefcase text-muted" aria-hidden="true"></i></span>'+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+'<small class="text-muted paddingLeft">(Yrs)</small></li>';
 							result = result + '<li class="mr mb10" title="Location"><span class="paddingRight"><i class="fa fa-map-marker text-muted"></i></span>'+(object[i].location == null ? "---" : object[i].location)+'</li>';
 							result = result + '</ul>';
+							if(object[i].showCompanyName != null && object[i].showCompanyName =="Y"){
+							result = result + '<p class="clearfix text-primary textBold mb0 inlineBlock tbldata-dotdot-200">'+object[i].companyName+'</p>';
+							result = result + '<div class="clearfix"></div>';
+							}
 							if(object[i].skillsName != null){
 								var skills = object[i].skillsName.split(',');
 								result = result + '<ul class="list-unstyled list-inline profileSkills mt10 mb0">';
@@ -811,26 +818,7 @@ function addCandidateToMarketCart(candidateName, UUID, viewModel) {
 	    });
 	}
 	
-	//INR,AUD,USD,GBP,SGD,EUR
-	//style: 'currency', currency: 'INR'
-	function updateMarketplaceCartCountAndPrice(){
-		var totalPriceInCurrency;
-		$.ajax({
-			 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
-		        type: 'GET',
-		        success: function (object) {
-		        	if(object != null){
-		        		$("#cartCount").html(object[0]);
-		        		if(object[0] === 0){
-			        		$("#cartCount").bind("click", false);
-			        		}else{
-			        		$("#cartCount").unbind("click", false);
-				        	}
-		        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
-		        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
-		        	}}
-		        });
-		}
+	
 	
 	
 $(".funPrice").on("click", "li", function(){

@@ -1028,7 +1028,7 @@ function cancelPopup(){
 	  
 	   $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getVendorInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&vendorOrgRelationId="+vendorOrgRelationId,
+	        url: sourceleadUrl+"/getVendorInvoiceAssociatesList?"+tokenParamName+"="+tokenValue+"&selectedAssociates="+selectedAssociates+"&vendorOrgRelationId="+vendorOrgRelationId+"&contractType=vendorSow",
 	        success: function(data) {
 	        	
 	        	if(data != null && data != 'undefined' && data != "" && data != '[]'){

@@ -228,16 +228,12 @@
 		maxDate : 0,
 	});
  </script>
- <script>
-      $("#illness").click(function() {
-	   $("#illnessMinor").toggle();
-  });
-     $("#nomineeShow").click(function() {
-	  $("#nomineeDetails").toggle();
-	  $("#nomineeDetails_form").show();
-	  getNomineeDetailsList();
-  });
-     $("#minor").click(function() {
-	 $("#minorDiv").toggle();
-  });
+<script>
+$("#illness").click(function() {
+$("#illnessMinor").toggle();
+});
+     
+$("#minor").click(function() {
+$("#minorDiv").toggle();
+});
  </script>
