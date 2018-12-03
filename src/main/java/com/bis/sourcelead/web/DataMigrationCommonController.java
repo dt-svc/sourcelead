@@ -388,7 +388,7 @@ public class DataMigrationCommonController {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
 	            
-	            if(key.equalsIgnoreCase("Task Type")) {
+	            if(key.equalsIgnoreCase("Task Type*")) {
 	            	List<String> taskTypeList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE, orgLocation.getId());
 	            	if(taskTypeList != null && !taskTypeList.isEmpty()) {
 	            		String [] taskType = taskTypeList.toArray(new String[taskTypeList.size()]);
@@ -406,7 +406,7 @@ public class DataMigrationCommonController {
 	            		String [] severity = severityList.toArray(new String[severityList.size()]);
 		            	sheet.addValidationData(getDropDownListForCell(severity, cellnum-1, "xls"));
 	            	}
-	            }else if(key.equalsIgnoreCase("Status")){
+	            }else if(key.equalsIgnoreCase("Status*")){
 	            	List<String> statusList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS, orgLocation.getId());
 	            	if(statusList != null && !statusList.isEmpty()) {
 	            		String [] status = statusList.toArray(new String[statusList.size()]);
@@ -414,6 +414,8 @@ public class DataMigrationCommonController {
 	            	}
 	            }else if(key.contentEquals("Currency Type")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.RATE_CURRENCY, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Billing Type*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.BILLING_TYPE, cellnum-1, "xls"));
 	            }
 	            
 	        }
