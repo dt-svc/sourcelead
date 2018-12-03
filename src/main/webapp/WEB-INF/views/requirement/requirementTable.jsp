@@ -923,7 +923,8 @@ function jpagination(url,sourceleadUrl){
 			         				'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 			         					result = result +"<option value='CANCEL'>CANCEL</option>";
 			         				'</sec:authorize>';
-			         			}else if(opt.requirementSubmissionStatus == "CLOSED"){
+			         			}
+			                   else if(opt.requirementSubmissionStatus == "CLOSED"){
 			         				result = result +"<option disabled selected >CLOSED</option>";
 			         				result = result +"<option value='OPEN'>OPEN</option>";
 			         			}
@@ -980,10 +981,11 @@ function jpagination(url,sourceleadUrl){
 			         				'</sec:authorize>';
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
-			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+			         				
+			         				if(opt.requirementSubmissionStatus == "ONHOLD" || opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='OPEN'>OPEN</option>";
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+/* 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
 			         						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
 			         					'</sec:authorize>';
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
@@ -991,9 +993,9 @@ function jpagination(url,sourceleadUrl){
 			         					'</sec:authorize>';
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
 			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>';
+			         					'</sec:authorize>'; */
 			         				}
-			         				if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
+			         					if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='DRAFT'>DRAFT</option>";
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';

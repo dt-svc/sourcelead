@@ -1,6 +1,8 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,67 +32,97 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 		USPayrollAssociateTaxHistory associateTax = new USPayrollAssociateTaxHistory();
 		associateTax.setAssTaxId(assTax.getId());
 		associateTax.setUpdatedBy(assTax.getUpdatedBy());
-		associateTax.setUpdatedDate(assTax.getUpdatedDate());
+		if(assTax.getUpdatedDate() != null)
+			associateTax.setUpdatedDate(assTax.getUpdatedDate());
+		else 
+			associateTax.setUpdatedDate(assTax.getCreatedDate());
 		associateTax.setCandidate(assTax.getCandidate().getId());
 		associateTax.setCreatedBy(assTax.getCreatedBy());
 		associateTax.setCreatedDate(assTax.getCreatedDate());
 		associateTax.setFederalTaxFilliingStatus(assTax.getFederalTaxFilliingStatus());
 		associateTax.setFederalTaxAllowances(assTax.getFederalTaxAllowances());
 		associateTax.setFederalTaxAdditionnalWithHolding(assTax.getFederalTaxAdditionnalWithHolding());
-		associateTax.setPreviousFederalTaxFilliingStatus(preAssTax.getFederalTaxFilliingStatus());
-		associateTax.setPreviousFederalTaxAllowances(preAssTax.getFederalTaxAllowances());
-		associateTax.setPreviousFederalTaxAdditionnalWithHolding(preAssTax.getFederalTaxAdditionnalWithHolding());
 		associateTax.setStateTaxFilliingStatus(assTax.getStateTaxFilliingStatus());
 		associateTax.setStateTaxAllowances(assTax.getStateTaxAllowances());
 		associateTax.setStateTaxAdditionnalWithHolding(assTax.getStateTaxAdditionnalWithHolding());
-		associateTax.setPreviousStateTaxFilliingStatus(preAssTax.getStateTaxFilliingStatus());
-		associateTax.setPreviousStateTaxAdditionnalWithHolding(preAssTax.getStateTaxAdditionnalWithHolding());
-		associateTax.setPreviousStateTaxAllowances(preAssTax.getStateTaxAllowances());
 		associateTax.setFederalExempt(assTax.getFederalExempt());
-		associateTax.setPreviousFederalExempt(preAssTax.getFederalExempt());
 		associateTax.setMediacareExempt(assTax.getMediacareExempt());
-		associateTax.setPreviousMediacareExempt(preAssTax.getMediacareExempt());
 		associateTax.setSocialSecurityExempt(assTax.getSocialSecurityExempt());
-		associateTax.setPreviousSocialSecurityExempt(preAssTax.getSocialSecurityExempt());
 		associateTax.setFutaExempt(assTax.getFutaExempt());
-		associateTax.setPreviousFutaExempt(preAssTax.getFutaExempt());
 		associateTax.setSutaExempt(assTax.getSutaExempt());
-		associateTax.setPreviousSutaExempt(preAssTax.getSutaExempt());
 		associateTax.setAssociateTaxUuid(assTax.getAssociateTaxUuid());
 		associateTax.setResidenceTaxFilliingStatus(assTax.getResidenceTaxFilliingStatus());
-		associateTax.setPreviousResidenceTaxFilliingStatus(preAssTax.getResidenceTaxFilliingStatus());
 		associateTax.setResidenceTaxAllowances(assTax.getResidenceTaxAllowances());
-		associateTax.setPreviousResidenceTaxAllowances(preAssTax.getResidenceTaxAllowances());
 		associateTax.setResidenceTaxAdditionnalWithHolding(assTax.getResidenceTaxAdditionnalWithHolding());
-		associateTax.setPreviousResidenceTaxAdditionnalWithHolding(preAssTax.getResidenceTaxAdditionnalWithHolding());
 		associateTax.setLocalTax(assTax.getLocalTax());
-		associateTax.setPreviousLocalTax(preAssTax.getLocalTax());
 		associateTax.setLocalTaxState(assTax.getLocalTax());
-		associateTax.setPreviousLocalTaxState(preAssTax.getLocalTax());
 		associateTax.setStatus(assTax.getStatus());
 		associateTax.setOrgLocationId(assTax.getOrgLocationId().getId());
 		associateTax.setSupplementType(assTax.getSupplementType());
-		associateTax.setPreviousSupplementType(preAssTax.getSupplementType());
+		if(StringUtils.isNotBlank(preAssTax.getFederalTaxFilliingStatus())) {
+			associateTax.setPreviousFederalTaxFilliingStatus(preAssTax.getFederalTaxFilliingStatus());
+			associateTax.setPreviousFederalTaxAllowances(preAssTax.getFederalTaxAllowances());
+			associateTax.setPreviousFederalTaxAdditionnalWithHolding(preAssTax.getFederalTaxAdditionnalWithHolding());
+			associateTax.setPreviousStateTaxFilliingStatus(preAssTax.getStateTaxFilliingStatus());
+			associateTax.setPreviousStateTaxAdditionnalWithHolding(preAssTax.getStateTaxAdditionnalWithHolding());
+			associateTax.setPreviousStateTaxAllowances(preAssTax.getStateTaxAllowances());
+			associateTax.setPreviousFederalExempt(preAssTax.getFederalExempt());
+			associateTax.setPreviousSupplementType(preAssTax.getSupplementType());
+			associateTax.setPreviousMediacareExempt(preAssTax.getMediacareExempt());
+			associateTax.setPreviousSocialSecurityExempt(preAssTax.getSocialSecurityExempt());
+			associateTax.setPreviousFutaExempt(preAssTax.getFutaExempt());
+			associateTax.setPreviousSutaExempt(preAssTax.getSutaExempt());
+			associateTax.setPreviousResidenceTaxFilliingStatus(preAssTax.getResidenceTaxFilliingStatus());
+			associateTax.setPreviousResidenceTaxAllowances(preAssTax.getResidenceTaxAllowances());
+			associateTax.setPreviousResidenceTaxAdditionnalWithHolding(preAssTax.getResidenceTaxAdditionnalWithHolding());
+			associateTax.setPreviousLocalTax(preAssTax.getLocalTax());
+			associateTax.setPreviousLocalTaxState(preAssTax.getLocalTax());
+		}else {
+			associateTax.setPreviousFederalTaxFilliingStatus("NA");
+			associateTax.setPreviousFederalTaxAllowances("NA");
+			associateTax.setPreviousFederalTaxAdditionnalWithHolding("NA");
+			associateTax.setPreviousStateTaxFilliingStatus("NA");
+			associateTax.setPreviousStateTaxAdditionnalWithHolding("NA");
+			associateTax.setPreviousStateTaxAllowances("NA");
+			associateTax.setPreviousFederalExempt(false);
+			associateTax.setPreviousSupplementType("NA");
+			associateTax.setPreviousMediacareExempt(false);
+			associateTax.setPreviousSocialSecurityExempt(false);
+			associateTax.setPreviousFutaExempt(false);
+			associateTax.setPreviousSutaExempt(false);
+			associateTax.setPreviousResidenceTaxFilliingStatus("NA");
+			associateTax.setPreviousResidenceTaxAllowances("NA");
+			associateTax.setPreviousResidenceTaxAdditionnalWithHolding("NA");
+			associateTax.setPreviousLocalTax("NA");
+			associateTax.setPreviousLocalTaxState("NA");
+		}
 		associateTax = usPayrollAssociateTaxHistoryDao.storeUSPayrollAssociateTaxHistory(associateTax);
 		return associateTax;
 	}
 
 	@Override
-	public List<USPayrollAssociateTaxHistoryDTO> getAssociateTaxHistoryByCandidateId(Long candidateId)
+	public List<USPayrollAssociateTaxHistoryDTO> getAssociateTaxHistoryByCandidateId(Long candidateId,String dateFormat)
 	{
 		List<USPayrollAssociateTaxHistory> list = usPayrollAssociateTaxHistoryDao.getAssociateTaxHistoryByCandidateId(candidateId);
 		List<USPayrollAssociateTaxHistoryDTO> dtoList = new ArrayList<>();
 		try {
 			for(USPayrollAssociateTaxHistory assTax : list) {
 				USPayrollAssociateTaxHistoryDTO dto = new USPayrollAssociateTaxHistoryDTO();
-				User user = userService.getUserByUserCode(assTax.getUpdatedBy());
-				dto.setUserName(user.getFullName());
-				dto.setProfileURL(user.getFileUrl());
+				if(StringUtils.isNotBlank(assTax.getUpdatedBy())) {
+					User user = userService.getUserByUserCode(assTax.getUpdatedBy());
+					dto.setUserName(user.getFullName());
+					dto.setProfileURL(user.getFileUrl());
+				}else {
+					User user = userService.getUserByUserCode(assTax.getCreatedBy());
+					dto.setUserName(user.getFullName());
+					dto.setProfileURL(user.getFileUrl());
+				}
+				
 				dto.setUpdatedBy(assTax.getUpdatedBy());
-//				dto.setUpdatedDate(assTax.getUpdatedDate());
+				String updatedDateStr = getUpdatedDateTimeAsString(assTax.getUpdatedDate(),dateFormat);
+				dto.setUpdatedDate(updatedDateStr);
 				dto.setCandidate(assTax.getCandidate());
 				dto.setCreatedBy(assTax.getCreatedBy());
-//				dto.setCreatedDate(assTax.getCreatedDate());
 				dto.setFederalTaxFilliingStatus(assTax.getFederalTaxFilliingStatus());
 				dto.setFederalTaxAllowances(assTax.getFederalTaxAllowances());
 				dto.setFederalTaxAdditionnalWithHolding(assTax.getFederalTaxAdditionnalWithHolding());
@@ -134,6 +166,17 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 			e.printStackTrace();
 		}
 		return dtoList;
+	}
+
+	private String getUpdatedDateTimeAsString(Date date, String dateFormat)
+	{
+		SimpleDateFormat dateFormatter = new SimpleDateFormat(dateFormat);
+    	SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+    	String dateAsString = dateFormatter.format(date);
+    	String timeAsString = timeFormatter.format(date);
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(dateAsString).append("#").append(timeAsString);
+		return sb.toString();
 	}
 	
 	
