@@ -233,7 +233,7 @@ window.onload = function () {
 		 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
 		 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
 		 result  = result + '</div>';
-		 result = result + '<ul class="project-tabs-menu">';
+		 result = result + '<ul class="project-tabs-menu project-tabs-menu-custom">';
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 
@@ -468,7 +468,7 @@ window.onload = function () {
 				     if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Probation'){
 				     	result = result + '<div class="clearfix"><input class="btn btn-primary btn-sm pull-right" id="confirmButton" type="button" value="Confirm Probation" onclick="confirmProbation('+userId+',\''+json.confirmationDateStr+'\',\''+json.designation+'\');"/></div>';
 				     }else if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Confirmed'){
-				    	 result = result + '<div class="clearfix"><input class="btn btn-success btn-sm pull-right" id="confirmButton" type="button" value="Probation Confirmed"></div>';
+				    	 result = result + '<div class="clearfix"><label class="textSuccess pull-right textBold" id="confirmButton" value="Probation Confirmed">Probation Confirmed</label></div>';
 				     }
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
@@ -4766,9 +4766,9 @@ function confirmProbation(userId,confirmationDate,designation){
 		type : "POST",
 		url: sourceleadUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 		success :function() {
-		$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
-  	    $("#confirmButton").val("Probation Confirmed");
-  	    $("#confirmButton").attr("onclick", "").unbind("click");
+		//$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
+  	    $("#confirmButton").text("Probation Confirmed");
+  	    //$("#confirmButton").attr("onclick", "").unbind("click");
     	  confirmPopUp(userId,confirmationDate,designation);
     	  
 		}

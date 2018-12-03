@@ -575,15 +575,32 @@ function cancelOrgImg(){
                 				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
              			    </div>
              			    </div>
-                			</div> 
-                			<div class="pull-right">
+                			</div>
+                			        
+                			<div class="clearfix"></div>
+                			 <div class="pull-right">
 								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
 								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
 							</div> 
-                			</form>       
-            			</div> 
+                			<div class="clearfix"></div> 
+                			</form>
+                			
+            			</div>
             			
-            			
+            			<sec:authorize access="hasRole('ROLE_SHARE_PROFILE')">
+            			<div class="tab-content panel-body">
+                			<h4>Marketplace</h4>
+                			<div class="form-group">
+	                			<label class="col-md-3">Display company name on marketplace profiles</label>  
+	                			<div class="col-md-4">
+	                				<label class="switch" style="position:relative; top:5px;">
+	                				 <input onclick="changeMarketplaceCompanyNameConfig(this)" type="checkbox"  ${orgLocations.showCompanyNameInMarkeplace == "Y"? 'checked' : ''}>
+	                				 <span class="slider round"></span>
+									</label>
+	                			</div>
+                			</div>
+                		</div>
+            			</sec:authorize>
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
@@ -3940,6 +3957,27 @@ function financialYear(){
 		$("#selector1").fadeIn(100);
         $('#selector1').delay(2000).fadeOut(100);
 	}
+function changeMarketplaceCompanyNameConfig(ele) {
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/configShowCompanyNameInMarkeplace?${_csrf.parameterName}=${_csrf.token}&showCompnayName="+$(ele).is(":checked"),
+			success : function(result) {
+				if (result && result.response === "INVALID_DATA") {
+                showError(result.responseMessage);
+            }else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		$('#successMsgDiv').html("Display company name on marketplace updated successfully");
+        		 $("#profilePercentageSelector").fadeIn(200);
+        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+			},
+		});    
+}
 </script> 
 
 

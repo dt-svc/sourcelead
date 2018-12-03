@@ -29,6 +29,8 @@ public interface LookUpDataService {
 	
 	List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
 	
+	List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category,Long orgLocation) throws Exception;
+	
 	LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception;
 	
 	LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception;
