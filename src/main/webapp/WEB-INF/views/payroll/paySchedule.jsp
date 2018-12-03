@@ -25,7 +25,10 @@ $(document).ready(function(){
         <div class="success_pop" id="selector2" style="display: none;">
           <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
         </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a></div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
+          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
+          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;Add Pay Schedule
+        </div>
     </section>
     <div class="clearfix"></div>
     <div class="timesheet_out">
@@ -231,7 +234,7 @@ $('#payPeriodStartDate').datepicker({
 			if(frequency == "Weekly"){
 				dt.setDate(dt.getDate()+6);
 			}if(frequency == "Bi-Weekly"){
-				dt.setDate(dt.getDate()+6);
+				dt.setDate(dt.getDate()+13);
 			}
 			var dd = new Date(finalDateFormat);
 			dd.setDate(dt);
@@ -332,13 +335,13 @@ function weekOnChange() {
 						if(existedUser != null && existedUser.length >0){
 							for(var j=0;j<existedUser.length;j++){
 								if(existedUser[j] == opt.id){
-									output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+									output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";
 								}else{
-									output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+									output = output + "<option value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";
 								}
 							}	
 						}else{
-							output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";	
+							output = output + "<option value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";	
 						}
 					}
 					$("#notifyMember").empty();
