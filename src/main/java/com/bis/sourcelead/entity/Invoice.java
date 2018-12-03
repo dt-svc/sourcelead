@@ -79,6 +79,9 @@ public class Invoice {
     @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
 	private PaymentAccount paymentAccount;
 	
+	@Column(name="IS_JOB_CLOSURE")     
+	private String isJobClosure;
+	
 	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
@@ -1238,5 +1241,14 @@ public class Invoice {
 	public void setGenerateBill(String generateBill) {
 		this.generateBill = generateBill;
 	}
+
+	public String getIsJobClosure() {
+		return isJobClosure;
+	}
+
+	public void setIsJobClosure(String isJobClosure) {
+		this.isJobClosure = isJobClosure;
+	}
+
 	
 }

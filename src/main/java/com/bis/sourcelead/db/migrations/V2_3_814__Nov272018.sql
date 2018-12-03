@@ -1,7 +1,5 @@
+
 CALL AlterTableAddColumn ('CANDIDATE','PAN_NUMBER','VARCHAR(20)  DEFAULT NULL AFTER `DATE_OF_BIRTH`');
-
-
-
 
 #Email scenario for Payroll submit for approver so, the selected member will be get the mail about that.
 #entity_type
@@ -33,6 +31,7 @@ INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_N
 ('sendNotificationToIndPayrollApprover', 'Notification', 'sendNotificationToIndPayrollApprover', ' Request for approving payroll for [frequency] duration.', '', 'org', '', ' click on the notification Link [Notification_link]','N','SLADMIN', 'slead', 'sleadIN', 3,1,'Y');
 
 
+
 #Email scenario for Payroll submit for user so, the particular user will be notify about that approver it is approved or not.
 #entity_type
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('sendApprovedMailToRequestedUserInd', 'Email');
@@ -56,3 +55,4 @@ INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) V
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('sendApprovedNotificationToRequestedUserInd', 'Notification');
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`,`TAB_ID`,`STATUS`,`DEFAULT_TEMPLATE`) VALUES
 ('sendApprovedNotificationToRequestedUserInd', 'Notification', 'sendApprovedNotificationToRequestedUserInd', ' Payroll got approved for the [frequency] Duration.', '', 'org', '', ' click on the notification Link [Notification_link]','N','SLADMIN', 'slead', 'sleadIN', 3,1,'Y');
+

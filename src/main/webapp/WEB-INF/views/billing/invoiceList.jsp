@@ -53,15 +53,19 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
     
-    <div class="project_side_wrap_inn_tabs clearfix">
+    
+
+    
+    <div class="project_wrap clearfix">
+    
+    <div class="project_side_wrap_inn_tabs clearfix dfsfdsd">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="${appPath}/invoiceList">Invoice List</a></li>
 		    <li class=""><a href="${appPath}/creditNoteList">Credit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>    
     
-    <div class="content-area content-new clearfix">
       <div class="billing_dashboard noPad">
         <!-- <div class="tabbable positionRelative">
           <div class="onboardcreateButtons">
@@ -171,9 +175,11 @@ $(document).ready(function(){
 	                      <!-- <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a> -->
 	                      <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">Client Based Invoice</a>
 						  <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">Project Based Invoice</a>
+						 <%--  <a href="<c:url value='${appPath}/createInvoiceForJobClosure'/>" title="Create Job closure Based Invoice">Invoice for Job Closure</a> --%>
 						  <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">Other Invoice</a>	                      
 	                  	</sec:authorize>
 	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
+	                   <!-- 	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice for JobClosure" onclick="generateAutomaticInvoiceForJobClosure();">Generate Automatic Invoice for JobClosure</a> -->
 	                   	 <a href="<c:url value='${appPath}/addPaymentInvoice'/>">Add Payment</a>
 					</span>
 				</div>
@@ -273,7 +279,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();" >     ';
 	result = result +'                      Custom:';
-	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" field-name="Custom Amount" data-validation-optional="true" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
@@ -1104,12 +1110,8 @@ function cancelbtn(){
 <script>
 function removeMask(){
 	 $("#customeAmount").removeAttr("readonly");
-	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
-	                event.preventDefault();
-	            }
-	        }); */
+	 $('#customeAmount').removeAttr('data-validation-optional');
+	 $('#customeAmount').attr("data-validation","required"); 
 	        
 	 $("#customeAmount").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
@@ -1618,6 +1620,23 @@ function generateAutomaticInvoice(){
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },
     });  
+}
+
+function generateAutomaticInvoiceForJobClosure(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+   	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+            success: function(json) {
+           	  $("#invoiceLoading").removeAttr("style");
+					$("#selector1").removeAttr("style");
+	    			$("#selector1").css("display", "block");
+	    			$("#msgDiv").html(json.object.count+" Invoice(s) Generated Successfully.");
+					msgFadein();
+           	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+       },
+   });  
 }
 </script>
 
