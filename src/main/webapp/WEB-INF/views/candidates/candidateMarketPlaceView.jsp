@@ -209,7 +209,7 @@
 	        	 }, 
 	             {
 	                 "targets": colIndex++,
-	                 "data": "fullName", 
+	                 "data": "firstName", 
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
@@ -291,7 +291,7 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "profilePercentage",
+	                 "data": "candidateProfilePercentage",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
@@ -304,7 +304,7 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "price",
+	                 "data": "marketPrice",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
