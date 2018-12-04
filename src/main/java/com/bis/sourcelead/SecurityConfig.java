@@ -1,6 +1,7 @@
 package com.bis.sourcelead;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -11,12 +12,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
@@ -86,6 +88,9 @@ public class SecurityConfig  {
     	@Autowired
     	SourceleadLogoutSuccessHandler sourceleadLogoutSuccessHandler;
     	
+    	@Autowired
+    	SecurityContextRepository securityContextRepository;
+    	
         @Override
         protected void configure(HttpSecurity http) throws Exception {
         	http
@@ -142,12 +147,22 @@ public class SecurityConfig  {
     			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(sourceleadLogoutSuccessHandler).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
     			.invalidateHttpSession(true)
     			.and().exceptionHandling().accessDeniedPage("/403")
+    			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    			.and().securityContext().securityContextRepository(securityContextRepository)
     			//.and().requiresChannel().anyRequest().requiresSecure()
     			.and().csrf().disable();
     			
     			
         }
      }
+    
+    @Bean
+    public SecurityContextRepository securityContextRepository(SourceleadUserDetailsService sourceleadUserDetailsService, 
+                                                              @Value("${auth.token}") String tokenName, 
+                                                              @Value("${auth.secret}") String tokenSecret) {
+        //our custom security context repository
+        return new JWTSecurityContextRepository(sourceleadUserDetailsService, tokenName, tokenSecret);
+    }
 	@Bean
 	public FormattingConversionService conversionService() {
 		FormattingConversionService conversionService = new DefaultFormattingConversionService();

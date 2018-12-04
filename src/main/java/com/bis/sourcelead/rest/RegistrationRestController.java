@@ -46,11 +46,13 @@ import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgPrimaryUserDTO;
-import com.bis.sourcelead.dto.OrgSettingsDTO;
+import com.bis.sourcelead.dto.OtpVerificationDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.dto.UserEnrolledLocationsDTO;
+import com.bis.sourcelead.dto.UserSpocRolesDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
@@ -1448,23 +1450,96 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/ws/sendOtpToUser", method = RequestMethod.GET)
-	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
+	
+	@RequestMapping(value = "/app/ws/getUserDetailsByUsernameAndRoleId", method = RequestMethod.POST)
+	public OtpVerificationDTO getUserDetailsByUsernameAndRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
-		ModelAndView model = new ModelAndView();
+		OtpVerificationDTO otpDTO = new OtpVerificationDTO();
+		UserRole userRole = null;
+		if(roleId != null && roleId >0)
+			userRole = userRoleService.getUserRoleById(roleId);
+		else{
+			User user = userService.findByUserName(userName);
+			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		}
+		if(userRole.getUser() != null){
+			otpDTO.setUserId(userRole.getUser().getId());
+			otpDTO.setUserRoleId(userRole.getId());
+			otpDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
+			otpDTO.setEmailId(userRole.getUser().getEmail());
+			if(StringUtils.isNotBlank(userRole.getUser().getMobilePhone()))
+				otpDTO.setMobilePhone(userRole.getUser().getMobilePhone());
+		}
+		if(userName != null)
+			otpDTO.setUsername(userName);
+		if(password != null)
+			otpDTO.setPassword(password);
+		return otpDTO;
+	}
+	
+	@RequestMapping(value = "/app/ws/sendOtpToUser", method = RequestMethod.GET)
+	public OtpVerificationDTO sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
+	{
+		OtpVerificationDTO otpDTO = new OtpVerificationDTO();
 		User user = userService.getUserById(userId);
 		String otp = registrationService.sendOtpToUser(user,type);
 		if(user != null){
-			model.addObject("emailId",user.getEmail());
+			otpDTO.setEmailId(user.getEmail());
 			if(StringUtils.isNotBlank(user.getMobilePhone()))
-				model.addObject("mobilePhone",user.getMobilePhone());
+				otpDTO.setMobilePhone(user.getMobilePhone());
 		}
-		model.addObject("authToken",otp);
-		model.addObject("status","success");
-		model.addObject("sourceleadUrl",sourceleadUrl);
-		model.setViewName("otpVerification");
-		return model;
+		otpDTO.setAuthToken(otp);
+		otpDTO.setStatus("success");
+		otpDTO.setSourceleadUrl(sourceleadUrl);
+		return otpDTO;
 	}
+	
+	 @RequestMapping(value = "/app/ws/userEnrolledOrgLocationsFromLogin" , method = RequestMethod.POST)
+	  public UserEnrolledLocationsDTO userEnrolledOrgLocationsFromLogin(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
+		     UserEnrolledLocationsDTO enrolledLocDTO = new UserEnrolledLocationsDTO();
+		     User user = userService.findByUserName(userName);
+
+			List<UserRole> userSpocRolesList = null;
+			if (user != null)
+				userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+			if(userSpocRolesList != null && !userSpocRolesList.isEmpty()) {
+				  List<UserSpocRolesDTO> usrSpocRolesList = new ArrayList<>();
+				  for(UserRole userRole :userSpocRolesList) {
+						UserSpocRolesDTO userSpocRolesDTO = new UserSpocRolesDTO();
+						userSpocRolesDTO.setUserRoleId(userRole.getId());
+						userSpocRolesDTO.setUserId(user.getId());
+						userSpocRolesDTO.setOrgLocationsId(userRole.getOrgLocations().getId());
+						userSpocRolesDTO.setOrgLocationName(userRole.getOrgLocations().getOrgLocationName());
+						userSpocRolesDTO.setOrgLocationLoginSecurity(userRole.getOrgLocations().getLoginSecurity());
+						userSpocRolesDTO.setUserLoginSecurity(userRole.getUser().getLoginSecurity());
+						userSpocRolesDTO.setOrgFileUrl(userRole.getOrgLocations().getOrg().getFileUrl());
+						String designation = "";
+						if(StringUtils.isNotEmpty(userRole.getRoles().getDisplayName())) {
+							if(userRole.getRoles().getDisplayName().equalsIgnoreCase("Professional")) {
+								designation = StringUtils.isNotEmpty(userRole.getDesignation()) ? userRole.getDesignation():"Job Seeker";
+							}else if(userRole.getRoles().getDisplayName().equalsIgnoreCase("Independent Recruiter")) {
+								designation = StringUtils.isNotEmpty(userRole.getDesignation()) ? userRole.getDesignation():"Freelance Recruiter";
+							}else {
+								designation = StringUtils.isNotEmpty(userRole.getDesignation()) ? userRole.getDesignation():userRole.getRoles().getDisplayName();
+							}
+						}
+						userSpocRolesDTO.setDesignation(designation);
+						String orgLocation = StringUtils.isNotEmpty(userRole.getOrgLocations().getCity()) ? userRole.getOrgLocations().getCity():"" +userRole.getOrgLocations().getCountry();
+					    userSpocRolesDTO.setOrgLocation(orgLocation);
+						usrSpocRolesList.add(userSpocRolesDTO);
+				}
+				  enrolledLocDTO.setUserSpocRolesList(usrSpocRolesList);
+			}
+			
+			String ipAddress = userLoginHelper.getClientIpAddr(request);
+			Boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
+			
+			enrolledLocDTO.setUsername(userName);
+			enrolledLocDTO.setSourceleadUrl(sourceleadUrl);
+			enrolledLocDTO.setRequirementUUID(requirementUUID);
+			enrolledLocDTO.setAlreadyVerifiedBefore(alreadyVerifiedBefore);
+			return enrolledLocDTO;
+		}
 	
 	@RequestMapping(value = "/app/ws/validateWhitelistIp", method = RequestMethod.GET)
 	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,

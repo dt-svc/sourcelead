@@ -59,8 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public TokenInfo authenticate(String login, String password,HttpServletRequest request,HttpSession session) throws AuthenticationException {
-		Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
-		
+		    Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
 			authentication = authenticationManager.authenticate(authentication);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			if (authentication.getPrincipal() != null) {

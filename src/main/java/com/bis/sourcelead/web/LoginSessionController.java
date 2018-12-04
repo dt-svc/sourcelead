@@ -34,6 +34,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.UserEnrolledLocationsDTO;
+import com.bis.sourcelead.dto.UserSpocRolesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
@@ -996,6 +998,9 @@ public class LoginSessionController {
 		model.setViewName("userEnrolledLocations");
 		return model;
 	}
+
+  
+ 
 
   
   

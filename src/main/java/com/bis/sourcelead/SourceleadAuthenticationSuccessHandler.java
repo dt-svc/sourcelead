@@ -13,12 +13,12 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Notifications;
@@ -43,8 +43,10 @@ import com.bis.sourcelead.service.WhiteListIpAddressService;
 @EnableTransactionManagement
 public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuccessHandler{
 
-	@Autowired
-	UserService userService;
+	 private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+	  
+	 @Autowired
+	 UserService userService;
 	
 	 @Autowired
 	 NotificationsService notificationsService;
@@ -68,7 +70,6 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException, AuthenticationException {
-		ModelAndView model = new ModelAndView();
 		 String UUID = request.getParameter("UUID");
 		 String spocUUID = request.getParameter("spocUUID");
 		 String requirementUUID = request.getParameter("requirementUUID");

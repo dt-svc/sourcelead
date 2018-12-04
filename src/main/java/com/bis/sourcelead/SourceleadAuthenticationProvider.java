@@ -1,33 +1,22 @@
 package com.bis.sourcelead;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
-import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.SourceleadActionsService;
-import com.bis.sourcelead.service.UserLoginAttemptsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
@@ -49,22 +38,13 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     private SourceleadPasswordEncoder sourceleadPasswordEncoder;
     
     @Autowired
-    private UserLoginAttemptsService userLoginAttemptsService;
-    
-    @Autowired
     private UserRoleService userRoleService;
-    
-    @Autowired 
-	private ModulesService modulesService;
     
     @Autowired
 	EmployeesService employeesService;
     
     @Autowired
     OrgLocationService orgLocationService;
-	
-	@Autowired 
-	private SourceleadActionsService sourceleadActionsService;
 	
 	@Autowired 
 	UserLoginHelper userLoginHelper;
@@ -86,7 +66,6 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
      
           User  user = userService.findByUserName(username);
           UserRole userRole = null;
-          List<Long> modulesId = null;
           List<UserRole> userRolesList = null;
           CandidateOffBoarding candidateOffBoarding = null;
 			
@@ -142,47 +121,5 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
     public boolean supports(Class<?> arg0) {
         return true;
     }
-
-  /*  private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
-
-    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
-       
-    	if(userRoles != null && !userRoles.isEmpty()){
-    		// Build user's authorities
-    		for (UserRole userRole : userRoles) {
-    			setAuths.add(new SimpleGrantedAuthority(userRole.getRoles().getRoleName()));
-    		}
-    	}
-    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
-    	return Result;
-    }*/
-    
-    
-    private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
-
-    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
-       
-    	if(actionsList != null && !actionsList.isEmpty()){
-    		// Build user's authorities
-    		for (SourceleadActions sourceleadActions : actionsList) {
-    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
-    		}
-    	}
-    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
-    	return Result;
-    }
-
-    private UserLoginAttempts getUserLoginAttemptsDetails(User user){
-    	
-    	UserLoginAttempts userLoginAttempts = new UserLoginAttempts();
-    	userLoginAttempts.setUser(user);
-    	userLoginAttempts.setAttemptsCount(1);
-    	userLoginAttempts.setCreatedDate(new Date());
-    	return userLoginAttempts;
-    	
-    }
-
-	
-
 
 }
