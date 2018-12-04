@@ -2866,6 +2866,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}*/
 			        	
 			        	int totalCount = 0;
+			        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
+			        		totalCount = listQuery.list().size();
+			        		if(query1.toString() != null && !query1.toString().isEmpty()){
+				    			response.setRecordsFiltered(filterCount);
+				    		}else {
+				    			response.setRecordsFiltered(totalCount);
+				    		}
+				    		response.setRecordsTotal(totalCount);
+			        	}
+			        	else{
 			    		if (requirementSubmissionHistoryDTO != null) {
 			    			if(countlist != null && !countlist.isEmpty()) {
 			    				totalCount = countlist.iterator().next().intValue();
@@ -2878,6 +2888,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}else {
 			    			response.setRecordsFiltered(totalCount);
 			    		}
+			        	}
 			    		response.setData(requirementSubmissionHistoryList);
 					}
 		        }
