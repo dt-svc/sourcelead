@@ -81,7 +81,6 @@ import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
-import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
 import com.bis.sourcelead.payroll.entity.USPayrollAssociateTaxHistory;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
@@ -1888,14 +1887,9 @@ public class USPayrollRestController {
 				payrollScheduleDTO.setPayCheckDate(payCheckDate);
 				payrollScheduleDTO.setRunPayDate(runPayDate);
 				payrollScheduleDTO.setPayFrequency(schedule.getPayFrequency());
-				Set<USPayScheduleNotifyMember> notifyMembers = schedule.getPayScheduleNotifyMember();
-				if(notifyMembers != null) {
-					for(USPayScheduleNotifyMember nmem : notifyMembers) {
-						notifiMemIds.add(nmem.getUser().getId());
-					}
-				}
 				payrollScheduleDTO.setNextPayMonth(schedule.getNextPayMonth());
 				payrollScheduleDTO.setNotifiMemIds(notifiMemIds);
+				payrollScheduleDTO.setNotifyMember(schedule.getNotifyMember());
 			}
 			payrollScheduleDTO.setApprovers(approvers);
 			List<String> month = new ArrayList<>();
