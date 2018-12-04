@@ -38,8 +38,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
@@ -1801,7 +1803,6 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
 		
-		
 /*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 */	     
@@ -2247,21 +2248,23 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
 						}*/
+						System.out.println("manager");
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && reportDTO.getAssignedUserStatus() ==null ){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
 								bd = bd.add(userDTO.getUserRequirementsCount());
 							}*/
+							System.out.println("primary");
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
@@ -2276,10 +2279,11 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
 						
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")) {
+					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId() !=reportDTO.getAssignedUserId() && reportDTO.getManagerUserId() !=reportDTO.getAssignedUserId()) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
+								System.out.println("assign");
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 						}
 					}
@@ -2694,6 +2698,45 @@ String sortingQry ="";
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate,Long orgLocationId) {
+		
+		List<ProbationDTO> usersList = null;
+		try {
+			
+			java.sql.Date startDate = new java.sql.Date(futureDate.getTime()); 
+			
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "SELECT " + 
+					"(select u.FIRST_NAME from USER u where u.ID = urole.USER_ID) as associateFirstName," + 
+					"(select u.LAST_NAME from USER u where u.ID = urole.USER_ID) as associateLastName," + 
+					"(select dep.DEPARTMENT_NAME from DEPARTMENT dep where dep.ID = emp.DEPARTMENT_ID) as departmentName, " + 
+					"urole.USER_TYPE as associateRole," + 
+					"emp.HIRE_DATE as hireDate," + 
+					"emp.PROBATION_PERIOD as probationPeriod," + 
+					"emp.CONFIRMATION_DATE as confirmationDate," + 
+					"urole.RESOURCE_MANAGER_ID as resourceManagerId " + 
+					" from EMPLOYEE emp, USER_ROLE urole where emp.USER_ID = urole.USER_ID and emp.ORG_LOCATIONS_ID = urole.ORG_LOCATIONS_ID and " +
+					" urole.RESOURCE_MANAGER_ID = :resourcemanagerId and emp.CONFIRMATION_DATE =:futureDate and urole.ORG_LOCATIONS_ID =:orgLocationId" ; 
+			
+			Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("resourcemanagerId", resourcemanagerId)
+			.setLong("orgLocationId", orgLocationId)
+			.setDate("futureDate", startDate);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ProbationDTO.class));
+			
+			usersList = queryObj.list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	return usersList;
+	
 	}
 
 	

@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -79,6 +80,9 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	private AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -371,9 +375,11 @@ public class DataMigrationCommonController {
 	 
 	 @RequestMapping(value = "/downloadDataImportTemplateForProjectTasks", method = RequestMethod.GET)
 		public void downloadDataImportTemplateForProjectTasks(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 	        @SuppressWarnings("resource")
-			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("ProjectTaskTemplate");
+			HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("ProjectTaskTemplate");
 	        String[] tableColumns = Constants.DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
@@ -381,9 +387,40 @@ public class DataMigrationCommonController {
 	        for (String key : tableColumns) {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
+	            
+	            if(key.equalsIgnoreCase("Task Type*")) {
+	            	List<String> taskTypeList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE, orgLocation.getId());
+	            	if(taskTypeList != null && !taskTypeList.isEmpty()) {
+	            		String [] taskType = taskTypeList.toArray(new String[taskTypeList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(taskType, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Priority")){
+	            	List<String> priorityList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY, orgLocation.getId());
+	            	if(priorityList != null && !priorityList.isEmpty()) {
+	            		String [] priority = priorityList.toArray(new String[priorityList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(priority, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Severity")){
+	            	List<String> severityList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY, orgLocation.getId());
+	            	if(severityList != null && !severityList.isEmpty()) {
+	            		String [] severity = severityList.toArray(new String[severityList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(severity, cellnum-1, "xls"));
+	            	}
+	            }else if(key.equalsIgnoreCase("Status*")){
+	            	List<String> statusList = lookUpDataService.getListOfStringLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS, orgLocation.getId());
+	            	if(statusList != null && !statusList.isEmpty()) {
+	            		String [] status = statusList.toArray(new String[statusList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(status, cellnum-1, "xls"));
+	            	}
+	            }else if(key.contentEquals("Currency Type")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.RATE_CURRENCY, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Billing Type*")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.BILLING_TYPE, cellnum-1, "xls"));
+	            }
+	            
 	        }
 	        try {
-	            File file = new File("Project_Task_Import_Template.xlsx");
+	            File file = new File("Project_Task_Import_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            
