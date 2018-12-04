@@ -2427,17 +2427,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.summary like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+			searchValue = searchValue.trim();
+			query1.append(" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.skillsName like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.currentRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.expectedRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.designation like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.summary like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.candidateProfilePercentage like '%" + searchValue + "%' )) ");
 		}
 		StringBuilder query2 = new StringBuilder("");
 		if (candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
-			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
+			query2.append(" and ((marketplace.candidateId.location like '%" + candidateLocation + "%' ))");
 		}
 		List<Long> searchCandiIdsLong = new ArrayList<>();
 		if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
