@@ -330,7 +330,7 @@ public class ReportsUtil {
      
      
 	public Date[] today(OrgLocations orgLocations) throws Exception {
-		
+	
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
@@ -389,6 +389,64 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		Date[] dates = new Date[2];
 		dates[0] = sevenDateUTC;
 		dates[1] = startDateUTC;
+		return dates;
+	}
+	
+	/**
+	 * Get from and to date of last week
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
+	 */
+	public Date[] lastWeek(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime startDayZoned = zoned.minusWeeks(2);
+		String sevenDaysStartDate = outputFormatter.print(startDayZoned);
+		Date dateStartUTC = TZ_DF_TS.parse(sevenDaysStartDate);
+		
+		DateTime endDayZoned = zoned.minusWeeks(1);
+		String sevenDaysEndDate = outputFormatter.print(endDayZoned);
+		Date dateEndUTC = TZ_DF_TS.parse(sevenDaysEndDate);
+		
+		
+		Date[] dates = new Date[2];
+		dates[0] = dateStartUTC;
+		dates[1] = dateEndUTC;
+		return dates;
+	}
+	
+	/**
+	 * Get from and to date of last month
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
+	 */
+	public Date[] lastMonth(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime startDayZoned = zoned.minusMonths(2);
+		String sevenDaysStartDate = outputFormatter.print(startDayZoned);
+		Date dateStartUTC = TZ_DF_TS.parse(sevenDaysStartDate);
+		
+		DateTime endDayZoned = zoned.minusMonths(1);
+		String sevenDaysEndDate = outputFormatter.print(endDayZoned);
+		Date dateEndUTC = TZ_DF_TS.parse(sevenDaysEndDate);
+		
+		
+		Date[] dates = new Date[2];
+		dates[0] = dateStartUTC;
+		dates[1] = dateEndUTC;
 		return dates;
 	}
 	
@@ -609,7 +667,14 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 			searchDates = today(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YESTERDAY)) {
 			searchDates = yesterdayDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_Last_Week)) {
+			searchDates = lastWeek(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_Month_Ago)) {
+			searchDates = lastMonth(orgLocations);
 		}
+		
+		
+		
 		
 		startDate = new java.sql.Date(searchDates[0].getTime());
 		endDate = new java.sql.Date(searchDates[1].getTime());

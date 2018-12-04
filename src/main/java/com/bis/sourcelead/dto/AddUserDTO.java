@@ -145,6 +145,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String EmailId;
 		
+		private String panNumber;
+		
 		private String phoneNumber;
 		
 		private String extensionNumber;
@@ -206,6 +208,12 @@ import com.bis.sourcelead.entity.UserRole;
 		private String associateId;
 		
 		private Long candidateId;
+		
+		private String probationPeriod;
+		
+		private String confirmationDate;
+		
+		private String probationStatus;
 		
 		
 		public String getFirstName() {
@@ -625,6 +633,14 @@ import com.bis.sourcelead.entity.UserRole;
 			EmailId = emailId;
 		}
 
+		public String getPanNumber() {
+			return panNumber;
+		}
+
+		public void setPanNumber(String panNumber) {
+			this.panNumber = panNumber;
+		}
+
 		public String getPhoneNumber() {
 			return phoneNumber;
 		}
@@ -958,4 +974,29 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCandidateId(Long candidateId) {
 			this.candidateId = candidateId;
 		}
+
+		public String getProbationPeriod() {
+			return probationPeriod;
+		}
+
+		public void setProbationPeriod(String probationPeriod) {
+			this.probationPeriod = probationPeriod;
+		}
+
+		public String getConfirmationDate() {
+			return confirmationDate;
+		}
+
+		public void setConfirmationDate(String confirmationDate) {
+			this.confirmationDate = confirmationDate;
+		}
+
+		public String getProbationStatus() {
+			return probationStatus;
+		}
+
+		public void setProbationStatus(String probationStatus) {
+			this.probationStatus = probationStatus;
+		}
+		
 }

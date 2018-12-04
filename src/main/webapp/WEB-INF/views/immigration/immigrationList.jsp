@@ -22,6 +22,7 @@
 	<div class="clearfix"></div>
     </section>    
     
+    <div class="project_wrap">
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		   
@@ -34,7 +35,7 @@
 	    </ul>
     </div>
     
-    <div class="immigrationWrap noPad mt5">
+    <div class="immigrationWrap noPad">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
@@ -254,6 +255,7 @@
 			 
     </div>
     </div>
+	</div>
   </section>
   <!-- Content Area -->
 <div id="popUp"></div>
