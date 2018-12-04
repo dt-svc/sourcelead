@@ -7,6 +7,8 @@
 	  
 <script type="text/javascript">
 window.onload = function() { 
+	
+	$("#approverUser").removeAttr("data-validation");
 
 	var leaveUUID = '${leaveUUID}';
 	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
