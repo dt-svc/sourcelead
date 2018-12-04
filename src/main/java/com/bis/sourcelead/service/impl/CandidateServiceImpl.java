@@ -3065,4 +3065,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			storeCandidate(candidateDto, orgLocations, user);
 	}
 
+	@Override
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) throws Exception {
+		// TODO Auto-generated method stub
+		List<Candidate> candidates = candidateDao.getCandidateDetailsListById(Ids);
+		return candidates;
+	}
+	
 }

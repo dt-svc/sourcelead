@@ -49,7 +49,7 @@ public class USPayrollAssociateTaxHistoryDaoImpl implements USPayrollAssociateTa
 		Session session = this.sessionFactory.getCurrentSession();
 		List<USPayrollAssociateTaxHistory> list = null;
 		try {
-			String query = "from USPayrollAssociateTaxHistory ath where ath.candidate = :candidateId";
+			String query = "from USPayrollAssociateTaxHistory ath where ath.candidate = :candidateId order by ath.id desc";
 			list = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(false).list();
 		} catch (Exception exception) {
 			exception.printStackTrace();

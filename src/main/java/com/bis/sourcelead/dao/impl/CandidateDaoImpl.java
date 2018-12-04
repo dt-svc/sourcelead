@@ -2771,4 +2771,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateMarketplaceCandidates;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate candidate where candidate.id IN (:Ids)";
+			List<Candidate> candidates = session.createQuery(query).setParameterList("Ids", Ids).list();
+			return candidates;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

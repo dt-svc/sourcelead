@@ -891,7 +891,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();
@@ -915,7 +915,7 @@ function changeStatus(requirementId, requirementStatus){
 		                } else if (result.response === "SUCCESS") {
 		                	$("#changeStatusId" +requirementId).val(status);
 		                	$(".success_pop").show();
-		                	$(".success_pop span").html("Changed Requirement status to " + status);
+		                	$(".success_pop span").html("Changed Job status to " + status);
 		                	 setTimeout(function(){
 				                	$(".success_pop").hide();
 				                	location.reload();
