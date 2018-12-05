@@ -1,11 +1,15 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +68,7 @@ import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
+import com.bis.sourcelead.payroll.dto.FilteredClientDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
@@ -1969,5 +1978,112 @@ public class USPayrollRestController {
 			return res;
 		}
 		
+		@RequestMapping(value = { "/getClientFiltered" }, method = RequestMethod.GET)
+		public ModelAndView getClientFiltered(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("payroll/filteredclients");
+			return model;
+		}
+		
+		@RequestMapping(value = "/staffingFilteredList", method = RequestMethod.GET)
+		public ModelAndView staffingFilteredList (HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("payroll/staffingFiltered");
+			return model;
+		}
+		
+		@RequestMapping(value = {"/getFilteredClientList","/rest/getFilteredClientList"}, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<FilteredClientDTO>getFilteredClientList(HttpServletRequest request,HttpServletResponse response) 
+		{
+			ResponseList<FilteredClientDTO> res = new ResponseList<>();
+			JSONParser jsonParser = new JSONParser();
+			String DEST = "C:\\Users\\BIS122\\Desktop\\clients_filtered.json";
+			try (FileReader reader = new FileReader(DEST))
+			{
+				List<FilteredClientDTO> list = new ArrayList<>();
+				Object obj = jsonParser.parse(reader);
+				JSONObject json = (JSONObject) obj;
+				Set<String> s = json.keySet();
+				for(String name : s) {
+					JSONArray arr = (JSONArray) json.get(name);
+					for(int i=0;i< arr.size(); i++) {
+						try{
+							JSONObject ob=new JSONObject((Map) arr.get(i));
+							FilteredClientDTO dto = parseFilteredClientObject(ob);
+							list.add(dto);
+						}catch(Exception e) {
+							System.out.println("error with index number :"+i);
+						}
+					}
+				}
+				res.setData(list);
+			 } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        } catch (ParseException e) {
+		            e.printStackTrace();
+		        }
+		
+			return res;
+		}
+		
+		private FilteredClientDTO parseFilteredClientObject(JSONObject ob)
+	    {
+			FilteredClientDTO dto = new FilteredClientDTO();
+			
+			dto.setCompanyName((String) ob.get("company_name"));
+			dto.setCompanyId((String) ob.get("company_id"));
+			dto.setCompanyWebsite((String)ob.get("company_website"));
+			dto.setOfficeCity((String)ob.get("office_city"));
+			dto.setOfficeCountry((String)ob.get("office_country"));
+			dto.setOfficeMetroArea((String)ob.get("office_metro_area"));
+			dto.setOfficePhone((String)ob.get("office_phone"));
+			dto.setOfficeState((String) ob.get("office_state"));
+			dto.setOfficeStreet((String)ob.get("office_street"));
+			dto.setOfficeWebsite((String)ob.get("office_website"));
+			dto.setOfficeStreet((String)ob.get("office_street"));
+	         
+			return dto;
+	    }
+		
+		@RequestMapping(value = {"/getCategoriesForStaffingFiltered","/rest/getCategoriesForStaffingFiltered"}, method = RequestMethod.GET)
+		@ResponseBody
+		public Response<Map<String,String>> getCategoriesForStaffingFiltered(HttpServletRequest request,HttpServletResponse response) 
+		{
+			Response<Map<String,String>> res = new Response<>();
+			JSONParser jsonParser = new JSONParser();
+			String DEST = "C:\\Users\\BIS122\\Desktop\\staffing_filtered.json";
+			try (FileReader reader = new FileReader(DEST))
+			{
+				Map<String,String> map = new HashMap<>();
+				Object obj = jsonParser.parse(reader);
 
+				JSONObject json = (JSONObject) obj;
+				Set<String> s = json.keySet();
+				for(String name : s) {
+					if("categories".equalsIgnoreCase(name)) {
+						System.out.println(json.get(name));
+						JSONObject json1 = (JSONObject) json.get(name);
+						Set<String> catSet = json1.keySet();
+						System.out.println(catSet);
+						for(String str : catSet) {
+							JSONObject ob = new JSONObject((Map) json1.get(str));
+							map.put(str, (String) ob.get("category_name"));
+						}
+					}
+				}
+				res.setObject(map);
+			 } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        } catch (ParseException e) {
+		            e.printStackTrace();
+		        }
+			return res;
+		}
 }

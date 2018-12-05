@@ -11,7 +11,7 @@
 	      <div class="clearfix row minHeightcol5">
 	      	<div class="clearfix"></div>
               <div class="col-md-12 mb">
-                <div class="clearfix">
+                <div class="clearfix row">
               	     <h4 class="col-md-12">PF</h4>
 		                  <div class="col-md-6 mb checkbox-new">
 							<input id="pf" class="checkbox-custom" type="checkbox" name="eligibleForPf"  onClick="pfFunction()">
@@ -64,11 +64,11 @@
                   
                   <div class="clearfix"></div>
                   
-                  <div class="col-md-6 mb checkbox-new">
-                   <c:if test="${associateNominee.nominee eq 'Y'}">
+                  <div class="col-md-6 mb checkbox-new noPad">
+                   <c:if test="${associatePfEsi.nominee eq 'Y'}">
                              <input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
                    </c:if>
-                   <c:if test="${empty associateNominee.nominee}">
+                   <c:if test="${empty associatePfEsi.nominee}">
                    			<input class="checkbox-custom" id="nomineeShow" name="nominee" type="checkbox" onClick="nomineeDetails()">
                    </c:if>
 					<label for="nomineeShow" class="checkbox-custom-label" onClick="nomineeDetails()"><span class="ml10">Nominee</span></label>
@@ -83,7 +83,7 @@
 		                 <input value="Add" id="addButton" class="btn btn-success btnSuccess" type="button" onclick="addNomineeDetails();">
 		               </div>
 		             </div>
-		             <div id="nomineeDeta" style="display: none;" class="require_wrap_table datatable_filter">
+		             <div id="nomineeDeta" style="display: none;" class="require_wrap_table">
 		             </div>
 			</div> 
                   
@@ -102,7 +102,7 @@
                     </thead>
 					  <tbody>
 				<tr>
-				<td><div class="ExpShow"><i class="fa fa-plus-squa<div id="informationDetailsLoading"></div>re-o" aria-hidden="true"></i>Category 1</div></td>
+				<td><div class="ExpShow"><i class="fa fa-plus-square-o" aria-hidden="true"></i>Category 1</div></td>
 				<td><div>20/09/2017</div></td>
 				<td><div>Cash</div></td>
 				<td><div>USD</div></td>
@@ -139,7 +139,7 @@
               </div>
               
               
-  <script>
+ <script>
     function getNomineeDetailsList(){
     	var userId = $("#associateId").val();
     	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -211,7 +211,7 @@
  	  </form:form>
  	  
  	  <div class="clearfix"></div>
-                <div class="clearfix mt minHeightcol5" id="nomineeDetails" style="display: none;">
+                <div class="clearfix mt minHeightcol5 row" id="nomineeDetails" style="display: none;">
                 <form:form class="login-form clearfix"  id="nomineeDetails_form"  name="nomineeDetails_form" method="post" >
                 <input type ="hidden" id="nomineeDetailsId" name="id">
                   <div class="col-md-12">
@@ -221,7 +221,7 @@
                   <div class="col-md-5">
                     <label>Name<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" id="familyDetailsName" class="form-control" name="name" value="" field-name="Name" data-validation="required validate_length length1-250 validate_Alphabet">
+                      <input type="text" id="name" class="form-control" name="name" value="" field-name="Name" data-validation="required">
                     </div>
                   </div>
                   <div class="col-md-5">
@@ -286,14 +286,13 @@
                   <div class="col-md-5">
                     <label>Nomination %<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="number" id="nominationPercentage" class="form-control" name="nominationPercentage" field-name="Nomination Percentage" onInput="return check(event,value)" min="0" max="100" step="0.01" data-validation="required">
-                    
+                      <input type="text" id="nominationPercentage" class="form-control" name="nominationPercentage" field-name="Nomination Percentage" data-validation="required">
                     </div>
                   </div>
                   <div class="col-md-5">
                     <label>Address</label>
                     <div>
-                      <textarea rows="2" id="familyDetailsAdd" class="form-control" name="address" data-validation="validate_Space validate_length length1-500" data-validation-optional = "true" field-name="Address"></textarea>
+                      <textarea rows="2" id="address" class="form-control" name="address" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
                     </div>
                   </div>
                   <div class="col-md-5">
@@ -301,9 +300,7 @@
                       <div class="col-md-4 mb checkbox-new">
                         <label>&nbsp;</label>
                         <div class="clearfix">
-
                           <input id="illness" class="checkbox-custom" name="esi" type="checkbox" onclick="validateIllness();">
-                          <input id="illness" class="checkbox-custom" name="illness" type="checkbox" onClick="illnessFunction()">
                           <label for="illness" class="checkbox-custom-label"><span class="ml10">Illness</span></label>
                         </div>
                       </div>
@@ -311,8 +308,6 @@
                         <label>&nbsp;</label>
                         <div class="clearfix">
                           <input id="minor" class="checkbox-custom" name="esi" type="checkbox" onclick="validateMinor();">
-
-                          <input id="minor" class="checkbox-custom" name="minor" type="checkbox" onClick="minorFunction()">
                           <label for="minor" class="checkbox-custom-label"><span class="ml10">Minor</span></label>
                         </div>
                       </div>
@@ -324,8 +319,9 @@
                     <div class="col-md-5">
                       <label>Guardian Name<span class="text-danger paddingLeft">*</span></label>
                       <div id="illnessguardianNameDiv">
-                                            <input type="text" id="illnessGuardianName" class="form-control" name="illnessGuardianName" field-name="Guardian Name" data-validation="required">
-                     </div>
+                        <input type="text" id="illnessguardianName" class="form-control" name="illnessGuardianName" field-name="Guardian Name" >
+                      </div>
+                    </div>
                     <div class="col-md-5">
                       <label>Relation<span class="text-danger paddingLeft">*</span></label>
                       <div id="illnessGuardianRelationNameDiv">
@@ -345,20 +341,20 @@
                     <div class="col-md-5">
                       <label>Address</label>
                       <div>
-                        <textarea rows="2" id="illnessGuardianAddress" class="form-control" name="illnessGuardianAddress" field-name="Illness Guardian Address"></textarea>
+                        <textarea rows="2" id="illnessGuardianAddress" class="form-control" name="illnessGuardianAddress" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
                       </div>
                     </div>
                     <div class="col-md-5">
                       <label>Phone Number</label>
                       <div>
-                        <input type="text" id="illnessGuardianPhoneNumber" class="form-control" name="illnessGuardianPhoneNumber" field-name="Illness Guardian PhoneNumber">
+                        <input type="text" id="illnessGuardianPhoneNumber" class="form-control" name="illnessGuardianPhoneNumber" data-validation-optional="true" data-validation="validate_int">
                       </div>
                     </div>
                     <div class="clearfix mt"></div>
                     <div class="col-md-5 mt">
                       <label>Email</label>
                       <div>
-                        <input type="text" id="illnessGuardianEmail" class="form-control" name="illnessGuardianEmail" field-name="Illness Guardian Email">
+                        <input type="text" id="illnessGuardianEmail" class="form-control" name="illnessGuardianEmail" data-validation-optional="true" data-validation="validate_email">
                       </div>
                     </div>
                     <div class="clearfix"></div>
@@ -373,8 +369,6 @@
                     <div class="col-md-5" id="minorGuardianRelationNameDiv">
                       <label>Relation<span class="text-danger paddingLeft">*</span></label>
                         <select class="sel" name="minorGuardianRelationName" id="minorGuardianRelationName" field-name="Relation">
-                      <div>
-                        <select class="sel" id="minorGuardianRelationName" name="minorGuardianRelationName" field-name="Relation" data-validation="required">
                           <option value="">Select</option>
                           	<option value="Father">Father</option>
 	                        <option value="Mother">Mother</option>
@@ -389,20 +383,20 @@
                     <div class="col-md-5">
                       <label>Address</label>
                       <div>
-                        <textarea rows="2" id="minorGuardianAddress" class="form-control" name="minorGuardianAddress" field-name="Address"></textarea>
+                        <textarea rows="2" id="address" class="form-control" name="minorGuardianAddress" data-validation-optional="true" data-validation="validate_length length1-500"></textarea>
                       </div>
                     </div>
                     <div class="col-md-5">
                       <label>Phone Number</label>
                       <div>
-                        <input type="text" id="minorGuardianPhoneNumber" class="form-control" name="minorGuardianPhoneNumber" field-name="Phone Number">
+                        <input type="text" id="phoneNumber" class="form-control" name="minorGuardianPhoneNumber" data-validation-optional="true" data-validation="validate_int">
                       </div>
                     </div>
                     <div class="clearfix mt"></div>
                     <div class="col-md-5 mt">
                       <label>Email</label>
                       <div>
-                        <input type="text" id="minorGuardianEmail" class="form-control" name="minorGuardianEmail" field-name="Email">
+                        <input type="text" id="email" class="form-control" name="minorGuardianEmail" data-validation-optional="true" data-validation="validate_email">
                       </div>
                     </div>
                     <div class="clearfix"></div>
@@ -413,7 +407,6 @@
 			             <div class="col-md-6 col-md-offset-6">
 			               <div class="pull-right">
 			                 <input value="save" id="saveButton" class="btn btn-success btnSuccess" type="button" onclick="saveNomineeDetails();">
-			                 <input value="cancel" id="cancelButton" class="btn btn-cancel btnCancel" type="button" onclick="cancelNomineeDetails();">
 			               </div>
 			             </div>
 			     </div> 
@@ -437,26 +430,9 @@
  	  
  </div>
  
+ 
+ 
  <script>
- check = function (e,value){
-		if (!e.target.validity.valid) {
-   	e.target.value = value.substring(0,value.length - 1);
-     return false;
-   }
- 	var idx = value.indexOf('.');
-   if (idx >= 0) {
-     if (value.length - idx > 3 ) {
-       e.target.value = value.substring(0,value.length - 1);
-       return false;
-     }
-   }
-   return true;
- }
- 
-</script>
- 
- 
- <<script>
 function validateIllness(){
 	if($("#illness").is(':checked')){
 		$("#illnessguardianName").attr("data-validation","required");
@@ -693,7 +669,8 @@ $("#illness").click(function() {
 });
 $("#nomineeShow").click(function() {
 	$("#nomineeDetails").toggle();
-	$("#nomineeDetails_form").show();
+	document.getElementById("nomineeDetails_form").reset();
+	$("#nomineeDetails").find('p.jquery_form_error_message').remove();
 });
 $("#minor").click(function() {
 	$("#minorDiv").toggle();
@@ -702,8 +679,6 @@ $("#minor").click(function() {
 
  <script>
  function saveNomineeDetails(){
-	 illnessFunction();
-	 minorFunction();
 	 var userId = $("#associateId").val();
 	 
 	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
@@ -724,7 +699,8 @@ $("#minor").click(function() {
 		        		//location.replace(sourceleadUrl+"/onboardingCandidateTaxDetails"); 
 // 		        		location.replace(sourceleadUrl+"/associateInformationDetails"); 
                         $("#nomineeDetails").hide();
-                         getNomineeDetailsList();
+                        getNomineeDetailsList();
+                        document.getElementById("nomineeDetails_form").reset();
 // 		        		getNomineeDetails();
 // 		        	} else if (response.indexOf('Sign In') !== -1) {
 // 		        		location.replace(sourceleadUrl);
@@ -757,26 +733,7 @@ $("#minor").click(function() {
  
  <script>
  function addNomineeDetails(){
-		$("#nomineeDetails").show();
-		$("#nomineeDetails_form").show();
-	    $("#familyDetailsName").val('');
-	    $("#dateOfBirth").val('');
-		$("#gender").val('');
-		$("#bloodGroup").val('');
-		$("#relation").val('');
-		$("#nominationFor").val('');
-		$("#nominationPercentage").val('');
-		$("#familyDetailsAdd").val('');
-		$("#illnessGuardianName").val('');
-		$("#illnessGuardianRelationName").val('');
-		$("#illnessGuardianAddress").val('');
-		$("#illnessGuardianPhoneNumber").val('');
-		$("#illnessGuardianEmail").val('');
-		$("#minorGuardianName").val('');
-		$("#minorGuardianRelationName").val('');
-		$("#minorGuardianPhoneNumber").val('');
-		$("#minorGuardianEmail").val('');
-		$("#nomineeDetailsId").val('');
+	 $("#nomineeDetails").show();
  }
  </script>
  
@@ -819,15 +776,15 @@ function deleteNominee(nomineeId,candidateId){
 	      url: sourceleadUrl+"/editNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
 	 	  success: function(data) { 
 	 		    $("#nomineeDetails_form").show();
-	 		    $("#familyDetailsName").val(data.name);
-	 		    $("#dateOfBirth").val(data.dob);
-		 		$("#gender").val(data.gender);
+	 		    $("#name").val(data.name);
+	 		    $("#dateOfBirth").val(data.name);
+		 		$("#gender").val(data.dateOfBirth);
 		 		$("#bloodGroup").val(data.bloodGroup);
 		 		$("#relation").val(data.relation);
 		 		$("#nominationFor").val(data.nominationFor);
 		 		$("#nominationPercentage").val(data.nominationPercentage);
-		 		$("#familyDetailsAdd").val(data.address);
-		 		$("#illnessGuardianName").val(data.illnessGuardianName);
+		 		$("#address").val(data.address);
+		 		$("#illnessguardianName").val(data.illnessguardianName);
 		 		$("#illnessGuardianRelationName").val(data.illnessGuardianRelationName);
 		 		$("#illnessGuardianAddress").val(data.illnessGuardianAddress);
 		 		$("#illnessGuardianPhoneNumber").val(data.illnessGuardianPhoneNumber);
@@ -844,53 +801,4 @@ function deleteNominee(nomineeId,candidateId){
 	    });
  }
  </script>
- 
-<script>
-function cancelNomineeDetails(){
-   $("#nomineeDetails").toggle();
-   $("#nomineeDetails_form").hide();
-   $('input[name=nominee]').attr('checked', false);
-}
-</script>
-
-<script>
-function illnessFunction(){
-	var checkBox = document.getElementById("illness");
-	if (checkBox.checked == true){
-		$("#illness").show();
-		$('#illnessGuardianName').attr('data-validation', "required validate_length length1-250");
-		$('#illnessGuardianRelationName').attr('data-validation', "required");
-		$('#illnessGuardianPhoneNumber').attr('data-validation-optional', "true");
-		$('#illnessGuardianPhoneNumber').attr('data-validation', "validate_space validate_length length7-10");
-	    } else {
-		 $("#illness").hide();
-		 $('#illnessGuardianName').removeAttr('data-validation', "required validate_length length1-250");
-	     $('#illnessGuardianRelationName').removeAttr('data-validation', "required");
-	     $('#illnessGuardianPhoneNumber').removeAttr('data-validation-optional', "true");
-		 $('#illnessGuardianPhoneNumber').removeAttr('data-validation', "validate_space validate_length length7-10");
- }
-	
-}
-</script>
-
-<script>
-function minorFunction(){
-	var checkBox = document.getElementById("minor");
-	if (checkBox.checked == true){
-		$("#minor").show();
-		$('#minorGuardianName').attr('data-validation', "required validate_length length1-250");
-		$('#minorGuardianRelationName').attr('data-validation', "required");
-		$('#minorGuardianPhoneNumber').attr('data-validation-optional', "true");
-		$('#minorGuardianPhoneNumber').attr('data-validation', "validate_space validate_length length7-10");
-		
-	    } else {
-		 $("#minor").hide();
-		 $('#minorGuardianName').removeAttr('data-validation', "required validate_length length1-250");
-	     $('#minorGuardianRelationName').removeAttr('data-validation', "required");
-	     $('#minorGuardianPhoneNumber').removeAttr('data-validation-optional', "true");
-		 $('#minorGuardianPhoneNumber').removeAttr('data-validation', "validate_space validate_length length7-10");
- }
-	
-}
-</script>
  
