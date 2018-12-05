@@ -1,6 +1,7 @@
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
+	
 	margin: 0; padding: 0;
 }
 body {
@@ -6570,7 +6571,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
     color: #333; bottom: 45px;
 }
 .project-tabs-menu.projecttabs-custom li a {
-    padding: 6px 25px;
+    padding: 10px 25px;
 }
 .project-tabs-menu.projecttabs-custom li {
     border-radius: 5px 5px 0 0;
