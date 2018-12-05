@@ -9542,8 +9542,12 @@ input[type=range]::-moz-range-track {
 .descriptionTxtarea .note-editable {
   min-height: 150px; max-height: 250px;
 }
-
-
+.customeProjectDetails .project_details_cta strong {
+	text-align: left; width:150px;
+}
+.customeProjectDetails .project_details_cta span {
+	width: 50%;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

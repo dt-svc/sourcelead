@@ -80,6 +80,9 @@ function getConfiguredList(){
     $('#configure').show();
     $('#unsubscribe').hide();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getUnsubscribeList(){
@@ -88,6 +91,9 @@ function getUnsubscribeList(){
     $('#configure').hide();
     $('#unsubscribe').show();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getLinkAccounts(){
@@ -95,8 +101,53 @@ function getLinkAccounts(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#myBankDetails').hide();
     $('#mylinkaccounts').show();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
+
+function getBankDetails(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $("#taxDate").hide();
+//     $('#myBankDetails').show();
+    $('.tabsMenu_tabs_inn').show();
+      associateBankData();
+}
+
+ function getTax(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $('#associateBankData').hide();
+    $('#myBankDetails').hide();
+//     $("#myTax").show();
+    $('.tabsMenu_tabs_inn').show();
+     associateTaxSummary();
+     getResidenceLocation();
+} 
+ 
+ function getDocuments(){
+	 $('#profile').hide();
+	    $('#updatepassword').hide();
+	    $('#configure').hide();
+	    $('#unsubscribe').hide();
+	    $('#myBankDetails').hide();
+	    $('#mylinkaccounts').hide();
+	    $('#associateBankData').hide();
+	    $("#taxDate").hide();
+	    $("#myTax").hide();
+	    $('#myBankDetails').hide();
+// 	    $("#myDocuments").show();
+// 	    $(".welCo1").show();
+	    candidateDocuments();
+ }
 </script>
 
 
@@ -133,6 +184,9 @@ function getLinkAccounts(){
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
+			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
+			<li onclick="getTax();"><a data-toggle="tab" href="#myTax">Tax</a></li>
+			<li onclick="getDocuments();"><a data-toggle="tab" href="#myDocuments">Documents</a></li>
 		  </ul>        
 <div class="accountsettings-tab noMar">
 
@@ -436,6 +490,9 @@ function getLinkAccounts(){
 		   </div>
 		   
 		  <jsp:include page="userAccounts.jsp" />
+		  <jsp:include page="userBankDetails.jsp" />
+		  <jsp:include page="userTax.jsp" />
+		  <jsp:include page="userDocuments.jsp" />
 		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->

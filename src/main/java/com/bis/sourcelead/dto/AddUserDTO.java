@@ -207,6 +207,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private Long candidateId;
 		
+		private String allowEmployeeToFill;
+		
 		
 		public String getFirstName() {
 			return firstName;
@@ -958,4 +960,14 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCandidateId(Long candidateId) {
 			this.candidateId = candidateId;
 		}
+
+		public String getAllowEmployeeToFill() {
+			return allowEmployeeToFill;
+		}
+
+		public void setAllowEmployeeToFill(String allowEmployeeToFill) {
+			this.allowEmployeeToFill = allowEmployeeToFill;
+		}
+		
+		
 }

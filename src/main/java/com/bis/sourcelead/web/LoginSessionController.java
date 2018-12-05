@@ -54,6 +54,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
@@ -187,6 +189,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	OrglocationDepositTaxesService orglocationDepositTaxesService;
+	
+	@Autowired
+	AssociateBankDataService associateBankDataService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -326,6 +331,9 @@ public class LoginSessionController {
 			//
 			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
+			
+			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "associateBankData", associateBankData);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);

@@ -8444,3 +8444,17 @@ bottom: auto !important; top: 55px !important;
 }
 .downloadLinks .downloadUL { display: none; }
 .downloadLinks:hover .downloadUL { display: block; }
+
+.infomaskHeight {
+	height: 350px;
+}
+.infoMask {
+	position: absolute; width: 100%; height: 350px; background-color: rgba(0,0,0,0.075); text-align: center; box-sizing: border-box;
+    padding: 10% 0px 0px 0px; font-size: 25px; top: 0px; left: 0px;
+}
+.infoMask.infoMask1 {
+	position: absolute; width: 100%; height: 100%;
+	}
+.infoMask i {
+	display: inline-block; padding: 0px 9px 0px 0px; font-size: 26px;
+}
