@@ -35,6 +35,8 @@ public interface AssociateSalaryService {
 
 	ResponseList<AssociateSalary> getAssociateSalaryListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId, CandidateDTO canDto);
 	
+	ResponseList<AssociateSalaryInd> getAssociateSalaryIndListByLocationIdAndGroupId(OrgLocations orgLocation, Long groupId, CandidateDTO canDto);
+	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupId(OrgLocations orgLocation, long parseLong);
 	
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation, long groupId,String payType,Date fqStartDate,Date fqEndDate);

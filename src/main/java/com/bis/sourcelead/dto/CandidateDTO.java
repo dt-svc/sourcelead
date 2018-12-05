@@ -46,6 +46,8 @@ public class CandidateDTO extends SearchDTO{
 	private String middleName;
 	
 	private String dateofBirth;
+	
+	private String panNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -258,6 +260,8 @@ public class CandidateDTO extends SearchDTO{
 	private String customStartDate;
 		
 	private String customEndDate;
+	
+	private Integer submittedJobsCount;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1127,6 +1131,14 @@ public class CandidateDTO extends SearchDTO{
 	}
 
 
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -1237,6 +1249,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCustomEndDate(String customEndDate) {
 		this.customEndDate = customEndDate;
+	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
 	}
 
 	

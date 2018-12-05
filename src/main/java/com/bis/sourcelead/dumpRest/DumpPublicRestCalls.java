@@ -493,7 +493,7 @@ public class DumpPublicRestCalls {
 	}
 	
 	
-	@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
 	@ResponseBody
 	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
 		logger.info("Start Time"+java.time.LocalDateTime.now());
@@ -504,8 +504,15 @@ public class DumpPublicRestCalls {
 		for(OrgLocations loc : orgLocList){
 			List<PayrollPayhead> existed = payrollPayheadDao.getPayrollPayheadList(loc);
 			for(PayrollPayhead payHead : payheadList) {
-				if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
-				}else {
+				boolean phNew = true;
+				if(existed.size() > 0) {
+					for(PayrollPayhead pHeadOld : existed) {
+						if(payHead.getShortCode().equalsIgnoreCase(pHeadOld.getShortCode())) {
+							phNew = false;
+						}
+					}
+				}
+				if(phNew) {
 					PayrollPayhead newPayhead = new PayrollPayhead();
 					newPayhead.setName(payHead.getName());
 					newPayhead.setShortCode(payHead.getShortCode());
@@ -536,5 +543,5 @@ public class DumpPublicRestCalls {
 			logger.info("Org Payhead>> "+java.time.LocalDateTime.now());
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
-	}
+	}*/
 }

@@ -22,7 +22,7 @@ top:0;
 			</div>
         </section>
          
-        
+        <div class="project_wrap">
 		<div class="project_tabs_inn_table vendor_wrap_inn_table overflow_Auto">
 		
 		<table id='example' class='display' cellspacing='0' width='100%' >
@@ -93,6 +93,8 @@ top:0;
                     </tbody>
            </table>
 		</div>
+		</div>
+		
  </section>
 
  <jsp:include page="masterFooter.jsp" />	

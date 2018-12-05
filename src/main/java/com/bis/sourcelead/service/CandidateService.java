@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -14,10 +16,13 @@ import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -252,6 +257,8 @@ public interface CandidateService {
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
 	
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception;
+	
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
 
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
@@ -266,8 +273,24 @@ public interface CandidateService {
 
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
 	
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception;
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception;
 	
 	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
+
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
+
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception;
+
+	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
+	
+	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
+	
+	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;
+	
+	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds)throws Exception;
+
+	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
 
 }

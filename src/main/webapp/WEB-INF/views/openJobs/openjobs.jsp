@@ -1215,7 +1215,7 @@ function getOpenJobsELKList(orgLocationId,type){
 // 		$("#openJobsOffset").val(offset)
 // 	}
 	
-	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&minOffset=0&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
@@ -1335,7 +1335,7 @@ function prepareOpenJobsElkList(response,offset){
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'  '+requirements.requirementUUID+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -1498,7 +1498,7 @@ function getOrgsList(alphabet,type){
 	   	type: "POST",
 	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
-	    	var json = JSON.parse(data);
+	    	var json = data.data;
 	    	var result = "";
 	    	
 	    	if(type != 'main'){
@@ -1543,6 +1543,7 @@ function getOrgsList(alphabet,type){
 		    	}
 // 	    		if(json.length > 5){
 // 	    			var orgCount = json.length - 5 ;
+
 				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
 			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
 
