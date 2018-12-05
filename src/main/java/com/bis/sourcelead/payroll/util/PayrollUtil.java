@@ -1012,7 +1012,7 @@ public class PayrollUtil {
 				for (List<String> innerList : weekdates) {
 					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
 					StringBuilder sb = new StringBuilder();
-					sb.append(innerList.get(0)).append(" To ").append(innerList.get(1));
+					sb.append(innerList.get(0)).append(",").append(innerList.get(1));
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1))); // Now use today date.
 					cal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
