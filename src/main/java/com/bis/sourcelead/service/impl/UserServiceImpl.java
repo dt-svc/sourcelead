@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProbationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -79,6 +80,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProbationHistory;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
@@ -104,6 +106,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.ProbationHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
@@ -240,6 +243,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private ProbationHistoryService probationHistoryService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -439,6 +446,29 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
+		
+		
+		if(employee != null) {
+			ProbationHistory probationHistory = new ProbationHistory();
+			probationHistory.setEmployeeId(employee);
+			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
+			probationHistory.setFromStatus(employee.getProbationStatus());
+			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			
+			if(addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+				probationHistory.setConfirmedDate(new Date());
+			}else {
+				probationHistory.setConfirmedDate(null);
+			}
+			probationHistory.setStatus(1);
+			probationHistory.setUuid(SourceLeadRandomCodeHelper.generateUUID());
+			probationHistory.setCreatedDate(new Date());
+			probationHistory.setCreatedBy(loginuser.getId());
+			probationHistoryService.saveProbationHistory(probationHistory);
+		}
 
 		if(addUserDTO.getCustomFormData() !=null && !responderType.equalsIgnoreCase("vendor") && !responderType.equalsIgnoreCase("client")) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
@@ -472,6 +502,11 @@ public class UserServiceImpl implements UserService {
 				candidate.setEmail(addUserDTO.getEmail());
 				candidate.setFirstName(addUserDTO.getFirstName());
 				candidate.setLastName(addUserDTO.getLastName());
+				if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+					candidate.setPanNumber(candidateDTO.getPanNumber());
+				}else{
+					candidate.setPanNumber(null);
+				}
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
@@ -568,6 +603,11 @@ public class UserServiceImpl implements UserService {
 				    	}
 				    	
 				    }
+					if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+						candidate.setPanNumber(candidateDTO.getPanNumber());
+					}else{
+						candidate.setPanNumber(null);
+					}
 					candidate.setIsAssociate(Constants.YES);
 					candidateService.addCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -586,6 +626,11 @@ public class UserServiceImpl implements UserService {
 			 candidate = candidateService.storeCandidateForUsers(candidateDTO, addUserDTO,user, orgLocations, masterCandidate,loginuser);
 				
 			}else{
+				if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+					candidate.setPanNumber(candidateDTO.getPanNumber());
+				}else{
+					candidate.setPanNumber(null);
+				}
 				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.YES);
 				candidateService.addCandidate(candidate);
@@ -992,6 +1037,30 @@ public class UserServiceImpl implements UserService {
 				} catch (Exception e) {
 				  e.printStackTrace();
 				}
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
+			try {
+				 employees.setConfirmationDate(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getConfirmationDate()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}else {
+				employees.setConfirmationDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getProbationPeriod())){
+				  employees.setProbationPeriod(addUserDTO.getProbationPeriod());
+		}else {
+				  employees.setProbationPeriod(null);
+		}
+		
+		
+		if(StringUtils.isNotBlank(addUserDTO.getProbationStatus())){
+				  employees.setProbationStatus(addUserDTO.getProbationStatus());
+		}else {
+				  employees.setProbationStatus(null);
 		}
 		employees.setCreatedBy(userCode);
 		employees.setCreatedDate(commonUtil.currentDate());
@@ -2244,6 +2313,108 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		return datesMap;
 	}
 
+	@Override
+	public List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate,Long orgLocationId) {
+		return userDao.getAllProbationUsersListForResourceManager(resourcemanagerId,futureDate,orgLocationId);
+	}
 
+
+	@Override
+	public void sendEmailForNewReportingManager(User user, User loginUser, String password, Long locationId, Long existingReportingManagerID, Long currentReportingManagerID) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationId);
+		 UserRole exUserRole = userRoleService.getUserRoleByUserIdAndLocationId(existingReportingManagerID, locationId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		 if(exUserRole == null){
+			 exUserRole = userRoleService.getLoginUserPrimaryRole(existingReportingManagerID);
+		 }
+		OrgLocations locations= orgLocationService.getOrgLocations(locationId);
+		 
+		 StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setLastName(user.getLastName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CHANGE_REPORTING_MANAGER_EMAIL);
+
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setOrgLocationId(locationId);
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuilder builder=new StringBuilder();
+		 if(user.getLastName() != null && user.getLastName() !=""){
+			 globalVarsMap.put("toAssociate",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("toAssociate", user.getFirstName());	 
+		 }
+		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
+		 globalVarsMap.put("loginUser",loginUserFullName);
+		 globalVarsMap.put("LoginOrgName", locations.getOrgLocationName());
+		 globalVarsMap.put("PreviousReportingManager",exUserRole.getUser().getFirstName()+" "+exUserRole.getUser().getLastName());
+		 globalVarsMap.put("NewReportingManager",userRole.getReportingManager().getFullName());
+
+		 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		 
+		 
+		 EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_REPORTING_MANAGER_NOTIFICATOPN, Constants.ENTITY_TYPE_NOTIFICATION);
+		 String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		 notificationScenario.setBody(notificationBody);
+
+		 
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
+		
+		String actionLink="";
+		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+	}
+
+	@Override
+	public void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser,OrgLocations orgLocations,String confirmationDate, String designation) throws Exception {
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(toUser.getFirstName());
+		 emailMessage.setLastName(toUser.getLastName());
+		 emailMessage.setToEmail(toUser.getEmail());
+		 emailMessage.setFromEmail(fromUser.getEmail());
+		 
+		 StringBuilder from=new StringBuilder();
+		 if(fromUser.getLastName() != null && fromUser.getLastName() !=""){
+			 emailMessage.setFromName(from.append(fromUser.getFirstName()).append(" ").append(fromUser.getLastName()).toString()); 
+		 }else{
+			 emailMessage.setFromName(fromUser.getFirstName());
+		 }
+		 emailMessage.setEmailType(Constants.CONFIRMATION_OF_EMPLOYMENT_MAIL);
+
+		 emailMessage.setCreatedBy(fromUser.getUserCode());
+		 emailMessage.setOrgLocationId(orgLocations.getId());
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuilder builder=new StringBuilder();
+		 if(toUser.getLastName() != null && toUser.getLastName() !=""){
+			 globalVarsMap.put("associateName",builder.append(toUser.getFirstName()).append(" ").append(toUser.getLastName()).toString());	 
+		 }else{
+			 globalVarsMap.put("associateName", toUser.getFirstName());	 
+		 }
+		 globalVarsMap.put("loginUser",emailMessage.getFromName());
+		 globalVarsMap.put("associateEmail", toUser.getEmail());
+		 globalVarsMap.put("associateRole",designation);
+		 globalVarsMap.put("confirmationDate",commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), confirmationDate).toString());
+		 globalVarsMap.put("loginOrgName",orgLocations.getOrgLocationName());
+
+		 List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		 
+		 UserRole uRole = userRoleService.getUserRoleByUserId(toUser.getId());
+		 
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,uRole.getOrgLocations().getOrg(),uRole.getOrgLocations(),Constants.CONFIRMATION_OF_EMPLOYMENT_MAIL,attachmentList);
+		
+		
+	}
+
+	
 }
 

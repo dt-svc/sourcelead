@@ -24,7 +24,9 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
+import com.bis.sourcelead.payroll.entity.USPayrollAssociateTaxHistory;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
+import com.bis.sourcelead.payroll.service.USPayrollAssociateTaxHistoryService;
 import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -43,6 +45,9 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	@Autowired
 	CandidateDao candidateDao;
 	
+	@Autowired
+	USPayrollAssociateTaxHistoryService uSPayrollAssociateTaxHistoryService; 
+	
 	
 	@Override
 	public Response<AssociateTaxDTO> saveAssociateTax(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser)
@@ -50,19 +55,21 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		Response<AssociateTaxDTO> resObj = new Response<>();
 		try {
 			AssociateTax associateTax = null;
+			AssociateTax previousAssociateTax = new AssociateTax();
 			if (Validator.validate(associateTaxDTO)) {
 				if(associateTaxDTO.getUserId() != null) {
 					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateTaxDTO.getUserId()),orgLocation.getId());
 					associateTax = associateTaxDao.findAssociateTaxSummaryByCandidateId(candidate.getId(),orgLocation);
 					if(associateTax != null) {
-						associateTax.setUpdatedBy(loginUser.getUserCode());
-						associateTax.setUpdatedDate(new Date());
+						previousAssociateTax = setPreviousAssociateTaxData(associateTax);
 					}else {
 						associateTax = new AssociateTax();
 //						Candidate candidate = candidateDao.getCandidateByConsultantUserId(associateTaxDTO.getUserId(),orgLocation.getId());
 						associateTax.setCandidate(candidate);
 						associateTax.setCreatedBy(loginUser.getUserCode());
 						associateTax.setCreatedDate(new Date());
+						associateTax.setUpdatedBy(loginUser.getUserCode());
+						associateTax.setUpdatedDate(new Date());
 					}
 				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
@@ -126,6 +133,8 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 					resObj.setResponseMessage(Result.SUCCESS.getValue());
 					associateTaxDTO.setId(savedAssociateTax.getId());
 					resObj.setObject(associateTaxDTO);
+					// below method is used to store history of Associate Tax
+					USPayrollAssociateTaxHistory his = uSPayrollAssociateTaxHistoryService.storeUSPayrollAssociateTaxHistory(savedAssociateTax,previousAssociateTax);
 				}
 			}
 			else {
@@ -140,6 +149,31 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		return resObj;
 	}
 	
+	private AssociateTax setPreviousAssociateTaxData(AssociateTax assTax)
+	{
+		AssociateTax associateTax = new AssociateTax();
+		associateTax.setFederalTaxFilliingStatus(assTax.getFederalTaxFilliingStatus());
+		associateTax.setFederalTaxAllowances(assTax.getFederalTaxAllowances());
+		associateTax.setFederalTaxAdditionnalWithHolding(assTax.getFederalTaxAdditionnalWithHolding());
+		associateTax.setStateTaxFilliingStatus(assTax.getStateTaxFilliingStatus());
+		associateTax.setStateTaxAllowances(assTax.getStateTaxAllowances());
+		associateTax.setStateTaxAdditionnalWithHolding(assTax.getStateTaxAdditionnalWithHolding());
+		associateTax.setFederalExempt(assTax.getFederalExempt());
+		associateTax.setMediacareExempt(assTax.getMediacareExempt());
+		associateTax.setSocialSecurityExempt(assTax.getSocialSecurityExempt());
+		associateTax.setFutaExempt(assTax.getFutaExempt());
+		associateTax.setSutaExempt(assTax.getSutaExempt());
+		associateTax.setAssociateTaxUuid(assTax.getAssociateTaxUuid());
+		associateTax.setResidenceTaxFilliingStatus(assTax.getResidenceTaxFilliingStatus());
+		associateTax.setResidenceTaxAllowances(assTax.getResidenceTaxAllowances());
+		associateTax.setResidenceTaxAdditionnalWithHolding(assTax.getResidenceTaxAdditionnalWithHolding());
+		associateTax.setLocalTax(assTax.getLocalTax());
+		associateTax.setLocalTaxState(assTax.getLocalTax());
+		associateTax.setStatus(assTax.getStatus());
+		associateTax.setSupplementType(assTax.getSupplementType());
+		return associateTax;
+	}
+
 	@Override
 	public Response<AssociateTaxDTO> isLocalTaxYes(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser)
 	{

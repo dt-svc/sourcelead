@@ -789,18 +789,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			assetMigDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), AssetsDataImportDTO.class);
 
-			List<AssetAssignDTO> assignAssetList = new ArrayList<>();
+		/*	List<AssetAssignDTO> assignAssetList = new ArrayList<>();
 			if (StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
 				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-				for (String as : assignUsere) {
-					AssetAssignDTO aDTO = new AssetAssignDTO();
-					String[] email = as.split("#");
-					aDTO.setShiftEmp(email[0]);
-					aDTO.setShift(email[1]);
-					assignAssetList.add(aDTO);
+				if(assignUsere != null && assignUsere[0] != null) {
+					for (String as : assignUsere) {
+						AssetAssignDTO aDTO = new AssetAssignDTO();
+						String[] email = as.split("#");
+						aDTO.setShiftEmp(email[0]);
+						aDTO.setShift(email[1]);
+						assignAssetList.add(aDTO);
+					}
 				}
+				
 			}
-			assetDTO.setAssignAsset(assignAssetList);
+			assetDTO.setAssignAsset(assignAssetList);*/
 			assetDTO.setCategory(assetMigDTO.getCategory());
 			assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
 			assetDTO.setCpu(assetMigDTO.getCpu());
@@ -1022,6 +1025,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 				immDto.setEmail(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"));
 			}
+			
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"))) {
+				immDto.setMobile(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"));
+			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("experience"))) {
 				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
@@ -1053,6 +1062,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				}
 			}
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("ssn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
 				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));

@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 
-
 /**
  * 
  * @author Rajashekar
@@ -248,6 +247,7 @@ public class Constants {
 	public static final String ACTIVE = "Active";
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
+	public static final String PURCHASED = "Purchased";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
@@ -355,6 +355,7 @@ public class Constants {
 	
 	public static final String BUDGET_REQUEST_ONHOLD_EMAIL = "Budget Request OnHold";
 	public static final String BUDGET_REQUEST_ONHOLD_NOTIFICATION = "BudgetRequestOnHoldNotification";
+	
 	
 	public static final String UPDATED_SPOC_CONTACT = "SpocPointOfContatChangeEmail";
 	public static final String INVITE_COMPANY = "inviteCompany";
@@ -670,10 +671,10 @@ public class Constants {
 	public static final String[] PROJECT_TASKS_PDF_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To", "Status"};
 	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
 
-	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
+	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type*" , "Task Title*","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status*", "Owner","Billing Type*","Currency Type","Business Value", "Description"};
 	
 
-	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
+	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
@@ -1169,6 +1170,8 @@ public class Constants {
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
+	public static final String REPORT_FILTER_Last_Week = "Last_Week";
+	public static final String REPORT_FILTER_1_Month_Ago = "1_Month_Ago";
 	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
 	public static final String GENERAL = "General";
@@ -1247,6 +1250,9 @@ public class Constants {
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
     
+    public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
+
+    
     public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
@@ -1296,6 +1302,8 @@ public class Constants {
 	
 	public static final String IND_PAYROLL_PAYHEAD_TDS = "TDS";
 	public static final String IND_PAYROLL_PROFESSIONAL_TAX = "PT";
+	public static final String IND_PAYROLL_PAYHEAD_PF = "PF";
+	public static final String IND_PAYROLL_PAYHEAD_ESI = "ESI";
 	
 	public static final String[] CONSTANT_PAYHEAD_SHORTCODES = { "PT", "TDS", "PF", "ESI", "L&D", "BO", "ARR", "RMB" };
 	
@@ -1311,12 +1319,35 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_VARIABLE = "Variable";
 	public static final String IND_PAYROLL_PAYHEAD_COMPONENT_FIXED = "Fixed";
 	
+	public static final String SEND_MAIL_TO_INDPAYROLL_APPROVER = "sendMailToIndPayrollApprover";
+	public static final String SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER = "sendNotificationToIndPayrollApprover";
+	
+	public static final String SEND_APPROVED_MAIL_TO_REQUESTED_USERIND = "sendApprovedMailToRequestedUserInd";
+	public static final String SEND_APPROVED_NOTIFICATION_TO_REQUESTE_DUSERIND = "sendApprovedNotificationToRequestedUserInd";
+
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+
+	public static final String CONFIRMED = "Confirmed";
+	
+	public static final String PROBATIONARY_ASSOCiATES_EMAIL = "ProbationaryAssociatesEmail";
+
+	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
+	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+
+	
+	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
+	public static final String CHANGE_REPORTING_MANAGER_NOTIFICATOPN="ChangeReportingManagerNotification";
+	
+
 	public static final String ASSOCIATE_WITH_HOLDING_REPORT = "Associate With Holding Report";
 	public static final String DEDUCTION_SUMMARY_REPORTS = "Deduction Summary Reports";
 	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
+	
+	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
+	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
+	
 }
