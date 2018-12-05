@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +41,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.CandidateEducationDao;
+import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
@@ -49,17 +53,19 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateDTO;
+import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
+import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
-import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -68,6 +74,7 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -76,6 +83,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -117,6 +125,8 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * 
@@ -239,7 +249,15 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     CandidateTimelineActivityService candidateTimelineActivityService;
+    
+    @Autowired
+    CandidateCertificationsDao candidateCertificationsDao;
+    
+    @Autowired
+    CandidateEmployersDao candidateEmployersDao;
 
+    @Autowired
+    CandidateEducationDao candidateEducationDao;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -559,6 +577,7 @@ public class CandidateServiceImpl implements CandidateService {
 		}
 		return candidateList;
 	}
+	
 	
 	/**
 	 * to get Candidate By CandidateId
@@ -1465,6 +1484,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateUser.getDateOfBirth() != null){
 			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
 			}
+		if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
+			candidate.setPanNumber(candidateDTO.getPanNumber());
+		}else{
+			candidate.setPanNumber(null);
+		}
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
@@ -2668,32 +2692,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
 			marketPlace.setMarketPrice(null);
 			marketPlace.setMarketRateCurrencey(null);
-			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setCandidateMarketStatus(Constants.DRAFT);
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
 			marketPlace.setCreatedBy(user);
@@ -2733,32 +2734,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setFullName(candidate.getFullName());
-			marketPlace.setGender(candidate.getGender());
-			marketPlace.setEmail(candidate.getEmail());
-			marketPlace.setAlternateEmail(candidate.getAlternateEmail());
-			marketPlace.setMobilePhone(candidate.getMobilePhone());
-			marketPlace.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
-			marketPlace.setDesignation(candidate.getDesignation());
-			marketPlace.setEmploymentType(candidate.getDesignationType());
-			marketPlace.setLocation(candidate.getLocation());
-			marketPlace.setProfilePercentage(candidate.getCandidateProfilePercentage());
-			marketPlace.setSkillsName(candidate.getSkillsName());
-			marketPlace.setExperienceYears(candidate.getExperienceYears());
-			marketPlace.setExperienceMonths(candidate.getExperienceMonths());
-			marketPlace.setCurrentRate(candidate.getCurrentRate());
-			marketPlace.setCurrentRateType(candidate.getCurrentRateType());
-			marketPlace.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
-			marketPlace.setExpectedRate(candidate.getExpectedRate());
-			marketPlace.setExpectedRateType(candidate.getRateType());
-			marketPlace.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
-			marketPlace.setNoticePeriod(candidate.getNoticePeriod());
-			marketPlace.setNationality(candidate.getNationality());
-			marketPlace.setMaritalStatus(candidate.getMaritalStatus());
-			marketPlace.setImageUrl(candidate.getFileUrl());
+			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
+			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
-			marketPlace.setSummary(candidate.getSummary());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
 			marketPlace.setStatus(Constants.CANDIDATE_ACTIVE);
 			marketPlace.setCreatedDate(new Date());
@@ -2795,6 +2774,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception{
+		return candidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+	}
+	
+	@Override
 	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason) throws Exception {
 		marketplace.setCandidateMarketStatus(Constants.STATUS_WITHDRAWN);
 		marketplace.setWithdrawReason(withdrawReason);
@@ -2803,7 +2787,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		saveOrUpdateCandidateElkDocument(candidate);
 		candidateDao.storeCandidate(candidate);
 		candidateDao.withdrawCandidateFromMarketplace(marketplace);
-		
+		//Deleting the record from the cart if already added in cart by the user.
+		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
 	}
 
 	@Override
@@ -2845,6 +2830,27 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 				BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+				marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+				marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+				marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+				marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+				marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+				marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+				marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+				marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+				marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+				marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+				marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+				marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+				marketPlaceDTO.setShowCompanyName(marketPlace.getShowCompanyName());
+				marketPlaceDTO.setCompanyName(marketPlace.getCompanyName());
+				marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
+				marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+				marketPlaceDTO.setMarketRateCurrencey(marketPlace.getMarketRateCurrencey());
+				marketPlaceDTO.setMarketPrice(marketPlace.getMarketPrice());
+				marketPlaceDTO.setMarketplaceUUID(marketPlace.getMarketplaceUUID());
+				marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+				
 				int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
 				if(count != 0){
 					marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
@@ -2874,8 +2880,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations)throws Exception {
-	return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception {
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);
 	}
 
 	@Override
@@ -2883,6 +2889,168 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidateDao.deleteCandidateFromMarketcartByCandidateUuid(candidateUuid);
 		
 	}
+	
+	@Override
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue) {
+		return candidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
+	}
+	
+	@Override
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception {
+		return candidateDao.updateMarketplaceCandidates(orgLocations,companyNameFlag);
+	}
+	
 
+	@Override
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception {
+		CandidateMarketPlace marketPlace = candidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
+		CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
+		BeanUtils.copyProperties(marketPlace, marketPlaceDTO);
+		marketPlaceDTO.setImageUrl(marketPlace.getCandidateId().getFileUrl());
+		marketPlaceDTO.setFullName(marketPlace.getCandidateId().getFullName());
+		marketPlaceDTO.setLocation(marketPlace.getCandidateId().getLocation());
+		marketPlaceDTO.setProfilePercentage(marketPlace.getCandidateId().getCandidateProfilePercentage());
+		marketPlaceDTO.setDesignation(marketPlace.getCandidateId().getDesignation());
+		marketPlaceDTO.setSummary(marketPlace.getCandidateId().getSummary());
+		marketPlaceDTO.setCurrentRateCurrency(marketPlace.getCandidateId().getCurrentRateCurrency());
+		marketPlaceDTO.setCurrentRate(marketPlace.getCandidateId().getCurrentRate());
+		marketPlaceDTO.setCurrentRateType(marketPlace.getCandidateId().getCurrentRateType());
+		marketPlaceDTO.setExpectedRateCurrencey(marketPlace.getCandidateId().getExpectedRateCurrencey());
+		marketPlaceDTO.setExpectedRate(marketPlace.getCandidateId().getExpectedRate());
+		marketPlaceDTO.setExpectedRateType(marketPlace.getCandidateId().getRateType());
+		marketPlaceDTO.setExperienceYears(marketPlace.getCandidateId().getExperienceYears());
+		marketPlaceDTO.setExperienceMonths(marketPlace.getCandidateId().getExperienceMonths());
+		if(marketPlace.getCandidateId().getSkillsName() != null){
+			String[] skills = marketPlace.getCandidateId().getSkillsName().split(",");
+			marketPlaceDTO.setSkills(skills);
+		}
+		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
+		for(CandidateEmployers employers : candidateEmployers){
+			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
+			BeanUtils.copyProperties(employers, employerDTO);
+			if(employers.getStartMonth()!= null && !employers.getStartMonth().equals("")){
+				String[] startMonth = employers.getStartMonth().split("&");
+				employerDTO.setStartMonth(startMonth[1]);
+			}
+			if(employers.getEndMonth() != null && !employers.getEndMonth().equals("")){
+				String[] endMonth = employers.getEndMonth().split("&");
+				employerDTO.setEndMonth(endMonth[1]);
+			}
+			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+				employerDTO.setEndMonth("Present");
+				employerDTO.setEndYear("");
+			}
+			candidateEmployerDTOs.add(employerDTO);
+		}
+		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
+		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
+		for(CandidateEducation education : educations){
+			CandidateEducationDTO educationDTO = new CandidateEducationDTO();
+			BeanUtils.copyProperties(education, educationDTO);
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat dtf2 = new SimpleDateFormat("MMM");
+			SimpleDateFormat dtf3 = new SimpleDateFormat("yyyy");
+			if(education.getStartDate() != null  && !education.getStartDate().equals("")){
+				String startDateString = dtf.format(education.getStartDate());
+				String startMonthName = dtf2.format(dtf.parse(startDateString));
+				String startYear = dtf3.format(dtf3.parse(startDateString));
+				educationDTO.setStartYear(startYear);
+				educationDTO.setStartMonth(startMonthName);
+			}
+			if(education.getEndDate() != null  && !education.getEndDate().equals("")){
+				String endDateString = dtf.format(education.getEndDate());
+				String endMonthName = dtf2.format(dtf.parse(endDateString));
+				String endYear = dtf3.format(dtf3.parse(endDateString));
+				educationDTO.setEndYear(endYear);
+				educationDTO.setEndMonth(endMonthName);
+			}
+			educationDTOs.add(educationDTO);
+		}
+		marketPlaceDTO.setCandidateEducation(educationDTOs);
+		//Set<CandidateCertifications> certifications = marketPlace.getCandidateId().getCandidateCertifications();
+		List<CandidateCertifications> certifications = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateCertificationDTO> certificationDTOs = new ArrayList<>();
+		for(CandidateCertifications certification : certifications){
+			CandidateCertificationDTO certificationDTO = new CandidateCertificationDTO();
+			BeanUtils.copyProperties(certification, certificationDTO);
+			SimpleDateFormat dtf = new SimpleDateFormat("yyyy-MM-dd");
+			if(certification.getValidFrom()!= null  && !certification.getValidFrom().equals("")){
+				certificationDTO.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidFrom()));
+			}
+			if(certification.getValidTo()!= null  && !certification.getValidTo().equals("")){
+				certificationDTO.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),certification.getValidTo()));
+			}
+			certificationDTOs.add(certificationDTO);
+		}
+		marketPlaceDTO.setCandidateCertifications(certificationDTOs);
+		int count = candidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+		if(count != 0){
+			marketPlaceDTO.setMarketCartStatus(Constants.ADDED_CART);
+		}
+		if(marketPlace.getCandidateId().getSkillsName() != null && !marketPlace.getCandidateId().getSkillsName().equals("")){
+			List<CandidateMarketPlaceDTO> marketPlaceDTOs = new ArrayList<>();
+			List<CandidateMarketPlace> globalCandidatesMarketplaceData = candidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
+			marketPlaceDTO.setSkillsName(marketPlace.getCandidateId().getSkillsName());
+			String[] marketPlaceSkills = marketPlace.getCandidateId().getSkillsName().split(",");
+			for (int j = 0; j < marketPlaceSkills.length; j++){
+				marketPlaceSkills[j] = marketPlaceSkills[j].trim();
+			}
+			for(CandidateMarketPlace place : globalCandidatesMarketplaceData){
+				String[] placeSkills = null;
+				if(place.getCandidateId().getSkillsName() != null && !place.getCandidateId().getSkillsName().equals("")){
+					placeSkills = place.getCandidateId().getSkillsName().split(",");
+					for (int i = 0; i < placeSkills.length; i++){
+						placeSkills[i] = placeSkills[i].trim();
+					}
+				if(!Collections.disjoint(Arrays.asList(placeSkills), Arrays.asList(marketPlaceSkills))){
+					CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
+					BeanUtils.copyProperties(place, dto);
+					dto.setImageUrl(place.getCandidateId().getFileUrl());
+					dto.setFullName(place.getCandidateId().getFullName());
+					dto.setLocation(place.getCandidateId().getLocation());
+					marketPlaceDTOs.add(dto);
+				}
+			}
+			}
+			marketPlaceDTO.setCandidateMarketPlaceDTOs(marketPlaceDTOs);
+		}
+		return marketPlaceDTO;
+	}
 
+	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
+		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
+		return marketCartIds;
+	}
+	
+	@Override
+	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
+		List<CandidateDTO> candidate = candidateDao.getCandidatesListByIds(Ids);
+		return candidate;
+	}
+
+	@Override
+	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
+		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
+	}
+
+	@Override
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory) throws Exception {
+		 candidateDao.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
+	}
+
+	@Override
+	public void saveTransactionCompletedCandidates(CandidateDTO candidateDto, OrgLocations orgLocations, User user)throws Exception {
+			storeCandidate(candidateDto, orgLocations, user);
+	}
+
+	@Override
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) throws Exception {
+		// TODO Auto-generated method stub
+		List<Candidate> candidates = candidateDao.getCandidateDetailsListById(Ids);
+		return candidates;
+	}
+	
 }

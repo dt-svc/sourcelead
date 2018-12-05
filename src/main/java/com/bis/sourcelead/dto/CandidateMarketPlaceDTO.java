@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  {
 	
@@ -84,9 +86,23 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	
 	private String candidateMarketStatus;
 	
+	private String showCompanyName;
+	
+	private String companyName;
+	
 	private String summary;
 	
 	private String marketCartStatus;
+	
+	private String[] skills;
+	
+	private List<CandidateEmployerDTO> candidateEmployers;
+	
+	private List<CandidateEducationDTO> candidateEducation;
+	
+	private List<CandidateCertificationDTO> candidateCertifications;
+	
+	private List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs;
 
 	public Long getId() {
 		return id;
@@ -384,6 +400,22 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.candidateMarketStatus = candidateMarketStatus;
 	}
 
+	public String getShowCompanyName() {
+		return showCompanyName;
+	}
+
+	public void setShowCompanyName(String showCompanyName) {
+		this.showCompanyName = showCompanyName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
 	public String getSummary() {
 		return summary;
 	}
@@ -400,4 +432,44 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.marketCartStatus = marketCartStatus;
 	}
 
+	public String[] getSkills() {
+		return skills;
+	}
+
+	public void setSkills(String[] skills) {
+		this.skills = skills;
+	}
+
+	public List<CandidateEmployerDTO> getCandidateEmployers() {
+		return candidateEmployers;
+	}
+
+	public void setCandidateEmployers(List<CandidateEmployerDTO> candidateEmployers) {
+		this.candidateEmployers = candidateEmployers;
+	}
+
+	public List<CandidateEducationDTO> getCandidateEducation() {
+		return candidateEducation;
+	}
+
+	public void setCandidateEducation(List<CandidateEducationDTO> candidateEducation) {
+		this.candidateEducation = candidateEducation;
+	}
+
+	public List<CandidateCertificationDTO> getCandidateCertifications() {
+		return candidateCertifications;
+	}
+
+	public void setCandidateCertifications(List<CandidateCertificationDTO> candidateCertifications) {
+		this.candidateCertifications = candidateCertifications;
+	}
+
+	public List<CandidateMarketPlaceDTO> getCandidateMarketPlaceDTOs() {
+		return candidateMarketPlaceDTOs;
+	}
+
+	public void setCandidateMarketPlaceDTOs(List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs) {
+		this.candidateMarketPlaceDTOs = candidateMarketPlaceDTOs;
+	}
+	
 }

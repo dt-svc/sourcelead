@@ -191,7 +191,7 @@ function cancelFileImport(){
 	/* $("#jobFieldsDiv").attr("style","display:none");
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleadUrl+"/uploadProjectTasks");
+	location.replace(sourceleadUrl+"/usersList");
 }
 </script>
 
