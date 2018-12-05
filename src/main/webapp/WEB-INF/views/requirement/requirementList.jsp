@@ -924,7 +924,7 @@ function exportToPdf(type) {
 	    });
 	 	var clients = [];
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
+			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
@@ -959,7 +959,7 @@ function exportToExcel(type) {
 	    });
 	 	var clients = [];
 		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).val());
+			clients.push($(this).attr("data-val"));
 	    });
 		if(requirementEmptyMessage > 0) {
 			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
@@ -1285,11 +1285,11 @@ function refreshGoogleApiCity(cityId){
 									<c:forEach var="team" items="${add_clientList}">
 									
 									<c:if test="${team.locationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
 									</c:if>
 									
 									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
 									</c:if>
 									
 									</c:forEach>
