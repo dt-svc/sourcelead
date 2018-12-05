@@ -1335,7 +1335,7 @@ public class Constants {
 	public static final String PROBATIONARY_ASSOCiATES_EMAIL = "ProbationaryAssociatesEmail";
 
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
-	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusEmail";
 
 	
 	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
