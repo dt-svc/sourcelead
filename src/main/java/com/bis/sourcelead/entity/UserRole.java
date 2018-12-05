@@ -209,6 +209,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String dateofBirthStr;
+	
+	@Transient
+	@JsonProperty
+	private String panNumber;
 
 	@Transient
 	@JsonProperty
@@ -292,7 +296,7 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<Roles> rolesList;
-
+	
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
 	
@@ -437,6 +441,17 @@ public class UserRole implements Serializable {
 	@JsonProperty
 	private String residenceLongitude;
 	
+	@Transient
+	@JsonProperty
+	private String confirmationDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String probationPeriod;
+	
+	@Transient
+	@JsonProperty
+	private String probationStatus;
 	
 	public BigInteger getUserRoleId() {
 		if(id != null) {
@@ -1062,6 +1077,14 @@ public class UserRole implements Serializable {
 	public void setDateofBirthStr(String dateofBirthStr) {
 		this.dateofBirthStr = dateofBirthStr;
 	}
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public String getOrgName()
 	{
 		return orgName;
@@ -1297,6 +1320,29 @@ public class UserRole implements Serializable {
 	public void setResidenceLongitude(String residenceLongitude) {
 		this.residenceLongitude = residenceLongitude;
 	}
-	
+
+	public String getConfirmationDateStr() {
+		return confirmationDateStr;
+	}
+
+	public void setConfirmationDateStr(String confirmationDateStr) {
+		this.confirmationDateStr = confirmationDateStr;
+	}
+
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public String getProbationStatus() {
+		return probationStatus;
+	}
+
+	public void setProbationStatus(String probationStatus) {
+		this.probationStatus = probationStatus;
+	}
 
 }

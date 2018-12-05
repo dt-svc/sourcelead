@@ -1,6 +1,7 @@
 /* CSS Document */
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
+	
 	margin: 0; padding: 0;
 }
 body {
@@ -6561,7 +6562,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
 .viewgrid-header {
     position: absolute; right: 15px; top: 15px;
 }
-/* Dashboard */
+
 .leavescount a{
     font-size: 1.5em; font-weight: 500; color: #808080; bottom: 35px; width: 100%; text-align: center; left: 0; z-index: 9;
     position: absolute; transition: all 0.3s ease-in-out;
@@ -6570,7 +6571,7 @@ border: 1px solid #ededed; padding: 10px; border-radius: 5px; transition: all 0.
     color: #333; bottom: 45px;
 }
 .project-tabs-menu.projecttabs-custom li a {
-    padding: 6px 25px;
+    padding: 10px 25px;
 }
 .project-tabs-menu.projecttabs-custom li {
     border-radius: 5px 5px 0 0;
@@ -7971,9 +7972,8 @@ display: initial;
 	margin-bottom: 0;
 }
 .signatoryFormDiv {
-    padding:20px; width: 950px; min-height: 150px;  left: 15%; top:15%;
-    background-color: #fff; display: none; position: fixed; z-index: 9999;
-    border-radius:5px;
+    padding:20px; width: 950px; min-height: 150px;  left: 15%; top:15%; background-color: #fff; display: none;
+	position: fixed; z-index: 9999; border-radius:5px;
 }
 .signatoryFormDiv .close {
     position: absolute; right: 10px; top: 10px; opacity: 1;
@@ -8009,8 +8009,7 @@ content: '\f00d'; font-family: fontawesome;
 color: green;
 }
 .passHintNew p.actTe:before {
-position: relative; display:inline-block;
-right:0px; width:18px;
+position: relative; display:inline-block; right:0px; width:18px;
 content: '\f00c'; font-family: fontawesome;
 }
 ul.actionIcons li{
@@ -9182,6 +9181,9 @@ margin: 5px 0; font-size: 16px; color: #606060;
 .rewardImage {
 	width: 55px; height: 55px; padding-right: 0;
 }
+/*.profileDetails-Widget .media-object {
+	width: 55px; height: 65px; margin: 5px 0px 0px 0px;
+}*/
 .prfileImg img, .profilesummarywidgetImg img, .grid-prfileImg img, .cartImg img, .rewardImage img {
 	max-height: 100%; border-radius:0px; margin: 0 auto;
 }
@@ -9268,6 +9270,11 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/sortIcon.svg); background-repeat: no-repeat; width: 25px; height: 28px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.walletSvg {
+	background-image: url(../images/walletexpenses.svg); background-repeat: no-repeat; width: 50px; height: 50px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9408,6 +9415,12 @@ background: url("../images/invitationSVG.svg"); background-repeat: no-repeat; ba
 .tagSVG {
 background: url("../images/tagSVG.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
 }
+.assenDesendingIC {
+background: url("../images/sortIC.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:22px; text-align: center; display: block; height: 32px;
+}
+.printIC {
+background: url("../images/printIC.svg"); background-repeat: no-repeat; background-size: 22px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9436,13 +9449,16 @@ background: url("../images/tagSVG.svg"); background-repeat: no-repeat; backgroun
 	min-height: 75px; max-height: 325px; overflow:auto;
 }
 .circular-chart {
-  display: block; margin:0 auto; max-width: 50%; max-height: 50px;
+display: block; margin:0 auto; max-width: 50%; max-height: 50px;
 }
 .circle-bg {
-  fill: none; stroke: #fff; stroke-width: 4;
+fill: none; stroke: #ccc; stroke-width: 4;
 }
 .circle {
-  fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+fill: none; stroke-width: 3; stroke-linecap: round; animation: progress 1s ease-out forwards;
+}
+.circle0 {
+fill: none; stroke-width: 0; stroke-linecap: round; animation: progress 1s ease-out forwards;
 }
 @keyframes progress {
   0% {
@@ -9542,7 +9558,53 @@ input[type=range]::-moz-range-track {
 .descriptionTxtarea .note-editable {
   min-height: 150px; max-height: 250px;
 }
-
+.tdVmiddle tr td {
+	vertical-align: middle !important;
+}
+.fullTimebg {
+	min-height: 30px; color: #fff; font-size: 18px; background-color: #f5f5f5;
+}
+.fullTimebg .joinedTime {
+	background-color: #2980b9; padding:0px; min-height: 30px;
+}
+.fullTimebg .joinedValue {
+background-color: #e84393; padding:0px; min-height: 30px;
+}
+.assignedImages {
+	width: 35px; height:35px; display: inline-block; margin: 0 auto;
+}
+.assignedImages img {
+	max-height: 100%; max-width: 100%; border-radius: 50%;
+}
+.headerCartCountShow {
+position: absolute; top: 2px; font-size: 10px; right: 0; width: 50px; text-align: center; 
+}
+ul.timelineDots {
+    list-style-type: none;
+}
+ul.timelineDots > li {
+    padding-left: 25px; margin-bottom: 15px; position: relative;
+}
+ul.timelineDots::before {
+    content: ''; background: #d4d9df; display: inline-block;
+    position: absolute; left: 0px; width: 2px; height: 60%; z-index: 400;
+}
+ul.timelineDots > li::before {
+    content: ''; background: #ddd; display: inline-block; position: absolute; border-radius: 50%;
+    width: 10px; height: 10px; z-index: 400; left: -4px; top: 15px;
+}
+ul.timelineDots li .media-object {
+    width: 50px; height: 50px;
+}
+ul.timelineDots li .media-object img {
+    border-radius: 50%; max-height: 100%;
+}
+.customeProjectDetails .project_details_cta strong {
+    text-align: left; width:150px;
+}
+.customeProjectDetails .project_details_cta span {
+    width: 50%;
+}
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {

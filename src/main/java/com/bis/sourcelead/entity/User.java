@@ -213,6 +213,10 @@ public class User implements Serializable{
     
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
+    
+    @Column(name = "ALLOW_EMPLOYEE_TO_FILL")
+	@Enumerated(EnumType.STRING)
+	private Status allowEmployeeToFill;
 	
 	@Transient
 	private String isPrimaryAdmin;
@@ -964,4 +968,14 @@ public class User implements Serializable{
 	public void setIsPayRollApprover(String isPayRollApprover) {
 		this.isPayRollApprover = isPayRollApprover;
 	}
+
+	public Status getAllowEmployeeToFill() {
+		return allowEmployeeToFill;
+	}
+
+	public void setAllowEmployeeToFill(Status allowEmployeeToFill) {
+		this.allowEmployeeToFill = allowEmployeeToFill;
+	}
+
+	
 }

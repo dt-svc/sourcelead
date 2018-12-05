@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -235,6 +236,22 @@ public interface RequirementSubmissionDao {
 	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
 	
 	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String usercode,Long orgLocationId, Date[] searchDates) throws Exception;
+
+	ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+	
+	ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId);
+	
+	List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations,User user,Long orgRelationId,List<Long> selectedAssociates);
+
+    List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId);
+    
+    List<RequirementSubmission> getCandidateForBillJobClosureEdit(OrgLocations orgLocations, User user,Long orgRelationId, List<Long> selectedAssociates);
 
 
 }

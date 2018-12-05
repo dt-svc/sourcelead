@@ -210,7 +210,7 @@
 		                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="dbUploadFileAttachment" placeholder="Files are not selected...">
 		                    </div>
 
-		                    <div class="timesheet_week_comm invoiceDocs sizeInputfield" id="dbUploadFile" style="display:block">
+		                    <div class="timesheet_week_comm invoiceDocs sizeInputfield width100percnt" id="dbUploadFile" style="display:block">
 				               <span>
 						         <strong id="ticketDocument16">
 				    		     <i class=""><a class="glyphicon glyphicon-save" href="${assetAssignData.fileUrl}" title="download"></a></i>

@@ -74,6 +74,9 @@ public class LcaReportView implements Serializable {
 	
 	@Column(name = "LCA_UUID ")
 	private String lcaUuid;
+	
+	@Column(name = "EXPIRED ")
+	private String expired;
 
 	public Long getId() {
 		return id;
@@ -233,6 +236,14 @@ public class LcaReportView implements Serializable {
 
 	public void setLcaUuid(String lcaUuid) {
 		this.lcaUuid = lcaUuid;
+	}
+
+	public String getExpired() {
+		return expired;
+	}
+
+	public void setExpired(String expired) {
+		this.expired = expired;
 	}
 	
 }
