@@ -26,5 +26,7 @@ public interface UserLoginLogoutSessionDao {
     List<UserLoginLogoutSession> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO);
     
 	List<UserLoginLogoutSession>  getAll();
+	
+	List<String> getUsersByUserId(UsersUsageReportDTO usersUsageReportDTO);
 
 }
