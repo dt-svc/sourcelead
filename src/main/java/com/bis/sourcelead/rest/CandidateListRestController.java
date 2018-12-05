@@ -2330,7 +2330,7 @@ public class CandidateListRestController {
 
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String[] tableColumns = { "fullName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "profilePercentage", "marketPrice"};
+		String[] tableColumns = { "firstName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "candidateProfilePercentage", "marketPrice"};
 		
 		int sortColumnIndex = 1; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
