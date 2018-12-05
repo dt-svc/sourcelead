@@ -204,6 +204,7 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
+	public static final String CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES= "CartDetailsMailToMarketPlaceCandidates";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -1334,7 +1335,7 @@ public class Constants {
 	public static final String PROBATIONARY_ASSOCiATES_EMAIL = "ProbationaryAssociatesEmail";
 
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
-	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusEmail";
 
 	
 	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";

@@ -2125,7 +2125,7 @@ background-color: #fff; height: 200px !important; background-image:url(../images
     background-color:#fff;
 }    
 .width175 {
-    width: 190px !important;
+    width: 200px !important;
 }
 .noMailImg {
     background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
@@ -8459,7 +8459,6 @@ bottom: auto !important; top: 55px !important;
 .reqrementsummary i { color: #fff !important;}
 .reqrementsummary { color: #fff !important;}
 .reqrementsummary .professinal-details ul li { border: none !important; background-color: #21C3A0; padding: 2px 6px;}
-
 
 
 
