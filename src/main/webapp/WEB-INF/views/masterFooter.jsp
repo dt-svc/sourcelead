@@ -4,10 +4,14 @@
  </c:if>
 </div>
 <!-- Footer Area -->
-<footer class="footer-area clearfix text-center">
-    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
-<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
- -->  </footer>
+<footer class="footer-area clearfix">
+    <div class="col-md-6 text-left">
+    	&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved
+    </div>
+            <div class='col-md-6 text-right'>
+                  <a href="/terms-of-use.html" target="blank" title="Terms of Service">Terms of Service</a> <small class="text-muted">|</small> <a href="/privacy-policy.html" target="blank" title="Privacy Policy">Privacy Policy</a>
+            </div>
+</footer>
   
   <div class='file_mask'>
   </div>

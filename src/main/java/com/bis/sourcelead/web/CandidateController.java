@@ -196,11 +196,10 @@ public class CandidateController {
 			HttpServletRequest request) {
 		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
 		logger.debug("inisde getOrgMarketplaceList  conroller =========> --> ");
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateMarketPlaceDTO.setOrgLocationId(orgLocations.getId().toString());
 		try {
-			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage", "marketPrice" };// should
+			String[] tableColumns = { "", "firstName", "location", "skillsName", "currentRate", "expectedRate", "candidateProfilePercentage", "marketPrice" };// should
 																														// be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
@@ -222,8 +221,6 @@ public class CandidateController {
 		}
 		logger.debug(
 				"after controller  getOrgMarketplaceList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>"
-				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
 	//Note this method is ResumeParsing Candidate method
