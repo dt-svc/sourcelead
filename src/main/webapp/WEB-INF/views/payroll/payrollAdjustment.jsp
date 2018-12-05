@@ -57,12 +57,19 @@
           </div>
           </div>
           
-      <!--     <div class="col-md-2 text-center">
-            <label class="clearfix"><strong>No. Leaves</strong></label>
-            <div class="clearfix">
-              <p class="mt5 mb0">30</p>
-            </div>
-          </div> -->
+      <div class="col-md-5">
+
+			<table class="table">
+				<thead><th>Type</th> <th>No. of Leaves</th> <th class="text-right">LOP Amount</th></thead>
+				<tbody id="LOPDiv">
+				</tbody>
+				<tfoot><tr><th>Total Amount <i class="fa fa-dollar mr5"></i></th>
+				<td colspan="2" class="noPad"><input type="text" id="totLopAmount" name="totLopAmount" readOnly class="payTotalFiled"></td>
+				</tr></tfoot>
+				<!-- <td colspan="2" class="text-right textBold"><span id="lopAmount"></span></td>< -->
+			</table>
+
+          </div>
         
         </div>
       </div>
@@ -146,35 +153,6 @@
                         </tr>
                       </thead>
                       <tbody id="taxesBodyDIV">
-                        <!-- <tr>
-                          <th>Description</th>
-                          <th>Amount</th>
-                        </tr>
-                        <tr>
-                          <td>Federal Withholding</td>
-                          <td><i class="fa fa-dollar mr5"></i><span id="federalWT">0.0</span></td>
-                        </tr>
-                        <tr>
-                          <td>Medicare</td>
-                           <td><i class="fa fa-dollar mr5"></i><span id="medicareWT">0.0</span></td>
-                        </tr>
-                        <tr>
-                          <td>FICA</td>
-                           <td><i class="fa fa-dollar mr5"></i><span id="ficaWT">0.0</span></td>
-                        </tr>
-                      
-                        <tr>
-                          <td>State Withholding</td>
-                          <td><i class="fa fa-dollar mr5"></i><span id="stateWithHoldingWT">0.0</span></td>
-                        </tr>
-                          <tr>
-                          <td>Advanced Earned Income Credit</td>
-                           <td><i class="fa fa-dollar mr5"></i><span id="aeicWT">0.0</span></td>
-                        </tr>
-                           <tr>
-                          <td>LocalTax</td>
-                           <td><i class="fa fa-dollar mr5"></i><span id="localTaxWT">0.0</span></td>
-                        </tr> -->
                         
                       </tbody>
                       <tfoot>
@@ -222,45 +200,6 @@
                       </tbody>
                     </table></td>
                 </tr>
-              <!--   <tr>
-                  <td><table class="table table-bordered">
-                      <tbody>
-                        <tr>
-                          <th>Total Gross</th>
-                          <td>2,062.53</td>
-                        </tr>
-                        <tr>
-                          <th>Before-Tax Deductions</th>
-                          <td>2,062.53</td>
-                        </tr>
-                        <tr>
-                          <th>Life Insurance Premiums</th>
-                          <td>2,062.53</td>
-                        </tr>
-                        <tr>
-                          <th>Fed Taxable and FICA</th>
-                          <td>2,062.53</td>
-                        </tr>
-                      </tbody>
-                    </table></td>
-                  <td><table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th colspan="2">Net Pay Disctibution</th>
-                        </tr>
-                      </thead>
-                      <tbody>json.federal
-                        <tr>
-                          <th>Advice#1006795</th>
-                          <td>2,062.53</td>
-                        </tr>
-                        <tr>
-                          <th>Total</th>
-                          <td>2,062.53</td>
-                        </tr>
-                      </tbody>
-                    </table></td>
-                </tr> -->
               </tbody>
             </table>
           </div>
@@ -318,6 +257,8 @@
 		            $("#preRegularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
 		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
 		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
+		            
+		            $("#totLopAmount").val(json.lopAmount);
 		            
 		            // Taxes Tax
 		            
@@ -603,6 +544,31 @@
 			                  }else{
 			                	  $("#loanAdvanceCol").hide();
 			                  }
+	                        
+	                        var lopres = "";
+	                        var lopData = json.lopHis;
+	                        if(lopData != '' && lopData.length > 0 ){
+	                        	for(var i = 0 ; i< lopData.length;i++){
+	                        		var lopJson = lopData[i];
+	                        		lopres = lopres + '<tr>';
+	                        		lopres = lopres +'<input type="hidden" value='+lopJson.id+' id="id" name="lopHis['+i+'].id"/>';
+	                        		lopres = lopres +'<input type="hidden" value='+lopJson.leaveTypeName+' id="leaveTypeName" name="lopHis['+i+'].leaveTypeName"/>';
+	                        		lopres = lopres +'<input type="hidden" value='+lopJson.lopAmount+' id="lopAmount" name="lopHis['+i+'].lopAmount"/>';
+	                        		lopres = lopres + '<td class="text-left checkBox"><input type="checkbox" name="lopHis['+i+'].lopExempt" id="lopHis['+i+'].lopExempt" class="noMar" onClick="excludeFun();"><span class="ml10">'+lopJson.leaveTypeName+'</span></td>';
+	                        		lopres = lopres + '<td class="text-left">'+lopJson.lopLeaves+'</td>';
+	                        		lopres = lopres + '<td class="text-right">'+lopJson.lopAmount+' <div class="text-right text-danger small" style="display:none" id="exclude">Excluded</div></td>';
+	                        		lopres = lopres + '</tr>';
+	                        	} 
+	                        }else{
+	                        	lopres = lopres + '<tr><td class="text-center">--</td><td class="text-center">--</td><td class="text-center">--</td></tr>';
+	                        }
+	                        
+	                        $("#LOPDiv").empty();
+ 	                        $("#LOPDiv").append(lopres);
+	                        /* () lopres = lopres + '<tr><td class="text-left">Normal Leave</td><td class="text-right">0.7</td></tr>';
+	                        lopres = lopres + '<tr><td class="text-left">Total Leaves</td><td class="text-right">1,4</td></tr>'; */
+	                        
+	                       
 	                          
 		        },
 		    }); 
@@ -868,5 +834,12 @@ function savePayrollAdjustment(){
  }
  </script>
 
+<script>
+//excude
+function excludeFun(){
+	/* $("#lopExempt").val("YES"); */
+	$("#exclude").toggle();
+}
+</script>
 
 
