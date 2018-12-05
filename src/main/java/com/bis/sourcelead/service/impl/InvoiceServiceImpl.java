@@ -2899,6 +2899,20 @@ public class InvoiceServiceImpl implements InvoiceService {
 		boolean result = false;
 		Invoice invoice = invoiceDao.getInvoicetByInvoiceUUID(invoiceUUID);
 		Date date = new Date();
+		// for jobclosure invoice deleted.
+		List<InvoiceLineItems> lineItemsList = invoiceLineItemDao.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		lineItemsList.forEach(items->{
+			if(items.getRequirementSubmissionId() !=null){
+			try {
+				RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(items.getRequirementSubmissionId().getId());
+				submission.setInvoiceGenerated(null);
+				requirementSubmissionDao.storeRequirementSubmission(submission);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			}
+		});
+		
 		if(invoice.getProjectID() != null){
 				invoice.setRejectReason(reason);
 				invoice.setStatus(Constants.MEMBER_IN_ACTIVE);

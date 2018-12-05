@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 public class ProfileDTO {
 	private String firstName;
 	private String lastName;
@@ -12,6 +14,8 @@ public class ProfileDTO {
 	private String facebookURL;
 	private String googlePlusURL;
 	private String imageURL;
+	private List<String> ipaddresses;
+	
 	public String getFirstName()
 	{
 		return firstName;
@@ -100,6 +104,13 @@ public class ProfileDTO {
 	{
 		this.imageURL = imageURL;
 	}
-	
+	public List<String> getIpaddresses()
+	{
+		return ipaddresses;
+	}
+	public void setIpaddresses(List<String> ipaddresses)
+	{
+		this.ipaddresses = ipaddresses;
+	}
 	
 }

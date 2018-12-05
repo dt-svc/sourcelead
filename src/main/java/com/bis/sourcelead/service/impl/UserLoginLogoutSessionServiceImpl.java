@@ -158,5 +158,11 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
 	{
 		return userLoginLogoutSessionDao.getAll();
 	}
+
+	@Override
+	public List<String> getUsersByUserId(UsersUsageReportDTO usersUsageReportDTO)
+	{
+		return userLoginLogoutSessionDao.getUsersByUserId(usersUsageReportDTO);
+	}
     
 }
