@@ -3037,26 +3037,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds) throws Exception {
-		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
-			tranHistory.setId(orgLicensePaymentTransactionHistory.getId());
-			OrgLocations orgLocation = new OrgLocations();
-			orgLocation.setId(orgLocationId);
-			tranHistory.setOrgLocationId(orgLocation);
-			if(marketCartIds != null && marketCartIds.size() > 0){
-				String ids = StringUtils.join(marketCartIds, ",");
-				tranHistory.setMarketPlaceCartIds(ids);
-			}
-			tranHistory.setCurrency(orgLicensePaymentTransactionHistory.getCurrency());
-			tranHistory.setInvoiceAmount(orgLicensePaymentTransactionHistory.getInvoiceAmount());
-			tranHistory.setPaymentId(orgLicensePaymentTransactionHistory.getPaymentId());
-			tranHistory.setOrderId(orgLicensePaymentTransactionHistory.getOrderId());
-			tranHistory.setInvoiceNumber(orgLicensePaymentTransactionHistory.getInvoiceNumber());
-			tranHistory.setTransactionId(orgLicensePaymentTransactionHistory.getTransactionId());
-			tranHistory.setTransactionPayerId(orgLicensePaymentTransactionHistory.getTransactionPayerId());
-			tranHistory.setTransactionUser(orgLicensePaymentTransactionHistory.getTransactionUser());
-			tranHistory.setTransactionUserEmail(orgLicensePaymentTransactionHistory.getTransactionUserEmail());
-			tranHistory.setTransactionDate(orgLicensePaymentTransactionHistory.getTransactionDate());
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory) throws Exception {
 		 candidateDao.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
 	}
 
