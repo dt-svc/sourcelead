@@ -3706,37 +3706,69 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		List<ProjectReportDTO> projectReportDTOList = new LinkedList<>();
 		List<Projects> projectList = projectsDao.getProjectReportList(projectReportDTO,orgLocationId);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		if(projectList!=null && !projectList.isEmpty()) {
+		if(projectList!=null && !projectList.isEmpty()) { 
+			int projectMemberStatus = 1;
+			boolean activeFlag = false, inactiveFlag = false;
+			
+			if(projectReportDTO.isRefreshFlag()) {
+				projectMemberStatus = 1;
+			} else if(projectReportDTO.getAssociateStatus() != null && projectReportDTO.getAssociateStatus().length > 0) {
+				for(String status : projectReportDTO.getAssociateStatus()) {
+					if(status.equalsIgnoreCase("ACTIVE")) {
+						activeFlag = true;
+					}
+					if(status.equalsIgnoreCase("INACTIVE")) {
+						inactiveFlag = true;
+					}
+				}
+				
+				if(activeFlag && inactiveFlag) {
+					projectMemberStatus = -1;
+				} else if(activeFlag) {
+					projectMemberStatus = 1;
+				} else if(inactiveFlag) {
+					projectMemberStatus = 0;
+				}
+			}
+			
 			for(Projects p : projectList) {
 				Set<ProjectMembers> projectMemebersList = p.getProjectMembers();
 				if(projectMemebersList != null && !projectMemebersList.isEmpty()) {
 					for(ProjectMembers projectMember : projectMemebersList) {
-						if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getOrgLocationId().getId().compareTo(orgLocationId) == 0) {
-							ProjectReportDTO reportDTO = getProjectReport(p);
-							//Project Members
-							reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
-							ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
-							if (pmh == null) {
-								pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+						boolean flag = false;
+						if(projectMemberStatus == -1) {
+							flag = true;
+						} else if(Integer.parseInt(projectMember.getStatus()) == projectMemberStatus) {
+							flag = true;
+						}
+						if(flag) {
+							if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getOrgLocationId().getId().compareTo(orgLocationId) == 0) {
+								ProjectReportDTO reportDTO = getProjectReport(p);
+								//Project Members
+								reportDTO.setProjectMembers(projectMember.getProjectMemberCandidteId().getFullName());
+								ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
+								if (pmh == null) {
+									pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+								}
+	/*							if(projectMember.getProjectAssignedDate() != null) {
+									reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
+								}
+								if(projectMember.getProjectEndDate() != null) {
+									reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectEndDate())) ;
+								}*/
+								if (pmh != null && pmh.getProjectAssignedDate() != null) {
+									reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(
+											projectMember.getProjects().getOrgLocationsId().getDateFormat(),
+											pmh.getProjectAssignedDate()));
+								}
+								if (pmh != null && pmh.getProjectTerminationDate() != null) {
+									reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(
+											projectMember.getProjects().getOrgLocationsId().getDateFormat(),
+											pmh.getProjectTerminationDate()));
+								}
+								reportDTO.setMemberStatus(projectMember.getStatus());
+								projectReportDTOList.add(reportDTO);
 							}
-/*							if(projectMember.getProjectAssignedDate() != null) {
-								reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectAssignedDate()));
-							}
-							if(projectMember.getProjectEndDate() != null) {
-								reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(), projectMember.getProjectEndDate())) ;
-							}*/
-							if (pmh != null && pmh.getProjectAssignedDate() != null) {
-								reportDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(
-										projectMember.getProjects().getOrgLocationsId().getDateFormat(),
-										pmh.getProjectAssignedDate()));
-							}
-							if (pmh != null && pmh.getProjectTerminationDate() != null) {
-								reportDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(
-										projectMember.getProjects().getOrgLocationsId().getDateFormat(),
-										pmh.getProjectTerminationDate()));
-							}
-							reportDTO.setMemberStatus(projectMember.getStatus());
-							projectReportDTOList.add(reportDTO);
 						}
 					}
 				}

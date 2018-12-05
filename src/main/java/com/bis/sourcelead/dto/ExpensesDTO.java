@@ -58,6 +58,16 @@ private static final long serialVersionUID = 1L;
 	private String expensesRejectedReason;
 	
 	private String projectStatus;
+	
+	private BigDecimal totalsubmittedAmount;
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
 
 	public Long getId() {
 		return id;

@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1695,59 +1696,77 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "  )  ";
 	     }
 		
+		String memberStatusQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getAssociateStatus() != null && !dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ALL")) {
+			if(dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ACTIVE")) {
+				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE')) ";
+			} else {
+				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'INACTIVE')) ";
+			}
+		}
+		
+		
+		
 		String employmentTypeQuery = "";
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
-			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			employmentTypeQuery = " and can.designationType IN (:empType) and can.orgLocationId.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'";
 		}
 	
 		String projectQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
-			//String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			projectQuery = "  projects.id  IN (:projectIds)";
 		}
 		
-		String groupByCandidateId = "Group By pm.masterCandidateId.id";
+		String groupByCandidateId = " group by pm.masterCandidateId.id";
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal") ) {
-			//can.orgLocationId.id = :locationId
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where "
-					 +projectQuery
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
-//			(pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId)
-			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where  "
+			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where "
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else {
-//			/can.orgLocationId.id = :locationId
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where  "
-					 +projectQuery
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}
-		Query queryObj = session.createQuery(query);
-		if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
-			queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		try {
+			System.out.println(query);
+			Query queryObj = session.createQuery(query);
+			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+				queryObj.setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds());
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()) {
+				queryObj.setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType());
+			}
+			pmList =queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
-			queryObj.setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds());
-		}
-		
-		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()) {
-			queryObj.setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType());
-		}
-		pmList =queryObj.list();
 		return pmList;
 	}
 	@Override

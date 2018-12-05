@@ -143,12 +143,11 @@
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
-					<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 					
 					<div class="project_details_cta">
-						<strong>Submitted Amount:</strong><span>${entry.submittedamount}</span><div class="clearfix"></div>
+						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
-					 </c:forEach> 
+					
 					 <div class="project_details_cta">
 					  <c:if test="${submissionStatus == 'APPROVED'}">
 					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
