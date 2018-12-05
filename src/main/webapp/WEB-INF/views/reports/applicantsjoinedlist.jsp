@@ -268,6 +268,7 @@ function daywiseLeaveReportsListPagination(url){
 		      {
 		          "targets": colIndex++,
 		          "data": "incentives",
+		          "sortable": false,
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		        	  result = result + ' <td>';
