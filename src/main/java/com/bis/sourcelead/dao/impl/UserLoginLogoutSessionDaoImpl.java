@@ -165,6 +165,17 @@ public class UserLoginLogoutSessionDaoImpl implements UserLoginLogoutSessionDao 
 		return session.createQuery("from UserLoginLogoutSession").list();
 				
 	}
+
+	@Override
+	public List<String> getUsersByUserId(UsersUsageReportDTO usersUsageReportDTO)
+	{
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+	        List<String> ipList = new ArrayList<>();
+	        String query = "select uLoginSession.ipaddress from UserLoginLogoutSession uLoginSession where uLoginSession.userId.id IN (select userRole.user.id from UserRole userRole where userRole.user.id = :userId) group by uLoginSession.ipaddress";
+	        ipList = session.createQuery(query).setLong("userId", usersUsageReportDTO.getId()).list();
+	        return ipList;
+	}
     
     
 
