@@ -513,7 +513,6 @@ public class LoginSessionController {
 								.append(requirementUUID).toString());
 						model.setViewName("professional/professionalRequirements");
 					} else {
-						System.out.print("check heree ===========>");
 						model.setViewName("dashboard");
 						// model.setViewName("masterPage");
 					}

@@ -1,0 +1,1107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<title>Welcome to Source Lead</title>
+<script src="/resources/js/formvalidator.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
+<link rel="stylesheet" href="/resources/css/chosen.min.css">
+<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css">
+<script src="/resources/js/jquery-1.11.1.min.js" /></script>
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="/resources/js/chosen.jquery.min.js"></script>
+<script src="/resources/js/jquery.dataTables.min.js"></script>
+<script src="/resources/js/sourcelead-app.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
+<script src="/resources/js/dashboard.js"></script>
+</head>
+
+<style>
+.chosen-container {
+    width: 100% !important;
+}
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
+
+.settPop .form-control {
+    height: auto !important; 
+}
+.chosen-container {
+    width: 100% !important;
+}
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
+.validationError p.jquery_form_error_message {
+width: 75px; padding: 0 !important;
+}
+.fa.pull-right {
+    margin-left: -1.7em !important;
+}
+</style>
+<!--  on boarding candidate list end -->
+<script>
+$( document ).ready(function() {
+	alert("ready called funtion :::::::::::::>")
+	// need to check role for the below timesheet function call
+     timeSheetSubmissionStatusCount("myTimesheets");// timesheet counts 
+	 requirementSubmissionsCount("today"); // jobs counts
+	 expensesCount("myExpenses"); // expenses count self need to check authorizarion
+	 getSelfTotalCounts(); // leaves counts self count need to check authorizarion
+	alert("ok")
+});
+function logoutForConfigure() {
+	document.getElementById("logoutForm").submit();
+}
+$('#dasboardTaskDatpicker').datepicker({
+	dateFormat : 'dd-mm-yy',
+	changeMonth : true,
+	changeYear : true,
+	onSelect : function(selected) {
+		assignTasksList();
+	}
+});
+</script> 
+ <!--   -->
+<body>
+<div class="wraper">
+ <header class="main-header">
+    <div class="menuIcon"></div>
+    <span class="logo"> <a href="dashboard/971" title="Source Lead"> <i>
+    <div class="text-logo"> <span class="tbldata-dotdot" data-id="orgLogoImage" title="INFO SOLUTIONS">INFO SOLUTIONS</span> </div>
+    </i> </a> </span>
+    <div class="search-area searchArea_mrgn newHeadSea">
+      <form id="search_form" name="search_form" action="/app/dashboard" method="post">
+        <div class="uasrch-selectpicker">
+          <div class="btn-group bootstrap-select uasrch pull-left show-menu-arrow">
+            <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="searchType" title="All"><span class="filter-option pull-left">All</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+            <div class="dropdown-menu open">
+              <ul class="dropdown-menu inner" role="menu">
+                <li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">All</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+                <li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Associates</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+                <li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Clients</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+                <li data-original-index="3"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Jobs</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+                <li data-original-index="4"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Vendors</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+                <li data-original-index="5"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">Candidates</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
+              </ul>
+            </div>
+            <select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" tabindex="-98">
+              <option value="All">All</option>
+              
+              <!--   commented by laxman because client based project querys are not implemented -->
+              
+              <option value="Users">Associates</option>
+              
+              <!--   commented by laxman because client based project querys are not implemented -->
+              
+              <option value="Client">Clients</option>
+              
+              <!--   commented by laxman because client based project querys are not implemented -->
+              
+              <option value="Requirement">Jobs</option>
+              
+              <!--   commented by laxman because client based project querys are not implemented -->
+              
+              <option value="Vendor">Vendors</option>
+              
+              <!--   commented by laxman because client based project querys are not implemented -->
+              
+              <option value="Candidate">Candidates</option>
+              
+            </select>
+          </div>
+        </div>
+        <div class="pull-left universalSrch">
+          <input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="">
+          <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();"></button>
+        </div>
+        <div> </div>
+      </form>
+    </div>
+    <div class="headProfile">
+      <div class="headProfileIcon"><img class="img-circle" data-id="userProfileImage" alt="Admin" title="neha " onerror="predefineProfileImage(this);" src="/slead-static/profile/professional-woman-51527854182232.jpg"> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="neha "> neha </span></div>
+      <div class="headPop" id="profilePop">
+        <div class="headPopInn"> <a href="/app/userProfile" title="Profile">
+          <div class="headPopUser clearfix">
+            <div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="neha " alt="Admin" onerror="predefineProfileImage(this);" src="/slead-static/profile/professional-woman-51527854182232.jpg"></div>
+            <div class="pull-right">
+              <p>neha </p>
+              <b>Admin</b> </div>
+          </div>
+          </a>
+          <ul>
+            <li> <a title="Connections" href="http://qa.sourcelead.com/app/loadConnectedList?status=connected" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right"></span></a> </li>
+            <li><a title="Contacts" href="http://qa.sourcelead.com/app/referRequirementList"><i class="contactsIC"></i>Contacts</a></li>
+            <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="invitecompanyIC"></i>Invite Company</a></li>
+            <li><a href="javascript:void(0)" class="icon-addTask" title="Add Task"><i class="addtaskIC"></i>Add Task</a></li>
+            <li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
+            <li><a class="logColor" href="javascript:logoutFormSubmit()" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="headNav">
+      <ul>
+        <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
+          <div class="headPop headPopnoti" id="orgPopView">
+            <div class="headPopInn">
+              <div class="headPopSear">
+                <input type="text" class="" id="orgsSearch" placeholder="Search">
+              </div>
+              <ul>
+                <li> <a class="sopcSwith noPad"> </a><a onclick="checkAuth(971,3979,'N','2342');" class="sopcSwith noPad">
+                  <div class="clearfix  orgAct">
+                    <div class="orgProfile"><img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="/resources/images/office-image.jpg"></div>
+                    <div class="orgDetails">
+                      <h3>INFO SOLUTIONS</h3>
+                      <h4><i class="fa fa fa-map-marker"></i>Hyderabad India</h4>
+                      <h4><i class="fa fa-user"></i>Admin</h4>
+                    </div>
+                  </div>
+                  </a> </li>
+                <li> <a onclick="checkAuth(633,4415,'N','2342');" class="sopcSwith noPad">
+                  <div class="clearfix  ">
+                    <div class="orgProfile"><img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="/resources/images/office-image.jpg"></div>
+                    <div class="orgDetails">
+                      <h3>Airlines client</h3>
+                      <h4><i class="fa fa fa-map-marker"></i>Shimla India</h4>
+                      <h4><i class="fa fa-user"></i>Manager</h4>
+                    </div>
+                  </div>
+                  </a> </li>
+                <li> <a onclick="checkAuth(1259,5006,'N','2342');" class="sopcSwith noPad">
+                  <div class="clearfix  ">
+                    <div class="orgProfile"><img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="/resources/images/office-image.jpg"></div>
+                    <div class="orgDetails">
+                      <h3>pulla reddy</h3>
+                      <h4><i class="fa fa fa-map-marker"></i>New York United States</h4>
+                      <h4><i class="fa fa-user"></i>Admin</h4>
+                    </div>
+                  </div>
+                  </a> </li>
+                <li> <a onclick="checkAuth(1873,7837,'N','2342');" class="sopcSwith noPad">
+                  <div class="clearfix  ">
+                    <div class="orgProfile"><img onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="/resources/images/office-image.jpg"></div>
+                    <div class="orgDetails">
+                      <h3>Info</h3>
+                      <h4><i class="fa fa fa-map-marker"></i>Hyderabad India</h4>
+                      <h4><i class="fa fa-user"></i>Manager</h4>
+                    </div>
+                  </div>
+                  </a> </li>
+              </ul>
+              <div class="noDate noDateSm" style="display: none;"></div>
+            </div>
+          </div>
+        </li>
+        <li><a title="Reports" href="/app/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
+        <li><a href="http://qa.sourcelead.com/app/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> </a></li>
+        <li> <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <span class="label-warning">188</span></a>
+          <div class="headPop headPopnoti" id="notificationPopup"></div>
+        </li>
+        <li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>
+          <div class="headPop" id="settingPopup">
+            <div class="headPopInn">
+              <div class="headPopSear">
+                <input type="text" class="" id="settingSearch" placeholder="Search">
+              </div>
+              <ul>
+                <li title="License Upgrade"><a href="/app/orgLicenseSubscriptionList">License Upgrade</a></li>
+                <li title="Bulk Import"><a id="subMenu" href="javascript:void(0)">Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+                  <div class="subMenuView"> <a href="/app/bulk-resume-import.html" target="_blank">Bulk Import</a> <a data-toggle="modal" href="javascript:void(0)" id="bulkImport">Process File(s)</a> </div>
+                </li>
+                <li title="Org Chart"><a href="/app/orgChart">Org Chart</a></li>
+                <li title="Role Configuration"><a href="/app/orgRolesList">Role Configuration</a></li>
+                <li title="Org Settings"><a href="/app/orgSettings">Org Settings</a></li>
+                <li title="Templates"><a href="/app/orgTemplates">Templates</a></li>
+                <li title="Expense Category"><a href="/app/expenseCategory">Expense Category</a></li>
+                <li title="Bank Accounts"><a href="/app/bankAccountDetails">Bank Accounts</a></li>
+                <li title="Leave Configuration"><a href="/app/leaveConfiguration">Leave Configuration</a></li>
+                <li title="Job Board Configuration"><a href="/app/job-boards">Job Board Configuration</a></li>
+                <li title="Custom Fields"><a href="/app/customFields">Custom Fields</a></li>
+                <li><a href="/app/projectAttributes">Project Attributes</a></li>
+                <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+                  <div class="campsubMenuView"> <a title="Senders" href="/app/campaignSendersList">Senders</a> <a title="Recipients" href="/app/recipientsList">Recipients</a> </div>
+                </li>
+                <li title="Payroll Configuration"><a href="/app/indPayrollConfiguration">Payroll Configuration</a></li>
+                <li><a href="http://qa.sourcelead.com/app/tagList" title="Tags" data-toggle="modal" id="tagsPop">Tags</a></li>
+              </ul>
+              <div class="noDate noDateSm" style="display: none;"></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ul class="responIcons clearfix">
+      <li><a><img src="/resources/images/India.gif" title="India"></a></li>
+      <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
+    </ul>
+  </header>
+  <aside class="">
+    <nav class="newMenu">
+      <ul>
+        <li class="navActive"><a href="/app/dashboard/971" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>
+        <li class=""><a href="/app/usersList" title="Associates"><span class="navIcons assIcon"></span><b>Associates</b></a></li>
+        <li class=""><a href="/app/clientDashboard" title="Clients"><span class="navIcons cliIcon"></span><b>Clients</b></a></li>
+        <li class=""><a href="/app/jobs" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
+        <li class=""><a href="/app/vendorsList" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
+        <li class=""><a href="/app/candidatesList" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
+        <li class=""><a href="/app/candidateOnBoardingList" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
+        <li class=""><a href="/app/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
+        <li class=""> <a href="#" class="timesheetLi" title="Timesheets"><span class="navIcons timIcon"></span><b>Timesheets</b> <i class="fa fa-fw fa-caret-down"></i> </a>
+          <ul class="collapses" style="display: none">
+            <li class=""><a href="/app/timesheet" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
+            <li class=""><a href="/app/timesheetApproval" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+          </ul>
+        </li>
+        <li class=""> <a href="#" class="expencesLi" title="Expenses"> <span class="navIcons expIcon"></span><b>Expenses</b> <i class="fa fa-fw fa-caret-down"></i> </a>
+          <ul class="collapses" style="display: none">
+            <li class=""><a href="/app/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
+            <li class=""><a href="/app/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
+          </ul>
+        </li>
+        <li class=""><a href="/app/assetManagement" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
+        <li class=""><a href="/app/contractListbyStatus" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
+        <li class=""> <a href="#" class="billingLi" title="Finance"> <span class="navIcons finIcon"></span><b>Finance</b> <i class="fa fa-fw fa-caret-down"></i> </a>
+          <ul class="collapses" style="display: none">
+            <li class=""><a href="/app/invoiceList" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
+            <li class=""><a href="/app/payablesList" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
+          </ul>
+        </li>
+        <li class=""><a href="/app/campaigns/hotcampaigns" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>
+        <li class=""><a href="/app/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
+        <li class=""> <a href="#" class="payrollli" title="Pay Roll"> <span class="navIcons payIcon"></span><b>Pay Roll</b> <i class="fa fa-fw fa-caret-down"></i> </a>
+          <ul class="collapses" style="display: none">
+            <li class=""><a href="/app/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
+            <li class=""><a href="/app/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
+          </ul>
+        </li>
+        <li class=""> <a href="#" class="expencesLi" title="Immigration"> <span class="navIcons immIcon"></span><b>Immigration</b><i class="fa fa-fw fa-caret-down"></i> </a>
+          <ul class="collapses" style="display: none">
+            <li class=""><a href="/app/immigration/myImmigration" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
+            <li class=""><a href="/app/immigration/viewImmigrationList" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <section class="content-wraper">
+    <div class="dashboard_loaded">
+      <section class="content-header clearfix">
+	      
+	   
+	    
+	    </section>
+	    
+    </div>
+<div class="row">
+
+<div class="col-md-6 mb10">
+    <div class="dashboardWidget-new dashNewWrap mb">
+      <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="/app/timesheet" class="pull-left"> Timesheets &nbsp;&nbsp;</a>
+        <input type="hidden" value="" id="timesheetSocketsFor">
+        <ul class="nav nav-tabs pull-right">
+          <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
+          <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
+        </ul>
+      </div>
+      <div class="db-widget-sm">
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="savedCountAnchor">Draft</p>
+            <p class="NewCount"><span id="savedTimesheetsSubmissionsCount">0</span></p>
+            <div id="draftLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="waitingCountAnchor">Submitted</p>
+            <p class="NewCount suColor"><span id="waitingTimesheetsSubmissionsCount">0</span></p>
+            <div id="waitingLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="approvedCountAnchor">Approved</p>
+            <p class="NewCount apColor"><span id="approvalTimesheetsSubmissionsCount">0</span></p>
+            <div id="approvedloading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount">
+            <p id="rejectedCountAnchor">Rejected</p>
+            <p class="NewCount reColor"><span id="rejectTimesheetsSubmissionsCount">0</span></p>
+            <div id="rejectLoading"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mb10">
+    <div class="dashboardWidget-new dashNewWrap mb">
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left" id="jobsLink" href="/app/jobs">Jobs </a><a class="moreLink" href="/app/requirementApplicantsList?&amp;tab=previous&amp;orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more" id="viewmoresDiv"> View More..</a>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
+          <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
+          <input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today">
+        </ul>
+      </div>
+      <div class="db-widget-sm">
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount" title="Applicants" id="appDiv">
+            <p>Applicants</p>
+            <p class="NewCount"><span id="applicantsCount">0</span></p>
+            <div id="applicantsCountLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount" title="Client Submissions" id="subDiv">
+            <p>Client Submissions</p>
+            <p class="NewCount suColor"><span id="submissionsCount">0</span></p>
+            <div id="submissionsCountLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount" title="Interviews" id="intDiv">
+            <p>Interviews</p>
+            <p class="NewCount deColor"><span id="interviewsCount">0</span></p>
+            <div id="interviewsCountLoading"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3">
+          <div class="dashNewCount" title="Offers" id="offDiv">
+            <p>Offers</p>
+            <p class="NewCount apColor"><span id="offersCount">0</span></p>
+            <div id="offersCountLoading"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb10">
+    <div class="dashboardWidget-new dashNewWrap mb">
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left" id="expensesLink" href="/app/expenses">Expenses &nbsp;&nbsp;</a>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');">Self</a></li>
+	              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
+        </ul>
+      </div>
+      <div id="today-req" class="tab-pane fade in active">
+        <div class="db-widget-sm">
+          <div class="col-xs-12 col-sm-3">
+            <div class="dashNewCount">
+              <p id="dial1txt">Draft</p>
+              <p class="NewCount"><span id="expensesDraftCount">0</span></p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3" id="submittedId">
+            <div class="dashNewCount">
+              <p id="dial2txt"><a onclick="myExpensesListByStage('submitted');">Submitted</a></p>
+              <p class="NewCount suColor"><span id="expensesSubmittedForApprovalCount"><a onclick="myExpensesListByStage('submitted');">1</a></span></p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3">
+            <div class="dashNewCount">
+              <p id="dial3txt">Approved</p>
+              <p class="NewCount apColor"><span id="expensesApprovedCount">0</span></p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-3" id="dial4txtDial">
+            <div class="dashNewCount">
+              <p id="dial4txt">Rejected</p>
+              <p class="NewCount reColor"><span id="expensesRejectCount">0</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb10">
+    <div class="dashboardWidget-new dashNewWrap mb">
+      <div class="dashNewWrapHead clearfix"> <a class="pull-left" href="/app/leaveManagementReports" title="Leave Management">Leaves</a>
+        <div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves">0</span></div>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
+          <li><a data-toggle="tab" href="#employee" onclick="getEmployeeTotalCounts();">Employees</a></li>
+        </ul>
+      </div>
+      <div class="clearfix">
+        <div class="tab-content clearfix">
+          <div id="self" class="tab-pane fade in active">
+            <div class="width100percnt clearfix">
+              <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left hidden"> </div>
+              <div class=" clearfix">
+                <div class="col-xs-12 col-sm-3">
+                  <div class="dashNewCount">
+                    <p id="selfpend">Pending</p>
+                    <p class="NewCount suColor"><span id="selfPendingCounts">0</span></p>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                  <div class="dashNewCount">
+                    <p id="selfapp">Approved</p>
+                    <p class="NewCount apColor"><span id="selfApprovedCounts">0</span></p>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                  <div class="dashNewCount">
+                    <p id="selfrej">Rejected</p>
+                    <p class="NewCount reColor"><span id="selfRejectedCounts">0</span></p>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                  <div class="dashNewCount">
+                    <p id="selfcanc">Cancelled</p>
+                    <p class="NewCount caColor"><span id="selfCancelledCounts">0</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 mb hidden">
+              <div id="selfApproved" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+              <div class="leavescount text-center"> <a href="leavetype-approvedcount.html" id="approved" title="Approved">20</a> </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 mb hidden">
+              <div id="selfRejected" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+              <div class="leavescount text-center"> <a href="leavetype-rejectedcount.html" id="rejected" title="Rejected">10</a> </div>
+            </div>
+          </div>
+          <div id="employee" class="tab-pane fade">
+            <div class="db-widget-sm clearfix">
+              <div class="width100percnt clearfix">
+                <div class="clearfix">
+                  <div class="col-xs-12 col-sm-3">
+                    <div class="dashNewCount">
+                      <p id="empReq"></p>
+                      <p class="NewCount suColor"><span id="employeeRequestedCounts"></span></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <div class="dashNewCount">
+                      <p id="empApp"></p>
+                      <p class="NewCount apColor"><span id="employeeApprovedCounts"></span></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <div class="dashNewCount">
+                      <p id="empRej"></p>
+                      <p class="NewCount reColor"><span id="employeeRejectedCounts"></span></p>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                    <div class="dashNewCount">
+                      <p id="empCanc"></p>
+                      <p class="NewCount caColor"><span id="employeeCancelledCounts"></span></p>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 40%; height: 105px;" class="countList pull-left hidden">
+                  <ul class="list-unstyled list-group clearfix mb5">
+                    <li class="clearfix">
+                      <label class="pull-left">Requested Leaves</label>
+                      <a href="/app/employeeRequestedLeaves" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>&gt;</a> </li>
+                    <li class="clearfix">
+                      <label class="pull-left">Approved Leaves</label>
+                      <a href="/app/employeeApprovedLeaves" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a> </li>
+                    <li class="clearfix">
+                      <label class="pull-left">Rejected Leaves</label>
+                      <a href="/app/employeeRejectedLeaves" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a> </li>
+                    <li class="clearfix">
+                      <label class="pull-left">Cancelled Leaves</label>
+                      <a href="/app/employeeCancelLeaves" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a> </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="db-widget-sm hidden">
+              <div class="col-xs-12 col-sm-4 mb">
+                <div id="empRequested" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="javascript:void(0)" id="requested" title="Requested">70</a> </div>
+              </div>
+              <div class="col-xs-12 col-sm-4 mb">
+                <div id="empApproved" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="javascript:void(0)" id="empApproved2" title="Approved">20</a> </div>
+              </div>
+              <div class="col-xs-12 col-sm-4 mb">
+                <div id="empRejected" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="javascript:void(0)" id="empRejected2" title="Rejected">10</a> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+   <div class="mb clearfix col-md-12"> 
+      <!-- Assigned Requirements -->
+      <div class="dashNewWrap mb10" id="assignedRequirementsDiv">
+        <div class="dashNewWrapHead noBor clearfix">
+          <h4 class="pull-left">Jobs</h4>
+        </div>
+        <div class="project_side_wrap_inn_tabs newDashPad">
+          <div id="resourceRequestsDivLoading"></div>
+          <div id="requirementListTabHead">
+            <div id="requirementListActions">
+             <!--  <div class="pull-right" id="viewmoresDiv"><a href="/app/jobs" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a></div> -->
+            </div>
+            <div class="clearfix require_wrap_table dashboard-data filter_position positionRelative" style="min-height: 200px;">
+              <div id="requirementLoading" style="position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); top: 0px; left: 0px; z-index: 100; background-image: url(&quot;/resources/images/loading.gif&quot;); background-position: center center; background-repeat: no-repeat; background-size: 75px auto; display: none;"></div>
+              <div id="requirementList">
+                <div class="new_side_wrap">
+                  <div class="new_side_wrap_inn">
+                    <div class="new_side_wrap_cta">
+                      <div id="addApplicantDiv"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="requirementPagination_wrapper" class="dataTables_wrapper no-footer">
+                  <table id="requirementPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementPagination_info" style="width: 99.9%;" width="99.9%" cellspacing="0">
+                    <thead>
+                      <tr role="row">
+                        <th>Actions</th>
+                        <th >Generated ID</th>
+                        <th >Title</th>
+                        <th>Client</th>
+                        <th >Rate</th>
+                        <th>Priority</th>
+                        <th>Applicants</th>
+                        <th>Shortlisted</th>
+                        <th>Submitted</th>
+                        <th>Interview</th>
+                        <th>Offered</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div class="dataTables_info" id="requirementPagination_info" role="status" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="vendor_wrap_mask"></div>
+        </div>
+      </div>
+    </div>
+  <div class="clearfix"></div>
+  <div class="col-md-12">
+    <div class="mb clearfix col-md-12 noPad">
+      <div class=" dashNewWrap hdrPosition minHeight_225 mb10">
+        <div class="dashNewWrapHead noBor clearfix">
+          <h4 class="pull-left">Candidates on-boarding</h4>
+        </div>
+        <div class="clearfix project_tabs_inn_table dashboard-data newDashPad dataSeaNew">
+          <div id="onboardingLoading"></div>
+          <div id="onboardingCandidatesList">
+            <div id="onboardingPagination_wrapper" class="dataTables_wrapper no-footer">
+              <div id="onboardingPagination_filter" class="dataTables_filter">
+                <label>
+                  <input type="search" class="" placeholder="" aria-controls="onboardingPagination">
+                </label>
+              </div>
+              <table id="onboardingPagination" class="display dataTable no-footer" role="grid" aria-describedby="onboardingPagination_info" style="width: 99.9%;" width="99.9%" cellspacing="0">
+                <thead>
+                    <th>Candidate Name</th>
+                    <th>Email</th>
+                    <th>Title</th>
+                    <th>DOJ<br>
+                      (<small class="custom-small">DD-MM-YYYY</small>)</th>
+                    <th>Rate</th>
+                    <th>Position Type</th>
+                    <th>On-board Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+              </table>
+              <div class="dataTables_info" id="onboardingPagination_info" role="status" aria-live="polite"></div>
+              <div class="dataTables_paginate paging_simple_numbers" id="onboardingPagination_paginate"><a class="paginate_button previous disabled" aria-controls="onboardingPagination" data-dt-idx="0" tabindex="0" id="onboardingPagination_previous">Previous</a><span><a class="paginate_button current" aria-controls="onboardingPagination" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="onboardingPagination" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="onboardingPagination" data-dt-idx="3" tabindex="0" id="onboardingPagination_next">Next</a></div>
+            </div>
+          </div>
+          <div id="rejectedReasonDiv"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sec:authorize>
+  <div class="mb clearfix col-md-12">
+  <div class="mb clearfix col-md-12">
+  <div class="dashNewWrap mb10">
+ <div class="dashNewWrap mb10">
+        	<div class="dashNewWrapHead clearfix">
+				<h4 class="pull-left">Project Requests</h4>
+	     	    <ul class="nav nav-tabs pull-right">
+	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
+				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
+				       </sec:authorize> 
+				        <li id="budgetDiv"><a href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Budget</a></li>
+			        <div class="clearfix"></div>
+			    </ul>				
+        	</div>       	  
+      	  
+      	    
+      	    <div class="clearfix newDashPad">
+      	    
+      	    <div class="project_side_wrap_inn_tabs" id="assocaiteRequestsTabDiv" style="display: block;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="waiting"><a title="Waiting" onclick="resourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="waitingCount"></span>)</a></li>
+			        <li id="requestApproved"><a title="Approved"  onclick="resourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="approvedCount"></span>)</a></li>
+			        <li id="requestRejected"><a title="Rejected" onclick="resourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="rejectedCount"></span>)</a></li>
+			        <li id="requestOnhold"><a title="On-Hold" onclick="resourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i>(<span id="onholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="resourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestedAssociatesDivLoading"></div>
+   				<div id="requestOnHoldReasonDiv"></div>
+   				<div id="rejectedReasonDiv"></div>
+           </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="newResourceRequestTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="newReqWaiting"><a title="Waitig" onclick="newResourceRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i>(<span id="newWaitingCount"></span>)</a></li>
+			        <li id="newRequestApproved"><a title="Approved" onclick="newResourceRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="newApprovedCount"></span>)</a></li>
+			        <li id="newRequestRejected"><a title="Rejected" onclick="newResourceRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="newRejectedCount"></span>)</a></li>
+			        <li id="newRequestOnhold"><a title="On-Hold" onclick="newResourceRequestList('On hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="newOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="newResourceRequestList"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="requestedNewAssociatesDivLoading"></div>
+   				<div id="newRequestOnHoldReasonDiv"></div>
+   				<div id="resourceRejectedReasonDiv"></div>
+           </div>
+           
+           <div class="project_side_wrap_inn_tabs" id="budgetTabDiv" style="display: none;">
+      	    <div id="resourceRequestsDivLoading"></div>
+			    <ul class="project-tabs-menu tabnewStyles tabnew-styles mt5">
+			        <li class="activeIcon" id="budgetWaiting"><a title="Waiting" onclick="getBudgetRequestList('Waiting For Approval')"><i class="fa fa-hourglass-start paddingRight"></i> (<span id="budgetWaitingCount"></span>)</a></li>
+			        <li id="budgetApproved"><a title="Approved"  onclick="getBudgetRequestList('Approved')"><i class="fa fa-check paddingRight"></i> (<span id="budgetApprovedCount"></span>)</a></li>
+			        <li id="budgetRejected"><a title="Rejected" onclick="getBudgetRequestList('Rejected')"><i class="fa fa-times paddingRight"></i> (<span id="budgetRejectedCount"></span>)</a></li>
+			        <li id="budgetOnhold"><a title="On-Hold" onclick="getBudgetRequestList('On Hold')"><i class="fa fa-clock-o paddingRight"></i> (<span id="budgetOnholdCount"></span>)</a></li>
+			        <div class="clearfix"></div>
+			    </ul>
+			    <div class="clearfix mb5"></div>
+			    <div id="budgetRequestListDiv"></div>
+			    <div class="vendor_wrap_mask"></div>
+   				<div id="budgetRejectedReasonDiv" ></div>
+   				<div id="budgetOnHoldReasonDiv"></div>
+           </div>
+           
+           </div>
+      	  </div>
+      	  <!-- projectPopupDetails.jsp included  -->
+      	  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+			<div id="projectPopupDetailsLoading"></div>
+				<h5 class="headerAdsrch" id="ProjectDetailsDiv">Project Details
+					<a href="javascript:void(0)" class="close-div" onClick="closeProjectDetailsPopup()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						
+						<div class="col-md-4">
+						<div class="row">
+						   <div id="projectDetailsDiv"></div>
+						</div>
+						</div>
+						
+						
+					</div>
+				</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Close" id="search_requiremet"
+								onclick="closeProjectDetailsPopup();" class="btn btn-sm btn-success" />
+						</div>
+					</div>
+				</div>
+</div>
+</div>
+  <div class="col-md-6 mb">
+    <div class="dashNewWrap mb10">
+      <div class="dashNewWrapHead clearfix">
+        <h4 class="pull-left">Job Approvals</h4>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active" id="waitingTab"><a data-toggle="tab" onclick="requirementApproverList('SUBMITTED');">Waiting </a></li>
+          <li id="approvedTab"><a data-toggle="tab" onclick="requirementApproverList('APPROVED');">Approved </a></li>
+          <li id="rejectedTab"><a data-toggle="tab" onclick="requirementApproverList('REJECTED');">Rejected</a></li>
+        </ul>
+      </div>
+      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+        <div id="requirementApproverList" class="">
+          <div id="rejectRequirementAlert"></div>
+          <div id="requirementApproverPagination_wrapper" class="dataTables_wrapper no-footer">
+            <div id="requirementApproverPagination_filter" class="dataTables_filter">
+              <label>
+                <input type="search" class="" placeholder="" aria-controls="requirementApproverPagination">
+              </label>
+            </div>
+            <table id="requirementApproverPagination" class="display dataTable no-footer" role="grid" aria-describedby="requirementApproverPagination_info" style="width: 99.5%;" width="99.5%" cellspacing="0">
+              <thead>
+                <tr role="row">
+                  <th class="sorting_asc" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 137px;" aria-sort="ascending" aria-label="ID-Title: activate to sort column descending">ID-Title</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 102px;" aria-label="Rate: activate to sort column ascending">Rate</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 89px;" aria-label="Exp: activate to sort column ascending">Exp</th>
+                  <th class="sorting" tabindex="0" aria-controls="requirementApproverPagination" rowspan="1" colspan="1" style="width: 127px;" aria-label="Action: activate to sort column ascending">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd">
+                  <td colspan="4" class="dataTables_empty" valign="top"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="dataTables_info" id="requirementApproverPagination_info" role="status" aria-live="polite"></div>
+            <div class="dataTables_paginate paging_simple_numbers" id="requirementApproverPagination_paginate"><a class="paginate_button previous disabled" aria-controls="requirementApproverPagination" data-dt-idx="0" tabindex="0" id="requirementApproverPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="requirementApproverPagination" data-dt-idx="1" tabindex="0" id="requirementApproverPagination_next">Next</a></div>
+          </div>
+        </div>
+      </div>
+      <!-- Pagenation Ends --> 
+    </div>
+  </div>
+  </sec:authorize>
+  <div class="col-md-6 mb">
+    <div class="dashNewWrap mb10">
+      <div class="dashNewWrapHead clearfix">
+        <h4 class="pull-left">Applicant Permission</h4>
+        <ul class="nav nav-tabs pull-right">
+          <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
+          <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+          <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
+        </ul>
+      </div>
+      <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
+      <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+        <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+        <div class="tab-content clearfix">
+          <div id="accepted" class=""></div>
+          <div id="requestSent" class="tab-pane fade in active">
+            <div id="rejectApplicantAlert"></div>
+            <div id="applicantsPagination_wrapper" class="dataTables_wrapper no-footer">
+              <div id="applicantsPagination_filter" class="dataTables_filter">
+                <label>
+                  <input type="search" class="" placeholder="" aria-controls="applicantsPagination">
+                </label>
+              </div>
+              <table id="applicantsPagination">
+                <thead>
+                  <tr role="row">
+                    <th >Applicant</th>
+                    <th>Job</th>
+                    <th>Team Member</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+              <div class="dataTables_info" id="applicantsPagination_info" role="status" aria-live="polite"></div>
+              <div class="dataTables_paginate paging_simple_numbers" id="applicantsPagination_paginate"><a class="paginate_button previous disabled" aria-controls="applicantsPagination" data-dt-idx="0" tabindex="0" id="applicantsPagination_previous">Previous</a><span></span><a class="paginate_button next disabled" aria-controls="applicantsPagination" data-dt-idx="1" tabindex="0" id="applicantsPagination_next">Next</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sec:authorize>
+  
+  <div class="clearfix"></div>
+  <div class="col-md-12">
+    <div class="mb eventAlert clearfix col-md-12 noPad">
+      <div class="dashNewWrap clearfix mb10">
+        <div class="dashNewWrapHead event_calendar">
+          <h4 class="pull-left">Events</h4>
+          <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+          <ul class="nav nav-tabs pull-right">
+            <li id="jobFairsTab" class="active"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
+            <li id="interviewsTab" class=""><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews &amp; Tasks</a></li>
+            <div class="clearfix"></div>
+          </ul>
+        </div>
+        
+        <!-- show Calendar -->
+        <div class="col-xs-12 col-md-5 mb mt">
+          <div id="eventCalendar" style="display: none;"></div>
+          <div id="jobFairCalendar" style="" class="hasDatepicker">
+            <div class="ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="display: block;">
+              <div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all"><a class="ui-datepicker-prev ui-corner-all" data-handler="prev" data-event="click" title="Prev"><span class="ui-icon ui-icon-circle-triangle-w">Prev</span></a><a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click" title="Next"><span class="ui-icon ui-icon-circle-triangle-e">Next</span></a>
+                <div class="ui-datepicker-title">
+                  <select class="ui-datepicker-month" data-handler="selectMonth" data-event="change">
+                  </select>
+                  <select class="ui-datepicker-year" data-handler="selectYear" data-event="change">
+                  </select>
+                </div>
+              </div>
+              <table class="ui-datepicker-calendar">
+                <thead>
+                  <tr>
+                    <th scope="col" class="ui-datepicker-week-end"><span title="Sunday">Su</span></th>
+                    <th scope="col"><span title="Monday">Mo</span></th>
+                    <th scope="col"><span title="Tuesday">Tu</span></th>
+                    <th scope="col"><span title="Wednesday">We</span></th>
+                    <th scope="col"><span title="Thursday">Th</span></th>
+                    <th scope="col"><span title="Friday">Fr</span></th>
+                    <th scope="col" class="ui-datepicker-week-end"><span title="Saturday">Sa</span></th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- show Calendar -->
+        <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardEventsDiv" style="display: none;">
+          <div class="eventHeader">
+            <div class="media">
+              <div class="media-left bg-success paddingRight"> <i class="fa fa-calendar fa-3x"></i> </div>
+              <div class="media-body paddingLeft">
+                <h4 class="media-heading" id="dayOfweek"></h4>
+                <p class="small" id="selectedDate"></p>
+              </div>
+            </div>
+          </div>
+          <div class="eventCalendr_content">
+            <div id="interviewDiv"></div>
+            <div id="taskDiv"></div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="">
+          <div class="eventHeader">
+            <div class="media">
+              <div class="media-left bg-success paddingRight"> <i class="fa fa-calendar fa-3x"></i> </div>
+              <div class="media-body paddingLeft">
+                <h4 class="media-heading" id="dayOfweekForJobFair">Tuesday</h4>
+                <p class="small" id="selectedDateForJobFair">Nov 20 2018</p>
+              </div>
+            </div>
+          </div>
+          <div class="eventCalendr_content">
+            <div id="fairJobsDiv">
+              <div class="row">
+                <div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;"> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="add_inter_wrap">
+        <div class="new_side_wrap_inn" id="addInterviewDiv"></div>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="col-md-12">
+    <div class="col-md-12 mb clearfix noPad" id="contractListDiv" style="display: block;">
+      <div class="dashNewWrap mb10">
+        <div class="dashNewWrapHead noBor clearfix">
+          <h4 class="pull-left">Contracts</h4>
+        </div>
+        <div class="newDashPad">
+          <div class="clearfix project_tabs_inn_table dashboard-data filter_position">
+            <div id="contractList">
+              <div id="contractListPagination_wrapper" class="dataTables_wrapper no-footer">
+                <table id="contractListPagination" class="display dataTable no-footer" role="grid" aria-describedby="contractListPagination_info" style="width: 100%;" width="100%" cellspacing="0">
+                  <thead>
+                    <tr role="row">
+                      <th>Applicant Name</th>
+                      <th>Job</th>
+                      <th>Rate</th>
+                      <th>Join Date<br>
+                        (<small class="custom-small">DD-MM-YYYY</small>)</th>
+                      <th>Vendor</th>
+                      <th>Contact</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  </tbody>
+                </table>
+                <div class="dataTables_info" id="contractListPagination_info" role="status" aria-live="polite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <div class="col-md-12">
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog modal-lg" style="width: 98%;">
+        <div class="modal-content">
+          <div class="modalHeader">
+            <button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">×</button>
+            <h4 class="modal-title">Assign To<i class="fa fa-info-circle" title="Assign the job to the internal team to process the resources for the job"></i></h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="clearfix"></div>
+              <div class="swaptables">
+                <div class="row positionRelative">
+                  <div class="col-md-6 mb5 bootSelectpicker">
+                    <div class="btn-group bootstrap-select show-tick">
+                      <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="teamSelectionCategory" title="--Select Assign Team--"><span class="filter-option pull-left">--Select Assign Team--</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                      <div class="dropdown-menu open">
+                        <div class="bs-actionsbox">
+                          <div class="btn-group btn-group-sm btn-block">
+                            <button type="button" class="actions-btn bs-select-all btn btn-default">Select All</button>
+                            <button type="button" class="actions-btn bs-deselect-all btn btn-default">Deselect All</button>
+                          </div>
+                        </div>
+                        <ul class="dropdown-menu inner" role="menu">
+                        </ul>
+                      </div>
+                      <select id="teamSelectionCategory" class="selectpicker" multiple="" data-actions-box="true" onchange="filterTeamMembers();" style="display: block !important" title="--Select Assign Team--" tabindex="-98">
+                      </select>
+                    </div>
+                  </div>
+                  <!-- <div class="remove_search fa-pull-right">
+								<input placeholder="Search" type="text">
+							</div> --> 
+                </div>
+                <div class="clearfix positionRelative assignTableScroll  assignTableScroll-mnh">
+                  <div id="usersGrid-loader"></div>
+                  <table id="assignToDataTableId" class="display table table-stripped table-bordered dataTable no-footer" role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
+                    <thead>
+                      <tr role="row">
+                        <th style="vertical-align: middle"><input type="checkbox" id="checkAll"></th>
+                        <th style="vertical-align: middle">Name</th>
+                        <th style="vertical-align: middle">Email</th>
+                        <th style="vertical-align: middle">Role</th>
+                        <th>Active<br>
+                          Jobs</th>
+                      </tr>
+                    </thead>
+                    <tbody id="usersGrid">
+                    </tbody>
+                  </table>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+              <div class="swaptables-buttons">
+                <div class="swaptables-buttons-inner">
+                  <div class="btn-arrow clearfix mb"> <i class="fa fa-2x fa-arrow-circle-right cursorPointer" onclick="selectAssignUsers();"></i> </div>
+                  <div class="btn-arrow clearfix"> <i class="fa fa-2x fa-arrow-circle-left cursorPointer" onclick="deSelectAssignUsers();"></i> </div>
+                </div>
+              </div>
+              <div class="swaptables">
+                <div class="clearfix mt40 assignTableScroll" style="height:250px; overflow-y:auto;" id="assignToSelectedDataTableDiv">
+                  <table id="assignToSelectedDataTableId" class="display table table-stripped table-bordered dataTable no-footer" role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
+                    <thead>
+                      <tr role="row">
+                        <th style="vertical-align: middle"><input id="checkAllSelected" type="checkbox"></th>
+                        <th style="vertical-align: middle"><span class="tbldata-dotdot-custom">Name</span></th>
+                        <th style="vertical-align: middle"><span class="tbldata-dotdot-100">Email</span></th>
+                        <th style="vertical-align: middle"><span class="tbldata-dotdot_80">Role</span></th>
+                        <th><span class="tbldata-dotdot_30">Active<br>
+                          Jobs</span> </th>
+                      </tr>
+                    </thead>
+                    <tbody id="selectedUsersGrid">
+                    </tbody>
+                  </table>
+                  <div class="panel-default text-center" id="noAssignedmembers">
+                    <div class="panel-body"> <i class="fa fa-users fa-3x text-muted mt mb"></i>
+                      <p>No Assigned Members</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="clearfix mb">
+            <div class="pull-right mr" id="summaryButtonsDiv">
+              <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
+              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
+            </div>
+            <div class="pull-right mr" id="listButtonsDiv" style="display: none;">
+              <button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Pop ends --> 
+    
+    
+    
+   
+    
+    
+    <div class="side_mask">
+      <div class="proj_close"></div>
+    </div>
+<style>
+#resumesDiv select{
+width: 100% !important;
+}
+</style>
+   
+   
+    <link rel="stylesheet" href="/resources/css/style.css">
+    <script src="/resources/js/submissionFormBuilder.js" type="text/javascript"></script> <!-- form builder --> 
+    <script src="/resources/js/submissionForm-html-generator.js" type="text/javascript"></script> <!-- form generator -->
+    
+    <style type="text/css">
+.mt10 {
+    margin-top: 10px !important;
+}
+</style>
+    
+    <!-- For add New Applicant --> 
+
+
+  </div>
+</div>
+
+	</section>
+</div>
+<!-- Footer Area -->
+<footer class="footer-area clearfix text-center">
+    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
+<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
+ -->  </footer>
+  
+  <div class='file_mask'>
+  </div>
+  <!-- <div class="alert alert-danger" role="alert" style='display:none;'>
+	<div>
+		<strong>Alert</strong>
+		<div class="close" data-type="2"></div>
+	</div>
+	<span></span>
+  </div>-->
+  <div class="alert alert-success" role="alert" style='display:none;'>
+	<div>
+		<strong>Message</strong>
+		<div class="close" data-type="1"></div>
+	</div>
+	<span></span>
+  </div> 
+</body>
+
+</html>
