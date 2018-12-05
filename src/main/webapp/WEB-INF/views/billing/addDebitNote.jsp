@@ -81,7 +81,7 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3 paddingRight">Invoice<span class="text-danger">&nbsp;*</span></label>
+		<label class="col-md-3 paddingRight">Bill<span class="text-danger">&nbsp;*</span></label>
 		<div class="col-md-9">
 		<select multiple="multiple" class="chosen-select form-control" id="invoceId" name="invoceId" data-validation="required" field-name="Invoice"></select>
 		</div>
