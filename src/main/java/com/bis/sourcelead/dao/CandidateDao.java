@@ -219,5 +219,5 @@ public interface CandidateDao {
 	
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
 
-
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
 }
