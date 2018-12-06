@@ -109,7 +109,7 @@ function associateTaxSummary(userId){
         		result = result + '  <span>---</span>';
        		result = result + '       <div class="clearfix"></div>';
        		result = result + '     </div>';
-       		result = result + '     <div class="project_details_cta"> <strong>Mediacare:</strong>';
+       		result = result + '     <div class="project_details_cta"> <strong>Medicare:</strong>';
        		if(json.medicareExempt != null && json.medicareExempt != '' && json.medicareExempt != 'undefined')
        			result = result + '  <span title="'+json.medicareExempt+'" >'+json.medicareExempt+'</span>';
         	else
@@ -249,7 +249,7 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousResidenceTaxAllowances != opt.residenceTaxAllowances){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Residence Tax Allowances:</label>';
-								result += '			<span class="col-md-10">'+opt.previousResidenceTaxFilliingStatus+' to '+opt.residenceTaxAllowances+'</span>';
+								result += '			<span class="col-md-10">'+opt.previousResidenceTaxAllowances+' to '+opt.residenceTaxAllowances+'</span>';
 								result += '		</div>  ';
 							}
 						}
@@ -288,7 +288,7 @@ function getAssociateTaxHistory(userId){
 							&& opt.mediacareExempt != null && opt.mediacareExempt != '' && opt.mediacareExempt != 'undefined'){
 							if(opt.previousMediacareExempt != opt.mediacareExempt){
 								result += '		<div class="clearfix">';
-								result += '			<label class="col-md-2 text-muted">Mediacare Exempt:</label>';
+								result += '			<label class="col-md-2 text-muted">Medicare Exempt:</label>';
 								result += '			<span class="col-md-10">'+opt.previousMediacareExempt+' to '+opt.mediacareExempt+'</span>';
 								result += '		</div>  ';
 							}
@@ -338,7 +338,7 @@ function getAssociateTaxHistory(userId){
 							&& opt.localTaxState != null && opt.localTaxState != '' && opt.localTaxState != 'undefined'){
 							if(opt.previousLocalTaxState != opt.localTaxState){
 								result += '		<div class="clearfix">';
-								result += '			<label class="col-md-2 text-muted">Local Tax:</label>';
+								result += '			<label class="col-md-2 text-muted">Local Tax State:</label>';
 								result += '			<span class="col-md-10">'+opt.previousLocalTaxState+' to '+opt.localTaxState+'</span>';
 								result += '		</div>  ';
 							}
@@ -573,7 +573,7 @@ function backToSummary(){
               result = result + '  </div>';
               result = result + '</div>';
               result = result + ' <div class="col-md-5">';
-              result = result + ' <label>Mediacare</label>';
+              result = result + ' <label>Medicare</label>';
               result = result + ' <div>';
               if(json.medicareExempt == 'YES'){
             	  result = result + '  <label class="radioIput mr">';

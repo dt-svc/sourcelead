@@ -982,18 +982,16 @@ function jpagination(url,sourceleadUrl){
 			         				
 			         			}else if(opt.requirementSubmissionStatus == "ONHOLD"){
 			         				
-			         				if(opt.requirementSubmissionStatus == "ONHOLD" || opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
+			         				if(opt.requirementSubmissionPreviousStatus == "OPEN" || opt.requirementSubmissionPreviousStatus == null || opt.requirementSubmissionPreviousStatus == '' || opt.requirementSubmissionPreviousStatus == 'undefined' ){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";
 			         					result = result +"<option value='OPEN'>OPEN</option>";
-/* 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
+ 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_FILLED_REQUIREMENT\')">';
 			         						result = result +"<option value='FILLEDCLOSED'>FILLEDCLOSED</option>";
 			         					'</sec:authorize>';
 			         					'<sec:authorize access="hasAnyRole(\'ROLE_CLOSE_UN_FILLED_REQUIREMENT\')">';
 			         						result = result +"<option value='UNFILLEDCLOSED'>UNFILLEDCLOSED</option>";
 			         					'</sec:authorize>';
-			         					'<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">';
-			         						result = result +"<option value='CANCEL'>CANCEL</option>";
-			         					'</sec:authorize>'; */
+			         					 
 			         				}
 			         					if(opt.requirementSubmissionPreviousStatus == "DRAFT"){
 			         					result = result +"<option disabled selected>"+opt.requirementSubmissionStatus+"</option>";

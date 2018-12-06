@@ -4655,12 +4655,12 @@ public class RequirementServiceImpl implements RequirementService {
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_JOB_STATUS_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_JOB_STATUS_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 		// covert subject,body and signature
 
 		 
 
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,
 				notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		
