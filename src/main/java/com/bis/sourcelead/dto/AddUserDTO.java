@@ -209,6 +209,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private Long candidateId;
 		
+		private String allowEmployeeToFill;
+
 		private String probationPeriod;
 		
 		private String confirmationDate;
@@ -975,6 +977,14 @@ import com.bis.sourcelead.entity.UserRole;
 			this.candidateId = candidateId;
 		}
 
+		public String getAllowEmployeeToFill() {
+			return allowEmployeeToFill;
+		}
+
+		public void setAllowEmployeeToFill(String allowEmployeeToFill) {
+			this.allowEmployeeToFill = allowEmployeeToFill;
+		}
+		
 		public String getProbationPeriod() {
 			return probationPeriod;
 		}

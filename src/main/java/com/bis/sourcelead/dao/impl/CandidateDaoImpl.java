@@ -2137,25 +2137,29 @@ public class CandidateDaoImpl implements CandidateDao {
 
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-				query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
-				query1.append(" or (concat(marketplace.currentRateCurrency,' ',marketplace.currentRate) like '%"
+				query1.append(" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.candidateId.skillsName like '%" + searchValue + "%' )");
+				query1.append(" or (concat(marketplace.candidateId.currentRateCurrency,' ',marketplace.candidateId.currentRate) like '%"
 						+ searchValue + "%' )");
-				query1.append(" or (concat(marketplace.expectedRateCurrencey,' ',marketplace.expectedRate) like '%"
+				query1.append(" or (concat(marketplace.candidateId.expectedRateCurrencey,' ',marketplace.candidateId.expectedRate) like '%"
 						+ searchValue + "%' )");
-				query1.append(" or (concat(marketplace.experienceYears,'.',marketplace.experienceMonths) like '%"
+				query1.append(" or (concat(marketplace.candidateId.experienceYears,'.',marketplace.candidateId.experienceMonths) like '%"
 						+ searchValue + "%' )");
 				query1.append(" or (concat(marketplace.marketRateCurrencey,' ',marketplace.marketPrice) like '%"
 						+ searchValue + "%' )");
-				query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
-				query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+				query1.append(" or (marketplace.candidateId.designation like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.candidateId.location like '%" + searchValue + "%' )");
+				query1.append(" or (marketplace.candidateId.candidateProfilePercentage like '%" + searchValue + "%' )) ");
 			}
 			StringBuilder query2 = new StringBuilder("");
 			String sortingQry = "";
 			if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getSortColumn())) {
 				String sortColumnName = candidateMarketPlaceDTO.getSortColumn();
-				sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+				if(sortColumnName.equalsIgnoreCase("marketPrice")){
+					sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+				}else{
+					sortingQry = " order by marketplace.candidateId." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+				}
 			}
 			String listQuery = "";
 			String listQueryCount = "";
@@ -2423,17 +2427,18 @@ public class CandidateDaoImpl implements CandidateDao {
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.currentRate like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.expectedRate like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.summary like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+			searchValue = searchValue.trim();
+			query1.append(" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.skillsName like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.currentRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.expectedRate like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.designation like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.summary like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.candidateProfilePercentage like '%" + searchValue + "%' )) ");
 		}
 		StringBuilder query2 = new StringBuilder("");
 		if (candidateLocation != null && !"".equalsIgnoreCase(candidateLocation)) {
-			query2.append(" and ((marketplace.location like '%" + candidateLocation + "%' ))");
+			query2.append(" and ((marketplace.candidateId.location like '%" + candidateLocation + "%' ))");
 		}
 		List<Long> searchCandiIdsLong = new ArrayList<>();
 		if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
@@ -2624,25 +2629,29 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder();
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-			query1.append(" and ((marketplace.fullName like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.skillsName like '%" + searchValue + "%' )");
-			query1.append(" or (concat(marketplace.currentRateCurrency,' ',marketplace.currentRate) like '%"
+			query1.append(" and ((concat(marketplace.candidateId.firstName,' ',marketplace.candidateId.lastName) like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.skillsName like '%" + searchValue + "%' )");
+			query1.append(" or (concat(marketplace.candidateId.currentRateCurrency,' ',marketplace.candidateId.currentRate) like '%"
 					+ searchValue + "%' )");
-			query1.append(" or (concat(marketplace.expectedRateCurrencey,' ',marketplace.expectedRate) like '%"
+			query1.append(" or (concat(marketplace.candidateId.expectedRateCurrencey,' ',marketplace.candidateId.expectedRate) like '%"
 					+ searchValue + "%' )");
-			query1.append(" or (concat(marketplace.experienceYears,'.',marketplace.experienceMonths) like '%"
+			query1.append(" or (concat(marketplace.candidateId.experienceYears,'.',marketplace.candidateId.experienceMonths) like '%"
 					+ searchValue + "%' )");
 			query1.append(" or (concat(marketplace.marketRateCurrencey,' ',marketplace.marketPrice) like '%"
 					+ searchValue + "%' )");
-			query1.append(" or (marketplace.designation like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.location like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.summary like '%" + searchValue + "%' )");
-			query1.append(" or (marketplace.profilePercentage like '%" + searchValue + "%' )) ");
+			query1.append(" or (marketplace.candidateId.designation like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.location like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.summary like '%" + searchValue + "%' )");
+			query1.append(" or (marketplace.candidateId.candidateProfilePercentage like '%" + searchValue + "%' )) ");
 		}
 		String sortingQry = "";
 		if (StringUtils.isNotBlank(candidateMarketPlaceDTO.getSortColumn())) {
 			String sortColumnName = candidateMarketPlaceDTO.getSortColumn();
-			sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+			if(sortColumnName.equalsIgnoreCase("marketPrice")){
+				sortingQry = " order by marketplace." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+			}else{
+				sortingQry = " order by marketplace.candidateId." + sortColumnName + " " + candidateMarketPlaceDTO.getSortOrder();
+			}
 		}
 		List<Long> searchCandiIdsLong = new ArrayList<>();
 		String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y'";
@@ -2668,6 +2677,19 @@ public class CandidateDaoImpl implements CandidateDao {
 		for (CandidateMarketPlace candidateMarketPlace : queryList) {
 			CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
 			BeanUtils.copyProperties(candidateMarketPlace, marketPlaceDTO);
+			marketPlaceDTO.setFullName(candidateMarketPlace.getCandidateId().getFullName());
+			marketPlaceDTO.setDesignation(candidateMarketPlace.getCandidateId().getDesignation());
+			marketPlaceDTO.setSkillsName(candidateMarketPlace.getCandidateId().getSkillsName());
+			marketPlaceDTO.setCurrentRate(candidateMarketPlace.getCandidateId().getCurrentRate());
+			marketPlaceDTO.setCurrentRateCurrency(candidateMarketPlace.getCandidateId().getCurrentRateCurrency());
+			marketPlaceDTO.setCurrentRateType(candidateMarketPlace.getCandidateId().getCurrentRateType());
+			marketPlaceDTO.setExpectedRate(candidateMarketPlace.getCandidateId().getExpectedRate());
+			marketPlaceDTO.setExpectedRateCurrencey(candidateMarketPlace.getCandidateId().getExpectedRateCurrencey());
+			marketPlaceDTO.setExpectedRateType(candidateMarketPlace.getCandidateId().getRateType());
+			marketPlaceDTO.setExperienceYears(candidateMarketPlace.getCandidateId().getExperienceYears());
+			marketPlaceDTO.setExperienceMonths(candidateMarketPlace.getCandidateId().getExperienceMonths());
+			marketPlaceDTO.setLocation(candidateMarketPlace.getCandidateId().getLocation());
+			marketPlaceDTO.setProfilePercentage(candidateMarketPlace.getCandidateId().getCandidateProfilePercentage());
 			int count = getMarketCartStatusByMarketIdOrgId(candidateMarketPlace.getId(),
 					candidateMarketPlace.getOrgLocationId().getId());
 			if (count != 0) {
@@ -2750,4 +2772,17 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateMarketplaceCandidates;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate candidate where candidate.id IN (:Ids)";
+			List<Candidate> candidates = session.createQuery(query).setParameterList("Ids", Ids).list();
+			return candidates;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

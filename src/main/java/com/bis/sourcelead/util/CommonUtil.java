@@ -2758,5 +2758,13 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		// System.out.println(" before file return list size ");
 		return fileInfoList;
 	}
+	
+	public Date calculateBeforeDate(Date date, int before) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, -before);
+		return cal.getTime();
+	}
+	
 }
 

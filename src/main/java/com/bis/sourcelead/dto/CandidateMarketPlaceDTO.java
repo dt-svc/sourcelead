@@ -96,11 +96,11 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 	
 	private String[] skills;
 	
-	private Set<CandidateEmployerDTO> candidateEmployers;
+	private List<CandidateEmployerDTO> candidateEmployers;
 	
-	private Set<CandidateEducationDTO> candidateEducation;
+	private List<CandidateEducationDTO> candidateEducation;
 	
-	private Set<CandidateCertificationDTO> candidateCertifications;
+	private List<CandidateCertificationDTO> candidateCertifications;
 	
 	private List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs;
 
@@ -440,27 +440,27 @@ public class CandidateMarketPlaceDTO extends SearchDTO implements Serializable  
 		this.skills = skills;
 	}
 
-	public Set<CandidateEmployerDTO> getCandidateEmployers() {
+	public List<CandidateEmployerDTO> getCandidateEmployers() {
 		return candidateEmployers;
 	}
 
-	public void setCandidateEmployers(Set<CandidateEmployerDTO> candidateEmployers) {
+	public void setCandidateEmployers(List<CandidateEmployerDTO> candidateEmployers) {
 		this.candidateEmployers = candidateEmployers;
 	}
 
-	public Set<CandidateEducationDTO> getCandidateEducation() {
+	public List<CandidateEducationDTO> getCandidateEducation() {
 		return candidateEducation;
 	}
 
-	public void setCandidateEducation(Set<CandidateEducationDTO> candidateEducation) {
+	public void setCandidateEducation(List<CandidateEducationDTO> candidateEducation) {
 		this.candidateEducation = candidateEducation;
 	}
 
-	public Set<CandidateCertificationDTO> getCandidateCertifications() {
+	public List<CandidateCertificationDTO> getCandidateCertifications() {
 		return candidateCertifications;
 	}
 
-	public void setCandidateCertifications(Set<CandidateCertificationDTO> candidateCertifications) {
+	public void setCandidateCertifications(List<CandidateCertificationDTO> candidateCertifications) {
 		this.candidateCertifications = candidateCertifications;
 	}
 
