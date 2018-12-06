@@ -85,6 +85,8 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
@@ -2881,6 +2883,12 @@ public Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Lon
 public ResponseList<LeaveReportView> getLeaveReportsOrglocationIdAndFromDateToDate(HrLeaveReportDTO hrLeaveReportDTO, Long orgId, Long orgLocationId,String loginUserRole) throws Exception
 {
 	return leaveDao.getLeaveReportsOrglocationIdAndFromToDate(hrLeaveReportDTO,orgId,orgLocationId,loginUserRole);
+}
+
+@Override
+public Set<PayrollLopHis> getLeaveByFrequency(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation,EmployeePayroll employeePayroll)
+{
+	return leaveDao.getLeaveByFrequency(candidateId,freqStartDate,freqEndDate,orgLocation,employeePayroll);
 }
 
 
