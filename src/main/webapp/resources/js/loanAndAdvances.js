@@ -119,9 +119,9 @@ this.getLoanAndAdvDetails = function(){
 		        },
 		    });
 	}
-	$("#effectiveDate").val("");
+	/*$("#effectiveDate").val("");
 	$("#issuedDate").val("");
-	$("#endDate").val("");
+	$("#endDate").val("");*/
 	
 }
 
