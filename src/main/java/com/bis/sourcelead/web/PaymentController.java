@@ -1,12 +1,17 @@
 package com.bis.sourcelead.web;
 
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +30,10 @@ import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.Org;
@@ -68,6 +77,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
@@ -127,6 +137,9 @@ public class PaymentController {
 
     @Value("${paypal.paymentMode}")
     private String paymentMode;
+    
+    @Value("${paymentSuccessReturnEmail}")
+	private String paymentSuccessReturnEmail;
 
     @Value("${env}")
     private String environment;
@@ -680,14 +693,22 @@ public class PaymentController {
           //  String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
             if (org != null) {
                 try {
-                    // need to copy the candidate to buyer/target organization location.
+                    // need to copy th bve candidate to buyer/target organization location.
                 	
                 	List<CandidateMarketCart>  marketCartList = candidateService.getMarketCartIdsFromMarketcart(orgLocations.getId());
                 	List<Long> candidateIds = new ArrayList<Long>();
                 	List<Long> cartIds = new ArrayList<Long>();
+                	Map<Long , List<Long>> orgAndCandidatesMap = new HashMap<Long , List<Long>>();
                 	for(CandidateMarketCart cartItem : marketCartList){
-                		cartIds.add(cartItem.getId());
-                		candidateIds.add(cartItem.getCandidateId().getId());
+                	cartIds.add(cartItem.getId());
+                	candidateIds.add(cartItem.getCandidateId().getId());
+                	if(orgAndCandidatesMap.get(cartItem.getSourceOrgLocationId().getId()) == null){
+                	List<Long> mailCandidateIds = new ArrayList<Long>();
+                	mailCandidateIds.add(cartItem.getCandidateId().getId());
+                	orgAndCandidatesMap.put(cartItem.getSourceOrgLocationId().getId(), mailCandidateIds);
+                	}else {
+                	orgAndCandidatesMap.get(cartItem.getSourceOrgLocationId().getId()).add((cartItem.getCandidateId().getId()));
+                	}
                 	}
                 	List<CandidateDTO> candidateDto = null;
                 	if(candidateIds != null && candidateIds.size() > 0){
@@ -702,7 +723,60 @@ public class PaymentController {
                 	}
                 	
                 	System.out.println("org value is "+org.getId());
-
+                  /*=====================Email Scenario for the profile contributor starts here=====================*/
+                	
+                	EmailMessage emailMessage = new EmailMessage();
+                    // Getting the payment transaction details from the table. It will always be single record.
+                	CandidateMarketPlacePaymentTransactionHistory transactionDetails = candidateService.getMarketplaceTransactionDetails(orgLocations.getId());
+                	// Getting the purchased organization name for email.
+                	String orgName= transactionDetails.getOrgLocationId().getOrg().getOrgName();
+					Set<Long> keySet =  orgAndCandidatesMap.keySet();
+					List<Long> aList = keySet.stream().collect(Collectors.toList());
+					for(Long sourceOrgLocationId : aList){
+				    // Getting primary contact user details by passing the source org location from the above list. It will always be single record.
+					User userDetails = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+					StringBuilder sb = new StringBuilder(); 
+                	StringBuilder cb = new StringBuilder();
+                	Map<String, String> globalVarsMap = new HashMap<String, String>(); 
+                		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+                		emailMessage.setFirstName(userDetails.getFirstName());
+                		if(null != userDetails.getLastName() && !"".equalsIgnoreCase(userDetails.getLastName())){ 
+                			sb.delete(0, sb.length());
+                			sb.append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString();
+                			globalVarsMap.put("contributorName", sb.toString()); 
+                		}else{ 
+                			sb.delete(0, sb.length());
+            				sb.append(userDetails.getFirstName()).toString();
+            				globalVarsMap.put("contributorName", sb.toString()); 
+            			}
+                		emailMessage.setToEmail(userDetails.getEmail()); 
+                		emailMessage.setFromEmail(paymentSuccessReturnEmail);
+                		globalVarsMap.put("toEmail", userDetails.getEmail());
+                		List<Long> candidateIdList = orgAndCandidatesMap.get(sourceOrgLocationId);
+                		String numberOfResumes = String.valueOf(candidateIdList.size());
+                		Date date = transactionDetails.getTransactionDate();  
+                		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+                		String transactionDate = dateFormat.format(date);
+                		//Getting the candidate details from the table. It will either be a single record or multiple records.
+                		List<CandidateMarketPlace> candidateDetails = candidateService.getCandidateDetailsByCandidateId(candidateIdList);
+                		int amount = 0;
+                		for(CandidateMarketPlace cd: candidateDetails){
+                		           cb.append(cd.getFullName()+"-"+cd.getMarketPrice()+"<br>");
+                		           amount += Integer.parseInt(cd.getMarketPrice());
+                		      }
+                		globalVarsMap.put("numberOfResumes", numberOfResumes);
+                		globalVarsMap.put("transactionId", transactionDetails.getTransactionId());
+                		globalVarsMap.put("orderedCompanyName", orgName);
+                		globalVarsMap.put("totalAmount", String.valueOf(amount) );
+                		globalVarsMap.put("date", transactionDate);
+                		globalVarsMap.put("candidateDetails", cb.toString());
+                		if(emailMessage !=null && globalVarsMap != null){ 
+                			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR, new ArrayList<EmailAttachment>());	
+                			} 
+                			cb.delete(0, cb.length());
+                	 }
+					
+					/*=====================Email Scenario for the profile contributor ends here=====================*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

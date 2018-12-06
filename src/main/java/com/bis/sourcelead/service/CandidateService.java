@@ -293,4 +293,10 @@ public interface CandidateService {
 
 	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
 
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+
+	public List<CandidateMarketPlace> getCandidateDetailsByCandidateId(List<Long> candidateIdList) throws Exception;
+
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+
 }

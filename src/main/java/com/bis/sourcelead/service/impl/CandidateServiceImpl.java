@@ -3062,7 +3062,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return marketPlaceDTO;
 	}
-
+	
+	@Override
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
 		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
 		return marketCartIds;
@@ -3070,14 +3071,29 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
-		List<CandidateDTO> candidate = candidateDao.getCandidatesListByIds(Ids);
-		return candidate;
+		return candidateDao.getCandidatesListByIds(Ids);
 	}
 
 	@Override
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
 		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
 	}
+	
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
+		return candidateDao.getMarketplaceTransactionDetails(orgLocationId);
+	}
+	
+	@Override
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception{
+		return candidateDao.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+	}
+
+	@Override
+	public List<CandidateMarketPlace> getCandidateDetailsByCandidateId(List<Long> candidateIdList) throws Exception{
+		return candidateDao.getCandidateDetailsByCandidateId(candidateIdList);
+	}
+	
 
 	@Override
 	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds) throws Exception {
