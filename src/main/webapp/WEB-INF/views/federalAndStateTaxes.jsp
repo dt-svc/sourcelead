@@ -116,7 +116,7 @@
 								<select  class="chosen-select form-control" name="federalDeposit" id="federalDeposit"  field-name="Federal Deposit">
 											<option value="">--Select Federal Deposit--</option>
 											<option value="Semi weekly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi weekly' ? 'selected' : ''}>Semi weekly</option>
-											<option value="Semi Monthly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
+											<option value="Semi Monthly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi Monthly' ? 'selected' : ''}>Monthly</option>
 											<option value="Quarterly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
 					                 </select>
 								</div>

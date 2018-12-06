@@ -20,6 +20,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.dao.TeamMemberDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -85,6 +88,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Autowired
 	RequirementApproverHierarchyDao requirementApproverHierarchyDao;
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -2861,6 +2866,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}*/
 			        	
 			        	int totalCount = 0;
+			        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
+			        		totalCount = listQuery.list().size();
+			        		if(query1.toString() != null && !query1.toString().isEmpty()){
+				    			response.setRecordsFiltered(filterCount);
+				    		}else {
+				    			response.setRecordsFiltered(totalCount);
+				    		}
+				    		response.setRecordsTotal(totalCount);
+			        	}
+			        	else{
 			    		if (requirementSubmissionHistoryDTO != null) {
 			    			if(countlist != null && !countlist.isEmpty()) {
 			    				totalCount = countlist.iterator().next().intValue();
@@ -2873,6 +2888,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}else {
 			    			response.setRecordsFiltered(totalCount);
 			    		}
+			        	}
 			    		response.setData(requirementSubmissionHistoryList);
 					}
 		        }
@@ -3939,4 +3955,388 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					return applicantJoinedReportList;
 				}
 
+				@Override
+				@Transactional
+				public ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+				{
+					Session session = this.sessionFactory.getCurrentSession();
+					 Query queryString = null;
+					 ResponseList<AssociateJoineReportDTO> associateJoineReportDTO = new ResponseList<>();
+		             List<AssociateJoineReportDTO> associateJoineReportDTOList = null;
+					 java.sql.Timestamp fromDate1 = new java.sql.Timestamp(startUTCDate.getTime());
+						java.sql.Timestamp toDate1 = new java.sql.Timestamp(endUTCDate.getTime());
+						java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+						java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+					    SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					    Date date = null;
+					    java.sql.Date sqlDate = null;
+						Query countQueryString;
+						List<Long> countlist = null;
+						String sortingQry = "";
+					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.TERMINATE_DATE as terminateDate,urole.USER_TYPE as userRole,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, COUNT(urole.TERMINATE_DATE) as terminatedCount,COUNT(emp.HIRE_DATE) as hiredCount, "
++" COUNT(case when emp.EMPLOYMENT_TYPE='Full Time' then 1 end) as empTypeFullTimeCount,"
++"COUNT(case when emp.EMPLOYMENT_TYPE='Part Time' then 1 end) as empTypePartTimeCount,"
++"COUNT(case when user.GENDER='Male' and  emp.EMPLOYMENT_TYPE='Full Time' then 1 end) as ftMaleCnt,"
++"COUNT(case when user.GENDER='Female' and  emp.EMPLOYMENT_TYPE='Full Time' then 1 end) as ftFemaleCnt,"
++"COUNT(case when user.GENDER='Male' and  emp.EMPLOYMENT_TYPE='Part Time' then 1 end) as ptMaleCnt,"
++"COUNT(case when user.GENDER='Female' and  emp.EMPLOYMENT_TYPE='Part Time' then 1 end) as ptFemaleCnt"
++" from EMPLOYEE emp, USER_ROLE urole, USER user "
+ +" where urole.USER_ID = emp.USER_ID and user.ID = emp.USER_ID "
++" and urole.ORG_LOCATIONS_ID = emp.ORG_LOCATIONS_ID and  emp.ORG_LOCATIONS_ID = '"
+				+ orgLocationsId + "' "
+						+" and (DATE_FORMAT(urole.TERMINATE_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+						+ "' and '" + toDate + " ' or  DATE_FORMAT(emp.HIRE_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+						+ "' and '" + toDate + " ')";
+					 StringBuilder query1 = new StringBuilder();
+					 if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSearchValue())) {
+						 
+					       Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			                Matcher matcher = pattern.matcher(requirementSubmissionHistoryDTO.getSearchValue());
+			                if (matcher.matches() == true) {
+			                    if (requirementSubmissionHistoryDTO.getSearchValue().contains("/")
+			                            || (requirementSubmissionHistoryDTO.getSearchValue().contains("-"))) {
+			                        String replacedValue = requirementSubmissionHistoryDTO.getSearchValue().replaceAll("/", "-");
+			                        Date date1 = format.parse(replacedValue);
+			                        sqlDate = new java.sql.Date(date1.getTime());
+			                    }
+			                    if (sqlDate != null) {
+			                        query1.append(" and (emp.HIRE_DATE like '%" + sqlDate +"%'" + ") ");
+			                    }
+			                }
+						 
+			                else{
+								 query1.append(" and (user.FIRST_NAME  like '%" + requirementSubmissionHistoryDTO.getSearchValue()+ "%' ")
+								 .append("OR user.LAST_NAME like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.EMPLOYMENT_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR CONCAT(user.FIRST_NAME,space(1),user.LAST_NAME) like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR urole.USER_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.ID like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%')");
+			                }
+					 }
+					 
+			/*		 
+			            if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSortColumn())) {
+			                sortingQry = " order by " + requirementSubmissionHistoryDTO.getSortColumn() + " "
+			                        + requirementSubmissionHistoryDTO.getSortOrder();
+			            }*/
+					 
+					 
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+							  		.addScalar("empType", StandardBasicTypes.STRING)
+							  		.addScalar("userRole", StandardBasicTypes.STRING)
+							  		.addScalar("gender", StandardBasicTypes.STRING)
+							  		.addScalar("hireDate", StandardBasicTypes.DATE)
+							  		.addScalar("terminatedCount", StandardBasicTypes.LONG)
+							  		.addScalar("empTypeFullTimeCount", StandardBasicTypes.LONG)
+							  		.addScalar("empTypePartTimeCount", StandardBasicTypes.LONG)
+							  		.addScalar("ftMaleCnt", StandardBasicTypes.LONG)
+							  		.addScalar("ftFemaleCnt", StandardBasicTypes.LONG)
+							  		.addScalar("ptMaleCnt", StandardBasicTypes.LONG)
+							  		.addScalar("ptFemaleCnt", StandardBasicTypes.LONG)
+									.addScalar("hiredCount", StandardBasicTypes.LONG)
+							  		.addScalar("terminateDate", StandardBasicTypes.DATE);
+		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
+		                associateJoineReportDTOList = queryString.list();
+		                
+		                
+		                
+						associateJoineReportDTO.setData(associateJoineReportDTOList);
+				         int count = 0;
+				            int filteredCount = 0;
+				            if (associateJoineReportDTOList != null && !associateJoineReportDTOList.isEmpty()) {
+				                count = queryString.list().size();
+				                filteredCount = queryString.list().size();
+				            }
+				            associateJoineReportDTO.setRecordsTotal(count);
+				            associateJoineReportDTO.setRecordsFiltered(filteredCount);
+						return associateJoineReportDTO;
 				}
+				@Override
+				@Transactional
+				public ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+				{
+					Session session = this.sessionFactory.getCurrentSession();
+					 Query queryString = null;
+					 ResponseList<AssociateJoineReportDTO> associateJoineReportDTO = new ResponseList<>();
+		             List<AssociateJoineReportDTO> associateJoineReportDTOList = null;
+					 java.sql.Timestamp fromDate1 = new java.sql.Timestamp(startUTCDate.getTime());
+						java.sql.Timestamp toDate1 = new java.sql.Timestamp(endUTCDate.getTime());
+						java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+						java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+					    SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					    Date date = null;
+					    java.sql.Date sqlDate = null;
+						Query countQueryString;
+						List<Long> countlist = null;
+						String sortingQry = "";
+					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
+					 		+ " urole.TERMINATE_DATE as terminateDate, urole.TERMINATE_REASON as terminatedReason,emp.HIRE_DATE as hireDate,  urole.USER_TYPE as userRole,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
++"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
++"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
++" (SELECT dep.DEPARTMENT_NAME from DEPARTMENT dep where dep.ID = emp.DEPARTMENT_ID) as deptName " 
++" from EMPLOYEE emp, USER_ROLE urole, USER user "
++" where urole.USER_ID = emp.USER_ID and user.ID = emp.USER_ID "
++" and urole.ORG_LOCATIONS_ID = emp.ORG_LOCATIONS_ID and  emp.ORG_LOCATIONS_ID = '"
+				+ orgLocationsId + "' "
+						+" and DATE_FORMAT(urole.TERMINATE_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+						+ "' and '" + toDate + " ' ";
+					 StringBuilder query1 = new StringBuilder();
+					 if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSearchValue())) {
+						 
+					       Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			                Matcher matcher = pattern.matcher(requirementSubmissionHistoryDTO.getSearchValue());
+			                if (matcher.matches() == true) {
+			                    if (requirementSubmissionHistoryDTO.getSearchValue().contains("/")
+			                            || (requirementSubmissionHistoryDTO.getSearchValue().contains("-"))) {
+			                        String replacedValue = requirementSubmissionHistoryDTO.getSearchValue().replaceAll("/", "-");
+			                        Date date1 = format.parse(replacedValue);
+			                        sqlDate = new java.sql.Date(date1.getTime());
+			                    }
+			                    if (sqlDate != null) {
+			                        query1.append(" and (urole.TERMINATE_DATE like '%" + sqlDate +"%'" + ") ");
+			                    }
+			                }
+						 
+			                else{
+								 query1.append(" and (user.FIRST_NAME  like '%" + requirementSubmissionHistoryDTO.getSearchValue()+ "%' ")
+								 .append("OR user.LAST_NAME like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.EMPLOYMENT_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR CONCAT(user.FIRST_NAME,space(1),user.LAST_NAME) like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR urole.USER_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.ID like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%')");
+			                }
+					 }
+					 
+					 
+			            if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSortColumn())) {
+			                sortingQry = " order by " + requirementSubmissionHistoryDTO.getSortColumn() + " "
+			                        + requirementSubmissionHistoryDTO.getSortOrder();
+			            }
+					 
+					 
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+							  		.addScalar("empName",StandardBasicTypes.STRING).addScalar("empType", StandardBasicTypes.STRING)
+							  		.addScalar("deptName", StandardBasicTypes.STRING).addScalar("userRole", StandardBasicTypes.STRING)
+							  		.addScalar("reportingManager", StandardBasicTypes.STRING)
+							  		.addScalar("gender", StandardBasicTypes.STRING)
+							  		.addScalar("currency", StandardBasicTypes.STRING)
+							  		.addScalar("rate", StandardBasicTypes.STRING)
+							  		.addScalar("ratePer", StandardBasicTypes.STRING)
+							  		.addScalar("shiftName", StandardBasicTypes.STRING)
+							  		.addScalar("terminatedReason", StandardBasicTypes.STRING)
+							  		.addScalar("terminateDate", StandardBasicTypes.DATE)
+					  				.addScalar("hireDate", StandardBasicTypes.DATE);
+		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
+		                associateJoineReportDTOList = queryString.list();
+		                
+		                
+		                
+						associateJoineReportDTO.setData(associateJoineReportDTOList);
+				         int count = 0;
+				            int filteredCount = 0;
+				            if (associateJoineReportDTOList != null && !associateJoineReportDTOList.isEmpty()) {
+				                count = queryString.list().size();
+				                filteredCount = queryString.list().size();
+				            }
+				            associateJoineReportDTO.setRecordsTotal(count);
+				            associateJoineReportDTO.setRecordsFiltered(filteredCount);
+						return associateJoineReportDTO;
+				}
+
+				
+				
+				
+				@Override
+				@Transactional
+				public ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+				{
+					Session session = this.sessionFactory.getCurrentSession();
+					 Query queryString = null;
+					 ResponseList<AssociateJoineReportDTO> associateJoineReportDTO = new ResponseList<>();
+		             List<AssociateJoineReportDTO> associateJoineReportDTOList = null;
+					 java.sql.Timestamp fromDate1 = new java.sql.Timestamp(startUTCDate.getTime());
+						java.sql.Timestamp toDate1 = new java.sql.Timestamp(endUTCDate.getTime());
+						java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+						java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+						OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationsId);
+					    SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					    Date date = null;
+					    java.sql.Date sqlDate = null;
+						Query countQueryString;
+						List<Long> countlist = null;
+						String sortingQry = "";
+					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
++"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
++"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
++" (SELECT dep.DEPARTMENT_NAME from DEPARTMENT dep where dep.ID = emp.DEPARTMENT_ID) as deptName " 
++" from EMPLOYEE emp, USER_ROLE urole, USER user "
+ +" where urole.USER_ID = emp.USER_ID and user.ID = emp.USER_ID "
++" and urole.ORG_LOCATIONS_ID = emp.ORG_LOCATIONS_ID and  emp.ORG_LOCATIONS_ID = '"
+				+ orgLocationsId + "' "
+						+" and DATE_FORMAT(emp.HIRE_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+						+ "' and '" + toDate + " ' ";
+					 StringBuilder query1 = new StringBuilder();
+					 if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSearchValue())) {
+						 
+					       Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			                Matcher matcher = pattern.matcher(requirementSubmissionHistoryDTO.getSearchValue());
+			                if (matcher.matches() == true) {
+			                    if (requirementSubmissionHistoryDTO.getSearchValue().contains("/")
+			                            || (requirementSubmissionHistoryDTO.getSearchValue().contains("-"))) {
+			                        String replacedValue = requirementSubmissionHistoryDTO.getSearchValue().replaceAll("/", "-");
+			                        Date date1 = format.parse(replacedValue);
+			                        sqlDate = new java.sql.Date(date1.getTime());
+			                    }
+			                    if (sqlDate != null) {
+			                        query1.append(" and (emp.HIRE_DATE like '%" + sqlDate +"%'" + ") ");
+			                    }
+			                }
+						 
+			                else{
+								 query1.append(" and (user.FIRST_NAME  like '%" + requirementSubmissionHistoryDTO.getSearchValue()+ "%' ")
+								 .append("OR user.LAST_NAME like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.EMPLOYMENT_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR CONCAT(user.FIRST_NAME,space(1),user.LAST_NAME) like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR urole.USER_TYPE like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%'")
+								 .append("OR emp.ID like '%"
+			                                + requirementSubmissionHistoryDTO.getSearchValue()
+			                                + "%')");
+			                }
+					 }
+					 
+					 
+			            if (StringUtils.isNotBlank(requirementSubmissionHistoryDTO.getSortColumn())) {
+			                sortingQry = " order by " + requirementSubmissionHistoryDTO.getSortColumn() + " "
+			                        + requirementSubmissionHistoryDTO.getSortOrder();
+			            }
+					 
+					 
+					  queryString =  session.createSQLQuery(query.toString() + " " + query1.toString() + " " + sortingQry).addScalar("empId", StandardBasicTypes.LONG)
+							  		.addScalar("empName",StandardBasicTypes.STRING).addScalar("empType", StandardBasicTypes.STRING)
+							  		.addScalar("deptName", StandardBasicTypes.STRING).addScalar("userRole", StandardBasicTypes.STRING)
+							  		.addScalar("reportingManager", StandardBasicTypes.STRING)
+							  		.addScalar("gender", StandardBasicTypes.STRING)
+							  		.addScalar("currency", StandardBasicTypes.STRING)
+							  		.addScalar("rate", StandardBasicTypes.STRING)
+							  		.addScalar("ratePer", StandardBasicTypes.STRING)
+							  		.addScalar("shiftName", StandardBasicTypes.STRING)
+							  		.addScalar("hireDate", StandardBasicTypes.DATE);
+		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
+		                associateJoineReportDTOList = queryString.list();
+		                
+		                
+		                
+						associateJoineReportDTO.setData(associateJoineReportDTOList);
+				         int count = 0;
+				            int filteredCount = 0;
+				            if (associateJoineReportDTOList != null && !associateJoineReportDTOList.isEmpty()) {
+				                count = queryString.list().size();
+				                filteredCount = queryString.list().size();
+				            }
+				            associateJoineReportDTO.setRecordsTotal(count);
+				            associateJoineReportDTO.setRecordsFiltered(filteredCount);
+						return associateJoineReportDTO;
+				}
+				
+				
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalList = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
+				+ "and req.isClientJob = 'Y'";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId());
+		finalList =finalQuery.list();
+		return finalList;
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations, User user,
+			Long orgRelationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalList = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
+				+ "and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId);
+		finalList =finalQuery.list();
+		return finalList;
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations, User user,
+			Long orgRelationId, List<Long> selectedAssociates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalList = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
+				+ "and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId and can.id NOT IN(:selectedAssociates)";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
+		finalList =finalQuery.list();
+		return finalList;
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalList = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated IS NULL and (req.jobType ='Full Time' or req.jobType ='W-2') "
+				+ "and can.orgRelationId.id =:orgRelationId";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId);
+		finalList =finalQuery.list();
+		return finalList;
+	}
+	
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getCandidateForBillJobClosureEdit(OrgLocations orgLocations, User user,
+			Long orgRelationId, List<Long> selectedAssociates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalList = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.submissionStatus ='JOINED' and rs.invoiceGenerated <> 'Y' and (req.jobType ='Full Time' or req.jobType ='W-2') "
+				+ "and can.orgRelationId.id =:orgRelationId and can.id NOT IN(:selectedAssociates)";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
+		finalList =finalQuery.list();
+		return finalList;
+	}
+
+}
+

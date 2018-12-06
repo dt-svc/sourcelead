@@ -2063,11 +2063,29 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("requirementId-Name", requirement.getJobTitle());
 		}
-		if (requirementLocation != null) {
-			globalVarsMap.put("requirementLocation", requirementLocation.toString());
-		} else {
-			globalVarsMap.put("requirementLocation", "--");
-		}
+		
+		
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			globalVarsMap.put("requirementLocation", location);
 		if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
 			globalVarsMap.put("approverName", loginUser.getFirstName());
 		} else {
@@ -2455,10 +2473,10 @@ public class RequirementServiceImpl implements RequirementService {
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		if (assUser.getFirstName() != null && !"".equalsIgnoreCase(assUser.getFirstName())) {
 			StringBuilder sb = new StringBuilder();
-			globalVarsMap.put("OwnerName",
+			globalVarsMap.put("Ownername",
 					sb.append(assUser.getFirstName()).append(" ").append(assUser.getLastName()).toString());
 		} else {
-			globalVarsMap.put("OwnerName", "--");
+			globalVarsMap.put("Ownername", "--");
 		}
 		if (requirement.getJobTitle() != null && !"".equalsIgnoreCase(requirement.getJobTitle())) {
 			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
@@ -2472,11 +2490,29 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("jobTitleId", requirement.getJobTitle());
 		}
-		if (location != null) {
-			globalVarsMap.put("RequirementLocation", location.toString());
-		} else {
-			globalVarsMap.put("RequirementLocation", "--");
-		}
+		
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String reqLocation = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							reqLocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							reqLocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			globalVarsMap.put("RequirementLocation", reqLocation);
+		
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
 				&& (requirement.getMaxRate() != null && !"".equalsIgnoreCase(requirement.getMaxRate()))) {
@@ -4607,12 +4643,12 @@ public class RequirementServiceImpl implements RequirementService {
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_JOB_STATUS_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CHANGE_JOB_STATUS_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 		// covert subject,body and signature
 
 		 
 
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(), globalVarsMap,
 				notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		

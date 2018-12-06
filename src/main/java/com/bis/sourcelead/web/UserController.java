@@ -165,6 +165,8 @@ public class UserController {
 			model.setViewName("users/userCreation");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
+			model.addObject("probationPeriod",orgLocations.getProbationPeriod());
+			
 		return model;
 
 	}

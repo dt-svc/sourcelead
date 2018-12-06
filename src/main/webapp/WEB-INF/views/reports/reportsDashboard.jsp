@@ -34,6 +34,9 @@
 				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
+				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joine Report</a></li>
+				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
@@ -588,6 +591,25 @@
             <div class="clearfix mt mb"></div>
                                    
         </div>
+        
+        
+        <div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="/app/projectReport">Project Report</a></li>
+				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
+				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+					
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="/app/projectReportList" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
+                      </div>
+        
         </div>
         <!--  List View End  --> 
     
