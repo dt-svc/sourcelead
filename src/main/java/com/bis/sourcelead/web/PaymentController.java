@@ -35,7 +35,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 
 import com.bis.sourcelead.entity.CandidateMarketPlace;
-import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
 
@@ -752,7 +751,7 @@ public class PaymentController {
 
                   /*=====================Email Scenario for the profile contributor starts here=====================*/
                 	
-                	EmailMessage emailMessage = new EmailMessage();
+                	EmailMessage emailMessage1 = new EmailMessage();
                     // Getting the payment transaction details from the table. It will always be single record.
                 	CandidateMarketPlacePaymentTransactionHistory transactionDetails = candidateService.getMarketplaceTransactionDetails(orgLocations.getId());
                 	// Getting the purchased organization name for email.
@@ -762,43 +761,54 @@ public class PaymentController {
 					for(Long sourceOrgLocationId : aList){
 				    // Getting primary contact user details by passing the source org location from the above list. It will always be single record.
 					User userDetails = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
-					StringBuilder sb = new StringBuilder(); 
+					StringBuilder sb1 = new StringBuilder(); 
                 	StringBuilder cb = new StringBuilder();
-                	Map<String, String> globalVarsMap = new HashMap<String, String>(); 
-                		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-                		emailMessage.setFirstName(userDetails.getFirstName());
+                	Map<String, String> globalVarsMap1 = new HashMap<String, String>(); 
+                	emailMessage1.setEmailType(Constants.CUSTOM_USER_EMAIL);
+                	emailMessage1.setFirstName(userDetails.getFirstName());
                 		if(null != userDetails.getLastName() && !"".equalsIgnoreCase(userDetails.getLastName())){ 
-                			sb.delete(0, sb.length());
-                			sb.append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString();
-                			globalVarsMap.put("contributorName", sb.toString()); 
+                			sb1.delete(0, sb1.length());
+                			sb1.append(userDetails.getFirstName()).append(" ").append(userDetails.getLastName()).toString();
+                			globalVarsMap1.put("contributorName", sb1.toString()); 
                 		}else{ 
-                			sb.delete(0, sb.length());
-            				sb.append(userDetails.getFirstName()).toString();
-            				globalVarsMap.put("contributorName", sb.toString()); 
+                			sb1.delete(0, sb1.length());
+            				sb1.append(userDetails.getFirstName()).toString();
+            				globalVarsMap1.put("contributorName", sb1.toString()); 
             			}
-                		emailMessage.setToEmail(userDetails.getEmail()); 
-                		emailMessage.setFromEmail(paymentSuccessReturnEmail);
-                		globalVarsMap.put("toEmail", userDetails.getEmail());
+                		emailMessage1.setToEmail(userDetails.getEmail()); 
+                		emailMessage1.setFromEmail(paymentSuccessReturnEmail);
+                		globalVarsMap1.put("toEmail", userDetails.getEmail());
                 		List<Long> candidateIdList = orgAndCandidatesMap.get(sourceOrgLocationId);
                 		String numberOfResumes = String.valueOf(candidateIdList.size());
                 		Date date = transactionDetails.getTransactionDate();  
                 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
                 		String transactionDate = dateFormat.format(date);
-                		//Getting the candidate details from the table. It will either be a single record or multiple records.
+                		//Getting the candidate details from the candidate market place table. It will either be a single record or multiple records.
                 		List<CandidateMarketPlace> candidateDetails = candidateService.getCandidateDetailsByCandidateId(candidateIdList);
+                		for(Long candidateId : candidateIdList){
+                		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+                		if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){ 
+                			cb.delete(0, cb.length());
+                			cb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
+                			
+                		}else{ 
+                			cb.delete(0, cb.length());
+            				cb.append(candidate.getFirstName()).toString();
+                		}
+                		}
                 		int amount = 0;
                 		for(CandidateMarketPlace cd: candidateDetails){
-                		           cb.append(cd.getFullName()+"-"+cd.getMarketPrice()+"<br>");
+                		           cb.append("-"+cd.getMarketPrice()+"<br>");
                 		           amount += Integer.parseInt(cd.getMarketPrice());
                 		      }
-                		globalVarsMap.put("numberOfResumes", numberOfResumes);
-                		globalVarsMap.put("transactionId", transactionDetails.getTransactionId());
-                		globalVarsMap.put("orderedCompanyName", orgName);
-                		globalVarsMap.put("totalAmount", String.valueOf(amount) );
-                		globalVarsMap.put("date", transactionDate);
-                		globalVarsMap.put("candidateDetails", cb.toString());
-                		if(emailMessage !=null && globalVarsMap != null){ 
-                			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR, new ArrayList<EmailAttachment>());	
+                		globalVarsMap1.put("numberOfResumes", numberOfResumes);
+                		globalVarsMap1.put("transactionId", transactionDetails.getTransactionId());
+                		globalVarsMap1.put("orderedCompanyName", orgName);
+                		globalVarsMap1.put("totalAmount", String.valueOf(amount) );
+                		globalVarsMap1.put("date", transactionDate);
+                		globalVarsMap1.put("candidateDetails", cb.toString());
+                		if(emailMessage1 !=null && globalVarsMap1 != null){ 
+                			commonUtil.sendTemplateEmail(emailMessage1, globalVarsMap1, orgLocations.getOrg(), orgLocations, Constants.PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR, new ArrayList<EmailAttachment>());	
                 			} 
                 			cb.delete(0, cb.length());
                 	 }
