@@ -28,6 +28,10 @@
          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
          <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+           
+         
          <div class="clearfix"></div>
      </ul>
 </div>
@@ -209,7 +213,7 @@
 	        	 }, 
 	             {
 	                 "targets": colIndex++,
-	                 "data": "fullName", 
+	                 "data": "firstName", 
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
@@ -291,7 +295,7 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "profilePercentage",
+	                 "data": "candidateProfilePercentage",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.profilePercentage !== null && opt.profilePercentage !== '' && opt.profilePercentage !== 'undefined') {
@@ -304,7 +308,7 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "price",
+	                 "data": "marketPrice",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.marketPrice !== null && opt.marketPrice !== '' && opt.marketPrice !== 'undefined') {
@@ -455,6 +459,13 @@ function cardModel() {
 }
 function goToGlobalMarketPlaceList(){
 	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
 }
 
 

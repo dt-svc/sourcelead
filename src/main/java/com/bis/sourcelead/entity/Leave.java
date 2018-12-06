@@ -38,8 +38,7 @@ public class Leave {
     private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;

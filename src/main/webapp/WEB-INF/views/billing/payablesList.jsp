@@ -195,9 +195,11 @@ $(document).ready(function(){
 							<!-- <a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a> -->
 					<a href="<c:url value='${appPath}/createPayables'/>" title="Create Vendor Based Bill">Vendor Based Bill</a>
 					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>" title="Create Project Based Bill">Project Based Bill</a>
+		            <a href="<c:url value='${appPath}/createPaybleForJobClosure'/>" title="Create Job closure Based Bill">Job closure Based Bill</a>
 		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">Other Bill</a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
+						<a href="javascript:void(0)" title="Generate Automatic JobClosure Bill" onclick="generateAutomaticBillForJobClosure();">Generate Automatic JobClosure Bill</a>
 						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
 					</span>
 				</div>
@@ -461,7 +463,7 @@ function validMask(){
 	 finalAmount = totalValue+parseFloat(customAmount);
 	if(finalAmount > totalAmount){
 		var exceededAmount = customAmount - totalAmount;
-		alert("your payment is exceeded by ); 
+		alert("your payment is exceeded by"); 
 		$('#customeAmount').removeAttr('data-validation-optional');
 		 $('#customeAmount').attr("data-validation","required");
 	}else{
@@ -1829,6 +1831,25 @@ function generateAutomaticInvoice(){
             	 location.replace(sourceleadUrl+"/payablesList");	
         },
     });  
+}
+
+
+function generateAutomaticBillForJobClosure(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+   	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
+            success: function(json) {
+           	 
+           	 $("#invoiceLoading").removeAttr("style");
+           	    $("#selector1").removeAttr("style");
+	    			$("#selector1").css("display", "block");
+	    			$("#msgDiv").html(json.object.count+"Bill(s) Generated Successfully.");
+					msgFadein();
+           	 location.replace(sourceleadUrl+"/payablesList");	
+       },
+   });  
 }
 </script>
 

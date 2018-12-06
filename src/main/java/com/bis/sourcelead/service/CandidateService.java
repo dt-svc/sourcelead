@@ -289,8 +289,10 @@ public interface CandidateService {
 	
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;
 	
-	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds)throws Exception;
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
 
 	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
+	
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
 
 }

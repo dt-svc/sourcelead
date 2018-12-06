@@ -402,6 +402,7 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
             }else if(result.response === "SUCCESS") {
             	getCandidateDetailsFromMarketcart();
 				updateInvoiceAndCartDetails();
+				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
     			$(".project_inn_mask").fadeOut(200);
             }else{
