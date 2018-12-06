@@ -1280,7 +1280,7 @@ public class CandidateRestController {
 		if (user != null) {
 			try {
 				if (null != marketplace) {
-					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else {

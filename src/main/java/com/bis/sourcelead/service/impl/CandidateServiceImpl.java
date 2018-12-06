@@ -85,6 +85,8 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
@@ -2796,7 +2798,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
 		newMarketCart.setMarketplaceId(marketplace);
@@ -2805,8 +2807,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
 		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
-		orgLocation.setId(orgLocationId);
+		orgLocation.setId(orgLocations.getId());
 		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setSourceOrgId(marketplace.getOrgLocationId().getOrg());
+		newMarketCart.setTargetOrgId(orgLocations.getOrg());
 		newMarketCart.setTargetOrgLocationId(orgLocation);
 		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
 		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
@@ -3062,4 +3066,52 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			storeCandidate(candidateDto, orgLocations, user);
 	}
 
+////
+
+	@Override
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo) throws Exception {
+		
+		
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+			
+			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
+			newMarketplacePurchaseorder.setOrderNo(orderNo);
+			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
+			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
+			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
+			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
+			newMarketplacePurchaseorder.setPaymentStatus(candidateMarketCart.getCartStatus());
+         	candidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			
+		}
+		
+	}
+
+	@Override
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo) throws Exception {
+	
+		///mapping and get org name
+		
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+			
+		MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+		 newMarketplaceSalesorder.setOrderNo(orderNo);
+		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
+		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
+		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
+		 newMarketplaceSalesorder.setPaymentStatus(candidateMarketCart.getCartStatus());
+		 
+			candidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+	}
+
+}
+
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception {
+		
+		return candidateDao.getOrderNo(id);
+	}
 }

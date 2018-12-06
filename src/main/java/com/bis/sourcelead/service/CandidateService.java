@@ -263,7 +263,7 @@ public interface CandidateService {
 
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations)throws Exception;
 	
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue);
 
@@ -292,5 +292,12 @@ public interface CandidateService {
 	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds)throws Exception;
 
 	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
+    
+	///
+	
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo)throws Exception;
 
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo)throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id)throws Exception;
 }

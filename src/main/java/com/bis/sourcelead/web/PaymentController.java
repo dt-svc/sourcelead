@@ -25,8 +25,10 @@ import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -693,8 +695,8 @@ public class PaymentController {
                 	if(candidateIds != null && candidateIds.size() > 0){
                 	candidateDto = candidateService.getCandidatesListByIds(candidateIds); 
                 	}
-                	Boolean flag = candidateService.updateMarketCartStatus(cartIds, orgLocations.getId());
                 	
+                	Boolean flag = candidateService.updateMarketCartStatus(cartIds, orgLocations.getId());
                 	if(flag == true){
                 		for(int i = 0; i < candidateDto.size(); i++){
                     		candidateService.saveTransactionCompletedCandidates(candidateDto.get(i), orgLocations, loginUser);
@@ -702,7 +704,19 @@ public class PaymentController {
                 	}
                 	
                 	System.out.println("org value is "+org.getId());
-
+                	
+                	// new code will be written here//
+                	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
+                	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
+                	
+                	
+                	String orderNo = transactionHistory.getOrderId();
+                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo);
+                	
+                	// 
+                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo);
+                	
+                	
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
