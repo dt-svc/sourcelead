@@ -581,6 +581,7 @@ public class RequirementRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
 								rah.setUpdatedDate(commonUtil.currentDate());
