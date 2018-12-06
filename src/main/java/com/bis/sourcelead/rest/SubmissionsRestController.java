@@ -309,7 +309,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = "/app/getRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
+	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate", "/rest/getRequirmentOrgSubmissionTemplate" }, method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 

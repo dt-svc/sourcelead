@@ -1102,6 +1102,65 @@ public class CandidateRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	 
+	 
+    	// Note this method is purchase orderlist  method
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/PurchaseOrderList")
+		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
+			logger.debug("inisde PurchaseOrderList  conroller =========>");
+			System.out.println("inside PurchaseOrderList  conroller =========>");
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");			
+			model.setViewName("candidates/purchaseOrderList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+		 
+		// Note this method is purchase order method
+				 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+				 @RequestMapping(value = "/app/PurchaseOrder")
+				 public ModelAndView goToPurchaseOrder(HttpServletRequest request) throws Exception {
+					logger.debug("inisde PurchaseOrder  conroller =========>");
+					System.out.println("inside PurchaseOrder  conroller =========>");
+					ModelAndView model = new ModelAndView();
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");			
+					model.setViewName("candidates/purchaseOrder");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					return model;
+				}
+		 
+			// Note this method is sales orderlist  method
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/SalesOrderList")
+		 public ModelAndView goToSalesOrderList(HttpServletRequest request) throws Exception {
+			logger.debug("inisde SalesOrderList  conroller =========>");
+			System.out.println("inside SalesOrderList  conroller =========>");
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			model.setViewName("candidates/salesOrderList");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
+		 
+		 
+			// Note this method is sales order  method
+		    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+	     	@RequestMapping(value = "/app/SalesOrder")
+		    public ModelAndView goToSalesOrder(HttpServletRequest request) throws Exception {
+			  logger.debug("inisde SalesOrder  conroller =========>");
+		   	  System.out.println("inside SalesOrder  conroller =========>");
+			  ModelAndView model = new ModelAndView();
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			  model.setViewName("candidates/salesOrder");
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  return model;
+		}
+		 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
