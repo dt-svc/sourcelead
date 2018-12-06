@@ -22,6 +22,7 @@
 	<div class="clearfix"></div>
     </section>    
     
+    <div class="project_wrap">
     <div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		   
@@ -34,7 +35,7 @@
 	    </ul>
     </div>
     
-    <div class="immigrationWrap noPad mt5">
+    <div class="immigrationWrap noPad">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
@@ -218,7 +219,7 @@
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
-		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+		<a href="javascript:void(0)" onclick="columClose();uncheckPpup();">Cancel</a>
 	</div>
 </div>				
 			</div>      		
@@ -254,6 +255,7 @@
 			 
     </div>
     </div>
+	</div>
   </section>
   <!-- Content Area -->
 <div id="popUp"></div>
@@ -832,6 +834,11 @@
 
 <script type="text/javascript">
 
+	function uncheckPpup(){
+		$("#columnsPickerUnCheckAll").prop('checked',false);
+		$("#columnsPickerCheckAll").prop('checked',true);
+		$('.toggle-vis:input:checkbox').prop('checked',true);
+	}	
 	function cancelImmigrationDelete(){
 		$("#remove_immigration_pop").fadeOut(200);
 		$(".project_inn_mask").fadeOut(200);
@@ -848,6 +855,7 @@
 	$(".refreIcon, .colPop").click(function(e){
 	 	e.stopPropagation();
 	});		
+	
 		
 	function columHide(){
 		hideColumns=[]; // reset the array object.

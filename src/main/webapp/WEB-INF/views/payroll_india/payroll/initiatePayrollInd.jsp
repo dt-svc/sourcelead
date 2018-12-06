@@ -22,8 +22,8 @@
 		</div>
 		<div class="col-md-2 paddingLeft paddingRight" id="payTypeIdDiv">
 			<select id="payType" name="payType" data-validation="required" data-placeholder="Select Pay type" field-name="Pay Type" class="chosen-select" onchange="errPayType();">
-				 <option value=""></option>
-				<!--  <option value="All">All</option>
+				 <!--  <option value=""></option>
+				 <option value="All">All</option>
 				 <option value="HourlyRate">Hourly Rate</option> -->
                  <option value = "Salary">Salary</option>
 			</select>
@@ -58,8 +58,8 @@ function getGroupFrequency(){
 	        var output = "";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var date = json[i].payPeriod.replace(",", " to ");
+				output = output + "<option value='" +json[i].payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);

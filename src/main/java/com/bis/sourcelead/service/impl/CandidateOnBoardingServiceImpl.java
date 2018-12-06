@@ -637,8 +637,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
         }
 	    
 	    user.setLocation(candidateOnBoarding.getAddress1());
-	   
-	    
+	    user.setGender(candidateOnBoarding.getGender());
 	    user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -716,6 +715,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    employees.setCreatedDate(commonUtil.currentDate());
 		    employees.setUpdatedBy(loginUser.getUserCode());
 		    employees.setUpdatedDate(commonUtil.currentDate());
+		    
+		    if(candidateOnBoarding.getProbationNotice() != null)
+		    employees.setProbationPeriod(candidateOnBoarding.getProbationNotice());
 		    
 		    Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		    if(candidate.getOrgRelationId() != null) {

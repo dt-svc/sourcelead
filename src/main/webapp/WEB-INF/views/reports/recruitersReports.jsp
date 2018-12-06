@@ -318,6 +318,7 @@ function userDataTableList(){
 	 var flag = true;
 	 var startDate = '';
 	 var endDate = '';
+	 var searchValueregx = searchValue.replace('^', '');
 	 if(timePeriod == 'custom'){
 		  startDate = $("#ReportStartDate").val();
 		  endDate = $("#ReportEndDate").val();
@@ -349,8 +350,11 @@ function userDataTableList(){
 	     });
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName;
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
 		 usersListPagination(url,sourceleadUrl);
+		 if(timePeriod == 'custom'){
+		 $("#customSearch").hide();
+		 }
 	 }
 	
 }
@@ -550,23 +554,26 @@ function usersListPagination(url,sourceleadUrl){
     } );
     $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#usersDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-   		    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-   	    	var searchData = $('#usersDataTableSearch').val();
-   	    	var regex =  new RegExp(/[\\-]/g);
-   	    	if(regex.test(searchData) == false){
-   	    		userDataTableList();
-   	    	}else{
-   	    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-   	    	}
-   	    	$('#usersDataTableSearch').val(searchData);
-    	   }
-    	});
+    
 }
 </script>
 
 <script>
+
+$("#usersDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+	    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#usersDataTableSearch').val();
+    	var regex =  new RegExp(/[\\-]/g);
+    	if(regex.test(searchData) == false){
+    		userDataTableList();
+    	}else{
+    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+    	}
+    	$('#usersDataTableSearch').val(searchData);
+	   }
+	});
+
 function getRecruiterJobs(userCode){
 	var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();

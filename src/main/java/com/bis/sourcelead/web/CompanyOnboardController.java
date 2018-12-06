@@ -132,16 +132,17 @@ public class CompanyOnboardController {
 			List<OrgLicenseSubscription> subscriptionList = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgId(org.getId());
 			List<String> orgSubscribedCountriesList = new ArrayList<>();
 			StringBuilder subscriptionCountries = new StringBuilder(); 
-			if(subscriptionList != null && !subscriptionList.isEmpty()) {
-				for(OrgLicenseSubscription subscription : subscriptionList) {
-					Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
-					subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
-					orgSubscribedCountriesList.add(subscription.getCountry());
-				}
-			}
 			
+			if(subscriptionList != null && !subscriptionList.isEmpty()) {
+					for(OrgLicenseSubscription subscription : subscriptionList) {
+						Countries subscriptionCountry = countriesService.getCountriesByCountryName(subscription.getCountry());
+						subscriptionCountries.append(subscriptionCountry.getCode2()).append(",");
+						orgSubscribedCountriesList.add(subscription.getCountry());
+					}
+				}
 			 String subscribedCountries = subscriptionCountries.toString();
-			 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
+			 if(subscribedCountries != null && !subscribedCountries.isEmpty())
+				 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
 			 
 			model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 			model.addObject("subscribedCountries", subscribedCountries);

@@ -1123,7 +1123,6 @@
 	  });
 	  
   } );
-  
   function clearDateOfBirth(){
 		$("#dateofBirth").val("");
 		};

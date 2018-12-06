@@ -10,6 +10,7 @@ $(document).ready(function(){
 	var payrollScheduleUUID = "${payScheduleUUID}";
 	/* getApproverList(); */
 	getPayrollSchedule(payrollScheduleUUID);
+	$("#endDateDIV").hide();
 });
 
 </script>
@@ -24,7 +25,10 @@ $(document).ready(function(){
         <div class="success_pop" id="selector2" style="display: none;">
           <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
         </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a></div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
+          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
+          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;Add Pay Schedule
+        </div>
     </section>
     <div class="clearfix"></div>
     <div class="timesheet_out">
@@ -40,7 +44,7 @@ $(document).ready(function(){
                 <div class="dropdown-select" id="scheduleFreDIV">
                   <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" onchange="weekOnChange();" field-name="Pay Frequency">
                     <option value="">Select Frequency</option>
-                    <option value="Weekly">Weekly</option>
+                    <option value="Weekly">Weekly</option> 
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Monthly">Monthly</option>
                   </select>
@@ -54,6 +58,8 @@ $(document).ready(function(){
 				<label class="col-md-4">Pay Period Start Date</label>
               <div class="col-md-8" id="payperiodDiv1">
                 <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
+              	<div class="clearfix mt5"></div>
+              	
               </div>
 			  <div class="clearfix"></div>
           </div>
@@ -63,20 +69,6 @@ $(document).ready(function(){
 				<label class="col-md-4">Next Pay Month</label>
               <div class="col-md-8" id="nextPayrollMonth">
 				  <select class="sel" id="nextPayMonth" name="nextPayMonth"  field-name="Next Pay Month">
-				  <!-- 	<option value="">Slect Month</option>
-				  	<option value="JANUARY">January</option>
-				  	<option value="FEBRUARY">February</option>
-				  	<option value="MARCH">March</option>
-				  	<option value="APRIL">April</option>
-				  	<option value="MAY">May</option>
-				  	<option value="JUNE">June</option>
-				  	<option value="JULY">July</option>
-				  	<option value="AUGUST">August</option>
-				  	<option value="SEPTEMBER">September</option>
-				  	<option value="OCTOBER">October</option>
-				  	<option value="NOVEMBER">November</option>
-				  	<option value="DECEMBER">December</option> -->
-					  
 				  </select>
               </div>
 			  <div class="clearfix"></div>
@@ -84,10 +76,9 @@ $(document).ready(function(){
           </div>
           </div>
           <div class="form-group">
-              <label class="col-md-4">Notify to Members</label>
+              <label class="col-md-4">Notify Before (day's)</label>
 				<div class="col-md-8">
-					<select class="form-control chosen-select" multiple data-placeholder="Notify Members" id="notifyMember" name="notifyMember">
-					</select>
+					<input type="text" data-validation="validate_int validate_Space validate_length length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control">
 				</div>
             </div>
           </div>
@@ -96,6 +87,15 @@ $(document).ready(function(){
           <div class="col-md-6">
 			 <h5 class="col-md-12 clearfix margin-top0">Pay Period Frequency</h5>
 			  <div class="clearfix"></div>
+			  
+			  <div class="form-group clearfix mt text-primary textBold" id="endDateDIV">
+				<label class="col-md-4">Pay Period End Date</label>
+              <div class="col-md-8">
+              		<span id="payPeriodEndDate"></span>
+              </div>
+			  <div class="clearfix"></div>
+            </div>
+			  
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
               <div class="col-md-8">
@@ -127,7 +127,7 @@ $(document).ready(function(){
 			  <div class="col-md-12 mb mt">
 			  	<div class="pull-right mr">
 					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
-					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="">Cancel</button>  
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/app/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -189,13 +189,6 @@ function savePayrollSchedule(){
 }
 </script>
   
-<!--   <script type="text/javascript">
-$(function() {
-	$("#payCheckDate").datepicker();
-	$("#runPayrollDate").datepicker();
-	$("#payPeriodStartDate").datepicker();
-})
- -->
 
 
 
@@ -211,8 +204,8 @@ $('#payCheckDate').datepicker({
     //minDate: 0  this line for to restrict selection of previous dates
     		onSelect : function(selected) {
     			var dt = $(this).datepicker('getDate', '+1d');
-    			dt.setDate(dt.getDate()+1);
-    			$("#runPayrollDate").datepicker("option", "minDate", dt);
+    			dt.setDate(dt.getDate()-1);
+    			$("#runPayrollDate").datepicker("option", "maxDate", dt);
 // 			removeStartValid();
 			}
 });
@@ -224,8 +217,8 @@ $('#runPayrollDate').datepicker({
     //minDate: 0  this line for to restrict selection of previous dates
     onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate());
-			$("#payCheckDate").datepicker("option", "maxDate", dt);
+			dt.setDate(dt.getDate()+1);
+			$("#payCheckDate").datepicker("option", "minDate", dt);
 // 			removeEndValid();
 	}
 });
@@ -236,10 +229,19 @@ $('#payPeriodStartDate').datepicker({
 	  changeYear: true, 
 	  onSelect : function(selected) {
 		  var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate()+1);
+		  var frequency = $("#payFrequency").val();
+			if(frequency == "Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}if(frequency == "Bi-Weekly"){
+				dt.setDate(dt.getDate()+13);
+			}
+			var dd = new Date(finalDateFormat);
+			dd.setDate(dt);
+			$("#payPeriodEndDate").html(dt);
+			$("#endDateDIV").show();
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
-    //minDate: 0  this line for to restrict selection of previous dates
+    //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
 	 
 	
@@ -322,30 +324,8 @@ function weekOnChange() {
 	        url: sourceleadUrl+"/findPayrollScheduleByUUID?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
 	        success: function(json) {
 	               
-	        	   var existedUser = json.notifiMemIds;
 	        	   var data = json.approvers;
 	        	   var monthly = json.month;
-	        	   var output = "";
-					for (var i=0; i<data.length; i++)
-					{
-						var opt = data[i];
-						if(existedUser != null && existedUser.length >0){
-							for(var j=0;j<existedUser.length;j++){
-								if(existedUser[j] == opt.id){
-									output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-								}else{
-									output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
-								}
-							}	
-						}else{
-							output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";	
-						}
-					}
-					$("#notifyMember").empty();
-					$("#notifyMember").append(output);
-					$('#notifyMember').trigger("chosen:updated");
-					
-				
 					var res = "";
 					res = res + "<option value=''>Slect Month</option>";
 					  for (var j=0; j<monthly.length; j++)
@@ -361,6 +341,7 @@ function weekOnChange() {
 	        $("#payCheckDate").val(json.payCheckDate);
 	        $("#runPayrollDate").val(json.runPayDate); 
 	        $("#nextPayMonth").val(json.nextPayMonth); 
+	        $("#notifyMember").val(json.notifyMember)
 	          
 	        	/*   var output = "";
 			for (var i=0; i<data.length; i++)

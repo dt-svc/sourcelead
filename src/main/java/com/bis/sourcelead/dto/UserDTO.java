@@ -95,6 +95,12 @@ public class UserDTO extends SearchDTO implements Serializable {
     private String tags;
     
     private String joinersAmount;
+    
+    private List<String> empTypes;
+    
+    private List<Long> roles;
+    
+    private Integer assignedJobsCount;
 	
 	public String getUnSubscribeTabIds()
 	{
@@ -649,5 +655,28 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.joinersAmount = joinersAmount;
 	}
 
+	public List<String> getEmpTypes() {
+		return empTypes;
+	}
+
+	public void setEmpTypes(List<String> empTypes) {
+		this.empTypes = empTypes;
+	}
+
+	public List<Long> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Long> roles) {
+		this.roles = roles;
+	}
+
+	public Integer getAssignedJobsCount() {
+		return assignedJobsCount;
+	}
+
+	public void setAssignedJobsCount(Integer assignedJobsCount) {
+		this.assignedJobsCount = assignedJobsCount;
+	}
 	
 }

@@ -602,317 +602,323 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseList<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId, RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId,String candidatesSelected,CandidateDTO candidateDTO) throws Exception {
-		float locationPercentage = 0; // location 10%
-		float ratePercentage = 0;    // rate 10 %
-		float skillPercentage = 0; // skill = 20%
-		float percentPerSkill = 0;
-		float percentPerkeyword = 0; //keyword 20%
-		float noticePeriod = 0; // notice 10%
-		float expPercentage = 0; //  experience = 10%
-//		float visaTypePercentage = 0; //  visaType = 10%
-//		float educationPercentage = 0; //  education = 10%
-		List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
-		ResponseList<CandidateIndex> response = new ResponseList<>();
-		String reqSkills = "";
-		if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
-//			Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
-			BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
-			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-			 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
-			 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
-			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
-			 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status",1));
-		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		ResponseList<CandidateIndex> response = null;
+		try {
+			float locationPercentage = 0; // location 10%
+			float ratePercentage = 0;    // rate 10 %
+			float skillPercentage = 0; // skill = 20%
+			float percentPerSkill = 0;
+			float percentPerkeyword = 0; //keyword 20%
+			float noticePeriod = 0; // notice 10%
+			float expPercentage = 0; //  experience = 10%
+//			float visaTypePercentage = 0; //  visaType = 10%
+//			float educationPercentage = 0; //  education = 10%
+			List<CandidateIndex> CandidateListcopy = new ArrayList<>(); 
+			response = new ResponseList<>();
+			String reqSkills = "";
+			if(null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+//				Long maxResults = candidateService.getCandidatesCountByOrgLocationID(orgLocationId,null);
+				BoolQueryBuilder boolQueryBuilderForCount = new BoolQueryBuilder();
+				BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
+				 boolQueryBuilder.must(QueryBuilders.matchQuery("status",1));
+				 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocationId));
+				 boolQueryBuilderForCount.must(QueryBuilders.matchQuery("status",1));
+			     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
 
-		     String visaType = null;
-		     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
-		    	 visaType = recommendedCustomizeScore.getCustomizeVisatype();
-		     }
-		    
-		     String education = null;
-		     if(recommendedCustomizeScore.getCustomizeEducation() != null){
-		    	 education  = recommendedCustomizeScore.getCustomizeEducation();
-		     }
-		     
-		     String [] numOfKeyWords = null;
-		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
-		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
-		    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
-		     }
-		     
-			String [] reqMaxSkills = reqSkills.split(",");
-			if(reqMaxSkills != null && reqMaxSkills.length >0){
-				for(String skill : reqMaxSkills){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
-					boolQueryBuilderForCount.should(QueryBuilders.matchQuery("skillsName", skill));
-				}
-			}
-
-			String [] visatypeArr = null;
-			if(visaType != null){
-				visatypeArr = visaType.split(",");
-				if(visatypeArr != null && visatypeArr.length >0){
-					for(String visa : visatypeArr){
-						boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
-						boolQueryBuilderForCount.should(QueryBuilders.matchQuery("visaType", visa));
+			     String visaType = null;
+			     if(recommendedCustomizeScore.getCustomizeVisatype() != null){
+			    	 visaType = recommendedCustomizeScore.getCustomizeVisatype();
+			     }
+			    
+			     String education = null;
+			     if(recommendedCustomizeScore.getCustomizeEducation() != null){
+			    	 education  = recommendedCustomizeScore.getCustomizeEducation();
+			     }
+			     
+			     String [] numOfKeyWords = null;
+			     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
+			    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
+			    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
+			     }
+			     
+				String [] reqMaxSkills = reqSkills.split(",");
+				if(reqMaxSkills != null && reqMaxSkills.length >0){
+					for(String skill : reqMaxSkills){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("skillsName", skill));
+						boolQueryBuilderForCount.should(QueryBuilders.matchQuery("skillsName", skill));
 					}
 				}
-			}
-			
-			String[] candidates = null;
-			if(null != candidatesSelected && !"".equals(candidatesSelected)){	
-				candidates = candidatesSelected.split(",");
-			}
-			
-			if(candidates != null){
-				BoolQueryBuilder candiListBuilder = QueryBuilders.boolQuery();
-		        for(int i=0 ; i< candidates.length; i++){
-		        	if(!"".equalsIgnoreCase(candidates[i])) {
-		        		BoolQueryBuilder candidateCompareQueryBuilder = QueryBuilders.boolQuery();
-			        	candidateCompareQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidates[i]));
-			        	candiListBuilder.should(candidateCompareQueryBuilder);
-		        	}
-		        }
-		        boolQueryBuilder.must(candiListBuilder);
-		        boolQueryBuilderForCount.must(candiListBuilder);
-			}
-			
-			String [] educationArr = null;
-			if(education != null){
-				educationArr = education.split(",");
-				for(String edu : educationArr){
-					boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
-					boolQueryBuilderForCount.should(QueryBuilders.matchQuery("education", edu));
-				}
-			}
-			
-			boolQueryBuilder.minimumShouldMatch("1");
-			boolQueryBuilderForCount.minimumShouldMatch("1");
-			String[] tableColumns = {"","firstName.keyword", "email.keyword", "city.keyword", "mobilePhone.keyword", "", "noOfReq","updatedDate","",""};
-			
-		    int sortColumnIndex = 1; //by default sorting using updated date
-			boolean sortColumnOrder = false; //by default descending order
-			if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
-				sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
-				sortColumnOrder = !candidateDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
-			}
-			
-			// count
-			
-			
-			// count end
-			
-			 List<String> anyKeyWordArray = new ArrayList<>();
-				if(StringUtils.isNotEmpty(candidateDTO.getSearchValue())) {
-					anyKeyWordArray.add(candidateDTO.getSearchValue());
+
+				String [] visatypeArr = null;
+				if(visaType != null){
+					visatypeArr = visaType.split(",");
+					if(visatypeArr != null && visatypeArr.length >0){
+						for(String visa : visatypeArr){
+							boolQueryBuilder.should(QueryBuilders.matchQuery("visaType", visa));
+							boolQueryBuilderForCount.should(QueryBuilders.matchQuery("visaType", visa));
+						}
+					}
 				}
 				
-				if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
-					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
-					for (String keywd : anyKeyWordArray) {
-						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
-						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
-							for (QueryBuilder QueryBuilder : QueryBuilderList) {
-								anyBoolSubQueryBuilder.should(QueryBuilder);
-							}
-							
-							OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-							DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
-							try{
-								if(keywd.contains("/")){
-									keywd = keywd.replaceAll("/", "-");
+				String[] candidates = null;
+				if(null != candidatesSelected && !"".equals(candidatesSelected)){	
+					candidates = candidatesSelected.split(",");
+				}
+				
+				if(candidates != null){
+					BoolQueryBuilder candiListBuilder = QueryBuilders.boolQuery();
+			        for(int i=0 ; i< candidates.length; i++){
+			        	if(!"".equalsIgnoreCase(candidates[i])) {
+			        		BoolQueryBuilder candidateCompareQueryBuilder = QueryBuilders.boolQuery();
+				        	candidateCompareQueryBuilder.should(QueryBuilders.matchQuery("candidateId", candidates[i]));
+				        	candiListBuilder.should(candidateCompareQueryBuilder);
+			        	}
+			        }
+			        boolQueryBuilder.must(candiListBuilder);
+			        boolQueryBuilderForCount.must(candiListBuilder);
+				}
+				
+				String [] educationArr = null;
+				if(education != null){
+					educationArr = education.split(",");
+					for(String edu : educationArr){
+						boolQueryBuilder.should(QueryBuilders.matchQuery("education", edu));
+						boolQueryBuilderForCount.should(QueryBuilders.matchQuery("education", edu));
+					}
+				}
+				
+				boolQueryBuilder.minimumShouldMatch("1");
+				boolQueryBuilderForCount.minimumShouldMatch("1");
+				String[] tableColumns = {"","firstName.keyword", "email.keyword", "city.keyword", "mobilePhone.keyword", "", "noOfReq","updatedDate","",""};
+				
+			    int sortColumnIndex = 1; //by default sorting using updated date
+				boolean sortColumnOrder = false; //by default descending order
+				if(candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !candidateDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");
+				}
+				
+				// count
+				
+				
+				// count end
+				
+				 List<String> anyKeyWordArray = new ArrayList<>();
+					if(StringUtils.isNotEmpty(candidateDTO.getSearchValue())) {
+						anyKeyWordArray.add(candidateDTO.getSearchValue());
+					}
+					
+					if (anyKeyWordArray != null && !anyKeyWordArray.isEmpty()) {
+						BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
+						for (String keywd : anyKeyWordArray) {
+							BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							List<QueryBuilder> QueryBuilderList = getQueryBuilderList(keywd);
+							if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+								for (QueryBuilder QueryBuilder : QueryBuilderList) {
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
-								Date d = df.parse(keywd);
-								anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-								String dateStr = commonUtil.elkDateFormatter(d);
-								anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
-							 }
-							 catch(Exception e){}
-							
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
-					}
-					boolQueryBuilder.must(anyBoolQueryBuilder);
-//					boolQueryBuilderForCount.must(anyBoolQueryBuilder);
-				}
-			
-			SearchResponse searchResponse = sourceleadELKBaseIndexer
-					.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-							0, 100, tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
-			
-			SearchHit searchHits[] = searchResponse.getHits().getHits();
-			
-			if(null != searchHits && searchHits.length >0){
-				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
-				float visaTypePercentage = 0;
-				float educationPercentage = 0;
-				if(visatypeArr !=null && visatypeArr.length >0){
-					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
-				}
-				if(educationArr != null && educationArr.length >0){
-					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationArr.length; 	
-				}
-				int reqMinExp = 0;
-				int reqMaxExp = 0;
-				float percentPerMonthExp = 0;
-				/*if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null !=recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
-					 reqMinExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience());
-					 reqMaxExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience());
-					int reqExp = reqMaxExp *12 ;
-					 percentPerMonthExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore())/(float)reqExp;
-				}*/
-				
-				float requirementHourlyRate = 0;
-				// changed rate logic
-				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
-					requirementHourlyRate = conversionUtil.getHourlyRate(recommendedCustomizeScore.getCustomizeRate(), recommendedCustomizeScore.getCustomizeRatetype());
-				}
-				// rate logic end
-				
-				for (SearchHit hit : searchHits) {
-					
-					ObjectMapper mapper = new ObjectMapper();
-					String json = hit.getSourceAsString();
-		    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
-					boolean isCandidateAdded = false;
-					
-					int matchedSkillCount = 0;
-					int matchedVisaTypeCount = 0;
-					int matchedEducationCount = 0;
-					
-					float eduPer = 0;
-					float visaPer = 0;
-					
-					
-					//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
-					Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
-					 // TODO Don't delete until regression testing done Rajashekar
-					boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
-					if(isSumbitted == true){
-						candidateIndex.setIsCandidateSubmitted(Constants.YES);
-					}else{
-						candidateIndex.setIsCandidateSubmitted(Constants.NO);
-					}
-					
-					//get the skillPercentage method
-					 				 
-					if(null  != candidateIndex.getSkillsName()){
-						String[] skills = candidateIndex.getSkillsName().split(",");
-						Set<String> set = new HashSet<String>(Arrays.asList(skills));
-						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
-					}
-					
-					if(null  != candidateIndex.getVisaType()){
-						String[] visa = candidateIndex.getVisaType();
-						Set<String> set = new HashSet<String>(Arrays.asList(visa));
-						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType,recommendedCustomizeScore.getCustomizeVisatypecore());
-					}
-					
-					
-					if(null  != candidateIndex.getEducation()){
-						ArrayList<String> edu = candidateIndex.getEducation();
-						Set<String> set = new HashSet<String>(edu);
-						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
-					}
-					
-					//get the ExperiencePercentage
-					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
-					
-					//get the RatePercentage
-					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,requirementHourlyRate);
-					
-					// get the NoticeperiodPercentage
-					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
-					
-					// get the locationPercentage
-					locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
-					
-					Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateIndex.getCandidateId());
-					candidateIndex.setCandidateProfilePercentage(profilePercentage);
-					
-					//keywords calculation
-				    float totalKeyWordPer = 0;
-					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
-						for(int i=0;i<numOfKeyWords.length;i++){
-							if(candidateIndex.getSummary().equalsIgnoreCase(numOfKeyWords[i])){
-								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
+								
+								OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
+								DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+								try{
+									if(keywd.contains("/")){
+										keywd = keywd.replaceAll("/", "-");
+									}
+									Date d = df.parse(keywd);
+									anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
+									String dateStr = commonUtil.elkDateFormatter(d);
+									anyBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+								 }
+								 catch(Exception e){}
+								
+								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
 						}
+						boolQueryBuilder.must(anyBoolQueryBuilder);
+//						boolQueryBuilderForCount.must(anyBoolQueryBuilder);
 					}
-					
-					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer+visaPer+eduPer;
-					
-					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
-					candidateIndex.setFinalScore(roundOff);
-					candidateIndex.setNoOfReq(reqListCount);
-					
-					double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
-					candidateIndex.setSkillPercentage((float)(skillRoundOff));
-					candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
-					
-					double visaTypeRoundOff = Math.round(visaPer * 100.0) / 100.0;
-					candidateIndex.setVisaTypePercentage((float)(visaTypeRoundOff));
-					if(recommendedCustomizeScore.getCustomizeVisatypecore() != null){
-						candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));	
-					}else{
-						candidateIndex.setTotalVisaTypePercentage(0);
-					}
-					
-					double educationRoundOff = Math.round(eduPer * 100.0) / 100.0;
-					candidateIndex.setEducationPercentage((float)(educationRoundOff));
-					if(recommendedCustomizeScore.getCustomizeEducationScore() != null){
-						candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));	
-					}else{
-						candidateIndex.setTotalEducationPercentage(0);
-					}
-					
-					
-					candidateIndex.setExpPercentage(expPercentage);
-					candidateIndex.setTotalExpPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore()));
-					
-					candidateIndex.setLocationPercentage(locationPercentage);
-					candidateIndex.setTotalLocationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore()));
-					
-					candidateIndex.setRatePercentage(ratePercentage);
-					candidateIndex.setTotalRatePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore()));
-					
-					candidateIndex.setNoticePeriodPercentage(noticePeriod);
-					candidateIndex.setTotalNoticePeriodPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore()));
-					
-					candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
-					candidateIndex.setKeyWordPerPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore()));
-					
-					candidateIndex.setIsCandidateAdedd(isCandidateAdded);
-					if(null != candidateIndex.getUpdatedDate()){
-						Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
-						String  strDate = new SimpleDateFormat(recommendedCustomizeScore.getOrgLocationId().getDateFormat()).format(date1);
-						candidateIndex.setUpdatedDate(strDate);	
-					}
-					
-					if(skillPercentage > 0 && totalPercentage > 0){
-						CandidateListcopy.add(candidateIndex);
-					}
-				}
-				Collections.sort(CandidateListcopy, new Comparator() {  
-		            @Override  
-		            public int compare(Object obj1, Object obj2) {  
-		            	CandidateIndex candidate1 = (CandidateIndex)obj1;  
-		            	CandidateIndex candidate2 = (CandidateIndex)obj2; 
-		            	if (candidate2.getFinalScore() < candidate1.getFinalScore()) return -1;
-		                if (candidate2.getFinalScore() > candidate1.getFinalScore()) return 1;
-		                return 0;
-		            }  
-		        });
-				response.setRecordsFiltered(CandidateListcopy.size());
-				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
-								0, 10, "updatedDate", SortOrder.DESC, boolQueryBuilderForCount);
 				
-				response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+				SearchResponse searchResponse = sourceleadELKBaseIndexer
+						.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
+								0, 100, tableColumns[sortColumnIndex], sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				
+				SearchHit searchHits[] = searchResponse.getHits().getHits();
+				
+				if(null != searchHits && searchHits.length >0){
+					percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+					float visaTypePercentage = 0;
+					float educationPercentage = 0;
+					if(visatypeArr !=null && visatypeArr.length >0){
+						 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+					}
+					if(educationArr != null && educationArr.length >0){
+						 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationArr.length; 	
+					}
+					int reqMinExp = 0;
+					int reqMaxExp = 0;
+					float percentPerMonthExp = 0;
+					/*if(null != recommendedCustomizeScore.getCustomizeMinExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMinExperience()) && null !=recommendedCustomizeScore.getCustomizeMaxExperience() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeMaxExperience())){
+						 reqMinExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMinExperience());
+						 reqMaxExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeMaxExperience());
+						int reqExp = reqMaxExp *12 ;
+						 percentPerMonthExp = Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore())/(float)reqExp;
+					}*/
+					
+					float requirementHourlyRate = 0;
+					// changed rate logic
+					if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
+						requirementHourlyRate = conversionUtil.getHourlyRate(recommendedCustomizeScore.getCustomizeRate(), recommendedCustomizeScore.getCustomizeRatetype());
+					}
+					// rate logic end
+					
+					for (SearchHit hit : searchHits) {
+						
+						ObjectMapper mapper = new ObjectMapper();
+						String json = hit.getSourceAsString();
+			    	    CandidateIndex candidateIndex = mapper.readValue(json, CandidateIndex.class);
+						boolean isCandidateAdded = false;
+						
+						int matchedSkillCount = 0;
+						int matchedVisaTypeCount = 0;
+						int matchedEducationCount = 0;
+						
+						float eduPer = 0;
+						float visaPer = 0;
+						
+						
+						//List<RequirementSubmission> reqList = requirementSubmissionService.getRequirementPerCandidate(candidateIndex.getCandidateId());
+						Integer reqListCount = requirementSubmissionService.getRequirementPerCandidateCount(candidateIndex.getCandidateId(),candidateIndex.getOrgLocationId());
+						 // TODO Don't delete until regression testing done Rajashekar
+						boolean isSumbitted = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateIdAndRequirementId(candidateIndex.getCandidateId(), requirementId);
+						if(isSumbitted == true){
+							candidateIndex.setIsCandidateSubmitted(Constants.YES);
+						}else{
+							candidateIndex.setIsCandidateSubmitted(Constants.NO);
+						}
+						
+						//get the skillPercentage method
+						 				 
+						if(null  != candidateIndex.getSkillsName()){
+							String[] skills = candidateIndex.getSkillsName().split(",");
+							Set<String> set = new HashSet<String>(Arrays.asList(skills));
+							skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
+						}
+						
+						if(null  != candidateIndex.getVisaType()){
+							String[] visa = candidateIndex.getVisaType();
+							Set<String> set = new HashSet<String>(Arrays.asList(visa));
+							visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType,recommendedCustomizeScore.getCustomizeVisatypecore());
+						}
+						
+						
+						if(null  != candidateIndex.getEducation()){
+							ArrayList<String> edu = candidateIndex.getEducation();
+							Set<String> set = new HashSet<String>(edu);
+							 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
+						}
+						
+						//get the ExperiencePercentage
+						expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
+						
+						//get the RatePercentage
+						ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,requirementHourlyRate);
+						
+						// get the NoticeperiodPercentage
+						noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
+						
+						// get the locationPercentage
+						locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
+						
+						Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateIndex.getCandidateId());
+						candidateIndex.setCandidateProfilePercentage(profilePercentage);
+						
+						//keywords calculation
+					    float totalKeyWordPer = 0;
+						if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
+							for(int i=0;i<numOfKeyWords.length;i++){
+								if(candidateIndex.getSummary().equalsIgnoreCase(numOfKeyWords[i])){
+									totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
+								}
+							}
+						}
+						
+						float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer+visaPer+eduPer;
+						
+						double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
+						candidateIndex.setFinalScore(roundOff);
+						candidateIndex.setNoOfReq(reqListCount);
+						
+						double skillRoundOff = Math.round(skillPercentage * 100.0) / 100.0;
+						candidateIndex.setSkillPercentage((float)(skillRoundOff));
+						candidateIndex.setTotalSkillPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore()));
+						
+						double visaTypeRoundOff = Math.round(visaPer * 100.0) / 100.0;
+						candidateIndex.setVisaTypePercentage((float)(visaTypeRoundOff));
+						if(recommendedCustomizeScore.getCustomizeVisatypecore() != null){
+							candidateIndex.setTotalVisaTypePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore()));	
+						}else{
+							candidateIndex.setTotalVisaTypePercentage(0);
+						}
+						
+						double educationRoundOff = Math.round(eduPer * 100.0) / 100.0;
+						candidateIndex.setEducationPercentage((float)(educationRoundOff));
+						if(recommendedCustomizeScore.getCustomizeEducationScore() != null){
+							candidateIndex.setTotalEducationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore()));	
+						}else{
+							candidateIndex.setTotalEducationPercentage(0);
+						}
+						
+						
+						candidateIndex.setExpPercentage(expPercentage);
+						candidateIndex.setTotalExpPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeExperienceScore()));
+						
+						candidateIndex.setLocationPercentage(locationPercentage);
+						candidateIndex.setTotalLocationPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore()));
+						
+						candidateIndex.setRatePercentage(ratePercentage);
+						candidateIndex.setTotalRatePercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeRateScore()));
+						
+						candidateIndex.setNoticePeriodPercentage(noticePeriod);
+						candidateIndex.setTotalNoticePeriodPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeNoticeperiodScore()));
+						
+						candidateIndex.setTotalKeyWordPerPercentage(totalKeyWordPer);
+						candidateIndex.setKeyWordPerPercentage(Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore()));
+						
+						candidateIndex.setIsCandidateAdedd(isCandidateAdded);
+						if(null != candidateIndex.getUpdatedDate()){
+							Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(candidateIndex.getUpdatedDate());
+							String  strDate = new SimpleDateFormat(recommendedCustomizeScore.getOrgLocationId().getDateFormat()).format(date1);
+							candidateIndex.setUpdatedDate(strDate);	
+						}
+						
+						if(skillPercentage > 0 && totalPercentage > 0){
+							CandidateListcopy.add(candidateIndex);
+						}
+					}
+					Collections.sort(CandidateListcopy, new Comparator() {  
+			            @Override  
+			            public int compare(Object obj1, Object obj2) {  
+			            	CandidateIndex candidate1 = (CandidateIndex)obj1;  
+			            	CandidateIndex candidate2 = (CandidateIndex)obj2; 
+			            	if (candidate2.getFinalScore() < candidate1.getFinalScore()) return -1;
+			                if (candidate2.getFinalScore() > candidate1.getFinalScore()) return 1;
+			                return 0;
+			            }  
+			        });
+					response.setRecordsFiltered(CandidateListcopy.size());
+					SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+							.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,
+									0, 10, "updatedDate", SortOrder.DESC, boolQueryBuilderForCount);
+					
+					response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+				 }
 			 }
-		 }
-		 response.setData(CandidateListcopy);
+			 response.setData(CandidateListcopy);
+		} catch (Exception e) {
+		       e.printStackTrace();
+		}
+		
 		 return response;
 //		logger.info("....RecommendationsWithScoreByUsingElk Method Ended...");
 //		return CandidateListcopy;

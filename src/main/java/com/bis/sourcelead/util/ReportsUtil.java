@@ -21,6 +21,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.jfree.data.time.Hour;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -329,7 +330,7 @@ public class ReportsUtil {
      
      
 	public Date[] today(OrgLocations orgLocations) throws Exception {
-		
+	
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
@@ -392,6 +393,64 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 	}
 	
 	/**
+	 * Get from and to date of last week
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
+	 */
+	public Date[] lastWeek(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime startDayZoned = zoned.minusWeeks(2);
+		String sevenDaysStartDate = outputFormatter.print(startDayZoned);
+		Date dateStartUTC = TZ_DF_TS.parse(sevenDaysStartDate);
+		
+		DateTime endDayZoned = zoned.minusWeeks(1);
+		String sevenDaysEndDate = outputFormatter.print(endDayZoned);
+		Date dateEndUTC = TZ_DF_TS.parse(sevenDaysEndDate);
+		
+		
+		Date[] dates = new Date[2];
+		dates[0] = dateStartUTC;
+		dates[1] = dateEndUTC;
+		return dates;
+	}
+	
+	/**
+	 * Get from and to date of last month
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
+	 */
+	public Date[] lastMonth(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime startDayZoned = zoned.minusMonths(2);
+		String sevenDaysStartDate = outputFormatter.print(startDayZoned);
+		Date dateStartUTC = TZ_DF_TS.parse(sevenDaysStartDate);
+		
+		DateTime endDayZoned = zoned.minusMonths(1);
+		String sevenDaysEndDate = outputFormatter.print(endDayZoned);
+		Date dateEndUTC = TZ_DF_TS.parse(sevenDaysEndDate);
+		
+		
+		Date[] dates = new Date[2];
+		dates[0] = dateStartUTC;
+		dates[1] = dateEndUTC;
+		return dates;
+	}
+	
+	/**
 	 * Get from and to date of last 15 days
 	 * @return Date[]  Date[0] = start date ,Date[1] = End date
 	 */
@@ -439,7 +498,37 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		return dates;
 	}
 	
+	/**
+	 * Get from and to date of current Month
+	 * 
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 */
+	public Date[] currentMonthDates(OrgLocations orgLocations) throws Exception {
+		
+		Calendar c = Calendar.getInstance(); // this takes current date
+		c.set(Calendar.DAY_OF_MONTH, 1);
+		
+		//System.out.println(c.getTime());
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		Date oneMonthDateUTC = c.getTime();
+		Date[] dates = new Date[2];
+		dates[0] = oneMonthDateUTC;
+		dates[1] = startDateUTC;
+		
+		return dates;
+	}
 	
+	
+	private int Hour_(int i) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	public Date[] last2MonthDates(OrgLocations orgLocations) throws Exception {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -558,6 +647,8 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 			searchDates = last7Days(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_15_DAYS)) {
 			searchDates = last15DaysDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+			searchDates = currentMonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_MONTH)) {
 			searchDates = last1MonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_3_MONTHS)) {
@@ -576,7 +667,14 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 			searchDates = today(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YESTERDAY)) {
 			searchDates = yesterdayDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_Last_Week)) {
+			searchDates = lastWeek(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_Month_Ago)) {
+			searchDates = lastMonth(orgLocations);
 		}
+		
+		
+		
 		
 		startDate = new java.sql.Date(searchDates[0].getTime());
 		endDate = new java.sql.Date(searchDates[1].getTime());

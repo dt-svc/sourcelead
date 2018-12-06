@@ -37,7 +37,9 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1065,7 +1067,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 					}
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
-				 
+					  
+					  if(StringUtils.isNotEmpty(projectAssignedMembersDTO.getType()) && projectAssignedMembersDTO.getType().equalsIgnoreCase("projectSummary"))
 					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
@@ -2065,8 +2068,30 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									
 									pah.setLevel(1);
 									pah.setStatus("1");
+									pah.setApprovalMechanismType(Constants.PARALLEL);
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									eah.setApprovalMechanismType(Constants.PARALLEL);
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
@@ -2101,7 +2126,8 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					  String projectManagers=managers.toString();
 					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
 				 
-					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
+					  //dont open the code By Laxman
+//					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
 		}
@@ -2134,6 +2160,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,
 			List<Long> projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersListByCandidateIdAndProjectClientId(candidateId, projectClientsId);
+	}
+
+	@Override
+	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
+			throws Exception {
+		return projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, orglocationId);
 	}
 
 }

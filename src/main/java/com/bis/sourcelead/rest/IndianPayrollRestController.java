@@ -7,13 +7,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
@@ -58,12 +63,14 @@ import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -117,6 +124,12 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	INDPayrollCommonUtil iNDPayrollCommonUtil;
+	
+	@Autowired
+	EmployeesService employeeService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -230,17 +243,51 @@ public class IndianPayrollRestController {
     
     @RequestMapping(value = "/app/getNamesByLoanAndAdvanceType", method = RequestMethod.POST)
  	public List<PayrollLoanAndAdvancesDTO> getNamesByLoanAndAdvanceType(HttpServletRequest request,
- 			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType){
+ 			@RequestParam(value="loanAndAdvType", required=true) String loanAndAdvType,
+ 			@RequestParam(value="associateUserId", required=true) Long associateUserId,
+ 			@RequestParam(value="loanAndAdvId", required=false) Long loanAndAdvId) throws Exception{
  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		 Candidate candidate = candidateService.getCandidateByConsultantUserId(associateUserId, orgLocation.getId());
+ 		// Employees employees = employeeService.getEmployeeByUserAndOrgLocationId(candidate.getConsultantUser().getId(), orgLocation.getId());
+ 		 
  		List<PayrollLoanAndAdvancesDTO> padvDTOList = new ArrayList<>();
+ 		HashMap<Long,PayrollLoanAndAdvancesDTO> loanAndAdvMap = new HashMap<>();
  		 try {
+ 			 
+ 			 
+ 			if(loanAndAdvId != null) {
+ 				PayrollLoanAndAdvances padv = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesById(loanAndAdvId);
+ 				PayrollLoanAndAdvancesDTO padvDTO = new PayrollLoanAndAdvancesDTO();
+ 				padvDTO.setId(padv.getId());
+ 				padvDTO.setName(padv.getName());
+ 				loanAndAdvMap.put(padv.getId(),padvDTO);
+ 				padvDTOList.add(padvDTO);
+ 			}
+ 			
  			List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByTypeAndOrgLocationId(loanAndAdvType, orgLocation.getId()); 
  			if(padvList != null && !padvList.isEmpty()) {
  				for(PayrollLoanAndAdvances padv : padvList) {
- 					PayrollLoanAndAdvancesDTO padvDTO = new PayrollLoanAndAdvancesDTO();
- 	 				padvDTO.setId(padv.getId());
- 	 				padvDTO.setName(padv.getName());
- 	 				padvDTOList.add(padvDTO);
+ 					PayrollLoanAndAdvancesDTO padvDTO = loanAndAdvMap.get(padv.getId());
+ 					if(padvDTO == null) {
+ 						padvDTO = new PayrollLoanAndAdvancesDTO();
+ 	 					Integer loanAndAdvExperienceInMonths = 0;
+ 	 					if(StringUtils.isNotBlank(padv.getApplicableFor()) && padv.getApplicableFor().equalsIgnoreCase("Experienced")) {
+ 	 							
+ 	 	 						 if(padv.getExperienceYears() != null) {
+ 	 	 							loanAndAdvExperienceInMonths = (padv.getExperienceYears() * 12);
+ 	 	 				 		 }
+ 	 	 				 		 
+ 	 	 				 		 if(padv.getExperienceMonths() != null) {
+ 	 	 				 			loanAndAdvExperienceInMonths = loanAndAdvExperienceInMonths+padv.getExperienceMonths();
+ 	 	 						 }
+ 	 					}
+ 	 					
+ 	 						padvDTO.setId(padv.getId());
+ 	 	 	 				padvDTO.setName(padv.getName());
+ 	 	 	 				loanAndAdvMap.put(padv.getId(),padvDTO);
+ 	 	 	 				padvDTOList.add(padvDTO);
+ 					}
+ 					
  				}
  				
  			}
@@ -364,7 +411,40 @@ public class IndianPayrollRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
-}
+    }
+    
+    
+    @RequestMapping(value = "/app/verifyLoanEligibilityByAssociateIdAndLoanAdv", method = RequestMethod.POST)
+	public Response<Boolean> verifyLoanEligibilityByAssociateIdAndLoanAdv(HttpServletRequest request, AssociateLoanAndAdvancesDTO loanAndAdvanceDTO){
+		 Response<Boolean> resObj = new Response<>();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 try {
+				 boolean isLoanAdvEligible = true;
+				 PayrollLoanAndAdvances payrollLoanAndAdvances = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesById(Long.parseLong(loanAndAdvanceDTO.getLoanAndAdvName()));
+				 Employees employee = employeeService.getEmployeeByUserAndOrgLocationId(Long.parseLong(loanAndAdvanceDTO.getAssociateUserId()), orgLocation.getId());
+				 if(StringUtils.isNotBlank(payrollLoanAndAdvances.getApplicableFor()) && payrollLoanAndAdvances.getApplicableFor().equalsIgnoreCase("Experienced")) {
+						Date joinDate = null;
+						if(employee.getHireDate() != null) {
+							joinDate = employee.getHireDate();
+						}else {
+							joinDate = employee.getCreatedDate();
+						}
+						Date eligibleDate = null;
+						eligibleDate = DateUtils.addYears(joinDate, joinDate !=  null && payrollLoanAndAdvances.getExperienceYears() != null ? payrollLoanAndAdvances.getExperienceYears() : 0 );
+						eligibleDate = DateUtils.addMonths(eligibleDate, payrollLoanAndAdvances.getExperienceMonths() != null ? payrollLoanAndAdvances.getExperienceMonths() : 0);
+						if(eligibleDate != null && eligibleDate.after(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), loanAndAdvanceDTO.getEffectiveDate()))) {
+							isLoanAdvEligible = false;
+						}
+				 }
+			 resObj.setObject(isLoanAdvEligible);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+    }
     
     
     
@@ -524,17 +604,17 @@ public class IndianPayrollRestController {
    			for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
    	   			
    	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    	   			}
    	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode())).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    	   			}
    	   		}
    	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
    	   		
    	   		
-   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
    		}
    		//List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
    		

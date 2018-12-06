@@ -45,6 +45,7 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementReferDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -184,6 +187,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private InvoiceDao  invoiceDao;
 	
 	@Autowired
 	CandidateService candidateService;
@@ -1798,15 +1804,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 StringBuilder locBuild = new StringBuilder();
-			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-		 		StringBuilder locBuild = new StringBuilder();
-		 		globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else{
-			globalVarsMap.put("location","--");
+		 
+		 
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			globalVarsMap.put("location", location);
+	
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 			 StringBuilder rateBuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
@@ -5689,4 +5710,204 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	}
 
-}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoinedGraph(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+
+	@SuppressWarnings("null")
+	@Override
+	public List<RequirementSubmissionsDTO > getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
+
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		List<RequirementSubmission> submissionList = requirementSubmissionDao.getCandidateForInvoiceDashBoard(orgLocations, user);
+
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
+			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
+
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations, User user,
+			Long orgRelationId,String contractType,String selectedAssociates) {
+		
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		
+		List<RequirementSubmission> submissionList = null;
+		List<Long> associateIds = new ArrayList<>();
+		if(!isNullOrEmpty(selectedAssociates)){
+			String[] selectedAssoicatesIds = selectedAssociates.split(",");
+			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
+				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+			}
+			submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
+		}else{
+			submissionList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocations, user,orgRelationId);
+		}
+		
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setEmail(requirementSubmission.getCandidate().getEmail());
+			applicantsDto.setRequirementId(requirementSubmission.getRequirement().getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
+			
+			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
+				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			try{
+				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					applicantsDto.setContractsList(contractsList);
+				}	
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+				
+			
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
+	
+	private List<Contracts> getSowContract(Long candidateId, OrgLocations orgLocation, Long orgRelationId, String contractType) throws Exception
+	{
+		List<Contracts> contractsList = null;
+		if (null != orgRelationId) {
+			if (contractType.equalsIgnoreCase("vendorSow")) {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Vendor_SOW);
+			}
+			else {
+				contractsList = invoiceDao.getSowcontractListByAssociateId(candidateId, orgLocation.getId(), orgRelationId, Constants.Client_SOW);
+			}
+		}
+		return contractsList;
+	}
+	
+	
+	@Override
+	public List<RequirementSubmissionsDTO> getCandidateForBillsJobClosure(OrgLocations orgLocations, User user,
+			Long orgRelationId,String contractType,String selectedAssociates) {
+		
+		List<RequirementSubmissionsDTO> listOfApplicants = new ArrayList<RequirementSubmissionsDTO>();
+		
+		List<RequirementSubmission> submissionList = null;
+		List<Long> associateIds = new ArrayList<>();
+		if(!isNullOrEmpty(selectedAssociates)){
+			String[] selectedAssoicatesIds = selectedAssociates.split(",");
+			for (int i = 0; i < selectedAssoicatesIds.length; i++) {
+				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
+			}
+			submissionList = requirementSubmissionDao.getCandidateForBillJobClosureEdit(orgLocations, user,orgRelationId,associateIds);	
+		}else{
+			submissionList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocations, user,orgRelationId);
+		}
+		
+		submissionList.forEach(requirementSubmission -> {
+
+			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
+			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
+			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setEmail(requirementSubmission.getCandidate().getEmail());
+			applicantsDto.setRequirementId(requirementSubmission.getRequirement().getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
+			if(requirementSubmission.getRequirementOffersList().size()>0){
+				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
+					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
+						applicantsDto.setRate(offer.getAmount());	
+					}
+				}
+				
+			}
+			
+			if (requirementSubmission.getCandidate().getOrgRelationId().getResponderType().equalsIgnoreCase("Vendor")) {
+				if (requirementSubmission.getCandidate().getOrgRelationId().getResponderType() != null) {
+					applicantsDto.setClientOrVendorName(requirementSubmission.getCandidate().getOrgRelationId().getResponderLocationId().getOrgLocationName());
+				}
+			}
+			if (requirementSubmission.getJoinedDate() != null) {
+				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+			}
+			
+			try{
+				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					applicantsDto.setContractsList(contractsList);
+				}	
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			listOfApplicants.add(applicantsDto);
+		});
+		
+		return listOfApplicants;
+	}
+
+} 

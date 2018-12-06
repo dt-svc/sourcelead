@@ -135,7 +135,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 					
 					ConfigurePayrollApprover cpa = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
 					if(cpa != null) {
-						List<PayrollApprover> pa = configurePayrollApproverService.getPayrollApproversByCPAID(cpa.getId());
+						Set<PayrollApprover> pa =  cpa.getPayrollApprover();
 						for (PayrollApprover payrollApprover : pa) {
 							indPayrollCommonUtil.sendMailToIndPayrollApprover(orgLocation,loginUser,payrollApprover,indPaysheetFrequency);
 						}

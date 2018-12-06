@@ -71,6 +71,12 @@ public class LcaReportView implements Serializable {
 	
 	@Column(name = "PRIVILING_WAGE_RATETYPE")
 	private String privilingWageRateType;
+	
+	@Column(name = "LCA_UUID ")
+	private String lcaUuid;
+	
+	@Column(name = "EXPIRED ")
+	private String expired;
 
 	public Long getId() {
 		return id;
@@ -223,6 +229,21 @@ public class LcaReportView implements Serializable {
 	public void setAvailablePositions(Integer availablePositions) {
 		this.availablePositions = availablePositions;
 	}
-	
+
+	public String getLcaUuid() {
+		return lcaUuid;
+	}
+
+	public void setLcaUuid(String lcaUuid) {
+		this.lcaUuid = lcaUuid;
+	}
+
+	public String getExpired() {
+		return expired;
+	}
+
+	public void setExpired(String expired) {
+		this.expired = expired;
+	}
 	
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,15 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.LetterHead;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RoleHierarchy;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
+import com.bis.sourcelead.service.RoleHierarchyService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -40,6 +46,9 @@ public class EmploymentVerificationTemplateController {
 	
 	@Autowired
 	LetterHeadService letterHeadService;
+	
+	@Autowired
+	private RolesService rolesService;
 	
 	/**
 	 * 	Display add template page
@@ -94,8 +103,13 @@ public class EmploymentVerificationTemplateController {
 	@RequestMapping(value = "/employementVerificationReport")
 	public ModelAndView employementVerificationReport(HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		List<Roles> orgRolesList = rolesService.getOrgEnrolledRolesByOrgLocationId(org, orgLocation.getId());
+		
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("orgRolesList", orgRolesList);
 		 model.setViewName("reports/employementVerificationReport");
 		 return model;
 	}

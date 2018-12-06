@@ -70,6 +70,7 @@ import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.NOTICE_PERIOD;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -277,7 +278,28 @@ public class DataMigrationCommonUtil {
 				if(!dataMigrationDTOJsonCopy.getString("noticePeriod").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("noticePeriod"))) {
 					String noticePeriod = dataMigrationDTOJsonCopy.getString("noticePeriod");
 					if(noticePeriod.equalsIgnoreCase("Immediately Available") || noticePeriod.equalsIgnoreCase("15 Days") || noticePeriod.equalsIgnoreCase("1 Month") || noticePeriod.equalsIgnoreCase("2 Months") || noticePeriod.equalsIgnoreCase("3 Months")){
-						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriod);
+//						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriod);
+						List<String> noticePeriodList = new ArrayList<>();
+						for(String npString : noticePeriod.split(",")) {
+							switch (npString.toLowerCase()) {
+								case "immediately available":
+									noticePeriodList.add(NOTICE_PERIOD.IMMEDIATELY_AVAILABLE.getValue());
+									break;
+								case "15 days" :
+									noticePeriodList.add(NOTICE_PERIOD.DAYS_15.getValue());
+									break;
+								case "1 month" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTH_1.getValue());
+									break;
+								case "2 months" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTHS_2.getValue());
+									break;
+								case "3 months" :
+									noticePeriodList.add(NOTICE_PERIOD.MONTHS_3.getValue());
+									break;
+							}
+						}
+						dataMigrationDTOJsonCopy.put("noticePeriod", noticePeriodList);
 					}else{
 						errorSet.put("noticePeriod", dataMigrationDTOJsonCopy.getString("noticePeriod")+" is invalid Notice period");
 					}
@@ -2226,9 +2248,19 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				// INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
 				} else {
-				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is not a valid email address");
 				}
 				}
+				
+				if (!dataMigrationDTOJsonCopy.getString("beneficiaryPhone").equals("null")) {
+					String mobileNumber = dataMigrationDTOJsonCopy.getString("beneficiaryPhone");
+					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
+					boolean isValidated = isMobileNumberValid(mobileNumber);
+					if (isValidated == false) {
+					errorSet.put("beneficiaryPhone", "Phone Number is not valid");
+					}
+					}
+					}
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 				errorSet.put("dateOfBirth", "DOB is missing");
@@ -2244,45 +2276,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
-				
-				
-				
-				/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("experience"))) {
-					if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
-						dataMigrationDTOJsonCopy.put("experience", "0");
-					//	candidateDTO.setExperienceYears("0");
-					//	candidateDTO.setExperienceMonths("0");
-					}else{
-						 String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
-						 if(exp.length >1){
-							 
-							 dataMigrationDTOJsonCopy.put("experience", exp[0]);
-							// candidateDTO.setExperienceYears(exp[0]);
-								if(!exp[1].matches("[a-zA-Z]+")){
-									if(!"years".equalsIgnoreCase(exp[1])){
-									int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-									candidateDTO.setExperienceMonths(String.valueOf(months));
-									}
-										
-								} 
-						 }else{
-							 if(exp[0].contains("years") || exp[0].contains("Years") ){
-								 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-								 
-								 dataMigrationDTOJsonCopy.put("experience", String.valueOf(years));
-								// candidateDTO.setExperienceYears(String.valueOf(years));
-								// candidateDTO.setExperienceMonths("0");
-							 }else{
-								// candidateDTO.setExperienceYears("");
-								// candidateDTO.setExperienceMonths("");
-								 dataMigrationDTOJsonCopy.put("experience", "");
-							 }
-							 
-						 }
-							
-							
+				if (!dataMigrationDTOJsonCopy.getString("experience").equals("null")) {
+					if(dataMigrationDTOJsonCopy.getString("experience").matches("^[a-zA-Z]+$")){
+					errorSet.put("exp", "experience should be (3.0 years,3years,1.2) Allowd");
 					}
-				}*/
+					}
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
 				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
@@ -3071,5 +3069,19 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		return experience.split("[\\p{Punct}\\s]+");
 		
 	}	
+	
+	private boolean isMobileNumberValid(String mobileNmber)
+	{
+		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+		boolean flag;
+		String mobNum = mobileNmber.trim();
+		if (mobNum.length() > 9 && mobNum.length() <= 20) {
+			flag = mobNum.matches(regex);
+		}
+		else {
+			flag = false;
+		}
+		return flag;
+	}
 		
 	}

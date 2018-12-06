@@ -38,6 +38,8 @@ $(document).ready(function(){
                   </div>
                 </div>
               </li>
+              <li id="employementveriFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="employementveriFileterPopUp();"></a></li>
+				
               <li>
               <div class="dynamic_search" style="top:-10px;">
         		          <input type="text" placeholder="Search" id="employeeDataTableSearch">
@@ -208,6 +210,57 @@ function printPage()
 	</div>
 </div>
 
+<!-- div for the employeeVarification filter -->
+	
+		 <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="employeeFilterId" style="display: none">
+			<h5 class="headerAdsrch">Filters
+			<a href="javascript:void(0)" class="close-div" onClick="closeEmployeeFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+					<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+								<label><strong>Employee Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="tierFilter">
+									<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099" ><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2" ><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Other"><label>&nbsp;Others</label></li>
+
+			                        </ul>
+							      </div>
+							</div> 
+							  
+							  <div class="col-md-6">
+							     <label><strong>Roles</strong></label>
+								 <div class="clearfix">
+			                        <ul class="list-unstyled positionRelative filterSearch mt5" id="roleFilter">
+										    <c:forEach var="report" items="${orgRolesList}">
+											     <li class="checkBox positionRelative"><input  type="checkbox" name="roleID" value ="${report.id}" ><label>${report.displayName}</label></li>
+											</c:forEach>
+									</ul>
+							      </div>
+						  </div>
+						
+					  </div>
+					</div>
+	
+<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeEmployeeFilterPop();getAllEmployeesList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetEmployeeFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+					
+</div>
+	<div class="advancedsearch-mask" onClick="closeAdsrch()"></div> 
+
 
 <script>
  $( function() {
@@ -352,8 +405,20 @@ function getAllEmployeesList(fromDate,toDate){
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		{
+			employmentType.push($(this).val());
+     	});
+	
+	var roles = [];
+	$('input:checkbox[name=roleID]:checked').each(function() 
+		{
+			roles.push($(this).val());
+     	});
+	
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate;
+	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&empTypes="+employmentType+"&roles="+roles;
 	prepareAllEmployeesList(url);
 }
 </script>	
@@ -361,7 +426,7 @@ function getAllEmployeesList(fromDate,toDate){
 <script>
 function prepareAllEmployeesList(url){
 	 	var result = "";
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="clearfix">';
 		result = result + '<table id="dynamicEmployeeListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -427,7 +492,7 @@ function emplyoeesListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		          if(user.userName !=null && user.userName !='' && user.userName !='undefined'){
-						 result = result +" <a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a>";
+						 result = result +"<div class='proj_show divmax-width dotdotwithImage'><a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a><i class='fa fa-binoculars pull-right'></i></div>";
 		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
@@ -522,15 +587,15 @@ function emplyoeesListPagination(url){
 			          "sortable": false,
 			          "render": function ( data, type, user, meta ) {
 			          	var result = '';
-					       result = result + '      <td><div class="tblminwidth-75 text-center">             ';
+					       result = result + '      <td><div class="width50px text-center">             ';
 				           result = result + '      <div class="positionRelative actionList-vdse-div">';
 				           result = result + '        <ul class="list-unstyled list-inline clearfix actionList-vdse">';
 				           result = result + '          <li><a href="javascript:void(0)" title="Print" class="fa fa-print" onClick="printEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
-				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
+// 				           result = result + '          <li><a href="javascript:void(0)" title="Download" class="fa fa-download" onClick="downloadEVR();commonview('+user.employeeId+');"></a></li>';
+// 				           result = result + '          <li><a href="javascript:void(0)" title="Share" class="fa fa-share-alt" onClick="shareEVR();commonview('+user.employeeId+');"></a></li>';
 				           result = result + '          <li><a href="javascript:void(0)" title="View" class="fa fa-eye" onClick="viewEVR();commonview('+user.employeeId+')"></a></li>';
 				           result = result + '        </ul>';
-				           result = result + '      </div>';
+// 				           result = result + '      </div>';
 				           result = result + '    </div>';
 				           result = result + '    </td>';
 				        return result;
@@ -587,6 +652,42 @@ function viewCompleteTemplate(temp){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 			})
+			
+		 
+			
+	//pop-up function for employeementVarification filter
+	
+	
+	
+	</script>
+	
+	<script>
+				function closeEmployeeFilterPop(){
+					$("#employeeFilterId").hide();
+					$(".mask").fadeOut();
+				}
+				function employementveriFileterPopUp(){
+					 $("#employeeFilterId").toggle();
+					 $(".mask").fadeIn();
+				}
+				function resetEmployeeFilter(){
+					$("ul#tierFilter > li input:checkbox").prop("checked",false);
+					$("ul#roleFilter > li input:checkbox").prop("checked",false);
+					getEmployeeList();
+					
+				}
+
+	
+function closeAdsrch(){
+		$("div.cand-advsrch-popup").fadeOut();
+		$(".mask").fadeOut();
+	};
+	
 </script>
+
+
+ 
+
+
 
 <jsp:include page="../masterFooter.jsp" />

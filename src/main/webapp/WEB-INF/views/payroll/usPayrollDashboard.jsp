@@ -37,9 +37,9 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+<%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();">History</a></li>
-	   </c:if>
+<%-- 	   </c:if> --%>
 	   
 	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
@@ -640,13 +640,14 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		  
 		  $('#payrollPayDate').datepicker({
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+	  		  maxDate: 0,
 		  	  onSelect : function(selected) {
-				addValidClass();
+			   addValidClass();
+/* 		  		document.getElementById("payrollPayDateDivId").style.display="block"; */
 			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });

@@ -682,6 +682,8 @@ public class CandidateOnBoardRestController {
 			candidateDTO.setCity(candidate.getCity());
 			candidateDTO.setZipcode(candidate.getZipCode());
 			candidateDTO.setGender(candidate.getGender());
+			if(loginOrgLocation.getProbationPeriod() != null)
+				candidateDTO.setDefaultOrgProbationPeriod(loginOrgLocation.getProbationPeriod());
 			if(candidate.getDateOfBirth() != null) {
 				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidate.getDateOfBirth()));
 			}
@@ -2246,8 +2248,9 @@ public class CandidateOnBoardRestController {
 	@RequestMapping(value = "/editNominee", method = RequestMethod.POST)
 	public AssociateNominee editNominee(AssociateNomineeDTO associateNomineeDTO,
 			HttpServletRequest request) throws Exception {
-		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		AssociateNominee associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
+		associateNominee.setDob(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), associateNominee.getDateOfBirth()));
 		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
 	}
 	

@@ -253,12 +253,22 @@
           <div class="clearfix"></div>
           <div class="col-xs-12 col-sm-12 col-md-12 mb">
           <h5 class="col-xs-8 col-sm-8 col-md-8">Place of Employment <span class="text-danger paddingLeft">*</span></h5>
+          <c:if test="${empty lcaDTO.lcaPlaceOfEmploymentList}">
           <div class="col-xs-4 col-sm-4 col-md-4">
          		<div class="pull-right">
           		<button type="button" class="btn btn-primary btn-sm pull-right"  id="placeEmployMntId" onclick="appendDynamicPlaceofEmploymentDiv();"><i class="fa fa-plus paddingRight"></i>Add</button>
           		<div class="clearfix"></div>
           		</div>
           </div>
+          </c:if>
+          <c:if test="${!empty lcaDTO.lcaPlaceOfEmploymentList}">
+          <div class="col-xs-4 col-sm-4 col-md-4">
+         		<div class="pull-right">
+          		<button type="button" class="btn btn-primary btn-sm pull-right"  id="placeEmployMntId" onclick="appendDynamicPlaceofEmploymentDiv();"><i class="fa fa-plus paddingRight"></i>Add</button>
+          		<div class="clearfix"></div>
+          		</div>
+          </div>
+          </c:if>
           </div>
           <div class="clearfix"></div>
           
@@ -298,7 +308,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">City</label>
+					<label class="col-md-4">City<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[0].city" id="city" value="${lcaDTO.lcaPlaceOfEmploymentList[0].city}" class="form-control" placeholder="City" field-name="City"
 								data-validation="required validate_length length2-100">
@@ -306,7 +316,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">State</label>
+					<label class="col-md-4">State<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[0].state" id="state" value="${lcaDTO.lcaPlaceOfEmploymentList[0].state}" class="form-control" placeholder="State" field-name="State"
 								data-validation="required validate_length length2-100">
@@ -314,7 +324,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">Country</label>
+					<label class="col-md-4">Country<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[0].country" id="country" value="${lcaDTO.lcaPlaceOfEmploymentList[0].country == null ? ''  : lcaDTO.lcaPlaceOfEmploymentList[0].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
@@ -332,6 +342,7 @@
 				</c:if>
 				
 		 <c:if test="${!empty lcaDTO.lcaPlaceOfEmploymentList}">
+		  
           <c:forEach var='lcaPlaceOfEmployment' items="${lcaDTO.lcaPlaceOfEmploymentList}" varStatus="rows">
           
           	<c:set var="rowIndexPlempt" value="${rows.count-1}" scope="page"/>
@@ -380,7 +391,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">City</label>
+					<label class="col-md-4">City<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].city" id="city${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].city}" class="form-control" placeholder="City" field-name="City"
 								data-validation="required validate_length length2-100">
@@ -388,7 +399,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">State</label>
+					<label class="col-md-4">State<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].state" id="state${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].state}" class="form-control" placeholder="State" field-name="State"
 								data-validation="required validate_length length2-100">
@@ -396,7 +407,7 @@
 				</div>
 				
 				<div class="col-xs-12 col-sm-6 col-md-6 minHeight50 mb">
-					<label class="col-md-4">Country</label>
+					<label class="col-md-4">Country<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
 					<input type="text" name="lcaPlaceOfEmploymentList[${rows.count-1}].country" id="country${rows.count-1}" value="${lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country == null ? loginCountryName  : lcaDTO.lcaPlaceOfEmploymentList[rows.count-1].country}"  class="form-control" placeholder="Country" field-name="Country"
 								data-validation="required validate_length length2-100">
@@ -832,21 +843,21 @@ $('#endDate').datepicker({
 	   
 	   
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <label class='col-md-4'>City</label>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <label class='col-md-4'>City<span class='text-danger paddingLeft'>*</span></label>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "        <div class='col-md-8'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='city"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].city' value='"+(typeof plsofEmpmtVal[4]==="undefined"?"":plsofEmpmtVal[4])+"' placeholder='City' type='text'></input>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='city"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].city' value='"+(typeof plsofEmpmtVal[4]==="undefined"?"":plsofEmpmtVal[4])+"' placeholder='City' type='text' field-name='City' data-validation='required validate_Space validate_length length2-250'></input>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "      </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <label class='col-md-4'>State</label>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <label class='col-md-4'>State<span class='text-danger paddingLeft'>*</span></label>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <div class='col-md-8'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='state"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].state' value='"+(typeof plsofEmpmtVal[5]==="undefined"?"":plsofEmpmtVal[5])+"' placeholder='State' type='text' ></input>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='state"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].state' value='"+(typeof plsofEmpmtVal[5]==="undefined"?"":plsofEmpmtVal[5])+"' placeholder='State' type='text' field-name='State' data-validation='required validate_Space validate_length length2-250'></input>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "        <label class='col-md-4'>Country</label>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "        <label class='col-md-4'>Country<span class='text-danger paddingLeft'>*</span></label>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       <div class='col-md-8'>";
-	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='country"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].country' value='"+(typeof plsofEmpmtVal[6]==="undefined"?"":plsofEmpmtVal[6])+"' placeholder='Country' value='${loginCountryName}' type='text' ></input>";
+	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "           <input class='form-control' id='country"+rowId+"' name='lcaPlaceOfEmploymentList["+rowId+"].country' value='"+(typeof plsofEmpmtVal[6]==="undefined"?"":plsofEmpmtVal[6])+"' placeholder='Country' value='${loginCountryName}' type='text' field-name='Country' data-validation='required validate_Space validate_length length2-250'></input>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "       </div>";
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     </div> ";                                                                                              
 	   preparePlsofEmpmtdiv =preparePlsofEmpmtdiv+ "     <div class='col-xs-12 col-sm-6 col-md-6 minHeight50 mb'>";
@@ -879,12 +890,12 @@ $('#endDate').datepicker({
 
    var removedLcaPlsOfEmpmntIds = new Array();
    function removeDynamicPlsofEmpmtDiv(id){
-	   if($("#plsempmntId"+id).val() !==  undefined ){
-	   removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
+	   if($("#plsempmntId"+id).val() !=='undefined'){
+	    removedLcaPlsOfEmpmntIds.push($("#plsempmntId"+id).val());
 	   }
-	 
 	   $("#dynamicPlsofEmpmtDiv"+id).remove();
-	 //  rowIdPlempt--;// decrement rowid when deleted in UI.
+	   
+	   rowIdPlempt--;// decrement rowid when deleted in UI.
 	   if(rowIdPlempt <= 2){
 		   $("#placeEmployMntId").show();
 	   }

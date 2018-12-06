@@ -78,6 +78,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -160,6 +162,9 @@ public class ProjectsDashboardRestController {
 	
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 
+	 @Autowired
+	 public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	 
 	 @Autowired
 	 public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -314,12 +319,14 @@ public class ProjectsDashboardRestController {
 				    		}
 				    		StringBuilder projectApprover = new StringBuilder();
 				    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    		projectsDTO.setProjectApprovalType(approverHierarchy.getApprovalMechanismType());
 				    	}
 				    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
 				    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId().intValue());
 				    		projectsDTO.setManager2Name(approverHierarchy.getApproverUserId().getFullName());
 				    		StringBuilder projectApprover = new StringBuilder();
 				    		projectsDTO.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    		projectsDTO.setProjectApprovalType(approverHierarchy.getApprovalMechanismType());
 				    	}
 				    	
 				    }
@@ -338,12 +345,14 @@ public class ProjectsDashboardRestController {
 					    		}
 					    		StringBuilder projectApprover = new StringBuilder();
 					    		projectsDTO.setLevel1ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    		projectsDTO.setExpenseApprovalType(approverHierarchy.getApprovalMechanismType());
 					    	}
 					    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
 					    		projectsDTO.setExpenseApprover2(approverHierarchy.getApproverUserId().getId().intValue());
 					    		projectsDTO.setExpenseApprover2Name(approverHierarchy.getApproverUserId().getFullName());
 					    		StringBuilder projectApprover = new StringBuilder();
 					    		projectsDTO.setLevel2ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    		projectsDTO.setExpenseApprovalType(approverHierarchy.getApprovalMechanismType());
 					    	}
 					    	
 					    }
@@ -522,7 +531,12 @@ public class ProjectsDashboardRestController {
 		 	  }
 				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
-				
+				 
+				 
+				 String projectApprovalMechanismType = projectApproverHierarchyService.getApprovalMechanismTypeByProjectClientId(projectClients.getId());
+				 ProjectDetails.setProjectApprovalType(projectApprovalMechanismType);
+				 String expenseApprovalMechanismType = expenseProjectApproverHierarchyService.getExpenseApprovalMechanismTypeByProjectClientId(projectClients.getId());
+				 ProjectDetails.setExpenseApprovalType(expenseApprovalMechanismType);
 		   }
 		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
@@ -751,9 +765,11 @@ public class ProjectsDashboardRestController {
 			 try {
 				 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 projectTasksDTO.setOrgLocationId(orgLocations.getId());
 				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				 if(userRole != null) {
-					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","status"};
+					 String[] tableColumns = {"id","taskName", "taskType", "priority", "assignedTo","createdDate","status"};
 					    int sortColumnIndex = 1; //by default sorting using updated date
 						String sortColumnOrder = "asc"; //by default descending order
 						if(projectTasksDTO.getOrder() != null && !projectTasksDTO.getOrder().isEmpty()) {
@@ -1563,7 +1579,7 @@ public void getExportUsersData(ProjectTasksDTO projectTasksDTO,HttpServletReques
 			 StringBuilder excelSB = new StringBuilder();
 	 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("project_Tasks ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 	 		 projectTasksDTO.setUserCode(user.getUserCode());
-	 		
+	 		projectTasksDTO.setOrgLocationId(orgLocations.getId());
 	 		 ResponseList<ProjectTasks>  taskList = tasksService.getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(projectTasksDTO,Long.parseLong(projectTasksDTO.getProjectId()),projectTasksDTO.getProjectTaskType(),projectTasksDTO.getProjectTaskStatus(),userRole,projectTasksDTO.getAssignedMembers());
 	 		 File file = null;
 	 		 if(!"pdf".equalsIgnoreCase(projectTasksDTO.getExportType())){

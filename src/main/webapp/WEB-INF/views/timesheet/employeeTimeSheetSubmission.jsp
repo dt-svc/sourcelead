@@ -47,6 +47,7 @@
 												<th>Projects</th>
 						                       	<th>Tasks </th>
 						                       	<th>Task Type</th>
+						                       	<th>Hourly Type</th>
 						                       	<th>Ref/Ticket No.</th>
 						                        <c:forEach var="weekDays" items="${employeeTimesheetEntryDetailsDTO.weekDays}">
 												   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
@@ -76,6 +77,9 @@
 								                       <td>
 								                         <div><span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span></div>
 								                      </td>
+								                      <td>
+								                         <div>--</div>
+								                      </td> 
 								                      <td>
 								                         <div>--</div>
 								                      </td>
@@ -234,6 +238,24 @@
 												           <span id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
 												        </div>
 												      </td>
+												      <td>
+												          <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														       <div>
+														          <select id="${leaveIndex+entryCount.index+1}hourlyType1Id" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}hourlyType1Id"  field-name="Hourly Type" onchange='setHourlyType("${entryIndex}","${leaveIndex+entryCount.index+1}hourlyType1Id");' >  
+													                  <option value='Regular' ${!empty entry.hourlyType && entry.hourlyType == 'Regular' ? 'selected' : ''}>Regular</option>
+													                  <option value='Overtime' ${!empty entry.hourlyType && entry.hourlyType == 'Overtime' ? 'selected' : ''}>Overtime</option>
+										                          </select>
+														       </div>
+													       </c:if>
+													        <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														         <c:if test="${!empty entry.hourlyType}">
+														             <div>${entry.hourlyType}</div>
+														         </c:if>
+														         <c:if test="${empty entry.hourlyType}">
+														             <div>--</div>
+														         </c:if>
+													       </c:if>
+												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
@@ -254,6 +276,7 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
+																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].hourlyType" value="${entry.hourlyType}" /> 
 			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${entry.ticketNumber}" /> 
 			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].projectMemberId" value="${entry.projectMemberId}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
@@ -342,6 +365,7 @@
 											<td> <div></div></td>
 					                 		<td> <div></div></td>
 					                 		<td> <div></div></td>
+					                 		<td> <div></div></td>
 											<td>
 												<div >
 												<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
@@ -403,7 +427,7 @@
 							            <div class="commentFile">
 							                  <h2>
 											    Attachmets & Comments 
-											    <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB "></i>
+											    <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps - Allowed Size : 2MB "></i>
 											 </h2>
 											<div class="">
 											    <c:set var="attMaxRowNumber" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
@@ -598,17 +622,25 @@
 	   		 <div id="divadttTd10" style="display:none;">
 		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
 	   		</div>
+	   		<div id="divadttTd12" style="display:none;">
+	             <div>
+	               <select id="REPLACEROWIDhourlyType1Id" name="REPLACEROWIDhourlyType1Id"  field-name="Hourly Type" onchange="setHourlyType('ENTRYINDEX','REPLACEROWIDhourlyType1Id');">  
+	                      <option value='Regular'>Regular</option>
+		                  <option value='Overtime'>Overtime</option>
+	               </select>
+	             </div>
+   		    </div>
+   		
 	   		<div id="divadttTd11" style="display:none;">
 		    	  <div><b>New</b></div>	
 	   		</div>
-	   		
-	   		
 	        <div id="divadttTd3" style="display:none;">
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -625,6 +657,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -642,6 +675,7 @@
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -659,6 +693,7 @@
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -677,6 +712,7 @@
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -694,6 +730,7 @@
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -711,6 +748,7 @@
 					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -1213,6 +1251,7 @@ function addTimeSheetRow() {
 			divadttTd00Str = divadttTd00Str.replace(/disabled/g, ''); 
 			
 			cell0.innerHTML = divadttTd00Str;
+			$("#"+maxRowNum+"projectMember1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"projectMember1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"projectMember1Id").attr('data-live-search','true');
 			$("#"+maxRowNum+"projectMember1Id").attr('data-size',8);
@@ -1239,14 +1278,28 @@ function addTimeSheetRow() {
 			cell2.innerHTML = divadttTd1Str;
 			
 			var cell3 = row.insertCell(3);
+			var divadttTd12Str = document.getElementById("divadttTd12").innerHTML;
+			divadttTd12Str = divadttTd12Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd12Str = divadttTd12Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd12Str = divadttTd12Str.replace(/disabled/g, ''); 
+			cell3.innerHTML = divadttTd12Str;
+			$("#"+maxRowNum+"hourlyType1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"hourlyType1Id").addClass('selectpicker');
+			$("#"+maxRowNum+"hourlyType1Id").attr('style','width:220px;');
+			$("#"+maxRowNum+"hourlyType1Id").attr('data-size',8);
+			
+			
+			
+			var cell4 = row.insertCell(4);
 			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
 			divadttTd10Str = divadttTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd10Str = divadttTd10Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			divadttTd10Str = divadttTd10Str.replace(/disabled/g, ''); 
-			cell3.innerHTML = divadttTd10Str;
+			cell4.innerHTML = divadttTd10Str;
 			
 			
-		    var cell4 = row.insertCell(4);
+			
+		    var cell5 = row.insertCell(5);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
@@ -1257,10 +1310,10 @@ function addTimeSheetRow() {
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
 			divadttTd2Str = divadttTd2Str.replace(/disabled/g, ''); 
-			cell4.innerHTML = divadttTd2Str;
+			cell5.innerHTML = divadttTd2Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell5 = row.insertCell(5);
+			var cell6 = row.insertCell(6);
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1270,10 +1323,10 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
 			divadttTd3Str = divadttTd3Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd3Str = divadttTd3Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell5.innerHTML = divadttTd3Str;
+			cell6.innerHTML = divadttTd3Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell6 = row.insertCell(6);
+			var cell7 = row.insertCell(7);
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1282,10 +1335,10 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd4Str = divadttTd4Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell6.innerHTML = divadttTd4Str;
+			cell7.innerHTML = divadttTd4Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell7= row.insertCell(7);
+			var cell8= row.insertCell(8);
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
@@ -1294,10 +1347,10 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd5Str = divadttTd5Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell7.innerHTML = divadttTd5Str;
+			cell8.innerHTML = divadttTd5Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell8 = row.insertCell(8);
+			var cell9 = row.insertCell(9);
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML; 
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
@@ -1306,10 +1359,10 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd6Str = divadttTd6Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell8.innerHTML = divadttTd6Str;
+			cell9.innerHTML = divadttTd6Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell9 = row.insertCell(9);
+			var cell10 = row.insertCell(10);
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1318,10 +1371,10 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd7Str = divadttTd7Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell9.innerHTML = divadttTd7Str;
+			cell10.innerHTML = divadttTd7Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell10 = row.insertCell(10);
+			var cell11 = row.insertCell(11);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1330,16 +1383,16 @@ function addTimeSheetRow() {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd8Str = divadttTd8Str.replace(/DAYOFTHEDATE/g, (dayOfDate));
-			cell10.innerHTML = divadttTd8Str;
+			cell11.innerHTML = divadttTd8Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
 			$("#entryIndexValue").val(entryIndex);
 			
-			var cell11 = row.insertCell(11);
-			cell11.className='timeTabFix';
+			var cell12 = row.insertCell(12);
+			cell12.className='timeTabFix';
 			var divadttTd11Str = document.getElementById("divadttTd11").innerHTML;
 			divadttTd11Str = divadttTd11Str.replace(/disabled/g, '');
-			cell11.innerHTML = divadttTd11Str;
+			cell12.innerHTML = divadttTd11Str;
 		    maskme();
 		    $('.selectpicker').selectpicker('refresh');
 		    $('.selectpicker').selectpicker({dropupAuto: false});
@@ -1378,6 +1431,17 @@ function addTimeSheetRow() {
 	              } 
         	}
         }
+        
+        function setHourlyType(entryIndex,hourlyTypeId){
+        	if($("#" + hourlyTypeId).val() != null && $("#" + hourlyTypeId).val() !="undefined"){
+        		   var end = parseInt(entryIndex)+7;
+	          	  for (i = entryIndex; i < end; i++) {
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].hourlyType']").val($("#"+hourlyTypeId).val());
+	              } 
+        	}
+        }
+        
+        
         
         //flush project tasks
         function flushtasks(projectTaskId){
@@ -1437,7 +1501,7 @@ function addTimeSheetRow() {
             	          		  } else if(count == 4 && thuEditable != "true"){
             	          			 $("#commentDiv"+i+" textarea").val('')
             	          			 $("#commentDiv"+i).find('i').removeAttr('class');
-            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
             	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
             	          		  } else if(count == 5 && friEditable != "true"){
             	          			 $("#commentDiv"+i+" textarea").val('')

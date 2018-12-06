@@ -138,7 +138,7 @@ function editAssociateBankDataFun(userId){
                 result += '  <div class="pull-right">';
                result += '   <input value="Save" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
 
-                 result += '   <input value="Cancel" onclick="cancelButton();" class="btn btn-default ml10" type="button">';
+                 result += '   <input value="Cancel" onclick="cancelButtonBank('+userId+');" class="btn btn-default ml10" type="button">';
 
                  result += '   </div>';
                result += ' </div>';
@@ -160,9 +160,9 @@ function editAssociateBankDataFun(userId){
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
 	if(accountType == "Direct Deposit"){
-		$("#bankName").val('');
-		$("#accountNumber").val('');
-		$("#routingNumber").val('');
+// 		$("#bankName").val('');
+// 		$("#accountNumber").val('');
+// 		$("#routingNumber").val('');
 		
 		$("#bankName").removeAttr('data-validation-optional');
 		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");
@@ -241,7 +241,8 @@ function showHideAccountTypes(){
 </script> 
 
 <script>
-function cancelButton(){
-	location.replace(sourceleadUrl+ "/usersList");
+function cancelButtonBank(userId){
+	 $("#finalTest").hide();
+	associateBankData(userId);
 }
 </script>
