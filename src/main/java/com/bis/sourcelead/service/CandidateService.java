@@ -295,9 +295,9 @@ public interface CandidateService {
     
 	///
 	
-	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo)throws Exception;
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId)throws Exception;
 
-	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo)throws Exception;
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId)throws Exception;
 
 	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id)throws Exception;
 }

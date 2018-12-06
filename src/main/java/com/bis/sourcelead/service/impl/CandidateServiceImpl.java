@@ -3069,7 +3069,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 ////
 
 	@Override
-	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo) throws Exception {
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId) throws Exception {
 		
 		
 		for (CandidateMarketCart candidateMarketCart : marketCartList) {
@@ -3077,11 +3077,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
 			newMarketplacePurchaseorder.setOrderNo(orderNo);
+			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
 			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
 			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
 			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
 			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
-			newMarketplacePurchaseorder.setPaymentStatus(candidateMarketCart.getCartStatus());
+			newMarketplacePurchaseorder.setPaymentStatus(Constants.SUCCESS);
          	candidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
 			
 		}
@@ -3089,20 +3090,21 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo) throws Exception {
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId) throws Exception {
 	
 		///mapping and get org name
-		
+		String sourceOrgName ;
 		for (CandidateMarketCart candidateMarketCart : marketCartList) {
 			
-			
-		MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+		 sourceOrgName = candidateMarketCart.getSourceOrgId().getOrgName();	
+		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
 		 newMarketplaceSalesorder.setOrderNo(orderNo);
 		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
 		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
 		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
 		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
-		 newMarketplaceSalesorder.setPaymentStatus(candidateMarketCart.getCartStatus());
+		 newMarketplaceSalesorder.setPaymentStatus(Constants.SUCCESS);
+		 newMarketplaceSalesorder.setCompanyName(sourceOrgName);
 		 
 			candidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
 	}

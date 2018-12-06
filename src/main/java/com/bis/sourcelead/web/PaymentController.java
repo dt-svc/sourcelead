@@ -708,14 +708,10 @@ public class PaymentController {
                 	// new code will be written here//
                 	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
                 	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
-                	
-                	
                 	String orderNo = transactionHistory.getOrderId();
-                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo);
-                	
-                	// 
-                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo);
-                	
+                	String paymentId = transactionHistory.getPaymentId();
+                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
+                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
                 	
                 } catch (Exception e) {
                     e.printStackTrace();
