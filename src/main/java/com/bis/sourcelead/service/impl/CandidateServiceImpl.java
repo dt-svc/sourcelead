@@ -3092,7 +3092,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId) throws Exception {
 	
-		///mapping and get org name
+		
 		String sourceOrgName ;
 		for (CandidateMarketCart candidateMarketCart : marketCartList) {
 			
