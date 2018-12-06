@@ -1104,6 +1104,8 @@ function cancel(candidateId){
          <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
          <div class="clearfix"></div>
          </sec:authorize>
      </ul>
@@ -3156,6 +3158,12 @@ function goToGlobalMarketPlaceList(){
 
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
+}
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
 }
 </script> 
 <jsp:include page="../masterFooter.jsp" /> 

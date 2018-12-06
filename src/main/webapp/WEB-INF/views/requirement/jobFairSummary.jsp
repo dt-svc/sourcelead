@@ -302,7 +302,7 @@
 			                      
 			                    if(checkSize>=10 && i==9) {
 			                       	/* $("#viewmoresDiv").css("display", "block"); */
-			                    	var text = "<div class='pull-right' id='viewmoresDiv'>";
+			                    	var text = "<div class='pull-right jobMoreBtn' id='viewmoresDiv'>";
 			                    	text += "<a href='/app/jobs' class='btn btn-sm btn-primary pull-right' title='View more'> View More</a>";
 			                       	text += "</div>";
 			                       	$("#requirementListActions").append(text);
