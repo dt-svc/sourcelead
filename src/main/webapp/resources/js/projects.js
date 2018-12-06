@@ -234,6 +234,17 @@ function Projects() {
 	      			   
 	      			   for(var i=0; i<json.approverHierarchyList.length; i++){
 		        		  var opt = json.approverHierarchyList[i];
+		        		  
+		        		  if(opt.approvalMechanismType != null && opt.approvalMechanismType != '' && opt.approvalMechanismType != 'undefined'){
+		        			  if(opt.approvalMechanismType == 'Parallel'){
+		        				     document.getElementById("parallelTimesheetsApproval").checked = true;
+					        		 $("#projectApprovalTypeValue").val(opt.approvalMechanismType);
+		        			  }else{
+		        				     document.getElementById("sequentialTimesheetsApproval").checked = true;
+					        		 $("#projectApprovalTypeValue").val(opt.approvalMechanismType);
+		        			  }
+		        		  }
+		        		  
 		        		  if(opt.level == "1"){
 		        			  level1ApproverUser = opt.projectApproverUserId;
 		        			  projects.getProjectLevel1Approvers(opt.projectApproverUserId);
@@ -254,6 +265,17 @@ function Projects() {
 	      			
 	      			 for(var i=0; i<json.expenseApproverHierarchyList.length; i++){
 		        		  var opt = json.expenseApproverHierarchyList[i];
+		        		  
+		        		  if(opt.approvalMechanismType != null && opt.approvalMechanismType != '' && opt.approvalMechanismType != 'undefined'){
+		        			  if(opt.approvalMechanismType == 'Parallel'){
+		        				     document.getElementById("parallerExpenseApproval").checked = true;
+					        		 $("#expenseApprovalTypeValue").val(opt.approvalMechanismType);
+		        			  }else{
+		        				     document.getElementById("sequentialExpenseApproval").checked = true;
+					        		 $("#expenseApprovalTypeValue").val(opt.approvalMechanismType);
+		        			  }
+		        		  }
+		        		  
 		        		  if(opt.level == "1"){
 		        			  level1ExpenseApproverUser = opt.expenseApproverUserId;
 		        			  projects.getProjectLevel1ExpenseApprovers(opt.expenseApproverUserId);
