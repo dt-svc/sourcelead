@@ -16,5 +16,7 @@ public interface ExpenseProjectApproverHierarchyService {
 	public ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
 	
 	public ExpenseProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId)throws Exception;
+	
+	String getExpenseApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception;
 			
 }

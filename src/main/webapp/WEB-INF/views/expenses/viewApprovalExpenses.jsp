@@ -82,7 +82,7 @@
 					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
 					                  <label class='clearfix reopen-label'>RE-OPEN</label>
 					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
-					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					                  <i class='reopen-text-danger glyphicon glyphicon-remove' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
 					           </div> 
 					      </c:if>
 					     
@@ -250,13 +250,13 @@
 </div>
 </div>
     </section>
- <div class="mask_time"></div>
+  <div class="mask_time"></div>
 <div class="time_appr_rejct_pop" id="" style="top: 25%; display: none;">
-	<p id="reject2message" class="modal-body text-center">Are you sure <br/> you want to make this expense item as billable ?</p>
+	 <p id="reject2message" class="modal-body text-center">Are you sure <br/> you want to make this expense item as billable ?</p> 
 	 <div id="rejectReasonDiv"></div>
 	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
 	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
-</div>
+</div> 
 
 <script>
 $("#export-pop").click(function(){
@@ -291,19 +291,19 @@ $(".export_pop, #export-pop").click(function(e) {
 			$(".time_appr_rejct_pop").slideUp(200);
 		});	
 	});
-	function showPopUp(element, ExpenseEntriesId){
+	 function showPopUp(element, ExpenseEntriesId){
 		var checked = $(element).is(":checked");
 		if(checked) {
 			$(element).prop("checked", false);
 		} else {
 			$(element).prop("checked", true);
 		}
-		$("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? "));
+	    $("#reject2message").html("Are you sure <br/> you want to make this expense item as " + (checked ? "billable ? " : "non-billable ? ")); 
 		$("#changeBillableStatus").data("id", ExpenseEntriesId);
 		$("#changeBillableStatus").data("billableStatus", checked ? "billable": "non-billable");
 		$(".mask_time").fadeIn(200);
 		$(".time_appr_rejct_pop").slideToggle(200);
-	}
+	} 
 </script> 
     
 <script>
