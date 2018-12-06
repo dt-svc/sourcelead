@@ -19,11 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayItem;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
@@ -37,9 +40,11 @@ import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 import com.bis.sourcelead.payroll.entity.PayitemHistory;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.util.CommonUtil;
 
 import javassist.compiler.NoFieldException;
@@ -60,6 +65,9 @@ public class PayrollUtil {
 	
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
+	
+	@Autowired
+	LeaveService leaveService;
 	
 	/***
 	 * calculating total amount by multipltying hours with rate
@@ -1124,6 +1132,110 @@ public class PayrollUtil {
 		return month;
 	}
 
+	/**
+	 * Calculating LOP amount for Leaves
+	 * @param employee
+	 * @param orgLocation 
+	 * @param freqEndDate 
+	 * @param freqStartDate 
+	 * @param assoSal 
+	 * @param amount 
+	 * @param employeePayroll 
+	 * @return
+	 */
+	public Set<PayrollLopHis> getLOPAmount(Employees employee, AssociateSalary assoSal, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, BigDecimal amount, EmployeePayroll employeePayroll)
+	{
+		
+		String dayHours = "";
+		BigDecimal lopAmt = BigDecimal.ZERO;
+		Set<PayrollLopHis> lopHiList = null;
+		try {
+			lopHiList = leaveService.getLeaveByFrequency(assoSal.getCandidate().getConsultantUser().getId(), freqStartDate,freqEndDate,orgLocation,employeePayroll);
+			if(lopHiList != null && lopHiList.size() > 0 ) {
+			for(PayrollLopHis payrollLopHis : lopHiList) {
+//			    	Double noOfLeaves = lopHiList.stream().mapToDouble(lop->lop.getLopLeaves()).sum();
+			    			BigDecimal lopLeaves = new BigDecimal(payrollLopHis.getLopLeaves());
+			    			BigDecimal compareLeave = new BigDecimal("0.5");
+			    			 int res = compareLeave.compareTo(lopLeaves);
+			    			 BigDecimal hourlyRate = BigDecimal.ZERO;
+			    			 if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+			    				  hourlyRate = assoSal.getHourlyRate();
+			    			 }else {
+			    				  hourlyRate = amount.divide(new BigDecimal(176));
+			    			 }
+			    			 if( res == 0 || res == 1) {
+			    				 //Calculating Half Day
+			    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+			    						 BigDecimal hours = new BigDecimal(dayHours.replace(":", "."));
+			    						 BigDecimal dayHrs = hours.divide(new BigDecimal(2));
+			    						 lopAmt = dayHrs.multiply(hourlyRate);
+			    					 }else {
+			    						 BigDecimal dayHrs = new BigDecimal(4);
+			    						 lopAmt = dayHrs.multiply(hourlyRate);
+			    					 }
+			    			 }else if( res == -1 ) {
+			    				 //Calculating Full Day
+			    				 if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+			    					 String averageHours = "";
+			    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+			    						 averageHours = employee.getDailyHours().replace(":", ".");
+			    					 }else {
+			    						 averageHours = "8";
+			    					 }
+			    					 System.out.println("******************************averageHours = "+averageHours);
+			    					 System.out.println("******************************averageHours = "+averageHours);
+			    					 
+			    					 
+			    					 BigDecimal one = new BigDecimal("1");
+			    					 double avgHrs = new BigDecimal(averageHours).doubleValue();
+			    					 double leaves = lopLeaves.doubleValue();
+			    					 double dyHours = 0;
+			    					 int res1 = one.compareTo(lopLeaves);
+			    					    if(res1 == 0 || res1 == 1) {
+			    					    	 dyHours = avgHrs/2;
+			    					    }else if(res1 == -1) {
+			    					    	  dyHours = (avgHrs * leaves);
+			    					    }
+			    						 System.out.println("******************************leaves = "+leaves);
+			    						 System.out.println("******************************leaves = "+dyHours);
+			    						 System.out.println("******************************LOP Amount = "+lopAmt);
+			    						 lopAmt = getTotalAmount(dyHours, hourlyRate);
+			    					
+			    				 }
+			    			 }
+			    			 System.out.println("******************************LOP Amount = "+lopAmt);
+			    			 payrollLopHis.setLopAmount(lopAmt);
+			    }	
+			}
+			
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHiList;
+	}
+
 	
+	
+	/***
+	 * calculating total amount by multipltying hours with rate
+	 * @param totalHours
+	 * @param payRate
+	 * @return double
+	 */
+	public BigDecimal getTotalAmount(double totalHours, BigDecimal payRate)
+	{
+		String pRate = String.valueOf(totalHours);
+		String[] rate = pRate.split("\\.");
+		double hr = Double.parseDouble(rate[0]);
+		double min = Double.parseDouble(rate[1]);
+		double hrsToMin = hr * 60;
+		double totalMin = hrsToMin + min;
+//		BigDecimal perMinRate= payRate.divide(PayrollConstant.ONE_MIN_SEC,);
+		double perMinRate = payRate.doubleValue() / 60;
+		double totatAmount = totalMin * perMinRate;
+		return BigDecimal.valueOf(totatAmount);
+	}
 
 }
