@@ -371,7 +371,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{7,7,7,4,5,5,5,7,6,6,4,5,5,5});
+            table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -416,37 +416,45 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 		if(ex.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(ex.getExpId());
 			if(null != expenseId.getProjectMembers()){
+				
+				if(null != expenseId.getExpenseId()){
+					expenseArray[0] = expenseId.getExpenseId();
+				}else{
+					expenseArray[0] = "--";
+				}
+				
 				//if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
+
 							StringBuffer sb = new StringBuffer();
-							expenseArray[0] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
+							expenseArray[1] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
 						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
-							expenseArray[0] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
+							expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
 						}
 						else
 						{
-							expenseArray[0] = "--";
+							expenseArray[1] = "--";
 						}
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
 
-							expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
+							expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
 						}else{
-							expenseArray[1] = "--";
+							expenseArray[2] = "--";
 						}
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone())){
 
-							expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
+							expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
 						}else{
-							expenseArray[2] = "--";
+							expenseArray[3] = "--";
 						}
 						
 					}
 					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
 
-						expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
+						expenseArray[4] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
 					}else{
-						expenseArray[3] = "--";
+						expenseArray[4] = "--";
 					}
 					
 				if(ex.getProjectMemberId()!= null) {
@@ -456,80 +464,80 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 							if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 								OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 								if(orgRelation != null){
-									expenseArray[4] = orgRelation.getResponderLocationId().getOrgLocationName();
+									expenseArray[5] = orgRelation.getResponderLocationId().getOrgLocationName();
 								}else{
-									expenseArray[4] = "--";
+									expenseArray[5] = "--";
 								}
 							 }
 						}else{
-							expenseArray[4] = "--";
+							expenseArray[5] = "--";
 						}
 					}
 				//}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
-						expenseArray[5] = expenseId.getProjectMembers().getProjects().getProjectName();
+						expenseArray[6] = expenseId.getProjectMembers().getProjects().getProjectName();
 					}
 				}else{
-					expenseArray[5] = "--";
+					expenseArray[6] = "--";
 				}
 				
 			}
 			if(null != expenseId.getClientName()){
 
-				expenseArray[6] = expenseId.getClientName();
-			}else{
-				expenseArray[6] = "--";
-			}
-			if(null != expenseId.getPurpose()){
-
-				expenseArray[7] = expenseId.getPurpose();
+				expenseArray[7] = expenseId.getClientName();
 			}else{
 				expenseArray[7] = "--";
 			}
-			
-			if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
-				expenseArray[8] = expenseId.getStartDateStr();
+			if(null != expenseId.getPurpose()){
+
+				expenseArray[8] = expenseId.getPurpose();
 			}else{
 				expenseArray[8] = "--";
 			}
 			
-			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
-				expenseArray[9] = expenseId.getEndDateStr();
+			if(null != expenseId.getStartDate()){
+				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
+				expenseArray[9] = expenseId.getStartDateStr();
 			}else{
 				expenseArray[9] = "--";
 			}
-			if(null != expenseId.getNoOfExpenses()){
-
-				expenseArray[10] = expenseId.getNoOfExpenses();
+			
+			if(null != expenseId.getEndDate()){
+				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
+				expenseArray[10] = expenseId.getEndDateStr();
 			}else{
 				expenseArray[10] = "--";
+			}
+			if(null != expenseId.getNoOfExpenses()){
+
+				expenseArray[11] = expenseId.getNoOfExpenses();
+			}else{
+				expenseArray[11] = "--";
 			}
 			if(expenseId.getTotalAmount().intValue() > 0){
 				StringBuilder str = new StringBuilder();
 				BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
 				//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
-				expenseArray[11] = str.append(bd).toString();
+				expenseArray[12] = str.append(bd).toString();
 			}else{
-				expenseArray[11] = "--";
+				expenseArray[12] = "--";
 			}
 			if(null != expenseId.getStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
 				    if(submissionStatus != null) {
-				    	expenseArray[12] = submissionStatus.getValue().toUpperCase();
+				    	expenseArray[13] = submissionStatus.getValue().toUpperCase();
 				    }else {
-				    	expenseArray[12] = "Rejected";
+				    	expenseArray[13] = "Rejected";
 				    }
 			}else{
-				expenseArray[12] = "--";
+				expenseArray[13] = "--";
 			}
 			if(null != ex.getActionPerformedBy()){
-				expenseArray[13] = ex.getActionPerformedBy();
+				expenseArray[14] = ex.getActionPerformedBy();
 			}else{
-				expenseArray[13] = "--";
+				expenseArray[14] = "--";
 			}
 		}
 		arrayList.add(expenseArray);
@@ -612,13 +620,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				if(null != expenseId.getProjectMembers().getEmployee()){
 					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
 						
+						if(null != expenseId.getExpenseId()){
+							writeRow.createCell(0).setCellValue(expenseId.getExpenseId());
+							createExcelsheet.autoSizeColumn(0);
+						}
+						
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
-							writeRow.createCell(0).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
-							createExcelsheet.autoSizeColumn(0);
+							writeRow.createCell(1).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
+							createExcelsheet.autoSizeColumn(1);
 						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
-							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
-							createExcelsheet.autoSizeColumn(0);
+							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
+							createExcelsheet.autoSizeColumn(1);
 						}
 						
 						/*if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
@@ -626,17 +639,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							createExcelsheet.autoSizeColumn(0);
 						}*/
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
-							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail());
-							createExcelsheet.autoSizeColumn(1);
+							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail());
+							createExcelsheet.autoSizeColumn(2);
 						}
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone()){
-							writeRow.createCell(2).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone());
-							createExcelsheet.autoSizeColumn(2);
+							writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone());
+							createExcelsheet.autoSizeColumn(3);
 						}
 					}
 					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType()){
-						writeRow.createCell(3).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
-						createExcelsheet.autoSizeColumn(3);
+						writeRow.createCell(4).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
+						createExcelsheet.autoSizeColumn(4);
 					}
 					
 					if(expensesList.getProjectMemberId()!= null) {
@@ -646,8 +659,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
 								OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 								if(orgRelation != null){
-								 writeRow.createCell(4).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
-								 createExcelsheet.autoSizeColumn(4);
+								 writeRow.createCell(5).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
+								 createExcelsheet.autoSizeColumn(5);
 							 }
 							}
 						}
@@ -655,57 +668,58 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				}
 				if(null != expenseId.getProjectMembers().getProjects()){
 					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
-						writeRow.createCell(5).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());
+						writeRow.createCell(6).setCellValue(expenseId.getProjectMembers().getProjects().getProjectName());
 						createExcelsheet.autoSizeColumn(5);
 					}
 				}
 			}
 			if(null != expenseId.getClientName()){
-				writeRow.createCell(6).setCellValue(expenseId.getClientName());
-				createExcelsheet.autoSizeColumn(6);
+				writeRow.createCell(7).setCellValue(expenseId.getClientName());
+				createExcelsheet.autoSizeColumn(7);
 			
 			}
 			if(null != expenseId.getPurpose()){
-				writeRow.createCell(7).setCellValue(expenseId.getPurpose());
-				createExcelsheet.autoSizeColumn(7);
+				writeRow.createCell(8).setCellValue(expenseId.getPurpose());
+				createExcelsheet.autoSizeColumn(8);
 			}
 			if(null != expenseId.getStartDate()){
 				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
-				writeRow.createCell(8).setCellValue(expenseId.getStartDateStr());
-				createExcelsheet.autoSizeColumn(8);
+				writeRow.createCell(9).setCellValue(expenseId.getStartDateStr());
+				createExcelsheet.autoSizeColumn(9);
 			}
 			if(null != expenseId.getEndDate()){
 				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
-				writeRow.createCell(9).setCellValue(expenseId.getEndDateStr());
-				createExcelsheet.autoSizeColumn(9);
+				writeRow.createCell(10).setCellValue(expenseId.getEndDateStr());
+				createExcelsheet.autoSizeColumn(10);
 			}
 			if(null != expenseId.getNoOfExpenses()){
-				writeRow.createCell(10).setCellValue(expenseId.getNoOfExpenses());
-				createExcelsheet.autoSizeColumn(10);
+				writeRow.createCell(11).setCellValue(expenseId.getNoOfExpenses());
+				createExcelsheet.autoSizeColumn(11);
 			}
 			if(expenseId.getTotalAmount().doubleValue() > 0){
 				StringBuilder str = new StringBuilder();
 				BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
 				//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );                
-                writeRow.createCell(11).setCellValue(str.append(bd).toString());
-                createExcelsheet.autoSizeColumn(11);
+                writeRow.createCell(12).setCellValue(str.append(bd).toString());
+                createExcelsheet.autoSizeColumn(12);
 			}
 			if(null != expenseId.getExpenseStatus()){
 				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
 			    Submission_Status submissionStatus = eah.getExpenseStatus();
 			    if(eah.getReopenRejectedReason()!= null) {
-			    	writeRow.createCell(12).setCellValue(submissionStatus.getValue().toUpperCase());
+			    	writeRow.createCell(13).setCellValue(submissionStatus.getValue().toUpperCase());
 			    }else {
-			    	writeRow.createCell(12).setCellValue("Rejected");
-				createExcelsheet.autoSizeColumn(12);
+			    	writeRow.createCell(13).setCellValue(expensesList.getExpensesStatus().toUpperCase());
+				    createExcelsheet.autoSizeColumn(12);
 			    }
 			}
 			if(null != expensesList.getActionPerformedBy()){
-				writeRow.createCell(13).setCellValue(expensesList.getActionPerformedBy());
-				createExcelsheet.autoSizeColumn(13);
+				writeRow.createCell(14).setCellValue(expensesList.getActionPerformedBy());
+				createExcelsheet.autoSizeColumn(14);
 			}
 		}
 	return createExcelsheet;
+	
 }
 
 	@Override
