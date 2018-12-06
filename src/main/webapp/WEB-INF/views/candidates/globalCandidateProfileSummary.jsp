@@ -125,7 +125,7 @@
 				
 				<div class="clearfix"></div>
 				<div class="profileDetails mt">
-					<h5>Experience</h5>
+					<h5>Employers</h5>
 					<div class="clearfix"></div>
 					<c:choose>
 						<c:when test="${marketplaceDTO.candidateEmployers == null}">
@@ -301,7 +301,8 @@
 				if (result.response === "AWKWARD") {
 	                location.href = "/errorPage";
 	            }else if(result.response === "SUCCESS") {
-					$("#deleteCandidateFromCartDiv").empty();
+	            	
+	            	$("#deleteCandidateFromCartDiv").empty();
 					$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addCartListModel" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\')" class="anchorHighlight">Add</a>');
 					$("#remove_marketCart_pop").fadeOut(200);
 					$(".project_inn_mask").fadeOut(200);
@@ -312,16 +313,16 @@
 			}); 
 		}
 	function addCandidateToMarketCart(candidateName, UUID) {
-		  $.ajax({
+			$.ajax({
 	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
 		        type:'GET',
 		        success: function (result) {
 		        	 if (result.response === "AWKWARD") {
 		                 location.href = "/errorPage";
 		             }else if(result.response === "SUCCESS") {
-			        	$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addedCartCardModel" class="anchorHighlight anchorHighlightActive">Added</a>');
+		            	$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addedCartCardModel" class="anchorHighlight anchorHighlightActive">Added</a>');
 			        	$("#deleteCandidateFromCartDiv").empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\');"><i class="fa fa-trash-o"></i></a>');
-		        	}else{
+		             }else{
 		            	 showError("Operation failed, please try again");
 		            }
 		        }

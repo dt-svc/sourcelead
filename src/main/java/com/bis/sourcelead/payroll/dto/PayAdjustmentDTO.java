@@ -47,7 +47,10 @@ public class PayAdjustmentDTO {
     
     private List<AssociateLoanAndAdvancesDTO> loanAdvance;
 	
-
+    private List<PayrollLopHisDTO> lopHis;
+    
+    private BigDecimal totLopAmount;
+    
 	public BigDecimal getAssSalaryAmount()
 	{
 		return assSalaryAmount;
@@ -235,5 +238,26 @@ public class PayAdjustmentDTO {
 	public void setLoanAdvance(List<AssociateLoanAndAdvancesDTO> loanAdvance) {
 		this.loanAdvance = loanAdvance;
 	}
+
+	public List<PayrollLopHisDTO> getLopHis()
+	{
+		return lopHis;
+	}
+
+	public void setLopHis(List<PayrollLopHisDTO> lopHis)
+	{
+		this.lopHis = lopHis;
+	}
+
+	public BigDecimal getTotLopAmount()
+	{
+		return totLopAmount;
+	}
+
+	public void setTotLopAmount(BigDecimal totLopAmount)
+	{
+		this.totLopAmount = totLopAmount;
+	}
+	
 	
 }
