@@ -3068,5 +3068,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		List<Candidate> candidates = candidateDao.getCandidateDetailsListById(Ids);
 		return candidates;
 	}
+
+	@Override
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		candidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
+		
+	}
 	
 }

@@ -226,4 +226,6 @@ public interface CandidateDao {
 	public List<CandidateMarketPlace> getCandidateDetailsByCandidateId(List<Long> candidateIdList) throws Exception;
 
 	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
+	
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 }

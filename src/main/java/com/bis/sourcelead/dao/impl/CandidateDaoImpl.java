@@ -2829,4 +2829,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketCart marketCart where marketCart.targetOrgLocationId.id = :orgLocationId";
+			session.createQuery(query).setParameter("orgLocationId", orgLocationId).executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
