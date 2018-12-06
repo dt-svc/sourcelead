@@ -219,6 +219,11 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		bd = bd.add(expensesEntry.getAmount());
 	}
 	expenses.setTotalAmount(bd);
+	BigDecimal sa =new BigDecimal(0);
+	for(ExpensesEntries expent : expensesEntriesList) {
+		sa = sa.add(expent.getSubmittedamount());
+	}
+	expenses.setTotalsubmittedAmount(sa);
 	HashMap<Integer,User> managers = new HashMap<>() ;
 	if(projMembers != null){
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
