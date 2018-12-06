@@ -301,6 +301,7 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
             }else if(result.response === "SUCCESS") {
 				//$(obj).closest('tr').find("div[id='addCartDiv"+candidateMarketUUID+"']").empty().append('<a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+candidateName+'\',\''+candidateMarketUUID+'\', \''+obj+'\')">Add Cart</a>');
 				globalRecommendationpagination();
+				updateMarketplaceCartCountAndPrice();
 				$("#remove_marketCart_pop").fadeOut(200);
 				$(".project_inn_mask").fadeOut(200);
 				}else{
@@ -318,6 +319,7 @@ function addCandidateToMarketCart(candidateName, UUID, obj) {
 	        	 if (result.response === "AWKWARD") {
 	                 location.href = "/errorPage";
 	             }else if(result.response === "SUCCESS") {
+	            	 updateMarketplaceCartCountAndPrice();
 		        	$(obj).closest('tr').find("div[id='addCartDiv"+UUID+"']").empty().append('<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')"> Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\',\''+obj+'\');"> Delete </a></sec:authorize>');
 	        	}else{
 	            	 showError("Operation failed, please try again");

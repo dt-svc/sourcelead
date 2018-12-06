@@ -125,7 +125,7 @@
 				
 				<div class="clearfix"></div>
 				<div class="profileDetails mt">
-					<h5>Experience</h5>
+					<h5>Employers</h5>
 					<div class="clearfix"></div>
 					<c:choose>
 						<c:when test="${marketplaceDTO.candidateEmployers == null}">
@@ -138,7 +138,7 @@
 											<div class="col-md-12">
 												<div class="media">
 									  <div class="media-left">
-										<img src="/resources/images/professionalExperinece.svg" class="media-object" alt="Image" style="width: 100px;">
+										<img src="/resources/images/professionalExperinece.svg" class="media-object" alt="Image" style="width: 50px;">
 									  </div>
 									  	<div class="media-body">
 											<div class="row">
@@ -176,7 +176,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="/resources/images/graduate-cap.svg" class="media-object" alt="Image" style="width: 75px;">
+						<img src="/resources/images/graduate-cap.svg" class="media-object" alt="Image" style="width: 50px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">
@@ -214,7 +214,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="/resources/images/diploma.svg" class="media-object" alt="Image" style="width:75px; height: 75px;">
+						<img src="/resources/images/diploma.svg" class="media-object" alt="Image" style="width:50px; height: 50px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">
@@ -268,24 +268,6 @@
 							</c:forEach>
 						</c:otherwise>
 				</c:choose>
-					<!-- <div class="media profileDetails-Widget clearfix">
-					  <div class="media">
-						  <div class="media-left">
-							<img src="images/24.jpg" class="media-object" style="width:40px; border-radius: 50%;" alt="Image">
-						  </div>
-						  <div class="media-body">
-							<div class="row">
-								<div class="col-md-12">
-									<h5 class="margin-top0"><a href="#">Rajkumar Santoshi Alapati</a></h5>
-							<p class="text-muted small mb5">Software Development Engineer</p>
-															  	<p class="text-muted small mb5">PromoKap IT Solutions Pvt Ltd</p>
-							<p class="text-muted small">Bhimavaram Area, India</p>
-
-								</div>
-							</div>
-						  </div>
-					  </div>
-				</div> -->
 			</div>
 			</div>
 		</div>
@@ -319,7 +301,8 @@
 				if (result.response === "AWKWARD") {
 	                location.href = "/errorPage";
 	            }else if(result.response === "SUCCESS") {
-					$("#deleteCandidateFromCartDiv").empty();
+	            	
+	            	$("#deleteCandidateFromCartDiv").empty();
 					$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addCartListModel" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\')" class="anchorHighlight">Add</a>');
 					$("#remove_marketCart_pop").fadeOut(200);
 					$(".project_inn_mask").fadeOut(200);
@@ -330,16 +313,16 @@
 			}); 
 		}
 	function addCandidateToMarketCart(candidateName, UUID) {
-		  $.ajax({
+			$.ajax({
 	        url: sourceleadUrl + "/addCandidateToMarketCart?id="+UUID,
 		        type:'GET',
 		        success: function (result) {
 		        	 if (result.response === "AWKWARD") {
 		                 location.href = "/errorPage";
 		             }else if(result.response === "SUCCESS") {
-			        	$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addedCartCardModel" class="anchorHighlight anchorHighlightActive">Added</a>');
+		            	$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addedCartCardModel" class="anchorHighlight anchorHighlightActive">Added</a>');
 			        	$("#deleteCandidateFromCartDiv").empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\');"><i class="fa fa-trash-o"></i></a>');
-		        	}else{
+		             }else{
 		            	 showError("Operation failed, please try again");
 		            }
 		        }

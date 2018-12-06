@@ -628,7 +628,6 @@ function resetImmForm(){
 	 $("#dateFrequency").val('');
 	 $("#custFromDate").val('');
 	 $("#custToDate").val('');
-	 
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->

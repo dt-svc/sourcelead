@@ -45,6 +45,7 @@ public class InvoiceDTO extends SearchDTO {
 	private String afterDiscountTotal;
 	private String grandTotal;
 	private String disCount;
+	private String isJobClosure;
 	
 	@Required (desc = "vendorOrgRelationId", dependsOn = "vendorOrgRelation", parentValue = "createPayables")
     private String vendorOrgRelationId;
@@ -63,6 +64,7 @@ public class InvoiceDTO extends SearchDTO {
     private String invoiceforexpenses;
     private String projectMemberId;
     private String expensesId;
+   
     private List<InvoiceExpensesDTO> expenseInvoice;
     private String staticPath;
     
@@ -537,6 +539,15 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setInvoiceDeleteStatus(String invoiceDeleteStatus) {
 		this.invoiceDeleteStatus = invoiceDeleteStatus;
+	}
+
+
+	public String getIsJobClosure() {
+		return isJobClosure;
+	}
+
+	public void setIsJobClosure(String isJobClosure) {
+		this.isJobClosure = isJobClosure;
 	}
 	
 

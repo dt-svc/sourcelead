@@ -403,7 +403,7 @@
 							            <div class="commentFile">
 							                  <h2>
 											    Attachmets & Comments 
-											    <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB "></i>
+											    <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps - Allowed Size : 2MB "></i>
 											 </h2>
 											<div class="">
 											    <c:set var="attMaxRowNumber" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
@@ -1213,6 +1213,7 @@ function addTimeSheetRow() {
 			divadttTd00Str = divadttTd00Str.replace(/disabled/g, ''); 
 			
 			cell0.innerHTML = divadttTd00Str;
+			$("#"+maxRowNum+"projectMember1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"projectMember1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"projectMember1Id").attr('data-live-search','true');
 			$("#"+maxRowNum+"projectMember1Id").attr('data-size',8);

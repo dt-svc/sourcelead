@@ -305,7 +305,7 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o'></i></a>";
 				result = result + "<div class='media-left'>";
 				result = result + "<div class='cartImg positionRelative'>";
-				result = result + "<img src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
+				result = result + "<img onerror='predefineProfileImage(this);' src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
 				result = result + "<i class='fa fa-shopping-cart faCart'></i>";
 				result = result + "<div class='clearfix'></div>";
 				result = result + "<h4 class='text-center'><span class='label label-default'>100%</span></h4>";
@@ -402,6 +402,7 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
             }else if(result.response === "SUCCESS") {
             	getCandidateDetailsFromMarketcart();
 				updateInvoiceAndCartDetails();
+				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
     			$(".project_inn_mask").fadeOut(200);
             }else{
@@ -466,6 +467,9 @@ $("#trashHdr").click(function() {
 })
 function refreshPage(){
   location.reload(); // refresh the page.
+}
+function predefineProfileImage(imageId){
+	$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 }
 </script>
 
