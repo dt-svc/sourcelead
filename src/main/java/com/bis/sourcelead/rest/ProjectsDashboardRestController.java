@@ -94,6 +94,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -161,6 +162,9 @@ public class ProjectsDashboardRestController {
 	
 	 @Autowired
 	 public ProjectApproverHierarchyService projectApproverHierarchyService;
+	 
+	 @Autowired
+	 public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	 
 	 @Autowired
 	 public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -315,12 +319,14 @@ public class ProjectsDashboardRestController {
 				    		}
 				    		StringBuilder projectApprover = new StringBuilder();
 				    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    		projectsDTO.setProjectApprovalType(approverHierarchy.getApprovalMechanismType());
 				    	}
 				    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
 				    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId().intValue());
 				    		projectsDTO.setManager2Name(approverHierarchy.getApproverUserId().getFullName());
 				    		StringBuilder projectApprover = new StringBuilder();
 				    		projectsDTO.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+				    		projectsDTO.setProjectApprovalType(approverHierarchy.getApprovalMechanismType());
 				    	}
 				    	
 				    }
@@ -339,12 +345,14 @@ public class ProjectsDashboardRestController {
 					    		}
 					    		StringBuilder projectApprover = new StringBuilder();
 					    		projectsDTO.setLevel1ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    		projectsDTO.setExpenseApprovalType(approverHierarchy.getApprovalMechanismType());
 					    	}
 					    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
 					    		projectsDTO.setExpenseApprover2(approverHierarchy.getApproverUserId().getId().intValue());
 					    		projectsDTO.setExpenseApprover2Name(approverHierarchy.getApproverUserId().getFullName());
 					    		StringBuilder projectApprover = new StringBuilder();
 					    		projectsDTO.setLevel2ExpenseApprover(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
+					    		projectsDTO.setExpenseApprovalType(approverHierarchy.getApprovalMechanismType());
 					    	}
 					    	
 					    }
@@ -523,7 +531,12 @@ public class ProjectsDashboardRestController {
 		 	  }
 				 Integer projectMembersCount  = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
-				
+				 
+				 
+				 String projectApprovalMechanismType = projectApproverHierarchyService.getApprovalMechanismTypeByProjectClientId(projectClients.getId());
+				 ProjectDetails.setProjectApprovalType(projectApprovalMechanismType);
+				 String expenseApprovalMechanismType = expenseProjectApproverHierarchyService.getExpenseApprovalMechanismTypeByProjectClientId(projectClients.getId());
+				 ProjectDetails.setExpenseApprovalType(expenseApprovalMechanismType);
 		   }
 		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
