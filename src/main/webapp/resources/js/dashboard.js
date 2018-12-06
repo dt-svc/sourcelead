@@ -1,17 +1,23 @@
 // below details need to be dynamic as of now used the user details of 
 //narasimha.seeral@businessintelli.com for india location 
 var sourceleadUrl ="http://localhost:8080/app";//'${sourceleadUrl}'; // setting common user settings 
-var locationId = "5";//'${SourceLeadWeb_orgLocationId}';
+//var locationId = "5";//'${SourceLeadWeb_orgLocationId}'; //narasimha
+var locationId = "3";//'${SourceLeadWeb_orgLocationId}'; snigitha
 var locationList ="dd-MM-yyyy";//'${SourceLeadWeb_orgLocations.dateFormat}';	
-var userId ="31";// '${SourceLeadWeb_user.id}';
-var orgLocationCode = "txhlIN"; //'${SourceLeadWeb_locationCode}';
-var candiadteId = "9105";//'${SourceLeadWeb_candidateId}';
+//var userId ="31";// '${SourceLeadWeb_user.id}'; Narasimha
+var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha
+//var orgLocationCode = "txhlIN"; //'${SourceLeadWeb_locationCode}'; Narasimha
+var orgLocationCode = "775BUS";// snigitha
+//var candiadteId = "9105";//'${SourceLeadWeb_candidateId}'; Narasimha
+var candiadteId = '9077';// snigitha
 var isGlobalAccess = "N";//'${SourceLeadWeb_isGlobalAccess}';
 var loginUserRole ="ROLE_ADMIN";// '${SourceLeadWeb_loginUserRole}';
 var orgATS = "Y";//'${SourceLeadWeb_ats}';
 var orgVMS ="Y";// '${SourceLeadWeb_vms}';
-var approverUserId ="31";// '${SourceLeadWeb_user.id}';
-var loginUser = "Narasimha Seerla";//'${SourceLeadWeb_userName}';
+//var approverUserId ="31";// '${SourceLeadWeb_user.id}'; Narasimha
+var approverUserId = '4'; // snigitha
+//var loginUser = "Narasimha Seerla";//'${SourceLeadWeb_userName}';
+var loginUser = 'Snigitha Paruchuri';
 var date = $("#eventCalendar").val();
 // its an entity commented now. var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
 var requirementId = "";//'${requirementId}';
