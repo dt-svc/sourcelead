@@ -329,7 +329,6 @@ function editLoanAndAdvance(loanAdvId){
         		
         		 $("input[name=endDate]").val(json.endDate);
         		 $("#deductAmount").val(json.deductAmount);
-        		 
         		 $("input[name=effectiveDate]").val(json.effectiveDate);
         		 loanAdv.getLoanAndAdvApprovers(json.loanAndAdvApprover);
         		    setTimeout(function () {
