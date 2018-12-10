@@ -92,7 +92,12 @@
 				    </c:otherwise>
 				</c:choose>				
 			  </tr>  
-			 </c:forEach>			  			  
+			 </c:forEach>
+			  <c:if test="${empty formsList}">
+				<tr>
+				 <td colspan="5" valign="top" class="dataTables_empty"></td>
+				</tr>
+				</c:if>			  			  
 			</tbody>
 		  </table>
 		</div>
