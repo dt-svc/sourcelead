@@ -249,6 +249,8 @@ public class Constants {
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	public static final String PURCHASED = "Purchased";
+	public static final String SUCCESS = "Success";
+	public static final String FAILED = "Failed";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";

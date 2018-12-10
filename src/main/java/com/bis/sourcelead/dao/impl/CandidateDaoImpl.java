@@ -47,6 +47,8 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LcaListView;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
@@ -2771,18 +2773,71 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<CandidateMarketPlace> candidateMarketplaceCandidates = session.createQuery(listQuery).setParameter("candidateOrgLocId", id).setParameter("marketplaceId", marketplaceId).list();
 		return candidateMarketplaceCandidates;
 	}
+	
+	
+	
+	//  new method 
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
+	public void saveToMarketplacePurchaseOrder(MarketplacePurchaseOrder newMarketplacePurchaseorder) throws Exception {
+		          logger.debug("Storing MarketPlace Purchase order details");
+	         try {
+	        	 Session session = this.sessionFactory.getCurrentSession();
+	        	 if(newMarketplacePurchaseorder !=null)
+	        	 {
+	        		 session.saveOrUpdate(newMarketplacePurchaseorder);
+	        	 }
+	         }
+	         catch(Exception e) {
+	        	 e.printStackTrace();
+	         }
+	         }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveToMarketplaceSalesOrder(MarketplaceSalesOrder newMarketplaceSalesorder) throws Exception {
+		      logger.debug("Storing MarketPlace Sales order details");
+		 try {
+        	 Session session = this.sessionFactory.getCurrentSession();
+        	 if(newMarketplaceSalesorder !=null)
+        	 {
+        		 session.saveOrUpdate(newMarketplaceSalesorder);
+        	 }
+         }
+         catch(Exception e) {
+        	 e.printStackTrace();
+         }
+		
+		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Candidate candidate where candidate.id IN (:Ids)";
-			List<Candidate> candidates = session.createQuery(query).setParameterList("Ids", Ids).list();
-			return candidates;
+			String query="from CandidateMarketPlacePaymentTransactionHistory cmpth where cmpth.orgLocationId.id=:ids and id = (select max(id) from CandidateMarketPlacePaymentTransactionHistory) ";
+			CandidateMarketPlacePaymentTransactionHistory transactionHistory = (CandidateMarketPlacePaymentTransactionHistory)session.createQuery(query).setLong("ids", id).uniqueResult();
+			return transactionHistory;
+		}
+		catch(Exception e) {
+       	 e.printStackTrace();
+       	 return null;
+        }
+		
+	}
+		
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CandidateMarketCart marketCart where marketCart.targetOrgLocationId.id = :orgLocationId";
+			session.createQuery(query).setParameter("orgLocationId", orgLocationId).executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 }
