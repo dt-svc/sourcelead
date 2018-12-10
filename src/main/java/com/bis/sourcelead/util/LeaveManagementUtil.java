@@ -979,7 +979,7 @@ public class LeaveManagementUtil {
 		Set<PayrollLopHis> lopHis = new HashSet<>();
 		try {
 			for (LeaveType leaveType : leavTypeList) {
-				if(leaveType.getIncludeInPayroll() != null && "Y".equalsIgnoreCase(leaveType.getIncludeInPayroll())) {
+				if(leaveType.getIncludeInPayroll() != null && "Y".equalsIgnoreCase(leaveType.getIncludeInPayroll()) && "Billable".equalsIgnoreCase(leaveType.getLeaveType())) {
 					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
 					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
