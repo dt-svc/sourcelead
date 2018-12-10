@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -50,8 +51,10 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.text.DecimalFormat;
@@ -111,6 +114,12 @@ public class PaymentController {
 
     @Autowired
 	private CandidateService candidateService;
+    
+    @Autowired
+	EmailScenarioService emailScenarioService;
+    
+    @Autowired
+	EmailScenerioUtil emailScenerioUtil;
     
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -747,20 +756,21 @@ public class PaymentController {
                 	StringBuilder bodyBuilder = new StringBuilder();
                 	StringBuilder candidateName = new StringBuilder();
                 	Map<String, String> globalVarsMap = new HashMap<String, String>();
-                		if(candidateDto !=null && candidateDto.size() > 0){
+                	
+                	if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+          				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
+          				 globalVarsMap.put("currentUser", currentUserName.toString());
+          			 	}else{
+          				 globalVarsMap.put("currentUser", loginUser.getFirstName());
+          			 	}
+                	
+                	if(candidateDto !=null && candidateDto.size() > 0){
                 			emailMessage.setFromEmail(defaultFromEmailAddressForProd);
                 			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
                 			emailMessage.setCreatedBy(loginUser.getUserCode());
                 			emailMessage.setOrgLocationId(orgLocations.getId());
                 			emailMessage.setFirstName("Source Lead.");
                 			globalVarsMap.put("dateAndTime", new Date().toString());
-                			
-                			if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-               				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
-               				 globalVarsMap.put("currentUser", currentUserName.toString());
-               			 	}else{
-               				 globalVarsMap.put("currentUser", loginUser.getFirstName());
-               			 	}
                 			
                 			for(int i=0; i< candidateDto.size(); i++){
                 				String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
@@ -828,11 +838,19 @@ public class PaymentController {
                 			 globalVarsMap.put("htmlBody", bodyBuilder.toString());
                 			 }
                 		 if(emailMessage !=null && globalVarsMap != null){
-                			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES, new ArrayList<EmailAttachment>());	
+                			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.PROFILES_ADDED_TO_CART_MAIL, new ArrayList<EmailAttachment>());	
                 			 }
-                	}
+                		}
 
-                 	
+                	    //sending Notification.
+                		//User mail address and resume count should be updated
+                		globalVarsMap.put("resumeCount", "resumes");
+                		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PROFILES_ADDED_TO_CART_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+                		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+                		notificationScenario.setBody(notificationBody);
+                		emailScenerioUtil.sendNotification(null, loginUser, loginUser, orgLocations, notificationScenario, new HashMap<String,String>());	
+                		
+                		
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
