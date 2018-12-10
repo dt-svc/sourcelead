@@ -302,7 +302,7 @@ function getCandidateDetailsFromMarketcart(){
 			var result ="";
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
-				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o'></i></a>";
+				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o mt5'></i></a>";
 				result = result + "<div class='media-left'>";
 				result = result + "<div class='cartImg positionRelative'>";
 				result = result + "<img onerror='predefineProfileImage(this);' src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
@@ -386,7 +386,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	<div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"  <b>Do you want to remove "+candidateName+" from Market cart!</b>";
+	result = result +"  <div class='modal-body'> <b>Do you want to remove "+candidateName+" from Market cart!</b> </div>";
 	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcartByCandidateUuid(\""+candidateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCart();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
@@ -477,7 +477,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 <script>
 //Window scroll fixed header
 $(window).scroll(function(){
-    if ($(window).scrollTop() >= 150) {
+    if ($(window).scrollTop() >= 100) {
         $('.reportHead').addClass('profileDetails-headerFixed');
 		$('.cartInvoice').addClass('cartInvoiceFixed');
     }
