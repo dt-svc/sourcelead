@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -4336,6 +4337,149 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
 		finalList =finalQuery.list();
 		return finalList;
+	}
+	
+	@Override
+	@Transactional
+	public long getRequirementClientCountByRequirementIdAndUserIdAndDates(BigInteger requirementID, BigInteger userId, Date[] searchDates)
+	{
+		 Integer count= 0;
+		try {
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+			String betweenDateQuery = "";
+			String resultQuery = "";
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(*) from Requirement requirement where requirement.id = :requirementID and (requirement.managerUserId = :userId OR requirement.primaryRecruiterUserId = :userId)";
+			
+			if (fromDate != null && toDate != null) {
+				betweenDateQuery = " and requirement.createdDate BETWEEN :fromDate AND :toDate ";
+			}
+			resultQuery = query.concat(betweenDateQuery);
+		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("requirementID", requirementID.intValue()).setLong("userId", userId.intValue())
+		    		 .setDate("fromDate", fromDate)
+		    		 .setDate("toDate", toDate).list();
+			
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getRequirementCountByUserIdAndDates(BigInteger userId, Date[] searchDates)
+	{
+		 Integer count= 0;
+		try {
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+			String betweenDateQuery = "";
+			String resultQuery = "";
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "select count(*) from RequirementAssignTo reqAssign where reqAssign.assignUserId = :userId";
+			
+			if (fromDate != null && toDate != null) {
+				betweenDateQuery = " and reqAssign.createdDate BETWEEN :fromDate AND :toDate ";
+			}
+			resultQuery = query.concat(betweenDateQuery);
+		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("userId", userId.intValue())
+		    		 .setDate("fromDate", fromDate)
+		    		 .setDate("toDate", toDate).list();
+			
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getOfferCountByUserIdAndDates(String userCode, Date[] searchDates)
+	{
+		 Integer count= 0;
+			try {
+				java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+				java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+				java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+				java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+				String betweenDateQuery = "";
+				String resultQuery = "";
+				Session session = this.sessionFactory.getCurrentSession();
+
+				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'OFFERMADE' or reqSub.submissionStatus='OFFERACCEPTED' or reqSub.previousSubmissionStatus='OFFERMADE' or reqSub.previousSubmissionStatus='OFFERACCEPTED') and reqSub.createdBy = :userCode ";
+				
+				if (fromDate != null && toDate != null) {
+					betweenDateQuery = " and reqSub.updatedDate BETWEEN :fromDate AND :toDate ";
+				}
+				resultQuery = query.concat(betweenDateQuery);
+			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)
+			    		 .setDate("fromDate", fromDate)
+			    		 .setDate("toDate", toDate).list();
+				
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates)
+	{
+		 Integer count= 0;
+			try {
+				java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+				java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+				java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+				java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+				String betweenDateQuery = "";
+				String resultQuery = "";
+				Session session = this.sessionFactory.getCurrentSession();
+				
+				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'JOINED' or  reqSub.previousSubmissionStatus='JOINED' ) and reqSub.createdBy = :userCode ";
+				
+				if (fromDate != null && toDate != null) {
+					betweenDateQuery = " and reqSub.updatedDate BETWEEN :fromDate AND :toDate ";
+				}
+				resultQuery = query.concat(betweenDateQuery);
+			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)
+			    		 .setDate("fromDate", fromDate)
+			    		 .setDate("toDate", toDate).list();
+				
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return count;
 	}
 
 }
