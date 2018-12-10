@@ -29,9 +29,13 @@ import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+<<<<<<< HEAD
+=======
 import com.bis.sourcelead.entity.EmailAttachment;
+>>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -722,8 +726,8 @@ public class PaymentController {
                 	if(candidateIds != null && candidateIds.size() > 0){
                 	candidateDto = candidateService.getCandidatesListByIds(candidateIds); 
                 	}
-                	Boolean flag = candidateService.updateMarketCartStatus(cartIds, orgLocations.getId());
                 	
+                	Boolean flag = candidateService.updateMarketCartStatus(cartIds, orgLocations.getId());
                 	if(flag == true){
                 		for(int i = 0; i < candidateDto.size(); i++){
                     		candidateService.saveTransactionCompletedCandidates(candidateDto.get(i), orgLocations, loginUser);
@@ -732,6 +736,15 @@ public class PaymentController {
                 	
                 	System.out.println("org value is "+org.getId());
                 	
+<<<<<<< HEAD
+                	// new code will be written here//
+                	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
+                	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
+                	String orderNo = transactionHistory.getOrderId();
+                	String paymentId = transactionHistory.getPaymentId();
+                	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
+                	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
+=======
                 	//sending Email.
                 	List<Candidate> candidates = new ArrayList<Candidate>();
                 	if(candidateIds != null && candidateIds.size() > 0){
@@ -825,6 +838,7 @@ public class PaymentController {
                 			 }
                 	}
 
+>>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
                 	
                 } catch (Exception e) {
                     e.printStackTrace();

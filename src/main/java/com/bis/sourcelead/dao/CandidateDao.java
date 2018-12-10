@@ -16,6 +16,8 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
@@ -219,7 +221,14 @@ public interface CandidateDao {
 	
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
 
+	public void saveToMarketplacePurchaseOrder(MarketplacePurchaseOrder newMarketplacePurchaseorder) throws Exception;
+
+	public void saveToMarketplaceSalesOrder(MarketplaceSalesOrder newMarketplaceSalesorder) throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception;
+
 	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
 	
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
+	
 }
