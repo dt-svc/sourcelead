@@ -49,6 +49,11 @@
 				</c:if>
 			 </tr>
 			</c:forEach>
+			 <c:if test="${empty lcaList}">
+				<tr>
+				 <td colspan="9" valign="top" class="dataTables_empty"><div class="tbldata-dotdot-sm" ></div></td>
+				</tr>
+			 </c:if>		
 		</tbody>
 		</table>
 	</div>
