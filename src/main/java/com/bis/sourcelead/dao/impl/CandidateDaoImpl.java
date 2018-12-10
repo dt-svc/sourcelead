@@ -2828,7 +2828,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 	}
 		
-	}
+
 
 
 	@Override
