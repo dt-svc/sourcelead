@@ -200,7 +200,7 @@ function closeCertificatePopup(){
 		result = result	+ '	             <div class="form-horizontal clearfix">';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Previous Employers" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
+		result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Previous Employers" name="name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
@@ -211,7 +211,7 @@ function closeCertificatePopup(){
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                    <input type="text" class="form-control input-sm"  placeholder="Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
+		result = result	+ '	                    <input type="text" class="form-control input-sm"  placeholder="Designation" name="designation" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
