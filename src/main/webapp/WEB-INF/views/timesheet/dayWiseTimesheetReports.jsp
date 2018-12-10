@@ -83,6 +83,22 @@ $( document ).ready(function() {
                 </select>
               </div>
             </div>
+            
+             <div class="col-md-5">
+              <label class="clearfix">Associate Status</label>
+              <div class="clearfix">
+                <select class="form-control sel" id = "associateSatus" onchange="getProjectMemberFromProjectId();" id="projectType">
+                  <option>Select</option>
+                  <option value="all" selected>All</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">InActive
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            
+            
 			<div class="clearfix"></div>
              <div class="col-md-5">
               <label class="clearfix">By Associate</label>
@@ -262,6 +278,7 @@ function getSelectedProjectDetailsList(){
 </script>
 <script>
 function getProjectMemberFromProjectId(){
+	var associateStatus = $('#associateSatus').val();
 	var projectIds  = $('#projectList').val();
     if(projectIds == null || projectIds =='' || projectIds=='undefined'){
 		projectIds = $("#allProjectIds").val();
@@ -274,7 +291,7 @@ function getProjectMemberFromProjectId(){
 	}
 	var projectType = $('#projectType').val();
 	$.ajax({
-        url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType,
+        url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType+"&associateStatus="+associateStatus,
         type: "POST",
         success: function (result) {
         	var output = "";
