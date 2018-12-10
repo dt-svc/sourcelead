@@ -39,7 +39,7 @@
 				<td><div class="tbldata-dotdot-sm" title = "0"></div>0</td>
 				</c:if> --%>
 				
-				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.availablePositions}" /></td>
+				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.availablePositions-1}" /></td>
 				
 				<c:if test="${lcadetails.status == '1'}">
 				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>Active</td>
