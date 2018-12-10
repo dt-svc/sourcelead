@@ -82,13 +82,13 @@
 
           
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">LCA No</label>
+				<label class="col-md-4 padding_left">LCA No<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
               		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="LCA Number" field-name="LCA NO" data-validation="required" >
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Start Date</label>
+				<label class="col-md-4 padding_left">Start Date<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group errorInptgroup" id="lcaStartDateDiv">
 				<input type="text" name="startDate" id="lcaStartDate" readonly='true'  class="form-control calendar" placeholder="Start Date" field-name="Start Date" data-validation="required">
@@ -96,7 +96,7 @@
           	</div>
 			</div>	
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">End Date</label>
+				<label class="col-md-4 padding_left">End Date<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
               	<div class="input-group errorInptgroup" id="lcaEndDateDiv">
 				<input type="text" id="lcaEndDate" name="endDate"  readonly='true' class="form-control calendar" placeholder="End Date" field-name="End Date" data-validation="required">
