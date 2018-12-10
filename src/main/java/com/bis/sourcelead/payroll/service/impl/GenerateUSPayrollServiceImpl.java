@@ -1504,6 +1504,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 				payroll.setPayrollLopHis(lopList);
 				payAdjHistory.setPreLopAmount(payAdjustmentDTO.getTotLopAmount());
 				payAdjHistory.setLopAmount(totalLopAmount);
+				payroll.setLopAmount(totalLopAmount);
 			}
 			payroll.setNetPay(netPay.subtract(totalLopAmount));
 			Set<EmployeePayrollTax> payrollTaxSet = getPayrollTaxes(payroll,orgLocation,payrollCalculator,loginUser);
