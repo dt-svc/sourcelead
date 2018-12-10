@@ -475,7 +475,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		 return payrollList;
 	}
-	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency) throws Exception {
+	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency, BigDecimal payAdjustmentConst) throws Exception {
 		IndPayrollPayheadUtilDTO utilDTO = new IndPayrollPayheadUtilDTO();
 		BigDecimal grossPay = BigDecimal.ZERO;
 		BigDecimal allDeductions = BigDecimal.ZERO;
@@ -543,7 +543,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					}
 				}
 				
-				payHeadHistory.setMonthly(payHead.getMonthly());
+				payHeadHistory.setMonthly(payHead.getMonthly().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 				payHeadHistory.setAnnualy(payHead.getAnnualy());
 				payHeadHistory.setStatus(payHead.getStatus());
 				

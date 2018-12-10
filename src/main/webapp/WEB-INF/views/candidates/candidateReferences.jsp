@@ -305,7 +305,7 @@
 		result = result + '<div class="clearfix mb">';
 		result = result + '<div class="col-md-12">';
 		result = result
-				+ '<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_length length1-200" class="form-control input-sm" value="" placeholder="Name *">';
+				+ '<input type="text" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" class="form-control input-sm" value="" placeholder="Name *">';
 		result = result + '</div>';
 		result = result + '</div>';
 

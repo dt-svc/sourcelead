@@ -452,13 +452,17 @@ public class UserServiceImpl implements UserService {
 		if(employee != null) {
 			ProbationHistory probationHistory = new ProbationHistory();
 			probationHistory.setEmployeeId(employee);
+			if(StringUtils.isNotBlank(addUserDTO.getDateofJoin())){
 			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			}
 			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
 			probationHistory.setFromStatus(employee.getProbationStatus());
 			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
 			probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			}
 			
-			if(addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+			if(StringUtils.isNotBlank(addUserDTO.getProbationStatus()) && addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
 				probationHistory.setConfirmedDate(new Date());
 			}else {
 				probationHistory.setConfirmedDate(null);
