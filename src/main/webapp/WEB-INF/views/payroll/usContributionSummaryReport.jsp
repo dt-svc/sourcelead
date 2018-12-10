@@ -22,7 +22,6 @@
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<input type="text" class="form-control calendar" readonly field-name="From Date" id="fromDate" data-validation="required">
-					<input type="hidden" id="emptyUsContributionId" name="emptyUsContributionId"/>
 				</div>
             </div>
             </div>
@@ -211,11 +210,10 @@ function contributionSummaryReportData(url) {
 									"data" : "type",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										$("#emptyUsContributionId").val(1);
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-75" id="usContributionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
 											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
 										} 
@@ -320,8 +318,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsContributionId').val();
-     if(emptyExport>0){
+     var usContribution = $('#usContributionTypeDiv').html();
+ 	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=pdf";
  	}else{
 		var result = " ";
@@ -352,8 +350,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsContributionId').val();
-     if(emptyExport>0){
+     var usContribution = $('#usContributionTypeDiv').html();
+  	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=xls";
  }else{
 		var result = " ";
