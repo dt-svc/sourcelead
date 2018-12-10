@@ -90,7 +90,16 @@ public class InvoiceDTO extends SearchDTO {
     private String count;
     private String tags;
     private String invoiceDeleteStatus;
+    private long invoicePDFTemplateId;
     
+	public long getInvoicePDFTemplateId() {
+		return invoicePDFTemplateId;
+	}
+
+	public void setInvoicePDFTemplateId(long invoicePDFTemplateId) {
+		this.invoicePDFTemplateId = invoicePDFTemplateId;
+	}
+
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}

@@ -8252,14 +8252,14 @@ aside.asideAct {
 	 width: 100%;
 }
 .customInvoiceGrid table th, .customInvoiceGrid table td {
-	border: 1px solid; font-weight: normal; text-align: center; width: 31%; height: 35px;
+	border: 1px solid; font-weight: normal; text-align: center; height: 35px;
 }
 .sortable-hidden {
 	position: relative; opacity: 0; width: 48%; height: 150px;
 }
 .sortable-hidden-show {opacity: 0.3;}
 .cusInList label {
-	display: inline-block; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
+	display: inline-block; /* width: 90%; */ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
 }
 .textError {
 	background-color: #e36363; color:#fff; position: absolute; top: 66px; text-align: center; width: 100%; left: 0px;
@@ -8444,3 +8444,65 @@ bottom: auto !important; top: 55px !important;
 }
 .downloadLinks .downloadUL { display: none; }
 .downloadLinks:hover .downloadUL { display: block; }
+
+
+
+
+
+
+
+/* Custom Invoice PDF */
+
+.activeElement {
+    border: 1px solid #86bbec;
+}
+.previewInnerCta {
+    width: 48%; margin: 1%; min-height: 120px; float: left;
+}
+.previewInnerCta h3 {padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;}
+.previewInnerCta span {display: none;}
+.previewInnerCta span.active {display: inline-block;}
+.previewInnerCta.previewInnerCtaFull, .previewInnerCta.previewInnerCtaFull span{width: 98%;}
+.previewInnerCta img {max-height: 120px;}
+.cusPerPop {
+    position: fixed; left: 0px; right: 0px; top: 0px; z-index: 10005; display: none; 
+    background: rgba(0,0,0,0.6); height: 100%; overflow: auto;
+}
+.cusPerPopInn {width: 92%; max-width:920px; background-color: #fff; margin: 30px auto; }
+
+
+.invLeftWrap {
+    position: fixed; left: auto; top: 78px; z-index: 100; width: 400px; box-shadow: 0px 2px 3px rgba(0,0,0,0.15);
+    background: #fff; border-radius: 3px;
+}
+.invTabs { margin: 0px 0px;}
+.invTabs li {
+    list-style-type: none; float: left; width: 33.33333%; 
+}
+.invTabs li a {
+    display: block; padding: 10px 5px 10px; text-align: center; font-size: 14px; font-weight: 400; color: #787878;
+    border-bottom: 3px solid #ededed;
+}
+.invTabs li a.Act {border-bottom: 3px solid #368ee0; color: #368ee0;}
+.invLeftWrapCta { padding: 20px;}
+.invLeftWrapCta label { font-size: 12px;}
+.invLeftWrap a {display: inline-block;}
+.invoicePreview {
+    background-color: #fff; box-shadow: 0px 3px 4px rgba(0,0,0,0.15); margin: 25px 0px 0px 420px;
+    border-radius: 3px;
+    }
+.invoicePreview .footer-area { margin: 0px !important; width: auto !important;}
+.invoicePreviewInn { padding: 10px; background-color: #f9f9f9; border-bottom: 1px solid #e0e0e0;}
+.invBtn {text-align: right; padding: 10px 0px 8px 0px;}
+.invBtn input { height: 32px; background-color: #2FC32C; border: 1px solid #28B025; color: #fff;}
+.invBtn input:hover {background-color: #28B025; border: 1px solid #28B025; color: #fff;}
+
+.disabled {
+	pointer-events: none; background-color: #C2C5C8 !important; color: #6C7686 !important;
+}
+/* .eleRight {
+	border: 2px solid #f00 !important;
+} */
+.hide {display: none;}
+
+/* Custom Invoice PDF */

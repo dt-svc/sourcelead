@@ -125,6 +125,10 @@ public class InvoiceController {
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
         model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
+		ResponseList<CustomInvoiceTemplateDTO> responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocations.getId(), null);
+		if(responseList != null && responseList.getData() != null && !responseList.getData().isEmpty()) {
+			model.addObject("invoiceTemplatesList", responseList.getData());
+		}
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
@@ -613,11 +617,34 @@ public class InvoiceController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(user != null) {
-//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
-				modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
+//				modelAndView.addObject("invoiceTemplateList", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
 				modelAndView.addObject("orgLocationId", orgLocationId);
 				modelAndView.addObject("orgRelationId", orgRelationId);
+				modelAndView.setViewName("billing/customInvoiceList");
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = { "/customInvoice/addTemplate", "/customInvoice/editTemplate" })
+	public ModelAndView addInvoice(HttpServletRequest request, @RequestParam(defaultValue = "0") Long orgLocationId,
+			@RequestParam(defaultValue = "0") Long orgRelationId, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("orgLocationId", orgLocationId);
+				modelAndView.addObject("orgRelationId", orgRelationId);
+				if (request.getRequestURI().contains("editTemplate")) {
+					modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId));
+					// modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
+				}
 				modelAndView.setViewName("billing/customInvoice");
 			} else {
 				modelAndView.setViewName("login");

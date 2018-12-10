@@ -1,19 +1,19 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-Configured
-<input type="hidden" id="invoiceTemplateId" value="${invoiceTemplate.id}"/>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>	
+<%-- <input type="hidden" id="invoiceTemplateId" value="${invoiceTemplate.id}"/> --%>
 <c:forEach items="${invoiceTemplate.itemObjectList}" var="item">
 	<c:choose>
 		<c:when test="${item.get('type') == 'hidden'}">
-			<li data-section="${item.get('type')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid sortable-hidden"></li>
+			<li data-section="${item.get('type')}" data-position="${item.get('position')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid sortable-hidden"></li>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${item.get('type') == 'image'}">
-				<li data-name="${item.get('name')}" data-section="${item.get('type')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+				<li data-name="${item.get('name')}" data-section="${item.get('type')}" data-position="${item.get('position')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
 					<span class="">${item.get('name')}</span>
 						<c:forEach begin="0" end="${item.getJSONArray('subItems').length() -1}" var="index">
 							<div class="cusInList">
 								<input class="checkbox-custom" ${item.getJSONArray('subItems').getJSONObject(index).get('checked') ? "checked='checked'" : ""} type="checkbox">
-								<img src="${item.getJSONArray('subItems').getJSONObject(index).get('value')}" id="logoImagePreview" alt="Logo" onclick="showImageSettingsTab(this)" data-id="invoiceLogo" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">
+								<img src="${item.getJSONArray('subItems').getJSONObject(index).get('value')}" id="logoImagePreview" alt="Logo" onclick="showImageSettingsTab(this)" data-id="invoiceLogo" data-name="${item.getJSONArray('subItems').getJSONObject(index).get('imageName')}" data-style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">
 							</div>
 						</c:forEach>
 					<span class="movIcon"></span>
@@ -56,27 +56,39 @@ Configured
 				</li>
 			</c:if>
 			<c:if test="${item.get('type') == 'text'}">
-				<li data-name="${item.get('name')}" data-section="${item.get('type')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
+				<li data-name="${item.get('name')}" data-section="${item.get('type')}" data-position="${item.get('position')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid">
 					<span class="">${item.get('name')}</span>
 						<c:forEach begin="0" end="${item.getJSONArray('subItems').length() -1}" var="index">
-							<div class="cusInList">
+							<c:set value="text-align:left;" var="textStyle"></c:set>
+							<c:forEach items="${item.getJSONArray('subItems').getJSONObject(index).get('style').split(';')}" var="s">
+								<c:if test="${fn:contains(s, 'text-align')}">
+									<c:set value="${s}" var="textStyle"></c:set>
+								</c:if>
+							</c:forEach>
+							<div class="cusInList" style="${textStyle}">
 								<input class="checkbox-custom" ${item.getJSONArray('subItems').getJSONObject(index).get('checked') ? "checked='checked'" : ""} type="checkbox">
-								<label onclick="showTextSettingsTab(this)" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">${item.getJSONArray('subItems').getJSONObject(index).get('value')}</label>
+								<label onclick="showTextSettingsTab(this)" data-style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">${item.getJSONArray('subItems').getJSONObject(index).get('value')}</label>
 							</div>
 						</c:forEach>
 					<span class="movIcon"></span>
 				</li>
 			</c:if>
 			<c:if test="${item.get('type') == 'footer'}">
-				<li data-name="${item.get('name')}" data-section="${item.get('type')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid" style="width: 98%;">
+				<li data-name="${item.get('name')}" data-section="${item.get('type')}" class="positionRelative ui-state-default ui-sortable-handle customInvoiceGrid previewGrid disable-drag" style="width: 98%;">
 					<span class="">${item.get('name')}</span>
 						<c:forEach begin="0" end="${item.getJSONArray('subItems').length() -1}" var="index">
-							<div class="cusInList">
+							<c:set value="text-align:left;" var="textStyle"></c:set>
+							<c:forEach items="${item.getJSONArray('subItems').getJSONObject(index).get('style').split(';')}" var="s">
+								<c:if test="${fn:contains(s, 'text-align')}">
+									<c:set value="${s}" var="textStyle"></c:set>
+								</c:if>
+							</c:forEach>
+							<div class="cusInList" style="${textStyle}">
 								<input class="checkbox-custom" ${item.getJSONArray('subItems').getJSONObject(index).get('checked') ? "checked='checked'" : ""} type="checkbox">
-								<label onclick="showTextSettingsTab(this)" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">${item.getJSONArray('subItems').getJSONObject(index).get('value')}</label>
+								<label onclick="showTextSettingsTab(this)" data-style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}" style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">${item.getJSONArray('subItems').getJSONObject(index).get('value')}</label>
 							</div>
 						</c:forEach>
-					<span class="movIcon"></span>
+					<!-- <span class="movIcon"></span> -->
 				</li>
 			</c:if>
 		</c:otherwise>

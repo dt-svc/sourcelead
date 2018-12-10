@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
@@ -54,10 +56,12 @@ import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -101,6 +105,7 @@ import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 
@@ -227,6 +232,9 @@ public class InvoiceRestController {
 	 * } catch (FileNotFoundException e) {
 	 * logger.error(ExceptionUtils.getFullStackTrace(e)); } }
 	 */
+	@Autowired
+	private InvoicePdfHelper invoicePdfHelper;
+	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveInvoice(InvoiceDTO invoiceDTO, @RequestParam(value = "saveType", required = false) String saveType, @RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
 	{
@@ -2551,6 +2559,64 @@ return responseList;
 		CreditDebitLineItems lineItem = invoiceService.getCreditDebitLineItemById(Long.parseLong(id));
 		invoiceService.deleteCreditDebitLineItem(lineItem);
 		return "Success";
+	}
+	
+	@RequestMapping(value="/generateCustomInvoicePDF")
+	public void generateCustomInvoicePDF(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(36L);
+			OrgLocations vendorOrgLocation = null;
+			if (orgRelation.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getLocationId();
+			}
+			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+				vendorOrgLocation = orgRelation.getResponderLocationId();
+			}
+			Invoice invoice =  invoiceDao.getInvoicetById(105L);
+			
+			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(5L);
+			File file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate);
+			/*if(file!= null){
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+				mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				file.delete();
+			}*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value = "/invoiceTemplateList", method = RequestMethod.POST)
+	public ResponseList<CustomInvoiceTemplateDTO> customizeInvoice(HttpServletRequest request, SearchDTO searchDTO,
+			@RequestParam(defaultValue = "0") Long orgLocationId, @RequestParam(defaultValue = "0") Long orgRelationId) {
+		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
 	}
 	
 	@RequestMapping(value = "/saveCustomInvoiceTemplate", method = RequestMethod.POST)

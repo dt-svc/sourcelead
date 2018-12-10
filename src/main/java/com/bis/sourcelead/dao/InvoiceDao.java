@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
@@ -98,6 +99,8 @@ public interface InvoiceDao{
 
 	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
 
-	public CustomInvoiceTemplate getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long userId, Long orgLocationId);
+	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long userId, Long orgLocationId, SearchDTO searchDTO);
+
+	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId);
 
 }

@@ -26,6 +26,15 @@ public class CustomInvoiceTemplate implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private long id;
 
+	@Column(name = "UUID")
+	private String uuid;
+
+	@Column(name = "NAME")
+	private String name;
+
+	@Column(name = "DESCRIPTION")
+	private String description;
+
 	@Column(name = "ITEMS")
 	private String items;
 
@@ -43,6 +52,30 @@ public class CustomInvoiceTemplate implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getItems() {
@@ -68,6 +101,5 @@ public class CustomInvoiceTemplate implements Serializable {
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
 	}
-
 
 }

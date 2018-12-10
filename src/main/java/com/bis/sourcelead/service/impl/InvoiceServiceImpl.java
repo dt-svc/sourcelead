@@ -77,6 +77,7 @@ import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
@@ -263,7 +264,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         	invoice.setCreatedDate(commonUtil.currentDate());
         }
         String generatedId = null;
-		OrgLocations vendorOrgLocation = null;;
+		OrgLocations vendorOrgLocation = null;
         if(Constants.PAYABLE.equalsIgnoreCase(invoiceType)){
         	if(StringUtils.isNotBlank(invoiceDTO.getVendorOrgRelationId())){
       			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(invoiceDTO.getVendorOrgRelationId()));
@@ -434,10 +435,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 
 		// store attached Documents (after)
-		File file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType,
-				vendorCurrencyCode, loginOrgCurrencyCode);
-
-		if (file.exists() && !file.isDirectory()) {
+		File file = null;
+		if(invoiceDTO.getInvoicePDFTemplateId() > 0) {
+			CustomInvoiceTemplate customInvoiceTemplate = null;
+			file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate);
+		} else {
+			file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		}
+		if (file != null && file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
 			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
@@ -4270,7 +4275,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 			else {
 				customInvoiceTemplate = new CustomInvoiceTemplate();
+				customInvoiceTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			}
+			customInvoiceTemplate.setName(customInvoiceTemplateDTO.getName());
+			customInvoiceTemplate.setDescription(customInvoiceTemplateDTO.getDescription());
 			customInvoiceTemplate.setItems(customInvoiceTemplateDTO.getJsonData());
 			customInvoiceTemplate.setOrgRelations(orgRelations);
 			customInvoiceTemplate.setOrgLocations(orgLocations);
@@ -4292,28 +4300,61 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
+	public ResponseList<CustomInvoiceTemplateDTO> getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO) {
+		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
 		try {
-			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId);
-			if (customInvoiceTemplate != null) {
-				CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
-				
-				JSONArray jsonArray = new JSONArray(customInvoiceTemplate.getItems());
-				if (jsonArray != null && jsonArray.length() > 0) {
-					List<JSONObject> itemsObjectList = new LinkedList<>();
-					for (int i = 0; i < jsonArray.length(); i++) {
-						JSONObject jsonObject = jsonArray.getJSONObject(i);
-						itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
-					}
-					customInvoiceTemplateDTO.setItemObjectList(itemsObjectList);
+			List<CustomInvoiceTemplateDTO> customInvoiceTemplateDTOList = new LinkedList<>();
+			ResponseList<CustomInvoiceTemplate> customInvoiceTemplateList = invoiceDao.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO);
+			if (customInvoiceTemplateList != null &&  customInvoiceTemplateList.getData() != null && !customInvoiceTemplateList.getData().isEmpty()) {
+				for(CustomInvoiceTemplate customInvoiceTemplate : customInvoiceTemplateList.getData()) {
+					customInvoiceTemplateDTOList.add(getCustomInvoiceTemplateDetails(customInvoiceTemplate));
 				}
-				customInvoiceTemplateDTO.setId(customInvoiceTemplate.getId());
-				return customInvoiceTemplateDTO;
+			}
+			responseList.setData(customInvoiceTemplateDTOList);
+			responseList.setRecordsFiltered(customInvoiceTemplateList.getRecordsFiltered());
+			responseList.setRecordsTotal(customInvoiceTemplateList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+
+	@Override
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId);
+			if(customInvoiceTemplate != null) {
+				return getCustomInvoiceTemplateDetails(customInvoiceTemplate);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private CustomInvoiceTemplateDTO getCustomInvoiceTemplateDetails(CustomInvoiceTemplate customInvoiceTemplate) {
+		CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
+		try {
+			customInvoiceTemplateDTO.setId(customInvoiceTemplate.getId());
+			customInvoiceTemplateDTO.setUuid(customInvoiceTemplate.getUuid());
+			customInvoiceTemplateDTO.setName(customInvoiceTemplate.getName());
+			customInvoiceTemplateDTO.setDescription(customInvoiceTemplate.getDescription());
+			customInvoiceTemplateDTO.setOrgLocationId(customInvoiceTemplate.getOrgLocations().getId());
+			customInvoiceTemplateDTO.setOrgRelationId(customInvoiceTemplate.getOrgRelations().getId());
+			
+			JSONArray jsonArray = new JSONArray(customInvoiceTemplate.getItems());
+			if (jsonArray != null && jsonArray.length() > 0) {
+				List<JSONObject> itemsObjectList = new LinkedList<>();
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
+				}
+				customInvoiceTemplateDTO.setItemObjectList(itemsObjectList);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return customInvoiceTemplateDTO;
 	}
 	
 

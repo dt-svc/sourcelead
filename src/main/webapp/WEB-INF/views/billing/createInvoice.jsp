@@ -172,6 +172,17 @@ function errRemoveClientContact(){
 			                </select>
 			              </div>
 			            </div>
+			            <div class="form-group">
+			              <label class="col-md-3">Invoice Template</label>
+			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+			                <select class="form-control" id="paymentAccountId" field-name="paymentAccountId Name" name="paymentAccount">
+			                   <option value="">--Select Account--</option>
+			                    <c:forEach items="${invoiceTemplatesList}" var="template">
+			                        <option value="${tmplate.id}">${template.name}</option>
+			                    </c:forEach>
+			                </select>
+			              </div>
+			            </div>
 			            
 <!-- 						<div class="form-group"> -->
 <!-- 							<label class="col-md-3">Account Details</label> -->

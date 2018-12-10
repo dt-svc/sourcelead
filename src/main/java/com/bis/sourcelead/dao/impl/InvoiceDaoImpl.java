@@ -33,6 +33,7 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
@@ -1065,7 +1066,8 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 	@Override
 	@Transactional
-	public CustomInvoiceTemplate getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId) {
+	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO) {
+		ResponseList<CustomInvoiceTemplate> responseList = new ResponseList<>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.orgRelations.id= :orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
@@ -1073,12 +1075,63 @@ public class InvoiceDaoImpl implements InvoiceDao {
 			queryObj.setLong("orgRelationId", orgRelationId);
 			queryObj.setLong("orgLocationId", orgLocationId);
 			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			
+			
+			StringBuilder query1 = new StringBuilder("");
+			if(searchDTO != null) {
+				if(searchDTO.getSearchValue() != null && !"".equalsIgnoreCase(searchDTO.getSearchValue())) {
+				 query1.append("and (invoiceTemplate.name like '%" + searchDTO.getSearchValue() + "%' ")
+					   .append("OR invoiceTemplate.venue like '%" + searchDTO.getSearchValue() + "%' )");
+				}
+				query1.append(" order by " + (searchDTO.getSortColumn() != null && !searchDTO.getSortColumn().isEmpty() ? searchDTO.getSortColumn() : "id") + " " + (searchDTO.getSortOrder() != null && !searchDTO.getSortOrder().isEmpty() ? searchDTO.getSortOrder() : "desc"));
+			}
+			
+			
+			List<Long> countlist = null;
+			String countQuery = "select count(*) from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.orgRelations.id= :orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			
+			Query countQueryObj = session.createQuery(countQuery + query1);
+			countQueryObj.setLong("orgRelationId", orgRelationId);
+			countQueryObj.setLong("orgLocationId", orgLocationId);
+			countlist = countQueryObj.list();
+			
+			int totalCount = 0;
+//			if (jobFairDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+//			}
+			responseList.setRecordsFiltered(totalCount);
+			responseList.setRecordsTotal(totalCount);
+			
 			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty())
+				responseList.setData(customInvoiceTemplateList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.uuid=:uuid and invoiceTemplate.orgRelations.id=:orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty()) {
 				return customInvoiceTemplateList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	
 	
 }
