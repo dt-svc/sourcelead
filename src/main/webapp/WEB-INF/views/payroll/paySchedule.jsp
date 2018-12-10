@@ -76,7 +76,7 @@ $(document).ready(function(){
           </div>
           </div>
           <div class="form-group">
-              <label class="col-md-4">Notify Before</label>
+              <label class="col-md-4">Notify Before (day's)</label>
 				<div class="col-md-8">
 					<input type="text" data-validation="required validate_int validate_Space validate_length  length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control" field-name="Notify Before" >
 				</div>

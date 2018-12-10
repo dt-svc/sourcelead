@@ -135,6 +135,34 @@ function Projects() {
 		           }
 		           
 		           
+		          if(json.projectApprovalType != null && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
+		        	   $("#parallelTimesheetsApproval").prop("checked", false); 
+		        	   $("#sequentialTimesheetsApproval").prop("checked", false);  
+		        	   
+		        	   if(json.projectApprovalType == 'Parallel'){
+		        		         $("#parallelTimesheetsApproval").prop("checked", true); 
+				        		 $("#projectApprovalTypeValue").val(json.projectApprovalType);
+	        			  }else{
+	        				     $("#sequentialTimesheetsApproval").prop("checked", true);  
+				        		 $("#projectApprovalTypeValue").val(json.projectApprovalType);
+	        			  }
+	        		  }
+		           
+		           
+		           if(json.expenseApprovalType != null && json.expenseApprovalType != '' && json.expenseApprovalType != 'undefined'){
+		        	   $("#parallelExpenseApproval").prop("checked", false); 
+		        	   $("#sequentialExpenseApproval").prop("checked", false);  
+		        	   
+		        	   if(json.expenseApprovalType == 'Parallel'){
+		        		         $("#parallelExpenseApproval").prop("checked", true); 
+				        		 $("#expenseApprovalTypeValue").val(json.expenseApprovalType);
+	        			  }else{
+	        				     $("#sequentialExpenseApproval").prop("checked", true);  
+				        		 $("#expenseApprovalTypeValue").val(json.expenseApprovalType);
+	        			  }
+	        		  }
+		           
+		           
 	        	   $("select[name=status]").val(projectStatus);
 	        	   
 	        	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
@@ -234,6 +262,7 @@ function Projects() {
 	      			   
 	      			   for(var i=0; i<json.approverHierarchyList.length; i++){
 		        		  var opt = json.approverHierarchyList[i];
+		        		  
 		        		  if(opt.level == "1"){
 		        			  level1ApproverUser = opt.projectApproverUserId;
 		        			  projects.getProjectLevel1Approvers(opt.projectApproverUserId);

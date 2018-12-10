@@ -28,6 +28,12 @@
 				<td title = "${items.taskStatus}"><div class="tbldata-dotdot-vsm">${items.taskStatus}</div></td>
 			  </tr> 
 			  </c:forEach>
+			  
+			  <c:if test="${empty tasksList}">
+				<tr>
+				  <td colspan="5" valign="top" class="dataTables_empty"></td>
+				</tr>
+			 </c:if>	
 			 </tbody>
 			
 		  </table>
