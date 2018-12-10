@@ -1754,6 +1754,7 @@ public class InvoiceServiceImpl implements InvoiceService {
   	  		  		      	invoice.setInvoiceFrequency(frequency);
   	  		  		        Invoice savedInvoice = invoiceDao.saveInvoce(invoice);
   	  		  		        updateSubmissionApproverHierachy(savedInvoice,invoiceType);
+  	  		  		        saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
   	  		  		        if(savedInvoice !=null){
   	  		  		         count++;
   	  		  		        }
@@ -1874,6 +1875,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 						}
 					});
 					}
+					saveInvoiceTimelineHistory(invoice, user, null, null, null, null);
 	  		      if(savedInvoice !=null){
  		  		         count++;
  		  		        }
