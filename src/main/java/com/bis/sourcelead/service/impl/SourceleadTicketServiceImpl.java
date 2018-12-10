@@ -50,6 +50,9 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
+
 	@Autowired
 	HttpServletRequest request;
 	
@@ -287,6 +290,34 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	@Override
 	public List<OrgLocations> getSourceleadTicketRequestedOrgLocatons() throws Exception {
 		return sourceleadTicketDao.getSourceleadTicketRequestedOrgLocatons();
+	}
+	
+	public void pmsTicketStatusUpdatedEmail(User user,Org org,OrgLocations orgloc, SourceleadTickets sourceleadTicket, String existingticketStatus, String ticketStatus)throws Exception{
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(sourceleadTicket.getUserId().getFirstName());
+		 emailMessage.setLastName(sourceleadTicket.getUserId().getLastName());
+		 emailMessage.setToEmail(sourceleadTicket.getUserId().getEmail());
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setFromName("sourcelead");
+		 emailMessage.setEmailType(Constants.PMS_Ticket_Status_Updated_Email);
+		 emailMessage.setCreatedBy(user.getUserCode());
+
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("ticketId",sourceleadTicket.getTicketGeneratedId());
+		 globalVarsMap.put("ticketOwner", sourceleadTicket.getUserId().getFullName());	 
+		 globalVarsMap.put("previousStatus", existingticketStatus);
+		 globalVarsMap.put("currentStatus",ticketStatus);
+		 globalVarsMap.put("ticketTitle",sourceleadTicket.getTicketTitle());
+		 globalVarsMap.put("module",sourceleadTicket.getTabId().getTabName());
+		 
+
+		 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		 System.out.println("Code for E-mail");
+		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,org,orgloc,Constants.PMS_Ticket_Status_Updated_Email,attachmentList);
+		
 	}
 
 	
