@@ -212,5 +212,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		return expensesEntriesDao.getExpensesEntriesByExpenseId(expenseId);
 	}
+
+	@Override
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
+	}
+
 	
 }
