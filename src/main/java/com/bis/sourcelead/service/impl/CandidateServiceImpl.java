@@ -3099,12 +3099,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getOrderNo(id);
 	}
 
-	@Override
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) throws Exception {
-		// TODO Auto-generated method stub
-		List<Candidate> candidates = candidateDao.getCandidateDetailsListById(Ids);
-		return candidates;
-	}
 
 	@Override
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {

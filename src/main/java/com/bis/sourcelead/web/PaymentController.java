@@ -29,10 +29,7 @@ import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
-<<<<<<< HEAD
-=======
 import com.bis.sourcelead.entity.EmailAttachment;
->>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -736,7 +733,7 @@ public class PaymentController {
                 	
                 	System.out.println("org value is "+org.getId());
                 	
-<<<<<<< HEAD
+
                 	// new code will be written here//
                 	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
                 	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
@@ -744,43 +741,40 @@ public class PaymentController {
                 	String paymentId = transactionHistory.getPaymentId();
                 	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
                 	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
-=======
+
                 	//sending Email.
-                	List<Candidate> candidates = new ArrayList<Candidate>();
-                	if(candidateIds != null && candidateIds.size() > 0){
-                	 candidates = candidateService.getCandidateDetailsListById(candidateIds);
-                	}
                 	StringBuilder currentUserName = new StringBuilder();
                 	StringBuilder bodyBuilder = new StringBuilder();
+                	StringBuilder candidateName = new StringBuilder();
                 	Map<String, String> globalVarsMap = new HashMap<String, String>();
-                		if(candidates !=null && candidates.size() > 0){
+                		if(candidateDto !=null && candidateDto.size() > 0){
                 			emailMessage.setFromEmail(defaultFromEmailAddressForProd);
                 			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
                 			emailMessage.setCreatedBy(loginUser.getUserCode());
                 			emailMessage.setOrgLocationId(orgLocations.getId());
-                			emailMessage.setFirstName("Source Lead Team");
+                			emailMessage.setFirstName("Source Lead.");
                 			globalVarsMap.put("dateAndTime", new Date().toString());
-                			for(int i=0; i< candidates.size(); i++){
-                			
-                				//should be updated from user table
-                			emailMessage.setToEmail(candidates.get(i).getEmail());
-                			globalVarsMap.put("otherUser", candidates.get(i).getFullName());
-               			 
                 			
                 			if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-                				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
-                				 globalVarsMap.put("currentUser", currentUserName.toString());
-                			 }else{
-                				 globalVarsMap.put("currentUser", loginUser.getFirstName());
-                			 }	                			 
+               				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
+               				 globalVarsMap.put("currentUser", currentUserName.toString());
+               			 	}else{
+               				 globalVarsMap.put("currentUser", loginUser.getFirstName());
+               			 	}
                 			
-                			System.out.println("Image URL is >> "+candidates.get(i).getFileUrl());
-                			String candidateSkills[] = candidates.get(i).getSkillsName().split(","); 
+                			for(int i=0; i< candidateDto.size(); i++){
+                				String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
+                				candidateName.append(candidateDto.get(i).getFirstName()+" "+candidateDto.get(i).getLastName()).toString();
+
+                				//should be updated from user table
+                			emailMessage.setToEmail(candidateDto.get(i).getEmail());
+                			globalVarsMap.put("otherUser", candidateDto.get(i).getFirstName()+" "+candidateDto.get(i).getLastName());
+                			
                 			 bodyBuilder.append("<table width='100%' style='border-collapse:collapse; border: 1px solid #ddd; font-family: 'Helvetica Neue', Helvetica, Arial;'>");
                 			 bodyBuilder.append("<tr>");
                 			 bodyBuilder.append("<td style='width: 20%; vertical-align: top; border-right:1px solid #f5f5f5;'>");
                 			 bodyBuilder.append("<div style='width: 75px; height: 75px; margin: 10px auto 5px; padding: 0; text-align: center;'>");
-                			 bodyBuilder.append("<img src='"+sourceleadUrl.split("/app")[0]+(candidates.get(i).getFileUrl() == null ? "/resources/images/userprofileImg.jpg" : candidates.get(i).getFileUrl())+"' style='max-height: 100%; max-width: 100%' alt='img'>");
+                			 bodyBuilder.append("<img src='"+sourceleadUrl.split("/app")[0]+(candidateDto.get(i).getFileUrl() == null ? "/resources/images/userprofileImg.jpg" : candidateDto.get(i).getFileUrl())+"' style='max-height: 100%; max-width: 100%' alt='img'>");
                 			 bodyBuilder.append("</div>");
                 			 bodyBuilder.append("<div style='font-size: 14px; clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>");
                 			 bodyBuilder.append("<span>Price: </span>");
@@ -792,29 +786,29 @@ public class PaymentController {
                 			 bodyBuilder.append("</td>");
                 			 bodyBuilder.append("<td style='width:80%; vertical-align: top;'>");
                 			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; ertical-align: top; padding: 10px;'>");
-                			 bodyBuilder.append("<h4 style='margin: 0 0 5px 0; padding: 0; color:#368ee0; font-size: 18px'>"+(candidates.get(i).getFullName() == null ? "--" : candidates.get(i).getFullName())+"</h4>");
-                			 bodyBuilder.append("<p style='margin:0 0 10px 0; padding: 0; color: #777; font-size: 14px;'>"+(candidates.get(i).getDesignation() == null ? "--" : candidates.get(i).getDesignation())+"</p>");
+                			 bodyBuilder.append("<h4 style='margin: 0 0 5px 0; padding: 0; color:#368ee0; font-size: 18px'>"+(candidateName.toString() == null ? "--" : candidateName.toString())+"</h4>");
+                			 bodyBuilder.append("<p style='margin:0 0 10px 0; padding: 0; color: #777; font-size: 14px;'>"+(candidateDto.get(i).getDesignation() == null ? "--" : candidateDto.get(i).getDesignation())+"</p>");
                 			 bodyBuilder.append("<ul style='list-style-position: inside; margin: 0; padding: 0; font-size: 14px;'>");
                 			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
-                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Current:</strong>"+(candidates.get(i).getCurrentRate() == null ? "--" : candidates.get(i).getCurrentRate())+" / hr");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Current:</strong>"+(candidateDto.get(i).getCurrentRate() == null ? "--" : candidateDto.get(i).getCurrentRate())+" / hr");
                 			 bodyBuilder.append("</li>");
                 			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
-                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Expected:</strong>"+(candidates.get(i).getExpectedRate() == null ? "--" : candidates.get(i).getExpectedRate())+" + / earned");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Expected:</strong>"+(candidateDto.get(i).getExpectedRate() == null ? "--" : candidateDto.get(i).getExpectedRate())+" + / earned");
                 			 bodyBuilder.append("</li>");
                 			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
-                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Location:</strong>"+(candidates.get(i).getLocation() == null ? "--" : candidates.get(i).getLocation())+"");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Location:</strong>"+(candidateDto.get(i).getLocation() == null ? "--" : candidateDto.get(i).getLocation())+"");
                 			 bodyBuilder.append("</li>");
                 			 bodyBuilder.append("</ul>");
                 			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; margin-top: 15px;'>");
                 			 bodyBuilder.append("<ul style='color: #333; list-style-type: none; margin: 0; padding: 0; font-size: 14px;'>");
-                			 if(candidates.get(i).getSkillsName() != null){
+                			 if(candidateDto.get(i).getSkillsName() != null){
                 			 for(int j = 0; j < candidateSkills.length;){
                 				 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
                 				 bodyBuilder.append(""+candidateSkills[j]+"");
                 				 bodyBuilder.append("</li>");
                 				 if(j == 5){
                 					 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
-                    				 bodyBuilder.append("<span class='text-success' title='"+candidates.get(i).getSkillsName()+"'>more</span>");
+                    				 bodyBuilder.append("<span class='text-success' title='"+candidateDto.get(i).getSkillsName()+"'>more</span>");
                     				 bodyBuilder.append("</li>");
                     				 break;
                 				 }
@@ -838,8 +832,7 @@ public class PaymentController {
                 			 }
                 	}
 
->>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
-                	
+                 	
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -227,8 +227,6 @@ public interface CandidateDao {
 
 	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception;
 
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
-	
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 	
 }
