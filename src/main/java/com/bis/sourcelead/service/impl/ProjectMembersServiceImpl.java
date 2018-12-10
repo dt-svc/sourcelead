@@ -2068,7 +2068,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									
 									pah.setLevel(1);
 									pah.setStatus("1");
-									pah.setApprovalMechanismType(Constants.PARALLEL);
+									//pah.setApprovalMechanismType(Constants.PARALLEL);
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 									
@@ -2089,7 +2089,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									
 									eah.setLevel(1);
 									eah.setStatus("1");
-									eah.setApprovalMechanismType(Constants.PARALLEL);
+									//eah.setApprovalMechanismType(Constants.PARALLEL);
 									expenseApproverHierarchyList.add(eah);
 									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
 									
