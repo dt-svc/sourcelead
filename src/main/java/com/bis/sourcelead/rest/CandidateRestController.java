@@ -1369,5 +1369,34 @@ public class CandidateRestController {
 		return response;
 	 	}
 	
+	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/deleteAllCandidatesFromMarketcart")
+	public Response<String> deleteAllCandidatesFromMarketcart(HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(orgLocation.getId() != null){	
+					candidateService.deleteAllCandidatesFromMarketcart(orgLocation.getId());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in deleteAllCandidateFromMarketCart controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		return response;
+	 	}
+	
+	
 }
 

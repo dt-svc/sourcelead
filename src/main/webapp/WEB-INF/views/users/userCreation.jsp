@@ -149,7 +149,7 @@
                         </div>
                   </div>
                   
-                 <div class="form-group" id="EmailIdDiv">
+                   <div class="form-group" id="EmailIdDiv">
                   <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
 	                  <div class="input-group errorInptgroup">
@@ -160,6 +160,53 @@
 	                  </div>
                   </div>
                   </div>
+                  
+             <div class="form-group">
+                  <label class="col-md-3">Probation Period <i class='fa fa-info-circle' title='This will represent the probation period for a associate in organisation'></i></label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="probationPeriod" id="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">
+                        <option value="">-Select Probation Period-</option>
+                        <c:if test="${!empty probationPeriod}">
+	                        <option value="15 Days" ${probationPeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
+	                        <option value="30 Days" ${probationPeriod  == '30 Days' ? 'selected' : ''}>1 Month</option>
+	                        <option value="60 Days" ${probationPeriod  == '60 Days' ? 'selected' : ''}>2 Months</option>
+	                        <option value="90 Days" ${probationPeriod  == '90 Days' ? 'selected' : ''}>3 Months</option>
+                        </c:if>
+                        <c:if test="${empty probationPeriod}">
+	                        <option value="15 Days">15 Days</option> 
+	                  		<option value="30 Days">1 Month</option>
+	                  		<option value="60 Days" selected>2 Months</option> 
+	                        <option value="90 Days">3 Months</option>
+                        </c:if>
+                        
+                      </select>
+                  </div>
+            </div>
+            
+                  
+              <div class="form-group">
+                  <label class="col-md-3">Status</label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="probationStatus" id="probationStatus" field-name="Status">
+                        <option value="">-Select Status-</option>
+                        <option value="Probation" selected>Probation</option>
+                        <option value="Confirmed">Confirmed</option>
+                      </select>
+                  </div>
+            </div>
+            
+            
+              <div class="form-group">
+                      <label class="col-md-3">Confirmation Date</label>
+                         <div class="col-md-9">
+                           <div class="input-group errorInptgroup">
+                              <input type="text" value="" name="confirmationDate" class="form-control calendar" id="confirmationDate" field-name="Confirmation Date" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearConfirmationDate();"></span>
+                           </div>
+                        </div>
+                  </div>
+                  
+                  
                   <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
                   <div class="form-group" id="ssnNumberDiv">
                   <label class="col-md-3">SSN<span class="text-danger">&nbsp;*</span></label>
@@ -428,7 +475,7 @@
                       </select>
                   </div>
             </div>
-            		
+            
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
@@ -1290,9 +1337,20 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  maxDate:0
+	  	  maxDate:0,
+	  	  onSelect : function(selected) {
+	  		calculateConfirmationDate();
+	 	  }
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
+	  
+	/*   $('#confirmationDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+// 	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  }); */
 	  
   } );
 </script>
@@ -1539,6 +1597,10 @@ function refreshGradesList(){
 function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
+	
+ /*  function clearConfirmationDate(){
+	  $("#confirmationDate").val("");
+  } */
 </script>
 
 <script>
@@ -1637,8 +1699,33 @@ $(document).ready(function() {
         $("#loading").removeAttr('style');
         $(tab).fadeIn();
     });
-})
+});
 </script> 
+
+
+<script>
+function calculateConfirmationDate(){
+
+	 var joiningDate = document.getElementById("DateofJoin").value;
+	 var probationperiod = document.getElementById("probationPeriod").value;
+	 if(joiningDate && probationperiod){
+	    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			success :function(confirmationDate) {
+				$("#loading").removeAttr("style");
+				$("#confirmationDate").val(confirmationDate);
+			}
+		});
+		
+	}else{
+		$("#confirmationDate").val('');
+	}
+
+}
+
+</script>
 
 
 

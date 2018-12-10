@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,10 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +29,10 @@ import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+<<<<<<< HEAD
+=======
+import com.bis.sourcelead.entity.EmailAttachment;
+>>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -36,6 +43,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -69,6 +77,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
@@ -132,7 +141,10 @@ public class PaymentController {
 
     @Value("${env}")
     private String environment;
-
+    
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;	
+		
     @RequestMapping("/license")
     public String license(HttpServletRequest request, ModelMap map) {
         return "payment/license";
@@ -530,6 +542,7 @@ public class PaymentController {
         return "payment/failed";
     }
    //===================== Marketplace Payment Process Starts Here=========================
+    @PreAuthorize("hasRole('ROLE_PURCHASE_PROFILE')")
     @RequestMapping("/init-marketplace-payment")
     @ResponseBody
     public String initMarketplacePayment(HttpServletRequest request, @RequestParam(defaultValue = "") String cartId) {
@@ -617,13 +630,31 @@ public class PaymentController {
                     OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment, req);
                     try {
                         orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
+                        
                         List<CandidateMarketCart> marketCartList = candidateService.getMarketCartIdsFromMarketcart(orgLocations.getId());
                         List<Long> marketCartIds = new ArrayList<Long>();
                     	for(CandidateMarketCart cartItem : marketCartList){
                     		marketCartIds.add(cartItem.getId());
                     	}
                     	if(marketCartIds != null && marketCartIds.size() > 0){
-                        candidateService.saveCandidateMarketplacePaymentTranscationHistory(paymentHistory, orgLocations.getId(), marketCartIds);
+                    		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
+                			tranHistory.setId(paymentHistory.getId());
+                			tranHistory.setOrgLocationId(orgLocations);
+                			if(marketCartIds != null && marketCartIds.size() > 0){
+                				String ids = StringUtils.join(marketCartIds, ",");
+                				tranHistory.setMarketPlaceCartIds(ids);
+                			}
+                			tranHistory.setCurrency(paymentHistory.getCurrency());
+                			tranHistory.setInvoiceAmount(paymentHistory.getInvoiceAmount());
+                			tranHistory.setPaymentId(paymentHistory.getPaymentId());
+                			tranHistory.setOrderId(paymentHistory.getOrderId());
+                			tranHistory.setInvoiceNumber(paymentHistory.getInvoiceNumber());
+                			tranHistory.setTransactionId(paymentHistory.getTransactionId());
+                			tranHistory.setTransactionPayerId(paymentHistory.getTransactionPayerId());
+                			tranHistory.setTransactionUser(paymentHistory.getTransactionUser());
+                			tranHistory.setTransactionUserEmail(paymentHistory.getTransactionUserEmail());
+                			tranHistory.setTransactionDate(paymentHistory.getTransactionDate());
+                    		candidateService.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
                     	}
                     	} catch (Exception e) {
                         e.printStackTrace();
@@ -678,7 +709,7 @@ public class PaymentController {
             User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
             Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+			EmailMessage emailMessage = new EmailMessage();
           //  String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
             if (org != null) {
                 try {
@@ -705,6 +736,7 @@ public class PaymentController {
                 	
                 	System.out.println("org value is "+org.getId());
                 	
+<<<<<<< HEAD
                 	// new code will be written here//
                 	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
                 	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
@@ -712,6 +744,101 @@ public class PaymentController {
                 	String paymentId = transactionHistory.getPaymentId();
                 	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
                 	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
+=======
+                	//sending Email.
+                	List<Candidate> candidates = new ArrayList<Candidate>();
+                	if(candidateIds != null && candidateIds.size() > 0){
+                	 candidates = candidateService.getCandidateDetailsListById(candidateIds);
+                	}
+                	StringBuilder currentUserName = new StringBuilder();
+                	StringBuilder bodyBuilder = new StringBuilder();
+                	Map<String, String> globalVarsMap = new HashMap<String, String>();
+                		if(candidates !=null && candidates.size() > 0){
+                			emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+                			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+                			emailMessage.setCreatedBy(loginUser.getUserCode());
+                			emailMessage.setOrgLocationId(orgLocations.getId());
+                			emailMessage.setFirstName("Source Lead Team");
+                			globalVarsMap.put("dateAndTime", new Date().toString());
+                			for(int i=0; i< candidates.size(); i++){
+                			
+                				//should be updated from user table
+                			emailMessage.setToEmail(candidates.get(i).getEmail());
+                			globalVarsMap.put("otherUser", candidates.get(i).getFullName());
+               			 
+                			
+                			if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+                				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
+                				 globalVarsMap.put("currentUser", currentUserName.toString());
+                			 }else{
+                				 globalVarsMap.put("currentUser", loginUser.getFirstName());
+                			 }	                			 
+                			
+                			System.out.println("Image URL is >> "+candidates.get(i).getFileUrl());
+                			String candidateSkills[] = candidates.get(i).getSkillsName().split(","); 
+                			 bodyBuilder.append("<table width='100%' style='border-collapse:collapse; border: 1px solid #ddd; font-family: 'Helvetica Neue', Helvetica, Arial;'>");
+                			 bodyBuilder.append("<tr>");
+                			 bodyBuilder.append("<td style='width: 20%; vertical-align: top; border-right:1px solid #f5f5f5;'>");
+                			 bodyBuilder.append("<div style='width: 75px; height: 75px; margin: 10px auto 5px; padding: 0; text-align: center;'>");
+                			 bodyBuilder.append("<img src='"+sourceleadUrl.split("/app")[0]+(candidates.get(i).getFileUrl() == null ? "/resources/images/userprofileImg.jpg" : candidates.get(i).getFileUrl())+"' style='max-height: 100%; max-width: 100%' alt='img'>");
+                			 bodyBuilder.append("</div>");
+                			 bodyBuilder.append("<div style='font-size: 14px; clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>");
+                			 bodyBuilder.append("<span>Price: </span>");
+                			 bodyBuilder.append("<strong style='color: #f60;'>&#36; 250</strong>");
+                			 bodyBuilder.append("</div>");
+                			 bodyBuilder.append("<div style='clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>");
+                			 bodyBuilder.append("<button type='button' style='background-color: #fff; border: 1px solid #0277BD; color: #0277BD; padding:3px 10px; border-radius: 3px; cursor: pointer;'>&#43; Add</button>");
+                			 bodyBuilder.append("</div>");
+                			 bodyBuilder.append("</td>");
+                			 bodyBuilder.append("<td style='width:80%; vertical-align: top;'>");
+                			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; ertical-align: top; padding: 10px;'>");
+                			 bodyBuilder.append("<h4 style='margin: 0 0 5px 0; padding: 0; color:#368ee0; font-size: 18px'>"+(candidates.get(i).getFullName() == null ? "--" : candidates.get(i).getFullName())+"</h4>");
+                			 bodyBuilder.append("<p style='margin:0 0 10px 0; padding: 0; color: #777; font-size: 14px;'>"+(candidates.get(i).getDesignation() == null ? "--" : candidates.get(i).getDesignation())+"</p>");
+                			 bodyBuilder.append("<ul style='list-style-position: inside; margin: 0; padding: 0; font-size: 14px;'>");
+                			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Current:</strong>"+(candidates.get(i).getCurrentRate() == null ? "--" : candidates.get(i).getCurrentRate())+" / hr");
+                			 bodyBuilder.append("</li>");
+                			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Expected:</strong>"+(candidates.get(i).getExpectedRate() == null ? "--" : candidates.get(i).getExpectedRate())+" + / earned");
+                			 bodyBuilder.append("</li>");
+                			 bodyBuilder.append("<li style='float: left; padding-right: 20px;'>");
+                			 bodyBuilder.append("<strong style='font-size: 13px; padding-right: 10px; color: #777;'>Location:</strong>"+(candidates.get(i).getLocation() == null ? "--" : candidates.get(i).getLocation())+"");
+                			 bodyBuilder.append("</li>");
+                			 bodyBuilder.append("</ul>");
+                			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; margin-top: 15px;'>");
+                			 bodyBuilder.append("<ul style='color: #333; list-style-type: none; margin: 0; padding: 0; font-size: 14px;'>");
+                			 if(candidates.get(i).getSkillsName() != null){
+                			 for(int j = 0; j < candidateSkills.length;){
+                				 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
+                				 bodyBuilder.append(""+candidateSkills[j]+"");
+                				 bodyBuilder.append("</li>");
+                				 if(j == 5){
+                					 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
+                    				 bodyBuilder.append("<span class='text-success' title='"+candidates.get(i).getSkillsName()+"'>more</span>");
+                    				 bodyBuilder.append("</li>");
+                    				 break;
+                				 }
+                				 j++;
+                			 }
+                			 }else{
+                				 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
+                				 bodyBuilder.append("--");
+                				 bodyBuilder.append("</li>");
+                			 }
+                			 bodyBuilder.append("</ul>");
+                			 bodyBuilder.append("</div>");
+                			 bodyBuilder.append("</div>");
+                			 bodyBuilder.append("</td>");
+                			 bodyBuilder.append("</tr>");
+                			 bodyBuilder.append("</table><br>");
+                			 globalVarsMap.put("htmlBody", bodyBuilder.toString());
+                			 }
+                		 if(emailMessage !=null && globalVarsMap != null){
+                			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES, new ArrayList<EmailAttachment>());	
+                			 }
+                	}
+
+>>>>>>> 68ae32c176b1484612470a3f68529464fadb5583
                 	
                 } catch (Exception e) {
                     e.printStackTrace();

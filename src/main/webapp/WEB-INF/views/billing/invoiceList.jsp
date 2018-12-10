@@ -175,11 +175,11 @@ $(document).ready(function(){
 	                      <!-- <a href="javascript:void(0)" title="Create invoice"  onclick="createBill();">Create Invoice</a> -->
 	                      <a  href="<c:url value='${appPath}/createInvoice'/>" title="Create Client Based Invoice">Client Based Invoice</a>
 						  <a href="<c:url value='${appPath}/createInvoiceProjectBased'/>" title="Create Project Based Invoice">Project Based Invoice</a>
-						 <%--  <a href="<c:url value='${appPath}/createInvoiceForJobClosure'/>" title="Create Job closure Based Invoice">Invoice for Job Closure</a> --%>
+						  <a href="<c:url value='${appPath}/createInvoiceForJobClosure'/>" title="Create Job closure Based Invoice">Job closure Based Invoice </a> 
 						  <a  href="<c:url value='${appPath}/createReceivableExpensesBill'/>" title="Create Other Invoice">Other Invoice</a>	                      
 	                  	</sec:authorize>
 	                   	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();">Generate Automatic Invoice</a>
-	                   <!-- 	<a href="javascript:void(0)" class="" title="Generate Automatic Invoice for JobClosure" onclick="generateAutomaticInvoiceForJobClosure();">Generate Automatic Invoice for JobClosure</a> -->
+	                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice for JobClosure" onclick="generateAutomaticInvoiceForJobClosure();">Generate Automatic JobClosure Invoice</a>
 	                   	 <a href="<c:url value='${appPath}/addPaymentInvoice'/>">Add Payment</a>
 					</span>
 				</div>
