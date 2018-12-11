@@ -16,6 +16,8 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
@@ -210,7 +212,7 @@ public interface CandidateDao {
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
 	
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
-
+	
 	List<CandidateMarketPlace> getGlobalMarketplaceDataByOrgId(Long id, Long marketplaceId);
 
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
@@ -218,6 +220,21 @@ public interface CandidateDao {
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;
 	
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
+	
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+	
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+	
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception;
 
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
+	public void saveToMarketplacePurchaseOrder(MarketplacePurchaseOrder newMarketplacePurchaseorder) throws Exception;
+
+	public void saveToMarketplaceSalesOrder(MarketplaceSalesOrder newMarketplaceSalesorder) throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception;
+
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
+
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id);
+	
 }

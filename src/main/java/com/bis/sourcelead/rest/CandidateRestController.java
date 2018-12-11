@@ -46,6 +46,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -55,9 +56,11 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -1108,15 +1111,51 @@ public class CandidateRestController {
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 		 @RequestMapping(value = "/app/PurchaseOrderList")
 		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
-			logger.debug("inisde PurchaseOrderList  conroller =========>");
-			System.out.println("inside PurchaseOrderList  conroller =========>");
-			ModelAndView model = new ModelAndView();
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");			
+			logger.debug("inside PurchaseOrderList  controller =========>");
+			System.out.println("inside PurchaseOrderList  controller =========>");
+			ModelAndView model = new ModelAndView();		
 			model.setViewName("candidates/purchaseOrderList");
-			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("sourceleadUrl", sourceleadUrl);			
 			return model;
 		}
+		 
+		 //response list for purchaseList table
+		 @RequestMapping(value = "/app/getPurchasedOrderList")
+		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(HttpServletRequest request) throws Exception {
+			
+			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
+			logger.debug("inside PurchaseOrderList  controller =========>");
+			System.out.println("inside PurchaseOrderList  controller =========>");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations.getId());
+			List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
+			try {
+				
+			for (MarketplacePurchaseOrder mps : marketplacePurchaseOrder) {
+				
+				MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+				mpsDto.setOrderNo(mps.getOrderNo());
+				mpsDto.setOrderDate(mps.getOrderDate());
+				mpsDto.setDiscount(mps.getDiscount());
+				mpsDto.setGrandTotal(mps.getGrandTotal());
+				mpsDto.setTotalPrice(mps.getTotalPrice());
+				mpsDto.setPaymentStatus(mps.getPaymentStatus());
+				mpsDto.setTotalresume(mps.getTotalresume());
+				mpsDto.setCompanyName(mps.getCompanyName());
+				mpsDto.setServiceFee(mps.getServiceFee());	
+				list.add(mpsDto);
+			}	
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			res.setData(list);
+			return res;
+		}
+		 
+
+
 		 
 		// Note this method is purchase order method
 				 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
@@ -1125,8 +1164,6 @@ public class CandidateRestController {
 					logger.debug("inisde PurchaseOrder  conroller =========>");
 					System.out.println("inside PurchaseOrder  conroller =========>");
 					ModelAndView model = new ModelAndView();
-					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");			
 					model.setViewName("candidates/purchaseOrder");
 					model.addObject("sourceleadUrl", sourceleadUrl);
 					return model;
@@ -1280,7 +1317,7 @@ public class CandidateRestController {
 		if (user != null) {
 			try {
 				if (null != marketplace) {
-					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation.getId());
+					candidateService.addCandidateToMarketCart(user, marketplace, orgLocation);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else {
@@ -1368,6 +1405,35 @@ public class CandidateRestController {
 			}
 		return response;
 	 	}
+	
+	@PreAuthorize("hasRole('WITHDRAW_PROFILE')")
+	@RequestMapping(value = "/app/deleteAllCandidatesFromMarketcart")
+	public Response<String> deleteAllCandidatesFromMarketcart(HttpServletRequest request)throws Exception{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if(orgLocation.getId() != null){	
+					candidateService.deleteAllCandidatesFromMarketcart(orgLocation.getId());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				} catch (Exception e) {
+				logger.error("Exception caugth in deleteAllCandidateFromMarketCart controller" + e.getMessage());
+				e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		return response;
+	 	}
+	
 	
 }
 

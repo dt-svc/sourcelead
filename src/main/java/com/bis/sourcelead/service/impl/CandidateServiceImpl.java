@@ -81,6 +81,8 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
@@ -2798,7 +2800,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
 		newMarketCart.setMarketplaceId(marketplace);
@@ -2807,8 +2809,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
 		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
-		orgLocation.setId(orgLocationId);
+		orgLocation.setId(orgLocations.getId());
 		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setSourceOrgId(marketplace.getOrgLocationId().getOrg());
+		newMarketCart.setTargetOrgId(orgLocations.getOrg());
 		newMarketCart.setTargetOrgLocationId(orgLocation);
 		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
 		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
@@ -3019,7 +3023,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return marketPlaceDTO;
 	}
-
+	
+	@Override
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
 		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
 		return marketCartIds;
@@ -3027,14 +3032,29 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
-		List<CandidateDTO> candidate = candidateDao.getCandidatesListByIds(Ids);
-		return candidate;
+		return candidateDao.getCandidatesListByIds(Ids);
 	}
 
 	@Override
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
 		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
 	}
+	
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
+		return candidateDao.getMarketplaceTransactionDetails(orgLocationId);
+	}
+	
+	@Override
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception{
+		return candidateDao.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+	}
+
+	@Override
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception{
+		return candidateDao.getCandidateDetailsByCandidateId(candidateId);
+	}
+	
 
 	@Override
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory) throws Exception {
@@ -3047,10 +3067,64 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) throws Exception {
-		// TODO Auto-generated method stub
-		List<Candidate> candidates = candidateDao.getCandidateDetailsListById(Ids);
-		return candidates;
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId) throws Exception {
+		
+		
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+			
+			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
+			newMarketplacePurchaseorder.setOrderNo(orderNo);
+			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
+			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
+			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
+			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
+			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
+			newMarketplacePurchaseorder.setPaymentStatus(Constants.SUCCESS);
+         	candidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			
+		}
+		
 	}
+
+	@Override
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId) throws Exception {
 	
+		
+		String sourceOrgName ;
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+		 sourceOrgName = candidateMarketCart.getSourceOrgId().getOrgName();	
+		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+		 newMarketplaceSalesorder.setOrderNo(orderNo);
+		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
+		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
+		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
+		 newMarketplaceSalesorder.setPaymentStatus(Constants.SUCCESS);
+		 newMarketplaceSalesorder.setCompanyName(sourceOrgName);
+		 
+			candidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+	}
+
+}
+
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception {
+		
+		return candidateDao.getOrderNo(id);
+	}
+
+
+	@Override
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		candidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
+		
+	}
+
+	@Override
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+		return candidateDao.getMarketplacePurchaseOrder(id);
+	}
+
 }
