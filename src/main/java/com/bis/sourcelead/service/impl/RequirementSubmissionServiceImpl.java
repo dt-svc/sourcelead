@@ -5745,6 +5745,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
 			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
 			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
 			if(requirementSubmission.getRequirementOffersList().size()>0){
 				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
 					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
@@ -5756,6 +5758,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					applicantsDto.setOrgRelationId(requirementSubmission.getRequirement().getClientId().getId());
 				}
 			}
 			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {

@@ -313,8 +313,8 @@
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 
-				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
@@ -569,8 +569,8 @@
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
-						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>
