@@ -1,6 +1,6 @@
 
-UPDATE `sourcelead`.`email_scenario` SET `SCENARIO_NAME`='ProfilesAddedToCartMail', `UNIQUE_SCENARIO_NAME`='ProfilesAddedToCartMail', `DESCRIPTION`='Profiles Added To Cart Mail To Users' WHERE `ID`='512';
-UPDATE `sourcelead`.`entity_type` SET `ENTITY_NAME`='ProfilesAddedToCartMail' WHERE `ID`='337';
+UPDATE `EMAIL_SCENARIO` SET `SCENARIO_NAME`='ProfilesAddedToCartMail', `UNIQUE_SCENARIO_NAME`='ProfilesAddedToCartMail', `DESCRIPTION`='Profiles Added To Cart Mail To Users' WHERE `ID`='512';
+UPDATE `ENTITY_TYPE` SET `ENTITY_NAME`='ProfilesAddedToCartMail' WHERE `ID`='337';
 
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('ProfilesAddedToCartNotification','Email');
 
