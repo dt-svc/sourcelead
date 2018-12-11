@@ -533,10 +533,10 @@ public class ProjectsDashboardRestController {
 				 ProjectDetails.setProjectMembersCount(projectMembersCount.toString());
 				 
 				 
-				 String projectApprovalMechanismType = projectApproverHierarchyService.getApprovalMechanismTypeByProjectClientId(projectClients.getId());
+				/* String projectApprovalMechanismType = projectApproverHierarchyService.getApprovalMechanismTypeByProjectClientId(projectClients.getId());
 				 ProjectDetails.setProjectApprovalType(projectApprovalMechanismType);
 				 String expenseApprovalMechanismType = expenseProjectApproverHierarchyService.getExpenseApprovalMechanismTypeByProjectClientId(projectClients.getId());
-				 ProjectDetails.setExpenseApprovalType(expenseApprovalMechanismType);
+				 ProjectDetails.setExpenseApprovalType(expenseApprovalMechanismType);*/
 		   }
 		 
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();

@@ -3,9 +3,6 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,11 +11,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +25,19 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
-import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
-import com.bis.sourcelead.entity.AppliedLeave;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
-import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -1000,6 +996,42 @@ public class LeaveManagementUtil {
 							payrollLopHis.setLopLeaves(-balLeave);
 							lopHis.add(payrollLopHis);
 //							minusLeave = minusLeave + balLeave;
+						}
+					}
+				}	
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHis;
+	}
+	
+	
+	public Set<PayrollLopHis> getToalAppliedLeavesByCandidaetInd(List<LeaveType> leavTypeList, OrgLocations orgLocation, Date startDate, Date endDate, Long userId, IndEmployeePayroll payroll)
+	{
+		Set<PayrollLopHis> lopHis = new HashSet<>();
+		try {
+			for (LeaveType leaveType : leavTypeList) {
+				if(leaveType.getIncludeInPayroll() != null && "Y".equalsIgnoreCase(leaveType.getIncludeInPayroll()) && "Billable".equalsIgnoreCase(leaveType.getLeaveType())) {
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+					List<AppliedLeaveDateView> appliedLeaves  = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), startDate, endDate, userId, orgLocation.getOrg().getId());
+					float appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv, startDate, endDate, leaveType);
+					if (appliedLeaves != null && appliedLeaves.size() > 0) {
+						float associateBalanceLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocation.getId(), orgLocation.getOrg().getId());
+						float balLeave = associateBalanceLeaves - appliedNoofLeaves;
+						if (balLeave < 0) {
+							PayrollLopHis payrollLopHis = new PayrollLopHis(); 
+							payrollLopHis.setIndPayroll(payroll);
+							payrollLopHis.setTotalBalanceLeaves(associateBalanceLeaves);
+							payrollLopHis.setTotalAppliedLeaves(appliedNoofLeaves);
+							payrollLopHis.setPayrollStartDate(startDate);
+							payrollLopHis.setPayrollEndDate(endDate);
+							payrollLopHis.setLeaveTypeName(leaveType.getName());
+							payrollLopHis.setLeaveTypeId(leaveType);
+							payrollLopHis.setLopLeaves(-balLeave);
+							lopHis.add(payrollLopHis);
 						}
 					}
 				}	

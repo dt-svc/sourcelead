@@ -110,8 +110,9 @@ $(document).ready(function(){
 		        	result = result + '<tbody>';
 		        	for(var i=0;i<data.length;i++){
 		        		var opt = data[i];
+		        		var periodDates = opt.payPeriod.replace(",", " To ");
 		        		result = result + '<tr>';
-		        		result = result + '<td> <div class="tblminwidth-75">'+opt.payPeriod+'</div></td>';
+		        		result = result + '<td> <div class="tblminwidth-75">'+periodDates+'</div></td>';
 		        		result = result + ' <td><div class="tblminwidth-75">'+opt.payCheckDate+'</div></td>';
 		        		result = result + '  <td> <div class="tblminwidth-50">'+opt.payRunDate+'</div></td>';
 		        		result = result + '</tr>';
