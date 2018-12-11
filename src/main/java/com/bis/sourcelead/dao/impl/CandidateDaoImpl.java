@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.entity.LcaListView;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
@@ -2712,6 +2714,48 @@ public class CandidateDaoImpl implements CandidateDao {
 			List<CandidateMarketCart> marketcardIds = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("cartStatus", Constants.ADDED_CART).list();
 			return marketcardIds;
 		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
+		try{
+			Session session = this.sessionFactory.getCurrentSession();	
+			String query = "from CandidateMarketPlacePaymentTransactionHistory transaction where transaction.orgLocationId = :orgLocationId and transaction.id in(select max(transaction.id) from CandidateMarketPlacePaymentTransactionHistory transaction)" ;
+			CandidateMarketPlacePaymentTransactionHistory transactionDetails =  (CandidateMarketPlacePaymentTransactionHistory) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
+			return transactionDetails;
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception{
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from User us where us.id IN (select user.id from OrgLocations OL where OL.id=:sourcelocationId) ";
+			List<User> userDetails = session.createQuery(query).setLong("sourcelocationId", sourceOrgLocationId).list();
+			User user = null;
+			if (userDetails != null && userDetails.size() > 0) {
+				user = (User) userDetails.iterator().next();
+			}
+			return user;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception{
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateMarketPlace marketplace where marketplace.candidateId.id IN (:candidateIdList)";
+			CandidateMarketPlace candidateDetails = (CandidateMarketPlace) session.createQuery(query).setLong("candidateIdList",candidateId).uniqueResult();
+			return candidateDetails;
+		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
