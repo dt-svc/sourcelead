@@ -272,16 +272,16 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					if(!isExisted) {
 						SalaryDTO sal = checkCandidateTermination(orgLocation,assoSal.getCandidate(),freqStartDate,freqEndDate);
 						if(("NO".equalsIgnoreCase(sal.getIsTerminated()) && sal.getJoiningDate().before(freqEndDate)) && (sal.getTerminatedDate() == null || sal.getTerminatedDate().after(freqStartDate))) {
-							 EmployeePayroll employeePayroll = new EmployeePayroll();
+							   EmployeePayroll employeePayroll = new EmployeePayroll();
 							    employeePayroll.setPaysheetFrequency(paySheetFreq);
 							    AssociateTaxDedContriView associateTaxView = associateTaxService.findUserTaxDeatails(assoSal.getCandidate().getId(), orgLocation);
 								double totalHours = 0;
 								BigDecimal payRate = BigDecimal.ZERO;
 								BigDecimal amount = BigDecimal.ZERO;
 								BigDecimal regularHoursAmount = BigDecimal.ZERO;
-								
+								List<TotalHoursDTO> totalHoursDto = null;
 								if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
-									 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+									 totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
 									Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
 									
 									for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
@@ -419,7 +419,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 								employeePayroll.setUpdatedBy(loginUser.getId());
 								employeePayroll.setCreatedDate(new Date());
 								employeePayroll.setUpdatedDate(new Date());
-								set.add(employeePayroll);
+								if(PayrollConstant.HOURLY_RATE.equalsIgnoreCase(assoSal.getPayType())) {
+									if(totalHoursDto != null) {
+										set.add(employeePayroll);
+									}
+								}else {
+									set.add(employeePayroll);
+								}
 						}
 
 					}

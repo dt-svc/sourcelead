@@ -92,7 +92,7 @@
 			   
 			  <c:if test="${empty candidatesEducationList}">
 				<tr>
-				 <td colspan="5" valign="top" class="dataTables_empty"></td>
+				 <td colspan="10" valign="top" class="dataTables_empty"></td>
 				</tr>
 			 </c:if>
 			  						

@@ -135,6 +135,34 @@ function Projects() {
 		           }
 		           
 		           
+		          if(json.projectApprovalType != null && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
+		        	   $("#parallelTimesheetsApproval").prop("checked", false); 
+		        	   $("#sequentialTimesheetsApproval").prop("checked", false);  
+		        	   
+		        	   if(json.projectApprovalType == 'Parallel'){
+		        		         $("#parallelTimesheetsApproval").prop("checked", true); 
+				        		 $("#projectApprovalTypeValue").val(json.projectApprovalType);
+	        			  }else{
+	        				     $("#sequentialTimesheetsApproval").prop("checked", true);  
+				        		 $("#projectApprovalTypeValue").val(json.projectApprovalType);
+	        			  }
+	        		  }
+		           
+		           
+		           if(json.expenseApprovalType != null && json.expenseApprovalType != '' && json.expenseApprovalType != 'undefined'){
+		        	   $("#parallelExpenseApproval").prop("checked", false); 
+		        	   $("#sequentialExpenseApproval").prop("checked", false);  
+		        	   
+		        	   if(json.expenseApprovalType == 'Parallel'){
+		        		         $("#parallelExpenseApproval").prop("checked", true); 
+				        		 $("#expenseApprovalTypeValue").val(json.expenseApprovalType);
+	        			  }else{
+	        				     $("#sequentialExpenseApproval").prop("checked", true);  
+				        		 $("#expenseApprovalTypeValue").val(json.expenseApprovalType);
+	        			  }
+	        		  }
+		           
+		           
 	        	   $("select[name=status]").val(projectStatus);
 	        	   
 	        	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
@@ -235,16 +263,6 @@ function Projects() {
 	      			   for(var i=0; i<json.approverHierarchyList.length; i++){
 		        		  var opt = json.approverHierarchyList[i];
 		        		  
-		        		  if(opt.approvalMechanismType != null && opt.approvalMechanismType != '' && opt.approvalMechanismType != 'undefined'){
-		        			  if(opt.approvalMechanismType == 'Parallel'){
-		        				     document.getElementById("parallelTimesheetsApproval").checked = true;
-					        		 $("#projectApprovalTypeValue").val(opt.approvalMechanismType);
-		        			  }else{
-		        				     document.getElementById("sequentialTimesheetsApproval").checked = true;
-					        		 $("#projectApprovalTypeValue").val(opt.approvalMechanismType);
-		        			  }
-		        		  }
-		        		  
 		        		  if(opt.level == "1"){
 		        			  level1ApproverUser = opt.projectApproverUserId;
 		        			  projects.getProjectLevel1Approvers(opt.projectApproverUserId);
@@ -265,17 +283,6 @@ function Projects() {
 	      			
 	      			 for(var i=0; i<json.expenseApproverHierarchyList.length; i++){
 		        		  var opt = json.expenseApproverHierarchyList[i];
-		        		  
-		        		  if(opt.approvalMechanismType != null && opt.approvalMechanismType != '' && opt.approvalMechanismType != 'undefined'){
-		        			  if(opt.approvalMechanismType == 'Parallel'){
-		        				     document.getElementById("parallerExpenseApproval").checked = true;
-					        		 $("#expenseApprovalTypeValue").val(opt.approvalMechanismType);
-		        			  }else{
-		        				     document.getElementById("sequentialExpenseApproval").checked = true;
-					        		 $("#expenseApprovalTypeValue").val(opt.approvalMechanismType);
-		        			  }
-		        		  }
-		        		  
 		        		  if(opt.level == "1"){
 		        			  level1ExpenseApproverUser = opt.expenseApproverUserId;
 		        			  projects.getProjectLevel1ExpenseApprovers(opt.expenseApproverUserId);
