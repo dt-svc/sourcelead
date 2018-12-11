@@ -825,6 +825,8 @@ public class PaymentController {
 					
 					/*=====================Email Scenario for the profile contributor ends here=====================*/
                 	
+                	System.out.println("org value is "+org.getId());
+                	
                 	CandidateMarketPlacePaymentTransactionHistory transactionHistory = candidateService.getOrderNo(orgLocations.getId());
                 	String purchasedOrgName = transactionHistory.getOrgLocationId().getOrg().getOrgName();
                 	String orderNo = transactionHistory.getOrderId();
@@ -921,10 +923,8 @@ public class PaymentController {
                 		 if(emailMessage !=null && globalVarsMap != null){
                 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.PROFILES_ADDED_TO_CART_MAIL, new ArrayList<EmailAttachment>());	
                 			 }
-                	}
 
-
-                	
+                		}
                 	    //sending Notification.
                 		//User mail address and resume count should be updated
                 		globalVarsMap.put("resumeCount", "resumes");
