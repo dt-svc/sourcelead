@@ -572,8 +572,12 @@ public class LeaveServiceImpl implements LeaveService{
 
 	private Set<LeaveApproveHierarchy> getApproverList(LeaveDTO leaveDTO, Leave leave, User user) {
 		Set<LeaveApproveHierarchy> approverList = new HashSet<>();
+		try {
+			int isDeleted = leaveDao.deleteApproversByLeaveId(leave.getId());
+		} catch (Exception excp) {
+			excp.printStackTrace();
+		}
 		
-		int isDeleted = leaveDao.deleteApproversByLeaveId(leave.getId());
 		if(leaveDTO.getOtherApproverUser() != null) {
 			List<String> allUsers = new ArrayList<>();
 			if(leaveDTO.getApproverUser() != null && !leaveDTO.getApproverUser().isEmpty()){
@@ -1412,14 +1416,26 @@ public class LeaveServiceImpl implements LeaveService{
 	                    if (Constants.YES.equalsIgnoreCase(type.getVisibleInBalanceLeaves())) {
 	                        empToatalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(type.getId(), user.getId(), orgLocations.getId(),orgLocations.getOrg().getId());
 	                        appliedLeaveCount = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocations, type, userId);
-	                        if (appliedLeaveCount > 0) {
-	                            appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
-	                        }
-	                        else {
-	                            appliedLeaveCount = empToatalLeaves;
+	                        if(StringUtils.isNotBlank(type.getAllowability())) {
+	                        	if(appliedLeaveCount < Integer.parseInt(type.getAllowability())) {
+	                        		if (appliedLeaveCount > 0) {
+			                            appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
+			                        }
+			                        else {
+			                            appliedLeaveCount = empToatalLeaves;
+			                        }
+	                        		balanceLeaveCounts += appliedLeaveCount;
+	                        	}
+	                        }else {
+	                        	if (appliedLeaveCount > 0) {
+		                            appliedLeaveCount = empToatalLeaves - appliedLeaveCount;
+		                        }
+		                        else {
+		                            appliedLeaveCount = empToatalLeaves;
+		                        }
+	                        	 balanceLeaveCounts += appliedLeaveCount;
 	                        }
 	                    }
-	                    balanceLeaveCounts += appliedLeaveCount;
 	                }
 	            }
 		   }
