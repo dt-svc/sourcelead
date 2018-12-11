@@ -245,7 +245,7 @@
 
 $(document).ready(function () {
 	getCandidateDetailsFromMarketcart();
-	updateInvoiceAndCartDetails();
+	updateInvoiceDetails();
 
 });
 
@@ -359,17 +359,15 @@ function getCandidateDetailsFromMarketcart(){
 		});
 	}
 
-function updateInvoiceAndCartDetails(){
+function updateInvoiceDetails(){
 	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
-	        		$("#cartCount").html(object[0]);
-	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
-	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 		        	$("#invoiceCartCount").html(object[0]);
+		        	totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		$("#invoiceTotalAmount").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		}}
@@ -403,7 +401,7 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
             	getCandidateDetailsFromMarketcart();
-				updateInvoiceAndCartDetails();
+            	updateInvoiceDetails();
 				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
     			$(".project_inn_mask").fadeOut(200);
