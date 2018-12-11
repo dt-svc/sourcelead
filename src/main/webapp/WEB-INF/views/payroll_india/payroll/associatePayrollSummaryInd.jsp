@@ -100,6 +100,13 @@
 								<c:set var="decuctionTotal" value="${decuctionTotal + decuction.monthly}"/>
 							</tr>
 						</c:forEach>
+						<c:if test="${indPayrollDTO.lopAmount != '' && indPayrollDTO.lopAmount != '0'}">
+							<tr>
+								<th><div class="tbldata-dotdot inlineBlock">Loss of Pay</div></th>
+								<td><input type="text" id="lopAmount" name="lopAmount" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="${indPayrollDTO.lopAmount}" class="formControl" readOnly onBlur="calculateNetSalary();"> </td>
+							</tr>
+							<c:set var="decuctionTotal" value="${decuctionTotal + indPayrollDTO.lopAmount}"/>
+						</c:if>
 						</tbody>
 						<tfoot>
 						<tr><th><strong>Total</strong></th><td id="deductionPayheadAmountTotal">${decuctionTotal}</td></tr>
