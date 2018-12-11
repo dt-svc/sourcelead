@@ -11,7 +11,7 @@
         <h2>Deduction Summary</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-       <a href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction Summary
+       <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -24,7 +24,6 @@
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<input type="text" id="fromDate" class="form-control calendar" readonly field-name="From Date" data-validation="required">
-					<input type="hidden" id="emptyUsDeductionId" name="emptyUsDeductionId"/>
 				</div>
             </div>
             </div>
@@ -210,11 +209,10 @@ function deductionSummaryReportData(url) {
 									"data" : "type",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										$("#emptyUsDeductionId").val(1);
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-75" id="usDeductionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
 											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
 										} 
@@ -320,8 +318,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsDeductionId').val();
-     if(emptyExport>0){
+     var usDeduction = $('#usDeductionTypeDiv').html();
+  	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=pdf";
      }else{
 		var result = " ";
@@ -350,8 +348,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsDeductionId').val();
-     if(emptyExport>0){
+     var usDeduction = $('#usDeductionTypeDiv').html();
+   	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=xls";
  }else{
 		var result = " ";

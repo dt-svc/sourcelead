@@ -30,7 +30,7 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 		List<AssociateSalaryHistory> associSalHisList = associateSalaryHistoryDao.findAssociateSalHistory(associateSalid);
 		List<AssociateSalaryHistoryDTO> resList = new ArrayList<>();
 		if(associSalHisList != null && associSalHisList.size() >0) {
-			associSalHisList.forEach(his->{
+			for(AssociateSalaryHistory his : associSalHisList) {
 				AssociateSalaryHistoryDTO prevAssHisDto = new AssociateSalaryHistoryDTO();
 				prevAssHisDto.setPayType(his.getPreviousPayType());
 				prevAssHisDto.setPayFrequency(his.getPreviousPayFrequency());
@@ -38,6 +38,7 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 				prevAssHisDto.setAnnualSalary(his.getPreviousAnnualSalary());
 				prevAssHisDto.setGrossSalary(his.getPreviousGrossSalary());
 				prevAssHisDto.setHourlyRate(his.getPreviousHourlyRate());
+
 				if(his.getPreviousCreatedDate() !=null) {
 					prevAssHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getPreviousCreatedDate()));	
 				}
@@ -60,7 +61,7 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 					assHisDto.setIncreasePercentage(his.getIncreasePercentage());
 				}
 				resList.add(assHisDto);
-			});
+			}
 		}
 		return resList;
 	}

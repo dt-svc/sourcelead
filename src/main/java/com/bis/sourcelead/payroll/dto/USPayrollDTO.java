@@ -113,6 +113,10 @@ public class USPayrollDTO {
     
     private BigDecimal loanAmountTotal;
     
+    private List<PayrollLopHisDTO> lopHis;
+    
+    private BigDecimal lopAmount;
+    
 	
 	public Map<String, BigDecimal> getTax()
 	{
@@ -528,5 +532,22 @@ public class USPayrollDTO {
 	public void setLoanAmountTotal(BigDecimal loanAmountTotal) {
 		this.loanAmountTotal = loanAmountTotal;
 	}
+	public List<PayrollLopHisDTO> getLopHis()
+	{
+		return lopHis;
+	}
+	public void setLopHis(List<PayrollLopHisDTO> lopHis)
+	{
+		this.lopHis = lopHis;
+	}
+	public BigDecimal getLopAmount()
+	{
+		return lopAmount;
+	}
+	public void setLopAmount(BigDecimal lopAmount)
+	{
+		this.lopAmount = lopAmount;
+	}
+	
 	
 }

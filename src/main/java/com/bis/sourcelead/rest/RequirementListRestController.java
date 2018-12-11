@@ -996,6 +996,8 @@ public class RequirementListRestController {
 					
 					List<User> assignUser = new ArrayList<>();
 					
+					List<User> assignTeamUser = new ArrayList<>();
+					
 					OrgSpoc spoc = null;
 					if(parentReqeqList != null) {
 						for (Requirement req : parentReqeqList) {
@@ -1006,7 +1008,12 @@ public class RequirementListRestController {
 					
 					if(assignedToList != null) {
 						for (RequirementAssignTo requirementAssignTo : assignedToList) {
-							assignUser.add(requirementAssignTo.getAssignUserId());
+							assignTeamUser.add(requirementAssignTo.getAssignUserId());
+							for (User toUser : assignTeamUser) {
+								if(requirement.getRequirementSubmissionStatus() != null &&  (!requirement.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD") && (requirement.getRequirementSubmissionPreviousStatus().toString().equalsIgnoreCase("SUBMITTED")))){
+									requirementService.sendMailToPrimaryRecruiter(requirement,loginUser,toUser);
+								}
+							}
 						}
 					}
 					

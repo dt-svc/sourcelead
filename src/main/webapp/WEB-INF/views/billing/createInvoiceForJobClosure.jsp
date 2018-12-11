@@ -943,7 +943,7 @@ function cancelDelDoc(){
 			
 			
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
-			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]+",Job:"+checkbox_value[2]);
+			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
 			$('#'+maxRowNum+'rate').val(checkbox_value[3]);
 			$('#'+maxRowNum+'requirementSubmissionId').val(checkbox_value[4]);
 			getSow(checkbox_value[0],maxRowNum); 
@@ -1051,7 +1051,11 @@ function cancelPopup(){
 	                    	 }else{
 	                    	 result = result +'<td>---</td>'; 
 	                    	 }
-	                    	 result = result +'<td>'+opt.joinedDate+'</td>';
+	                    	 if(opt.joinedDate != null && opt.joinedDate !='' && opt.joinedDate !='undefined'){
+		                    	 result = result +'<td>'+opt.joinedDate+'</td>';
+	                    	 }else{
+	                    		 result = result +'<td>---</td>';  
+	                    	 }
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
