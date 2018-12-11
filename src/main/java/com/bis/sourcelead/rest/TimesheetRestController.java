@@ -2501,9 +2501,11 @@ public class TimesheetRestController {
 					String taskType = teDTO.getTimesheetTaskDTO().getTaskType();
 					String billableHours = "00:00";
 					String nonBillableHours = "00:00";
-					TimeSheetDayEntries timesheetDayEntries = new TimeSheetDayEntries();
+					TimeSheetDayEntries timesheetDayEntries = null;
 					if (teDTO.getId() != null) {
-						timesheetDayEntries.setId(teDTO.getId());
+						timesheetDayEntries = timeSheetDayEntriesService.getTimesheetDayEntriesById(teDTO.getId());
+					}else {
+						timesheetDayEntries = new TimeSheetDayEntries();
 					}
 					timesheetDayEntries.setProjectTask(projectTasks);
 					timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
@@ -2541,7 +2543,12 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTaskType("Non-Billable");
 					}
 					timesheetDayEntries.setTicketNumber(teDTO.getTicketNumber());
-					timesheetDayEntries.setHourlyType(teDTO.getHourlyType());
+					
+					if (teDTO.getId() == null && StringUtils.isEmpty(teDTO.getHourlyType())) {
+						timesheetDayEntries.setHourlyType("Regular");
+					}else if(StringUtils.isNotEmpty(teDTO.getHourlyType())) {
+						timesheetDayEntries.setHourlyType(teDTO.getHourlyType());
+					}
 					timesheetDayEntries.setComments(teDTO.getComments());
 					timesheetDayEntries.setTimesheetDate(
 							commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), teDTO.getDate()));
