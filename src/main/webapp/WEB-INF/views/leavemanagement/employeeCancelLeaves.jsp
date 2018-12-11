@@ -380,7 +380,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
              if(data.thisMonthLeavesTaken !=null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
 				 result = result +'  <span>'+data.thisMonthLeavesTaken+'</span>';	 
 			 }else{
-				 result = result +'  <span>--</span>';
+				 result = result +'  <span>0</span>';
 			 }
              result = result +'</div>';
              result = result +'</div>';
@@ -390,7 +390,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
              if(totalBalLeaves !=null && totalBalLeaves !='' && totalBalLeaves !='undefined'){
 				 result = result +'  <span>'+totalBalLeaves+'</span>';	 
 			 }else{
-				 result = result +'  <span>--</span>';
+				 result = result +'  <span>0</span>';
 			 }
              result = result +'</div>';
              result = result +'</div>';

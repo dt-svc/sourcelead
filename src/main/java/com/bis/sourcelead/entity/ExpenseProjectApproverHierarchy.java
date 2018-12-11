@@ -54,6 +54,9 @@ public class ExpenseProjectApproverHierarchy implements Serializable{
     @Column(name = "STATUS")
     private String status;
     
+    @Column(name = "APPROVAL_MECHANISM_TYPE")
+    private String approvalMechanismType;
+    
     @Column(name = "CREATED_DATE")
     private Date createdDate;
     
@@ -186,6 +189,14 @@ public class ExpenseProjectApproverHierarchy implements Serializable{
 
 	public void setExpenseApproverUserId(Long expenseApproverUserId) {
 		this.expenseApproverUserId = expenseApproverUserId;
+	}
+
+	public String getApprovalMechanismType() {
+		return approvalMechanismType;
+	}
+
+	public void setApprovalMechanismType(String approvalMechanismType) {
+		this.approvalMechanismType = approvalMechanismType;
 	}
 
 

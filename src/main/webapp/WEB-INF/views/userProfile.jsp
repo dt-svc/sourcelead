@@ -80,6 +80,9 @@ function getConfiguredList(){
     $('#configure').show();
     $('#unsubscribe').hide();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getUnsubscribeList(){
@@ -88,6 +91,9 @@ function getUnsubscribeList(){
     $('#configure').hide();
     $('#unsubscribe').show();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getLinkAccounts(){
@@ -95,8 +101,53 @@ function getLinkAccounts(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#myBankDetails').hide();
     $('#mylinkaccounts').show();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
+
+function getBankDetails(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $("#taxDate").hide();
+//     $('#myBankDetails').show();
+    $('.tabsMenu_tabs_inn').show();
+      associateBankData();
+}
+
+ function getTax(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $('#associateBankData').hide();
+    $('#myBankDetails').hide();
+//     $("#myTax").show();
+    $('.tabsMenu_tabs_inn').show();
+     associateTaxSummary();
+     getResidenceLocation();
+} 
+ 
+ function getDocuments(){
+	 $('#profile').hide();
+	    $('#updatepassword').hide();
+	    $('#configure').hide();
+	    $('#unsubscribe').hide();
+	    $('#myBankDetails').hide();
+	    $('#mylinkaccounts').hide();
+	    $('#associateBankData').hide();
+	    $("#taxDate").hide();
+	    $("#myTax").hide();
+	    $('#myBankDetails').hide();
+// 	    $("#myDocuments").show();
+// 	    $(".welCo1").show();
+	    candidateDocuments();
+ }
 </script>
 
 
@@ -133,6 +184,9 @@ function getLinkAccounts(){
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
+			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
+			<li onclick="getTax();"><a data-toggle="tab" href="#myTax">Tax</a></li>
+			<li onclick="getDocuments();"><a data-toggle="tab" href="#myDocuments">Documents</a></li>
 		  </ul>        
 <div class="accountsettings-tab noMar">
 
@@ -160,31 +214,38 @@ function getLinkAccounts(){
 				 </div> 
 				 
 				 </form:form>	
-			  
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
+			  		<div class="clearfix"></div>
+			  		<div class="clearfix text-center mt">
+						 <a href="javascript:void(0)" onclick="generateJson()" class="btn btn-primary" title="Download">
+						 	Download Profile<i class="fa fa-download ml"></i>
+						 </a>
+					</div>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
+		   <div id="editor"></div>
+<!-- 		   <button id="cmd">generate PDF</button> -->
 		   <form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
 			   <div class="row">
 				<div class="col-md-6">
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
+					  <input type="text" name="firstName" id="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" id="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
 					<label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					<input type="text" readonly="readonly" value="${SourceLeadWeb_user.email}" class="form-control">
+					<input type="text" readonly="readonly" id="email" value="${SourceLeadWeb_user.email}" class="form-control">
 					</div>
 				  </div>
 		
@@ -194,13 +255,13 @@ function getLinkAccounts(){
 						  <div class="form-group" id="designationDiv">
 							<label class="col-md-4">Designation</label>
 							<div class="col-md-8">
-							  <input type="text" name="designation" field-name="Designation" value="${SourceLeadWeb_designation}" ${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' ? 'readonly' : ''} class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
+							  <input type="text" name="designation" id="designation" field-name="Designation" value="${SourceLeadWeb_designation}" ${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' ? 'readonly' : ''} class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group" id="phoneDiv">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
+							  <input type="text" name="mobilePhone" id="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
 							</div>
 						  </div>
 						  <div class="form-group" id="loactionDiv">
@@ -223,13 +284,13 @@ function getLinkAccounts(){
 					<div class="form-group" id="linkedInDiv">
 					<label class="col-md-4">LinkedIn</label>
 					<div class="col-md-8">
-					  <input type="text" name="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="linkedIn" id="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="fbDiv">
 					<label class="col-md-4">Facebook</label>
 					<div class="col-md-8">
-					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="facebook" id="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 				</div>
@@ -238,17 +299,18 @@ function getLinkAccounts(){
 					<div class="form-group">
 					<label class="col-md-4">Twitter</label>
 					<div class="col-md-8">
-					  <input type="text" name="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="twitter" id="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="gplusDiv">
 					<label class="col-md-4">Google+</label>
 					<div class="col-md-8">
-					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="googlePlus"  id="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 		
 				</div>
+				 
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
@@ -436,6 +498,9 @@ function getLinkAccounts(){
 		   </div>
 		   
 		  <jsp:include page="userAccounts.jsp" />
+		  <jsp:include page="userBankDetails.jsp" />
+		  <jsp:include page="userTax.jsp" />
+		  <jsp:include page="userDocuments.jsp" />
 		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
@@ -884,6 +949,91 @@ function getLoginUserProfile(){
 	   });
 }
 </script>
+<script>
+function generateJson() {
+	$.ajax({
+	   	type: "GET",
+	   	url: sourceleadUrl+"/downloadLoginUserProfile?"+tokenParamName+"="+tokenValue,	    	   
+	    success: function(data) {
+	    	
+	    	 
+	var search = {}
+				search["FirstName"] = data.firstName;
+				if (data.lastName != null) {
+					search["LastName"] = data.lastName;
+				} else {
+					search["LastName"] = "";
+				}
+				if (data.email != null) {
+					search["Email"] = data.email;
+				} else {
+					search["Email"] = "";
+				}
+				if (data.designation != null) {
+					search["Designation"] = data.designation;
+				} else {
+					search["Designation"] = " ";
+				}
+				if (data.mobileNumber != null) {
+					search["MobilePhone"] = data.mobileNumber;
+				} else {
+					search["MobilePhone"] = "";
+				}
+				if (data.location != null) {
+					search["Location"] = data.location;
+
+				} else {
+					search["Location"] = "";
+
+				}
+				if (data.linkedinURL != null) {
+					search["LinkedIn"] = data.linkedinURL;
+				} else {
+					search["LinkedIn"] = " ";
+				}
+
+				if (data.facebookURL != null) {
+					search["Facebook"] = data.facebookURL;
+
+				} else {
+					search["Facebook"] = "";
+
+				}
+				if (data.twitterURL != null) {
+					search["Twitter"] = data.twitterURL;
+
+				} else {
+					search["Twitter"] = " ";
+
+				}
+				if (data.googlePlusURL != null) {
+					search["GooglePlus"] = data.googlePlusURL;
+
+				} else {
+					search["GooglePlus"] = " ";
+
+				}
+				if (data.ipaddresses != null) {
+					search["Ipaddresses"] = data.ipaddresses;
+				} else {
+					search["Ipaddresses"] = " ";
+				}
+				var dataStr = JSON.stringify(search);
+				var dataUri = 'data:application/json;charset=utf-8,'
+						+ encodeURIComponent(dataStr);
+				var exportFileDefaultName = 'Profile.json';
+				var linkElement = document.createElement('a');
+				linkElement.setAttribute('href', dataUri);
+				linkElement.setAttribute('download', exportFileDefaultName);
+			    document.body.appendChild(linkElement);
+			    linkElement.click();
+			    linkElement.remove();
+
+			}
+		});
+
+	}
+</script>
 
 <script>
 $(document).ready(function(){
@@ -941,6 +1091,22 @@ function passwordValidation_pf(idValue,np_letter,np_capital,np_number,np_special
 
 </script>
 
+<script type="text/javascript">
 
+var doc = new jsPDF();
+var specialElementHandlers = {
+    '#editor': function (element, renderer) {
+        return true;
+    }
+};
+
+$('#cmd').click(function () {
+	doc.fromHTML($('#content').html(), 15, 15, {
+        'width': 170,
+            'elementHandlers': specialElementHandlers
+    });
+    doc.save('sample-file.pdf');
+});
+</script>
 
 </html>

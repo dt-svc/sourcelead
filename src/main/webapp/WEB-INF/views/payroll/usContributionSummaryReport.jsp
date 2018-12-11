@@ -10,7 +10,7 @@
         <h2>Contribution Summary</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-      <a href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Contribution Summary
+      <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Contribution Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -134,6 +134,7 @@ $(".overIcon, .newActPop").click(function(e){
 	});
 </script>
 
+<div id="popUp"></div>
 <script>
 function runContributionSummary(){
 	
@@ -151,6 +152,11 @@ function runContributionSummary(){
 	}  
 	
 }
+$('body').on('blur', '#contribution_summary_report_form', function() {
+	$("#contribution_summary_report_form").showHelpOnFocus();
+	$("#contribution_summary_report_form").validateOnBlur(false, validationSettings);
+});
+
 
 
 function contributionSummaryReportsList(url) {
@@ -204,11 +210,10 @@ function contributionSummaryReportData(url) {
 									"data" : "type",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-75" id="usContributionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
 											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
 										} 
@@ -313,9 +318,30 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
+     var usContribution = $('#usContributionTypeDiv').html();
+ 	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=pdf";
- }
+ 	}else{
+		var result = " ";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Summary List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
  
+ </script>
+
+ <script type="text/javascript">
+ function cancelExport(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
+ }
  </script>
  
    <script>
@@ -324,11 +350,30 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
+     var usContribution = $('#usContributionTypeDiv').html();
+  	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=xls";
+ }else{
+		var result = " ";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Summary List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+<script type="text/javascript">
+ function cancelExport(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
  }
- 
- </script>
-  
+ </script>  
 
 
 <jsp:include page="../masterFooter.jsp" />

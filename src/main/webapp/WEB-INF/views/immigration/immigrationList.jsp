@@ -219,7 +219,7 @@
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
-		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+		<a href="javascript:void(0)" onclick="columClose();uncheckPpup();">Cancel</a>
 	</div>
 </div>				
 			</div>      		
@@ -834,6 +834,11 @@
 
 <script type="text/javascript">
 
+	function uncheckPpup(){
+		$("#columnsPickerUnCheckAll").prop('checked',false);
+		$("#columnsPickerCheckAll").prop('checked',true);
+		$('.toggle-vis:input:checkbox').prop('checked',true);
+	}	
 	function cancelImmigrationDelete(){
 		$("#remove_immigration_pop").fadeOut(200);
 		$(".project_inn_mask").fadeOut(200);
@@ -843,9 +848,6 @@
 	}
 	function columClose(){
 		$(".colPop").hide();
-		$("#columnsPickerUnCheckAll").prop('checked',false);
-		$("#columnsPickerCheckAll").prop('checked',true);
-		$('.toggle-vis:input:checkbox').prop('checked',true);
 	}
 	$("html").click(function(){
 		$(".colPop").hide();
@@ -853,6 +855,7 @@
 	$(".refreIcon, .colPop").click(function(e){
 	 	e.stopPropagation();
 	});		
+	
 		
 	function columHide(){
 		hideColumns=[]; // reset the array object.

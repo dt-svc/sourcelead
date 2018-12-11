@@ -380,6 +380,8 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception {
+		
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());

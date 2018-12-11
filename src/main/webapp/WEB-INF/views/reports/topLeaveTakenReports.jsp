@@ -391,7 +391,6 @@ function listTypePagination(count) {
 		"bLengthChange" : true,
 		"bDestroy" : true,
 		"ordering" : true,
-		"order" : [[6, "desc"]],
 		"mark" : true,
 		"oLanguage" : {
 			"sSearch" : "",
@@ -401,7 +400,8 @@ function listTypePagination(count) {
 		}
 	});
 	$("#topLeaveTakenReportsListView").wrap("<div class='overflow_Auto' style='width:100%;'></div>");
-
+	 
+	$("#topLeaveTakenReportsListView").DataTable().columns(-1).order('desc').draw();
 }
 $("#leaveReportDataTableSearch").keydown(function(e) {
 	   if(e.which === 13) {

@@ -50,6 +50,9 @@ public class TimeSheetDayEntries implements Serializable{
 	@Column(name = "BILLABLE_HOURS")
 	private String billableHours;
 	
+	@Column(name = "HOURLY_TYPE")
+	private String hourlyType;
+	
 	@Column(name = "TICKET_NUMBER")
 	private String ticketNumber;
 	
@@ -232,6 +235,14 @@ public class TimeSheetDayEntries implements Serializable{
 
 	public void setTicketNumber(String ticketNumber) {
 		this.ticketNumber = ticketNumber;
+	}
+
+	public String getHourlyType() {
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType) {
+		this.hourlyType = hourlyType;
 	}
 
 

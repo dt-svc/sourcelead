@@ -120,5 +120,8 @@ public interface InvoiceService {
 	CreditDebitLineItems getCreditDebitLineItemById(Long id);
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
+	
+	Integer generateInvoiceJobClosureFromDashboard(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user,String contractType,Long orgRlelationId,Long submissionId,Long candidateId)throws Exception;
+
 
 }

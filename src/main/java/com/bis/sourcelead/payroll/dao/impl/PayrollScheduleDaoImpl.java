@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollScheduleDao;
-import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 
 @Repository
@@ -98,6 +97,20 @@ public class PayrollScheduleDaoImpl implements PayrollScheduleDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id = :orgLocationId and usPay.payFrequency =:payFrequency and usPay.status = 1 and usPay.payrollScheduleUUID != :scheduleUUID";
 			usPayrollSchedule =  (UsPayrollSchedule) session.createQuery(query).setString("payFrequency", payFrequency).setLong("orgLocationId", orgLocationId).setString("scheduleUUID", scheduleUUID).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return usPayrollSchedule;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UsPayrollSchedule> getAllPayrollScheduleByOrgLocationId(Long orgLocationId) {
+		List<UsPayrollSchedule> usPayrollSchedule = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from UsPayrollSchedule usPay where usPay.orgLocation.id = :orgLocationId";// and usPay.payFrequency =:payFrequency and usPay.status = 1 and usPay.payrollScheduleUUID != :scheduleUUID";
+			usPayrollSchedule =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

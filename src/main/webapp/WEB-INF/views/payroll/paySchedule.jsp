@@ -76,10 +76,9 @@ $(document).ready(function(){
           </div>
           </div>
           <div class="form-group">
-              <label class="col-md-4">Notify to Members</label>
+              <label class="col-md-4">Notify Before (day's)</label>
 				<div class="col-md-8">
-					<select class="form-control chosen-select" multiple data-placeholder="Notify Members" id="notifyMember" name="notifyMember">
-					</select>
+					<input type="text" data-validation="required validate_int validate_Space validate_length  length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control" field-name="Notify Before" >
 				</div>
             </div>
           </div>
@@ -100,7 +99,7 @@ $(document).ready(function(){
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
               <div class="col-md-8">
-                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="payCheckDate">
+                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="Pay Check Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
@@ -188,6 +187,10 @@ function savePayrollSchedule(){
     		return false;
     	  } 
 }
+$('body').on('blur', '#add_payroll_schedule_form', function() {
+	$("#add_payroll_schedule_form").showHelpOnFocus();
+	$("#add_payroll_schedule_form").validateOnBlur(false, validationSettings);  
+});
 </script>
   
 
@@ -218,8 +221,8 @@ $('#runPayrollDate').datepicker({
     //minDate: 0  this line for to restrict selection of previous dates
     onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
-			dt.setDate(dt.getDate());
-			$("#payCheckDate").datepicker("option", "maxDate", dt);
+			dt.setDate(dt.getDate()+1);
+			$("#payCheckDate").datepicker("option", "minDate", dt);
 // 			removeEndValid();
 	}
 });
@@ -325,30 +328,8 @@ function weekOnChange() {
 	        url: sourceleadUrl+"/findPayrollScheduleByUUID?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
 	        success: function(json) {
 	               
-	        	   var existedUser = json.notifiMemIds;
 	        	   var data = json.approvers;
 	        	   var monthly = json.month;
-	        	   var output = "";
-					for (var i=0; i<data.length; i++)
-					{
-						var opt = data[i];
-						if(existedUser != null && existedUser.length >0){
-							for(var j=0;j<existedUser.length;j++){
-								if(existedUser[j] == opt.id){
-									output = output + "<option selected value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";
-								}else{
-									output = output + "<option value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";
-								}
-							}	
-						}else{
-							output = output + "<option value='" +opt.id+ "'>"+opt.fullName+" ("+opt.role+")</option>";	
-						}
-					}
-					$("#notifyMember").empty();
-					$("#notifyMember").append(output);
-					$('#notifyMember').trigger("chosen:updated");
-					
-				
 					var res = "";
 					res = res + "<option value=''>Slect Month</option>";
 					  for (var j=0; j<monthly.length; j++)
@@ -364,6 +345,7 @@ function weekOnChange() {
 	        $("#payCheckDate").val(json.payCheckDate);
 	        $("#runPayrollDate").val(json.runPayDate); 
 	        $("#nextPayMonth").val(json.nextPayMonth); 
+	        $("#notifyMember").val(json.notifyMember)
 	          
 	        	/*   var output = "";
 			for (var i=0; i<data.length; i++)
