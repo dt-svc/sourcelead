@@ -3112,4 +3112,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 	}
 
+	@Override
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+		return candidateDao.getMarketplacePurchaseOrder(id);
+	}
+
 }
