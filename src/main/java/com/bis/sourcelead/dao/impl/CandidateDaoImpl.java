@@ -2884,4 +2884,20 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId";
+			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
+			return  marketplacePurchaseOrder;
+		}
+		catch(Exception e) {
+       	 e.printStackTrace();
+       	 return null;
+        }
+	}
 }
