@@ -99,7 +99,7 @@ public interface InvoiceDao{
 
 	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
 
-	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long userId, Long orgLocationId, SearchDTO searchDTO);
+	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO);
 
 	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId);
 

@@ -125,10 +125,6 @@ public class InvoiceController {
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
         model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
-		ResponseList<CustomInvoiceTemplateDTO> responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocations.getId(), null);
-		if(responseList != null && responseList.getData() != null && !responseList.getData().isEmpty()) {
-			model.addObject("invoiceTemplatesList", responseList.getData());
-		}
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
@@ -444,14 +440,18 @@ public class InvoiceController {
 		if(null != clientList){
 			for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
+				Long responderLocationId = 0L;
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrgLocationName();
+					responderLocationId = orgRelations.getLocationId().getId();
 					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					responderLocationId = orgRelations.getResponderLocationId().getId();
 					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getResponderLocationId().getCountry()));
 				}
 				orgRelations.setOrgName(orgName);
+				orgRelations.setResponderId(responderLocationId + "");
 			}
 		}
 //		return commonUtil.toJSON(clientList);

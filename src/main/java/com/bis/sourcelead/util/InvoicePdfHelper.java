@@ -40,6 +40,8 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.InvoiceTableItemsDTO;
+import com.bis.sourcelead.dto.InvoiceTableOtherItemsDTO1;
+import com.bis.sourcelead.dto.InvoiceTableOtherItemsDTO2;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
@@ -356,7 +358,7 @@ public class InvoicePdfHelper {
 	}
 	
 	public File createCustomInvoicePDF(Invoice invoice, OrgLocations orgLocation, User user, Org org,
-			String vendorCurrencyCode, String loginOrgCurrencyCode, CustomInvoiceTemplate customInvoiceTemplate) {
+			String vendorCurrencyCode, String loginOrgCurrencyCode, CustomInvoiceTemplate customInvoiceTemplate, String pdfType) {
 		try {
 			File invoiceFile = new File(orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime()+ ".pdf");
 			if (Constants.Payables.equalsIgnoreCase(invoice.getInvoiceType())) {
@@ -395,7 +397,11 @@ public class InvoicePdfHelper {
 											cellBuilder1 = getLogoDataFromJSON(jsonObject1); 
 											break;
 										case "table" : 
-											tableReport = getTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											if(pdfType.equalsIgnoreCase("other")) {
+												tableReport = getOtherTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems(), invoice);
+											} else {
+												tableReport = getTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											}
 											tableFlag1 = true;
 											break;
 										case "text" : 
@@ -425,7 +431,11 @@ public class InvoicePdfHelper {
 											cellBuilder2 = getLogoDataFromJSON(jsonObject2); 
 											break;
 										case "table" : 
-											tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											if(pdfType.equalsIgnoreCase("other")) {
+												tableReport = getOtherTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems(), invoice);
+											} else {
+												tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											}
 											tableFlag2 = true;
 											break;
 										case "text" : 
@@ -529,7 +539,11 @@ public class InvoicePdfHelper {
 											cellBuilder1 = getLogoDataFromJSON(jsonObject1); 
 											break;
 										case "table" : 
-											tableReport = getTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											if(pdfType.equalsIgnoreCase("other")) {
+												tableReport = getOtherTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems(), invoice);
+											} else {
+												tableReport = getTableDataFromJSON(jsonObject1, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											}
 											tableFlag1 = true;
 											break;
 										case "text" : 
@@ -559,7 +573,11 @@ public class InvoicePdfHelper {
 											cellBuilder2 = getLogoDataFromJSON(jsonObject2); 
 											break;
 										case "table" : 
-											tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											if(pdfType.equalsIgnoreCase("other")) {
+												tableReport = getOtherTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems(), invoice);
+											} else {
+												tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems()); 
+											}
 											tableFlag2 = true;
 											break;
 										case "text" : 
@@ -742,6 +760,128 @@ public class InvoicePdfHelper {
 		return cellBuilder;
 	}
 	
+	private JasperReportBuilder getOtherTableDataFromJSON(JSONObject jsonObject, OrgLocations orgLocation, Set<InvoiceLineItems> invoiceLineItemsList, Invoice invoice) {
+		try {
+			if (invoiceLineItemsList != null && !invoiceLineItemsList.isEmpty()) {
+				if (Constants.Payables.equalsIgnoreCase(invoice.getInvoiceType())) {
+					return getTableDataFromJSON(jsonObject, orgLocation, invoiceLineItemsList);
+				} else {
+					if (invoice.getExpensesInvoices() != null) {
+						List<InvoiceTableOtherItemsDTO1> tableItemsList = new LinkedList<>();
+						for (InvoiceLineItems invoiceLineItems : invoiceLineItemsList) {
+							InvoiceTableOtherItemsDTO1 invoiceTableItemsDTO = new InvoiceTableOtherItemsDTO1();
+							// Date
+							String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+									invoiceLineItems.getStartDate());
+							invoiceTableItemsDTO.setDate(startDate);
+							// Category
+							if (invoiceLineItems.getExpenseCategory() != null
+									&& !invoiceLineItems.getExpenseCategory().isEmpty()) {
+								invoiceTableItemsDTO.setCategory(invoiceLineItems.getExpenseCategory());
+							} else {
+								invoiceTableItemsDTO.setCategory("----");
+							}
+							// Description/Price
+							if (invoiceLineItems.getInlineDescription() != null
+									&& !invoiceLineItems.getInlineDescription().isEmpty()) {
+								invoiceTableItemsDTO.setDescription(invoiceLineItems.getInlineDescription());
+							} else {
+								invoiceTableItemsDTO.setDescription("----");
+							}
+							// Amount
+							if (invoiceLineItems.getAmount() != null && !invoiceLineItems.getAmount().isEmpty()) {
+								invoiceTableItemsDTO.setAmount(invoiceLineItems.getAmount());
+							} else {
+								invoiceTableItemsDTO.setAmount("----");
+							}
+							tableItemsList.add(invoiceTableItemsDTO);
+						}
+
+						String thStyle = "";
+						String tdStyle = "";
+
+						JSONArray subItemsArrayJSON = jsonObject.getJSONArray("subItems");
+						for (int i = 0; i < subItemsArrayJSON.length(); i++) {
+							JSONObject subItemObject = subItemsArrayJSON.getJSONObject(i);
+							switch (subItemObject.getString("value")) {
+							case "th":
+								thStyle = subItemObject.getString("style");
+								break;
+							case "td":
+								tdStyle = subItemObject.getString("style");
+								break;
+							default:
+								break;
+							}
+						}
+						// InvoiceTableOtherItemsDTO1
+						return createOtherTableItem1(tableItemsList, thStyle, tdStyle);
+					} else {
+						List<InvoiceTableOtherItemsDTO2> tableItemsList = new LinkedList<>();
+						// Date, Description, Quantity, Rate/Price, Total
+						for (InvoiceLineItems invoiceLineItems : invoiceLineItemsList) {
+							InvoiceTableOtherItemsDTO2 invoiceTableItemsDTO = new InvoiceTableOtherItemsDTO2();
+							// Date
+							String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+									invoiceLineItems.getStartDate());
+							invoiceTableItemsDTO.setDate(startDate);
+							// Description/Price
+							if (invoiceLineItems.getInlineDescription() != null
+									&& !invoiceLineItems.getInlineDescription().isEmpty()) {
+								invoiceTableItemsDTO.setDescription(invoiceLineItems.getInlineDescription());
+							} else {
+								invoiceTableItemsDTO.setDescription("----");
+							}
+							// Qty
+							if (invoiceLineItems.getQuantity() != null
+									&& !invoiceLineItems.getQuantity().isEmpty()) {
+								invoiceTableItemsDTO.setQuantity(invoiceLineItems.getQuantity());
+							} else {
+								invoiceTableItemsDTO.setQuantity("----");
+							}
+							// Rate
+							if (invoiceLineItems.getRate() != null && !invoiceLineItems.getRate().isEmpty()) {
+								invoiceTableItemsDTO.setRate(invoiceLineItems.getRate());
+							} else {
+								invoiceTableItemsDTO.setRate("----");
+							}
+							// Total
+							if (invoiceLineItems.getAmount() != null && !invoiceLineItems.getAmount().isEmpty()) {
+								invoiceTableItemsDTO.setTotal(invoiceLineItems.getAmount());
+							} else {
+								invoiceTableItemsDTO.setTotal("----");
+							}
+							tableItemsList.add(invoiceTableItemsDTO);
+						}
+
+						String thStyle = "";
+						String tdStyle = "";
+
+						JSONArray subItemsArrayJSON = jsonObject.getJSONArray("subItems");
+						for (int i = 0; i < subItemsArrayJSON.length(); i++) {
+							JSONObject subItemObject = subItemsArrayJSON.getJSONObject(i);
+							switch (subItemObject.getString("value")) {
+							case "th":
+								thStyle = subItemObject.getString("style");
+								break;
+							case "td":
+								tdStyle = subItemObject.getString("style");
+								break;
+							default:
+								break;
+							}
+						}
+						// InvoiceTableOtherItemsDTO2
+						return createOtherTableItem2(tableItemsList, thStyle, tdStyle);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private JasperReportBuilder getTableDataFromJSON(JSONObject jsonObject, OrgLocations orgLocation, Set<InvoiceLineItems> invoiceLineItemsList) {
 		try {
 			List<InvoiceTableItemsDTO> tableItemsList = new LinkedList<>();
@@ -836,6 +976,235 @@ public class InvoicePdfHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private JasperReportBuilder createOtherTableItem1(List<InvoiceTableOtherItemsDTO1> tableItemsList, String thStyleString, String tdStyleString) {
+		TextColumnBuilder<String> dateColumn = col.column("Date", "date", type.stringType()).setFixedWidth(80);
+		TextColumnBuilder<String> categoryColumn = col.column("Category", "category", type.stringType());
+		TextColumnBuilder<String> descriptionColumn = col.column("Description/Price", "description", type.stringType()).setFixedWidth(80);
+		TextColumnBuilder<String> amountColumn = col.column("Amount", "amount", type.stringType()).setFixedWidth(80);
+		StyleBuilder tableHeadStyle = stl.style(Templates.columnStyle);
+		StyleBuilder tableRowStyle = stl.style(Templates.columnStyle);
+		
+		if(thStyleString != null && !thStyleString.isEmpty()) {
+			for(String allStyles : thStyleString.split(";")) {
+				String style[] = allStyles.split(":");
+				if(style.length > 1) {
+					switch (style[0]) {
+					case "border":
+						if(!style[1].equalsIgnoreCase("none")) {
+							PenBuilder pen = stl.pen();
+							String[] borderStyles = style[1].split(" ");
+							
+							pen.setLineColor(Color.decode(borderStyles[2]));
+							pen.setLineStyle(LineStyle.SOLID);
+							pen.setLineWidth(1f);
+							
+							tableHeadStyle.setBorder(pen);
+							/*tableHeadStyle.setBorder(stl.pen1Point());*/
+						}
+						break;
+					case "font-size":
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						break;
+					
+					case "background-color":
+						tableHeadStyle.setBackgroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+						
+					case "color":
+						tableHeadStyle.setForegroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		} else {
+			PenBuilder pen = stl.pen();
+			pen.setLineColor(Color.decode("#989898"));
+			pen.setLineStyle(LineStyle.SOLID);
+			pen.setLineWidth(1f);
+			
+			tableHeadStyle.setBorder(pen);
+			tableHeadStyle.setFontSize(10);
+			tableHeadStyle.setBackgroundColor(Color.decode("#6C7686"));
+			tableHeadStyle.setForegroundColor(Color.decode("#FFFFFF"));
+			tableHeadStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		}
+		
+		if(tdStyleString != null && !tdStyleString.isEmpty()) {
+			for(String allStyles : tdStyleString.split(";")) {
+				String style[] = allStyles.split(":");
+				if(style.length > 1) {
+					switch (style[0]) {
+					case "border":
+						if(!style[1].equalsIgnoreCase("none")) {
+							PenBuilder pen = stl.pen();
+							String[] borderStyles = style[1].split(" ");
+							
+							pen.setLineColor(Color.decode(borderStyles[2]));
+							pen.setLineStyle(LineStyle.SOLID);
+							pen.setLineWidth(1f);
+							
+							tableRowStyle.setBorder(pen);
+							/*tableHeadStyle.setBorder(stl.pen1Point());*/
+						}
+//						tableRowStyle.setBorder(stl.pen1Point());
+						break;
+					case "font-size":
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						break;
+					
+					case "background-color":
+						tableRowStyle.setBackgroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+						
+					case "color":
+						tableRowStyle.setForegroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		} else {
+			PenBuilder pen = stl.pen();
+			pen.setLineColor(Color.decode("#989898"));
+			pen.setLineStyle(LineStyle.SOLID);
+			pen.setLineWidth(1f);
+			
+			tableRowStyle.setBorder(pen);
+			tableRowStyle.setFontSize(8);
+			tableRowStyle.setBackgroundColor(Color.decode("#EAE6E6"));
+			tableRowStyle.setForegroundColor(Color.decode("#333"));
+			tableRowStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		}
+		
+		JasperReportBuilder tableReport = report();		
+		tableReport
+		.setColumnStyle(tableRowStyle)
+		.setColumnTitleStyle(tableHeadStyle)
+		.columns(dateColumn, categoryColumn, descriptionColumn, amountColumn)
+		.columnGrid(dateColumn, categoryColumn, descriptionColumn, amountColumn)
+		.setDataSource(tableItemsList);
+		
+		return tableReport;
+	}
+	
+	private JasperReportBuilder createOtherTableItem2(List<InvoiceTableOtherItemsDTO2> tableItemsList, String thStyleString, String tdStyleString) {
+		TextColumnBuilder<String> dateColumn = col.column("Date", "date", type.stringType()).setFixedWidth(80);
+		TextColumnBuilder<String> descriptionColumn = col.column("Description", "description", type.stringType());
+		TextColumnBuilder<String> qtyColumn = col.column("Quantity", "quantity", type.stringType()).setFixedWidth(80);
+		TextColumnBuilder<String> rateColumn = col.column("Rate/Price", "rate", type.stringType()).setFixedWidth(80);
+		TextColumnBuilder<String> totalColumn = col.column("Total", "total", type.stringType()).setFixedWidth(80);
+		StyleBuilder tableHeadStyle = stl.style(Templates.columnStyle);
+		StyleBuilder tableRowStyle = stl.style(Templates.columnStyle);
+		
+		if(thStyleString != null && !thStyleString.isEmpty()) {
+			for(String allStyles : thStyleString.split(";")) {
+				String style[] = allStyles.split(":");
+				if(style.length > 1) {
+					switch (style[0]) {
+					case "border":
+						if(!style[1].equalsIgnoreCase("none")) {
+							PenBuilder pen = stl.pen();
+							String[] borderStyles = style[1].split(" ");
+							
+							pen.setLineColor(Color.decode(borderStyles[2]));
+							pen.setLineStyle(LineStyle.SOLID);
+							pen.setLineWidth(1f);
+							
+							tableHeadStyle.setBorder(pen);
+							/*tableHeadStyle.setBorder(stl.pen1Point());*/
+						}
+						break;
+					case "font-size":
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						break;
+					
+					case "background-color":
+						tableHeadStyle.setBackgroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+						
+					case "color":
+						tableHeadStyle.setForegroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		} else {
+			PenBuilder pen = stl.pen();
+			pen.setLineColor(Color.decode("#989898"));
+			pen.setLineStyle(LineStyle.SOLID);
+			pen.setLineWidth(1f);
+			
+			tableHeadStyle.setBorder(pen);
+			tableHeadStyle.setFontSize(10);
+			tableHeadStyle.setBackgroundColor(Color.decode("#6C7686"));
+			tableHeadStyle.setForegroundColor(Color.decode("#FFFFFF"));
+			tableHeadStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		}
+		
+		if(tdStyleString != null && !tdStyleString.isEmpty()) {
+			for(String allStyles : tdStyleString.split(";")) {
+				String style[] = allStyles.split(":");
+				if(style.length > 1) {
+					switch (style[0]) {
+					case "border":
+						if(!style[1].equalsIgnoreCase("none")) {
+							PenBuilder pen = stl.pen();
+							String[] borderStyles = style[1].split(" ");
+							
+							pen.setLineColor(Color.decode(borderStyles[2]));
+							pen.setLineStyle(LineStyle.SOLID);
+							pen.setLineWidth(1f);
+							
+							tableRowStyle.setBorder(pen);
+							/*tableHeadStyle.setBorder(stl.pen1Point());*/
+						}
+//						tableRowStyle.setBorder(stl.pen1Point());
+						break;
+					case "font-size":
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						break;
+					
+					case "background-color":
+						tableRowStyle.setBackgroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+						
+					case "color":
+						tableRowStyle.setForegroundColor(Color.decode(style[1].replace("!important", "")));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		} else {
+			PenBuilder pen = stl.pen();
+			pen.setLineColor(Color.decode("#989898"));
+			pen.setLineStyle(LineStyle.SOLID);
+			pen.setLineWidth(1f);
+			
+			tableRowStyle.setBorder(pen);
+			tableRowStyle.setFontSize(8);
+			tableRowStyle.setBackgroundColor(Color.decode("#EAE6E6"));
+			tableRowStyle.setForegroundColor(Color.decode("#333"));
+			tableRowStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		}
+		
+		JasperReportBuilder tableReport = report();		
+		tableReport
+		.setColumnStyle(tableRowStyle)
+		.setColumnTitleStyle(tableHeadStyle)
+		.columns(dateColumn, descriptionColumn, qtyColumn, rateColumn, totalColumn)
+		.columnGrid(dateColumn, descriptionColumn, qtyColumn, rateColumn, totalColumn)
+		.setDataSource(tableItemsList);
+		
+		return tableReport;
 	}
 	
 	private JasperReportBuilder createTableItem(List<InvoiceTableItemsDTO> tableItemsList, String thStyleString, String tdStyleString) {

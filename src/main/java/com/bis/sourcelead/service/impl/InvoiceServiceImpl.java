@@ -435,13 +435,18 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 
 		// store attached Documents (after)
+		boolean invoiceTemplateConfigured = false;
 		File file = null;
-		if(invoiceDTO.getInvoicePDFTemplateId() > 0) {
-			CustomInvoiceTemplate customInvoiceTemplate = null;
-			file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate);
-		} else {
+		if(invoiceDTO.getInvoiceTemplateId() > 0) {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
+			if(customInvoiceTemplate != null) {
+				file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
+				invoiceTemplateConfigured = true;
+			}
+		} 
+		if(!invoiceTemplateConfigured)
 			file = invoicePdfHelper.createPdfTableForInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
-		}
+		
 		if (file != null && file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
 			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
@@ -2957,13 +2962,22 @@ public class InvoiceServiceImpl implements InvoiceService {
 		}
 
 		// store attached Documents (after)
-		File file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org,
-				invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		boolean invoiceTemplateConfigured = false;
+		File file = null;
+		if(invoiceDTO.getInvoiceTemplateId() > 0) {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
+			if(customInvoiceTemplate != null) {
+				file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other");
+				invoiceTemplateConfigured = true;
+			}
+		}
+		if(!invoiceTemplateConfigured)
+			file = expensesInvoicePdfHelper.createPdfTableForExpensesInvoice(invoice, orgLocation, user, org, invoiceType, vendorCurrencyCode, loginOrgCurrencyCode);
+		
 		invoice.setFileName(file.getName());
 		if (file.exists() && !file.isDirectory()) {
 			invoice.setFileName(file.getName());
-			invoice.setFileUrl(
-					FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
+			invoice.setFileUrl(FileUploadUtil.moveFile(staticPath, org.getId(), orgLocation.getId(), "InvoicePdf", file));
 		}
 		if (null != file) {
 			file.delete();
