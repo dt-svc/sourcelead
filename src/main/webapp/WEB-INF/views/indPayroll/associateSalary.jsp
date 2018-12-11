@@ -257,9 +257,9 @@ function saveAssociateSalaryInd(){
 		var annualSalary = document.getElementById("annualSal").value;
 		var annualPayheadTotal = 0.00;
 		$("#phTblBody input:checked").each(function(){
-			if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+			/* if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){ */
 				annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
-			}
+			/* } */
 		});
 		if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
 			payheadsNotMatchedAlert('mismatch');
