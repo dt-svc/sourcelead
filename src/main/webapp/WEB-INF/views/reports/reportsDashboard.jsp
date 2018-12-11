@@ -182,8 +182,6 @@
 
                 <li><a href="${appPath}/assetsReport">Assigned Assets History</a></li>
 
-				<li><a href="${appPath}/projectReport">Project Report</a></li>
-
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
 				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>

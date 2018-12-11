@@ -38,8 +38,9 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 				prevAssHisDto.setAnnualSalary(his.getPreviousAnnualSalary());
 				prevAssHisDto.setGrossSalary(his.getPreviousGrossSalary());
 				prevAssHisDto.setHourlyRate(his.getPreviousHourlyRate());
-				if(his.getEffectiveDate() !=null) {
-					prevAssHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getEffectiveDate()));	
+
+				if(his.getPreviousCreatedDate() !=null) {
+					prevAssHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getPreviousCreatedDate()));	
 				}
 				if(StringUtils.isNotBlank(his.getIncreasePercentage())) {
 					prevAssHisDto.setIncreasePercentage("");
