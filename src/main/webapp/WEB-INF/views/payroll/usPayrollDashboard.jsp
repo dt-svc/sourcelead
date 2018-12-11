@@ -685,8 +685,9 @@ function confirmPayroll(){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
+	 var payType = $("#payType").val();
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,"",payType);
 }
 </script>
 
