@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
@@ -49,6 +54,7 @@ import com.bis.sourcelead.payroll.service.IndPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -101,6 +107,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
+	
+	@Autowired
+	PayrollPaySlipIndService payrollPaySlipIndService;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -571,5 +580,77 @@ public class PayrollRestController {
 
 	
 	
-	
+
+    @RequestMapping(value = "/savePayrollPaySlipInd", method = RequestMethod.POST)
+    @ResponseBody
+	public   Response<String> savePayrollPaySlipInd(PayrollPaySlipIndDTO  payrollPaySlipIndDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	payrollPaySlipIndDTO.setOrgLocation(orgLocation);
+    	payrollPaySlipIndDTO.setUser(user);
+    	Response<String> respons=new Response<>();
+    	try{
+    		if(user !=null){
+    			if(Validator.validate(payrollPaySlipIndDTO)){
+    				payrollPaySlipIndService.savePayrollPaySlipIndDTO(payrollPaySlipIndDTO);
+    				respons.setResponse(Result.SUCCESS.name());
+    				respons.setResponseMessage(Result.SUCCESS.getValue());
+    			}else{
+    				respons.setObject("DataMissing");
+					respons.setResponse(Result.INVALID_DATA.name());
+					respons.setResponseMessage(Result.INVALID_DATA.getValue());
+    			}
+    		}else{
+    			respons.setResponse(Result.SESSION_TIMEDOUT.name());
+				respons.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    		}
+    		
+    	}catch (Exception e) {
+    		respons.setResponse(Result.AWKWARD.name());
+			respons.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return respons;
+		
+	}
+    
+    
+    
+    
+    @RequestMapping(value = "/getPayrollPaySlipViewList", method = RequestMethod.POST)
+	public List<PayrollPaySlipInd> getPayrollPaySlipViewList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<PayrollPaySlipInd> indPaySlipList = payrollPaySlipIndService.getIndPayrollPaySlipListByOrglocationInd(orgLocation.getId());
+		return indPaySlipList;
+	}
+
+    
+    @RequestMapping(value = "/deletePayrollPaySlip", method = RequestMethod.POST)
+   	public PayrollPaySlipInd deletePayrollPaySlip(PayrollPaySlipInd payrollPaySlipInd) throws Exception {
+   		 PayrollPaySlipInd indPaySlip = payrollPaySlipIndService.getPayrollPayslipByUUID(payrollPaySlipInd.getUuid());
+   		 if(indPaySlip != null) {
+   			indPaySlip.setStatus(Constants.RECORD_INACTIVE);
+   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlip);
+   		 }
+   		return indPaySlip;
+   	}
+    
+    @RequestMapping(value = "/validatePayslipName", method = RequestMethod.POST)
+   	public @ResponseBody Boolean validatePayslipName(@RequestParam(value = "payslipName", required = false) String payslipName,
+   			@RequestParam(value="payslipUUID", required=false) String payslipUUID,HttpServletRequest request) throws Exception {
+ 	   OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+ 	   PayrollPaySlipInd indPaySlip = null;
+    	if(payslipUUID != null) {
+    		indPaySlip = payrollPaySlipIndService.validatePayslipNameByUUIDAndPayslipName(payslipUUID, payslipName);
+    	}
+    	Boolean flag = false;
+    	if(indPaySlip == null) {
+    		flag = payrollPaySlipIndService.validatePayslipNameByOrglocationIdAndPayslipName(orgLocation.getId(), payslipName);
+    	}
+   		return flag;
+   	}
+    
+    
+    
 }
