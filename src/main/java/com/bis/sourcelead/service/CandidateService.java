@@ -299,10 +299,17 @@ public interface CandidateService {
 
 	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId)throws Exception;
 
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception;
+
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+	
 	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id)throws Exception;
 	
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
 	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id);
+
 
 }
