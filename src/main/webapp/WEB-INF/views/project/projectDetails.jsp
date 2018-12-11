@@ -647,9 +647,9 @@ function editClientProjectDetails(projectId){
 				result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
 				result = result + '</div>';
 				
-				result = result + '<div class="clearfix"></div>';
+				/* result = result + '<div class="clearfix"></div>';
 			    result = result+' <div class="col-md-4">';
-				result = result + '<label>Timesheet Approval Mechanism<span class="text-danger">*</span></label>';
+				result = result + '<label>Timesheet Approval Mechanism</label>';
 				result = result + '<div class="clearfix"></div>';
 				result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
 				result = result + '<label class="paddingRight"><input type="radio" id="sequentialTimesheetsApproval"  value="Sequential" '+(json.projectApprovalType == "Sequential" ? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
@@ -658,12 +658,12 @@ function editClientProjectDetails(projectId){
 				
 				result = result + '<div class="clearfix"></div>';
 				result = result+' <div class="col-md-4">';
-				result = result + '<label>Expense Approval Mechanism<span class="text-danger">*</span></label>';
+				result = result + '<label>Expense Approval Mechanism</label>';
 				result = result + '<div class="clearfix"></div>';
 				result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallerExpenseApproval" value="Parallel" '+(json.expenseApprovalType == "Parallel"? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
 				result = result + '<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" '+(json.expenseApprovalType == "Sequential" ? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
 				result = result + '<input type="hidden"  id="expenseApprovalTypeValue" name="expenseApprovalTypeValue" value="'+expenseApprovalType+'" data-validation="required"  field-name="Expense Approval"/>';
-				result = result + '</div>';
+				result = result + '</div>'; */
 		  }		
 				
 		    result = result + '<div class="clearfix"></div>';
@@ -1188,7 +1188,7 @@ function editClientProjectDetails(projectId){
 						
 						
 					    result = result+' <div class="col-md-4">';
-						result = result + '<label>Timesheet Approval Mechanism<span class="text-danger">*</span></label>';
+						result = result + '<label>Timesheet Approval Mechanism</label>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
 						result = result + '<label class="paddingRight"><input type="radio" id="sequentialTimesheetsApproval"  value="Sequential" '+(json.projectApprovalType == "Sequential" ? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
@@ -1197,7 +1197,7 @@ function editClientProjectDetails(projectId){
 						
 						
 						result = result+' <div class="col-md-4">';
-						result = result + '<label>Expense Approval Mechanism<span class="text-danger">*</span></label>';
+						result = result + '<label>Expense Approval Mechanism</label>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallerExpenseApproval" value="Parallel" '+(json.expenseApprovalType == "Parallel"? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
 						result = result + '<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" '+(json.expenseApprovalType == "Sequential" ? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
