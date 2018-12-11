@@ -265,7 +265,6 @@
 										</c:if>
 										<c:if test="${requirement.requirementSubmissionPreviousStatus == 'SUBMITTED'}">
 											<option value='SUBMITTED'>SUBMITTED</option>
-											<option value='OPEN'>OPEN</option>
 											<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_REQUIREMENT\')">
 												<option value='CANCEL'>CANCEL</option>
 											</sec:authorize>
