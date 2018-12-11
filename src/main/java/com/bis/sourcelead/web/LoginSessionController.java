@@ -536,7 +536,6 @@ public class LoginSessionController {
 
 			setTimeZone(request, orgLocations, model);
 			
-			model.setViewName("dashboard");
 
 		} else {
 			commonUtil.highLightMenu(Constants.Dashboard, request);

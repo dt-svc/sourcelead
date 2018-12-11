@@ -20,6 +20,7 @@
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css">
 <script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
 <script src="/resources/js/formvalidator.js"></script>
 <script src="/resources/js/bootstrap-select.min.js"></script>
@@ -27,8 +28,9 @@
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
 <script src="/resources/js/dashboard.js"></script>
+<script src="/resources/js/masterHeaderAction.js"></script>
+
 </head>
 
 

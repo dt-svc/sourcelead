@@ -5001,10 +5001,7 @@ function getLoginUserTabsList() {
 				url : sourceleadUrl + "/getLoginUserTabAccessList?locationId="+locationId+"&userId="+userId,
 				success : function(data) {
 					tabAccessArray = data;
-				///	alert("success loading");
-				//	console.log($("#masterSideNav"));
 					$("#masterSideNav").load("/resources/masterSideNavHtml.html");
-				//	alert("completed");
 				},
 
 			});

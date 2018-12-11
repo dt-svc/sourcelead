@@ -2049,6 +2049,7 @@ public class DashboardRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, locationId);
 		Collection<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), locationId);
 		List<String> loginUserTabsList = new ArrayList<>();
+		loginUserTabsList.add(userRole.getRoles().getRoleName());
 		loginUserTabsList.add("Dashboard");
 		if(tabsList != null && !tabsList.isEmpty()) {
 			for(Tabs tabs : tabsList) {
