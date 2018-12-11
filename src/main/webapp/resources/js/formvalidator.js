@@ -1169,6 +1169,11 @@ jQueryFormUtils.validateName = function(val) {
         if (validationRules.indexOf('validate_max_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length')) {
             return validationErrorMsg || language.tooLongStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
         }
+        
+     	// fixed length
+        if ((validationRules.indexOf('fixed_length') > -1 && value.length < jQueryFormUtils.attrInt(validationRules, 'length')) || (validationRules.indexOf('fixed_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length'))) {
+            return validationErrorMsg || fieldname + language.fixedSizeStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
+        }
 
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
@@ -1450,6 +1455,7 @@ jQueryFormUtils.LANG =  {
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
+    fixedSizeStart : ' length should be ',
     tooLongStart : 'You have given an answer longer than ',
     tooLongEnd : ' characters',
     tooShortStart : 'You have given an answer shorter than ',

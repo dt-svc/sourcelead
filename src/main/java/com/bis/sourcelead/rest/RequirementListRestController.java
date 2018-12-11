@@ -980,9 +980,53 @@ public class RequirementListRestController {
 						requirement.setRepoenedDate(CommonUtil.currentDate());
 					}
 					requirementService.addRequirement(requirement);
+					/*changeStatusEmail();*/
 					StringBuilder reqStatusChange = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "reqStatusChange", reqStatusChange.append(" ").append(requirement.getJobTitle()).append(" Status changed ").append(requirement.getRequirementSubmissionPreviousStatus()).append(" to ").append(requirement.getRequirementSubmissionStatus()).append(" ").toString());
 					modifiedReqStatusMailtoVendorContact(requirement, loginUser, loginOrgLocation);
+//					List<Requirement> requirementList = requirementService.getRequirementListByOrgLocationID(loginOrgLocation.getId(), status, clients, user, userRoleName);
+					
+					
+					
+					
+// ----------- method for e-mail scenario when job status changed mail will be send to manager, vendor,assigned members and primaryRecruiter -----------------------------
+					List<RequirementAssignTo> assignedToList= requirementAssignToService.getRequirementAssignToListByRequirementId(requirement.getId());
+					
+					List<Requirement> parentReqeqList = requirementService.getAllReleasedRequirementsByParentId(requirement.getId());
+					
+					List<User> assignUser = new ArrayList<>();
+					
+					List<User> assignTeamUser = new ArrayList<>();
+					
+					OrgSpoc spoc = null;
+					if(parentReqeqList != null) {
+						for (Requirement req : parentReqeqList) {
+							spoc = orgSpocService.getOrgSpocById(req.getSpocId().getId());
+							assignUser.add(spoc.getVendorUser());
+						}
+					}
+					
+					if(assignedToList != null) {
+						for (RequirementAssignTo requirementAssignTo : assignedToList) {
+							assignTeamUser.add(requirementAssignTo.getAssignUserId());
+							for (User toUser : assignTeamUser) {
+								if(requirement.getRequirementSubmissionStatus() != null &&  (!requirement.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD") && (requirement.getRequirementSubmissionPreviousStatus().toString().equalsIgnoreCase("SUBMITTED")))){
+									requirementService.sendMailToPrimaryRecruiter(requirement,loginUser,toUser);
+								}
+							}
+						}
+					}
+					
+					if(requirement.getPrimaryRecruiterUserId() != null) {
+						assignUser.add(requirement.getPrimaryRecruiterUserId());
+					}
+					
+						assignUser.add(requirement.getManagerUserId());
+						
+						for (User toUser : assignUser) {
+							requirementService.sendMailToPrimaryRecruiter(requirement,loginUser,toUser);
+						}
+					
 				}
 				response.setObject("true");
 				response.setResponse(Result.SUCCESS.name());
@@ -997,6 +1041,10 @@ public class RequirementListRestController {
 		}
 		return response;
 	}
+	// ------------------------------------------------------------------------End of this method------------------------------------------------
+	
+	
+	
 	
 	@RequestMapping(value = "/saveChangedStatusFromDraft", method = RequestMethod.POST)
 	@ResponseBody
@@ -1022,6 +1070,14 @@ public class RequirementListRestController {
 					requirement.setUpdatedBy(loginUser.getUserCode());
 					requirement.setUpdatedDate(commonUtil.currentDate());
 					requirementService.addRequirement(requirement);
+					
+					/*for (String approver : approvers) {
+						User approverUser = userService.getUserById(Long.parseLong(approver));
+						if (!approverUser.getId().equals(user.getId())) {
+							approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
+						}
+					}*/
+					
 				}
 				response.setObject("true");
 				response.setResponse(Result.SUCCESS.name());

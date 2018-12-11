@@ -88,6 +88,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private String isFormulaEditable;
 		
 		private BigDecimal totalForfrequencyLevel;
+		
+		private String status;
 
 		public Long getId() {
 			return id;
@@ -376,6 +378,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setTotalForfrequencyLevel(BigDecimal totalForfrequencyLevel) {
 			this.totalForfrequencyLevel = totalForfrequencyLevel;
+		}
+
+		public String getStatus() {
+			return status;
+		}
+
+		public void setStatus(String status) {
+			this.status = status;
 		}
 		
 }

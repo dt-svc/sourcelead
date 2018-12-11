@@ -22,6 +22,11 @@ public class InvoiceLineItemsDTO {
     private String submissionInvoiceId;
     private String submissionApproverHierarchyId;
     private String user;
+    private String requirementSubmissionId;
+    
+    private String quantity;
+    
+    private String billRateType;
 //	 
 	public String getCandidateName() {
 		return candidateName;
@@ -100,6 +105,24 @@ public class InvoiceLineItemsDTO {
 	}
 	public void setUser(String user) {
 		this.user = user;
+	}
+	public String getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+	public String getBillRateType() {
+		return billRateType;
+	}
+	public void setBillRateType(String billRateType) {
+		this.billRateType = billRateType;
+	}
+	public String getRequirementSubmissionId() {
+		return requirementSubmissionId;
+	}
+	public void setRequirementSubmissionId(String requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
 	}
 	
 	

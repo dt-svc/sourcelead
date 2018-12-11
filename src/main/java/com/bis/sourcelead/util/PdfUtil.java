@@ -1440,7 +1440,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Balance_Leave_Report");
+	        userStyle.append(orgLocation.getOrgLocationName()).append(" ").append("Top_Leave_Taken_Report");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -1489,7 +1489,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("BalanceLeaves Table");
+	        document.addTitle("Balance Leaves Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -2278,7 +2278,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 				cell1.setColspan(18);
 				headerCellStyle(cell1);
 				table.setWidthPercentage(100);
-				table.setWidths(new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 });
+				table.setWidths(new int[] { 5, 5, 5, 7, 5, 5, 5, 5, 5, 5 });
 				table.addCell(cell1);
 				for (int i = 0; i < headers.length; i++) {
 					String header = headers[i];
@@ -2348,7 +2348,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 				reportArray[2] = "--";
 			}
 
-			if (report.getProjectManagers() != null) {
+			if (report.getProjectManagerNames() != null) {
 				reportArray[3] = report.getProjectManagerNames();
 			} else {
 				reportArray[3] = "--";

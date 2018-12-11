@@ -22,6 +22,7 @@
 	<div class="clearfix"></div>
     </section>    
     
+    <div class="project_wrap">
     <div class="immigrationWrap noPad">
 		<div class="immigraInnWrap">
 		
@@ -117,6 +118,7 @@
 			 
     </div>
   </div>
+   </div>
   </section>
   <!-- Content Area -->
 

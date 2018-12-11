@@ -78,6 +78,8 @@ public interface InvoiceService {
 
 	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType,String globalUser)throws Exception;
 
+	Integer getAutomaticInvoiceForJobClosure(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user,String contractType,String globalUser)throws Exception;
+
 	List<Invoice> getInvoiceByOrgLocationId(Long idorgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
 
 	List<Invoice> getClientBasedInvoiceLists(Long orgRelationId, Long orgLocationId, String invoiceType);
@@ -121,6 +123,9 @@ public interface InvoiceService {
 	CreditDebitLineItems getCreditDebitLineItemById(Long id);
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
+	
+	Integer generateInvoiceJobClosureFromDashboard(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user,String contractType,Long orgRlelationId,Long submissionId,Long candidateId)throws Exception;
+
 
 	Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations);
 

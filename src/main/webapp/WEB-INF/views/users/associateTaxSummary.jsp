@@ -10,8 +10,17 @@ function associateTaxSummary(userId){
            url: sourceleadUrl+"/findAssociateTaxSummaryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) {
             var result = "";
-       		result = result + '<div id="editButtonDiv" class="col-md-12">';
+            result = result + '<div id="blankDiv" class="col-md-12 mt minHeight_225" style="display:none;">';
+            result = result + '<div class="pull-left">';
+       		result = result + ' <a class="anchor-black" target="_self" onclick="backToSummary();" title="Back"><i class="fa fa-angle-double-left paddingRight"></i>Back</a>';
+       		result = result + '</div>';
+            result = result + '<div class="dataTables_empty"></div>';
+            result = result + '</div>';
+       		result = result + '<div id="editButtonDiv" class="col-md-12 useredit mt">';
+       		result = result + '<div class="pull-right">';
        		result = result + ' <a onclick="editAssociateSummary('+userId+');" class="anchor-black pull-right" target="_self" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a>';
+       		result = result + ' <a onclick="getAssociateTaxHistory('+userId+');" class="anchor-black pull-right" target="_self" title="History"><i class="fa fa-history paddingRight"></i>History</a>';
+       		result = result + '</div>';
        		result = result + '</div>';
        		result = result + '<div id="summaryBodyDiv">';
        		result = result + ' <div class="user_details_cta user_detailsCta userDetails-cta">';
@@ -100,7 +109,7 @@ function associateTaxSummary(userId){
         		result = result + '  <span>---</span>';
        		result = result + '       <div class="clearfix"></div>';
        		result = result + '     </div>';
-       		result = result + '     <div class="project_details_cta"> <strong>Mediacare:</strong>';
+       		result = result + '     <div class="project_details_cta"> <strong>Medicare:</strong>';
        		if(json.medicareExempt != null && json.medicareExempt != '' && json.medicareExempt != 'undefined')
        			result = result + '  <span title="'+json.medicareExempt+'" >'+json.medicareExempt+'</span>';
         	else
@@ -132,6 +141,7 @@ function associateTaxSummary(userId){
        		result = result + ' </div>';
        		result = result + ' </div>';
        		result = result + '<div id="editBodyDiv" class="col-md-12"></div>';
+       		result = result + '<div id="historyDiv" class="col-md-12"></div>';
                 $("#tab-18").empty(); 
                 $("#tab-17").empty(); 
                 $("#tab-19").empty(); 
@@ -148,6 +158,221 @@ function associateTaxSummary(userId){
   } 
 </script>
  
+<script>
+function getAssociateTaxHistory(userId){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+"/getAssociateTaxHistoryByUserId?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success : function(result) {
+			var json = result.data;
+			var result = "";
+			if(json.length >= 1){
+					result += '<div class="clearfix positionRelative" id="assTaxHisViewDiv">';
+					result = result + '<div class="clearfix mt">';
+		       		result = result + ' <a class="anchor-black" target="_self" onclick="backToSummary();" title="Back"><i class="fa fa-angle-double-left paddingRight"></i>Back</a>';
+		       		result = result + '</div>';
+		            result += '<h4>Timeline</h4>';
+					result += '	<ul class="timelineDots clearfix">';
+					
+					for(var i=0; i<json.length;i++){
+						var opt = json[i];
+						result += ' <li>';
+						result += '<div class="media">';
+						result += '<div class="media-left">';
+						result += '	<div class="media-object">';
+						if(opt.profileURL != null && opt.profileURL != '' && opt.profileURL != 'undefined'){
+							result += ' <img src="'+opt.profileURL+'" class="" style="width:50px" alt="Image">';
+						}else{
+							result += ' <img src="" class="" style="width:50px" alt="Image">';
+						}
+						result += '	</div>';
+						result += ' </div>';
+						result += ' <div class="media-body">';
+						result += '	<div class="row">';
+						result += ' <div class="col-md-9">';
+						result += '		<p class="media-heading textBold">'+opt.userName+' has updated the Tax Details</p>';
+						result += '	</div>';
+						result += '	<div class="col-md-3">';
+						result += '	  <ul class="pull-right small text-muted list-unstyled list-inline">';
+						var dateStr = opt.updatedDate.split("#");
+						result += '		<li class="mr"><i class="fa fa-calendar paddingRight"></i>'+dateStr[0]+'</li>';
+						result += '		<li><i class="fa fa-clock-o paddingRight"></i>'+dateStr[1]+'</li>';
+						result += '	  </ul>  ';
+						result += '	<div class="clearfix"></div>';
+						result += '	</div>';
+						result += '	</div>';
+						
+						result += '	<div class="row mt5">';
+						
+						if(opt.previousFederalTaxFilliingStatus != null && opt.previousFederalTaxFilliingStatus != '' && opt.previousFederalTaxFilliingStatus != 'undefined'
+								&& opt.federalTaxFilliingStatus != null && opt.federalTaxFilliingStatus != '' && opt.federalTaxFilliingStatus != 'undefined'){
+							if(opt.previousFederalTaxFilliingStatus != opt.federalTaxFilliingStatus){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Federal Filling Status:</label>';
+								result += '			<span class="col-md-10">'+opt.previousFederalTaxFilliingStatus+' to '+opt.federalTaxFilliingStatus+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousFederalTaxAllowances != null && opt.previousFederalTaxAllowances != '' && opt.previousFederalTaxAllowances != 'undefined'
+							&& opt.federalTaxAllowances != null && opt.federalTaxAllowances != '' && opt.federalTaxAllowances != 'undefined'){
+							if(opt.previousFederalTaxAllowances != opt.federalTaxAllowances){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Federal Allowances:</label>';
+								result += '			<span class="col-md-10">'+opt.previousFederalTaxAllowances+' to '+opt.federalTaxAllowances+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousFederalTaxAdditionnalWithHolding != null && opt.previousFederalTaxAdditionnalWithHolding != '' && opt.previousFederalTaxAdditionnalWithHolding != 'undefined'
+							&& opt.federalTaxAdditionnalWithHolding != null && opt.federalTaxAdditionnalWithHolding != '' && opt.federalTaxAdditionnalWithHolding != 'undefined'){
+							if(opt.previousFederalTaxAdditionnalWithHolding != opt.federalTaxAdditionnalWithHolding){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Federal Additional with holding:</label>';
+								result += '			<span class="col-md-10">'+opt.previousFederalTaxAdditionnalWithHolding+' to '+opt.federalTaxAdditionnalWithHolding+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousResidenceTaxFilliingStatus != null && opt.previousResidenceTaxFilliingStatus != '' && opt.previousResidenceTaxFilliingStatus != 'undefined'
+							&& opt.residenceTaxFilliingStatus != null && opt.residenceTaxFilliingStatus != '' && opt.residenceTaxFilliingStatus != 'undefined'){
+							if(opt.previousResidenceTaxFilliingStatus != opt.residenceTaxFilliingStatus){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Residence Filliing Status:</label>';
+								result += '			<span class="col-md-10">'+opt.previousResidenceTaxFilliingStatus+' to '+opt.residenceTaxFilliingStatus+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousResidenceTaxAllowances != null && opt.previousResidenceTaxAllowances != '' && opt.previousResidenceTaxAllowances != 'undefined'
+							&& opt.residenceTaxAllowances != null && opt.residenceTaxAllowances != '' && opt.residenceTaxAllowances != 'undefined'){
+							if(opt.previousResidenceTaxAllowances != opt.residenceTaxAllowances){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Residence Tax Allowances:</label>';
+								result += '			<span class="col-md-10">'+opt.previousResidenceTaxAllowances+' to '+opt.residenceTaxAllowances+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousResidenceTaxAdditionnalWithHolding != null && opt.previousResidenceTaxAdditionnalWithHolding != '' && opt.previousResidenceTaxAdditionnalWithHolding != 'undefined'
+							&& opt.residenceTaxAdditionnalWithHolding != null && opt.residenceTaxAdditionnalWithHolding != '' && opt.residenceTaxAdditionnalWithHolding != 'undefined'){
+							if(opt.previousResidenceTaxAdditionnalWithHolding != opt.residenceTaxAdditionnalWithHolding){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Residence Additionnal WithHolding:</label>';
+								result += '			<span class="col-md-10">'+opt.previousResidenceTaxAdditionnalWithHolding+' to '+opt.residenceTaxAdditionnalWithHolding+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousSupplementType != null && opt.previousSupplementType != '' && opt.previousSupplementType != 'undefined'
+							&& opt.supplementType != null && opt.supplementType != '' && opt.supplementType != 'undefined'){
+							if(opt.previousSupplementType != opt.supplementType){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">SupplementType:</label>';
+								result += '			<span class="col-md-10">'+opt.previousSupplementType+' to '+opt.supplementType+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousFederalExempt != null && opt.previousFederalExempt != '' && opt.previousFederalExempt != 'undefined'
+							&& opt.federalExempt != null && opt.federalExempt != '' && opt.federalExempt != 'undefined'){
+							if(opt.previousFederalExempt != opt.federalExempt){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Federal Exempt:</label>';
+								result += '			<span class="col-md-10">'+opt.previousFederalExempt+' to '+opt.federalExempt+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousMediacareExempt != null && opt.previousMediacareExempt != '' && opt.previousMediacareExempt != 'undefined'
+							&& opt.mediacareExempt != null && opt.mediacareExempt != '' && opt.mediacareExempt != 'undefined'){
+							if(opt.previousMediacareExempt != opt.mediacareExempt){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Medicare Exempt:</label>';
+								result += '			<span class="col-md-10">'+opt.previousMediacareExempt+' to '+opt.mediacareExempt+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousSocialSecurityExempt != null && opt.previousSocialSecurityExempt != '' && opt.previousSocialSecurityExempt != 'undefined'
+							&& opt.socialSecurityExempt != null && opt.socialSecurityExempt != '' && opt.socialSecurityExempt != 'undefined'){
+							if(opt.previousSocialSecurityExempt != opt.socialSecurityExempt){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Social Security Exempt:</label>';
+								result += '			<span class="col-md-10">'+opt.previousSocialSecurityExempt+' to '+opt.socialSecurityExempt+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousFutaExempt != null && opt.previousFutaExempt != '' && opt.previousFutaExempt != 'undefined'
+							&& opt.futaExempt != null && opt.futaExempt != '' && opt.futaExempt != 'undefined'){
+							if(opt.previousFutaExempt != opt.futaExempt){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Futa Exempt:</label>';
+								result += '			<span class="col-md-10">'+opt.previousFutaExempt+' to '+opt.futaExempt+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousSutaExempt != null && opt.previousSutaExempt != '' && opt.previousSutaExempt != 'undefined'
+							&& opt.sutaExempt != null && opt.sutaExempt != '' && opt.sutaExempt != 'undefined'){
+							if(opt.previousSutaExempt != opt.sutaExempt){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Suta Exempt:</label>';
+								result += '			<span class="col-md-10">'+opt.previousSutaExempt+' to '+opt.sutaExempt+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousLocalTax != null && opt.previousLocalTax != '' && opt.previousLocalTax != 'undefined'
+							&& opt.localTax != null && opt.localTax != '' && opt.localTax != 'undefined'){
+							if(opt.previousLocalTax != opt.localTax){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Local Tax:</label>';
+								result += '			<span class="col-md-10">'+opt.previousLocalTax+' to '+opt.localTax+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						
+						if(opt.previousLocalTaxState != null && opt.previousLocalTaxState != '' && opt.previousLocalTaxState != 'undefined'
+							&& opt.localTaxState != null && opt.localTaxState != '' && opt.localTaxState != 'undefined'){
+							if(opt.previousLocalTaxState != opt.localTaxState){
+								result += '		<div class="clearfix">';
+								result += '			<label class="col-md-2 text-muted">Local Tax State:</label>';
+								result += '			<span class="col-md-10">'+opt.previousLocalTaxState+' to '+opt.localTaxState+'</span>';
+								result += '		</div>  ';
+							}
+						}
+						result += '</div>';
+						result += '</div>';
+						result += '</div>';
+						result += '</li>';
+					}
+					
+					result += '</ul>';
+				  	result += '</div>';
+				
+			}else{
+				$("#blankDiv").show();
+			}
+		  	 $("#editButtonDiv").hide();
+             $("#summaryBodyDiv").hide();
+             $("#editBodyDiv").hide();
+             $("#historyDiv").append(result);
+             $("#historyDiv").show();
+             
+       }
+	});
+}
+
+function backToSummary(){
+	$("#editButtonDiv").show();
+    $("#summaryBodyDiv").show();
+    $("#editBodyDiv").hide();
+    $("#historyDiv").hide();
+	$("#blankDiv").hide();
+}
+</script>
  
  <script>
  function editAssociateSummary(userId){
@@ -348,7 +573,7 @@ function associateTaxSummary(userId){
               result = result + '  </div>';
               result = result + '</div>';
               result = result + ' <div class="col-md-5">';
-              result = result + ' <label>Mediacare</label>';
+              result = result + ' <label>Medicare</label>';
               result = result + ' <div>';
               if(json.medicareExempt == 'YES'){
             	  result = result + '  <label class="radioIput mr">';
@@ -445,7 +670,7 @@ function associateTaxSummary(userId){
               result = result + ' <div class="col-md-12">';
               result = result + '   <div class="pull-right">';
               result = result + ' <input value="Save" class="btn btn-success btnSuccess" id="associate_tax_button" type="button" onclick="saveAssociateTax('+userId+');">';
-              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButton();" type="button">';
+              result = result + ' <input value="Cancel" class="btn btn-default ml10" onclick="cancelButtonTax('+userId+');" type="button">';
               result = result + '  </div>';
               result = result + '  </div>';
               result = result + '  </div>';
@@ -545,8 +770,10 @@ function getResidenceLocation(userId,localTax){
 </script>
 
 <script>
-function cancelButton(){ 
-	location.replace(sourceleadUrl+ "/usersList");
+function cancelButtonTax(userId){ 
+	$("#editBodyDiv").hide();
+	associateTaxSummary(userId);
+	/* location.replace(sourceleadUrl+ "/usersList"); */
 }
 </script>
 

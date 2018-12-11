@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -25,11 +27,17 @@ import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndPayrollPayheadUtilDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
+import com.bis.sourcelead.dto.ProfessionalTaxDTO;
+import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
@@ -43,10 +51,16 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
+import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.PayrollTaxService;
+import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * This is the commonutil for the certain common methods used throughout the application
@@ -91,6 +105,24 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	PayrollTaxService payrollTaxService;
+	
+	@Autowired
+	private TaxService taxService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	LeaveService leaveService;
+	
+	@Autowired
+	PayrollUtil payrollUtil;
 	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
@@ -375,6 +407,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setNoOfDays(employeePayroll.getNoOfDays());
 				payrollDTO.setGrossPay(employeePayroll.getGrossPay());
 				payrollDTO.setNetPay(employeePayroll.getNetPay());
+				payrollDTO.setLopAmount(employeePayroll.getLopAmount());
 				payrollDTO.setTds(employeePayroll.getTds());
 				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
 				payrollDTO.setApproverStatus(employeePayroll.getIndPaysheetFrequency().getApproverStatus());
@@ -452,7 +485,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		 return payrollList;
 	}
-	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency) throws Exception {
+	public IndPayrollPayheadUtilDTO getAssociatePayrollPayHeadHistoryFromAssociateSalaryPayHeads(Set<AssociateSalaryPayheadInd> payheadList,IndEmployeePayroll empPayroll,User loginUser,String payFrequency, BigDecimal payAdjustmentConst) throws Exception {
 		IndPayrollPayheadUtilDTO utilDTO = new IndPayrollPayheadUtilDTO();
 		BigDecimal grossPay = BigDecimal.ZERO;
 		BigDecimal allDeductions = BigDecimal.ZERO;
@@ -510,16 +543,17 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(payHead.getPayrollPayhead() != null 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
 						&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+					if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
 						allDeductions = allDeductions.add(payHead.getAnnualy());
-					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
+					}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
 						allDeductions = allDeductions.add(payHead.getMonthly());
 					}else  {
+						if(payHead.getAnnualy() != null)
 						allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
 					}
 				}
 				
-				payHeadHistory.setMonthly(payHead.getMonthly());
+				payHeadHistory.setMonthly(payHead.getMonthly().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 				payHeadHistory.setAnnualy(payHead.getAnnualy());
 				payHeadHistory.setStatus(payHead.getStatus());
 				
@@ -889,6 +923,45 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
+	@SuppressWarnings("static-access")
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
+		Double ptAmount = 0.0;
+		
+		AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
+		
+		if(asph != null) {
+			String financialYear = "";
+			Calendar c = Calendar.getInstance();
+			c.setTime(freqEndDate);
+			String fromYear = "";
+			String toYear = "";
+			if(c.get(Calendar.MONTH) <= 3) {
+				toYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, -1);
+				fromYear = c.get(Calendar.YEAR) + "";
+			}else {
+				fromYear = c.get(Calendar.YEAR) + "";
+				c.roll(Calendar.YEAR, 1);
+				toYear = c.get(Calendar.YEAR) + "";
+			}
+			financialYear = fromYear + "-" + toYear;
+			
+			StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+			try {
+				if(taxDTO != null) {
+					ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(asph.getMonthly()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(asph.getMonthly()) >= 0 ).findAny().get();
+					if(ptDTO != null)
+						ptAmount = Double.valueOf(ptDTO.getAmount());
+				}
+			}catch (Exception e) {
+				//e.printStackTrace();
+				return ptAmount;
+			}
+		}
+		return ptAmount;
+	}
+	
+	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
 	{
@@ -903,9 +976,150 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
-	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency savedPF) throws Exception {
-		
-		
+	
+	/**
+	 * Calculating LOP amount for Leaves
+	 * @param employee
+	 * @param orgLocation 
+	 * @param freqEndDate 
+	 * @param freqStartDate 
+	 * @param AssociateSalaryInd 
+	 * @param amount 
+	 * @param IndEmployeePayroll 
+	 * @return
+	 */
+	public Set<PayrollLopHis> getLOPAmountInd(Employees employee, AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, BigDecimal amount, IndEmployeePayroll employeePayroll)
+	{
+		String dayHours = "";
+		BigDecimal lopAmt = BigDecimal.ZERO;
+		Set<PayrollLopHis> lopHiList = null;
+		try {
+			lopHiList = leaveService.getLeaveByFrequencyInd(assoSal.getCandidate().getConsultantUser().getId(), freqStartDate,freqEndDate,orgLocation,employeePayroll);
+			if(lopHiList != null && lopHiList.size() > 0 ) {
+				for(PayrollLopHis payrollLopHis : lopHiList) {
+	    			BigDecimal lopLeaves = new BigDecimal(payrollLopHis.getLopLeaves());
+	    			BigDecimal compareLeave = new BigDecimal("0.5");
+	    			int res = compareLeave.compareTo(lopLeaves);
+	    			BigDecimal hourlyRate = BigDecimal.ZERO;
+	    			if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+	    				  hourlyRate = assoSal.getHourlyRate();
+	    			}else {
+	    				  hourlyRate = amount.divide(new BigDecimal(176));
+	    			}
+	    			if( res == 0 || res == 1) {
+	    				 //Calculating Half Day
+	    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+	    						 BigDecimal hours = new BigDecimal(dayHours.replace(":", "."));
+	    						 BigDecimal dayHrs = hours.divide(new BigDecimal(2));
+	    						 lopAmt = dayHrs.multiply(hourlyRate);
+	    					 }else {
+	    						 BigDecimal dayHrs = new BigDecimal(4);
+	    						 lopAmt = dayHrs.multiply(hourlyRate);
+	    					 }
+	    			}else if( res == -1 ) {
+	    				 //Calculating Full Day
+	    				 if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+	    					 String averageHours = "";
+	    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+	    						 averageHours = employee.getDailyHours().replace(":", ".");
+	    					 }else {
+	    						 averageHours = "8";
+	    					 }
+	    					 BigDecimal one = new BigDecimal("1");
+	    					 double avgHrs = new BigDecimal(averageHours).doubleValue();
+	    					 double leaves = lopLeaves.doubleValue();
+	    					 double dyHours = 0;
+	    					 int res1 = one.compareTo(lopLeaves);
+	    					    if(res1 == 0 || res1 == 1) {
+	    					    	 dyHours = avgHrs/2;
+	    					    }else if(res1 == -1) {
+	    					    	  dyHours = (avgHrs * leaves);
+	    					    }
+	    						lopAmt = payrollUtil.getTotalAmount(dyHours, hourlyRate);
+	    				 }
+	    			 }
+	    			 payrollLopHis.setLopAmount(lopAmt);
+			    }	
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHiList;
+	}
+	
+	
+	
+	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency frequency) throws Exception {
+		if(payrollApprover.getUser().getId() != loginUser.getId()){
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(payrollApprover.getUser().getFirstName());
+			emailMessage.setLastName(payrollApprover.getUser().getLastName());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setFirstName(loginUser.getLastName());
+			emailMessage.setToEmail(payrollApprover.getUser().getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+
+			emailMessage.setFromName(loginUser.getFullName());
+
+			// setting the class field values...............
+
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
+				globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+			} else {
+				globalVarsMap.put("LoginOrgName", "--");
+			}
+			globalVarsMap.put("ApproverName", payrollApprover.getUser().getFullName());
+
+			globalVarsMap.put("Frequency",
+					commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+							frequency.getFrequencyStartDate()) + " to "
+							+ commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),
+									frequency.getFrequencyEndDate()));
+
+			globalVarsMap.put("GetTheBatchName", frequency.getUserGroup().getGroupName());
+
+			globalVarsMap.put("GetTheCountNoOfAssociates", "" + frequency.getIndEmployeepayroll().size());
+
+			BigDecimal totAmount = new BigDecimal(0.0);
+			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+				totAmount.add(indEmployeepayroll.getNetPay());
+			}
+			
+			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
+			// Set the login link when user click this link the page goes to redirect the
+			// sourcelead login page..
+
+			StringBuilder loginLinkBuild = new StringBuilder();
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+					.toString());
+
+			// Set the notification link when user click this link the page goes to
+			// respective payroll summary.......
+
+			StringBuilder notifyBuild = new StringBuilder();
+			globalVarsMap.put("NotificationLink",
+					notifyBuild.append(sourceleadUrl).append("/")
+							.append("employeePayrollList?paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID())
+							.toString());
+
+			// getting the current email scenario by uniqueNotification
+
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.SEND_NOTIFICATION_TO_INDPAYROLL_APPROVER, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+					notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			// getting the current email scenario by uniqueEmail
+
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+					Constants.SEND_MAIL_TO_INDPAYROLL_APPROVER, new ArrayList<EmailAttachment>());
+		}
 	}
 	
 	
@@ -920,10 +1134,60 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	
-	public void sendApprovedMailToRequestedUserInd(OrgLocations orgLocation, IndPaysheetFrequency savedPF, User loginUser){
-		
-		
+	public void sendApprovedMailToRequestedUserInd(OrgLocations orgLocation, IndPaysheetFrequency frequency, User loginUser) throws Exception{
+		if (frequency.getCreatedBy() != loginUser.getId()) {
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(loginUser.getFirstName());
+			emailMessage.setFirstName(loginUser.getLastName());
+			User user = userService.getUserById(frequency.getCreatedBy());
+			emailMessage.setToEmail(user.getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setFromName(loginUser.getFullName());
+
+			// setting the class field values...............
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+				globalVarsMap.put("RequestUsername", user.getFullName());
+			if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
+				globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+			} else {
+				globalVarsMap.put("LoginOrgName", "--");
+			}
+			globalVarsMap.put("loginUser",loginUser.getFullName());
+
+			globalVarsMap.put("Frequency", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyStartDate()) + " to " + commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),frequency.getFrequencyEndDate()));
+
+			globalVarsMap.put("GetTheBatchName",frequency.getUserGroup().getGroupName());
+
+			globalVarsMap.put("GetTheCountNoOfAssociates",""+frequency.getIndEmployeepayroll().size());
+
+			BigDecimal totAmount = new BigDecimal(0.0);
+			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+				totAmount.add(indEmployeepayroll.getNetPay());
+			}
+			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
+			// Set the login link when user click this link the page goes to redirect the sourcelead login page..
+
+			StringBuilder loginLinkBuild = new StringBuilder();
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+
+			// Set the notification link when user click this link the page goes to respective payroll summary.......
+
+			StringBuilder notifyBuild = new StringBuilder();
+			globalVarsMap.put("NotificationLink",notifyBuild.append(sourceleadUrl).append("/").append("employeePayrollList?paySheetFrequencyUUID="+frequency.getPaySheetFrequencyUUID()).toString());
+
+			// getting the current email scenario by uniqueNotification
+
+			EmailScenario notificationScenario = null;
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SEND_APPROVED_NOTIFICATION_TO_REQUESTE_DUSERIND, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			String notificationbody = null;
+			notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_APPROVED_MAIL_TO_REQUESTED_USERIND, new ArrayList<EmailAttachment>());
+		}
 	}
-	
 }
 

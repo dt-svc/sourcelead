@@ -1,4 +1,4 @@
-<jsp:include page="../masterHeader.jsp" />
+ <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -6,9 +6,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <jsp:include page="addExpenseEntries.jsp"></jsp:include>
+  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
- <style type="text/css">
+  <style type="text/css">
 .ReadTextFli {
 	 text-align: -webkit-left;
 }
@@ -39,7 +39,7 @@ $(document).ready(function(){
    <jsp:include page="viewExpenses.jsp"></jsp:include>
  </c:if>
 <!-- View Content Area Ends-->
-  <!-- Content Area -->
+   <!-- Content Area -->
   <c:if test = "${type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -51,11 +51,11 @@ $(document).ready(function(){
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
 	        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
-	    <c:otherwise>
+	     <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
-    
+
     </section>
     <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
@@ -285,7 +285,7 @@ $(document).ready(function(){
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
@@ -542,14 +542,21 @@ function withdrawMyExpense(id){
 
 <script>
 function getAmountValue(rowId){
+	
 	var categoryAmount = document.getElementById("categoryType"+rowId).value;
 	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
 		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$( window.location.href="#addExpenseCategoryButton" + rowId).attr("disabled","disabled");
+		$("#draftForApprovalExpensesId").attr("disabled","disabled");
+		$("#submitForApprovalExpensesId").attr("disabled","disabled");
 	}else{
-		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		 $("#amountDiv"+rowId).find('p.jquery_form_error_message').remove(); 
+		$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+		$("#draftForApprovalExpensesId").prop("disabled", false);
+		$("#submitForApprovalExpensesId").prop("disabled", false);
 	}
    }
 }
@@ -562,13 +569,24 @@ function getAmountValueCategory(rowId){
 	var categoryAmount = document.getElementById("categoryType"+rowId).value;
 	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
 	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+	$("#draftForApprovalExpensesId").prop("disabled", false);
+	$("#submitForApprovalExpensesId").prop("disabled", false);
+	
 if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
 		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$( window.location.href="#addExpenseCategoryButton" + rowId).attr("disabled","disabled");
+		$("#draftForApprovalExpensesId").attr("disabled","disabled");
+		$("#submitForApprovalExpensesId").attr("disabled","disabled");
 	}else{
 		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+		$("#draftForApprovalExpensesId").prop("disabled", false);
+		$("#submitForApprovalExpensesId").prop("disabled", false);
+		
 	}
    }	
   }

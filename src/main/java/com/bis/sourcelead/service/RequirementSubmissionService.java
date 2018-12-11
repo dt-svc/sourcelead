@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -311,6 +314,20 @@ public interface RequirementSubmissionService {
 	RequirementIncentive getRequirementIncentiveByRequirementId(Long requirementId) throws Exception;
 	
 	List<ApplicantsJoinedReportDTO> getRequirementIncentiveByRequirementIdAndLocation(Long requirementId,String userCode,Long orgLocationId, Date[] searchDates) throws Exception;
+
+
+	ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception;
+
+	List<RequirementSubmissionsDTO> getCandidateForInvoiceDashBoard(OrgLocations orgLocations,User user);
+	
+	List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId,String contractType,String selectedAssociates);
+	
+	public List<RequirementSubmissionsDTO> getCandidateForBillsJobClosure(OrgLocations orgLocations, User user,Long orgRelationId,String contractType,String selectedAssociates);
+
 
 
 }

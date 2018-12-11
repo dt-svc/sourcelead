@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,7 @@ import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SearchDTO;
@@ -79,6 +81,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -98,6 +101,7 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
@@ -169,6 +173,9 @@ public class InvoiceRestController {
 	private OrgRelationsService orgRelationsService;
 	@Autowired
 	private ExpensesService expensesService;
+	
+	@Autowired
+	private RequirementSubmissionService requirementSubmissionService;
 	
 	protected static boolean isNullOrEmpty(String str)
 	{
@@ -276,6 +283,122 @@ public class InvoiceRestController {
 		return response;
 	}
 	
+	@RequestMapping(value = "/saveInvoiceForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveInvoiceForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
+	@RequestMapping(value = "/saveBillForJobClosure", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveBillForJobClosure(InvoiceDTO invoiceDTO, 
+			@RequestParam(value = "saveType", required = false) String saveType, 
+			@RequestParam(value = "invoiceType", required = false) String invoiceType,
+			@RequestParam(value = "isJobClosure", required = false) String isJobClosure,
+			HttpServletRequest request) throws Exception
+	{
+		Response<String> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (user != null) {
+				if (Validator.validate(invoiceDTO)) {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+					invoiceDTO.setStaticPath(staticPath);
+					if(StringUtils.isNotBlank(isJobClosure)){
+						invoiceDTO.setIsJobClosure(isJobClosure);	
+					}
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					// update requirement submission 
+					if(invoice !=null){
+					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
+					lineItemsList.forEach(list->{
+						if(list.getRequirementSubmissionId() !=null){
+					try {
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionById(list.getRequirementSubmissionId().getId());
+						submission.setInvoiceGenerated(Constants.YES);
+						requirementSubmissionService.storeRequirementSubmission(submission);
+						
+					} catch (Exception e) {
+						
+						e.printStackTrace();
+					}
+						}
+					});
+					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		
+		return response;
+	}
+	
 	@RequestMapping(value = "/saveCreditDebitNote", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCreditDebitNote(CreditDebitNoteDTO creditDebitNoteDTO, 
 			@RequestParam(value = "saveType", required = false) String saveType, 
@@ -338,18 +461,50 @@ public class InvoiceRestController {
 				associateIds.add(Long.parseLong(selectedAssoicatesIds[i]));
 			}
 			associateList = candidateService.getAllActiveAssociatesByLocationAndAssoicatesList(loginOrgLocation.getId(), associateIds);
-			for (Candidate candidate : associateList) {
-				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
-				if (null != contractsList && contractsList.size() > 0) {
-					candidate.setContractsList(contractsList);
-				}
-			}
+			
 		}
 		else {
 			associateList = candidateService.getAllActiveAssociatesByLocation(loginOrgLocation.getId());
 		}
+		for (Candidate candidate : associateList) {
+			List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, orgRelationId, contractType);
+			if (null != contractsList && contractsList.size() > 0) {
+				candidate.setContractsList(contractsList);
+			}
+		}
 //		resultJson = commonUtil.toJSON(associateList);
 		responseList.setData(associateList);
+		return responseList;
+	}
+	
+	
+	@RequestMapping(value = "/getInvoiceCandidatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getInvoiceCandidatesListForJobClosure(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForInvoiceJobClosure(loginOrgLocation, user, orgRelationId,contractType,selectedAssociates);
+		
+		responseList.setData(applicantsList);
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getVendorInvoiceAssociatesListForJobClosure", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates, 
+			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<RequirementSubmissionsDTO> responseList = new ResponseList<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<RequirementSubmissionsDTO> applicantsList = requirementSubmissionService.getCandidateForBillsJobClosure(loginOrgLocation, user, vendorOrgRelationId,contractType,selectedAssociates);
+		
+		responseList.setData(applicantsList);
 		return responseList;
 	}
 	
@@ -1039,6 +1194,9 @@ return responseList;
 				}
 				if (null != inviceLine.getContract()) {
 					inviceLine.setSowName(inviceLine.getContract().getContractTitle());
+				}
+				if(inviceLine.getRequirementSubmissionId() !=null){
+					inviceLine.setRequirementName(inviceLine.getRequirementSubmissionId().getRequirement().getJobTitle());
 				}
 				inviceLine.setRate(inviceLine.getRate());
 				inviceLine.setInlineDescription(inviceLine.getInlineDescription());
@@ -2053,6 +2211,28 @@ return responseList;
 		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType,isGlobalAccess);
+//		resultJson = commonUtil.toJSON(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
+	}
+	
+	@RequestMapping(value = "/generateAutomaticInvoiceForJobClosure", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateAutomaticInvoiceForJobClosure(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+//		String resultJson = "";
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
 		response.setObject(invoiceDTO);

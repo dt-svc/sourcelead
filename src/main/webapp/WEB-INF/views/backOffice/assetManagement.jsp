@@ -7,12 +7,8 @@
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <style type="text/css">
-.columnfields-custom .col-md-9 {
-	width: 100%;
-}
-.popinnerdiv  {
-min-height: 100px; max-height: 450px; overflow-y:auto; 
-}
+.columnfields-custom .col-md-9 { width: 100%;}
+.popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
 </style>
 
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
@@ -77,6 +73,8 @@ $(document).ready(function(){
   <div class="pull-left"><h2>Asset Management</h2></div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Asset Management</div>
 </section>
+
+<div class="project_wrap">
 <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
          <li class="current"><a href="#tab-8" onclick="getDynamicAssetList()" id="asset">Assets</a></li>
@@ -214,7 +212,8 @@ $(document).ready(function(){
   
       
       <div class="clearfix"></div>
-      
+      <input type="hidden" id="assetmanagementPdfFile" name="assetmanagementPdfFile">
+      <input type="hidden" id="assetAssignFileSize" name="assetAssignFileSize">
     <!-- list Table -->
     <div class="require_wrap_table table-wrap datatable_filter overflow_inherint project_tabs_inn" id="tab-8">
 	    <div id= "assetManagementLoderDiv"></div>
@@ -245,6 +244,7 @@ $(document).ready(function(){
         </div>
       </div>
     </div>
+    
     <!-- Project -->
   </div>
   </section>
@@ -252,6 +252,7 @@ $(document).ready(function(){
    <div class="comMask"></div>
   		<div class="modal assetManagementPopup" id="assetManagementPopup" style="display: none;">
  		<jsp:include page="addAssetPopup.jsp"></jsp:include> 
+ 	</div>
  	</div>
 
 <script>
@@ -671,6 +672,7 @@ function projectAssetPaginations(url){
 		  	"display": "none",
 		  	"render": function(data, type, report) {
 		  		var result = "";
+		  		$("#assetmanagementPdfFile").val(1);
 			   	result = result+'<td><div class="tbldata-dotdot" title="'+report.id+'">'+report.id+'</div></td>';
 
 	             return result;
@@ -891,6 +893,7 @@ function assignAssetPagination(url){
 		  	"display": "none",
 		  	"render": function(data, type, report) {
 		  		var result = "";
+		  		   $("#assetAssignFileSize").val(1);
 			  		if(report.employeeId != null && report.employeeId != "" && report.employeeId !="undefined"){
 					   	result = result+'<td><div class="tbldata-dotdot_80" title="'+report.employeeId+'">'+report.employeeId+'</div></td>';
 			  		}else{
@@ -1079,7 +1082,7 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 						result = result + '			<div class="col-md-12">';
 						result = result + '				<label class="clearfix">Description<span class="colorRed paddingLeft">*</span></label>';
 						result = result + '				<div class="clearfix validation_p">';
-						result = result + '					<textarea class="form-control" rows="3" name="description" id="description" placeholder="Description" data-validation="required" field-name="Description"></textarea>';
+						result = result + '					<textarea class="form-control" rows="3" name="description" id="description" placeholder="Description" data-validation="required validate_length length2-500" field-name="Description"></textarea>';
 						result = result + '				</div>';
 						result = result + '			</div>';
 					result = result + '	</div>';
@@ -1146,6 +1149,7 @@ function closePopup(assetUUID,assetId) {
 <script>
 function saveAssetService(assetId){
 	if ($('#assetService_form').validate(false, validationSettings)) {
+		$("#save_button").attr("disabled", "disabled");
 		var rowHtmlContent =  $("#asset"+assetId).html();
 		var workingState = $("#workingState").val();
 		 $("#asset"+assetId).empty();
@@ -1630,10 +1634,22 @@ function assetExport(type){
     {
 		tags.push($(this).val());
     });
-	
+	var emptyFileSize = $('#assetmanagementPdfFile').val();
 	var searchValue = $("#assetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 if(emptyFileSize > 0 ){
+	 	 window.location.href = sourceleadUrl	+"/getAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 }else{
+		   $('.mask').show();
+		    var result = "";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+	 }
 }
 </script>
 <!-- ==================================  Asset Export script Written By Laxman Ends==============================  -->
@@ -1670,10 +1686,22 @@ function assignAssetExport(type){
     {
 		tags.push($(this).val());
     });
-	
+	var fileSize = $("#assetAssignFileSize").val();
 	var searchValue = $("#assignAssetDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 if(fileSize > 0){
+		 window.location.href = sourceleadUrl	+"/getAssignAssetmanagementExport?searchValue="+searchValue+"&categoryIds="+categoryIds+"&workingStatus="+workingStatus+"&shiftIds="+shiftIds+"&tags="+tags+"&exportType="+exportType;
+	 }else{
+		 $('.mask').show();
+		 var result = "";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#pipeline_user_pop").slideDown(200);
+	 }
 }
 </script>
 <!-- ================================== AssigneAsset Export script Written By Laxman Ends==============================  -->
@@ -1718,6 +1746,7 @@ function deleteAsset(assetUUID){
 
 <script type="text/javascript">
 function cancel(){
+	$('.mask').hide();
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
