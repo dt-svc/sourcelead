@@ -30,7 +30,8 @@
 <script src="/resources/js/jquery.timepicker.js"></script>
 <script src="/resources/js/dashboard.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
-
+<script src="/resources/js/masterSideNav.js"></script>
+<script src="/resources/js/masterHeader.js"></script>
 </head>
 
 
@@ -38,9 +39,5 @@
 $(document).ready(function() {
 	   getLoginUserTabsList();
 		$('body').load("/resources/dashboardHtml.html");
-	   //alert("hi");
-		/* setTimeout(function () {
-			$('body').load("/resources/dashboardHtml.html");
-			}, 5000); */
 	});
 </script>
