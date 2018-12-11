@@ -374,6 +374,8 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 			 globalVarsMap.put("employeeUser",loginUser.getFirstName());
 		 }
 		 
+		 
+		 
 		 if(null != managerUser.getLastName() && !"".equalsIgnoreCase(managerUser.getLastName())){
 			 StringBuilder manager =new StringBuilder();
 			 globalVarsMap.put("managerUser", manager.append(managerUser.getFirstName()).append(" ").append(managerUser.getLastName()).toString());
@@ -395,6 +397,9 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 		 globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
 		 }
 		 
+		 if(null != expenses.getTotalsubmittedAmount()) {
+			 globalVarsMap.put("totalSubmittedAmount",expenses.getTotalsubmittedAmount().toString());
+		 }
 		 
 		 Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
 		 for(ExpensesEntries exp : expensesEntries) {
