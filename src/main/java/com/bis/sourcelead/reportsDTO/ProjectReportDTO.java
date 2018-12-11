@@ -9,6 +9,7 @@ public class ProjectReportDTO extends SearchDTO implements Serializable{
 
 	private String projectName;
 	private String projectStatus;
+	private String[] associateStatus;
 	private String projectStartDate;
 	private String projectEndDate;
 	private String projectMembers;
@@ -22,8 +23,21 @@ public class ProjectReportDTO extends SearchDTO implements Serializable{
 	private List<Long> projectClients;
 	private String projectManagerNames;
 	private String projectSeqNo;
+	private boolean refreshFlag;
 	
 	
+	public boolean isRefreshFlag() {
+		return refreshFlag;
+	}
+	public void setRefreshFlag(boolean refreshFlag) {
+		this.refreshFlag = refreshFlag;
+	}
+	public String[] getAssociateStatus() {
+		return associateStatus;
+	}
+	public void setAssociateStatus(String[] associateStatus) {
+		this.associateStatus = associateStatus;
+	}
 	public String getProjectName() {
 		return projectName;
 	}
