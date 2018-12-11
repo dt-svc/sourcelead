@@ -202,7 +202,7 @@ public class LoginSessionController {
 			@RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 
 		ModelAndView model = new ModelAndView();
-		/*	if (authentication == null) {
+			if (authentication == null) {
 			model.setViewName("login");
 			return model;
 		}
@@ -249,7 +249,7 @@ public class LoginSessionController {
 		}
 
 		
-		 * if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
+		/* * if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
 		 * if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
 		 * if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
 		 * model.addObject("userId",user.getId());
@@ -257,7 +257,7 @@ public class LoginSessionController {
 		 * model.addObject("emailId",user.getEmail());
 		 * if(StringUtils.isNotBlank(user.getMobilePhone()))
 		 * model.addObject("mobilePhone",user.getMobilePhone());
-		 * model.setViewName("otpVerification"); return model; } } }
+		 * model.setViewName("otpVerification"); return model; } } }*/
 		 
 
 		// commented By Pavan jampana -- switchuserType value will be available in the
@@ -696,8 +696,7 @@ public class LoginSessionController {
 		model.addObject("dashboardConfigured", dashboardConfigured);
 		model.addObject("dashboardItems", dashboardItems);
 		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
-			model.setViewName("dashboard_configured");*/
-		model.setViewName("dashboard");
+			model.setViewName("dashboard_configured");
 		return model;
 
 	}
