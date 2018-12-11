@@ -2831,6 +2831,8 @@ public class CandidateDaoImpl implements CandidateDao {
 
 
 
+
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
@@ -2844,6 +2846,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
 	}
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

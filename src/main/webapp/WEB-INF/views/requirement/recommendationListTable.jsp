@@ -277,7 +277,7 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, obj){
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +" <b>Do you want to remove "+candidateName+" from the cart!</b>";
+		result = result +" <div class='modal-body'><b>Do you want to remove "+candidateName+" from the cart!</b></div>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+obj+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
 		result = result +"	</div>";
