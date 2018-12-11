@@ -151,10 +151,10 @@ function showTextSettingsTab(ele) {
 		var marginRight = $(ele).data("margin_right");
 		var marginBottom = $(ele).data("margin_bottom");
 		var marginLeft = $(ele).data("margin_left"); */
-		var paddingTop = savedPaddingTop === "" ? "" : savedPaddingTop;
-		var paddingRight = savedPaddingRight === "" ? "" : savedPaddingRight;
-		var paddingBottom = savedPaddingBottom === "" ? "" : savedPaddingBottom;
-		var paddingLeft = savedPaddingLeft === "" ? "" : savedPaddingLeft;
+		var paddingTop = savedPaddingTop === "" ? "0" : savedPaddingTop;
+		var paddingRight = savedPaddingRight === "" ? "0" : savedPaddingRight;
+		var paddingBottom = savedPaddingBottom === "" ? "0" : savedPaddingBottom;
+		var paddingLeft = savedPaddingLeft === "" ? "0" : savedPaddingLeft;
 
 		//auto-fill of pre-filled values to edit components
 		$("#textFontFamily").val(fontFamily);
@@ -246,103 +246,108 @@ function showTextSettingsTab(ele) {
 
 function applyTextSettings(saveFlag) {
 	if(activeElement !== null) {
-		//original values
-		var textBGColorCB = $("#textBGColorCB").is(":checked");
-		
-		var fontFamily = $("#textFontFamily").val();
-		var fontStyle = $("#textFontStyle").val();
-//		var fontSize = $("#textFontSize").val() === "" ? "14" : $("#textFontSize").val();
-		var fontSize = "14px";
-		if($("#textFontSize").val() === "small") {
-			fontSize = "12px";
-		} else if($("#textFontSize").val() === "medium") {
-			fontSize = "14px";
-		} else if($("#textFontSize").val() === "large") {
-			fontSize = "16px";
-		} else if($("#textFontSize").val() === "extraLarge") {
-			fontSize = "18px";
-		}
-		
-		var textAlign = $("#textFontAlign").val();
-		var textColor = $("#textTextColorSelector").val();
-		var bgColor = "";
-		if(textBGColorCB)
-			bgColor = $("#textBGColorSelector").val();
-		else
-			bgColor = "transparent";
-		var marginTop = $("#textMarginTop").val() === "" ? "0" : $("#textMarginTop").val();
-		var marginRight = $("#textMarginRight").val() === "" ? "0" : $("#textMarginRight").val();
-		var marginBottom = $("#textMarginBottom").val() === "" ? "0" : $("#textMarginBottom").val();
-		var marginLeft = $("#textMarginLeft").val() === "" ? "0" : $("#textMarginLeft").val();
-
-		var paddingTop = $("#textPaddingTop").val() === "" ? "0" : $("#textPaddingTop").val();
-		var paddingRight = $("#textPaddingRight").val() === "" ? "0" : $("#textPaddingRight").val();
-		var paddingBottom = $("#textPaddingBottom").val() === "" ? "0" : $("#textPaddingBottom").val();
-		var paddingLeft = $("#textPaddingLeft").val() === "" ? "0" : $("#textPaddingLeft").val();
-		
-		//converted to data attribute values
-		var dataFontFamily = ($("#textFontFamily").data("prefix") !== "" ? $("#textFontFamily").data("prefix") + ":" : "") + fontFamily + "" + $("#textFontFamily").data("suffix");
-		var dataFontStyle = ($("#textFontStyle").data("prefix") !== "" ? $("#textFontStyle").data("prefix") + ":" : "") + fontStyle + "" + $("#textFontFamily").data("suffix");
-		var dataFontSize = ($("#textFontSize").data("prefix") !== "" ? $("#textFontSize").data("prefix") + ":" : "") + fontSize + "" + $("#textFontSize").data("suffix");
-		var dataTextAlign = ($("#textFontAlign").data("prefix") !== "" ? $("#textFontAlign").data("prefix") + ":" : "") + textAlign + "" + $("#textFontAlign").data("suffix");
-		var dataTextColor = ($("#textTextColorSelector").data("prefix") !== "" ? $("#textTextColorSelector").data("prefix") + ":" : "") + textColor + "" + $("#textTextColorSelector").data("suffix");
-		var dataTextBGColorCB = textBGColorCB;
-		var dataBgColor = "";
-		if(textBGColorCB)
-			dataBgColor = ($("#textBGColorSelector").data("prefix") !== "" ? $("#textBGColorSelector").data("prefix") + ":" : "") + bgColor + "" + $("#textBGColorSelector").data("suffix");
-		else
-			dataBgColor = "background-color:transparent";
-		/* var dataMarginTop = ($("#textMarginTop").data("prefix") !== "" ? $("#textMarginTop").data("prefix") + ":" : "") + marginTop + "" + $("#textMarginTop").data("suffix");
-		var dataMarginRight = ($("#textMarginRight").data("prefix") !== "" ? $("#textMarginRight").data("prefix") + ":" : "") + marginRight + "" + $("#textMarginRight").data("suffix");
-		var dataMarginBottom = ($("#textMarginBottom").data("prefix") !== "" ? $("#textMarginBottom").data("prefix") + ":" : "") + marginBottom + "" + $("#textMarginBottom").data("suffix");
-		 var dataMarginLeft = ($("#textMarginLeft").data("prefix") !== "" ? $("#textMarginLeft").data("prefix") + ":" : "") + marginLeft + "" + $("#textMarginLeft").data("suffix");
-		 */
-		var dataPaddingTop = ($("#textPaddingTop").data("prefix") !== "" ? $("#textPaddingTop").data("prefix") + ":" : "") + paddingTop + "" + $("#textPaddingTop").data("suffix");
-		var dataPaddingRight = ($("#textPaddingRight").data("prefix") !== "" ? $("#textPaddingRight").data("prefix") + ":" : "") + paddingRight + "" + $("#textPaddingRight").data("suffix");
-		var dataPaddingBottom = ($("#textPaddingBottom").data("prefix") !== "" ? $("#textPaddingBottom").data("prefix") + ":" : "") + paddingBottom + "" + $("#textPaddingBottom").data("suffix");
-		var dataPaddingLeft = ($("#textPaddingLeft").data("prefix") !== "" ? $("#textPaddingLeft").data("prefix") + ":" : "") + paddingLeft + "" + $("#textPaddingLeft").data("suffix");
-
-		$(activeElement).parent().attr("style", dataTextAlign);
-		$(activeElement).attr("style", dataFontFamily + ";" + dataFontStyle + ";" + dataFontSize + ";" + dataTextAlign + ";" + dataTextColor + ";" + dataTextBGColorCB + ";" + dataBgColor + ";" + dataPaddingTop + ";" + dataPaddingRight + ";" + dataPaddingBottom + ";" + dataPaddingLeft + ";");
-	
-		if(saveFlag) {
-			//saving actual values as "data" attributes to active element
-			$(activeElement).data("font_family", fontFamily);
-			$(activeElement).data("font_size", fontSize);
-			$(activeElement).data("font_style", fontStyle);
-			$(activeElement).data("text_align", textAlign);
-			$(activeElement).data("color", textColor);
-			$(activeElement).data("background_color_cb", textBGColorCB);
-			$(activeElement).data("background_color", bgColor);
-			$(activeElement).data("margin_top", marginTop);
-			$(activeElement).data("margin_right", marginRight);
-			$(activeElement).data("margin_bottom", marginBottom);
-			$(activeElement).data("margin_left", marginLeft);
-			$(activeElement).data("padding_top", paddingTop);
-			$(activeElement).data("padding_right", paddingRight);
-			$(activeElement).data("padding_bottom", paddingBottom);
-			$(activeElement).data("padding_left", paddingLeft);
+		if($('#paddingForm').validate(false, validationSettings)) {
+			//original values
+			var textBGColorCB = $("#textBGColorCB").is(":checked");
 			
-			//saving full-named values as "data-prev" attributes to active element
-			$(activeElement).data("prev_font_family", dataFontFamily);
-			$(activeElement).data("prev_font_style", dataFontStyle);
-			$(activeElement).data("prev_font_size", dataFontSize);
-			$(activeElement).data("prev_text_align", dataTextAlign);
-			$(activeElement).data("prev_color", dataTextColor);
-			$(activeElement).data("prev_background_color_cb", dataTextBGColorCB);
-			$(activeElement).data("prev_background_color", dataBgColor);
-			/* $(activeElement).data("prev_margin_top", dataMarginTop);
-			$(activeElement).data("prev_margin_right", dataMarginRight);
-			$(activeElement).data("prev_margin_bottom", dataMarginBottom);
-			$(activeElement).data("prev_margin_left", dataMarginLeft); */
-			$(activeElement).data("prev_padding_top", dataPaddingTop);
-			$(activeElement).data("prev_padding_right", dataPaddingRight);
-			$(activeElement).data("prev_padding_bottom", dataPaddingBottom);
-			$(activeElement).data("prev_padding_left", dataPaddingLeft);
+			var fontFamily = $("#textFontFamily").val();
+			var fontStyle = $("#textFontStyle").val();
+//			var fontSize = $("#textFontSize").val() === "" ? "14" : $("#textFontSize").val();
+			var fontSize = "14px";
+			if($("#textFontSize").val() === "small") {
+				fontSize = "12px";
+			} else if($("#textFontSize").val() === "medium") {
+				fontSize = "14px";
+			} else if($("#textFontSize").val() === "large") {
+				fontSize = "16px";
+			} else if($("#textFontSize").val() === "extraLarge") {
+				fontSize = "18px";
+			}
 			
-			$(activeElement).data("style_saved", true);
-			activeElement = null;
-			refreshTextSettings();
+			var textAlign = $("#textFontAlign").val();
+			var textColor = $("#textTextColorSelector").val();
+			var bgColor = "";
+			if(textBGColorCB)
+				bgColor = $("#textBGColorSelector").val();
+			else
+				bgColor = "transparent";
+			var marginTop = $("#textMarginTop").val() === "" ? "0" : $("#textMarginTop").val();
+			var marginRight = $("#textMarginRight").val() === "" ? "0" : $("#textMarginRight").val();
+			var marginBottom = $("#textMarginBottom").val() === "" ? "0" : $("#textMarginBottom").val();
+			var marginLeft = $("#textMarginLeft").val() === "" ? "0" : $("#textMarginLeft").val();
+
+			var paddingTop = $("#textPaddingTop").val() === "" ? "0" : $("#textPaddingTop").val();
+			var paddingRight = $("#textPaddingRight").val() === "" ? "0" : $("#textPaddingRight").val();
+			var paddingBottom = $("#textPaddingBottom").val() === "" ? "0" : $("#textPaddingBottom").val();
+			var paddingLeft = $("#textPaddingLeft").val() === "" ? "0" : $("#textPaddingLeft").val();
+			
+			//converted to data attribute values
+			var dataFontFamily = ($("#textFontFamily").data("prefix") !== "" ? $("#textFontFamily").data("prefix") + ":" : "") + fontFamily + "" + $("#textFontFamily").data("suffix");
+			var dataFontStyle = ($("#textFontStyle").data("prefix") !== "" ? $("#textFontStyle").data("prefix") + ":" : "") + fontStyle + "" + $("#textFontFamily").data("suffix");
+			var dataFontSize = ($("#textFontSize").data("prefix") !== "" ? $("#textFontSize").data("prefix") + ":" : "") + fontSize + "" + $("#textFontSize").data("suffix");
+			var dataTextAlign = ($("#textFontAlign").data("prefix") !== "" ? $("#textFontAlign").data("prefix") + ":" : "") + textAlign + "" + $("#textFontAlign").data("suffix");
+			var dataTextColor = ($("#textTextColorSelector").data("prefix") !== "" ? $("#textTextColorSelector").data("prefix") + ":" : "") + textColor + "" + $("#textTextColorSelector").data("suffix");
+			var dataTextBGColorCB = textBGColorCB;
+			var dataBgColor = "";
+			if(textBGColorCB)
+				dataBgColor = ($("#textBGColorSelector").data("prefix") !== "" ? $("#textBGColorSelector").data("prefix") + ":" : "") + bgColor + "" + $("#textBGColorSelector").data("suffix");
+			else
+				dataBgColor = "background-color:transparent";
+			/* var dataMarginTop = ($("#textMarginTop").data("prefix") !== "" ? $("#textMarginTop").data("prefix") + ":" : "") + marginTop + "" + $("#textMarginTop").data("suffix");
+			var dataMarginRight = ($("#textMarginRight").data("prefix") !== "" ? $("#textMarginRight").data("prefix") + ":" : "") + marginRight + "" + $("#textMarginRight").data("suffix");
+			var dataMarginBottom = ($("#textMarginBottom").data("prefix") !== "" ? $("#textMarginBottom").data("prefix") + ":" : "") + marginBottom + "" + $("#textMarginBottom").data("suffix");
+			 var dataMarginLeft = ($("#textMarginLeft").data("prefix") !== "" ? $("#textMarginLeft").data("prefix") + ":" : "") + marginLeft + "" + $("#textMarginLeft").data("suffix");
+			 */
+			var dataPaddingTop = ($("#textPaddingTop").data("prefix") !== "" ? $("#textPaddingTop").data("prefix") + ":" : "") + paddingTop + "" + $("#textPaddingTop").data("suffix");
+			var dataPaddingRight = ($("#textPaddingRight").data("prefix") !== "" ? $("#textPaddingRight").data("prefix") + ":" : "") + paddingRight + "" + $("#textPaddingRight").data("suffix");
+			var dataPaddingBottom = ($("#textPaddingBottom").data("prefix") !== "" ? $("#textPaddingBottom").data("prefix") + ":" : "") + paddingBottom + "" + $("#textPaddingBottom").data("suffix");
+			var dataPaddingLeft = ($("#textPaddingLeft").data("prefix") !== "" ? $("#textPaddingLeft").data("prefix") + ":" : "") + paddingLeft + "" + $("#textPaddingLeft").data("suffix");
+
+			$(activeElement).parent().attr("style", dataTextAlign);
+			$(activeElement).attr("style", dataFontFamily + ";" + dataFontStyle + ";" + dataFontSize + ";" + dataTextAlign + ";" + dataTextColor + ";" + dataTextBGColorCB + ";" + dataBgColor + ";" + dataPaddingTop + ";" + dataPaddingRight + ";" + dataPaddingBottom + ";" + dataPaddingLeft + ";");
+		
+			if(saveFlag) {
+				//saving actual values as "data" attributes to active element
+				$(activeElement).data("font_family", fontFamily);
+				$(activeElement).data("font_size", fontSize);
+				$(activeElement).data("font_style", fontStyle);
+				$(activeElement).data("text_align", textAlign);
+				$(activeElement).data("color", textColor);
+				$(activeElement).data("background_color_cb", textBGColorCB);
+				$(activeElement).data("background_color", bgColor);
+				$(activeElement).data("margin_top", marginTop);
+				$(activeElement).data("margin_right", marginRight);
+				$(activeElement).data("margin_bottom", marginBottom);
+				$(activeElement).data("margin_left", marginLeft);
+				$(activeElement).data("padding_top", paddingTop);
+				$(activeElement).data("padding_right", paddingRight);
+				$(activeElement).data("padding_bottom", paddingBottom);
+				$(activeElement).data("padding_left", paddingLeft);
+				
+				//saving full-named values as "data-prev" attributes to active element
+				$(activeElement).data("prev_font_family", dataFontFamily);
+				$(activeElement).data("prev_font_style", dataFontStyle);
+				$(activeElement).data("prev_font_size", dataFontSize);
+				$(activeElement).data("prev_text_align", dataTextAlign);
+				$(activeElement).data("prev_color", dataTextColor);
+				$(activeElement).data("prev_background_color_cb", dataTextBGColorCB);
+				$(activeElement).data("prev_background_color", dataBgColor);
+				/* $(activeElement).data("prev_margin_top", dataMarginTop);
+				$(activeElement).data("prev_margin_right", dataMarginRight);
+				$(activeElement).data("prev_margin_bottom", dataMarginBottom);
+				$(activeElement).data("prev_margin_left", dataMarginLeft); */
+				$(activeElement).data("prev_padding_top", dataPaddingTop);
+				$(activeElement).data("prev_padding_right", dataPaddingRight);
+				$(activeElement).data("prev_padding_bottom", dataPaddingBottom);
+				$(activeElement).data("prev_padding_left", dataPaddingLeft);
+				
+				$(activeElement).data("style_saved", true);
+				activeElement = null;
+				refreshTextSettings();
+			}
+			$(".configureBtn").removeClass("disabled");
+		} else {
+			$(".configureBtn").addClass("disabled");
 		}
 	} else {
 		alert("please select a text element");
@@ -671,10 +676,15 @@ function showTableSettingsTab(ele) {
 		} else if(thFontSize === "6px") {
 			$("#tableHeadFontSize").val("small");
 		}
-		$("#tableHeadBGColor").val(thBGColor.replace(/!important/g,""));
-		$("#tableHeadBGColorSelector").val(thBGColor.replace(/!important/g,""));
-		$("#tableHeadFontColor").val(thTextColor.replace(/!important/g,""));
-		$("#tableHeadFontColorSelector").val(thTextColor.replace(/!important/g,""));
+		
+		if(thBGColor !== "") {
+			$("#tableHeadBGColor").val(thBGColor.replace(/!important/g,""));
+			$("#tableHeadBGColorSelector").val(thBGColor.replace(/!important/g,""));
+		}
+		if(thTextColor !== "") {
+			$("#tableHeadFontColor").val(thTextColor.replace(/!important/g,""));
+			$("#tableHeadFontColorSelector").val(thTextColor.replace(/!important/g,""));
+		}
 		
 		if(tdFontSize === "12px") {
 			$("#tableBodyFontSize").val("extraLarge");
@@ -685,10 +695,10 @@ function showTableSettingsTab(ele) {
 		} else if(tdFontSize === "6px") {
 			$("#tableBodyFontSize").val("small");
 		}
-		$("#tableBodyBGColor").val(tdBGColor.replace(/!important/g,""));
+		/*$("#tableBodyBGColor").val(tdBGColor.replace(/!important/g,""));
 		$("#tableBodyBGColorSelector").val(tdBGColor.replace(/!important/g,""));
 		$("#tableBodyFontColor").val(tdTextColor.replace(/!important/g,""));
-		$("#tableBodyFontColorSelector").val(tdTextColor.replace(/!important/g,""));
+		$("#tableBodyFontColorSelector").val(tdTextColor.replace(/!important/g,""));*/
 //		console.log("--------TH--------" + thBorder + "--------" + thFontSize + "--------" + thBGColor + "--------" + thTextColor);
 //		console.log("--------TD--------" + tdBorder + "--------" + tdFontSize + "--------" + tdBGColor + "--------" + tdTextColor);
 		$("#textSettingsTab").hide();

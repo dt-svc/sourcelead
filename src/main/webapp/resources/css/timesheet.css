@@ -8457,7 +8457,7 @@ bottom: auto !important; top: 55px !important;
     border: 1px solid #86bbec;
 }
 .previewInnerCta {
-    width: 48%; margin: 1%; min-height: 120px; float: left;
+    width: 48%; margin: 1%; min-height: 140px; float: left;
 }
 .previewInnerCta h3 {padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;}
 .previewInnerCta span {display: none;}
@@ -8504,5 +8504,6 @@ bottom: auto !important; top: 55px !important;
 	border: 2px solid #f00 !important;
 } */
 .hide {display: none;}
+.configureBtn.disabled {box-shadow: none; opacity: .65;}
 
 /* Custom Invoice PDF */

@@ -120,25 +120,27 @@
 						<span class="text-muted" style="font-size: 10px;">Left</span>
 					</div>
 				</div> -->
-				<div class="row clearfix">
-					<label class="col-md-12 mb10 text-muted">Padding (in pixels)</label>
-					<div class="col-md-3 paddingRight">
-						<input type="text" id="textPaddingTop" placeholder="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_top" data-prefix="padding-top" data-suffix="px">
-						<span class="text-muted" style="font-size: 10px;">Top</span>
+				<form id="paddingForm">
+					<div class="row clearfix">
+						<label class="col-md-12 mb10 text-muted">Padding (in pixels)</label>
+						<div class="col-md-3 paddingRight">
+							<input type="text" id="textPaddingTop" placeholder="0" value="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_top" data-prefix="padding-top" data-suffix="px" data-validation="validate_number validate_length length1-2" field-name="Top">
+							<span class="text-muted" style="font-size: 10px;">Top</span>
+						</div>
+						<div class="col-md-3 paddingLeft paddingRight">
+							<input type="text" id="textPaddingRight" placeholder="0" value="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_right" data-prefix="padding-right" data-suffix="px" data-validation="validate_number validate_length length1-2" field-name="Right">
+							<span class="text-muted" style="font-size: 10px;">Right</span>
+						</div>
+						<div class="col-md-3 paddingLeft paddingRight">
+							<input type="text" id="textPaddingBottom" placeholder="0" value="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_bottom" data-prefix="padding-bottom" data-suffix="px" data-validation="validate_number validate_length length1-2" field-name="Bottom">
+							<span class="text-muted" style="font-size: 10px;">Bottom</span>
+						</div>
+						<div class="col-md-3 paddingLeft">
+							<input type="text" id="textPaddingLeft" placeholder="0" value="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_left" data-prefix="padding-left" data-suffix="px" data-validation="validate_number validate_length length1-2" field-name="Left">
+							<span class="text-muted" style="font-size: 10px;">Left</span>
+						</div>
 					</div>
-					<div class="col-md-3 paddingLeft paddingRight">
-						<input type="text" id="textPaddingRight" placeholder="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_right" data-prefix="padding-right" data-suffix="px">
-						<span class="text-muted" style="font-size: 10px;">Right</span>
-					</div>
-					<div class="col-md-3 paddingLeft paddingRight">
-						<input type="text" id="textPaddingBottom" placeholder="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_bottom" data-prefix="padding-bottom" data-suffix="px">
-						<span class="text-muted" style="font-size: 10px;">Bottom</span>
-					</div>
-					<div class="col-md-3 paddingLeft">
-						<input type="text" id="textPaddingLeft" placeholder="0" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="padding_left" data-prefix="padding-left" data-suffix="px">
-						<span class="text-muted" style="font-size: 10px;">Left</span>
-					</div>
-				</div>
+				</form>
 			</div>
 			<div class="popupFoot">
 				<a class="slBtn md colorBtn configureBtn disabled" id="applyTextSettingsBtn" href="javascript:void(0)" onclick="applyTextSettings(true)">Save</a>
@@ -169,7 +171,7 @@
 						<div class="clearfix">
 							<select class="sel" id="imagePosition" onchange="applyImageSettings(false)">
 								<option value="left">Left</option>
-								<option value="none" selected>Center</option>
+								<!-- <option value="none" selected>Center</option> -->
 								<option value="right">Right</option>
 							</select>
 						</div>
@@ -227,7 +229,7 @@
 										<option value="small">Small</option>
 										<option value="medium">Medium</option>
 										<option value="large">Large</option>
-										<option value="extraLarge">Extra Large</option>								
+										<option value="extraLarge" selected="selected">Extra Large</option>								
 									</select>
 								</div>
 							</div>
@@ -236,9 +238,9 @@
 							<label class="col-md-5">Background Color</label>
 							<div class="col-md-7">
 								<div class="input-group">
-									<input id="tableHeadBGColor" class="form-control" name="tblBorder" value="#ffff00" placeholder="#6C7686" type="text">
+									<input id="tableHeadBGColor" class="form-control" name="tblBorder" value="#6C7686" placeholder="#6C7686" type="text">
 									<span class="input-group-addon" style="padding: 2px 10px;">
-										<input id="tableHeadBGColorSelector" value="#ffff00" style="width: 20px; height: 20px;" 
+										<input id="tableHeadBGColorSelector" value="#6C7686" style="width: 20px; height: 20px;" 
 										onchange="colorPicker('tableHeadBGColorSelector', 'tableHeadBGColor'); applyTableSettings(false);" type="color">
 									</span>
 								</div>
@@ -267,7 +269,7 @@
 									<select class="form-control" id="tableBodyFontSize" onchange="applyTableSettings(false)">
 										<option value="small">Small</option>
 										<option value="medium">Medium</option>
-										<option value="large">Large</option>
+										<option value="large" selected="selected">Large</option>
 										<option value="extraLarge">Extra Large</option>								
 									</select>
 								</div>
@@ -277,9 +279,9 @@
 							<label class="col-md-5">Background Color</label>
 							<div class="col-md-7">
 								<div class="input-group">
-									<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" placeholder="#f9f9f9" type="text">
+									<input id="tableBodyBGColor" class="form-control" name="itemrowFontclor" value="#F9F9F9" placeholder="#F9F9F9" type="text">
 									<span class="input-group-addon" style="padding: 2px 10px;">
-										<input id="tableBodyBGColorSelector" value="#f9f9f9"
+										<input id="tableBodyBGColorSelector" value="#F9F9F9"
 										style="width: 20px; height: 20px;" onchange="colorPicker('tableBodyBGColorSelector', 'tableBodyBGColor'); applyTableSettings(false);" type="color">
 									</span>
 								</div>
@@ -289,7 +291,7 @@
 							<label class="col-md-5">Font Color</label>
 							<div class="col-md-7">
 								<div class="input-group">
-									<input id="tableBodyFontColor" class="form-control" name="itemrowFontclor" placeholder="#333" type="text">
+									<input id="tableBodyFontColor" class="form-control" name="itemrowFontclor" value="#333" placeholder="#333" type="text">
 									<span class="input-group-addon" style="padding: 2px 10px;">
 										<input id="tableBodyFontColorSelector" value="#333" style="width: 20px; height: 20px;"
 										 onchange="colorPicker('tableBodyFontColorSelector', 'tableBodyFontColor'); applyTableSettings(false);" type="color">
