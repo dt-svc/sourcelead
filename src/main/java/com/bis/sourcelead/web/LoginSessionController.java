@@ -202,7 +202,7 @@ public class LoginSessionController {
 			@RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 
 		ModelAndView model = new ModelAndView();
-		if (authentication == null) {
+		/*	if (authentication == null) {
 			model.setViewName("login");
 			return model;
 		}
@@ -248,7 +248,7 @@ public class LoginSessionController {
 					userLoginSession.getAuthenticated());
 		}
 
-		/*
+		
 		 * if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
 		 * if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
 		 * if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
@@ -258,7 +258,7 @@ public class LoginSessionController {
 		 * if(StringUtils.isNotBlank(user.getMobilePhone()))
 		 * model.addObject("mobilePhone",user.getMobilePhone());
 		 * model.setViewName("otpVerification"); return model; } } }
-		 */
+		 
 
 		// commented By Pavan jampana -- switchuserType value will be available in the
 		// session no-need to set again.
@@ -535,6 +535,8 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "isAdmin", isAdmin);
 
 			setTimeZone(request, orgLocations, model);
+			
+			model.setViewName("dashboard");
 
 		} else {
 			commonUtil.highLightMenu(Constants.Dashboard, request);
@@ -694,7 +696,8 @@ public class LoginSessionController {
 		model.addObject("dashboardConfigured", dashboardConfigured);
 		model.addObject("dashboardItems", dashboardItems);
 		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
-			model.setViewName("dashboard_configured");
+			model.setViewName("dashboard_configured");*/
+		model.setViewName("dashboard");
 		return model;
 
 	}

@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -90,6 +92,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -192,6 +195,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TeamService teamService;
+	 
+	 @Autowired
+	 TabsService tabsService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -2033,6 +2039,23 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 List<RequirementSubmissionsDTO > dtoList = requirementSubmissionService.getCandidateForInvoiceDashBoard(orgLocations,user);
 		return dtoList; 
+	}
+	
+	
+	@RequestMapping(value = "/getLoginUserTabAccessList")
+	public @ResponseBody List<String> getLoginUserTabAccessList(@RequestParam(value="locationId", required=true) Long locationId,
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, locationId);
+		Collection<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), locationId);
+		List<String> loginUserTabsList = new ArrayList<>();
+		loginUserTabsList.add("Dashboard");
+		if(tabsList != null && !tabsList.isEmpty()) {
+			for(Tabs tabs : tabsList) {
+				loginUserTabsList.add(tabs.getTabName());
+			}
+		}
+		return loginUserTabsList;
 	}
 	
 }

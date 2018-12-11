@@ -1,32 +1,6 @@
 <!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta http-equiv="Pragma" content="private">
-<meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead</title>
-<script src="/resources/js/formvalidator.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
-<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css">
-<script src="/resources/js/jquery-1.11.1.min.js" /></script>
-<script src="/resources/js/jquery-ui.js"></script>
-<script src="/resources/js/formvalidator.js"></script>
-<script src="/resources/js/bootstrap-select.min.js"></script>
-<script src="/resources/js/chosen.jquery.min.js"></script>
-<script src="/resources/js/jquery.dataTables.min.js"></script>
-<script src="/resources/js/sourcelead-app.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/dashboard.js"></script>
-</head>
+
 
 <style>
 .chosen-container {
@@ -60,6 +34,7 @@ width: 75px; padding: 0 !important;
 $( document ).ready(function() {
 	//alert("ready called funtion :::::::::::::>")
 	// need to check role for the below timesheet function call
+	
      timeSheetSubmissionStatusCount("myTimesheets");// timesheet counts 
 	 requirementSubmissionsCount("today"); // jobs counts
 	 expensesCount("myExpenses"); // expenses count self need to check authorizarion
@@ -101,7 +76,7 @@ $('#dasboardTaskDatpicker').datepicker({
       <form id="search_form" name="search_form" action="/app/dashboard" method="post">
         <div class="uasrch-selectpicker">
           <div class="btn-group bootstrap-select uasrch pull-left show-menu-arrow">
-            <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="searchType" title="All"><span class="filter-option pull-left">All</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+           <!--  <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="searchType" title="All"><span class="filter-option pull-left">All</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button> -->
             <div class="dropdown-menu open">
               <ul class="dropdown-menu inner" role="menu">
                 <li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">All</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li>
@@ -264,53 +239,8 @@ $('#dasboardTaskDatpicker').datepicker({
       <li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
     </ul>
   </header>
-  <aside class="">
-    <nav class="newMenu">
-      <ul>
-        <li class="navActive"><a href="/app/dashboard/971" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>
-        <li class=""><a href="/app/usersList" title="Associates"><span class="navIcons assIcon"></span><b>Associates</b></a></li>
-        <li class=""><a href="/app/clientDashboard" title="Clients"><span class="navIcons cliIcon"></span><b>Clients</b></a></li>
-        <li class=""><a href="/app/jobs" title="Jobs"><span class="navIcons jobIcon"></span><b>Jobs</b></a></li>
-        <li class=""><a href="/app/vendorsList" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
-        <li class=""><a href="/app/candidatesList" title="Candidates"><span class="navIcons canIcon"></span><b>Candidates</b></a></li>
-        <li class=""><a href="/app/candidateOnBoardingList" title="On / Off Boarding"><span class="navIcons onoffIcon"></span><b>On / Off Board</b></a></li>
-        <li class=""><a href="/app/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
-        <li class=""> <a href="#" class="timesheetLi" title="Timesheets"><span class="navIcons timIcon"></span><b>Timesheets</b> <i class="fa fa-fw fa-caret-down"></i> </a>
-          <ul class="collapses" style="display: none">
-            <li class=""><a href="/app/timesheet" title="My TimeSheets"><i class="fa fa-chevron-right"></i> Self</a></li>
-            <li class=""><a href="/app/timesheetApproval" title="TimeSheet Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
-          </ul>
-        </li>
-        <li class=""> <a href="#" class="expencesLi" title="Expenses"> <span class="navIcons expIcon"></span><b>Expenses</b> <i class="fa fa-fw fa-caret-down"></i> </a>
-          <ul class="collapses" style="display: none">
-            <li class=""><a href="/app/expenses" title="My Expenses"><i class="fa fa-chevron-right"></i> Self</a></li>
-            <li class=""><a href="/app/expensesApprovalList" title="Expenses Approval"><i class="fa fa-chevron-right"></i> Employees</a></li>
-          </ul>
-        </li>
-        <li class=""><a href="/app/assetManagement" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
-        <li class=""><a href="/app/contractListbyStatus" title="Contracts"><span class="navIcons contIcon"></span><b>Contracts</b></a></li>
-        <li class=""> <a href="#" class="billingLi" title="Finance"> <span class="navIcons finIcon"></span><b>Finance</b> <i class="fa fa-fw fa-caret-down"></i> </a>
-          <ul class="collapses" style="display: none">
-            <li class=""><a href="/app/invoiceList" title="Invoices"><i class="fa fa-chevron-right"></i> Invoices</a></li>
-            <li class=""><a href="/app/payablesList" title="Bills"><i class="fa fa-chevron-right"></i> Bills</a></li>
-          </ul>
-        </li>
-        <li class=""><a href="/app/campaigns/hotcampaigns" title="Campaigns"><span class="navIcons campIcon"></span><b>Campaigns</b></a></li>
-        <li class=""><a href="/app/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
-        <li class=""> <a href="#" class="payrollli" title="Pay Roll"> <span class="navIcons payIcon"></span><b>Pay Roll</b> <i class="fa fa-fw fa-caret-down"></i> </a>
-          <ul class="collapses" style="display: none">
-            <li class=""><a href="/app/myPayrollInd" title="My Pays"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
-            <li class=""><a href="/app/runIndianPayRoll" title="Payroll"><i class="fa fa-chevron-right"></i>Run Payroll</a></li>
-          </ul>
-        </li>
-        <li class=""> <a href="#" class="expencesLi" title="Immigration"> <span class="navIcons immIcon"></span><b>Immigration</b><i class="fa fa-fw fa-caret-down"></i> </a>
-          <ul class="collapses" style="display: none">
-            <li class=""><a href="/app/immigration/myImmigration" title="My Immigration"><i class="fa fa-chevron-right"></i> Self</a></li>
-            <li class=""><a href="/app/immigration/viewImmigrationList" title="Immigrations"><i class="fa fa-chevron-right"></i> Employees</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+  <aside class="" id="masterSideNav">
+   
   </aside>
   <section class="content-wraper">
     <div class="dashboard_loaded">
@@ -965,7 +895,7 @@ $('#dasboardTaskDatpicker').datepicker({
       <div class="modal-dialog modal-lg" style="width: 98%;">
         <div class="modal-content">
           <div class="modalHeader">
-            <button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">Ã—</button>
+            <button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">×</button>
             <h4 class="modal-title">Assign To<i class="fa fa-info-circle" title="Assign the job to the internal team to process the resources for the job"></i></h4>
           </div>
           <div class="modal-body">

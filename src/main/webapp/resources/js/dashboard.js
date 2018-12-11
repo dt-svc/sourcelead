@@ -28,6 +28,7 @@ var timezoneId = "246"
 var country = "India";//'${SourceLeadWeb_orgLocations.country}';
 var locationDate = locationList; // locationList is unique variable using for date format.
 var finalDateFormatEDashboardeventCalendar = '';
+var tabAccessArray = '';
 //$(document).ready(function() {
 	if (locationDate.match("yyyy-MM-dd")) {
 		finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
@@ -437,7 +438,7 @@ function getSelfTotalCounts(){
 	//var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
@@ -490,7 +491,7 @@ function getEmployeeTotalCounts(){
 //	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
@@ -835,7 +836,7 @@ function getAssignedMembersListForEdit(reqId){
 	if(reqId != '' && reqId != 'undefined' && reqId != null){
 		$.ajax({
 	           type : "POST",
-	           url: sourceleadUrl+"/getAssignedMembersForEdit?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
+	           url: sourceleadUrl+"/getAssignedMembersForEdit?reqId="+reqId,    
 	            success :function(result) {
 		            	var json = result.object;
 		            	if (result.response === "SESSION_TIMEDOUT") {
@@ -873,7 +874,7 @@ function editAssignedTeamsOrUsers(requirementId){
 	$("#forAssignedToCount2").text(assignedToEditCount);
 		$.ajax({
 	           type : "POST",
-	           url: sourceleadUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
+	           url: sourceleadUrl+"/saveOrUpdateAssignToTeam?assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    
 	            success :function(result) {
 	            	if (result.response === "SESSION_TIMEDOUT") {
 		  				location.replace(sourceleadUrl);
@@ -4987,6 +4988,32 @@ function contractListPagination() {
 		}
 	});
 }
+
+function predefineProfileImage(imageId){   
+	$(imageId).attr('src','/resources/images/userprofile-img.png');
+}
+
+//contracts starts here
+function getLoginUserTabsList() {
+
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/getLoginUserTabAccessList?locationId="+locationId+"&userId="+userId,
+				success : function(data) {
+					tabAccessArray = data;
+				///	alert("success loading");
+				//	console.log($("#masterSideNav"));
+					$("#masterSideNav").load("/resources/masterSideNavHtml.html");
+				//	alert("completed");
+				},
+
+			});
+}
+
+
+
+
+
 // dashboard scripts
 function configureDiv(){
 	getDateFormatByOrgLocation();
@@ -6347,7 +6374,7 @@ function getEmployeeTotalCounts(){
 //	var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
 	    		   if(report.employeeRequestedCounts == 0){
@@ -6448,7 +6475,7 @@ function getSelfTotalCounts(){
 	//var userId = '${SourceLeadWeb_userId}';
 	 $.ajax({
 	      type : "GET",
-	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?orgLocationId="+orgLocationId+"&userId="+userId,  
 	       success :function(report) { 
 	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
 	   		if(report.selfPendingCounts == 0){
@@ -7263,7 +7290,7 @@ function getUserList(teamType){
 		 	   $("#usersGrid-loader").attr('style','position:absolute; width:100%; height:200px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 	   $.ajax({
 		           type : "POST",
-		           url: sourceleadUrl+"/getUserList?"+tokenParamName+"="+tokenValue+"&teamType="+teamType,    
+		           url: sourceleadUrl+"/getUserList?teamType="+teamType,    
 		            success :function(data) {
 		            	$("#usersGrid").removeAttr("style");
 		            	if (data.response === "SESSION_TIMEDOUT") {
@@ -7403,7 +7430,7 @@ function filterTeamMembers(){
 function getTeamsList(reqId){
 	  $.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
+         url: sourceleadUrl+"/getTeamsList?reqId="+reqId,    
           success :function(result) {
           	var json = result.object;
           	if (result.response === "SESSION_TIMEDOUT") {
