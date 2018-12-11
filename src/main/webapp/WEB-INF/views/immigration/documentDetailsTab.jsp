@@ -148,7 +148,11 @@
 				</c:choose>
 			  </tr>  
 		</c:forEach>
-			  						
+			<c:if test="${empty immigrationCanDocList}">
+			<tr>
+				<td colspan="5" class="dataTables_empty" valign="top"></td>
+			</tr>
+		   </c:if>				
 			</tbody>
 		  </table>
 		</div>

@@ -4301,6 +4301,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Override
 	@Transactional
+	public 	List<RequirementSubmission> getCandidateInvoiceJobClosureDashboard(OrgLocations orgLocations,Long orgRelationId,Long summissionId,Long candidateId)
+ {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalSubmission = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.candidate.id =:candidateId and rs.id =:summissionId and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameter("candidateId", candidateId).setParameter("summissionId", summissionId);
+		finalSubmission =finalQuery.list();
+		return finalSubmission;
+	}
+	
+	
+	@Override
+	@Transactional
 	public List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations, User user,
 			Long orgRelationId, List<Long> selectedAssociates) {
 		Session session = this.sessionFactory.getCurrentSession();

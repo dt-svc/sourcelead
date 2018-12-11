@@ -84,6 +84,11 @@
 				</td> -->
 			  </tr>
 			   </c:forEach>
+			    <c:if test="${empty PassportList}">
+				<tr>
+				 <td colspan="5" valign="top" class="dataTables_empty"></td>
+				</tr>
+			 </c:if>
 			  </tbody>
 		  </table>
 		</div>
