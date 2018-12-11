@@ -51,10 +51,13 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserService;
@@ -114,6 +117,12 @@ public class INDPayrollCommonUtil {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	LeaveService leaveService;
+	
+	@Autowired
+	PayrollUtil payrollUtil;
 	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
@@ -398,6 +407,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setNoOfDays(employeePayroll.getNoOfDays());
 				payrollDTO.setGrossPay(employeePayroll.getGrossPay());
 				payrollDTO.setNetPay(employeePayroll.getNetPay());
+				payrollDTO.setLopAmount(employeePayroll.getLopAmount());
 				payrollDTO.setTds(employeePayroll.getTds());
 				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
 				payrollDTO.setApproverStatus(employeePayroll.getIndPaysheetFrequency().getApproverStatus());
@@ -964,6 +974,79 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		return payPeriod;
 	}
+	
+	
+	
+	/**
+	 * Calculating LOP amount for Leaves
+	 * @param employee
+	 * @param orgLocation 
+	 * @param freqEndDate 
+	 * @param freqStartDate 
+	 * @param AssociateSalaryInd 
+	 * @param amount 
+	 * @param IndEmployeePayroll 
+	 * @return
+	 */
+	public Set<PayrollLopHis> getLOPAmountInd(Employees employee, AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, BigDecimal amount, IndEmployeePayroll employeePayroll)
+	{
+		String dayHours = "";
+		BigDecimal lopAmt = BigDecimal.ZERO;
+		Set<PayrollLopHis> lopHiList = null;
+		try {
+			lopHiList = leaveService.getLeaveByFrequencyInd(assoSal.getCandidate().getConsultantUser().getId(), freqStartDate,freqEndDate,orgLocation,employeePayroll);
+			if(lopHiList != null && lopHiList.size() > 0 ) {
+				for(PayrollLopHis payrollLopHis : lopHiList) {
+	    			BigDecimal lopLeaves = new BigDecimal(payrollLopHis.getLopLeaves());
+	    			BigDecimal compareLeave = new BigDecimal("0.5");
+	    			int res = compareLeave.compareTo(lopLeaves);
+	    			BigDecimal hourlyRate = BigDecimal.ZERO;
+	    			if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+	    				  hourlyRate = assoSal.getHourlyRate();
+	    			}else {
+	    				  hourlyRate = amount.divide(new BigDecimal(176));
+	    			}
+	    			if( res == 0 || res == 1) {
+	    				 //Calculating Half Day
+	    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+	    						 BigDecimal hours = new BigDecimal(dayHours.replace(":", "."));
+	    						 BigDecimal dayHrs = hours.divide(new BigDecimal(2));
+	    						 lopAmt = dayHrs.multiply(hourlyRate);
+	    					 }else {
+	    						 BigDecimal dayHrs = new BigDecimal(4);
+	    						 lopAmt = dayHrs.multiply(hourlyRate);
+	    					 }
+	    			}else if( res == -1 ) {
+	    				 //Calculating Full Day
+	    				 if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
+	    					 String averageHours = "";
+	    					 if(employee != null && StringUtils.isNotBlank(employee.getDailyHours())) {
+	    						 averageHours = employee.getDailyHours().replace(":", ".");
+	    					 }else {
+	    						 averageHours = "8";
+	    					 }
+	    					 BigDecimal one = new BigDecimal("1");
+	    					 double avgHrs = new BigDecimal(averageHours).doubleValue();
+	    					 double leaves = lopLeaves.doubleValue();
+	    					 double dyHours = 0;
+	    					 int res1 = one.compareTo(lopLeaves);
+	    					    if(res1 == 0 || res1 == 1) {
+	    					    	 dyHours = avgHrs/2;
+	    					    }else if(res1 == -1) {
+	    					    	  dyHours = (avgHrs * leaves);
+	    					    }
+	    						lopAmt = payrollUtil.getTotalAmount(dyHours, hourlyRate);
+	    				 }
+	    			 }
+	    			 payrollLopHis.setLopAmount(lopAmt);
+			    }	
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHiList;
+	}
+	
 	
 	
 	public void sendMailToIndPayrollApprover(OrgLocations orgLocation, User loginUser, PayrollApprover payrollApprover, IndPaysheetFrequency frequency) throws Exception {
