@@ -463,7 +463,7 @@ function showImageSettingsTab(ele) {
 			}
 		}
 		var imageName = savedImageName !== "" ? savedImageName : "";
-		var imageFloat = savedFloat !== "" ? savedFloat : "none";
+		var imageFloat = savedFloat !== "" ? savedFloat : "left";
 		var imageWidth = savedWidth !== "" ? savedWidth : "50%";
 		
 		$("#logoImage").val(imageName);
@@ -831,7 +831,7 @@ function showTemplatePreview() {
 				style = $(this).find("img").attr("style");
 				text += "<div class='previewInnerCta' data-name='" + $(this).data("name") + "' data-type='image' data-section='item' data-position=" + $(this).data("position") + ">";
 				var itemChecked = $(this).find("input[type='checkbox']").is(":checked");
-				text += "	<span " + (itemChecked ? "class='active'" : "") + ">";
+				text += "	<span " + (itemChecked ? "class='active'" : "") + " style='" + style + "'>";
 				text += "		<img src='" + $(this).find("img").attr("src") + "' data-name='" +  $(this).find("img").data("name") + "' style='" + style + "'>";
 				text += "	</span>";
 				text += "</div>";
@@ -971,10 +971,11 @@ function saveTemplate() {
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
-	        	} else if (response.response === "INVALID_DATA" || response.response === "INVALID_USER") {
+	        	} else if (response.response === "INVALID_DATA" || response.response === "INVALID_USER" || response.response === "DUPLICATE_NAME") {
 					showError(response.responseMessage);
-	        		closeConfigurePopup();
+					closePreviewPopup();
 	        	} else if (response.response === "SUCCESS") {
+	        		closePreviewPopup();
 	        		$(".success_pop").show();
 	        		location.reload();
 	        	} else if (response.indexOf('Sign In') !== -1) {

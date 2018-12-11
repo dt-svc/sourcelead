@@ -102,5 +102,8 @@ public interface InvoiceDao{
 	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO);
 
 	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId);
+	
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(String name, Long orgRelationId, Long orgLocationId);
 
+	public boolean deleteCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
 }

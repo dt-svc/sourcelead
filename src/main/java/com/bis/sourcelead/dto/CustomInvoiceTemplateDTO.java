@@ -1,10 +1,17 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,6 +25,13 @@ public class CustomInvoiceTemplateDTO extends SearchDTO implements Serializable 
 	private String uuid;
 	private String name;
 	private String description;
+	private int status;
+	private String createdByUserId;
+	private String createdByUserName;
+	private String createdDate;
+	private String updatedByUserId;
+	private String updatedByUserName;
+	private String updatedDate;
 	private long orgLocationId;
 	private long orgRelationId;
 	private String jsonData;
@@ -55,6 +69,62 @@ public class CustomInvoiceTemplateDTO extends SearchDTO implements Serializable 
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getCreatedByUserId() {
+		return createdByUserId;
+	}
+
+	public void setCreatedByUserId(String createdByUserId) {
+		this.createdByUserId = createdByUserId;
+	}
+
+	public String getCreatedByUserName() {
+		return createdByUserName;
+	}
+
+	public void setCreatedByUserName(String createdByUserName) {
+		this.createdByUserName = createdByUserName;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedByUserId() {
+		return updatedByUserId;
+	}
+
+	public void setUpdatedByUserId(String updatedByUserId) {
+		this.updatedByUserId = updatedByUserId;
+	}
+
+	public String getUpdatedByUserName() {
+		return updatedByUserName;
+	}
+
+	public void setUpdatedByUserName(String updatedByUserName) {
+		this.updatedByUserName = updatedByUserName;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
 	public long getOrgLocationId() {

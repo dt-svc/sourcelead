@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.InvoiceTableItemsDTO;
@@ -55,6 +56,7 @@ import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.LineStyle;
 
+@Component
 public class CustomInvoicePDFHelper {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomInvoicePDFHelper.class);
@@ -125,7 +127,7 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
+//				report.show();
 				break;
 
 			case 1:
@@ -135,7 +137,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 2:
@@ -145,7 +146,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 3:
@@ -155,7 +155,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 4:
@@ -165,7 +164,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 5:
@@ -175,7 +173,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 6:
@@ -185,7 +182,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 7:
@@ -195,7 +191,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[7], horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 8:
@@ -205,7 +200,6 @@ public class CustomInvoicePDFHelper {
 						cmp.subreport(tableReport), horizontalListBuilderArray[8], horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 9:
@@ -215,7 +209,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[8], cmp.subreport(tableReport), horizontalListBuilderArray[9],
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 10:
@@ -225,7 +218,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[8], horizontalListBuilderArray[9], cmp.subreport(tableReport),
 						horizontalListBuilderArray[10], horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 11:
@@ -235,7 +227,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[8], horizontalListBuilderArray[9], horizontalListBuilderArray[10],
 						cmp.subreport(tableReport), horizontalListBuilderArray[11], horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 12:
@@ -245,7 +236,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[8], horizontalListBuilderArray[9], horizontalListBuilderArray[10],
 						horizontalListBuilderArray[11], cmp.subreport(tableReport), horizontalListBuilderArray[12],
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 
 			case 13:
@@ -255,7 +245,6 @@ public class CustomInvoicePDFHelper {
 						horizontalListBuilderArray[8], horizontalListBuilderArray[9], horizontalListBuilderArray[10],
 						horizontalListBuilderArray[11], horizontalListBuilderArray[12], cmp.subreport(tableReport),
 						horizontalListBuilderArray[13], cmp.verticalGap(10));
-				report.show();
 				break;
 			default:
 				break;

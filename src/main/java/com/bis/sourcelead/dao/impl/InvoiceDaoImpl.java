@@ -1131,6 +1131,40 @@ public class InvoiceDaoImpl implements InvoiceDao {
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(String name,
+			Long orgRelationId, Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CustomInvoiceTemplate invoiceTemplate where invoiceTemplate.name=:name and invoiceTemplate.orgRelations.id=:orgRelationId and invoiceTemplate.orgLocations.id=:orgLocationId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			List<CustomInvoiceTemplate> customInvoiceTemplateList = queryObj.list();
+			if (customInvoiceTemplateList != null && !customInvoiceTemplateList.isEmpty()) {
+				return customInvoiceTemplateList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public boolean deleteCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(customInvoiceTemplate);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	
 	

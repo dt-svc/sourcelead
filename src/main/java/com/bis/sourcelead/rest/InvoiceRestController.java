@@ -2790,8 +2790,9 @@ return responseList;
 		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
-				responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO);
+				responseList = invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO, loggedInOrgLocations);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
 			}
@@ -2808,8 +2809,8 @@ return responseList;
 			CustomInvoiceTemplateDTO customInvoiceTemplateDTO) {
 		Response<String> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			User loggedInUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loggedInUser != null) {
 				JSONArray jsonArray = new JSONArray(customInvoiceTemplateDTO.getJsonData());
 				if(jsonArray!=null) {
 					for(int i=0;i<jsonArray.length();i++) {
@@ -2825,13 +2826,46 @@ return responseList;
 				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,loggedInOrgLocations.getId());
 				if(orgLocation != null && orgRelation != null) {
-					response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation);
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
+					response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
+					/*response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());*/
 				} else {
 					response.setResponse(Result.INVALID_USER.name());
 					response.setResponseMessage(Result.INVALID_USER.getValue());
 				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/changeCustomInvoiceTemplateStatus", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> changeJobFairStatus(HttpServletRequest request, 
+			@RequestParam(defaultValue = "0") long templateId,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId,
+			@RequestParam(defaultValue = "0") int status) {
+		Response<Boolean> response = new Response<>();
+		try {
+			User loggedInUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (loggedInUser != null) {
+				boolean result = false;
+				if(status == -1) {
+					result = invoiceService.deleteCustomInvoiceTemplate(templateId);
+				} else {
+					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+					result = invoiceService.changeCustomInvoiceTemplateStatus(templateId, status, loggedInUser, orgLocation);
+				}
+				response.setObject(result);
+				response.setResponse(result ? Result.SUCCESS.name() : Result.FAILED.name());
+				response.setResponseMessage(result ? Result.SUCCESS.getValue() : Result.FAILED.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

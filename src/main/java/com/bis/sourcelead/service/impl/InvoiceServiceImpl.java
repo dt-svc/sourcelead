@@ -96,6 +96,7 @@ import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
+import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -4601,20 +4602,30 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations) {
+	public Response<String> saveCustomInvoiceTemplate(CustomInvoiceTemplateDTO customInvoiceTemplateDTO, OrgRelations orgRelations, OrgLocations orgLocations, User loggedInUser, OrgLocations loggedInOrgLocations) {
 		Response<String> response = new Response<>();
 		try {
 			CustomInvoiceTemplate customInvoiceTemplate = null;
+			CustomInvoiceTemplate savedTemplate = invoiceDao.getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(customInvoiceTemplateDTO.getName(), orgRelations.getId(), orgLocations.getId());
+			if(savedTemplate != null && customInvoiceTemplateDTO.getId() != savedTemplate.getId()) {
+				response.setResponse(Result.DUPLICATE_NAME.name());
+				response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+				return response;
+			}
 			if (customInvoiceTemplateDTO.getId() > 0) {
 				customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(customInvoiceTemplateDTO.getId());
-			}
-			else {
+				customInvoiceTemplate.setUpdatedBy(loggedInUser);
+				customInvoiceTemplate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), loggedInOrgLocations));
+			} else {
 				customInvoiceTemplate = new CustomInvoiceTemplate();
 				customInvoiceTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				customInvoiceTemplate.setCreatedBy(loggedInUser);
+				customInvoiceTemplate.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), loggedInOrgLocations));
 			}
 			customInvoiceTemplate.setName(customInvoiceTemplateDTO.getName());
 			customInvoiceTemplate.setDescription(customInvoiceTemplateDTO.getDescription());
 			customInvoiceTemplate.setItems(customInvoiceTemplateDTO.getJsonData());
+			customInvoiceTemplate.setStatus(1);
 			customInvoiceTemplate.setOrgRelations(orgRelations);
 			customInvoiceTemplate.setOrgLocations(orgLocations);
 			
@@ -4635,14 +4646,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public ResponseList<CustomInvoiceTemplateDTO> getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO) {
+	public ResponseList<CustomInvoiceTemplateDTO> getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO, OrgLocations loggedInOrgLocations) {
 		ResponseList<CustomInvoiceTemplateDTO> responseList = new ResponseList<>();
 		try {
 			List<CustomInvoiceTemplateDTO> customInvoiceTemplateDTOList = new LinkedList<>();
 			ResponseList<CustomInvoiceTemplate> customInvoiceTemplateList = invoiceDao.getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId, searchDTO);
 			if (customInvoiceTemplateList != null &&  customInvoiceTemplateList.getData() != null && !customInvoiceTemplateList.getData().isEmpty()) {
 				for(CustomInvoiceTemplate customInvoiceTemplate : customInvoiceTemplateList.getData()) {
-					customInvoiceTemplateDTOList.add(getCustomInvoiceTemplateDetails(customInvoiceTemplate));
+					customInvoiceTemplateDTOList.add(getCustomInvoiceTemplateDetails(customInvoiceTemplate, loggedInOrgLocations));
 				}
 			}
 			responseList.setData(customInvoiceTemplateDTOList);
@@ -4655,11 +4666,11 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId) {
+	public CustomInvoiceTemplateDTO getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId, OrgLocations loggedInOrgLocations) {
 		try {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId);
 			if(customInvoiceTemplate != null) {
-				return getCustomInvoiceTemplateDetails(customInvoiceTemplate);
+				return getCustomInvoiceTemplateDetails(customInvoiceTemplate, loggedInOrgLocations);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -4667,15 +4678,30 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return null;
 	}
 	
-	private CustomInvoiceTemplateDTO getCustomInvoiceTemplateDetails(CustomInvoiceTemplate customInvoiceTemplate) {
+	private CustomInvoiceTemplateDTO getCustomInvoiceTemplateDetails(CustomInvoiceTemplate customInvoiceTemplate, OrgLocations loggedInOrgLocations) {
 		CustomInvoiceTemplateDTO customInvoiceTemplateDTO = new CustomInvoiceTemplateDTO();
 		try {
 			customInvoiceTemplateDTO.setId(customInvoiceTemplate.getId());
 			customInvoiceTemplateDTO.setUuid(customInvoiceTemplate.getUuid());
 			customInvoiceTemplateDTO.setName(customInvoiceTemplate.getName());
 			customInvoiceTemplateDTO.setDescription(customInvoiceTemplate.getDescription());
+			customInvoiceTemplateDTO.setStatus(customInvoiceTemplate.getStatus());
 			customInvoiceTemplateDTO.setOrgLocationId(customInvoiceTemplate.getOrgLocations().getId());
 			customInvoiceTemplateDTO.setOrgRelationId(customInvoiceTemplate.getOrgRelations().getId());
+			if(customInvoiceTemplate.getCreatedBy() != null) {
+				customInvoiceTemplateDTO.setCreatedByUserId(customInvoiceTemplate.getCreatedBy().getId() + "");
+				customInvoiceTemplateDTO.setCreatedByUserName(customInvoiceTemplate.getCreatedBy().getFullName());
+			}
+			if(customInvoiceTemplate.getCreatedDate() != null) {
+				customInvoiceTemplateDTO.setCreatedDate(customInvoiceTemplate.getCreatedDate().toString());
+			}
+			if(customInvoiceTemplate.getUpdatedBy() != null) {
+				customInvoiceTemplateDTO.setUpdatedByUserId(customInvoiceTemplate.getUpdatedBy().getId() + "");
+				customInvoiceTemplateDTO.setUpdatedByUserName(customInvoiceTemplate.getUpdatedBy().getFullName());
+			}
+			if(customInvoiceTemplate.getUpdatedDate() != null) {
+				customInvoiceTemplateDTO.setUpdatedDate(customInvoiceTemplate.getUpdatedDate().toString());
+			}
 			
 			JSONArray jsonArray = new JSONArray(customInvoiceTemplate.getItems());
 			if (jsonArray != null && jsonArray.length() > 0) {
@@ -4690,6 +4716,36 @@ public class InvoiceServiceImpl implements InvoiceService {
 			e.printStackTrace();
 		}
 		return customInvoiceTemplateDTO;
+	}
+
+	@Override
+	public boolean changeCustomInvoiceTemplateStatus(Long templateId, int status, User user, OrgLocations orgLocations) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(templateId);
+			if(customInvoiceTemplate != null) {
+				customInvoiceTemplate.setStatus(status);
+				customInvoiceTemplate.setUpdatedBy(user);
+				customInvoiceTemplate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+			}
+			long result = invoiceDao.saveCustomInvoiceTemplate(customInvoiceTemplate);;
+			return result > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteCustomInvoiceTemplate(Long templateId) {
+		try {
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(templateId);
+			if(customInvoiceTemplate != null) {
+				return invoiceDao.deleteCustomInvoiceTemplate(customInvoiceTemplate);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 

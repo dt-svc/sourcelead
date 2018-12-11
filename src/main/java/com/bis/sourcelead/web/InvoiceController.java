@@ -140,12 +140,16 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		for(OrgRelations vendors:orgClientList){
+			Long responderLocationId = 0L;
 			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+				responderLocationId = vendors.getResponderLocationId().getId();
 			}
 			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+				responderLocationId = vendors.getLocationId().getId();
 			}
+			vendors.setResponderId(responderLocationId + "");
 			
 		}
 		model.addObject("clientsList", orgClientList);
@@ -672,12 +676,13 @@ public class InvoiceController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null) {
 				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
 				modelAndView.addObject("orgLocationId", orgLocationId);
 				modelAndView.addObject("orgRelationId", orgRelationId);
 				if (request.getRequestURI().contains("editTemplate")) {
-					modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId));
+					modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId, loggedInOrgLocations));
 					// modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
 				}
 				modelAndView.setViewName("billing/customInvoice");

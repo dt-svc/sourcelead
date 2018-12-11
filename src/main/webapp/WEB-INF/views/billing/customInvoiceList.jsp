@@ -18,7 +18,7 @@
 			<div class="positionRelative reportHead clearfix">
 				<ul class="pull-right list-unstyled list-inline">
 					<li><a href="${appPath}/customInvoice/addTemplate?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}" class="newAdBtn">+ Template</a></li>
-
+					<%-- 
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 						<div class="newActPop">
 							<span>
@@ -32,6 +32,7 @@
 						<input type="text" class="repSearchBar" placeholder='Search' id='templateSearch' />
 						<span class="repSearchIcon" onClick="jobFairListCheck();"></span>
 					</li>
+					--%>
 				</ul>
 			</div>
 
@@ -41,6 +42,22 @@
 		</div>
 	</div>
 </section>
+
+<div class='project_inn_mask'></div>
+
+<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+	<p>Are are sure you want to delete the Template?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeTemplateStatus()' class="pull-left">
+		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+	</b>
+</div>
+
+<div class="success_pop" style="display: none;">
+	<i class="fa fa-check-circle"></i><span>Invoice Template Saved</span>
+</div>
+
 <script type="text/javascript">
 var orgRelationId = ${orgRelationId};
 var orgLocationId = ${orgLocationId};
@@ -57,6 +74,7 @@ function getInvoiceTemplateList() {
  	result += "		<th>Generated ID</th>";
  	result += "		<th>Title</th>";
  	result += "		<th>Description</th>";
+ 	result += "		<th>Status</th>";
  	result += "		<th>Action(s)</th>";
 	result += "	</tr>"; 
  	result += "</thead>";
@@ -89,6 +107,7 @@ function getInvoiceTemplateList() {
     	   {"data": "uuid"},
            {"data": "name"},
            {"data": "description"},
+           {"data": "status"},
            {"data": "actions" }
        	],
 	    "columnDefs": [
@@ -111,7 +130,7 @@ function getInvoiceTemplateList() {
 	           "render": function ( data, type, opt, meta ) {
 	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
-	       		    result = result +"<td><a href='<c:url value='/app/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	       		    result = result +"<td><a href='" + sourceleadUrl + "/customInvoice/editTemplate?uuid="+ opt.uuid +"&orgLocationId="+ opt.orgLocationId + "&orgRelationId="+ opt.orgRelationId +"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		            return result;
 	            }
             },
@@ -130,22 +149,34 @@ function getInvoiceTemplateList() {
 	        },
 	        {
 	            "targets": colIndex++,
+	            "data": "status",
+	            "render": function ( data, type, opt, meta ) {
+	            		var result = "";
+	            		result += '<select class="templateStatus">';
+	     	        	result += '<option data-id='+opt.id+' value="1" ' + (opt.status == 1?'selected=""':'') + '>ACTIVE</option>';
+	     	        	result += '<option data-id='+opt.id+' value="0" ' + (opt.status == 0?'selected=""':'') + '>INACTIVE</option>';
+	     	        	result += '</select>';
+		           		return result;
+	             }
+	        },
+	        {
+	            "targets": colIndex++,
 	            "data": "actions",
 	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            	var result = '<div class=" widthIcon widthIcon-three">';
-	            	result +='	<div class="text-center">';
+	            	/* result +='	<div class="text-center">';
 	            	result +='		<a href="' + sourceleadUrl + '/customInvoice/editTemplate?uuid=' + opt.uuid + '&orgLocationId=' + opt.orgLocationId + '&orgRelationId=' + opt.orgRelationId + '" title="View Template" onclick="" class="add-applicant">';
 	            	result +='			<i class="fa fa-eye"></i>';
 	            	result +='		</a>';
-	            	result +='	</div>';
+	            	result +='	</div>'; */
 	            	result +='	<div class="text-center">';
 	            	result +='		<a href="' + sourceleadUrl + '/customInvoice/editTemplate?uuid=' + opt.uuid + '&orgLocationId=' + opt.orgLocationId + '&orgRelationId=' + opt.orgRelationId + '" title="Edit Template" onclick="" class="add-applicant">';
 	            	result +='			<i class="fa fa-edit"></i>';
 	            	result +='		</a>';
 	            	result +='	</div>';
 	            	result +='	<div class="text-center">';
-	            	result +='		<a href="javascript:void(0)" title="Delete Template" onclick="showChangeTemplateStatusPopup(' + opt.id + ',' + opt.orgLocationId + ',' + opt.orgRelationId + ')">';
+	            	result +='		<a href="javascript:void(0)" title="Delete Template" onclick="showChangeTemplateStatusPopup(' + opt.id + ', -1)">';
 	            	result +='		<i class="fa fa-trash-o"></i>';
 	            	result +='		</a>';
 	            	result +='	</div>';
@@ -170,14 +201,13 @@ function getInvoiceTemplateList() {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
-	    /*,
+	     },
 	     drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+   	      /* $('a.paginate_button', this.api().table().container()).on('click', function(){
    	    	jobFairSearchHighlight();
-   	      });
-   	   		updateFairStatusEvents();
-   	   	}*/
+   	      }); */
+   	   		updateTemplateStatusEvents();
+   	   	}
    });
    
   
@@ -191,18 +221,31 @@ function getInvoiceTemplateList() {
    	});
 }
 
-function showChangeTemplateStatusPopup(templateId, orgLocationId, orgRelationId) {
+function updateTemplateStatusEvents() {
+	$(".templateStatus").each(function() {
+		$(this).on('focusin', function(){
+		    $(this).data('prev_value', $(this).val());
+		}).on('change', function(){
+			var templateId = $(this).find("option:selected").data("id");
+		    var prev = $(this).data("prev_value");
+		    showChangeTemplateStatusPopup(templateId, $(this).val(), prev, $(this));
+		});
+	});
+}
+
+var ele;
+function showChangeTemplateStatusPopup(templateId, status, oldValue, element) {
 	ele = element;
 	var statusText = "";
 	if(status === "0") {
-		statusText = "Are you sure to make the JobFair status to 'CLOSE' ?";
+		statusText = "Are you sure to make the Template Status as Inactive ?";
 	} else if(status === "1") {
-		statusText = "Are you sure to make the JobFair status to 'OPEN' ?";
+		statusText = "Are you sure to make the Template Status as Active ?";
 	} else {
-		statusText = "Are you sure to delete the JobFair ?";
+		statusText = "Are you sure to delete the Template ?";
 	}
 	$("#changeStatusPopup p").html(statusText);
-	$("#confirmId").data("job_fair_id", jobFairId);
+	$("#confirmId").data("template_id", templateId);
 	$("#confirmId").data("status",status);
 	$("#cancelStatusPopup").data("old_value", oldValue);
 	$("#changeStatusPopup").slideDown(200);
@@ -216,20 +259,25 @@ function closeChangeStatusPopup() {
 	$(".project_inn_mask").fadeOut(200);
 }
 
-function changeJobFairStatus() {
-	var jobFairId = $("#confirmId").data("job_fair_id");
+function changeTemplateStatus() {
+	var templateId = $("#confirmId").data("template_id");
 	var status = $("#confirmId").data("status");
 	var data = {
-			jobFairId: jobFairId,
+			templateId: templateId,
 			status : status
-	};
-	$.post(sourceleadUrl + "/changeJobFairStatus?", data, function(result) {
+		};
+	$.post(sourceleadUrl + "/changeCustomInvoiceTemplateStatus?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId, data, function(result) {
 		if (result.response === "SESSION_TIMEDOUT") {
 			location.replace(sourceleadUrl);
 		} else if (result.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (result.response === "SUCCESS") {
-			location.href = sourceleadUrl + "/jobs?viewTab=jobFair";
+			closeChangeStatusPopup();
+			$(".success_pop").css("display","block");
+    		$(".success_pop span").html("Invoice Template " + (status == 1 ? "made as Active" : status == 0 ? "made as Inactive" : "Deleted"));
+			setTimeout(function() {
+    			location.reload();					 			
+	 		},1000); 
 		} else if (result.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
