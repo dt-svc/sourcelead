@@ -360,12 +360,14 @@ function getCandidateDetailsFromMarketcart(){
 	}
 
 function updateInvoiceDetails(){
+	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
 		        	$("#invoiceCartCount").html(object[0]);
+		        	totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		$("#invoiceTotalAmount").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		}}
