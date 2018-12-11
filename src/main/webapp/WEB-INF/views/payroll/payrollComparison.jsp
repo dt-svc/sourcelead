@@ -362,7 +362,7 @@ function runPayrollregister(){
          $.ajax({
 				type : "POST",
      	    	data: formData,
-				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&compareDate1="+compareDate1+"&compareDate2="+compareDate2,
+				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue,
 				success : function(result) {
 					
 					
