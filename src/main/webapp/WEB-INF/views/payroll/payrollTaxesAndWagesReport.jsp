@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Taxable Wages</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo;  Taxable Wages</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo;  Taxable Wages</div>
     </section>
     <div class="contentareaInner-styles clearfix">
     
@@ -37,7 +37,7 @@ $(document).ready(function(){
 			
 			<div id="customtaxablewages" style="display: none">
 			  	<div class="col-md-5">
-		            <div class="form-group">
+		            <div class="form-group" id="fromDateDiv">
 		              <label class="col-md-12 paddingRight">From Date</label>
 						<div class="col-md-12">
 							<input type="text" class="form-control calendar" id="fromDate">
@@ -45,7 +45,7 @@ $(document).ready(function(){
 		            </div>
 	            </div>
 	            <div class="col-md-5">
-		            <div class="form-group">
+		            <div class="form-group" id="toDateDiv">
 		              <label class="col-md-12">To Date</label>
 		              <div class="col-md-12">
 		                <input type="text" class="form-control calendar" id="toDate">
@@ -81,9 +81,10 @@ $(document).ready(function(){
     
     
      <div class="clearfix"></div>
+     <div id="popUp"></div>	
   	<div class="timesheet_out" id="payrollTaxAndWagesDiv" style="display: none;">
       <div class="clearfix">
-        <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+        <div class="positionRelative reportHead clearfix">
   			<ul class="pull-right list-unstyled list-inline">
 				<li>
 					<a class="overIcon" title="Actions" onclick="newActions();"></a>
@@ -155,8 +156,50 @@ function runPayrollTaxAndWagesReport(){
 			freqEndDate = $("#freqEndDate").val();
 		}
 		var url = sourceleadUrl+"/getpayrollTaxAndWagesReport?&searchValue="+searchValue+"&payGroup="+payGroup+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
-		payrollTaxAndWagesList(url);
-		$("#payrollTaxAndWagesDiv").show();
+		
+		if($("#payGroup").val() == "custom"){
+			var fromDate = $("#fromDate").val();
+			var toDate = $("#toDate").val();
+			if(fromDate == null || fromDate == '' || fromDate == 'undefined'){
+				$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+			  	$("input#fromDate").after("<p class='jquery_form_error_message'>From Date is required.</span>");
+			}else{
+				$('#fromDateDiv').find('p.jquery_form_error_message').remove(); 
+			}
+			if(toDate == null || toDate == '' || toDate == 'undefined'){
+				$('#toDateDiv').find('p.jquery_form_error_message').remove();
+			  	$("input#toDate").after("<p class='jquery_form_error_message'>To Date is required.</span>");
+			}else{
+				$('#toDateDiv').find('p.jquery_form_error_message').remove(); 
+			}
+			if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+				payrollTaxAndWagesList(url);
+				$("#payrollTaxAndWagesDiv").show();
+			}
+		}else{
+			if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+				$("#fromDate").val("");
+				$("#toDate").val("");
+				payrollTaxAndWagesList(url);
+				$("#payrollTaxAndWagesDiv").show();
+			}else{
+				var result = "";
+				result = result +"	<div class='project_inn_mask'></div>";
+				result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>Please select PayGroup and PayPeriod</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removePopUp();' style='background-color: #FF0000; width : 100%'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#remove_user_pop").slideDown(200);
+				$(".project_inn_mask").fadeIn(200);
+			}
+		}
+}
+
+function removePopUp(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 
 function payrollTaxAndWagesList(url){
@@ -255,7 +298,7 @@ function payrollTaxAndWagesPagination(url){
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	   if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >'+opt.grossPay+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" >$ '+opt.grossPay+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -267,7 +310,7 @@ function payrollTaxAndWagesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.federalTax !=null && opt.federalTax != '' && opt.federalTax !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.federalTax+'" >'+opt.federalTax+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.federalTax+'" >$ '+opt.federalTax+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -279,7 +322,7 @@ function payrollTaxAndWagesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.socialSecTax !=null && opt.socialSecTax != '' && opt.socialSecTax !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.socialSecTax+'" >'+opt.socialSecTax+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.socialSecTax+'" >$ '+opt.socialSecTax+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -291,7 +334,7 @@ function payrollTaxAndWagesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
   	    	  		if(opt.medicare !=null && opt.medicare != '' && opt.medicare !='undefined'){
-  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.medicare+'" >'+opt.medicare+'</div>';
+  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.medicare+'" >$ '+opt.medicare+'</div>';
   	        		}else{
   	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
   	        		}
@@ -303,7 +346,7 @@ function payrollTaxAndWagesPagination(url){
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
     	    	  		if(opt.futa !=null && opt.futa != '' && opt.futa !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.futa+'" >'+opt.futa+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.futa+'" >$ '+opt.futa+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -327,7 +370,7 @@ function payrollTaxAndWagesPagination(url){
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
     	    	  		if(opt.stateTax !=null && opt.stateTax != '' && opt.stateTax !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.stateTax+'" >'+opt.stateTax+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.stateTax+'" >$ '+opt.stateTax+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -339,7 +382,7 @@ function payrollTaxAndWagesPagination(url){
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
     	    	  		if(opt.localTax !=null && opt.localTax != '' && opt.localTax !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.localTax+'" >'+opt.localTax+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.localTax+'" >$ '+opt.localTax+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -363,7 +406,7 @@ function payrollTaxAndWagesPagination(url){
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
     	    	  		if(opt.ytdTaxes !=null && opt.ytdTaxes != '' && opt.ytdTaxes !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" >'+opt.ytdTaxes+'</div>';
+    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" >$ '+opt.ytdTaxes+'</div>';
     	        		}else{
     	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
     	        		}
@@ -384,11 +427,11 @@ function payrollTaxAndWagesPagination(url){
                 });
        $("#payrollTaxAndWagesListTable").wrap("<div class='overflow_Auto width100percnt'></div>")
 //        $("input[type=search]").hide();
-//        $("#requestedEmployeesTableSearch").keyup(function(e) {
-//        	   if(e.which === 13) {
-//        		getRequestedEmployeesList();
-//        	   }
-//        	});
+       $("#payrollTaxWageSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    	   runPayrollTaxAndWagesReport();
+    	   }
+    	});
 }
 
 </script>
@@ -457,4 +500,17 @@ $(".overIcon, .newActPop").click(function(e){
 		});
 	});
 </script>
+
+<script>
+function resetData(){
+	document.getElementById("payroll_Taxes_Wages_form").reset(); 
+	$("#payrollTaxAndWagesDiv").hide();
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$("#freqStartDate").val('');
+	$("#freqEndDate").val('');
+// 	document.getElementById("payrollTaxAndWagesList").reset();
+}
+</script>
+
 <jsp:include page="../masterFooter.jsp" />

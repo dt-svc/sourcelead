@@ -129,6 +129,8 @@ public class InvoiceController {
 	return model;
 	}
 	
+	
+	
 	@RequestMapping(value = "/addPaymentInvoice")
 	public ModelAndView addPayment(HttpServletRequest request) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -266,6 +268,8 @@ public class InvoiceController {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if(projectId !=null && !"".equalsIgnoreCase(projectId) && !"null".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
+		}else if(invoice.getIsJobClosure().equals("Y")){
+			model.setViewName("billing/createInvoiceForJobClosure");
 		}else{
 			model.setViewName("billing/createInvoice");
 		}
@@ -577,7 +581,38 @@ public class InvoiceController {
 	return model;
 	}
 	
-	
+	@RequestMapping(value = "/createInvoiceForJobClosure")
+	public ModelAndView createInvoiceForJobClosure(HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		
+		Date currentDate = new Date();
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
+		model.addObject("currentDate", convertedDate);
+		model.setViewName("billing/createInvoiceForJobClosure");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Receivable);
+		request.getSession().setAttribute("sessionData",sessionData);
+	return model;
+	}
 	
 	 /*@RequestMapping(value = "/viewInvoiceDocView/{title}", method = RequestMethod.GET)
 	    public void viewInvoiceDocView(@RequestParam(value="documentId", required=false) String documentId,

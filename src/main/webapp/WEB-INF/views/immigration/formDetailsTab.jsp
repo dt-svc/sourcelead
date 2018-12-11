@@ -92,7 +92,12 @@
 				    </c:otherwise>
 				</c:choose>				
 			  </tr>  
-			 </c:forEach>			  			  
+			 </c:forEach>
+			  <c:if test="${empty formsList}">
+				<tr>
+				 <td colspan="6" valign="top" class="dataTables_empty"></td>
+				</tr>
+				</c:if>			  			  
 			</tbody>
 		  </table>
 		</div>
@@ -310,7 +315,7 @@ function removeImmigFormDoc1(){
 	
 	$("#uploadFormDivEditDocDiv").hide();
 	$("#uploadFormDiv").show();
-	$('#uploadFormFile').attr("data-validation", "required");
+	$('#uploadFormFile').attr("data-validation", "required validatepdf");
 }
 
 

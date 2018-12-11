@@ -37,9 +37,9 @@ function approvePayrollDiv(){
    	    
 	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
-	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
+<%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();">History</a></li>
-	   </c:if>
+<%-- 	   </c:if> --%>
 	   
 	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
@@ -459,8 +459,9 @@ function getGroupFrequency(){
 	        output = output + "<option value=''>Ferquency</option>";
 			for (var i=0; i<json.length; i++)
 			{
-				var date = json[i].replace(",", " to ");
-				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				var opt = json[i];
+				var date = opt.payPeriod.replace(",", " to ");
+				output = output + "<option value='" +opt.payFrequency+ "'>"+date+"</option>";
 			}
 			$("#payPeriod").empty();
 			$("#payPeriod").append(output);
@@ -639,13 +640,14 @@ $('body').on('blur', '#generate_payroll_form', function() {
 		  	  changeYear: true, 
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
-		  
 		  $('#payrollPayDate').datepicker({
 		      dateFormat: finalDateFormat,
 		      changeMonth: true,
 		  	  changeYear: true, 
+	  		  maxDate: 0,
 		  	  onSelect : function(selected) {
-				addValidClass();
+			   addValidClass();
+/* 		  		document.getElementById("payrollPayDateDivId").style.display="block"; */
 			}
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
@@ -683,8 +685,9 @@ function confirmPayroll(){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
+	 var payType = $("#payType").val();
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,"",payType);
 }
 </script>
 

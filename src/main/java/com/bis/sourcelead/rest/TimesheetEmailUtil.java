@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -327,10 +329,25 @@ public class TimesheetEmailUtil {
 	 * @throws Exception
 	 * @Description send email  to manager.
 	 */
-	void sendEmailToManagerAtTimesheetSubmissionsNew(Long masterCanidateId, Long projectId,
+	void sendEmailToManagerAtTimesheetSubmissionsNew(ProjectMembers projMembers,Long masterCanidateId, Long projectId,
 			Date frequencyStartDate, Date frequencyEndDate, User loginUser, OrgLocations loginOrgLocation,String loginOrgCode) throws Exception {
 		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService
 				.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(masterCanidateId, projectId);
+		if(approverHierarchyList != null && !approverHierarchyList.isEmpty() && projMembers != null && projMembers.getProjects() != null && StringUtils.isNotEmpty( projMembers.getProjects().getIsReportingManagerAsApprover())
+				   &&  projMembers.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y") && projMembers.getProjectMemberCandidteId() != null &&  projMembers.getProjectMemberCandidteId().getConsultantUser() != null
+				   &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
+		   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
+		   ProjectApproverHierarchy approver =  approverHierarchyList.iterator().next();
+		   
+		   if(userRole.getReportingManager() != null) {
+			   ProjectApproverHierarchy reportingManager = new ProjectApproverHierarchy();
+			   reportingManager.setApproverUserId(userRole.getReportingManager()); 
+			   reportingManager.setProjectId(approver.getProjectId());
+			   reportingManager.setProjectClientsId(approver.getProjectClientsId());
+			   approverHierarchyList.add(reportingManager);
+		   }
+		   
+		}
 		for (ProjectApproverHierarchy approver : approverHierarchyList) {
 
 			if (!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {

@@ -1,16 +1,12 @@
-	
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
-<!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<%-- <c:set var ="myImmigrationPage" value = "Y" scope="session"/> --%>
 <title>Welcome to Source Lead :: Marketplace List</title>
 <div id="popUp"></div>
     <section class="content-wraper contentWraper">
@@ -36,7 +32,7 @@
           		<div class="col-md-9 customSetprice">
           				<div class="form-inline">
           					<div class="form-group">
-          						<input type="text" class="form-control" id="amountForAll" placeholder="Enter">
+          						<input type="text" class="form-control" id="amountForAll" onkeypress="return isNumbersPrice(event);" placeholder="Enter">
           					</div>
           					<div class="form-group dropdown-select bgPosition">
           						<select id="priceTypeVal">
@@ -57,9 +53,6 @@
           </div>
           
           </div>
-         <!--  <div class="remove_search">
-            <input type="text" placeholder="Search"/>
-          </div> -->
         </div>
         <div class="clearfix mt"></div>
         	<div id="marketPlaceTableDiv" class="project_wrap_table datatable_filter"></div>
@@ -67,25 +60,38 @@
         <div class="footerstyelsNew mt clearfix">
         <div class="col-lg-12">
         <div class="pull-right">
+
+          <sec:authorize access="hasAnyRole(\'ROLE_SHARE_PROFILE\',\'ROLE_ADD_PROFILE\')"> 
+
         <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
-        <input type="button" class="btn btn-default ml" value="Cancel">
+         </sec:authorize> 
+        <input type="button" class="btn btn-default ml" onclick="cancelPriceAmount();" value="Cancel">
         </div>
         </div>
         </div>
-          
       </div>
-    </div>
   </section>
 <script type="text/javascript">
-/*function funPrice(event){
-	var price = event.target.text || event.srcElement.text;
-	$(".selectPrice").text(price);
-	
-}*/
-
 function setValuesForAllMCandidates(){
 	var amount = $("#amountForAll").val();
 	var amountType = $("#priceTypeVal").val();
+	var val = parseFloat($('#amountForAll').val());
+	if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	} 
+	/* var formatDigit = /^\d+\.\d\d$/
+	if(!formatDigit.test(amount)){
+		popupDisplay("Please enter two digits");
+		return false;
+	} */
+	
+	var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
+	if(format.test($('#amountForAll').val())){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
 	if(amount != '' && amountType != ''){
 		$("input[id='priceVal']").each(function() {
 			$(this).val(amount);
@@ -110,6 +116,9 @@ function callValidatePriceAmount(){
 	var flagPriceForSelectedRow = false;
 	var flagPriceTypeForEnteredPrice = false;
 	var flagPriceForEnteredPriceType = false;
+	var flagPriceValueEnterSpecialChar = false;
+	var flagPriceValueEnterZeroValue = false;
+	var flagPriceValueDotTwoDigit = false;
 	if(!$('input[id="sharedcheckbox"]').is(":checked")){
 		flagAtleastOneCheck = true;
 	}
@@ -149,6 +158,41 @@ function callValidatePriceAmount(){
 		}
 	});
 	
+	$("input[id='priceVal']").each(function() {
+		var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
+		if(format.test($(this).val())){
+			flagPriceValueEnterSpecialChar = true;
+		}
+	});
+	
+	$("input[id='priceVal']").each(function() {
+		if(isNaN($(this).val()) || (val === $(this).val())){
+			flagPriceValueEnterZeroValue = true;
+		}
+	});
+	
+	/* $("input[id='priceVal']").each(function() {
+		var formatDigit = /^\d+\.\d\d$/
+		if(!formatDigit.test($(this).val())){
+			flagPriceValueDotTwoDigit = true;
+		}
+	}); */
+	
+	/* if(flagPriceValueDotTwoDigit){
+		popupDisplay("Please enter two digits");
+		return false;
+	} */
+	
+	if(flagPriceValueEnterZeroValue){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+	
+	if(flagPriceValueEnterSpecialChar){
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+	
 	if(flagRowForEnteredPrice){
 		popupDisplay("Please select checkbox for entered price");
 		return false;
@@ -173,6 +217,14 @@ function callValidatePriceAmount(){
 		popupDisplay("Please enter amount for amount type");
 		return false;
 	}
+	
+	var val = parseFloat($('#priceVal').val());
+	if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	}
+		
 	var marketCandidateObj = [];
 	$("input:checkbox[id='sharedcheckbox']:checked").each(function(){
 		var objectValue = {};
@@ -183,7 +235,6 @@ function callValidatePriceAmount(){
 		}
 		marketCandidateObj.push(objectValue);
  	});
-	//console.log("List of object :"+marketCandidateObj);
 	
 	$.ajax({
 		url : sourceleadUrl + "/saveMarketPlaceData",		
@@ -214,7 +265,6 @@ function popupDisplay(message){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
-	/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 	result = result +"<div class='modal-body'><p id='popupMsg'></p></div>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
 	result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
@@ -237,12 +287,6 @@ function toggleMarketPlaceAllCheck(source){
 		  $('input[id="sharedcheckbox"]').removeProp('checked');
 	}
 }
-
-/* $("").keyup(function(){
-    $(this).closest('tr').find("input").each(function() {
-        alert(this.value)
-    });
-}); */
 
 $(document).ready(function() {
 	loadMarketPlaceDraftData();
@@ -269,19 +313,10 @@ function loadMarketPlaceDraftData(){
     result = result +"</table>";
     $("#marketPlaceTableDiv").append(result);
     marketPlacePagination();
-	/* $.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/getMarketPlaceDraftList",
-		success : function(result) {
-			
-		}
-	}); */
 }
 
 function marketPlacePagination(){
 	var colIndex = 0;
-	//var countIndex = 0;
-	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#marketPlaceTable').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -289,7 +324,6 @@ function marketPlacePagination(){
         "searchHighlight": true,
         "ajax": $.fn.dataTable.pipeline( {
             url: sourceleadUrl + "/getMarketPlaceCandidateMovedList",
-            //data: "candidateIds = ${movedCandidateIds}",
             method: 'POST',
             pages: 10
         }),
@@ -309,8 +343,6 @@ function marketPlacePagination(){
     	  	"sortable": false,
     	  	"data": "id",
     	  	"render": function(data, type, full, meta) {
-    	  		//countIndex++;
-    	  		//alert(countIndex);
 				var result = "";
     	  		 result = result + '<input type="checkbox" id="sharedcheckbox" />';
 	        		result = result + "<input type='hidden' id='candidateId' value='"+full.id+"'/>";
@@ -318,7 +350,6 @@ function marketPlacePagination(){
     	  	}
         	},  {
 	    	  	"targets": colIndex++,
-	    	  	//"className": "tbldata-dotdot_50",
 	    	  	"data": "generatedId",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, full, meta) {
@@ -438,7 +469,6 @@ function marketPlacePagination(){
     	    	  } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	//"aaSorting": [[9,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -447,20 +477,7 @@ function marketPlacePagination(){
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
-	     /* drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	candidateSearchHighlight();
-	         }); 
-	   } */
     } );
-    // $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-    //$("input[type=search]").hide();
-    //$("#dataTableSearch").keyup(function(e) {
-    	//   if(e.which === 13) {
-		//candidateList();
-		//candidateSearchHighlight();
-    	 //  }
-    	//}); 
     // Removing pagination for market place list 
      $('#marketPlaceTable_length').remove(); // removes the pagination values.
     $('#marketPlaceTable_info').remove(); // removes the pagination information.
@@ -473,9 +490,6 @@ $(".funPrice").on("click", "li", function(){
 });
 function setPrice(){
 	$(".customSetprice").toggle(function(){
-		/* if($(this).is(":visible")){
-			
-		} */
 		if($(this).is(":hidden")){
 			$("input[id='priceVal']").each(function() {
 				$(this).val('');
@@ -489,6 +503,19 @@ function setPrice(){
 			$("#priceTypeVal").val('');
 		}
 	});
+}
+
+function cancelPriceAmount(){
+	$("input[id='priceVal']").each(function() {
+		$(this).val('');
+	});
+	$("select[id='amountTypeEach']").each(function(){
+		$(this).val('');
+	});
+	$('input[id="sharedcheckbox"]').removeProp('checked');
+	$('input[id="sharedcheckboxAll"]').removeProp('checked');
+	$("#amountForAll").val('');
+	$("#priceTypeVal").val('');
 }
 </script>	
 <jsp:include page="../masterFooter.jsp" /> 	

@@ -18,7 +18,7 @@ $(document).ready(function(){
         <h2>Contribution</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Contribution
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Contribution
 		</div>
     </section>
     
@@ -32,7 +32,6 @@ $(document).ready(function(){
               <label class="col-md-12 paddingRight">Pay Group <span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
 					<select class="form-control chosen-select" id="payGroup" name="payGroup" onchange="getPayPeriod();" field-name="Pay Group" data-validation="required">
-					<input type="hidden" id="emptyContributionId" name="emptyContributionId"/>
 					</select>
 				</div>
             </div>
@@ -90,7 +89,7 @@ $(document).ready(function(){
       <div class="newActPop" style="">
           <span>
           <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-           <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a>
+           <!-- <a href="javascript:void(0)" onclick="exportExcel();" title="Excel">Export Excel</a> -->
             </span>
       </div>
     </li>
@@ -300,9 +299,8 @@ function getContributionReports(){
 									"data" : "type",
 									"sortable": true,
 									"render" : function(data, type, opt,meta) {
-										$("#emptyContributionId").val(1);
 										     var result = "";
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.contributionType+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75" id="contributionTypeDiv">'+opt.contributionType+'</div></td>';
 										
 										return result;
 									}
@@ -392,7 +390,7 @@ function getContributionReports(){
 		$("input[type=search]").hide();
 		$("#dataTableSearch").keyup(function(e) {
 			if (e.which === 13) {
-				getContributionReports()();
+				getContributionReports();
 			}
 		});
 		
@@ -425,7 +423,6 @@ function getcontributionList(){
 
 <script>
 function exportToPdf(){
-	
 	var groupId = $('#payGroup').val();
     getFreqdates("freqStartDate", "freqEndDate");
     var  freqStartDate = $("#freqStartDate").val();
@@ -433,16 +430,16 @@ function exportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var contributionId = $("#contributionId").val();
-	var emptyExport = $('#emptyContributionId').val();
 	/* alert("groupId = "+groupId);
 	alert("freqStartDate = "+freqStartDate);
 	alert("freqEndDate = "+freqEndDate);
 	alert("contributionId = "+freqEndDate);
 	alert("searchValue = "+searchValue); */
-	if(emptyExport > 0){
+	var contribution = $('#contributionTypeDiv').html();
+	if(contribution != null && contribution !='' && contribution !='undefined'){
 	window.location.href = sourceleadUrl+"/exportToPdfContributionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&contributionId="+contributionId;
 }else{
-	 var result = "";
+	 var result = " ";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Contribution Report List is Empty</p>";

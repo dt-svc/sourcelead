@@ -97,16 +97,12 @@ function logoutForConfigure() {
 	    <div class="clearfix row">
 	    	
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			 <c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-			 </c:if> 
 	      </sec:authorize>
 	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	      	<c:if test="${userTabs.tabName == 'Jobs'}">
 				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
 						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-					</c:if>
 			     </sec:authorize>
 		     </c:if>
 		   </c:forEach>
@@ -117,9 +113,7 @@ function logoutForConfigure() {
 			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
 				<jsp:include page="leaveManagement.jsp"></jsp:include>
 			</sec:authorize>
-			 
-		 
-	    	<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
+			
 	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 	    		<c:if test="${userTabs.tabName == 'Jobs'}">
 	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
@@ -130,6 +124,11 @@ function logoutForConfigure() {
 					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
 					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
 					</sec:authorize>
+					
+					<!-- Candidates for Invoice -->
+			<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
+				<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
+			</sec:authorize> 
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
 					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
@@ -149,7 +148,7 @@ function logoutForConfigure() {
 				   	 	 </sec:authorize>
 			   	 	 </c:if>	
 			   	 </c:forEach>
-		    </c:if>
+		     	
 		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 			     	<c:if test="${userTabs.tabName == 'Jobs'}">
 			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">

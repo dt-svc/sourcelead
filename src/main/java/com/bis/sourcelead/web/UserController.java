@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -105,6 +107,9 @@ public class UserController {
 	
 	@Autowired
 	private ShiftService shiftService;
+	
+	@Autowired
+	 private SourceleadTagsService sourceleadTagsService;
 
 	@Autowired
 	UserGroupDao userGroupDao;
@@ -159,6 +164,8 @@ public class UserController {
 		    
 			model.setViewName("users/userCreation");
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+			model.addObject("probationPeriod",orgLocations.getProbationPeriod());
 			
 		return model;
 
@@ -234,11 +241,10 @@ public class UserController {
                
 				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 				model.addObject("org_projectsList", projectsList);*/
-				Candidate candidate = null;
-				candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+				Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
-					if(candidate.getMasterCandidateId() != null) {
+					if(candidate != null && candidate.getMasterCandidateId() != null) {
 						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId(),"All");
 						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
 						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
@@ -259,6 +265,7 @@ public class UserController {
 			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
+				
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");

@@ -29,7 +29,7 @@ $(document).ready(function(){
 	<div class="pull-right">
 		<ul class="list-unstyled list-inline clearfix">
 		<li>
-			<a onClick="addbatches()" class="newAdBtn mr5" id="createbatches">+ Create</a>
+			<a onClick="addbatches()" class="newAdBtn mr5" id="createbatches">+ Add Batch</a>
 		</li>
 			<li>
 			<div class="dynamic_search mt10">

@@ -9,23 +9,13 @@
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
 
-<style>
-.user_summary_edit_cta p{
-    margin: -5px 15px;
-}
-.remove_user_pop input{
-	color: #333;
-}
-#editUserDiv .user_summary_edit_cta {
-min-height: 65px;
-}
-.edit_role_pop.editrole-custom {
-height: 450px; overflow-y: auto;
-}
-.assignroles.changeRole {
-max-height: inherit !important;
-}
 
+<style>
+.user_summary_edit_cta p{ margin: -5px 15px;}
+.remove_user_pop input{ color: #333;}
+#editUserDiv .user_summary_edit_cta { min-height: 65px;}
+.edit_role_pop.editrole-custom { height: 450px; overflow-y: auto;}
+.assignroles.changeRole { max-height: inherit !important;}
 </style>
 
 <div class="wraper">
@@ -60,7 +50,10 @@ $(document).ready(function(){
 			 dateFormat: finalDateFormat,
 			 changeMonth: true,
 			 changeYear: true, 
-		  	  maxDate:0
+		  	  maxDate:0,
+		  		onSelect : function(selected) {
+		  		calculateConfirmationDate();
+		 	  }
 			});
 	 });
 	 
@@ -77,14 +70,150 @@ $(document).ready(function(){
 	 
 });
 </script>
-		<div id="loadingSummary"></div>
-		<div id="projectSideDiv"></div>
-		<div id="baningDetailsDiv"></div> 
-		<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
 
+<div class="project_wrap">
+	<div id="loadingSummary"></div>
+	<div id="projectSideDiv"></div>
+	<div id="baningDetailsDiv"></div> 
+	<div id="candidateSideDiv" class="project_tabs clearfix"></div> 
+</div>	
+<div class="cearfix">
+  <div class="newTagsWrap">
+	 <ul class="clearfix tagsWrap tagsWrapBor">
+		<select multiple class="chosen-select form-control" name="tagName" id="associateTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">11111111
+		</select>
+	</ul>
+	 <div class="clearfix"></div>
+  </div>
+   </div>
+  <div class="success_pop tagStyles" id="addProjectTagAlert">
+		<i class="fa fa-check-circle"></i>
+ 		<span></span>
+  </div>
+ <div class="remove_pop tagStyles" id="deleteProjectTagAlert">
+	<i class="fa fa-times"></i>
+	<span></span>
+ </div>		
+
+
+
+<!--  ======================== Tags Related Scripts written by Laxman Start =============================== -->
+ <script>
+var select, chosen;
+select = $("#associateTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#associateTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#associateTagName").trigger("chosen:updated");
+		saveAssociateTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveAssociateTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveAssociateTags("delete");
+	}
+	
+});
+$("#associateTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getAssociateTagsList(associateId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getAssociateTags?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.associateTags != null && json.associateTags != 'undefined' && json.associateTags != '') {
+	                var res = [];
+	                res = json.associateTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#associateTagName").empty();
+            $("#associateTagName").append(result);
+            $("#associateTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveAssociateTags(type){
+	 var associateId = '${userId}';
+	 var tagName = $("#associateTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByAssociateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&associateId="+associateId+"&tagName="+""
+	 } 
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getAssociateTagsList(associateId)
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addProjectTagAlert").css("display","block");
+	$("#addProjectTagAlert span").html(status);
+    $('#addProjectTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteProjectTagAlert").css("display","block");
+	$("#deleteProjectTagAlert span").html(status);
+    $('#deleteProjectTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ======================== Tags Related Scripts written by Laxman Ends =============================== -->		
 		
-		
-		 
+<script type="text/javascript">
+window.onload = function () {
+	var associateId = '${userId}';
+	getAssociateTagsList(associateId);
+ };
+</script>		 
 
 <script>
  function getUserSummaryDetails(userId){
@@ -104,7 +233,7 @@ $(document).ready(function(){
 		 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
 		 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
 		 result  = result + '</div>';
-		 result = result + '<ul class="project-tabs-menu">';
+		 result = result + '<ul class="project-tabs-menu project-tabs-menu-custom">';
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 
@@ -333,6 +462,14 @@ $(document).ready(function(){
 				    '</sec:authorize>';	     
 				    }
 				     result = result + ' </div>';  
+				     
+				     
+				     // Confirm Probation
+				     if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Probation'){
+				     	result = result + '<div class="clearfix"><input class="btn btn-primary btn-sm pull-right" id="confirmButton" type="button" value="Confirm Probation" onclick="confirmProbation('+userId+',\''+json.confirmationDateStr+'\',\''+json.designation+'\');"/></div>';
+				     }else if(json.probationStatus != null && json.probationStatus != '' && json.probationStatus != 'undefined' && json.probationStatus == 'Confirmed'){
+				    	 result = result + '<div class="clearfix"><label class="textSuccess pull-right textBold" id="confirmButton" value="Probation Confirmed">Probation Confirmed</label></div>';
+				     }
 				     result = result + ' <div id="edit_role_pop" class="edit_role_pop editrole-custom" >';
 				     result = result + ' <div id="editRoleLoading" ></div>';
 				     result = result + ' <div class="user_summary_edit_cta">';
@@ -444,6 +581,15 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
+				if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
+				}
+				
 		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 			
 			if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
@@ -548,6 +694,27 @@ $(document).ready(function(){
 			if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Probation Period:</strong><span class="fix">'+json.probationPeriod+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Status:</strong><span class="fix">'+json.probationStatus+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Confirmation Date:</strong><span class="fix">'+json.confirmationDateStr+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				result = result + '<div class="clearfix"></div>';
 			}
@@ -1838,12 +2005,25 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
+					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+					}
+					
 					if("${SourceLeadWeb_orgLocations.country}" == 'United States'){
-					result = result + ' <div class="user_summary_edit_cta">';
+					var ssn = '';	
+					if(json.user.ssn != null && json.user.ssn != '' && json.user.ssn != 'undefined'){
+						ssn = json.user.ssn;
+					}
+					result = result + ' <div class="user_summary_edit_cta" id="ssnnum">';
 					result = result + ' <label>SSN<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" name="ssn" value="'+json.user.ssn+'" field-name="SSN" data-validation="required validate_Space"/>';
+					result = result + ' <input type="text" id="SSN" name="ssn" value="'+ssn+'" field-name="SSN" onblur="validateSSNNumber();"/>';
+
 					result = result + ' </div>';
 					}
+					
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Work Location<span class="text-danger">&nbsp;*</span></label>';
@@ -2121,6 +2301,68 @@ $("#editRoleDetailsList").empty();
 					}
 					result = result + ' </div></div>';	
 					
+					if(json.probationStatus == "Confirmed"){
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Probation Period </label>';
+							result = result + '<input class="form-control" id="probationPeriod" value="'+json.probationPeriod+'" name="probationPeriod" readonly="readonly" field-name="Probation Period">';
+						result = result + ' </div>';	
+						
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Status</label>';
+							
+							result = result + '<input class="form-control" id="probationStatus" value="'+json.probationStatus+'" name="probationStatus" readonly="readonly" field-name="Status">';
+						result = result + ' </div>';
+						
+						
+							result = result + ' <div class="user_summary_edit_cta">';
+							result = result + ' <label>Confirmation Date</label>';
+							result = result + ' <div class="input-group">';
+							result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" class="calendar" readonly="readonly" field-name="Confirmation Date">';
+							result = result + '   <span class="input-group-addon" onClick=""></span> ';
+							result = result + ' </div>';
+							result = result + ' </div>';
+						
+					}else{
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Probation Period </label>';
+// 					if(json.probationPeriod != null && json.probationPeriod != "" && json.probationPeriod != "undefined"){
+						result = result + '<select class="form-control" id="probationPeriod" name="probationPeriod" field-name="Probation Period" onchange="calculateConfirmationDate();">';
+						result = result + '<option value="">--Select Probation Period--</option>';
+						result = result + ' <option value="15 Days" '+(json.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+						result = result + ' <option value="30 Days" '+(json.probationPeriod == "30 Days" ? "selected" : '') +'>1 Month</option>';
+						result = result + '	<option  value="60 Days" '+ (json.probationPeriod == "60 Days" ? "selected" : '') +'>2 Months</option>';
+						result = result + ' <option value="90 Days" '+(json.probationPeriod == "90 Days" ? "selected" : '') +'>3 Months</option>';
+						result = result + ' </select>';
+
+// 					}
+					result = result + ' </div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Status</label>';
+// 					if(json.probationStatus != null && json.probationStatus != "" && json.probationStatus != "undefined"){
+						
+						result = result + '<select class="form-control" id="probationStatus" name="probationStatus" field-name="Status">';
+						result = result + '<option value="">--Select Status--</option>';
+						result = result + ' <option value="Probation" '+(json.probationStatus == "Probation" ? "selected" : '') +'>Probation</option>';
+						result = result + ' <option value="Confirmed" '+(json.probationStatus == "Confirmed" ? "selected" : '') +'>Confirmed</option>';
+						result = result + ' </select>';
+// 					}
+					result = result + ' </div>';
+					
+					
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Confirmation Date</label>';
+						result = result + ' <div class="input-group">';
+// 					if(json.confirmationDateStr != null && json.confirmationDateStr != "" && json.confirmationDateStr != "undefined"){
+						result = result + ' <input type="text" value="'+json.confirmationDateStr+'" name="confirmationDate" id="confirmationDate" readonly="readonly" class="calendar" field-name="Confirmation Date">';
+						result = result + '   <span class="input-group-addon" onClick=""></span> ';
+// 					}
+						result = result + ' </div>';
+						result = result + ' </div>';
+					
+					}
+					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Date of Birth</label>';
 					result = result + '<div class="input-group">';
@@ -2140,7 +2382,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					result = result + '<div class="col-md-4">';
+					result = result + '<div class="col-md-4 ml">';
 					result = result + ' <label>&nbsp;</label>';
 					result = result + '<div class="clearfix">';
 					result = result + '<div class="checkbox checkBox">';
@@ -2203,6 +2445,7 @@ $("#editRoleDetailsList").empty();
 			    getVendorsByOrgLocationId();
 			    getDepartmentsList();
 			    maskme(); 
+			    calculateConfirmationDate();
 			   
 	        },
 		});
@@ -2865,6 +3108,47 @@ $(document).ready(function() {
 
 </script>
 
+<!-- <script>
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+}
+function calculateSSNLength(length,ssnNumber){
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+		$("#update_user").attr("disabled", "disabled");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+		$("#update_user").attr("disabled", "disabled");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+	}
+}
+ </script> -->
+
 <script type="text/javascript">
 function flushProject(){
 	$("#proId").removeAttr("disabled");
@@ -2899,7 +3183,6 @@ function inlineEditForUsers(userId,localFieldName){
 
 <script>
 function getStartandEndDate(){
-	
 	var projectId = document.getElementById("proId").value;
 	if(projectId != null && projectId != ""){
     $.ajax({
@@ -2987,6 +3270,50 @@ function getStartandEndDate(){
 	  
     }
 </script>
+
+   <script>
+    function validateSSNNumber(){
+		var SSN = $("#SSN").val();
+		var length  = $("#SSN").val().length;
+		if(SSN.search("-") > 0){
+			SSN = SSN.replace(/-/g, "");
+			length = SSN.length;
+			calculateSSNLength(length,SSN);
+		}else{
+			calculateSSNLength(length,SSN);
+		}
+	}
+	function calculateSSNLength(length,SSN){
+		if(length == 0){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+			$("#update_user").attr("disabled", "disabled");
+		}else if(length != 9){
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			$("#SSN").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+			$("#update_user").attr("disabled", "disabled");
+		}else{
+			$("#ssnnum").find('span.ssn_errmsg').remove();
+			var value = "";
+			var ssn = SSN.substring(0,3);
+			value += ssn+"-";
+			ssn = SSN.substring(3,5);
+			value += ssn+"-";
+			ssn = SSN.substring(5,9);
+			value += ssn;
+			$("#SSN").val(value);
+			if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#SSN").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+				$("#update_user").attr("disabled", "disabled");
+			}else{
+				$("#ssnnum").find('span.ssn_errmsg').remove();
+				$("#update_user").removeAttr("disabled", "disabled");
+			}
+		}
+	}
+	 </script>
+
 
 
 
@@ -4040,7 +4367,6 @@ function deleteProfileImage(candidateId){
      }); 
 }
 </script>
-s')
 <%-- 
      @author : Laxman.
      this script is for refresh image block
@@ -4409,6 +4735,86 @@ function getShiftList(shiftId){
 
 
 </script>
+
+
+<script>
+function calculateConfirmationDate(){
+
+	var joiningDate = document.getElementById("DateofJoin").value;
+	 var probationperiod = document.getElementById("probationPeriod").value;
+	 if(joiningDate && probationperiod){
+	    $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $.ajax({
+			type : "GET",
+			url: sourceleadUrl+"/getConfirmationDateBasedOnJoiningDate?"+tokenParamName+"="+tokenValue+"&joiningDate="+joiningDate+"&probationperiod="+probationperiod,
+			success :function(confirmationDate) {
+				$("#loadingSummary").removeAttr("style");
+				$("#confirmationDate").val(confirmationDate);
+			}
+		});
+		
+	}else{
+		$("#confirmationDate").val('');
+	}
+}
+
+</script>
+
+
+<script>
+function confirmProbation(userId,confirmationDate,designation){
+    $.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/confirmProbation?"+tokenParamName+"="+tokenValue+"&userId="+userId,
+		success :function() {
+		//$("#confirmButton").removeClass("btn btn-primary").addClass("btn btn-success");
+  	    $("#confirmButton").text("Probation Confirmed");
+  	    //$("#confirmButton").attr("onclick", "").unbind("click");
+    	  confirmPopUp(userId,confirmationDate,designation);
+    	  
+		}
+	});
+}
+
+function confirmPopUp(userId,confirmationDate,designation){
+	var result = "";
+	result = result + "	<div class='project_inn_mask'></div>";
+	result = result + "	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"		<p>Send Confirmation Email</p>";
+	result = result + "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='confirm' onclick='sendMailConfirmation("+userId+",\""+confirmationDate+"\",\""+designation+"\")'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
+	result = result + "	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
+
+function sendMailConfirmation(userId,confirmationDate,designation){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/sendMailConfirmationToAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&confirmationDate="+confirmationDate+"&designation="+designation,        
+        success :function() {
+        $("#selectoruser").removeAttr("style");
+        $("#selectoruser").css({ display: "block" });
+ 		$("#userMsgDiv").html("Mail Sent Sucessfully");
+  	  	userMsgFadein();
+  	  	cancelRejectPopup();
+        },
+	});
+	
+}
+
+function cancelRejectPopup() {
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+
+}
+</script>
+<script>
+
+</script>
+
+
+
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>

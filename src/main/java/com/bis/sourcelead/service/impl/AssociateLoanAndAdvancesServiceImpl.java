@@ -243,8 +243,11 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			List<AssociateLoanAndAdvanceHistory> assLoanAndAdvanceHis = associateLoanAndAdvancesHistoryDao.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceLoanId(loanAndAdv.getId());
 			Double deductedAmount = assLoanAndAdvanceHis.stream().mapToDouble(amt -> amt.getDeductAmount()).sum();
 			
-			AssociateLoanAndAdvanceHistory lastContact = Collections.max(assLoanAndAdvanceHis, Comparator.comparing(c -> c.getCreatedDate()));
-			loanAndAdvDTO.setLastPaidOnMaxDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lastContact.getCreatedDate()));
+			if(assLoanAndAdvanceHis.size() > 0) {
+				AssociateLoanAndAdvanceHistory lastContact = Collections.max(assLoanAndAdvanceHis, Comparator.comparing(c -> c.getCreatedDate()));
+				loanAndAdvDTO.setLastPaidOnMaxDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lastContact.getCreatedDate()));
+			}
+			
 			
 			Double totalAmount = loanAndAdv.getAmount() - deductedAmount;
 			loanAndAdvDTO.setDeductAmount(String.valueOf(totalAmount));
@@ -283,6 +286,12 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByUserIdAndLocationId(User user,
 			OrgLocations orgLocation, String loanStatus) throws Exception {
 			return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByUserIdAndLocationId(user, orgLocation,loanStatus);
+	}
+
+	@Override
+	public List<AssociateLoanAndAdvances> getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(Long candidateId,
+			Long orgLocationId, List<String> loanStatus) throws Exception {
+		return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(candidateId, orgLocationId, loanStatus);
 	}
 
 }

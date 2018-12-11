@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
@@ -112,6 +113,15 @@ public class IndEmployeePayroll implements Serializable {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
+	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indPayroll")
+	private Set<PayrollLopHis> payrollLopHis;
+	
+	@Column(name = "LOP_AMOUNT")
+	private BigDecimal lopAmount;
 	
 	public Long getId() {
 		return id;
@@ -301,6 +311,14 @@ public class IndEmployeePayroll implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
+	public Set<AssociateLoanAndAdvanceHistory> getLoanHistory() {
+		return loanHistory;
+	}
+
+	public void setLoanHistory(Set<AssociateLoanAndAdvanceHistory> loanHistory) {
+		this.loanHistory = loanHistory;
+	}
+
 	public String getPayType() {
 		return payType;
 	}
@@ -332,6 +350,22 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Set<PayrollLopHis> getPayrollLopHis() {
+		return payrollLopHis;
+	}
+
+	public void setPayrollLopHis(Set<PayrollLopHis> payrollLopHis) {
+		this.payrollLopHis = payrollLopHis;
+	}
+
+	public BigDecimal getLopAmount() {
+		return lopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount) {
+		this.lopAmount = lopAmount;
 	}
 
 	

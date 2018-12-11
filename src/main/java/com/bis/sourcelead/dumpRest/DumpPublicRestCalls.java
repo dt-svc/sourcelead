@@ -30,6 +30,8 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -58,6 +60,7 @@ import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -134,6 +137,9 @@ public class DumpPublicRestCalls {
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
 	
+	@Autowired
+	ExpensesEntriesService expensesEntriesService;
+	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
 	public List<AppliedLeaveDate> dumpAllAppliedLeaveDatesData() {
@@ -152,6 +158,14 @@ public class DumpPublicRestCalls {
 		
 	}
 	
+	@RequestMapping(value = "/ws/dumpExpenseCategorySubmittedAmount", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateExpenseSubmittedAmount() {
+		logger.info("Start Time" + java.time.LocalDateTime.now());
+//		List<ExpensesEntries> expensesEntriesList = expensesEntriesService.getAllEntries();
+		int count = expensesEntriesService.dumpExpenceCategoryAmountToOldRecords();
+		return count + " Records updated";
+	}
 	
 	@RequestMapping(value = "/ws/updateAllAppliedLeaveDatesDataForWeekOffs", method = RequestMethod.GET)
 	@ResponseBody
@@ -479,7 +493,7 @@ public class DumpPublicRestCalls {
 	}
 	
 	
-	@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/ws/generateINDPayrollPayheadForOldOrgs", method = RequestMethod.GET)
 	@ResponseBody
 	public void generateINDPayrollPayheadForOldOrgs() throws Exception {
 		logger.info("Start Time"+java.time.LocalDateTime.now());
@@ -490,8 +504,15 @@ public class DumpPublicRestCalls {
 		for(OrgLocations loc : orgLocList){
 			List<PayrollPayhead> existed = payrollPayheadDao.getPayrollPayheadList(loc);
 			for(PayrollPayhead payHead : payheadList) {
-				if (existed.stream().filter(o -> o.getShortCode().equals(payHead.getShortCode())).findFirst().isPresent()) {
-				}else {
+				boolean phNew = true;
+				if(existed.size() > 0) {
+					for(PayrollPayhead pHeadOld : existed) {
+						if(payHead.getShortCode().equalsIgnoreCase(pHeadOld.getShortCode())) {
+							phNew = false;
+						}
+					}
+				}
+				if(phNew) {
 					PayrollPayhead newPayhead = new PayrollPayhead();
 					newPayhead.setName(payHead.getName());
 					newPayhead.setShortCode(payHead.getShortCode());
@@ -522,5 +543,5 @@ public class DumpPublicRestCalls {
 			logger.info("Org Payhead>> "+java.time.LocalDateTime.now());
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
-	}
+	}*/
 }

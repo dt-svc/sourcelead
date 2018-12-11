@@ -1,4 +1,4 @@
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+ <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -43,10 +43,10 @@
 						       <b class='proj_active pull-right'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						        <b class='proj_closed pull-right'>${submissionStatus}</b>
 						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy}</div>
 						      </i>
+						      <b class='proj_closed pull-right' style="width:75% !important;">${submissionStatus}</b>
 						  </c:if>
 						</div>
 				</div>                
@@ -165,7 +165,7 @@
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
-								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
+								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
@@ -224,4 +224,4 @@ function viewDocument(title,id){
 function exportMyExpenses(type,Expid,ApproverType){
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
-</script>
+</script> 

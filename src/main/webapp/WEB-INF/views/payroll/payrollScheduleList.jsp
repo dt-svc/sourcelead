@@ -33,38 +33,22 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Pay Schedule</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Pay Schedule</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
+       <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Pay Schedule List
+		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
       <div class="timesheet_out">
         <div class="clearfix">
-          <div class="positionRelative reportHead clearfix"> <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+          <div class="positionRelative timesheet_head clearfix"> 
+         <!--  <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
             <ul class="pull-right list-unstyled list-inline">
               <li><a class="newAdBtn mr5" href="<c:url value='${appPath}/paySchedule'/>"  title="Add">+ Add</a></li>
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-              </li>
-              <li class="">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-            </ul>
+            </ul> 
           </div>
-          <div class="require_wrap_table tableFirstSecond clearfix">
+          <div class="require_wrap_table tableFirstSecond datatable_filter clearfix filter_position">
            <div id="payrollScheduleDIV"></div>
           </div>
-        <!--   <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav> -->
         </div>
       </div>
       
@@ -80,13 +64,14 @@ $(document).ready(function(){
 		        success: function(data) {
 		        	
 		        	 var result = "";
-		        	result = result + "<table>";
+		        	result = result + "<table id='scheduleListTable' class='display' cellspacing='0' width='100%' >";
 		        	result = result + "<thead>";
 		        	result = result + "<tr>";
 		        	result = result + "<th>Pay Frequency</th>";
 		        	result = result + "<th>Pay Period Start Date</th>";
-		        	result = result + "<th>PayCheckDate</th>";
-		        	result = result + "<th>Run Pay Date</th>";
+		        	result = result + "<th>Calender</th>";
+		 /*        	result = result + "<th>PayCheckDate</th>";
+		        	result = result + "<th>Run Pay Date</th>"; */
 		        	result = result + "<th>Action</th>";
 		        	result = result + "</tr>";
 		        	result = result + "</thead>";
@@ -96,10 +81,22 @@ $(document).ready(function(){
 		        		var opt = data[i];
 		        		result = result + "<tr>";
 			        	result = result + "<td><div class='tblminwidth-75'>"+opt.payFrequency+"</div></td>";
-			        	result = result + "<td><div class='tblminwidth-75'><a onClick='calendarPop(\""+opt.payFrequency+"\" , \""+opt.payPeriodStartDate+"\");'>"+opt.payPeriodStartDate+"</a></div></td>";
+			        	if(opt.payPeriodStartDate != null && opt.payPeriodStartDate != '' && opt.payPeriodStartDate != 'undefined'){
+			        		result = result + "<td><div class='tblminwidth-75'>"+opt.payPeriodStartDate+"</div></td>";
+			        	}else{
+			        		result = result + "<td><div class='tblminwidth-75'>"+opt.nextPayMonth+"</div></td>";
+			        	}
+			        	
+			        	result = result + ' <td>';
+		        		 result = result + ' <div class="tblminwidth-50">';
+		        		 result = result +' <span title="List" class="paddingRight"><a href="<c:url value="/app/payrollScheduleCalender?payScheduleUUID='+opt.payrollScheduleUUID+'"/>">view</a></span> ';
+		        		 result = result + '  </div>';
+		        		 result = result + ' </td>';
+			        	//result = result + "<td><div class='tblminwidth-75'><a onClick='calendarPop(\""+opt.payFrequency+"\" , \""+opt.payPeriodStartDate+"\",\""+opt.payCheckDate+"\",\""+opt.runPayDate+"\");'>view</a></div></td>";
+			        	/* result = result + "<td><div class='tblminwidth-75'><a onClick='calendarPop(\""+opt.payFrequency+"\" , \""+opt.payPeriodStartDate+"\",\""+opt.payCheckDate+"\",\""+opt.runPayDate+"\");'>"+opt.payPeriodStartDate+"</a></div></td>";
 			        	result = result + "<td><div class='tblminwidth-75'>"+opt.payCheckDate+"</div></td>";
-			        	result = result + "<td><div class='tblminwidth-75'>"+opt.runPayDate+"</div></td>";
-			        	result = result + " <td><div class='tblminwidth-50'><a href='payschedule.html'><i class='fa fa-pencil'></i></a></div></td>";
+			        	result = result + "<td><div class='tblminwidth-75'>"+opt.runPayDate+"</div></td>"; */
+			        	result = result + '<td><div class="tblminwidth-50"><a href="<c:url value="/app/payScheduleCalEdit?payScheduleUUID='+opt.payrollScheduleUUID+'"/>"><i class="fa fa-pencil"></i></a></div></td>';
 			        	result = result + "</tr>";
 		        	}
 		        	
@@ -107,11 +104,29 @@ $(document).ready(function(){
 		                result = result + " </table>"; 
 		                $("#payrollScheduleDIV").empty();
 		                $("#payrollScheduleDIV").append(result);
+		                payschedulePagination();
 				
 		        },
 		    });
   }
   </script>
+  
+  <script>
+function payschedulePagination(){ 
+    $('#scheduleListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#scheduleListTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+</script>
   
   <div class="mask"></div>
 <div class="popupWrap" id="modalTasktype">
@@ -148,8 +163,7 @@ $(document).ready(function(){
   
 <script>
 
-/* var j=0; */
-	var SelectedDates = {};
+	/* var SelectedDates = {};
 	 SelectedDates[new Date('10/10/2018')] = new Date('10/10/2018'); 
 	 SelectedDates[new Date('10/11/2018')] = new Date('10/11/2018');
 	 SelectedDates[new Date('10/12/2018')] = new Date('10/12/2018');
@@ -172,13 +186,13 @@ $(document).ready(function(){
 	 SelectedDates[new Date('10/27/2018')] = new Date('10/27/2018');
 	 SelectedDates[new Date('10/28/2018')] = new Date('10/28/2018');
 	 SelectedDates[new Date('10/29/2018')] = new Date('10/29/2018');
-	 SelectedDates[new Date('10/30/2018')] = new Date('10/30/2018');
+	 SelectedDates[new Date('10/30/2018')] = new Date('10/30/2018'); */
 	 
-function calendarPop(payFrequency,payPeriodStartDate){
-	 alert("Hi");
+function calendarPop(payFrequency,payPeriodStartDate,payCheckDate,runPayDate){
 	  $.ajax({
 	    	type: "POST",
-	        url: sourceleadUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payPeriodStartDate="+payPeriodStartDate, 
+	        url: sourceleadUrl+"/findScheduleDates?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payPeriodStartDate="+payPeriodStartDate
+	        		+"&payCheckDate="+payCheckDate+"&runPayDate="+runPayDate, 
 	        success: function(data) {
 			
 	        },

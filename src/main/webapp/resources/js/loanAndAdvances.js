@@ -51,11 +51,15 @@ $('body').on('blur', '#associate_loanAndAdvance_form', function() {
 
 this.getLoanAndAdvNames = function(loanAndAdvId){
 	 var loanAndAdvType = document.getElementById("loanAndAdvType").value; 
+	 var associateUserId = document.getElementById("loanAndAdvAssociateUserId").value; 
+	 if(loanAndAdvId == 'undefined' || loanAndAdvId == '' || loanAndAdvId == null){
+		 loanAndAdvId = '';
+	 }
 	 if(loanAndAdvType != null && loanAndAdvType != "" && loanAndAdvType != 'undefined'){
 		 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getNamesByLoanAndAdvanceType?loanAndAdvType="+loanAndAdvType, 
+		        url: sourceleadUrl+"/getNamesByLoanAndAdvanceType?loanAndAdvType="+loanAndAdvType+"&associateUserId="+associateUserId+"&loanAndAdvId="+loanAndAdvId, 
 		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Name --</option>"; 
@@ -83,15 +87,15 @@ this.getLoanAndAdvNames = function(loanAndAdvId){
 	     $('#loanAndAdvName').trigger("chosen:updated");
 	     $("#loanAndAdvancesDetailsLoading").removeAttr('style');
 	 }
-	 
-	
+	 $("#effectiveDate").val("");
+	 $("#issuedDate").val("");
+	 $("#endDate").val("");
 }
 
 
 this.getLoanAndAdvDetails = function(){
 	var loanAndAdvId = document.getElementById("loanAndAdvName").value;
 	var loanAndAdvStatus = document.getElementById("loanAndAdvStatus").value;
-	
 	if(loanAndAdvId && loanAndAdvStatus){
 		 $("#loanAndAdvancesDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');		
 		 $.ajax({
@@ -114,8 +118,10 @@ this.getLoanAndAdvDetails = function(){
 	        	  $("#loanAndAdvancesDetailsLoading").removeAttr('style');   
 		        },
 		    });
-		 
 	}
+	/*$("#effectiveDate").val("");
+	$("#issuedDate").val("");
+	$("#endDate").val("");*/
 	
 }
 
@@ -246,9 +252,9 @@ this.getLoanAndAdvStatus =  function(){
 		 var statusTypeDiv = document.getElementById("statusTypeDiv");
 		 statusTypeDiv.style.display = "block";	
 		 var loanAndAdvId = $("#loanAndAdvId").val();
-		 if(loanAndAdvId == null || loanAndAdvId == '' || loanAndAdvId == 'undefined'){
+		 /*if(loanAndAdvId == null || loanAndAdvId == '' || loanAndAdvId == 'undefined'){
 			 loanAdv.clearLoanAndAdvances();
-		 }
+		 }*/
 		
 		$("#requestedAmount").attr("data-validation", "required validate_float validate_length length1-12");
 	    $("#scheduler").attr("data-validation", "required");
@@ -293,7 +299,9 @@ this.getLoanAndAdvStatus =  function(){
 	    statusTypeDiv.style.display = "none";
 	    loanAdv.clearLoanAndAdvances();
 	}
-	
+	$("#effectiveDate").val("");
+	$("#issuedDate").val("");
+	$("#endDate").val("");
 }
 
 
@@ -322,6 +330,31 @@ this.clearLoanAndAdvances = function(){
 	    $("#pendingAmount").val("");
 	    $("#loanAndAdvApprover").val("");
 	    $("#loanAndAdvApprover").trigger("chosen:updated");
+	    
+	    $("#loanAndAdvStatus").val("");
+	    $("#loanAndAdvType").val("");
+	    $("#loanAndAdvName").empty();
+	    var output = output + "<option value=''>-- Select Name --</option>"; 
+        $("#loanAndAdvName").append(output);
+        $('#loanAndAdvName').trigger("chosen:updated");
+	    var statusTypeDiv = document.getElementById("statusTypeDiv");
+		statusTypeDiv.style.display = "none";	
+		
+		
+		  $("#requestedAmountDiv").find('p.jquery_form_error_message').remove();
+		  $("#schedulerDiv").find('p.jquery_form_error_message').remove();
+		  $("#effectiveDateDiv").find('p.jquery_form_error_message').remove();
+		  $("#deductAmountDiv").find('p.jquery_form_error_message').remove();
+		  $("#noOfSchedulesDiv").find('p.jquery_form_error_message').remove();
+		  $("#endDateDiv").find('p.jquery_form_error_message').remove();
+		  $("#descriptionDiv").find('p.jquery_form_error_message').remove();
+		  $("#issuedDateDiv").find('p.jquery_form_error_message').remove();
+		  $("#paidAmountDiv").find('p.jquery_form_error_message').remove();
+		  $("#pendingAmountDiv").find('p.jquery_form_error_message').remove();
+		  $("#loanAndAdvApproverDiv").find('p.jquery_form_error_message').remove();
+		  $("#loanAndAdvStatusDiv").find('p.jquery_form_error_message').remove();
+		  $("#loanAndAdvTypeDiv").find('p.jquery_form_error_message').remove();
+		  $("#loanAndAdvNameDiv").find('p.jquery_form_error_message').remove();
 }
 
 

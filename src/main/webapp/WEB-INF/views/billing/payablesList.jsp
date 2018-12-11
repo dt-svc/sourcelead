@@ -68,15 +68,18 @@ $(document).ready(function(){
 		</div>
 	</section>
 	
+
+	
+	<div class="project_wrap clearfix">
+	
 	<div class="project_side_wrap_inn_tabs clearfix">
 	    <ul class="project-tabs-menu">
 		    <li class="current"><a href="${appPath}/payablesList">Bill List</a></li>
 		    <li class=""><a href="${appPath}/debitNoteList">Debit Note List</a></li>
 		    
 	    </ul>
-    </div>
+    </div>	
 	
-	<div class="content-area content-new clearfix">
 		<div class="billing_dashboard noPad">
 			<div class="tabbable positionRelative">
 				<!-- <div class="onboardcreateButtons">
@@ -192,9 +195,11 @@ $(document).ready(function(){
 							<!-- <a href="javascript:void(0)" title="Create Bill" onclick="createBill();">Create Bill </a> -->
 					<a href="<c:url value='${appPath}/createPayables'/>" title="Create Vendor Based Bill">Vendor Based Bill</a>
 					<a href="<c:url value='${appPath}/createInvoiceProjectPayableBased'/>" title="Create Project Based Bill">Project Based Bill</a>
+		            <a href="<c:url value='${appPath}/createPaybleForJobClosure'/>" title="Create Job closure Based Bill">Job closure Based Bill</a>
 		            <a href="<c:url value='${appPath}/createExpensesPayableBill'/>" title="Create Other Bill">Other Bill</a>
                            </sec:authorize>
 						<a href="javascript:void(0)" title="Generate Automatic Bill" onclick="generateAutomaticInvoice();">Generate Automatic Bill</a>
+						<a href="javascript:void(0)" title="Generate Automatic JobClosure Bill" onclick="generateAutomaticBillForJobClosure();">Generate Automatic JobClosure Bill</a>
 						 <a href="<c:url value='${appPath}/addPaymentBill'/>">Add Payment</a>
 					</span>
 				</div>
@@ -364,7 +369,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'                    <div class="col-md-6">      ';
 	result = result +'                      <input  type="radio" name="paymentAmount" value="custom" onclick="removeMask();">     ';
 	result = result +'                      Custom:                       ';
-	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
+	result = result +'                      <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10 allownumericwithdecimal" data-validation-optional="true" field-name="Custom Amount" id="customeAmount" name="customeAmount" readonly onblur="amountCal();">       ';
 	result = result +'                      <span class="addon-currency">'+currencyCode+'</span>';
 	result = result +'                    </div>                      ';
 	result = result +'                  </div>                        ';
@@ -429,12 +434,8 @@ function removeErr(){
 }
 function removeMask(){
 	 $("#customeAmount, #customeAmountOnline").removeAttr("readonly");
-	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
-	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
-	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
-	                event.preventDefault();
-	            }
-	        }); */
+	 $('#customeAmount').removeAttr('data-validation-optional');
+	 $('#customeAmount').attr("data-validation","required"); 
 	        
 	 $("#customeAmount, #customeAmountOnline").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
@@ -455,14 +456,20 @@ function removeMask(){
 function validMask(){
 	  $('#customeAmount, #customeAmountOnline').attr("readonly","readonly");  
 }
-/* function amountCal(){
+ function amountCal(){
 	var totalAmount =  $("#totalAmount").val();
 	var customAmount =  $("#customeAmount").val();
-	if(totalAmount > customAmount){
-		var exceededAmount = customAmount - totalAmount
-		alert("your payment is exceeded by "+exceededAmount.toFixed(2)); 
+	 var totalValue=0.00;
+	 finalAmount = totalValue+parseFloat(customAmount);
+	if(finalAmount > totalAmount){
+		var exceededAmount = customAmount - totalAmount;
+		alert("your payment is exceeded by"); 
+		$('#customeAmount').removeAttr('data-validation-optional');
+		 $('#customeAmount').attr("data-validation","required");
+	}else{
+		$('#customeAmount').removeAttr('data-validation-optional');
 	}
-} */
+}
 </script>
 <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
@@ -1825,6 +1832,25 @@ function generateAutomaticInvoice(){
         },
     });  
 }
+
+
+function generateAutomaticBillForJobClosure(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+   	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoiceForJobClosure?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
+            success: function(json) {
+           	 
+           	 $("#invoiceLoading").removeAttr("style");
+           	    $("#selector1").removeAttr("style");
+	    			$("#selector1").css("display", "block");
+	    			$("#msgDiv").html(json.object.count+"Bill(s) Generated Successfully.");
+					msgFadein();
+           	 location.replace(sourceleadUrl+"/payablesList");	
+       },
+   });  
+}
 </script>
 
 <script>
@@ -2113,6 +2139,5 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 </script>				
-				
-<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
-<jsp:include page="../masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" />				
+<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js" ></script>

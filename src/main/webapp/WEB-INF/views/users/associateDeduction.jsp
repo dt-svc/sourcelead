@@ -226,7 +226,10 @@ function shiftToTaxTab(){
 	document.getElementById("associateTax").removeAttribute("class"); 
 	associates.href="#tab-3"; 
 	$("#loading").removeAttr('style');
-	$("#associate_tax_button" ).addClass('button').val('Save & Continue');
+	if($("#allowEmployeeToFill").is(':checked')){
+	    $("#associate_tax_button" ).addClass('button').val('Proceed To Next Step');
+	}
+	
     $("#associate_tax_button").removeAttr("disabled");
     $("#associateTax").click();
 }

@@ -10,7 +10,8 @@
       <div class="pull-left">
         <h2>US Payroll Reports</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a> &raquo;US Payroll Reports</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard
+</a> &raquo;US Payroll Reports</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content mt mb col-md-12">
@@ -28,8 +29,8 @@
           <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-exchange fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Comparsion</h4>
-              <small class="text-muted">Payroll Comparsion</small>
+              <h4 class="text-muted">Comparison</h4>
+              <small class="text-muted">Payroll Comparison</small>
               <div class="clearfix mt10"> <a href="${appPath}/payrollComparison" class="btn btn-primary btn-sm" title="View">View</a> </div>
             </div>
           </div>
@@ -139,7 +140,7 @@
          <div class="col-md-3">
             <div class="pull-left mr10"> <i class="fa fa-calendar fa-2x text-muted"></i> </div>
             <div class="pull-left">
-              <h4 class="text-muted">Contract Employee Payroll Report</h4>
+              <h4 class="text-muted">Contract Employee Payroll</h4>
               <small class="text-muted">Contract Employee Payroll Report</small>
               <div class="clearfix mt10"><a href="${appPath}/contractEmployeePayreport" class="btn btn-primary btn-sm" title="View">View</a> </div>
               </div>

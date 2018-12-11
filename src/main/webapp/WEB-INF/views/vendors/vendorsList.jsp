@@ -2380,15 +2380,15 @@ function cancelTermination(){
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
-    $(".advancedsearch-mask").fadeOut();
+    $(".mask").fadeOut();
     };
     function openPop(){
     $("div.cand-advsrch-popup").toggle();
-    $(".advancedsearch-mask").fadeIn();
+    $(".mask").fadeIn();
     };
 	function closeAdsrch(){
 		$("div.cand-advsrch-popup").fadeOut();
-		$(".advancedsearch-mask").fadeOut();
+		$(".mask").fadeOut();
 	};
 </script> 
 
@@ -2559,15 +2559,16 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
 //Vendor
 function closeVendorFilterPop(){
 	$("#vendorFilterId").hide();
-	$(".advancedsearch-mask").fadeOut();
+	$(".mask").fadeOut();
 }
 function vendorFileterPopUp(){
 	 $("#vendorFilterId").toggle();
-	 $(".advancedsearch-mask").fadeIn();
+	 $(".mask").fadeIn();
 }
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
+// 	$(".mask").fadeOut();
 	
 }
 

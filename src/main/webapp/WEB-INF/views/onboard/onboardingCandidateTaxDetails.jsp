@@ -127,6 +127,7 @@
                         <option value="">--Select--</option>
                         <option value="SINGLE"  ${taxDeatails.federaltaxFillingStatus == 'SINGLE' ? 'selected' : ''}>Single</option>
                         <option value="MARRIED" ${taxDeatails.federaltaxFillingStatus == 'MARRIED' ? 'selected' : ''}>Married</option>
+                        <option value="MARRIED_SINGLE_INCOME" ${taxDeatails.federaltaxFillingStatus == 'MARRIED_SINGLE_INCOME' ? 'selected' : ''}>Married Single Income</option>
                         <option value="MARRIED_USE_SINGLE_RATE" ${taxDeatails.federaltaxFillingStatus == 'MARRIED_USE_SINGLE_RATE' ? 'selected' : ''}>Married Use Single Rate</option>
                         <option value="NONRESIDENT_ALIEN" ${taxDeatails.federaltaxFillingStatus == 'NONRESIDENT_ALIEN' ? 'selected' : ''}>Non Resident Alien</option>
                       </select>			 
@@ -154,7 +155,7 @@
 	</div>
 </div>
  
- <h5>State Tax</h5>
+ <%-- <h5>State Tax</h5>
  <div class="form-horizontal">
 	<div class="clearfix">
  		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -191,7 +192,7 @@
                 </div>
 			</div>
 	</div>
-</div>
+</div> --%>
 
 <h5>Residence Location</h5>
  <div class="form-horizontal">

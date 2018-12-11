@@ -19,4 +19,10 @@ public interface PayrollScheduleService {
 
 	List<PayrollScheduleDTO> findAllPayrollScheduleList(Long orgLocationId, String orgDateFormat);
 
+	UsPayrollSchedule getPayScheduleByUUID(String payrollScheduleUUID, Long orgLocationId);
+
+	UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId, String scheduleUUID);
+	
+	List<UsPayrollSchedule> getAllPayrollScheduleByOrgLocationId(Long orgLocationId);
+
 }

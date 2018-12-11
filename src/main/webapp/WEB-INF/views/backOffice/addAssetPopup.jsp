@@ -51,7 +51,7 @@
 		                <div class="col-md-5" >
 		                  <label class="clearfix">Name</label>
 		                  <div class="clearfix">
-		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-200" data-validation-optional="true">
+		                    <input type="text" class="form-control input-sm" id="name" name="name" value="${assetAssignData.name}" placeholder="Name" field-name="Name"  data-validation="validate_length length1-100" data-validation-optional="true">
 		                  </div>
 		                  </div>
 		                  
@@ -210,7 +210,7 @@
 		                      <input type="text" class="form-control" name="abc" data-validation = "validatedoc" data-validation-optional="true"  readonly id="dbUploadFileAttachment" placeholder="Files are not selected...">
 		                    </div>
 
-		                    <div class="timesheet_week_comm invoiceDocs sizeInputfield" id="dbUploadFile" style="display:block">
+		                    <div class="timesheet_week_comm invoiceDocs sizeInputfield width100percnt" id="dbUploadFile" style="display:block">
 				               <span>
 						         <strong id="ticketDocument16">
 				    		     <i class=""><a class="glyphicon glyphicon-save" href="${assetAssignData.fileUrl}" title="download"></a></i>

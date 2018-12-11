@@ -9,7 +9,7 @@
 <script>
 $(document).ready(function(){
 	 loc ="${SourceLeadWeb_orgLocations.dateFormat}";
-	 getAllRelationssByOrgLocation();
+	  getAllRelationssByOrgLocation();
 	  if(loc.match("yyyy-MM-dd")){
 		  locDateFormat = 'YYYY-MM-DD';
 	  }if(loc.match("dd-MM-yyyy")){
@@ -27,26 +27,28 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Petition Attorney Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>>> Petition Attorney Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
+					href="<c:url value='/app/reportsDashboard'/>"> Reports Dashboard</a>&raquo;Petition Attorney Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
     <div id="ImmigReportLoading"></div>
-    <form:form id="immigration_report_form" name="immigration_report_form" method="post">
+    <form:form id="immigration_attorney_report_form" name="immigration_attorney_report_form" method="post">
    
     <div class="clearfix minHeightcol5">
         <div class="clearfix row">
           <div class="col-md-5">
-           
+          
+        
            <div class="clearfix mb">
             <div class="form-group">
               <label class="clearfix">Company</label>
 				<div class="clearfix mySkillsUl">
-               <select multiple data-placeholder="Select Attorney" class="chosen-select form-control" name="attorneyId" id="attorneyId"  data-validation-optional="true">
+               <select multiple data-placeholder="Select Company" class="chosen-select form-control" name="attorneyId" id="attorneyId"  field-name="Company" data-validation="required"> 
 				</select>
 				</div>
             </div>
-            </div>
+            </div> 
             
             <div class="clearfix mb">
             <div class="form-group">
@@ -67,7 +69,7 @@ $(document).ready(function(){
            <div class="clearfix mb">
               <label class="clearfix">Petition Type</label>
 				<div class="clearfix">
-                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="required"> 
+                 <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="validate_Space" data-validation-optional="true"> 
 	                <c:forEach var="visa" items="${petitionTypeList}">
 		                     <option value="${visa.name}">${visa.name}</option>
 	                </c:forEach>
@@ -81,7 +83,7 @@ $(document).ready(function(){
 				<div class="clearfix">
                  <select class="form-control sel" id="dateFrequency" name="dateFrequency" onchange="showCustomFields();">
 						<option value="1_week">This week</option>
-						<option value="1_month">This Month</option>
+						<option value="current_month">This Month</option>
 						<option value="YTD" selected>This year</option>
 						<option value="Last_Year">Last year</option>
 						<option value="Custom">Custom </option>
@@ -89,12 +91,12 @@ $(document).ready(function(){
                  <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;">
 		          <div class="pull-left">
 		            <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqStartDate" id="custFromDate" field-name="From Date" placeholder="From Date" class="form-control calendar input-sm" type="text">
 		            </div>
 		            <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" class="form-control calendar input-sm" type="text">
+		              <input value="" name="freqEndDate" id="custToDate" field-name="To Date" placeholder="To Date" class="form-control calendar input-sm" type="text">
 		            </div>
-		            <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		            <button type="button" class="btn btn-primary btn-sm" onclick="runImmigrationReport();validateCustDates();"><i class="fa fa-search"></i></button>
 		          </div>
 		        </div>
                 
@@ -112,6 +114,7 @@ $(document).ready(function(){
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href ='<c:url value='/app/reportsDashboard'/>'"class="btn btn-default ml">
           </div>
         </div>
       </div>      
@@ -136,7 +139,7 @@ $(document).ready(function(){
   			</ul>
 		</div>
         <div class="require_wrap_table datatable_filter">
-        	<div id="immigrationReportTableDiv"></div>
+        	<div id="immigrationAttorneyReportTableDiv"></div>
         </div>
       </div>
     </div> 
@@ -252,31 +255,33 @@ $(document).ready(function(){
       }if(locationDate.match("yyyy-dd-MM")){
           finalDateFormatEndDate = 'yy-dd-mm'; 
       }
-
-      $( "#custFromDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-            maxDate: new Date() ,
-            onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custToDate").datepicker("option", "minDate", dt);
-             removeStartValid();
-            } 
-      });
       
-      $( "#custToDate" ).datepicker({
-           dateFormat : finalDateFormatEndDate,
-            changeMonth: true,
-            changeYear: true,
-          maxDate: new Date() ,
-      onSelect : function(selected) {
-            var dt = $(this).datepicker('getDate', '+1d');
-            dt.setDate(dt.getDate());
-            $("#custFromDate").datepicker("option", "maxDate", dt);
-             removeEndValid();
-            }});
+      
+      $('#custFromDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custToDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+      
+      $('#custToDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#custFromDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+      
+
   }
 
 	function removeStartValid(){
@@ -315,17 +320,26 @@ $(document).ready(function(){
 <script type="text/javascript">
 function getAllRelationssByOrgLocation(){
 	 console.log(" before function calling ---->");
-	var type = "Vendor";
+	var type = null ;
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		type = "Client";
+	}else{
+		type = "Vendor";
+	}
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
-		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	
+		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
+		        	}
 		        	$('#attorneyId').empty();
 		            for(var i=0;i<json.length;i++){
-		            var opt = json[i];
-		            $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
+		            	  var opt = json[i];
+		            	  
+		            		$('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.orgName+' >'+opt.orgName+'</option>');
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
 		        }
@@ -353,7 +367,7 @@ function runImmigrationReport(){
 	             scrollToTopOnError: true,
 	             dateFormat: 'yyyy/mm/dd'
 	         };
-	     if ($('#immigration_report_form').validate(false, validationSettings)) {
+	     if ($('#immigration_attorney_report_form').validate(false, validationSettings)) {
 	    	 
 	    	 var petitionType=$("#petitionType").val();
 	    	 var petitionStatus=$("#petitionStatus").val();
@@ -389,7 +403,7 @@ function runImmigrationReport(){
 	 			}
 	 		}
 	    	 
-        	var url = sourceleadUrl+ "/runImmigrationReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
+        	var url = sourceleadUrl+ "/runImmigrationAttorneyReport?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
             $("#immigrationReport").show(); 
             prepareImmigrationReportList(url);
 	     }
@@ -403,11 +417,11 @@ function runImmigrationReport(){
 
 <script>
 function prepareImmigrationReportList(url){
-	 $("#immigrationReportTableDiv").empty();
+	 $("#immigrationAttorneyReportTableDiv").empty();
 	  var result = "";
 		result = result +" <div class='remove_search'>";
 		result = result +"</div>";
-		result = result + '<table id="immigReportTable" class="display" cellspacing="0" width="100%" >';
+		result = result + '<table id="immigAttorReportTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>ID</th>';
@@ -416,15 +430,15 @@ function prepareImmigrationReportList(url){
         result = result + '<th>Phone</th>';
         result = result + '<th>Type</th>';
         result = result + '<th>Country</th>';
-        result = result + '<th>On Date</th>';
-        result = result + '<th>Attorney(Vendor Name)</th>';
+        result = result + '<th>Open Date</th>';
+        result = result + '<th>Attorney(Client Org Name)</th>';
         result = result + '<th>LCA Start Date</th>';
         result = result + '<th>LCA End Date</th>';
         result = result + '<th>Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
-        $("#immigrationReportTableDiv").append(result);
+        $("#immigrationAttorneyReportTableDiv").append(result);
         immigrationReportPagination(url);  
 }
 </script>
@@ -432,7 +446,7 @@ function prepareImmigrationReportList(url){
 <script>
 function immigrationReportPagination(url){
 	var colIndex = 0;
-    $('#immigReportTable').DataTable({ 
+    $('#immigAttorReportTable').DataTable({ 
     	"processing": true,
         "serverSide": true,
         "searching": false,
@@ -449,7 +463,7 @@ function immigrationReportPagination(url){
             { "data": "type" },
             { "data": "country" },
             { "data": "onDate"},
-            { "data": "attorneyName" },
+            { "data": "clientOrgName" },
             { "data": "lcaStartDate" },
             { "data": "lcaEndDate" },
             { "data": "status" }
@@ -460,7 +474,7 @@ function immigrationReportPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 		    	  	 	if(opt.generatedId !=null && opt.generatedId != '' && opt.generatedId !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" >'+opt.generatedId+'</div>';
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.generatedId+'" ><a href=/app/immigration/viewImmigration?immigrationUUID='+opt.immigrationUUID+'&candidateUUID='+opt.candidateUUID+'&immiTemplateUUID='+opt.immiTemplateUUID+'&myImmigrationPage=Y>'+opt.generatedId+'</a></div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -497,8 +511,8 @@ function immigrationReportPagination(url){
 	    	  	"sorting":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		 if(opt.phone !=null && opt.phone != '' && opt.phone !='undefined'){
-		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phone+'" >'+opt.phone+'</div>';
+	    	  		 if(opt.phoneNumber !=null && opt.phoneNumber != '' && opt.phoneNumber !='undefined'){
+		    	  			result = result + '     <div class="tblminwidth-75" title="'+opt.phoneNumber+'" >'+opt.phoneNumber+'</div>';
 		        		}else{
 		        			result = result + '     <div class="tblminwidth-75">---</div>';
 		        		} 
@@ -545,7 +559,7 @@ function immigrationReportPagination(url){
                   }
                }, {
                     "targets": colIndex++,
-                    "data": "attorneyName",
+                    "data": "clientOrgName",
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
@@ -608,7 +622,7 @@ function immigrationReportPagination(url){
     	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
     	     }
                 });
-              $("#immigReportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+              $("#immigAttorReportTable").wrap("<div class='overflow_Auto width100percnt'></div>")
               $("#immSearch").keyup(function (e) {
                   if (e.which === 13) {
                 	  runImmigrationReport();
@@ -625,6 +639,9 @@ function resetImmForm(){
 	 $("#petitionStatus").trigger("chosen:updated"); 
 	 $("#attorneyId").val('');
 	 $("#attorneyId").trigger("chosen:updated"); 
+	 $("#dateFrequency").val('');
+	 $("#custFromDate").val('');
+	 $("#custToDate").val('');
 }
 </script>
 <!-- =============== Pdf and  Excel Export by prasad k =================== -->
@@ -643,7 +660,7 @@ function resetImmForm(){
 	             dateFormat: 'yyyy/mm/dd'
 	         };
 		
-		  if ($('#immigration_report_form').validate(false, validationSettings)) {
+		  if ($('#immigration_attorney_report_form').validate(false, validationSettings)) {
 	    	 var petitionType=$("#petitionType").val();
 	    	 var petitionStatus=$("#petitionStatus").val();
 	    	 var dateFrequency=$("#dateFrequency").val();

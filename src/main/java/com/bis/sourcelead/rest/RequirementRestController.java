@@ -5,17 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Writer;
-import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,20 +43,15 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
-import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobShareCandidate;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-
 import com.bis.sourcelead.entity.OrgRelations;
-
-import com.bis.sourcelead.entity.Projects;
-
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -69,10 +60,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Shift;
-import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
@@ -102,9 +90,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -596,6 +581,7 @@ public class RequirementRestController {
 								} else if (status.equalsIgnoreCase("REJECTED")) {
 									rah.setRejectedReason(reason);
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+									requirementService.rejectedEmailScenario(loginUser, requirement.getCreatedBy(), requirement, location, reason,orgLocation);
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
 								rah.setUpdatedDate(commonUtil.currentDate());
@@ -860,28 +846,9 @@ public class RequirementRestController {
 
 			    // This is made static as requirment action id is 146
 				
-				ArrayList<User> mynewList =  new ArrayList<User>();
 				List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
-		       
-				//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
 				
-				/*
-				// adding team owner as  a Team Member
-				if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
-					Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
-					usersList.add(team.getOwnerUserId());
-				}*/
-				
-				for(User user : usersList){
-			            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocation.getId());
-			            user.setAssignJobCount(assign.size());
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-						if(null != userRole){
-							user.setUserType(userRole.getUserType());
-							 mynewList.add(user);
-						}
-				   }
-				response.setData(mynewList);
+				response.setData(usersList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
@@ -893,6 +860,21 @@ public class RequirementRestController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
 		return response;
+	}
+	
+	
+	@RequestMapping(value = "/getUserAssingedJobsListCountForRequirementAssignedTo" , method = RequestMethod.GET)
+	 public @ResponseBody UserDTO getUserAssingedJobsListCountForRequirementAssignedTo(@RequestParam(value = "userId", required = true) Long userId, HttpServletRequest request) throws Exception {
+			
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     UserDTO userDTO = new UserDTO();
+		     List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(userId,orgLocation.getId());
+		     userDTO.setAssignedJobsCount(assign.size());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocation.getId());
+				if(null != userRole){
+					userDTO.setUserType(userRole.getUserType());
+				}
+				return userDTO;
 	}
 
 	@RequestMapping(value = "/getApproverTwoByUserId", method = RequestMethod.POST)
@@ -970,6 +952,8 @@ public class RequirementRestController {
 	public @ResponseBody Response<CombinedList> getTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
 		Response<CombinedList> response =  new Response<>();
 		
+		logger.info("Team And Roles Start Time>>>"+Calendar.getInstance().getTime());
+		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(loginUser != null) {
 			try {
@@ -1020,6 +1004,8 @@ public class RequirementRestController {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
 					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
+		
+		logger.info("Team And Roles End Time>>>"+Calendar.getInstance().getTime());
 		return response;
 	}
 

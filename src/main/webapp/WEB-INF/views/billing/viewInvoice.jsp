@@ -630,7 +630,7 @@ function getViewInvoice(){
                                 if(report.dueAmount != null && report.dueAmount != '' && report.dueAmount != 'undefined' && parseFloat(report.dueAmount) > 0){
 	        			dueAmount = parseFloat(report.dueAmount);
 	        		}else{
-	        			dueAmount = "--";
+	        			dueAmount = "0.0";
 	        		}
 	        		
 	        		if(report.convertCurrencyCode != null && report.convertCurrencyCode != '' && report.convertCurrencyCode != 'undefined'){
@@ -650,7 +650,6 @@ function getViewInvoice(){
 	        		}else{
 	        			currencyCode = "--";
 	        		}
-	        		
 	        		
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
@@ -863,11 +862,20 @@ function getViewInvoice(){
                     }else{
                         result = result +'                     <th>Id</th> ';
                         result = result +'                     <th>Associates</th>';
+                        if(report.isJobClosure == 'Y'){
+                        result = result +'                     <th>Job Name</th>';	
+                        }
                         result = result +'                     <th>Description</th>';
                         result = result +'                     <th>SOW/PO</th>                                          ';
+                        if(report.isJobClosure == null && report.isJobClosure == '' && report.isJobClosure == 'undefined'){
                         result = result +'                     <th>Date</th>                                             ';
-                        result = result +'                     <th>Rate Hourly</th>                                             ';
-                        result = result +'                     <th>Total Hours</th>                                      ';
+                        }if(report.isJobClosure == 'Y'){
+                        	result = result +'                     <th>Offer Rate</th>                                       ';
+                            result = result +'                     <th>Bill Rate</th>                                      ';		
+                        }else{
+                        	result = result +'                     <th>Rate Hourly</th>                                       ';
+                            result = result +'                     <th>Total Hours</th>                                      ';	
+                        }
                         result = result +'                     <th>Total Amount</th>                                     ';
                     }
 					result = result +'                 </tr>                                                         ';
@@ -950,7 +958,11 @@ function getViewInvoice(){
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
                             result = result +'                     </td>                                                     ';
-                            
+                            if(report.isJobClosure == 'Y'){
+                            	result = result +'                     <td>                                                      ';
+                                result = result +'                         <div class="tbldata-dotdot-sm" title="'+items.requirementName+'">'+items.requirementName+'</div>       ';
+                                result = result +'                     </td>                                                     ';	
+                            }
                         }
                         result = result +'<td>';
                         result = result +'<div class="tbldata-dotdot_50" title="'+inlineDescription+'">'+inlineDescription+'</div>';
@@ -975,15 +987,24 @@ function getViewInvoice(){
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
                             result = result +'                     </td>                                                     ';
+                            if(report.isJobClosure == null && report.isJobClosure == '' && report.isJobClosure == 'undefined'){
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+ endDateStr+'</div>       ';
                             result = result +'                     </td>                                                     ';
+                            }
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
                             result = result +'                     </td>                                                     ';
+                            if(report.isJobClosure == 'Y'){
+                           	result = result +'                     <td>                                                      ';
+                            result = result +'                         <div class="tbldata-dotdot_80">'+quantity+'</div>       ';
+                            result = result +'                         <div class="tbldata-dotdot_80">'+items.billRateType+'</div>       ';
+                            result = result +'                     </td>                                                     '; 	
+                            }else{
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_80">'+totalHours+'</div>       ';
                             result = result +'                     </td>                                                     ';
+                            }
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+amount+'">'+amount+'</div>       ';
                             result = result +'                     </td>                                                     ';

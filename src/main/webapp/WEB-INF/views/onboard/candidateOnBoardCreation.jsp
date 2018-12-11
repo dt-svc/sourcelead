@@ -383,7 +383,7 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
-  <jsp:include page="onboardingCandidatePfAndEsiDetails.jsp" />
+
   
   
 <div id="divAttachmentTd1" style="display: none; float: left;">
@@ -898,6 +898,11 @@ function validateUploadFile(id)
 			    		var json = response.object;
 			    		$("#firstName").val(json['firstName']);
 				    	 $("#lastName").val(json['lastName']);
+				    	 
+				    	 if(json.defaultOrgProbationPeriod != "" && json.defaultOrgProbationPeriod != null && json.defaultOrgProbationPeriod !="undefined"){
+					    	 $("#probationNotice").val(json.defaultOrgProbationPeriod);
+					    	 $('#probationNotice').trigger("chosen:updated");
+				    	 }
 				    	 
 				    	 if(json['mobilePhone'] != "" && json['mobilePhone'] != null && json['mobilePhone'] !="undefined"){
 				        		$("#mobileNumber").val(json['mobilePhone']);

@@ -17,9 +17,9 @@ $(document).ready(function(){
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Payroll Comparision Report</h2>
+        <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo; Payroll Comparision Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">

@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo;  Payroll Register</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -93,7 +93,7 @@ $(document).ready(function(){
 				<li>
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
-       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <a title="Excel">Export Excel</a> </span> </div>
+       					<span><a onclick="exportPayrollRegisterReportPdf();" title="PDF">Export PDF</a> <!-- <a title="Excel">Export Excel</a> --> </span> </div>
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">

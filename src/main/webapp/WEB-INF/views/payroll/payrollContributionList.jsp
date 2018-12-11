@@ -110,7 +110,8 @@ function contributionTypepagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "deductionType",
-	    	  	"sortable": false,
+	    	  	 "sortable": false,
+	    	  	"sortable": true,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		        var result = "";
 							result = result + ' <td><div class="tblminwidth-75"><span>'+opt.deductionType+'</span></div></td>';
@@ -118,8 +119,8 @@ function contributionTypepagination(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
+	    	  "sortable": false,
               "data": "description",
-              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
@@ -132,8 +133,8 @@ function contributionTypepagination(url){
               }
 	          },{
 		    	  "targets": colIndex++,
-	              "data": "taxType",
-	              "sortable": false,
+		    	  "sortable": false,
+	              "data": "taxType", 
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.taxType !=null && opt.taxType !='' && opt.taxType !='undefined'){
@@ -146,8 +147,8 @@ function contributionTypepagination(url){
 	              }
 		          },{
 			    	  "targets": colIndex++,
+			    	  "sortable": false,
 		              "data": "scheduleType",
-		              "sortable": false,
 		              "render": function ( data, type, opt, meta ) {
 		            	  var result = "";
 		            	  if(opt.scheduleType !=null && opt.scheduleType !='' && opt.scheduleType !='undefined'){
@@ -160,6 +161,7 @@ function contributionTypepagination(url){
 		              }
 			          },{
             "targets": colIndex++,
+            "sortable": false,
             "data": "payrollContributionMethod",
             "render": function ( data, type, opt, meta ) { 
           			  var result = "";
@@ -172,8 +174,9 @@ function contributionTypepagination(url){
             }
           }, {
               "targets": colIndex++,
+              "sortable": false,
               "data": "contributionAmount",
-              "render": function ( data, type, opt, meta ) {
+               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.payrollContributionMethod == 'Fixed'){
             		  result = result + ' <td><div  class="tblminwidth-100">$ '+opt.contributionAmount.toFixed(2)+'</div></td>';  

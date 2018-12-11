@@ -14,4 +14,12 @@ public interface PayrollScheduleDao {
 
 	List<UsPayrollSchedule> findAllPayrollScheduleList(Long orgLocationId);
 
+	UsPayrollSchedule getPayScheduleByUUID(String payrollScheduleUUID, Long orgLocationId);
+
+	int deleteExistedNotifyMembers(Long payScheduleId);
+
+	UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId, String scheduleUUID);
+	
+	List<UsPayrollSchedule> getAllPayrollScheduleByOrgLocationId(Long orgLocationId);
+
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,8 +69,8 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 	}
 
 	@Override
-	public List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId) throws Exception {
-		return projectAssignTasksDao.getProjectAssignTaskListOfLongByProjectTaskId(projectTaskId);
+	public List<Long> getProjectAssignTaskListOfLongByProjectTaskId(Long projectTaskId,List<Long> assignedMembersIds) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListOfLongByProjectTaskId(projectTaskId,assignedMembersIds);
 	}
 
 	@Override
@@ -81,7 +84,7 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 	}
 
 	@Override
-	public void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId ,Long userId)throws Exception {
+	public void inlineUpdateAssignTaskUsers(ProjectTasksDTO projectTasksDTO,String assignValue, String projectTaskId ,Long userId,OrgLocations orgLocations)throws Exception {
 		User user = userServiceImpl.getUserById(userId);
 		StringBuffer activity  = null;
 		 StringBuffer activitySummary = null;
@@ -93,7 +96,8 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 				 }
 			 }
 		 
-		 List<Long> updatedResourceRequests = projectAssignTasksDao.getProjectAssignTaskListOfLongByProjectTaskId(Long.valueOf(projectTaskId));
+	     List<Long> assignedMembersIds = projectMembersService.getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long.valueOf(projectTasksDTO.getProjectId()), orgLocations.getId());
+		 List<Long> updatedResourceRequests = projectAssignTasksDao.getProjectAssignTaskListOfLongByProjectTaskId(Long.valueOf(projectTaskId),assignedMembersIds);
 		 ArrayList<Long> removedMemberIds = new ArrayList<>();
 		 removedMemberIds.addAll(updatedResourceRequests);
 		 removedMemberIds.removeAll(assignUserids);
@@ -101,45 +105,67 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 		 assignUserids.removeAll(updatedResourceRequests);
 		 if(assignUserids.size() > 0) {
 			 for (Long assignedMemeber :assignUserids) {
-				 ProjectAssignTask  assignTasks = new ProjectAssignTask();
-				 ProjectTasks projectTask = tasksService.getTasksId(projectTaskId);
-				 assignTasks.setProjectTaskId(projectTask);
-				 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
-				 assignTasks.setProjectMemberId(pm);
-				 if(pm.getProjectMemberCandidteId() != null) {
-					 if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
-						 assignTasks.setCreatedBy(pm.getProjectMemberCandidteId().getConsultantUser().getUserCode());
-					 }
-				 }
-				 assignTasks.setStatus(Constants.RECORD_ACTIVE.toString());
-				 assignTasks.setCreatedDate(commonUtil.currentDate());
-				 projectAssignTasksDao.saveProjectAssignTask(assignTasks);
-				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				 		
-				 projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTasks,projectTasksDTO,projectTask,loginOrgLocation,user);
-				  				 
-				 //this code is Assigned to user Activity
-				 activity = new StringBuffer();
-			     activitySummary = new StringBuffer();
-				 activity.append("Add Assigned User");
-				 activitySummary.append(assignTasks.getProjectMemberId().getEmployee().getUser().getFullName());
-				 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTask,user);
+				 
+					ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
+					List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), Long.valueOf(projectTasksDTO.getProjectId()));
+							if(pmList != null && !pmList.isEmpty()) {
+								for(ProjectMembers members : pmList) {
+									ProjectAssignTask assignTask = new ProjectAssignTask();
+									 ProjectTasks projectTask = tasksService.getTasksId(projectTaskId);
+									assignTask.setProjectTaskId(projectTask);
+									
+									assignTask.setProjectMemberId(members);
+									assignTask.setStatus(Constants.MEMBER_ACTIVE);
+									
+									assignTask.setCreatedDate(CommonUtil.currentDate());
+									assignTask.setCreatedBy(user.getUserCode());
+									assignTask.setUpdatedDate(CommonUtil.currentDate());
+									assignTask.setUpdatedBy(user.getUserCode());
+									projectAssignTasksDao.saveProjectAssignTask(assignTask);
+									if(orgLocations.getId().longValue() == members.getProjectMemberCandidteId().getOrgLocationId().getId()) {
+										projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTask,projectTasksDTO,projectTask,orgLocations,user);
+										 //this code is Assigned to user Activity
+										 activity = new StringBuffer();
+									     activitySummary = new StringBuffer();
+										 activity.append("Added Assigned User");
+										 activitySummary.append(members.getCandidateName());
+										 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTask,user);
+									}
+								}
+							}
 			 }
 		 }
 		 
 		 if(removedMemberIds != null && !removedMemberIds.isEmpty()){
 				for(Long memberId : removedMemberIds){
-					 ProjectAssignTask assignUs = projectAssignTasksDao.getProjectAssignTaskByIdAndMemberId(Long.valueOf(projectTaskId), memberId);
-					 projectAssignTasksDao.deleteProjectAssignTask(assignUs);
-					 
-					 activity = new StringBuffer();
-				     activitySummary = new StringBuffer();
-					 activity.append("Delete Assigned User");
-					 activitySummary.append(assignUs.getProjectMemberId().getEmployee().getUser().getFullName());
-					 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),assignUs.getProjectTaskId(),user);
+					ProjectMembers pm = projectMembersService.getProjectMemberById(memberId);
+					ProjectTasks tasks = projectTasksService.getTasksId(projectTaskId);
+					List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersListByMasterCandidateId(pm.getMasterCandidateId().getId(), tasks.getProjectId().getId());
+					if(pmList != null && !pmList.isEmpty()) {
+						for(ProjectMembers members : pmList) {
+							ProjectAssignTask assignUs = projectAssignTasksDao.getProjectAssignTaskByIdAndMemberId(Long.valueOf(projectTaskId), members.getId());
+							if(assignUs != null) {
+							 projectAssignTasksDao.deleteProjectAssignTask(assignUs);
+							 activity = new StringBuffer();
+						     activitySummary = new StringBuffer();
+							 activity.append("Deleted Assigned User");
+							 activitySummary.append(members.getCandidateName());
+							 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),tasks,user);
+							}
+						}
+					}
 				}
 			}
-		 
+	}
+
+	@Override
+	public List<ProjectassignTasksDTO> getProjectAssignTaskListByOrglocationId(Long orglocationId) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByOrglocationId(orglocationId);
+	}
+
+	@Override
+	public ResponseList<ProjectAssignTask> getProjectAssignTaskListByCandidateIdOrglocationId(ProjectassignTasksDTO projectassignTasksDTO) throws Exception {
+		return projectAssignTasksDao.getProjectAssignTaskListByCandidateIdOrglocationId(projectassignTasksDTO);
 	}
 	
 	 

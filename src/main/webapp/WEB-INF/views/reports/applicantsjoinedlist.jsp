@@ -150,7 +150,7 @@ function getAppliantJoinedListByRecruiter(){
 		});
 	 if(flag){
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients;
+		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue;
 // 		 usersListPagination(url,sourceleadUrl);
 			prepareAllDaywiseLeaveReportList(url);
 
@@ -268,6 +268,7 @@ function daywiseLeaveReportsListPagination(url){
 		      {
 		          "targets": colIndex++,
 		          "data": "incentives",
+		          "sortable": false,
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		        	  result = result + ' <td>';

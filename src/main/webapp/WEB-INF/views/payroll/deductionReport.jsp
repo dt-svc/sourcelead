@@ -19,7 +19,7 @@ $(document).ready(function(){
         <h2>Deduction</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction
 		</div>
     </section>
     
@@ -98,7 +98,7 @@ $(document).ready(function(){
     <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="deductionReportExportToPdf();" title="PDF">Export PDF</a> <!-- <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>  --></span> </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -212,7 +212,7 @@ $(".overIcon, .newActPop").click(function(e){
 
 
 
-
+<div id="popUp"></div>
 <script type="text/javascript">
 function deductionReport(){
 	 if ($('#deduction_report_form').validate(false, validationSettings)){ 
@@ -306,9 +306,8 @@ function getDeductionReports(){
 									"data" : "type",
 									"sortable": true,
 									"render" : function(data, type, opt,meta) {
-										
 										     var result = "";
-											result = result+ ' <td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ ' <td><div class="tblminwidth-75" id="deductionTypeDiv">'+opt.deductionType+'</div></td>';
 										
 										return result;
 									}
@@ -440,8 +439,29 @@ function deductionReportExportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var deductionId = $("#deductionId").val();
+	var deduction = $('#deductionTypeDiv').html();
+	if(deduction != null && deduction !='' && deduction !='undefined'){
+		window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+	}else{
+		var result = " ";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Deduction Report List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 	
-	window.location.href = sourceleadUrl+"/exportToPdfDeductionReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&deductionId="+deductionId;
+}
+</script>
+
+<script type="text/javascript">
+function cancelExport(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 

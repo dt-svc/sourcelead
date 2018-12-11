@@ -28,6 +28,7 @@ import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayPeriod;
+import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 
 @Repository
 public class USPayPeriodDaoImpl implements USPayPeriodDao{
@@ -70,7 +71,8 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 	public ResponseList<USPayPeriod> getPayPeriodListByOrgLocationId(OrgLocations orgLocation, PaysheetFrequencyDTO paysheetFrequencyDTO) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String qry = "from USPayPeriod up where up.orgLocation.id =:orgLocationId and up.status = '1' order by up.id desc";
+		String qry = "from USPayPeriod up where up.orgLocation.id =:orgLocationId and up.status = '1' ";
+		String SubString = "order by up.id desc";
 		List<USPayPeriod> periodList = null;
 		ResponseList<USPayPeriod> response = new ResponseList<>();
 		StringBuilder query1 = new StringBuilder("");
@@ -100,13 +102,15 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 							+ paysheetFrequencyDTO.getSearchValue()
 							+ "%' ").append("OR up.approverStatus like '%"
 							+ paysheetFrequencyDTO.getSearchValue()
+							+ "%' ").append("OR up.payPeriodNum like '%"
+							+ paysheetFrequencyDTO.getSearchValue()
 							+ "%' ").append("OR up.paysheetFrequency.type like '%"
 							+ paysheetFrequencyDTO.getSearchValue()
 							+ "%' )");
 				}
 			}
 		}
-		Query queryObj = session.createQuery(qry + query1.toString());
+		Query queryObj = session.createQuery(qry + query1 + SubString);
 		periodList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		response.setData(periodList);
 		return response;
@@ -151,4 +155,5 @@ public class USPayPeriodDaoImpl implements USPayPeriodDao{
 		empList = session.createQuery(query).setInteger("payPeriodNum", payPeriodNum).list();
 		return empList;
 	}
+
 }

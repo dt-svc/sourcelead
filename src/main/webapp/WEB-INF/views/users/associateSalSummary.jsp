@@ -433,6 +433,7 @@ function salaryHistory(id) {
 		        result = result + '<tbody>';
 				for (var i=0; i<json.length; i++)
 				{
+					
 					var opt = json[i];
 					result = result + '<tr>';
 					result = result + '<td>'+opt.payType+'</td>';

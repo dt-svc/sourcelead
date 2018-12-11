@@ -48,6 +48,12 @@ public class UsPayrollSchedule {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "NOTIFY_BEFORE")
+	private String notifyMember;
+	
+	@Column(name = "PAYROLL_SCHEDULE_UUID")
+	private String payrollScheduleUUID;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -60,10 +66,6 @@ public class UsPayrollSchedule {
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollScheduleId")
-	private Set<USPayScheduleNotifyMember> payScheduleNotifyMember;
-	
-
 	public Long getId() {
 		return id;
 	}
@@ -135,6 +137,14 @@ public class UsPayrollSchedule {
 		return status;
 	}
 
+	public String getNotifyMember() {
+		return notifyMember;
+	}
+
+	public void setNotifyMember(String notifyMember) {
+		this.notifyMember = notifyMember;
+	}
+
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
@@ -170,16 +180,14 @@ public class UsPayrollSchedule {
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-
-
-	public Set<USPayScheduleNotifyMember> getPayScheduleNotifyMember()
+	public String getPayrollScheduleUUID()
 	{
-		return payScheduleNotifyMember;
+		return payrollScheduleUUID;
 	}
 
-	public void setPayScheduleNotifyMember(Set<USPayScheduleNotifyMember> payScheduleNotifyMember)
+	public void setPayrollScheduleUUID(String payrollScheduleUUID)
 	{
-		this.payScheduleNotifyMember = payScheduleNotifyMember;
+		this.payrollScheduleUUID = payrollScheduleUUID;
 	}
 
 	

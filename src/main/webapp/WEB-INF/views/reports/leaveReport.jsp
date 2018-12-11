@@ -61,19 +61,13 @@ $( document ).ready(function() {
             	  <div class="col-md-6">
               <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" readonly class="form-control calendar" name="startDate" value="" field-name="From Date" id="fromDate" data-validation="required" onclick="datePickeerTest();">
-                 <span class="input-group-addon">
-                 	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('from');"></i>
-                 </span>
+                <input type="text" readonly class="form-control calendar" name="startDate" value="" field-name="From Date" id="fromDate" placeholder="From Date" data-validation="required" onclick="datePickeerTest();">
               </div> 
               </div>
             	  <div class="col-md-6">
               <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" readonly class="form-control calendar" name="endDate" value="" field-name="To Date" id="toDate" data-validation="required" onclick="datePickeerTest();">
-                 <span class="input-group-addon">
-                 	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('to');"></i>
-                 </span>
+                <input type="text" readonly class="form-control calendar" name="endDate" value="" field-name="To Date" id="toDate" placeholder="To Date" data-validation="required" onclick="datePickeerTest();">
               </div>
               </div>
             
@@ -273,7 +267,7 @@ function exportUserData(){
 function leaveReport(){
 // 	var formData = getFormData("leaveReportForm");
 document.getElementById("showReport").style.display="none";
-document.getElementById("hearderId").style.display="block";
+//document.getElementById("hearderId").style.display="block";
 var reportRolesId="";
 var employmentType="";
 var associateListId="";
@@ -306,7 +300,8 @@ var status="";
 	var url = sourceleadUrl+"/leaveReportsList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&startDate="+fromDate+"&endDate="+toDate+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId+"&leaveTypeIds="+leaveTypeIds+"&status="+status;
 //     var url = sourceleadUrl+"/leaveReportsList?searchValue="+searchValue;
     if ($('#leaveReportForm').validate(false, validationSettings)){	
-    prepareAllLeaveReportList(url);
+    	$("#hearderId").show();
+    	prepareAllLeaveReportList(url);
     }else{ 
 		return false;
  } 
@@ -628,7 +623,7 @@ function resetValues(){
 	$('#projectList').trigger("chosen:updated");
 	$('#associateList').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
-	window.location.href =sourceleadUrl+"/reportsDashboard"
+	window.location.href =sourceleadUrl+"/hrReportsList"
 }
 </script>
 
@@ -771,11 +766,13 @@ function reportCollapse() {
 	//$("#leaveReportsList").slideUp();
 }
 function searchReportCollapse() {
+	$("#hearderId").hide();
 	document.getElementById("showReport").style.display="none";
-	document.getElementById("hearderId").style.display="none";
-	var fromDate = $("#fromDate").val();
-    var toDate = $("#toDate").val();
-	leaveReport(fromDate,toDate);
+// 	document.getElementById("hearderId").style.display="none";
+// 	var fromDate = $("#fromDate").val();
+//     var toDate = $("#toDate").val();
+// 	leaveReport(fromDate,toDate);
+	$("#leaveReportDataTableSearch").val('');
 	$("#fromDate").val('');
 	$("#toDate").val('');
 	$("#departmentList").val('');

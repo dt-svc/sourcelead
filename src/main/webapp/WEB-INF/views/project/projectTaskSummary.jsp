@@ -59,7 +59,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		}
 		priorityColorPic();
 		severityColorPic();
-		
+		description(${projectTask.id});
 	});
 function priorityColorPic(){
 	var colorValue= $('select#taskpriorityId option:selected').attr("colorProp");
@@ -214,7 +214,7 @@ function severityColorPic(){
 			   		<span></span>
 			   </div>
           
-              <div class="col-md-12 alert-custom" data-toggle="collapse" href="#collapse2" onclick="description(${projectTask.id});">
+              <div class="col-md-12 alert-custom hidden" onclick="description(${projectTask.id});">
                 <div class="alert alert-info row">  
               <div class="col-md-3 mt5">
                   <label class="paddingRight">Created On:</label>
@@ -233,11 +233,24 @@ function severityColorPic(){
                   </div>
                   </div>
               </div>
-              <div id="collapse2" class="row panel-collapse collapse">
-                  <div class="col-md-12 clearfix">
+              <div class="clearfix alert-custom">
+              <div class="alert alert-info clearfix mb0">
+                  <div class="col-md-2 clearfix">
                       <strong>Description</strong>
                   </div>
+                  <div class="col-md-3 textBold">
+                  <label class="paddingRight">Created On:</label>
+                  <span>${createdDate}</span>
+              </div>
+              <div class="col-md-7 textBold">
+                  <label class="paddingRight pull-left">Created By:</label>
+                  <span class="tbldata-dotdot pull-left" title="${createdBy}">${createdBy}</span>
+              </div>
+              </div>    
+                 
+                 <div class="row clearfix"> 
                   <div id="descrptionid"></div>
+                  </div>
                  
               </div>
               <div class="clearfix"></div>
@@ -324,9 +337,9 @@ function severityColorPic(){
 		          
 		          <c:if test="${taskTypeName == 'SubTask'}">
 		          <c:if test="${not empty parentGeneratedId}">
-		          <div class="row dropdown-select mb">
-			              <label class="col-md-6">Parent Task Id :</label> 
-			              <div class="col-md-6 dropdown-select">
+		          <div class="row dropdown-select mb10">
+			              <label class="col-md-4">Parent Task Id :</label> 
+			              <div class="col-md-8 paddingLefet textBold">
 			              <a href="${sourceleadUrl}/projectTaskSummary?taskUUID=${parentProjectTaskUUID}&projectClientUUID=${projectClientUUID}" title="${parentGeneratedId}">${parentGeneratedId}</a>
 			              </div>
 			              </div>
@@ -578,9 +591,10 @@ $('.chosen-select').chosen().on('change', function() {
 	var projectClientUUID = '${projectClientUUID}';
 	var taskId = '${projectTask.id}';
 	var userId = '${SourceLeadWeb_userId}';
+	var projectId =  "${projectId}";
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID, 	   
+		    url: sourceleadUrl+"/ProjectTasks/updateAssignTaskUsers?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue+"&taskId="+taskId+"&userId="+userId+"&projectClientUUID="+projectClientUUID+"&projectId="+projectId, 	   
 	 		    success: function(data) {
 		    }
 	 });  
@@ -1950,8 +1964,8 @@ function subTasksAssignList(projectId){
  </script>
  <script>
 function saveTasks(){
-	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	 if ($('#projectTask_form').validate(false, validationSettings)) {
+		 var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		var frm = $('#projectTask_form').serializeFormJSON();
 		var form = $('#projectTask_form')[0];
 		var formData = new FormData(form);

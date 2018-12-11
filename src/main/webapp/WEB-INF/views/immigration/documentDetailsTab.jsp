@@ -148,7 +148,11 @@
 				</c:choose>
 			  </tr>  
 		</c:forEach>
-			  						
+			<c:if test="${empty immigrationCanDocList}">
+			<tr>
+				<td colspan="5" class="dataTables_empty" valign="top"></td>
+			</tr>
+		   </c:if>				
 			</tbody>
 		  </table>
 		</div>
@@ -332,7 +336,7 @@ function removeImmigDocumrntDynamic(id){
 	$('#uploadDocumentName'+id).val('');
 	$("#uploadFile"+id).removeAttr("data-validation");
 	$("#uploadFile"+id).removeAttr("data-validation-optional");
-	$("#uploadFile"+id).attr("data-validation", "required");
+	$("#uploadFile"+id).attr("data-validation", "required validatepdf");
 	
 }
 </script>

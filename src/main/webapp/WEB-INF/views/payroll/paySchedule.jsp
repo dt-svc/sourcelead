@@ -7,7 +7,10 @@
 
 <script>
 $(document).ready(function(){
-	getApproverList();
+	var payrollScheduleUUID = "${payScheduleUUID}";
+	/* getApproverList(); */
+	getPayrollSchedule(payrollScheduleUUID);
+	$("#endDateDIV").hide();
 });
 
 </script>
@@ -22,85 +25,94 @@ $(document).ready(function(){
         <div class="success_pop" id="selector2" style="display: none;">
           <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
         </div>
-      <div class="pull-right brud-crum">Home &raquo; Pay Schedule</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
+          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
+          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;Add Pay Schedule
+        </div>
     </section>
     <div class="clearfix"></div>
     <div class="timesheet_out">
       <div class="tablelist-wrap clearfix">
-          <div class="row">
-		  <div class="col-md-6 mt">
+          <div class="row mt">
+		  <div class="clearfix">
 		  <div id="loaderDIV"></div>
 		    <form:form id="add_payroll_schedule_form" name="add_payroll_schedule_form" method="post">
+            <div class="col-md-6">
             <div class="form-group clearfix">
-				<label class="col-md-4">Pay Frequency</label>
-              <div class="col-md-6">
-                <div class="dropdown-select">
-                  <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" field-name="Pay Frequency">
+			 <label class="col-md-4">Pay Frequency</label>
+              <div class="col-md-8">
+                <div class="dropdown-select" id="scheduleFreDIV">
+                  <select class="sel" id="payFrequency" name="payFrequency" data-validation="required" onchange="weekOnChange();" field-name="Pay Frequency">
                     <option value="">Select Frequency</option>
-                    <option value="Weekly">Weekly</option>
+                    <option value="Weekly">Weekly</option> 
                     <option value="Bi-Weekly">Bi-Weekly</option>
                     <option value="Monthly">Monthly</option>
                   </select>
                 </div>
               </div>
-            </div>
-			  
+              </div>
+            
+			  <input type="hidden" value="${payScheduleUUID}" name="payrollScheduleUUID"/>
 			  <div style="display: block;">
           <div class="form-group clearfix" id="frequencyBy">
 				<label class="col-md-4">Pay Period Start Date</label>
-              <div class="col-md-6">
-                <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate" data-validation="required" field-name="Pay Period Start Date">
+              <div class="col-md-8" id="payperiodDiv1">
+                <input class="form-control calendar" placeholder="Date" type="text" id="payPeriodStartDate" name="payPeriodStartDate"  field-name="Pay Period Start Date">
+              	<div class="clearfix mt5"></div>
+              	
               </div>
 			  <div class="clearfix"></div>
           </div>
+          
 		<div id="frequencyByMonthly" style="display: none;">
           <div class="form-group clearfix">
 				<label class="col-md-4">Next Pay Month</label>
-              <div class="col-md-6">
-				  <select class="sel" id="nextPayMonth" name="nextPayMonth">
-				  	<option value="">Slect Month</option>
-				  	<option value="JANUARY">January</option>
-				  	<option value="FEBRUARY">February</option>
-				  	<option value="MARCH">March</option>
-				  	<option value="APRIL">April</option>
-				  	<option value="MAY">May</option>
-				  	<option value="JUNE">June</option>
-				  	<option value="JULY">July</option>
-				  	<option value="AUGUST">August</option>
-				  	<option value="SEPTEMBER">September</option>
-				  	<option value="OCTOBER">October</option>
-				  	<option value="NOVEMBER">November</option>
-				  	<option value="DECEMBER">December</option>
-					  
+              <div class="col-md-8" id="nextPayrollMonth">
+				  <select class="sel" id="nextPayMonth" name="nextPayMonth"  field-name="Next Pay Month">
 				  </select>
               </div>
 			  <div class="clearfix"></div>
           </div>
           </div>
-			 <h5 class="col-md-12 clearfix">Pay Period Frequency</h5>
+          </div>
+          <div class="form-group">
+              <label class="col-md-4">Notify Before (day's)</label>
+				<div class="col-md-8">
+					<input type="text" data-validation="required validate_int validate_Space validate_length  length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control" field-name="Notify Before" >
+				</div>
+            </div>
+          </div>
+          
+          
+          <div class="col-md-6">
+			 <h5 class="col-md-12 clearfix margin-top0">Pay Period Frequency</h5>
 			  <div class="clearfix"></div>
+			  
+			  <div class="form-group clearfix mt text-primary textBold" id="endDateDIV">
+				<label class="col-md-4">Pay Period End Date</label>
+              <div class="col-md-8">
+              		<span id="payPeriodEndDate"></span>
+              </div>
+			  <div class="clearfix"></div>
+            </div>
+			  
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
-              <div class="col-md-6">
-                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="payCheckDate">
+              <div class="col-md-8">
+                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="Pay Check Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
 			  <div class="form-group clearfix">
-				<label class="col-md-4">Run Payroll</label>
-              <div class="col-md-6">
+				<label class="col-md-4">Run Payroll</label> 
+              <div class="col-md-8">
                 <input class="form-control calendar" placeholder="Date" type="text" id="runPayrollDate" name="runPayDate" data-validation="required" field-name="Run Payroll Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
-            
-            <div class="form-group">
-              <label class="col-md-12 paddingRight">Notify to Members</label>
-				<div class="col-md-12">
-					<select class="form-control chosen-select" multiple data-placeholder="Notify Members" id="notifyMember" name="notifyMember">
-					</select>
-				</div>
             </div>
+            
+            
           <!--   <div class="form-group clearfix">
 				<label class="col-md-4">Notify to Members</label>
               <div class="col-md-6">
@@ -112,9 +124,10 @@ $(document).ready(function(){
 			  
 			  <div class="clearfix"></div>
 			  
-			  <div class="col-md-6 col-md-offset-4 mb">
-			  	<div class="pull-right">
-					<button type="button" class="btn btn-primary" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button>  
+			  <div class="col-md-12 mb mt">
+			  	<div class="pull-right mr">
+					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
+					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/app/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>
@@ -146,8 +159,7 @@ function savePayrollSchedule(){
 // 	 	    var formData = getFormData("add_payroll_schedule_form");
 	 	   var formData = $($('#add_payroll_schedule_form')[0]).serialize();
 	        	  $("#loaderDIV").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        	  $.post(sourceleadUrl+"/savePayrollSchedule?"+tokenParamName+"="+tokenValue, formData, function(data) {
-	        		  
+	        	  $.post(sourceleadUrl+"/savePayrollSchedule?"+tokenParamName+"="+tokenValue, formData, function(result) {
 	        		  if (result && result.response === "INVALID_DATA") {
 		                    $("#save_pay_schedule_button").removeAttr("disabled");
 		                    $("#save_pay_schedule_button").removeAttr('button').val('Save');
@@ -156,7 +168,7 @@ function savePayrollSchedule(){
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
 		                	    $("#loaderDIV").removeAttr("style");
-			        		 /*  location.replace(sourceleadUrl+ "/payrollDeductionList"); */
+		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
 				     			 $("#messageFadeDIV ").html("Added Successfully");
@@ -175,15 +187,12 @@ function savePayrollSchedule(){
     		return false;
     	  } 
 }
+$('body').on('blur', '#add_payroll_schedule_form', function() {
+	$("#add_payroll_schedule_form").showHelpOnFocus();
+	$("#add_payroll_schedule_form").validateOnBlur(false, validationSettings);  
+});
 </script>
   
-<!--   <script type="text/javascript">
-$(function() {
-	$("#payCheckDate").datepicker();
-	$("#runPayrollDate").datepicker();
-	$("#payPeriodStartDate").datepicker();
-})
- -->
 
 
 
@@ -197,6 +206,12 @@ $('#payCheckDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
     //minDate: 0  this line for to restrict selection of previous dates
+    		onSelect : function(selected) {
+    			var dt = $(this).datepicker('getDate', '+1d');
+    			dt.setDate(dt.getDate()-1);
+    			$("#runPayrollDate").datepicker("option", "maxDate", dt);
+// 			removeStartValid();
+			}
 });
 
 $('#runPayrollDate').datepicker({
@@ -204,6 +219,12 @@ $('#runPayrollDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
     //minDate: 0  this line for to restrict selection of previous dates
+    onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate()+1);
+			$("#payCheckDate").datepicker("option", "minDate", dt);
+// 			removeEndValid();
+	}
 });
 
 $('#payPeriodStartDate').datepicker({
@@ -211,9 +232,20 @@ $('#payPeriodStartDate').datepicker({
     changeMonth: true,
 	  changeYear: true, 
 	  onSelect : function(selected) {
-		//addValidClass();
+		  var dt = $(this).datepicker('getDate', '-1d');
+		  var frequency = $("#payFrequency").val();
+			if(frequency == "Weekly"){
+				dt.setDate(dt.getDate()+6);
+			}if(frequency == "Bi-Weekly"){
+				dt.setDate(dt.getDate()+13);
+			}
+			var dd = new Date(finalDateFormat);
+			dd.setDate(dt);
+			$("#payPeriodEndDate").html(dt);
+			$("#endDateDIV").show();
+			$("#payCheckDate").datepicker("option", "minDate", dt);
 	}
-    //minDate: 0  this line for to restrict selection of previous dates
+    //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
 	 
 	
@@ -221,28 +253,59 @@ $('#payPeriodStartDate').datepicker({
 		 $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove(); 
 	} */
 </script>
-	
-	<script>
-$("#payFrequency").change(function() {
-	var frequency = $(this).val();
+
+<script>
+function removeStartValid(){
+	$('#payCheckDate').find('p.jquery_form_error_message').remove();
+}
+
+function removeEndValid(){
+	$('#runPayrollDate').find('p.jquery_form_error_message').remove();
+}
+</script>
+<script>
+function weekOnChange() {
+	var frequency = $("#payFrequency").val();
 	if(frequency != "Monthly"){
 		$("#frequencyBy").show();
 		$("#frequencyByMonthly").hide();
+		$('#nextPayMonth').removeAttr('data-validation');
+	    $('#nextPayMonth').attr('data-validation-optional',"true");
+	    $('#nextPayrollMonth').find('p.jquery_form_error_message').remove();
+	    $('#payPeriodStartDate').removeAttr('data-validation-optional');
+	    $('#payPeriodStartDate').attr('data-validation',"required");
 	}else {
 		$("#frequencyBy").hide();
 		$("#frequencyByMonthly").show();
+		$('#payPeriodStartDate').removeAttr('data-validation');
+	    $('#payPeriodStartDate').attr('data-validation-optional',"true");
+	    $('#nextPayMonth').removeAttr('data-validation-optional');
+	    $('#nextPayMonth').attr('data-validation',"required");
+	    $('#payperiodDiv1').find('p.jquery_form_error_message').remove();
+		
 	}
-})	
+	
+	checkDuplicatePaySchedule(frequency);
+}	
 </script>
 
 
 <script>
-  function getApproverList(){
+  function checkDuplicatePaySchedule(payFrequency){
+	  var payrollScheduleUUID = "${payScheduleUUID}";
 		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/findPayrollApprover?"+tokenParamName+"="+tokenValue, 
+		    	type: "POST",
+		        url: sourceleadUrl+"/checkDuplicatePaySchedule?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency+"&payrollScheduleUUID="+payrollScheduleUUID, 
 		        success: function(data) {
-		        var output = "";
+		      	  if (!data) {
+		                	$('#scheduleFreDIV').find('p.jquery_form_error_message').remove();
+		                	$("#save_pay_schedule_button").attr("disabled", false);
+		            }  else {
+							$('#scheduleFreDIV').find('p.jquery_form_error_message').remove();
+		      			  	$("#payFrequency").after("<p class='jquery_form_error_message'>"+payFrequency+" already exists..!!</span>");
+		      				$("#save_pay_schedule_button").attr("disabled", true);
+		                }
+	/* 	        var output = "";
 				for (var i=0; i<data.length; i++)
 				{
 				var opt = data[i];
@@ -250,10 +313,53 @@ $("#payFrequency").change(function() {
 				}
 				$("#notifyMember").empty();
 				$("#notifyMember").append(output);
-				$('#notifyMember').trigger("chosen:updated");
+				$('#notifyMember').trigger("chosen:updated"); */
 				
 		        },
 		    });
+  }
+  </script>
+  
+  <script>
+  function getPayrollSchedule(payrollScheduleUUID){
+	  
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/findPayrollScheduleByUUID?"+tokenParamName+"="+tokenValue+"&payrollScheduleUUID="+payrollScheduleUUID, 
+	        success: function(json) {
+	               
+	        	   var data = json.approvers;
+	        	   var monthly = json.month;
+					var res = "";
+					res = res + "<option value=''>Slect Month</option>";
+					  for (var j=0; j<monthly.length; j++)
+					{
+						res = res + "<option selected value='" +monthly[j]+ "'>"+monthly[j]+"</option>";
+					}  
+					$("#nextPayMonth").empty();
+					$("#nextPayMonth").append(res);  
+	        	
+	        $("#payFrequency").val(json.payFrequency);
+	        weekOnChange();
+	        $("#payPeriodStartDate").val(json.payPeriodStartDate); 
+	        $("#payCheckDate").val(json.payCheckDate);
+	        $("#runPayrollDate").val(json.runPayDate); 
+	        $("#nextPayMonth").val(json.nextPayMonth); 
+	        $("#notifyMember").val(json.notifyMember)
+	          
+	        	/*   var output = "";
+			for (var i=0; i<data.length; i++)
+			{
+			var opt = data[i];
+			 output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"  ("+opt.role+")</option>";
+			}
+			$("#notifyMember").empty();
+			$("#notifyMember").append(output);
+			$('#notifyMember').trigger("chosen:updated"); */
+			
+	        },
+	    });
+	  
   }
   </script>
 
