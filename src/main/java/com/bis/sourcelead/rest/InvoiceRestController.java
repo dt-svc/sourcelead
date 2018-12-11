@@ -104,6 +104,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.CustomInvoicePDFHelper;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -232,8 +233,9 @@ public class InvoiceRestController {
 	 * } catch (FileNotFoundException e) {
 	 * logger.error(ExceptionUtils.getFullStackTrace(e)); } }
 	 */
+	
 	@Autowired
-	private InvoicePdfHelper invoicePdfHelper;
+	private CustomInvoicePDFHelper customInvoicePDFHelper;
 	
 	@RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveInvoice(InvoiceDTO invoiceDTO, @RequestParam(value = "saveType", required = false) String saveType, @RequestParam(value = "invoiceType", required = false) String invoiceType, HttpServletRequest request) throws Exception
@@ -2580,7 +2582,7 @@ return responseList;
 			
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(5L);
-			File file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
+			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
 			/*if(file!= null){
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {

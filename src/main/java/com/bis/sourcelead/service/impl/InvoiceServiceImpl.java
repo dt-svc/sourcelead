@@ -125,6 +125,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.CustomInvoicePDFHelper;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.ExpensesInvoicePdfHelper;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -212,6 +213,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Autowired
 	private InvoicePdfHelper invoicePdfHelper;
+	
+	@Autowired
+	private CustomInvoicePDFHelper customInvoicePDFHelper;
 
 	@Autowired
 	private ProjectsService projectsService;
@@ -440,7 +444,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
 				invoiceTemplateConfigured = true;
 			}
 		} 
@@ -2967,7 +2971,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = invoicePdfHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other");
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other");
 				invoiceTemplateConfigured = true;
 			}
 		}
