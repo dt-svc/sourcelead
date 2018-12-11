@@ -17,7 +17,7 @@
 	getEmployeeTaskRepotList();    
  });
  
- </script>
+ </script> 
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -106,6 +106,11 @@ function getEmployeeTaskRepotList(){
 }
  
 </script>
+<script>
+ function resetFilter(){
+	 getEmployeeTaskRepotList();
+ }
+ </script>
  <script>
  function employeeTaskPagination(){
 		$('#employeeTaskPagination').DataTable( { 

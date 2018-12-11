@@ -95,7 +95,7 @@
 			  	</c:forEach>
 			  <c:if test="${empty candidatesEmployersList}">
 				<tr>
-				 <td colspan="5" class="dataTables_empty" valign="top"></td>
+				 <td colspan="7" class="dataTables_empty" valign="top"></td>
 				</tr>
 			 </c:if>						
 			</tbody>

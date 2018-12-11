@@ -1511,11 +1511,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
 	    	
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	if(stateCode != null) {
-	    		candidate.setResidenceStateCode(stateCode);
+	    	if(StringUtils.isNotBlank(addUserDTO.getResidenceState()) && StringUtils.isNotBlank(addUserDTO.getResidenceCountry())) {
+	    		Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	if(stateCode != null) {
+		    		candidate.setResidenceStateCode(stateCode);
+		    	}
 	    	}
 	    	
 	    }
