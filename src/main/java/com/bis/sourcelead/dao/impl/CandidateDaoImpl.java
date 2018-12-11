@@ -2829,6 +2829,25 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 		
 
+
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate candidate where candidate.id IN (:Ids)";
+			List<Candidate> candidates = session.createQuery(query).setParameterList("Ids", Ids).list();
+			return candidates;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
@@ -2839,5 +2858,21 @@ public class CandidateDaoImpl implements CandidateDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId";
+			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
+			return  marketplacePurchaseOrder;
+		}
+		catch(Exception e) {
+       	 e.printStackTrace();
+       	 return null;
+        }
 	}
 }
