@@ -899,9 +899,10 @@ function showTemplatePreview() {
 				$(this).find("div[class='cusInList']").each(function() {
 					var itemChecked = $(this).find("input[type='checkbox']").is(":checked");
 					var textElementStyle = $(this).find("label").attr("style");
-					textElementStyle += style+";";
-					
+
 					var parentStyle = $(this).attr("style");
+					textElementStyle += parentStyle+";";
+					
 					bodyText += "<div style='"+parentStyle+"'><span " + (itemChecked ? "class='active'" : "") + " style='" + textElementStyle + "'>" + $(this).find("label").html() + "</span></div>";
 				});
 				headText += bodyText;
