@@ -572,6 +572,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projects.setUpdatedDate(new Date());
 			projects.setIsProjectForTimeSheets(Constants.YES);
 			projects.setIsProjectForExpenses(Constants.YES);
+			projects.setProjectApprovalType(Constants.PARALLEL);
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 			
 			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
