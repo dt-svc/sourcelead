@@ -5,6 +5,53 @@ var masterHeader = new buildMasterHeaderPanel();
 	    var userType = 'Admin'
 		var fileUrl = '/resources/images/userprofile-img.png'	
 	    var masterNavHtml='';	
+	    var searchValue = '';
+	    var loginOrgLocationName = "BusinessIntelli Solutions";
+	    
+	    if(tabAccessArray.indexOf("ROLE_CROWDSOURCING_PROFESSIONAL") == -1 && tabAccessArray.indexOf("ROLE_CROWDSOURCING_RECRUITER") == -1){
+	    	
+	    	masterNavHtml = masterNavHtml+'<span class="logo">';
+	    	masterNavHtml = masterNavHtml+'<div class="text-logo">';	
+	    	masterNavHtml = masterNavHtml+'<span class="tbldata-dotdot" data-id="orgLogoImage" title="'+loginOrgLocationName+'">'+loginOrgLocationName+'</span>';	
+	    	masterNavHtml = masterNavHtml+'</div>';	
+	    	masterNavHtml = masterNavHtml+'</span>';
+	    	
+	    	masterNavHtml = masterNavHtml+'<div class="search-area searchArea_mrgn newHeadSea">';	
+	    	masterNavHtml = masterNavHtml+'<form:form name ="search_form" id="search_form">';	
+	    	masterNavHtml = masterNavHtml+'<div class="uasrch-selectpicker">';	
+	    	masterNavHtml = masterNavHtml+'<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >';	
+	    	masterNavHtml = masterNavHtml+'<option ${searchType == "All" ?"selected":""} value="All">All</option>';	
+	    	 if(tabAccessArray.indexOf("Associates")){
+	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Users" ?"selected":""} value="Users">Associates</option>';	
+	    	 }
+	    	 
+	    	 if(tabAccessArray.indexOf("Jobs")){
+	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Requirement" ?"selected":""} value="Users">Requirement</option>';
+	    	 }
+	    	 
+	    	 if(tabAccessArray.indexOf("Candidates")){
+	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Candidate" ?"selected":""} value="Candidate">Candidates</option>';
+	    	 }
+	    	 
+	    	 if(tabAccessArray.indexOf("Clients")){
+	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Client" ?"selected":""} value="Client">Clients</option>';
+	    	 }
+	    	 
+	    	 if(tabAccessArray.indexOf("Vendors")){
+	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Vendor" ?"selected":""} value="Vendor">Vendors</option>';
+	    	 }
+	    	
+	    	 masterNavHtml = masterNavHtml+'</select>';	
+	    	 masterNavHtml = masterNavHtml+'</div>';	
+					
+	    	 masterNavHtml = masterNavHtml+'<div class="pull-left universalSrch">';	
+	    	 masterNavHtml = masterNavHtml+'<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="'+searchValue+'"/>';	
+	    	 masterNavHtml = masterNavHtml+'<button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="masterHeader.universalSearch();" ></button>';	
+	    	 masterNavHtml = masterNavHtml+'</div>';	
+	    	 masterNavHtml = masterNavHtml+'</form:form>';	
+	    	 masterNavHtml = masterNavHtml+'</div>';	
+	    }
+	    
 			
 	    masterNavHtml = masterNavHtml+'<div class="headProfile">';	
 	    masterNavHtml = masterNavHtml+'<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="'+userType+'" title="'+loginUser+'" onerror="predefineProfileImage(this);"  src="'+fileUrl+'"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="'+loginUser+'"> '+loginUser+' </div>';
@@ -90,6 +137,11 @@ var masterHeader = new buildMasterHeaderPanel();
 	    
 	    masterNavHtml = masterNavHtml+'</ul>';
 	    masterNavHtml = masterNavHtml+'</div>';
+	    
+	    masterNavHtml = masterNavHtml+'<ul class="responIcons clearfix">';
+	    masterNavHtml = masterNavHtml+'<li><a><img src="/resources/images/'+country+'.gif" title="'+country+'"></a></li>';
+	    masterNavHtml = masterNavHtml+'<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>';
+	    masterNavHtml = masterNavHtml+'</ul>';
 		
 	    $("#masterHeaderNav").append(masterNavHtml);
 	    sideNewMenuActionListener();
@@ -143,7 +195,7 @@ var masterHeader = new buildMasterHeaderPanel();
 						
 						result = result + ' </li>';
 					} 
-					  result = result + '<a class="notiView" href="<c:url value="/app/notificationsList"/>">View All</a> ';
+					  result = result + '<a class="notiView" href="/app/notificationsList">View All</a>';
 				}else{
 					result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
 				}
@@ -181,7 +233,7 @@ var masterHeader = new buildMasterHeaderPanel();
 						
 						result = result + '<li>';
 						if(opt.displayName != "Professional" && opt.displayName != "Independent Recruiter"){
-							result = result + '<a onclick="masterHeader.checkLocationAccess('+opt.orgLocationId+','+opt.id+','+opt.loginSecurity+','+opt.userId+');" class="sopcSwith noPad">';
+							result = result + '<a onclick="masterHeader.checkLocationAccess('+opt.orgLocationId+','+opt.id+',\''+opt.loginSecurity+'\','+opt.userId+');" class="sopcSwith noPad">';
 							result = result + '<div class="clearfix '+orgAct+'">';
 							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.fileUrl+'"></div>';
 							result = result + '<div class="orgDetails">';
@@ -196,14 +248,39 @@ var masterHeader = new buildMasterHeaderPanel();
 					}
 				} 
 			      result = result + '</ul>';
+			      result = result + '<div class="noDate noDateSm" style="display: none;"></div>';
 		          result = result + ' </div>';
-					$("#orgLiksPopup").empty();
-			        $("#orgLiksPopup").append(result); 
+				  $("#orgLiksPopup").empty();
+		          $("#orgLiksPopup").append(result); 
+		          //To register Accout search event
+		          masterHeader.searchAccout();
 	             
 					
 		 });
 		 
 	 }
+	 
+   this.searchAccout = function(){
+	   $("#orgsSearch").keyup(function(){
+		   var filter = $(this).val(), count = 0;
+	        $(".headPopInn ul li").each(function(){
+	            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+	                $(this).hide();
+	            } else {
+	                $(this).show();
+	                count++;
+	            }
+	        });
+
+	        if(count == 0) {
+	            $(this).parent().parent().find(".noDate").show();
+	        } else {
+	            $(this).parent().parent().find(".noDate").hide();
+	        } 
+	    
+	    });
+   }
+	       
 	 
 	 this.predefineOrgImage = function(imageId){
 			$(imageId).attr('src','/resources/images/office-image.jpg');
@@ -233,6 +310,25 @@ var masterHeader = new buildMasterHeaderPanel();
 		      },
 		  });
 	 }
+	  
+	  
+	  
+	  
+	   this.universalSearch = function(){
+	  	 var searchType = document.getElementById('searchType').value;
+	  	 searchValue = document.getElementById('searchKey').value;
+	  	 if(searchType == "Candidate") {
+	  		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	  	 } else if(searchType == "Associate") {
+	  		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	  	 }
+	  	 else if(searchType == "Requirement") {
+	  		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+	  	 }
+	  	 else {
+	  		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	  	 }
+	  }
 		
 }
 
