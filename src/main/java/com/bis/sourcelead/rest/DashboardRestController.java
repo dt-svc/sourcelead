@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
+import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
@@ -60,6 +61,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -78,9 +80,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -194,6 +196,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TeamService teamService;
+	 
+	 @Autowired
+	 private InvoiceService invoiceService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -1582,7 +1587,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
-		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
+	ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
 		try {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1633,13 +1638,20 @@ public class DashboardRestController {
 					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-						rshDTO.setPayOutPeriod(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+						String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+						payTerm=payTerm.replaceAll("\\D", "");
+						Integer result = Integer.parseInt(payTerm);
+						rshDTO.setPayTerm(result);
+
+					}
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
 					}
 					
 					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-						int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
+//						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
+						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
 //						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
 						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
@@ -2116,6 +2128,10 @@ public class DashboardRestController {
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
 					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
@@ -2236,7 +2252,9 @@ public class DashboardRestController {
 					if(rsh.getShiftName() !=null){
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
-					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
@@ -2448,6 +2466,28 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 List<RequirementSubmissionsDTO > dtoList = requirementSubmissionService.getCandidateForInvoiceDashBoard(orgLocations,user);
 		return dtoList; 
+	}
+	
+	@RequestMapping(value = "/generateInvoiceForJobClosureDashboard", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateInvoiceForJobClosureDashboard(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.generateInvoiceJobClosureFromDashboard(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,orgRelationId,submissionId,candidateId);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
 	}
 
 }

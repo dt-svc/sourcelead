@@ -8,9 +8,11 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
+import com.bis.sourcelead.entity.CustomInvoiceTemplate;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
@@ -93,4 +95,15 @@ public interface InvoiceDao{
 	
 	void deleteCreditDebitLineItem(CreditDebitLineItems creditDebitLineItems);
 
+	public CustomInvoiceTemplate getCustomInvoiceTemplateById(long customInvoiceTemplateId);
+
+	public long saveCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
+
+	public ResponseList<CustomInvoiceTemplate> getCustomInvoiceTemplateByOrgRelationIdAndOrgLocationId(Long orgRelationId, Long orgLocationId, SearchDTO searchDTO);
+
+	public CustomInvoiceTemplate getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(String uuid, Long orgRelationId, Long orgLocationId);
+	
+	public CustomInvoiceTemplate getCustomInvoiceTemplateByNameAndOrgRelationIdAndOrgLocationId(String name, Long orgRelationId, Long orgLocationId);
+
+	public boolean deleteCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate);
 }
