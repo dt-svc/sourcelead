@@ -94,7 +94,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 					}
 				}
 				
-				updatedDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate());
+				if(StringUtils.isNotBlank(associateSalaryDTO.getEffectiveDate()))
+					updatedDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate());
+				
 				/*else {
 					associateSalary  = new AssociateSalary();
 //					User user = userService.getUserById(associateSalaryDTO.getUserId());

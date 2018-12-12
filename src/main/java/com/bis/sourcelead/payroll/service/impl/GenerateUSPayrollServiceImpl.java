@@ -1442,7 +1442,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payAdjHistory.setRegularHoursAmt(new BigDecimal(regHrsAmt));
 			payAdjHistory.setOvertimeHoursAmt(new BigDecimal(otHrsAmt));
 			payAdjHistory.setPrePayType(payAdjustmentDTO.getAssSalType());
-			payAdjHistory.setPrePayPerSalary(amount);
+			payAdjHistory.setPrePayPerSalary(payAdjustmentDTO.getPreAssSalaryAmount());
 			payAdjHistory.setPayType(payAdjustmentDTO.getAssSalType());
 			payAdjHistory.setPayPerSalary(amount);
 			double preTaxContriSum = 0;
