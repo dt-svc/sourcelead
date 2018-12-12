@@ -699,7 +699,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		 * user may be admin)
 		 */
 		String query = " from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient  left join fetch hierarchy.approverUserId left join fetch sah.submissionId submission left join fetch submission.masterCandidateId mc left join fetch submission.projectMembers pm left join fetch submission.projects projects left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee emp left join fetch emp.user "
-				+ " where projects.id =:projectId and mc.id = :masterCandidateId and  sah.frequencyStartDate =:startDate and  sah.frequencyEndDate =:endDate "
+				+ " where projects.id =:projectId and mc.id = :masterCandidateId and  sah.frequencyStartDate =:startDate and  sah.frequencyEndDate =:endDate  "
 				+ "  and  ("
 				/*
 				 * logged in user as approver in project_approver_hierarchy
@@ -707,14 +707,20 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 */
 				+ "    hierarchy.approverUserId.id = :approverUserId  "
 				
-				+ "  OR  (:approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projects.id = :projectId and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId and subsah.submissionId.masterCandidateId.id = :masterCandidateId  and subsah.submissionApprovalStatus != 'APPROVED' and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate ) and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
+				+ "  OR  ("
+				+ "        :approverUserId NOT IN("
+				+ "                select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projects.id = :projectId and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId and subsah.submissionId.masterCandidateId.id = :masterCandidateId  and subsah.submissionApprovalStatus != 'APPROVED' and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate "
+				+ "           ) and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL "
+				+ "       and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and "
+				+ "      sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id  and pah.status != '0'))  and sah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId "
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
 				+ " OR (:approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projects.id = :projectId and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId and subsah.submissionId.masterCandidateId.id = :masterCandidateId  and subsah.submissionApprovalStatus != 'APPROVED' and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate ) "
-				+ "  and " + Constants.loginUserAsAdminWithMaxHeirarchyLevelForTs + ")" + ")";
+				+ "  and " + Constants.loginUserAsAdminWithMaxHeirarchyLevelForTs + ")" 
+				+ ")";
 		List<SubmissionApproverHierarchy> sahMainList = session.createQuery(query).setLong("projectId", projectMembers.getProjects().getId()).setLong("masterCandidateId", projectMembers.getMasterCandidateId().getId()).setLong("approverUserId", approverUserId).setLong("orgLocationsId", orglocations.getId()).setLong("userId", approverUserId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		if (sahMainList != null && !sahMainList.isEmpty()) {
 			for (SubmissionApproverHierarchy sah : sahMainList) {
@@ -1173,13 +1179,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ "' and sah.hierarchyId.projectClientsId.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = sah.submissionId.projectMembers.projects.id and subPm.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> '"
 				+ Constants.GUEST
 				+ "') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
-		// left join fetch sah.hierarchyId hierarchy left join fetch
-		// hierarchy.projectClientsId pclient left join fetch
-		// hierarchy.approverUserId left join fetch sah.submissionId ts left
-		// join fetch ts.projectMembers pm left join fetch
-		// pm.projectMemberCandidteId can left join fetch pm.projects left join
-		// fetch pm.employee emp left join fetch ts.projects project left join
-		// fetch ts.masterCandidateId mc
+		
 		String query = "from  SubmissionApproverHierarchy sah "
 				+ " where  "+globalUserQuery+"  "
 				+ fillingOptionQuery + " and ( "
@@ -1188,10 +1188,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
 				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "     )"
-				/*+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
-				+ "        ( sah.hierarchyId.level = '2' and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
-				+ "        OR (sah.hierarchyId.level = '1'  and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "*/
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
