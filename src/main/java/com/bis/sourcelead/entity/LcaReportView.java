@@ -245,5 +245,7 @@ public class LcaReportView implements Serializable {
 	public void setExpired(String expired) {
 		this.expired = expired;
 	}
+
+	
 	
 }

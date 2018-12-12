@@ -141,6 +141,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 					resDTO.setDepartmentId(data.getDepartmentId());
 					resDTO.setNetPay(data.getNetPay());
 					resDTO.setTotalChecks(data.getTotalChecks());
+					resDTO.setEmployeeId(data.getEmployeeId());
 					list.add(resDTO);
 					res.setData(list);
 				} catch (Exception e) {
@@ -208,8 +209,8 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 		PayrollComparisonDTO compare = new PayrollComparisonDTO();
 		try {
 			String [] compareDates = new String[2];
-			compareDates[0] = payrollComparisonDTO.getCompareDate1();
-			compareDates[1] = payrollComparisonDTO.getCompareDate2();
+			compareDates[0] = payrollComparisonDTO.getPayPeriod();
+			compareDates[1] = payrollComparisonDTO.getPayPeriod2();
 			int i=0;
 			for(String freqDates : compareDates) {
 				CompareDataDTO compareData1 = new CompareDataDTO();
