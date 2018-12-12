@@ -46,6 +46,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
@@ -122,6 +123,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.ibm.icu.math.BigDecimal;
 
 /**
  * This Service Class is used to get User Object
@@ -246,6 +248,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private ProbationHistoryService probationHistoryService;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -2081,6 +2086,22 @@ public class UserServiceImpl implements UserService {
 	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long orglocationId, Date[] searchDates, List<Long> teamsList, String type, List<Long> clientIdsList) throws Exception
 	{
 		ResponseList<ApplicantsJoinedReportDTO> response = userDao.getApplicantsJoinedReport(applicantsJoinedReportDTO,orglocationId,searchDates,teamsList,type,clientIdsList);
+		
+		if(response.getData() != null && !response.getData().isEmpty()) {
+			for(ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : response.getData()) {
+				
+				long reqClientCount = requirementSubmissionDao.getRequirementClientCountByRequirementIdAndUserIdAndDates(applicantsJoinedReportDTO2.getRequirementID(), applicantsJoinedReportDTO2.getUserId(), searchDates);
+				long requirementCount = requirementSubmissionDao.getRequirementCountByUserIdAndDates(applicantsJoinedReportDTO2.getUserId(), searchDates);
+				long offerCount = requirementSubmissionDao.getOfferCountByUserIdAndDates(applicantsJoinedReportDTO2.getCreatedBy(), searchDates);
+				long joinedCount = requirementSubmissionDao.getJoinedCountByUserIdAndDates(applicantsJoinedReportDTO2.getCreatedBy(), searchDates);
+				
+				applicantsJoinedReportDTO2.setReqClientCount(new BigInteger(reqClientCount+""));
+				applicantsJoinedReportDTO2.setRequirementCount(new BigInteger(requirementCount+""));
+				applicantsJoinedReportDTO2.setOfferCount(new BigInteger(offerCount+""));
+				applicantsJoinedReportDTO2.setJoinedCount(new BigInteger(joinedCount+""));
+			}
+		}
+		
 		
 //		Map<Long, List<>> map = res.getData().stream().collect(Collectors.groupingBy(ApplicantsJoinedReportDTO::getUserId,Collectors.mapping(ApplicantsJoinedReportDTO::getUserId, Collectors.toList()));
 		

@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.DashboardCountsDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
+import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
@@ -78,9 +79,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
+import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -194,6 +195,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TeamService teamService;
+	 
+	 @Autowired
+	 private InvoiceService invoiceService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -2448,6 +2452,28 @@ public class DashboardRestController {
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 List<RequirementSubmissionsDTO > dtoList = requirementSubmissionService.getCandidateForInvoiceDashBoard(orgLocations,user);
 		return dtoList; 
+	}
+	
+	@RequestMapping(value = "/generateInvoiceForJobClosureDashboard", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<InvoiceDTO> generateInvoiceForJobClosureDashboard(@RequestParam(value = "invoiceType", required = false) String invoiceType, 
+			@RequestParam(value = "contractType", required = false) String contractType,
+			@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			@RequestParam(value = "submissionId", required = false) Long submissionId,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			HttpServletRequest request) throws Exception
+	{
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Integer savedInvoiceCount = invoiceService.generateInvoiceJobClosureFromDashboard(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,orgRelationId,submissionId,candidateId);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
+		return response;
 	}
 
 }
