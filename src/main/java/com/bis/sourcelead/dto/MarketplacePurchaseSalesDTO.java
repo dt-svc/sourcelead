@@ -10,7 +10,8 @@ import javax.persistence.ManyToOne;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 
-public class MarketplacePurchaseSalesDTO implements Serializable{
+
+public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
