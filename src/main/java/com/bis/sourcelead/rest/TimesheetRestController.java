@@ -1976,13 +1976,12 @@ public class TimesheetRestController {
 				String taskIdWithRef = "";
 				String taskName="";
 				String taskType = "";
-				String ticketNumber="";
-				String hourlyType="";
+				String ticketNumber="NA";
+				String hourlyType="NA";
 				if (teDTO.getTimesheetTaskDTO() != null && teDTO.getTimesheetTaskDTO().getId() != null) {
 					Long taskId = teDTO.getTimesheetTaskDTO().getId();
 					taskName = teDTO.getTimesheetTaskDTO().getTaskName();
 					taskType = teDTO.getTimesheetTaskDTO().getTaskType();
-					ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}
@@ -2501,11 +2500,9 @@ public class TimesheetRestController {
 					String taskType = teDTO.getTimesheetTaskDTO().getTaskType();
 					String billableHours = "00:00";
 					String nonBillableHours = "00:00";
-					TimeSheetDayEntries timesheetDayEntries = null;
+					TimeSheetDayEntries timesheetDayEntries = new TimeSheetDayEntries();
 					if (teDTO.getId() != null) {
-						timesheetDayEntries = timeSheetDayEntriesService.getTimesheetDayEntriesById(teDTO.getId());
-					}else {
-						timesheetDayEntries = new TimeSheetDayEntries();
+						timesheetDayEntries.setId(teDTO.getId());
 					}
 					timesheetDayEntries.setProjectTask(projectTasks);
 					timesheetDayEntries.setTimesheetSubmissions(timesheetSubmissions);
@@ -2772,8 +2769,8 @@ public class TimesheetRestController {
 				String taskIdWithRef = "";
 				if (teDTO.getTimesheetTaskDTO() != null && teDTO.getTimesheetTaskDTO().getId() != null) {
 					Long taskId = teDTO.getTimesheetTaskDTO().getId();
-					String ticketNumber = "";
-					String hourlyType = "";
+					String ticketNumber = "NA";
+					String hourlyType = "NA";
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTicketNumber())) {
 						ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 					}

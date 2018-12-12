@@ -435,13 +435,26 @@ function aragingInvoiceData(url){
             "targets": colIndex++,
             "data": "billDate",
             "render": function ( data, type, opt, meta ) {
-            	return  '<td><div class="tblminwidth-75">'+opt.billDate+'</div></td>';
+            	var result = "";
+            	if(opt.billDate != null && opt.billDate !='' && opt.billDate !='undefined' ){
+            		
+            		result = result+  '<td><div class="tblminwidth-75" title="'+opt.billDate+'">'+opt.billDate+'</div></td>';
+            		}else{
+            			 result = result + '<td><div class="tblminwidth-75">--</div></td>';
+            		}
+            	  return result;
             }
           }, {
               "targets": colIndex++,
               "data": "dueDate",
               "render": function ( data, type, opt, meta ) {
-            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.dueDate+'">'+opt.dueDate+'</div></td>';
+            	  var result = "";
+              	if(opt.dueDate != null && opt.dueDate !='' && opt.dueDate !='undefined' ){
+              		 result = result+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.dueDate+'">'+opt.dueDate+'</div></td>';
+              	}else{
+              		result = result + '<td><div class="tbldata-dotdot-vsm"---</div></td>';
+              	}
+            	 return result;
               }
             }, {
                 "targets": colIndex++,

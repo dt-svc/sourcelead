@@ -19,7 +19,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo; Payroll Comparison Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -362,7 +362,7 @@ function runPayrollregister(){
          $.ajax({
 				type : "POST",
      	    	data: formData,
-				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&compareDate1="+compareDate1+"&compareDate2="+compareDate2,
+				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue,
 				success : function(result) {
 					
 					

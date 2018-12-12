@@ -31,7 +31,7 @@
 			  
 			  <c:if test="${empty tasksList}">
 				<tr>
-				  <td colspan="5" valign="top" class="dataTables_empty"></td>
+				  <td colspan="7" valign="top" class="dataTables_empty"></td>
 				</tr>
 			 </c:if>	
 			 </tbody>
