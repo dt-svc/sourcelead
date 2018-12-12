@@ -5761,11 +5761,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setOrgRelationId(requirementSubmission.getRequirement().getClientId().getId());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getClientId().getPaymentTerm());
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			listOfApplicants.add(applicantsDto);
@@ -5815,11 +5817,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+				int result = Integer.parseInt(requirementSubmission.getRequirement().getClientId().getPaymentTerm());
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			try{
