@@ -1924,8 +1924,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 			applicants = requirementSubmissionDao.getCandidateInvoiceJobClosureDashboard(orgLocation, orgrelationId,submissionId,candidateId);
 			 
 			for(RequirementSubmission reqSubmission : applicants){
-				 if (reqSubmission.getRequirement().getPayOutPeriod() != null && reqSubmission.getJoinedDate() != null) {
-						int result = Integer.parseInt(reqSubmission.getRequirement().getPayOutPeriod());
+				 if (reqSubmission.getRequirement().getClientId() != null && reqSubmission.getJoinedDate() != null) {
+						
+					 	int result = Integer.parseInt(reqSubmission.getRequirement().getClientId().getPaymentTerm());
 						Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(reqSubmission.getJoinedDate(), result);
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
 						reqSubmission.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dtOrg.toDate()));
