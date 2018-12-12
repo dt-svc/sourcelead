@@ -279,8 +279,12 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 						String received = invoiceIdsMap.get(invoice.getId());
 						BigDecimal receivedDecimal = (new BigDecimal(received));
 						remainAmount = dueDecimal.subtract(receivedDecimal);
+						if(commonUtil.currentDate().after(invoice.getDueDate())) {
+							invoice.setPaymentStatus(Constants.OVER_DUE);
+						}else{
+							invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);	
+						}
 						remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
-						invoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
 						invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 						invoice.setDueAmount(remainAmount.toString());
 					}
@@ -319,7 +323,11 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 								BigDecimal receivedDecimal = (new BigDecimal(received));
 								remainAmount = dueDecimal.subtract(receivedDecimal);
 								remainAmount = remainAmount.setScale(3, BigDecimal.ROUND_UP);
-								parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);
+								if(commonUtil.currentDate().after(parentInvoice.getDueDate())) {
+									parentInvoice.setPaymentStatus(Constants.OVER_DUE);
+								}else{
+									parentInvoice.setPaymentStatus(Constants.INVOICE_STATUS_PARTIAL_PAID);	
+								}
 								invoicePayment.setPaymentAmount(invoiceIdsMap.get(invoice.getId()));
 								parentInvoice.setDueAmount(remainAmount.toString());
 							}
