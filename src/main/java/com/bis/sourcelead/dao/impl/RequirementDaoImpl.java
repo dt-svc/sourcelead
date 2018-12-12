@@ -441,6 +441,12 @@ public class RequirementDaoImpl implements RequirementDao {
 				}
 				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'UNFILLEDCLOSED' ";
 			}
+			if (Arrays.asList(subStatus).contains("ONHOLD")) {
+				if (StringUtils.isNotEmpty(subQuery7)) {
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'ONHOLD' ";
+			}
 			if (Arrays.asList(subStatus).contains("CANCEL")) {
 				if (StringUtils.isNotEmpty(subQuery7)) {
 					subQuery7 = subQuery7 + " OR ";
