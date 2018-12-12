@@ -8502,7 +8502,7 @@ table.tableNetpay thead > tr >  th {
 	border:1px solid #A8B7C7; padding-right: 5px; 
 }
 .tablePayslip .formControl {
-	border: transparent; width: 100%; padding:0px; text-align: left;
+	border: transparent; width: 95%; padding:0px; text-align: left;
 }
 .tablePayslip .formControl.activeEdit {
 	border:1px solid #A8B7C7; padding:1px 5px; 

@@ -65,6 +65,10 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String incentivizedType;
 	private String applicants;
 	
+	private int payTerm;
+	
+	private String jobRate;
+	
 	@Enumerated(EnumType.STRING)
 	private ApplicantSubmissionStatus finalsSubmissionStatus;
 	
@@ -496,6 +500,22 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	public void setApplicants(String applicants)
 	{
 		this.applicants = applicants;
+	}
+	public int getPayTerm()
+	{
+		return payTerm;
+	}
+	public void setPayTerm(int payTerm)
+	{
+		this.payTerm = payTerm;
+	}
+	public String getJobRate()
+	{
+		return jobRate;
+	}
+	public void setJobRate(String jobRate)
+	{
+		this.jobRate = jobRate;
 	}
 	
 }

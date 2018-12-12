@@ -1056,6 +1056,9 @@ jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
 	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
 };
 
+jQueryFormUtils.validateNumber = function(val) {
+	return val.trim().match(/^-?\d+\.?\d*$/) !== null;
+};
 
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
@@ -1232,6 +1235,11 @@ jQueryFormUtils.validateName = function(val) {
         // Phone number
         else if (validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
             return validationErrorMsg || language.badTelephone;
+        }
+        
+        // Number
+        else if (validationRules.indexOf('validate_number') > -1 && !jQueryFormUtils.validateNumber(value)) {
+            return validationErrorMsg || language.badNumber;
         }
         
         //ExtNo
@@ -1443,6 +1451,7 @@ jQueryFormUtils.LANG =  {
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
+    badNumber : 'you entered invalid number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
