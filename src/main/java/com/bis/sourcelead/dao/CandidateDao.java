@@ -240,4 +240,6 @@ public interface CandidateDao {
 
 	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id)throws Exception;
 	
+	public List<MarketplaceSalesOrder> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, Long orgLocationId, String orderNo, String searchValue)throws Exception;
+	
 }

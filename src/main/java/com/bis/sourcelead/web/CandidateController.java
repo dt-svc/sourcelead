@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -800,4 +801,22 @@ public class CandidateController {
 	        model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
+		
+		// Note this method is sales order  method
+	    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+     	@RequestMapping(value = "/SalesOrder")
+	    public ModelAndView goToSalesOrder(
+	    		MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+	    		@RequestParam(value = "orderNo", required = true) String orderNo,
+	    		HttpServletRequest request) throws Exception {
+		  ModelAndView model = new ModelAndView();
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderByOrderNumber(orgLocations.getId(), orderNo);
+		  model.addObject("marketplaceSalesOrder", salesOrder);
+		  model.setViewName("candidates/salesOrder");
+		  model.addObject("sourceleadUrl", sourceleadUrl);
+		  return model;
+	}
+	
 }

@@ -3169,4 +3169,33 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 return mpsDto;      
 	}
 
+	@Override
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, Long orgLocationId, String orderNo, String searchValue)throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocationId, orderNo, searchValue);
+		List<MarketplacePurchaseSalesDTO> salesDtoList = new ArrayList<>();
+		for(MarketplaceSalesOrder sales : salesOrder){
+			MarketplacePurchaseSalesDTO salesDto = new MarketplacePurchaseSalesDTO();
+			BeanUtils.copyProperties(sales, salesDto);
+			salesDtoList.add(salesDto);
+		}
+		return salesDtoList;
+	}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(Long orgLocationId, String orderNo) throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(null, orgLocationId, orderNo, null);
+		MarketplacePurchaseSalesDTO salesOrderDto = null;
+		for(MarketplaceSalesOrder sales : salesOrder){
+			salesOrderDto = new MarketplacePurchaseSalesDTO();
+			salesOrderDto.setOrderNo(sales.getOrderNo());
+			salesOrderDto.setOrderDate(sales.getOrderDate());
+			salesOrderDto.setCompanyName(sales.getCompanyName());
+			//salesOrderDto.setTotalresume(sales.getNoOfResumes());
+			salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
+			salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
+		}
+		return salesOrderDto;
+	}
+
+	
 }
