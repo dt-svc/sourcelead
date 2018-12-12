@@ -1035,6 +1035,29 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
 									
+									
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
+									
+									
 									projectClientService.storeProjectClients(projectClients);
 								}
 								if(cand.getConsultantUser() != null){

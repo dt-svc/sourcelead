@@ -452,7 +452,7 @@ function aragingInvoiceData(url){
               	if(opt.dueDate != null && opt.dueDate !='' && opt.dueDate !='undefined' ){
               		 result = result+ '<td><div class="tbldata-dotdot-vsm" title="'+opt.dueDate+'">'+opt.dueDate+'</div></td>';
               	}else{
-              		result = result + '<td><div class="tbldata-dotdot-vsm">--</div></td>';
+              		result = result + '<td><div class="tbldata-dotdot-vsm"---</div></td>';
               	}
             	 return result;
               }

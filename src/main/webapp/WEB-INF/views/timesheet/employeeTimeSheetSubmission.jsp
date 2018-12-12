@@ -276,7 +276,7 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].hourlyType" value="${entry.hourlyType}" /> 
+																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].hourlyType" value="${empty entry.hourlyType ? 'Regular' : entry.hourlyType}" /> 
 			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${entry.ticketNumber}" /> 
 			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].projectMemberId" value="${entry.projectMemberId}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
@@ -640,7 +640,7 @@
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -657,7 +657,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -675,7 +675,7 @@
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -693,7 +693,7 @@
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
@@ -712,7 +712,7 @@
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -730,7 +730,7 @@
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
@@ -748,7 +748,7 @@
 					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType"/> 
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
