@@ -8,6 +8,7 @@ import java.util.Map;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -235,6 +236,10 @@ public interface CandidateDao {
 
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id);
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id)throws Exception;
+
+	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id)throws Exception;
+	
+	public List<MarketplaceSalesOrder> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, Long orgLocationId, String orderNo, String searchValue)throws Exception;
 	
 }

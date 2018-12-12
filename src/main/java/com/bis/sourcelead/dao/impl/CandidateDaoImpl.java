@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -2537,7 +2538,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			Query queryObj = session.createQuery(query + createdByQuery)
 					.setLong("targetOrgLocationId", targetOrgLocationId)
 					.setParameterList("cartStatus", new ArrayList<String>(Arrays.asList(Constants.ADDED_CART)));
-			System.out.println(queryObj);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
 			}
@@ -2871,7 +2871,8 @@ public class CandidateDaoImpl implements CandidateDao {
         }
 		
 	}
-		
+	
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2887,7 +2888,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -2900,4 +2901,54 @@ public class CandidateDaoImpl implements CandidateDao {
        	 return null;
         }
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id) throws Exception {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orderNo = :orderNo";
+			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("orderNo", orderNo).uniqueResult();
+			return  marketplacePurchaseOrder;
+		}
+		catch(Exception e) {
+       	 e.printStackTrace();
+       	 return null;
+        }
+		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplaceSalesOrder> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, Long orgLocationId, String orderNo, String searchValue) {
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder queryBuilder1 = new StringBuilder();
+			if(orderNo != null && !"".equalsIgnoreCase(orderNo)){
+				queryBuilder1.append(" and (salesOrder.orderNo like '%"+orderNo+"%')");
+			}
+			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+				//
+			}
+			StringBuilder queryBuilder2 = new StringBuilder("");
+			if(marketplacePurchaseSalesDTO != null){
+			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
+				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
+				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
+					queryBuilder2.append(" order by salesOrder." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+				}else{
+					queryBuilder2.append(" order by salesOrder.id " + marketplacePurchaseSalesDTO.getSortOrder());
+				}
+			}
+			}
+			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setParameter("orgLocationId", orgLocationId).list();
+			return salesOrderList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }
