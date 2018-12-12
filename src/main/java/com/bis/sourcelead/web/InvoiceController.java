@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
+import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
@@ -139,12 +140,16 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		for(OrgRelations vendors:orgClientList){
+			Long responderLocationId = 0L;
 			if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 				vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
+				responderLocationId = vendors.getResponderLocationId().getId();
 			}
 			if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 				vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
+				responderLocationId = vendors.getLocationId().getId();
 			}
+			vendors.setResponderId(responderLocationId + "");
 			
 		}
 		model.addObject("clientsList", orgClientList);
@@ -443,14 +448,18 @@ public class InvoiceController {
 		if(null != clientList){
 			for (OrgRelations orgRelations : clientList) {
 				String orgName = "";
+				Long responderLocationId = 0L;
 				if(orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getLocationId().getOrgLocationName();
+					responderLocationId = orgRelations.getLocationId().getId();
 					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getLocationId().getCountry()));
 				}if(orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					orgName = orgRelations.getResponderLocationId().getOrgLocationName();
+					responderLocationId = orgRelations.getResponderLocationId().getId();
 					orgRelations.setClientCurrency(conversionUtil.getVendorOrgCurrencyCode(orgRelations.getResponderLocationId().getCountry()));
 				}
 				orgRelations.setOrgName(orgName);
+				orgRelations.setResponderId(responderLocationId + "");
 			}
 		}
 //		return commonUtil.toJSON(clientList);
@@ -640,11 +649,46 @@ public class InvoiceController {
 
 		}*/ 
 	@RequestMapping(value = "/customizeInvoice")
-	public ModelAndView customizeInvoice(HttpServletRequest request) {
+	public ModelAndView customizeInvoice(HttpServletRequest request,
+			@RequestParam(defaultValue="0") Long orgLocationId,
+			@RequestParam(defaultValue="0") Long orgRelationId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			modelAndView.addObject("sourceleadUrl", sourceleadUrl);
-			modelAndView.setViewName("billing/customInvoice");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+//				modelAndView.addObject("invoiceTemplateList", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
+				modelAndView.addObject("orgLocationId", orgLocationId);
+				modelAndView.addObject("orgRelationId", orgRelationId);
+				modelAndView.setViewName("billing/customInvoiceList");
+			} else {
+				modelAndView.setViewName("login");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = { "/customInvoice/addTemplate", "/customInvoice/editTemplate" })
+	public ModelAndView addInvoice(HttpServletRequest request, @RequestParam(defaultValue = "0") Long orgLocationId,
+			@RequestParam(defaultValue = "0") Long orgRelationId, @RequestParam(defaultValue = "") String uuid) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations loggedInOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (user != null) {
+				modelAndView.addObject("sourceleadUrl", sourceleadUrl);
+				modelAndView.addObject("orgLocationId", orgLocationId);
+				modelAndView.addObject("orgRelationId", orgRelationId);
+				if (request.getRequestURI().contains("editTemplate")) {
+					modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId, loggedInOrgLocations));
+					// modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
+				}
+				modelAndView.setViewName("billing/customInvoice");
+			} else {
+				modelAndView.setViewName("login");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

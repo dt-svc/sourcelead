@@ -83,7 +83,7 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();getInvoiceTemplateList();" data-validation="required" field-name="clientName">             
 				                </select>
 				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
 				                </div>
@@ -169,6 +169,14 @@ function errRemoveClientContact(){
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
 			                    </c:forEach>
+			                </select>
+			              </div>
+			            </div>
+			            <div class="form-group">
+			              <label class="col-md-3">Invoice Template</label>
+			              <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
+			                <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+			                   <option value="0">--Select Invoice Template--</option>
 			                </select>
 			              </div>
 			            </div>
@@ -1991,9 +1999,9 @@ function getClients(){
 		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
 		}
 		}
 		
@@ -2077,6 +2085,25 @@ function getPaymentTerms(){
 		           	}
 				}
 			
+		}
+	});
+}
+
+function getInvoiceTemplateList() {
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
+	$("#invoiceTemplateId").empty("");
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		success : function(data) {
+			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+			if(data && data.data != null && data.data.length > 0) {
+				for(var e in data.data) {
+					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
+				}
+			}
 		}
 	});
 }
