@@ -977,7 +977,9 @@ function saveTemplate() {
 	        	} else if (response.response === "SUCCESS") {
 	        		closePreviewPopup();
 	        		$(".success_pop").show();
-	        		location.reload();
+	        		setTimeout(function() {
+	        			location.href = sourceleadUrl + "/customizeInvoice?orgLocationId=" + orgLocationId + "&orgRelationId=" + orgRelationId;				 			
+	    	 		},1000);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {

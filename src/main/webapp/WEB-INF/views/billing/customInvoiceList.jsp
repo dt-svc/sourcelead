@@ -277,7 +277,7 @@ function changeTemplateStatus() {
     		$(".success_pop span").html("Invoice Template " + (status == 1 ? "made as Active" : status == 0 ? "made as Inactive" : "Deleted"));
 			setTimeout(function() {
     			location.reload();					 			
-	 		},1000); 
+	 		},1000);
 		} else if (result.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
