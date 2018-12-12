@@ -1195,7 +1195,7 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"task1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"task1Id").attr('data-live-search','true');
-			$("#"+maxRowNum+"task1Id").attr('title','--select tasfk--');
+			$("#"+maxRowNum+"task1Id").attr('title','--select task--');
 			$("#"+maxRowNum+"task1Id").attr('data-size',8);
 			
 			var cell1 = row.insertCell(1);
