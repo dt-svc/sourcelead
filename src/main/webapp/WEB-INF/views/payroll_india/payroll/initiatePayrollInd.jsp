@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="timesheet_out" id="reviewPayrollDiv">
-<div class="tablelist-wrap">
+<div class="clearfix">
 <div class="timesheet_head minHeight_225">
 <form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
 <div class="col-md-10 mt">

@@ -4085,7 +4085,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
 					 		+ " urole.TERMINATE_DATE as terminateDate, urole.TERMINATE_REASON as terminatedReason,emp.HIRE_DATE as hireDate,  urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4150,6 +4150,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
 							  		.addScalar("terminatedReason", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("terminateDate", StandardBasicTypes.DATE)
 					  				.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
@@ -4192,7 +4193,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						List<Long> countlist = null;
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4256,6 +4257,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("rate", StandardBasicTypes.STRING)
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
 		                associateJoineReportDTOList = queryString.list();

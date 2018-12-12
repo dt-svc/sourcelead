@@ -120,9 +120,9 @@ $( document ).ready(function() {
                     <div class="col-md-5">
               <label class="clearfix">Status</label>
               <div class="clearfix">
-                <select class="form-control chosen-select" id="status" name="status" data-placeholder="Status" multiple field-name="Status" >
+                <select class="form-control chosen-select" id="status" name="status" multiple data-placeholder="Select Option" >
 	                 <option value="PENDING">PENDING</option>
-	                 <option value="APPROVED" selected>APPROVED</option>
+	                 <option value="APPROVED">APPROVED</option>
 	                 <option value="REJECTED">REJECTED</option>
 	                 <option value="CANCELLED">CANCELLED</option>
                 </select>

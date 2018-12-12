@@ -38,8 +38,10 @@ import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.service.GenerateINDPayrollService;
 import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -84,6 +86,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	PayrollUtil payrollUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -168,13 +173,13 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
 	{
 		
-		long frequencyPayrollDays = TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
-		long applincablePayrollDays = frequencyPayrollDays;
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
 				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(assoSal.getCandidate().getConsultantUser().getId(),orgLocation.getId());
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assoSal.getCandidate().getConsultantUser().getId(), orgLocation.getId());
+				long frequencyPayrollDays = TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
+				long applincablePayrollDays = frequencyPayrollDays;
 				if(employee.getHireDate().after(freqEndDate)) {
 					continue;
 				}else if(employee.getHireDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(employee.getHireDate()) * employee.getHireDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
@@ -185,14 +190,15 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 				
 				BigDecimal payAdjustmentConst = new BigDecimal((float)applincablePayrollDays/(float)frequencyPayrollDays).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 				
+				
 				    IndEmployeePayroll employeePayroll = new IndEmployeePayroll();
 				    employeePayroll.setIndPaysheetFrequency(paySheetFreq);
 					double totalHours = 0;
 					BigDecimal payRate = BigDecimal.ZERO;
 					BigDecimal amount = BigDecimal.ZERO;
 					BigDecimal regularHoursAmount = BigDecimal.ZERO;
-					 List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-					 Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+					List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+					Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
 					for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
 						BigDecimal projectGross = BigDecimal.ZERO;
 						double projectTotalHours = 0;
@@ -222,7 +228,6 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
-					
 					if (employee != null) {
 						employeePayroll.setEmployee(employee);
 					}
@@ -346,10 +351,22 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 					}
 					
+					// Calculating LOP
+					BigDecimal lopAmount = BigDecimal.ZERO;
+					Set<PayrollLopHis> lopList = iNDPayrollCommonUtil.getLOPAmountInd(employee,assoSal,freqStartDate,freqEndDate,orgLocation,amount,employeePayroll);
+					if(lopList != null) {
+						Double lopAmont = lopList.stream().mapToDouble(lop->lop.getLopAmount().doubleValue()).sum();
+						lopAmount = new BigDecimal(lopAmont);
+						employeePayroll.setPayrollLopHis(lopList);
+					}
+					employeePayroll.setLopAmount(lopAmount);
+					
+					employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
+					employeePayroll.setNoOfLeaves( lopList != null ? new BigDecimal(lopList.size()): BigDecimal.ZERO );
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
 					employeePayroll.setGrossPay(utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(loanAdvTotal)).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
 				    employeePayroll.setTds(utilDTO.getTds());
 				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);

@@ -92,7 +92,16 @@ public class InvoiceDTO extends SearchDTO {
     private String count;
     private String tags;
     private String invoiceDeleteStatus;
+    private long invoiceTemplateId;
     
+	public long getInvoiceTemplateId() {
+		return invoiceTemplateId;
+	}
+
+	public void setInvoiceTemplateId(long invoiceTemplateId) {
+		this.invoiceTemplateId = invoiceTemplateId;
+	}
+
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
