@@ -2109,6 +2109,7 @@ public class DashboardRestController {
 				accountsDTO.setState(userRole.getOrgLocations().getState());
 				accountsDTO.setCity(userRole.getOrgLocations().getCity());
 				accountsDTO.setUserId(userRole.getUser().getId());
+				accountsDTO.setUserType(userRole.getUserType());
 				accountsDTO.setDesignation(userRole.getDesignation());
 				accountsDTO.setOrgLocationName(userRole.getOrgLocations().getOrgLocationName());
 				userLoginAccountsDTOList.add(accountsDTO);

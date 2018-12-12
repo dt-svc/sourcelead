@@ -224,7 +224,13 @@ var masterHeader = new buildMasterHeaderPanel();
 						if(opt.designation != null && opt.designation != '' && opt.designation != 'undefined'){
 							designation = opt.designation;
 						}else{
-							designation = opt.displayName;
+							if(opt.displayName != "Professional" && opt.displayName != "Independent Recruiter"){
+								designation = opt.displayName;
+							}else if(opt.displayName == "Professional"){
+								designation = "Job Seeker"
+							}else if(opt.displayName == "Independent Recruiter"){
+								designation = "Freelance Recruiter"
+							}
 						}
 						
 						if(opt.orgLocationId == locationId && opt.userId == userId){
@@ -244,6 +250,19 @@ var masterHeader = new buildMasterHeaderPanel();
 							result = result + '</div>';
 							result = result + '</a>';
 						}
+						
+						if(opt.displayName == "Professional" || opt.displayName == "Independent Recruiter"){
+							result = result + '<a onclick="masterHeader.crowdSourceLocationAccess('+opt.orgLocationId+',\''+opt.userType+'\','+opt.userId+');"  class="sopcSwith noPad">';
+							result = result + '<div class="clearfix '+orgAct+'">';
+							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.fileUrl+'"></div>';
+							result = result + '<div class="orgDetails">';
+							result = result + '<h3>'+opt.orgLocationName+'</h3>';
+							result = result + '<h4><i	class="fa fa-user"></i>'+designation+'</h4>';
+							result = result + '</div>';						                   
+							result = result + '</div>';
+							result = result + '</a>';
+						}
+						
 						result = result + '</li>';
 					}
 				} 
@@ -286,8 +305,11 @@ var masterHeader = new buildMasterHeaderPanel();
 			$(imageId).attr('src','/resources/images/office-image.jpg');
 		}
 	 
+	this.crowdSourceLocationAccess = function(locationId,userType,userId){
+		 location.replace(sourceleadUrl+"/dashboard/"+userType+"/"+userId);  
+	}
 	 
-	  this.checkLocationAccess = function(locationId,roleId,orgSecurity,userId){
+   this.checkLocationAccess = function(locationId,roleId,orgSecurity,userId){
 		 $.ajax({
 		      type : "GET",
 		       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        

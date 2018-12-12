@@ -28,6 +28,8 @@ public class UserLoginAccountsDTO implements Serializable{
 	
 	private String orgLocationName;
 	
+	private String userType;
+	
 	public Long getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -114,6 +116,14 @@ public class UserLoginAccountsDTO implements Serializable{
 
 	public void setOrgLocationName(String orgLocationName) {
 		this.orgLocationName = orgLocationName;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 	
