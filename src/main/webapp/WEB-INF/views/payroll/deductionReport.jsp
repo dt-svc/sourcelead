@@ -127,7 +127,7 @@ $(document).ready(function(){
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 	 $("#payGroup").trigger("chosen:updated"); 
-	 $("#payPeriod").val('');
+	 $("#payPeriod").empty();
 	 $("#payPeriod").trigger("chosen:updated"); 
 	 $("#deductionId").val('');
 	 $("#deductionId").trigger("chosen:updated"); 
