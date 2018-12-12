@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
@@ -54,6 +55,9 @@ public class DynamicReport {
 	
 	@Autowired
 	ProjectAssignTasksService projectAssignTasksService;
+	
+	@Autowired
+	private ProjectMembersDao  projectMembersDao;
 	
 	/**
 	 * @author Laxman
@@ -570,10 +574,9 @@ public class DynamicReport {
 			  if(pat.getProjectTaskId().getDueDate() != null) {
 				  dueDate = commonUtil.dateStrFromOrgDateFormatter(pat.getProjectTaskId().getProjectId().getOrgLocationsId().getDateFormat(), pat.getProjectTaskId().getDueDate());
 			  }
-			  if(pat.getProjectTaskId().getDueDate() != null) {
+			  if(pat.getProjectTaskId().getPercentage() != null) {
 				  completion =   pat.getProjectTaskId().getPercentage();
 			  }
-			  
 			dataSource.add(pat.getProjectTaskId().getTaskName(),priority,pat.getProjectTaskId().getProjectId().getProjectName(),dueDate,completion,pat.getProjectTaskId().getTaskStatus().getName());
 		}
 		return dataSource;
@@ -712,12 +715,16 @@ public class DynamicReport {
 				  completion =   pt.getPercentage();
 			  }
 			  
+			  List<Long> assignedMembersIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(pt.getProjectId().getId(), pt.getProjectId().getOrgLocationsId().getId());
+			  
 			  List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(pt.getId());
 			  List<String> assignedTaskUsersList =  new ArrayList<>();
 				for(ProjectAssignTask pat:assignUser) {
 					if(pat.getProjectMemberId() != null) {
 						if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
-							assignedTaskUsersList.add(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+							if(assignedMembersIds.contains(pat.getProjectMemberId().getId().longValue())) {
+								assignedTaskUsersList.add(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+							}
 						}
 					}
 				 }
