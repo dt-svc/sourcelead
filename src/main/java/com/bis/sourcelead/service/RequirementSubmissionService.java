@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -326,6 +327,7 @@ public interface RequirementSubmissionService {
 	List<RequirementSubmissionsDTO> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId,String contractType,String selectedAssociates);
 	
 	public List<RequirementSubmissionsDTO> getCandidateForBillsJobClosure(OrgLocations orgLocations, User user,Long orgRelationId,String contractType,String selectedAssociates);
+
 
 
 }

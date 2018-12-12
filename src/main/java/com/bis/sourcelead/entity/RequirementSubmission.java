@@ -591,6 +591,10 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private List<String> locationsList;
     
+    @Transient
+	@JsonProperty
+	private String invoiceGenerateDate;
+
     
 	public int getProfilePercentage()
 	{
@@ -1741,6 +1745,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setInvoiceGenerated(String invoiceGenerated) {
 		this.invoiceGenerated = invoiceGenerated;
+	}
+
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
 	}
 	
 	
