@@ -24,7 +24,7 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>${marketplacePurchaseOrder.orderDateStr}</label>
+                      <label>${marketplacePurchaseOrder.createdDate}</label>
                     </div>
                   </div>
                   <div class="col-md-6">

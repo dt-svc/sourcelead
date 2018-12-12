@@ -312,7 +312,7 @@ public interface CandidateService {
 
 	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations) throws Exception;
 
-	public MarketplacePurchaseSalesDTO getPurchaseDetailByOrderNo(String orderNo, OrgLocations orgLocations)throws Exception;
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations)throws Exception;
 
 
 }

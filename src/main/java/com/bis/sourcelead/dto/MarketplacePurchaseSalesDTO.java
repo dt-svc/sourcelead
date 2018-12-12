@@ -24,9 +24,11 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	private String tax;
 	private String totalresume;
 	private String paymentId;
-	private Date orderDate;	
 	private String candidateName;
-	private String orderDateStr;	
+	private String createdDate;
+	private String updatedDate;	
+	private String purchaseUuid;
+	private String salesUuid;
 	
 	
 	
@@ -96,20 +98,30 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
 	}
-	public Date getOrderDate() {
-		return orderDate;
+	public String getCreatedDate() {
+		return createdDate;
 	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getUpdatedDate() {
+		return updatedDate;
 	}
-	public String getOrderDateStr() {
-		return orderDateStr;
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
-	public void setOrderDateStr(String orderDateStr) {
-		this.orderDateStr = orderDateStr;
+	public String getPurchaseUuid() {
+		return purchaseUuid;
 	}
+	public void setPurchaseUuid(String purchaseUuid) {
+		this.purchaseUuid = purchaseUuid;
+	}
+	public String getSalesUuid() {
+		return salesUuid;
+	}
+	public void setSalesUuid(String salesUuid) {
+		this.salesUuid = salesUuid;
+	}
+   
 	
 }

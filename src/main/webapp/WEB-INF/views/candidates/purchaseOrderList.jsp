@@ -148,7 +148,7 @@ function purchasePagination(url){
             "render": function ( data, type, report, meta ) {
             	var result = "";
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?orderNo='+report.orderNo+'" title="'+report.orderNo+'">'+report.orderNo+'</a></div>';	 
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
             		         		 
          		}else{
          		  result = result +'<div class="tblminwidth-100">--</div>';
@@ -162,8 +162,8 @@ function purchasePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		var result = "";
-	            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
+	            	 if(report.createdDate != null && report.createdDate != '' && report.createdDate !='undefined'){
+	           		  result = result +'<div class="tblminwidth-100">'+report.createdDate+'</div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 

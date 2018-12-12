@@ -238,6 +238,6 @@ public interface CandidateDao {
 
 	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id)throws Exception;
 
-	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id)throws Exception;
+	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id)throws Exception;
 	
 }

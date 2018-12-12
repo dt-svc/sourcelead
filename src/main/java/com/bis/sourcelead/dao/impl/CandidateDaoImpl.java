@@ -2905,12 +2905,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id) throws Exception {
-		
+	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id) throws Exception {
+		      logger.debug("fetching single record from marketplace purchase table using uuid");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query="from MarketplacePurchaseOrder cmpth where cmpth.orderNo = :orderNo";
-			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("orderNo", orderNo).uniqueResult();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.purchaseUuid = :purchaseUuid";
+			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("purchaseUuid", purchaseUuid).uniqueResult();
 			return  marketplacePurchaseOrder;
 		}
 		catch(Exception e) {

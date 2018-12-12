@@ -1133,14 +1133,14 @@ public class CandidateRestController {
 		 
 	
 		 
-		// Note this method is purchase order method
+		// fetching record from marketplace purchase table
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 		 @RequestMapping(value = "/app/PurchaseOrder")
-		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "orderNo", required = true) String orderNo,HttpServletRequest request) throws Exception {
-			logger.debug("inisde PurchaseOrder  conroller =========>");
-			System.out.println("inside PurchaseOrder  conroller =========>");
+		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "purchaseUuid", required = true) String purchaseUuid,HttpServletRequest request) throws Exception {
+			logger.debug("inside PurchaseOrder  controller =========>");
+			System.out.println("inside PurchaseOrder  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			MarketplacePurchaseSalesDTO marketplacePurchaseOrder = candidateService.getPurchaseDetailByOrderNo(orderNo, orgLocations);
+			MarketplacePurchaseSalesDTO marketplacePurchaseOrder = candidateService.getPurchaseDetailByPurchaseUuid(purchaseUuid, orgLocations);
 			ModelAndView model = new ModelAndView();
 			model.setViewName("candidates/purchaseOrder");
 			model.addObject("sourceleadUrl", sourceleadUrl);
