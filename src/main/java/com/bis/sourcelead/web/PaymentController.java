@@ -840,7 +840,7 @@ public class PaymentController {
                 	}
 
 
-                		}
+                		
 
                 	    //sending Notification.
                 		//User mail address and resume count should be updated

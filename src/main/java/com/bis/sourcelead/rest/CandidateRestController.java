@@ -1107,7 +1107,6 @@ public class CandidateRestController {
 	}
 	 
 	 
-    	// Note this method is purchase orderlist  method
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
 		 @RequestMapping(value = "/app/PurchaseOrderList")
 		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
@@ -1127,47 +1126,29 @@ public class CandidateRestController {
 			logger.debug("inside PurchaseOrderList  controller =========>");
 			System.out.println("inside PurchaseOrderList  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations.getId());
-			List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
-			try {
-				
-			for (MarketplacePurchaseOrder mps : marketplacePurchaseOrder) {
-				
-				MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
-				mpsDto.setOrderNo(mps.getOrderNo());
-				mpsDto.setOrderDate(mps.getOrderDate());
-				mpsDto.setDiscount(mps.getDiscount());
-				mpsDto.setGrandTotal(mps.getGrandTotal());
-				mpsDto.setTotalPrice(mps.getTotalPrice());
-				mpsDto.setPaymentStatus(mps.getPaymentStatus());
-				mpsDto.setTotalresume(mps.getTotalresume());
-				mpsDto.setCompanyName(mps.getCompanyName());
-				mpsDto.setServiceFee(mps.getServiceFee());	
-				list.add(mpsDto);
-			}	
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			res.setData(list);
+			List<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations);			
+			res.setData(marketplacePurchaseOrder);
 			return res;
 		}
 		 
-
-
+	
 		 
 		// Note this method is purchase order method
-				 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-				 @RequestMapping(value = "/app/PurchaseOrder")
-				 public ModelAndView goToPurchaseOrder(HttpServletRequest request) throws Exception {
-					logger.debug("inisde PurchaseOrder  conroller =========>");
-					System.out.println("inside PurchaseOrder  conroller =========>");
-					ModelAndView model = new ModelAndView();
-					model.setViewName("candidates/purchaseOrder");
-					model.addObject("sourceleadUrl", sourceleadUrl);
-					return model;
-				}
+		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+		 @RequestMapping(value = "/app/PurchaseOrder")
+		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "orderNo", required = true) String orderNo,HttpServletRequest request) throws Exception {
+			logger.debug("inisde PurchaseOrder  conroller =========>");
+			System.out.println("inside PurchaseOrder  conroller =========>");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			MarketplacePurchaseSalesDTO marketplacePurchaseOrder = candidateService.getPurchaseDetailByOrderNo(orderNo, orgLocations);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("candidates/purchaseOrder");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("marketplacePurchaseOrder", marketplacePurchaseOrder);
+				return model;
+		}
+				 
+
 		 
 			// Note this method is sales orderlist  method
 		 @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
