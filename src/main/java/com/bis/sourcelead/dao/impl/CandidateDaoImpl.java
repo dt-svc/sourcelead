@@ -38,6 +38,7 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.LcaListViewDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -2871,7 +2872,8 @@ public class CandidateDaoImpl implements CandidateDao {
         }
 		
 	}
-		
+	
+
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -2887,7 +2889,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -2899,5 +2901,22 @@ public class CandidateDaoImpl implements CandidateDao {
        	 e.printStackTrace();
        	 return null;
         }
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id) throws Exception {
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orderNo = :orderNo";
+			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("orderNo", orderNo).uniqueResult();
+			return  marketplacePurchaseOrder;
+		}
+		catch(Exception e) {
+       	 e.printStackTrace();
+       	 return null;
+        }
+		
 	}
 }
