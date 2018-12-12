@@ -263,7 +263,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO) throws Exception {
+	public Invoice saveInvoice(User user, OrgLocations orgLocation,String saveType,String invoiceType,Org org,String loginOrgCurrencyCode,InvoiceDTO invoiceDTO, String defaultFont) throws Exception {
 		
         Invoice invoice = null;
         String savedInvoiceId = null;
@@ -457,7 +457,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", defaultFont);
 				invoiceTemplateConfigured = true;
 			}
 		} 
@@ -3077,7 +3077,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,
-			String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory) throws Exception {
+			String invoiceType, Org org, String loginOrgCurrencyCode, String invoiceCategory, String defaultFont) throws Exception {
 
 		Invoice invoice = null;
 		String savedInvoiceId = null;
@@ -3289,7 +3289,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other");
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other", defaultFont);
 				invoiceTemplateConfigured = true;
 			}
 		}
