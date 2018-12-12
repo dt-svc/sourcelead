@@ -2538,7 +2538,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			Query queryObj = session.createQuery(query + createdByQuery)
 					.setLong("targetOrgLocationId", targetOrgLocationId)
 					.setParameterList("cartStatus", new ArrayList<String>(Arrays.asList(Constants.ADDED_CART)));
-			System.out.println(queryObj);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
 			}
@@ -2927,7 +2926,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
 			if(orderNo != null && !"".equalsIgnoreCase(orderNo)){
-				queryBuilder1.append(" and (salesOrder.orderNo like '%"+orderNo+"%')".toString());
+				queryBuilder1.append(" and (salesOrder.orderNo like '%"+orderNo+"%')");
 			}
 			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
 				//
@@ -2939,7 +2938,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
 					queryBuilder2.append(" order by salesOrder." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryBuilder2.append(" order by salesOrder.id." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.id " + marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}

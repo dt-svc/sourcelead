@@ -1424,7 +1424,7 @@ public class CandidateRestController {
 	  			e.printStackTrace();
 	  			return null;
 	  		}
-		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations.getId(), orderNo, searchValue);
+		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, orderNo, searchValue);
 		responseList.setData(salesOrderList);
 		return responseList;
 	}

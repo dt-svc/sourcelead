@@ -812,7 +812,7 @@ public class CandidateController {
 		  ModelAndView model = new ModelAndView();
 		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderByOrderNumber(orgLocations.getId(), orderNo);
+		  MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderByOrderNumber(orgLocations, orderNo);
 		  model.addObject("marketplaceSalesOrder", salesOrder);
 		  model.setViewName("candidates/salesOrder");
 		  model.addObject("sourceleadUrl", sourceleadUrl);

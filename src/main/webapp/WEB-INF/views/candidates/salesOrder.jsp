@@ -31,7 +31,7 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>${marketplaceSalesOrder.orderDate != null ? marketplaceSalesOrder.orderDate : "---"}</label>
+                      <label>${marketplaceSalesOrder.orderDateStr != null ? marketplaceSalesOrder.orderDateStr : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -77,7 +77,7 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td><div class="tbldata-dotdot">---</div></td>
+                      <td><div class="tbldata-dotdot">${marketplaceSalesOrder.candidateName != null ? marketplaceSalesOrder.candidateName : "---"}</div></td>
                       <td><div class="tblminwidth-100">---</div></td>
                       <td><div class="tblminwidth-100">---</div></td>
                       <td><div class="tblminwidth-100">---</div></td>
