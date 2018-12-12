@@ -86,6 +86,7 @@ import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.rest.TimesheetRestController;
@@ -2907,6 +2908,12 @@ public Set<PayrollLopHis> getLeaveByFrequency(Long candidateId, Date freqStartDa
 	return leaveDao.getLeaveByFrequency(candidateId,freqStartDate,freqEndDate,orgLocation,employeePayroll);
 }
 
+
+@Override
+public Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, IndEmployeePayroll employeePayroll)
+{
+	return leaveDao.getLeaveByFrequencyInd(candidateId,freqStartDate,freqEndDate,orgLocation,employeePayroll);
+}
 
 }
 
