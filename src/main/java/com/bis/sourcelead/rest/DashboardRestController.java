@@ -53,6 +53,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.UserLoginAccountsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -2078,6 +2079,43 @@ public class DashboardRestController {
 			}
 		}
 		return loginUserActionsList;
+	}
+	
+	
+	@RequestMapping(value = "/getLoginUserMultiAccountsList")
+	public @ResponseBody List<UserLoginAccountsDTO> getLoginUserMultiAccountsList(
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		List<UserLoginAccountsDTO> userLoginAccountsDTOList = new ArrayList<>();
+		List<Long> accountUserList = new ArrayList<>();
+		List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userId);
+		if (userIdsList != null && !userIdsList.isEmpty()) {
+			for (Long uid : userIdsList) {
+				List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(uid);
+				accountUserList.addAll(linkedUserIdsList);
+			}
+		}
+		userIdsList.addAll(accountUserList);
+		userIdsList.add(userId);
+		List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+		if(userSpocRolesList != null && !userSpocRolesList.isEmpty()) {
+			for(UserRole userRole : userSpocRolesList) {
+				UserLoginAccountsDTO accountsDTO = new UserLoginAccountsDTO();
+				accountsDTO.setDisplayName(userRole.getRoles().getDisplayName());
+				accountsDTO.setOrgLocationId(userRole.getOrgLocations().getId());
+				accountsDTO.setId(userRole.getId());
+				accountsDTO.setLoginSecurity(userRole.getOrgLocations().getLoginSecurity());
+				accountsDTO.setFileUrl(userRole.getOrgLocations().getOrg().getFileUrl());
+				accountsDTO.setCountry(userRole.getOrgLocations().getCountry());
+				accountsDTO.setState(userRole.getOrgLocations().getState());
+				accountsDTO.setCity(userRole.getOrgLocations().getCity());
+				accountsDTO.setUserId(userRole.getUser().getId());
+				accountsDTO.setDesignation(userRole.getDesignation());
+				accountsDTO.setOrgLocationName(userRole.getOrgLocations().getOrgLocationName());
+				userLoginAccountsDTOList.add(accountsDTO);
+			}
+			
+		}
+		return userLoginAccountsDTOList;
 	}
 	
 }

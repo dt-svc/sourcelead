@@ -54,6 +54,14 @@ var masterHeader = new buildMasterHeaderPanel();
 	    
 	    masterNavHtml = masterNavHtml+'<div class="headNav">';
 	    masterNavHtml = masterNavHtml+'<ul>';
+	  
+	    masterNavHtml = masterNavHtml+'<li><a id="orgPopId" onclick="masterHeader.getUserLinkedOrgsByuserId();" title="Locations"><i class="headNavIcon"></i></a>';
+	    masterNavHtml = masterNavHtml+'<div class="headPop headPopnoti" id="orgPopView">';
+	    masterNavHtml = masterNavHtml+'<div class="headPopInn">';
+	    masterNavHtml = masterNavHtml+'<div id="orgLiksPopup"></div>';
+	    masterNavHtml = masterNavHtml+'</div>';
+	    masterNavHtml = masterNavHtml+'</div>';
+	    masterNavHtml = masterNavHtml+'</li>';
 	    
 	    
 	    if(tabAccessArray.indexOf("Reports")){
@@ -68,10 +76,12 @@ var masterHeader = new buildMasterHeaderPanel();
 	    	masterNavHtml = masterNavHtml+'</li>';
 	    }
 	  
+	    //dynamically need to get unread mails count
 	    if(roleActionsArray.indexOf("ROLE_MAIL_BOX") > -1 || roleActionsArray.indexOf("ROLE_HOTLIST_CAMPAIGN") > -1){
 	    	masterNavHtml = masterNavHtml+'<li><a href="/app/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i></a></li>';
 	    }
 	    
+	    //dynamically need to get unread notifications count
 	    masterNavHtml = masterNavHtml+'<li>';
 	    masterNavHtml = masterNavHtml+'<a id="notiPopId" href="#" title="Alerts" onclick="masterHeader.getTopNotificationsByuserId();"><i class="headNavIcon notiIcon"></i></a>';
 	    masterNavHtml = masterNavHtml+'<div class="headPop headPopnoti" id="notificationPopup"></div>';
@@ -145,6 +155,84 @@ var masterHeader = new buildMasterHeaderPanel();
 				
 			});
 		}
+	 
+	 this.getUserLinkedOrgsByuserId = function(){
+		
+		 $.get(sourceleadUrl+"/getLoginUserMultiAccountsList?&userId="+userId, function(data) {
+				var result = "";
+				result = result + '<div class="headPopInn">';
+				result = result+'<div class="headPopSear"><input type="text" class="" id="orgsSearch" placeholder="Search"></div>';
+				result = result + '<ul>';
+				if(data !=null && data !='' && data !='undefined'){
+					for(var i=0;i<data.length;i++){
+						var opt = data[i];
+						var designation = '';
+						var orgAct = '';
+						
+						if(opt.designation != null && opt.designation != '' && opt.designation != 'undefined'){
+							designation = opt.designation;
+						}else{
+							designation = opt.displayName;
+						}
+						
+						if(opt.orgLocationId == locationId && opt.userId == userId){
+							orgAct = 'orgAct';
+						}
+						
+						result = result + '<li>';
+						if(opt.displayName != "Professional" && opt.displayName != "Independent Recruiter"){
+							result = result + '<a onclick="masterHeader.checkLocationAccess('+opt.orgLocationId+','+opt.id+','+opt.loginSecurity+','+opt.userId+');" class="sopcSwith noPad">';
+							result = result + '<div class="clearfix '+orgAct+'">';
+							result = result + '<div class="orgProfile"><img onerror="masterHeader.predefineOrgImage(this);" data-id="orgLogoImage" src="'+opt.fileUrl+'"></div>';
+							result = result + '<div class="orgDetails">';
+							result = result + '<h3>'+opt.orgLocationName+'</h3>';
+							result = result + '<h4><i	class="fa fa fa-map-marker"></i>'+opt.country+'</h4>';
+							result = result + '<h4><i	class="fa fa-user"></i>'+designation+'</h4>';
+							result = result + '</div>';						                   
+							result = result + '</div>';
+							result = result + '</a>';
+						}
+						result = result + '</li>';
+					}
+				} 
+			      result = result + '</ul>';
+		          result = result + ' </div>';
+					$("#orgLiksPopup").empty();
+			        $("#orgLiksPopup").append(result); 
+	             
+					
+		 });
+		 
+	 }
+	 
+	 this.predefineOrgImage = function(imageId){
+			$(imageId).attr('src','/resources/images/office-image.jpg');
+		}
+	 
+	 
+	  this.checkLocationAccess = function(locationId,roleId,orgSecurity,userId){
+		 $.ajax({
+		      type : "GET",
+		       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
+		       success :function(result) {
+		    	   location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);  
+		    	   /*if(result == true){
+		    			 if(orgSecurity == 'Y'){
+		    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+		    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+		    				 $(".authenticationMask").fadeIn();
+		    				 getUserDetailsbyroleId(roleId);
+		    			 }else{
+		    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+		    			 }
+		    		 }else{
+		    			 $(".location-alert").fadeIn();
+		    			 $(".location-alert").fadeOut(5000);
+		    		 }*/
+		    	   
+		      },
+		  });
+	 }
 		
 }
 
