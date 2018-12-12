@@ -1165,21 +1165,6 @@ public class CandidateRestController {
 		}
 		 
 		 
-			// Note this method is sales order  method
-		    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
-	     	@RequestMapping(value = "/app/SalesOrder")
-		    public ModelAndView goToSalesOrder(HttpServletRequest request) throws Exception {
-			  logger.debug("inisde SalesOrder  conroller =========>");
-		   	  System.out.println("inside SalesOrder  conroller =========>");
-			  ModelAndView model = new ModelAndView();
-			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  model.setViewName("candidates/salesOrder");
-			  model.addObject("sourceleadUrl", sourceleadUrl);
-			  return model;
-		}
-		 
-	
 	@PreAuthorize("hasRole('ROLE_VIEW_CART')")
 	@RequestMapping(value = "/app/getAddedMarketplaceCandidates", method = RequestMethod.POST)
 	public Map<String, Object[]> getAddedMarketplaceCandidates(
@@ -1414,6 +1399,35 @@ public class CandidateRestController {
 			}
 		return response;
 	 	}
+	
+	@RequestMapping(value = "/app/getDynamicSalesOrderList")
+	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
+	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+	 		 @RequestParam(value = "orderNo", required = false)String orderNo, 
+			 @RequestParam(value = "searchValue", required = false)String searchValue,	 
+			 HttpServletRequest request) throws Exception {
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		try{
+		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
+		  	int sortColumnIndex = -1; 
+	  		String sortColumnOrder = "desc"; 
+	  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
+	  		sortColumnIndex = Integer.parseInt(marketplacePurchaseSalesDTO.getOrder().get(0).get("column"));
+	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
+	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
+	  		}
+	  		if (sortColumnIndex != -1){
+	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  		}
+	  		}catch(Exception e){
+	  			e.printStackTrace();
+	  			return null;
+	  		}
+		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations.getId(), orderNo, searchValue);
+		responseList.setData(salesOrderList);
+		return responseList;
+	}
 	
 	
 }
