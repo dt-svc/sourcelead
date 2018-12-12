@@ -131,8 +131,8 @@
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
 		    	  		var result = "";
-		            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
-		           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
+		            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
+		           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
 		         		}else{
 		         		  result = result +'<div class="tblminwidth-100">--</div>';
 		         		} 
