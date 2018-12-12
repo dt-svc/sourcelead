@@ -536,7 +536,7 @@
 		                </div>
 		                 </div>
                </div>
-               
+               <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
                <div class="form-group">
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
@@ -547,6 +547,7 @@
 		                </div>
 		                 </div>
                </div>
+               </c:if>
                 <c:if test="${!empty sourceleadSectionList}">
 	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               		<c:if test="${sectionOrder.index == 0}">

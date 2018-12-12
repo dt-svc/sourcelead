@@ -41,7 +41,7 @@ $(document).ready(function(){
               <div class="col-md-12">
                 <select class="form-control sel" id="payrollType" name="payrollType" field-name="Payroll Type" data-validation="required">
 					    <option>Select Type</option>
-						<option>Regular</option>
+						<option selected>Regular</option>
 						<option>Additional</option>
 					</select>
               </div>
@@ -336,9 +336,9 @@ $(".overIcon, .newActPop").click(function(e){
 function resetData() {
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
-	 $("#payrollType").val('');
-	 $("#payPeriod").val('');
-	 $("#payPeriod2").val('');
+// 	 $("#payrollType").val('');
+	 $("#payPeriod").empty();
+	 $("#payPeriod2").empty();
 	 $("#payrollDepartment").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 	

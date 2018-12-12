@@ -80,7 +80,9 @@ function getDayWiseReports(){
           
         </div>    		
     		</li>
+    		<c:if test="${loginUserRole eq 'ROLE_ADMIN'}">
     		<li><a href="javascript:void(0)" class="btn btn-default btn-sm repFilIcon" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter"></i></a></li>
+    	</c:if>
     		<li class="positionRelative"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onClick="userDataTableList();"></span></li>
     	</ul>
     </div>

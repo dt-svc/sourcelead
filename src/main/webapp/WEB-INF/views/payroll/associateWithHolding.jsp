@@ -15,10 +15,10 @@ $(document).ready(function(){
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Associate with Holding</h2>
+        <h2>Associate withholding</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Associate with Holding
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Associate withholding
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">

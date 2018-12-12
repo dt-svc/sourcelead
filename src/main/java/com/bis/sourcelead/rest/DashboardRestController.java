@@ -2128,6 +2128,10 @@ public class DashboardRestController {
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
 					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
@@ -2248,7 +2252,9 @@ public class DashboardRestController {
 					if(rsh.getShiftName() !=null){
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
-					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
