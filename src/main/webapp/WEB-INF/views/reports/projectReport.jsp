@@ -92,6 +92,18 @@
              
             </ul>
           </div>
+          
+          
+          	<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="associateStatus" id="activeStatus" value ="ACTIVE" checked ><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="associateStatus" id="inactiveStatus" value ="INACTIVE" ><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
         </div>
         
         
@@ -183,6 +195,9 @@ function resetFilter(){
 	$("ul#projectStatus > li input:checkbox").prop("checked",false);
 	$("ul#managersUL > li input:checkbox").prop("checked",false);
 	$("ul#clientsUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	
+	document.getElementById("activeStatus").checked = true;
 	
 }
 
@@ -213,6 +228,7 @@ function projectReportDataTableList(refreshFlag){
 	var projectStatus = [];
     var clients = [];
     var projectManagers = [];
+    var associateStatus = [];
     var searchValue = "";
     $("#projectReporttableList").empty();
     if(refreshFlag) {
@@ -227,6 +243,11 @@ function projectReportDataTableList(refreshFlag){
 		$('input:checkbox[name=projectStatus]:checked').each(function(){
 			projectStatus.push($(this).val());
 		});
+		
+		$('input:checkbox[name=associateStatus]:checked').each(function(){
+			associateStatus.push($(this).val());
+		});
+		
 	    $('input:checkbox[name=clientName]:checked').each(function() {
 		    clients.push($(this).val());
 	    });
@@ -236,9 +257,10 @@ function projectReportDataTableList(refreshFlag){
 	    searchValue = $("#projectReportDataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 	}
+    
      $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getProjectReport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue,
+			url : sourceleadUrl+"/getProjectReport?&projectClients="+clients+"&projectManagers="+projectManagers+"&projectIds="+projectIds+"&projectStatus="+projectStatus+"&searchValue="+searchValue+"&associateStatus="+associateStatus+"&refreshFlag="+refreshFlag,
 			success : function(result) {
 				if(result && result.response === "SUCCESS") {
 					var text = "";

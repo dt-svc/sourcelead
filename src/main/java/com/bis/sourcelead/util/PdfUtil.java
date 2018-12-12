@@ -59,6 +59,7 @@ import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -135,6 +136,8 @@ public class PdfUtil {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -1815,74 +1818,85 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 				}
 			}
 			
-			if(rsh.getSubmissionId().getRequirement().getProcess() != null){
-				userArray[4] = rsh.getSubmissionId().getRequirement().getProcess();
+			if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+				userArray[4] = rsh.getSubmissionId().getRequirement().getJobRate();
 			}else{
 				userArray[4] = "--";
+			}
+		
+			
+			if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				userArray[5] = rsh.getSubmissionId().getRequirement().getProcess();
+			}else{
+				userArray[5] = "--";
 			}
 		
 				//Clinet Name
 				if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 						if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-							 userArray[5] = rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
+							 userArray[6] = rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
 						}else {
-							userArray[5] = "--";
+							userArray[6] = "--";
 						}
 					}
 					if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 						if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-							 userArray[5] = rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
+							 userArray[6] = rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
 						}else {
-							userArray[5] = "--";
+							userArray[6] = "--";
 						}
 					}
 				}else {
-					userArray[5] = "--";
+					userArray[6] = "--";
 				}
 				RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
 				
 				if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
-					 userArray[6] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview());
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview());
 				}
 				else{
-					userArray[6] = "--";
+					userArray[7] = "--";
 				}
 		
 				RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 				
 				if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
-					 userArray[7] = reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode();
+					 userArray[8] = reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode();
 				}
 				else{
-					 userArray[7] = "--";
+					 userArray[8] = "--";
 				}
 				//Sourece Name
-			   userArray[8] = rsh.getSubmissionId().getCreatedUser();
+			   userArray[9] = rsh.getSubmissionId().getCreatedUser();
 			 //Submitted On
-		   userArray[9] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate());
+		   userArray[10] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate());
 		   if(rsh.getSubmissionId().getJoinedDate()  != null){
-			   userArray[10] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate());
+			   userArray[11] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate());
 			}
 			else{
-				userArray[10] = "--";
+				userArray[11] = "--";
 				}
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-				userArray[11] = rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString();
+			if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				payTerm=payTerm.replaceAll("\\D", "");
+				userArray[12] = payTerm.toString();
 			}
 			else{
-				 userArray[11] = "--";
+				 userArray[12] = "--";
 			}
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				payTerm=payTerm.replaceAll("\\D", "");
+				int result = Integer.parseInt(payTerm);
 				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				   userArray[12] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
+			   userArray[13] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
 
 			}
 			else{
-				userArray[12] = "--";	
+				userArray[13] = "--";	
 			}
 	   
 	return userArray;
@@ -1927,10 +1941,10 @@ public File ApplicantsJoinedListPdfTable(ResponseList<RequirementSubmissionHisto
         PdfPTable table = new PdfPTable(headers.length);
         Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
         PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-        cell1.setColspan(13);
+        cell1.setColspan(14);
         headerCellStyle(cell1);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{5, 5, 5,5, 5, 4, 4, 5, 5, 6, 3, 4,5});
+        table.setWidths(new int[]{5, 5, 5,5, 5, 5, 4, 4, 5, 5, 6, 3, 4,5});
         table.addCell(cell1);
         for (int i = 0; i < headers.length; i++) {
             String header = headers[i];
@@ -2278,7 +2292,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 				cell1.setColspan(18);
 				headerCellStyle(cell1);
 				table.setWidthPercentage(100);
-				table.setWidths(new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 });
+				table.setWidths(new int[] { 5, 5, 5, 7, 5, 5, 5, 5, 5, 5 });
 				table.addCell(cell1);
 				for (int i = 0; i < headers.length; i++) {
 					String header = headers[i];
@@ -2348,7 +2362,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 				reportArray[2] = "--";
 			}
 
-			if (report.getProjectManagers() != null) {
+			if (report.getProjectManagerNames() != null) {
 				reportArray[3] = report.getProjectManagerNames();
 			} else {
 				reportArray[3] = "--";

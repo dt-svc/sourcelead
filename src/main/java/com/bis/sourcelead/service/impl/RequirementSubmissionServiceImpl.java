@@ -5608,76 +5608,87 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
 			}
 		}
-		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
-				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
- 
+		 if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+
 		 }
 		 else{
 			 writeRow.createCell(4).setCellValue("--"); 
+		 }
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(5).setCellValue("--"); 
 		 }
 		//Clinet Name
 		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(5).setCellValue("--");
+					writeRow.createCell(6).setCellValue("--");
 				}
 			}
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+					writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(5).setCellValue("--");
+					writeRow.createCell(6).setCellValue("--");
 				}
 			}
 		}else {
-			writeRow.createCell(5).setCellValue("--");
+			writeRow.createCell(6).setCellValue("--");
 		}
 		 
 		RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
 		if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
-			writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
+			writeRow.createCell(7).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
 		}
 		else{
-			writeRow.createCell(6).setCellValue("--");
+			writeRow.createCell(7).setCellValue("--");
 		}
 		
 		RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			
 		if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
-			writeRow.createCell(7).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
+			writeRow.createCell(8).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
 		}
 		else{
-			writeRow.createCell(7).setCellValue("--");
+			writeRow.createCell(8).setCellValue("--");
 		}
 		//Sourece Name
-		 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
+		 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getCreatedUser());
 		 //Submitted On
-		 writeRow.createCell(9).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+		 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
 
 			if(rsh.getSubmissionId().getJoinedDate()  != null){
-				 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
-			}
-			else{
-				writeRow.createCell(10).setCellValue("--");
-			}
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-				 writeRow.createCell(11).setCellValue(rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString());
+				 writeRow.createCell(11).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
 			}
 			else{
 				writeRow.createCell(11).setCellValue("--");
 			}
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
-				DateTime dtOrg = new DateTime(generatedInvoiceDate);
-				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				 writeRow.createCell(12).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
-
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				payTerm=payTerm.replaceAll("\\D", "");
+				 writeRow.createCell(12).setCellValue(payTerm);
 			}
 			else{
 				writeRow.createCell(12).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				payTerm=payTerm.replaceAll("\\D", "");
+				int result = Integer.parseInt(payTerm);
+				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+
+			}
+			else{
+				writeRow.createCell(13).setCellValue("--");
 			}
 
 		return createExcelsheet;
@@ -5745,6 +5756,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
 			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
 			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
 			if(requirementSubmission.getRequirementOffersList().size()>0){
 				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
 					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
@@ -5756,6 +5769,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					applicantsDto.setOrgRelationId(requirementSubmission.getRequirement().getClientId().getId());
 				}
 			}
 			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {

@@ -37,7 +37,9 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1032,6 +1034,29 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									pah.setStatus("1");
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
+									
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
@@ -2066,8 +2091,30 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									
 									pah.setLevel(1);
 									pah.setStatus("1");
+									//pah.setApprovalMechanismType(Constants.PARALLEL);
 									projectApproverHierarchyList.add(pah);
 									projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+									
+									
+									//prepare ExpenseApproverHierarchy
+									Set<ExpenseProjectApproverHierarchy> expenseApproverHierarchyList = new HashSet<ExpenseProjectApproverHierarchy>();
+									ExpenseProjectApproverHierarchy eah = new ExpenseProjectApproverHierarchy();
+									eah.setProjectId(projects);
+									eah.setProjectClientsId(projectClients);
+									
+									if(cand.getOrgLocationId().getUser() != null) {
+										eah.setApproverUserId(cand.getOrgLocationId().getUser());
+									}else {
+										OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+										eah.setApproverUserId(orgSpoc.getVendorUser());
+									}
+									
+									
+									eah.setLevel(1);
+									eah.setStatus("1");
+									//eah.setApprovalMechanismType(Constants.PARALLEL);
+									expenseApproverHierarchyList.add(eah);
+									projectClients.setExpenseProjectApproverHierarchyList(expenseApproverHierarchyList);
 									
 									projectClientService.storeProjectClients(projectClients);
 								}
