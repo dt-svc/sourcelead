@@ -924,7 +924,10 @@ public class PaymentController {
                 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.PROFILES_ADDED_TO_CART_MAIL, new ArrayList<EmailAttachment>());	
                 			 }
 
+
                 		}
+                		
+
                 	    //sending Notification.
                 		//User mail address and resume count should be updated
                 		globalVarsMap.put("resumeCount", "resumes");

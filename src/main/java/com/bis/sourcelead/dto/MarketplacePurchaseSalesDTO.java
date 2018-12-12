@@ -3,6 +3,13 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+
 public class MarketplacePurchaseSalesDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -17,7 +24,18 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	private String tax;
 	private String totalresume;
 	private String paymentId;
-	private Date orderDate;
+	private Date orderDate;	
+	private String candidateName;
+	private String orderDateStr;	
+	
+	
+	
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
 	public String getOrderNo() {
 		return orderNo;
 	}
@@ -86,6 +104,12 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public String getOrderDateStr() {
+		return orderDateStr;
+	}
+	public void setOrderDateStr(String orderDateStr) {
+		this.orderDateStr = orderDateStr;
 	}
 	
 }
