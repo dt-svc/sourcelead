@@ -35,7 +35,7 @@
           <div class="col-lg-12">
             <div class="pull-right">
               <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="getContractEmployeeReport();">
-              <input value="Reset" class="btn btn-defualt ml10" type="button">
+              <input value="Reset" class="btn btn-defualt ml10" type="button" onClick="resetData();">
             </div>
           </div>
         </div>
@@ -331,5 +331,22 @@ $(".overIcon, .newActPop").click(function(e){
 		});
 	});
 </script>
+
+<script>
+function resetData(){
+	 $("#contractEmployeeReportDiv").hide();
+	 $("#fromDate").val('');
+	 $("#toDate").val('');
+}
+</script>
+
+<!-- <script> -->
+<!--  function resetFilter(){ -->
+<!--  	 $("#conEmpReportTable").val(''); -->
+<!--  	 $("#fromDate").val(''); -->
+<!--  	 $("#toDate").val(''); -->
+<!--  } -->
+<!-- </script> -->
+
 
 <jsp:include page="../masterFooter.jsp" />
