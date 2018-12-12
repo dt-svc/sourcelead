@@ -11,7 +11,7 @@ $(document).ready(function(){
 </script>
 
 <!-- Content Area -->
-  <section class="content-wraper contentWraper">
+  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Purchase Order List</h2>

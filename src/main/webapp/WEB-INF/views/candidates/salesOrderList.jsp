@@ -3,7 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <section class="content-wraper contentWraper">
+
+ <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Sales Orders List</h2>
