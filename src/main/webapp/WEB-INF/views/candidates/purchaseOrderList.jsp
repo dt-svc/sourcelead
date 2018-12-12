@@ -25,18 +25,35 @@ $(document).ready(function(){
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
             <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
-             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
-           
-         
-         <div class="clearfix"></div>
+             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>        
+         <div class="clearfix"></div>         
      </ul>
 </div>
-
-<div class="candidate_wrap_table datatable_filter">
-<div id="purchaseList"></div>
-</div>
     
-
+    <div class="contentareaInner-styles clearfix">
+      <div class="timesheet_out" id="payrollRegister" style="display: block;">
+        <div class="clearfix">
+          <div class="positionRelative reportHead clearfix">
+			  <span class="pull-left refreIcon noPad mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+			  </span>
+            <ul class="pull-right list-unstyled list-inline noPad">
+              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+              </li>
+            <li class="noMar">
+                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+			</li>
+            </ul>
+          </div>
+        <div class="candidate_wrap_table datatable_filter">
+        <div id="purchaseList"></div>
+        </div>
+        </div>
+      </div>
+    </div>
   </section>
   
   
@@ -66,33 +83,12 @@ $(document).ready(function(){
   
    function getPurchaseOrderList(){
 	  
-	   /*     $.ajax({
-		    	type: "GET",
-		    	 url: sourceleadUrl+"/getPurchasedOrderList", 
-		        success: function(result) {
-		        	
-		        	
-		     		
-		        },
-		    });
-	      */
-	     
-// 	     var searchValue = $("#invoiceDataTableSearch").val();
-// 	 	 searchValue = searchValue ? searchValue : "";
-		// var url = sourceleadUrl+"/getInvoiceList?&invoiceStatus="+invoice+"&paymentStatus="+payment+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceType=receivable&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tags="+tags+"&invoiceDeleteStatus="+invoieDeleteStatus;
 	   	var url = sourceleadUrl+"/getPurchasedOrderList";
-	   	getPurchaseOrderListPagin(url);
-	  
-	  
-	  
-	  
+	   	getPurchaseOrderListPagin(url);	  
   }
   </script>
   
-  
-  
-  
-  
+   
   
   <script>
 function getPurchaseOrderListPagin(url){
@@ -152,7 +148,8 @@ function purchasePagination(url){
             "render": function ( data, type, report, meta ) {
             	var result = "";
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-           		  result = result +'<div class="tblminwidth-100">'+report.orderNo+'</div>';
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?orderNo='+report.orderNo+'" title="'+report.orderNo+'">'+report.orderNo+'</a></div>';	 
+            		         		 
          		}else{
          		  result = result +'<div class="tblminwidth-100">--</div>';
          		} 
@@ -165,8 +162,8 @@ function purchasePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		var result = "";
-	            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
+	            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
+	           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 
