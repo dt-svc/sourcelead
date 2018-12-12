@@ -199,12 +199,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			
-			Set<EmployeePayroll> empPayroll = null;
-			if(!"All".equalsIgnoreCase(payrollApproverDTO.getPayType())) {
+			Set<EmployeePayroll> empPayroll = pf.getEmployeepayroll();
+			/*if(!"All".equalsIgnoreCase(payrollApproverDTO.getPayType())) {
 				 empPayroll = pf.getEmployeepayroll().stream().filter(p->payrollApproverDTO.getPayType().equalsIgnoreCase(p.getPayType())).collect(Collectors.toSet());	
 			}else {
 				 empPayroll = pf.getEmployeepayroll();
-			}
+			}*/
 			
 			List<EmployeePayroll> payrollListt = null;
 			if(Constants.DRAFT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
