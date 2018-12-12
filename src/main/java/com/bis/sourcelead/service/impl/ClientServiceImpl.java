@@ -828,6 +828,8 @@ public class ClientServiceImpl implements ClientService {
 			projects.setProjectShortCode("DFP");
 			projects.setIsProjectForTimeSheets(Constants.YES);
 			projects.setIsProjectForExpenses(Constants.YES);
+			projects.setProjectApprovalType(Constants.PARALLEL);
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());
