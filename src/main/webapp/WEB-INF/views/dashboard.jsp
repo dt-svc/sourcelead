@@ -38,6 +38,7 @@
 <script>
 $(document).ready(function() {
 	   getLoginUserTabsList();
+	   getLoginUserRolesActionsList();
 		$('body').load("/resources/dashboardHtml.html");
 	});
 </script>

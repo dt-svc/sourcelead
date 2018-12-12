@@ -8,6 +8,7 @@ var locationList ="dd-MM-yyyy";//'${SourceLeadWeb_orgLocations.dateFormat}';
 var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha
 //var orgLocationCode = "txhlIN"; //'${SourceLeadWeb_locationCode}'; Narasimha
 var orgLocationCode = "775BUS";// snigitha
+var orgCode = '775B'
 //var candiadteId = "9105";//'${SourceLeadWeb_candidateId}'; Narasimha
 var candiadteId = '9077';// snigitha
 var isGlobalAccess = "N";//'${SourceLeadWeb_isGlobalAccess}';
@@ -29,6 +30,7 @@ var country = "India";//'${SourceLeadWeb_orgLocations.country}';
 var locationDate = locationList; // locationList is unique variable using for date format.
 var finalDateFormatEDashboardeventCalendar = '';
 var tabAccessArray = '';
+var roleActionsArray = '';
 //$(document).ready(function() {
 	if (locationDate.match("yyyy-MM-dd")) {
 		finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
@@ -5001,12 +5003,24 @@ function getLoginUserTabsList() {
 				url : sourceleadUrl + "/getLoginUserTabAccessList?locationId="+locationId+"&userId="+userId,
 				success : function(data) {
 					tabAccessArray = data;
-					$("#masterSideNav").html(buildMasterSideNavPanel());
-					$("#masterHeaderNav").html(buildMasterHeaderPanel());
+					$("#masterSideNav").html(masterSideNav.masterSideNavPanel());
 					
 				},
 
 			});
+}
+
+function getLoginUserRolesActionsList(){
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getLoginUserRoleActionsList?locationId="+locationId+"&userId="+userId,
+		success : function(data) {
+			roleActionsArray = data;
+			$("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+			
+		},
+
+	});
 }
 
 

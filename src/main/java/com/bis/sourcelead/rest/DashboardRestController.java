@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
@@ -92,6 +93,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
@@ -198,6 +200,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TabsService tabsService;
+	 
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -2057,6 +2062,22 @@ public class DashboardRestController {
 			}
 		}
 		return loginUserTabsList;
+	}
+	
+	
+	@RequestMapping(value = "/getLoginUserRoleActionsList")
+	public @ResponseBody List<String> getLoginUserRoleActionsList(@RequestParam(value="locationId", required=true) Long locationId,
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, locationId);
+		List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(null,userRole.getRoles().getId(), locationId);
+		List<String> loginUserActionsList = new ArrayList<>();
+		if(actionsList != null && !actionsList.isEmpty()) {
+			for(SourceleadActions actions : actionsList) {
+				loginUserActionsList.add(actions.getActionName());
+			}
+		}
+		return loginUserActionsList;
 	}
 	
 }
