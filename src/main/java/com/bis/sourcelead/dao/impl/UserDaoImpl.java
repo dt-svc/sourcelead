@@ -2278,14 +2278,29 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-					System.out.println("pid>>>"+reportDTO.getPrimaryUserId());
-					System.out.println("assid>>>"+reportDTO.getAssignedUserId());
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) {
+					
+					//for reference
+					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
+							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
 								System.out.println("assign");
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}*/
+					
+					if(reportDTO.getAssignedUserId() != null){
+						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+								&& (reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) 
+								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
+							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
+							if(userDTO != null){
+									jobIds.add(reportDTO.getRequirementId());
+									System.out.println("assign");
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+							}
 						}
 					}
 					
