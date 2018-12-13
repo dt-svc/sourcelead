@@ -1882,7 +1882,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		List<Requirement> releasedJobsList = null;
 		String query = "";
 		if (orgRelationId != null && orgLocationId != null) {
-			query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
+			query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and (date(requirement.createdDate) BETWEEN  :startDateUTC and :endDateUTC)  and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
 			releasedJobsList = session.createQuery(query).setLong("orgRelationId", orgRelationId)
 					.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}
