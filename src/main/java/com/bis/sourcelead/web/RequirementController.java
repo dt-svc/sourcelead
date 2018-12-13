@@ -823,12 +823,17 @@ public class RequirementController {
 				//requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 			}
 			Boolean isLoginUserAsApprover = false;
+			Boolean approvedByLoginUser = false;
 			RequirementApproverHierarchy requirementApproverHierarchy = null;
 			if(isAdmin || isManager){
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
 			}else{
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+				if (requirementApproverHierarchy != null && requirementApproverHierarchy.getRequirementApproverStatus().getValue().equalsIgnoreCase("APPROVED")) {
+					approvedByLoginUser = true;
+				}
 			}
+			model.addObject("approvedByLoginUser",approvedByLoginUser);
 			if (requirementApproverHierarchy != null) {
 				isLoginUserAsApprover = true;
 				requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
