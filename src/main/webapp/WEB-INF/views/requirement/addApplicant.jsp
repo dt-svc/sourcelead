@@ -102,9 +102,9 @@ function getAddApplicant(requirementId){
 	result = result + '<label class="col-md-4">Skills</label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
-	            <c:forEach var="sk" items="${skillsList}">
-	result = result + "<option value='${sk.name}'>${sk.name}</option>";
-	            </c:forEach>
+	result = result + '<c:forEach var="skill" items="${skillsList}">';
+	result = result + "<option value='${skill.name}'>${skill.name}</option>";
+	result = result + ' </c:forEach>';
 	result = result + '</select>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';

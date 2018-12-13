@@ -4,6 +4,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.col;
 import static net.sf.dynamicreports.report.builder.DynamicReports.export;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
+import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
 import java.io.File;
@@ -56,6 +57,7 @@ import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.JasperProperty;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
@@ -1574,10 +1576,13 @@ public class PayrollReportPdfUtil {
 		    }
 			
 			file.setReadable(true);
+			StyleBuilder tableHeadStyle = stl.style(Templates.columnStyle);
+			StyleBuilder tableRowStyle = stl.style(Templates.columnStyle);
+			
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
 			report().setTemplate(Templates.reportTemplate)
-					.title(cmp.text(title).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
-					.columns(
+					.title(cmp.text(title).setStyle(Templates.bold18CenteredStyle))
+					.setColumnStyle(tableRowStyle.setHorizontalAlignment(HorizontalAlignment.CENTER)).columns(
 							col.column("Type", "type", type.stringType()),
 							col.column("No of Employees", "noOfEmployees", type.integerType()),
 							col.column("Current", "current", type.bigDecimalType()),
