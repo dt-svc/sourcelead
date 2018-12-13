@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -67,6 +69,9 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	
 	@Autowired
 	private AddExpensesDao addExpensesDao;
+	
+	@Autowired
+	private CandidateDao candidateDao;
 	
 	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
@@ -289,7 +294,11 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 		expenses.setOrgLocationId(orgLoc);
 	}
 	
-	expenses.setExpensesLocationId(orgLoc.getId());
+	Candidate expenseCandidate = candidateDao.getCandidateByMasterCandidateId(projMembers.getMasterCandidateId().getId());
+	if(expenseCandidate != null) {
+		expenses.setExpensesLocationId(expenseCandidate.getOrgLocationId().getId());
+	}
+//	expenses.setExpensesLocationId(orgLoc.getId());
 	
 	if(expenses != null && expenses.getProjects() != null && StringUtils.isNotEmpty( expenses.getProjects().getIsReportingManagerAsApprover())
 			   &&  expenses.getProjects().getIsReportingManagerAsApprover().equalsIgnoreCase("Y")) {

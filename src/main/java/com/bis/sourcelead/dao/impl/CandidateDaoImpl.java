@@ -2785,4 +2785,24 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional
+	public Candidate getCandidateByMasterCandidateId(Long masterCandidateId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.masterCandidateId.id=:masterCandidateId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("masterCandidateId", masterCandidateId);
+			List<Candidate> candidateList = queryObj.list();
+			if(candidateList != null && !candidateList.isEmpty()) {
+				return candidateList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 }
