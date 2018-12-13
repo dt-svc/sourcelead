@@ -823,12 +823,17 @@ public class RequirementController {
 				//requirementService.checkLoginUserIsRequirementManagerByRequirementIdAndUserId(requirement.getId(), loginUser.getId());
 			}
 			Boolean isLoginUserAsApprover = false;
+			Boolean approvedByLoginUser = false;
 			RequirementApproverHierarchy requirementApproverHierarchy = null;
 			if(isAdmin || isManager){
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRejectedApproverHierarchyByRequirementId(requirement.getId());
 			}else{
 				requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirement.getId(), loginUser.getId());
+				if (requirementApproverHierarchy != null && requirementApproverHierarchy.getRequirementApproverStatus().getValue().equalsIgnoreCase("APPROVED")) {
+					approvedByLoginUser = true;
+				}
 			}
+			model.addObject("approvedByLoginUser",approvedByLoginUser);
 			if (requirementApproverHierarchy != null) {
 				isLoginUserAsApprover = true;
 				requirement.setRejectReasonForRequirement(requirementApproverHierarchy.getRejectedReason());
@@ -882,14 +887,14 @@ public class RequirementController {
 		
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
-			/*	List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
 				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
 				
 				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-				model.addObject("documentsList", documentsList);*/
+				model.addObject("documentsList", documentsList);
 		
 				// This code is commented as not in use 
 		
