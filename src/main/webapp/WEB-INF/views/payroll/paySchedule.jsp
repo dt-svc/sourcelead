@@ -23,7 +23,7 @@ $(document).ready(function(){
         <h2>Pay Schedule</h2>
       </div>
         <div class="success_pop" id="selector2" style="display: none;">
-          <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
+          <i class="fa fa-check-circle"></i><span id="msgFadeDiv"></span>
         </div>
         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
           <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
@@ -172,7 +172,7 @@ function savePayrollSchedule(){
 		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
-				     			 $("#messageFadeDIV ").html("Added Successfully");
+				     			 $("#msgFadeDiv").html("Added Successfully");
 				     			msgFadein();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
