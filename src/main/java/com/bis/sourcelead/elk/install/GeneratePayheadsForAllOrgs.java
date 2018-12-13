@@ -37,23 +37,31 @@ public void generatePayheadsByOrg() throws IOException, SQLException {
 			DataSource dataSource = comboPooledDataSource();
 			conn = dataSource.getConnection();
 			
-			String sql11 = "DELETE from sourcelead.payroll_loan_and_advances where sourcelead.payroll_loan_and_advances.id > 0 and  sourcelead.payroll_loan_and_advances.PAY_HEAD_ID IS NOT NULL and sourcelead.payroll_loan_and_advances.ORGLOCATION_ID IN (SELECT sourcelead.org_locations.id FROM sourcelead.org_locations where sourcelead.org_locations.COUNTRY='India')";
+			String sql111 = "DELETE from sourcelead.ASSOCIATE_LOAN_AND_ADVANCES_HISTORY where sourcelead.ASSOCIATE_LOAN_AND_ADVANCES_HISTORY.ID > 0 and sourcelead.ASSOCIATE_LOAN_AND_ADVANCES_HISTORY.ORG_LOCATIONS_ID IN (SELECT sourcelead.ORG_LOCATIONS.ID FROM sourcelead.ORG_LOCATIONS where sourcelead.ORG_LOCATIONS.COUNTRY='India')";
+			PreparedStatement stmt111 = conn.prepareStatement(sql111);
+			stmt111.executeUpdate();
+			
+			String sql112 = "DELETE from sourcelead.ASSOCIATE_LOAN_ADVANCES where sourcelead.ASSOCIATE_LOAN_ADVANCES.ID > 0 and sourcelead.ASSOCIATE_LOAN_ADVANCES.ORG_LOCATION_ID IN (SELECT sourcelead.ORG_LOCATIONS.ID FROM sourcelead.ORG_LOCATIONS where sourcelead.ORG_LOCATIONS.COUNTRY='India')";
+			PreparedStatement stmt112 = conn.prepareStatement(sql112);
+			stmt112.executeUpdate();
+			
+			String sql11 = "DELETE from sourcelead.PAYROLL_LOAN_AND_ADVANCES where sourcelead.PAYROLL_LOAN_AND_ADVANCES.ID > 0 and  sourcelead.PAYROLL_LOAN_AND_ADVANCES.PAY_HEAD_ID IS NOT NULL and sourcelead.PAYROLL_LOAN_AND_ADVANCES.ORGLOCATION_ID IN (SELECT sourcelead.ORG_LOCATIONS.ID FROM sourcelead.ORG_LOCATIONS where sourcelead.ORG_LOCATIONS.COUNTRY='India')";
 			PreparedStatement stmt11 = conn.prepareStatement(sql11);
 			stmt11.executeUpdate();
 			
-			String sql12 = "DELETE from sourcelead.payroll_payhead_salary_setup_history where sourcelead.payroll_payhead_salary_setup_history.id > 0 and  sourcelead.payroll_payhead_salary_setup_history.PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			String sql12 = "DELETE from sourcelead.PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY where sourcelead.PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY.ID > 0 and  sourcelead.PAYROLL_PAYHEAD_SALARY_SETUP_HISTORY.PAYHEAD IN (SELECT sourcelead.PAYROLL_PAYHEAD.ID  FROM sourcelead.PAYROLL_PAYHEAD where ORGLOCATION_ID != 1)";
 			PreparedStatement stmt12 = conn.prepareStatement(sql12);
 			stmt12.executeUpdate();
 			
-			String sql13 = "DELETE from sourcelead.associate_salary_payhead_ind where sourcelead.associate_salary_payhead_ind.id > 0 and  sourcelead.associate_salary_payhead_ind.PAYROLL_PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			String sql13 = "DELETE from sourcelead.ASSOCIATE_SALARY_PAYHEAD_IND where sourcelead.ASSOCIATE_SALARY_PAYHEAD_IND.ID > 0 and  sourcelead.ASSOCIATE_SALARY_PAYHEAD_IND.PAYROLL_PAYHEAD IN (SELECT sourcelead.PAYROLL_PAYHEAD.ID  FROM sourcelead.PAYROLL_PAYHEAD where ORGLOCATION_ID != 1)";
 			PreparedStatement stmt13 = conn.prepareStatement(sql13);
 			stmt13.executeUpdate();
 			
-			String sql14 = "DELETE from sourcelead.associate_payroll_payhead_history where sourcelead.associate_payroll_payhead_history.id > 0 and  sourcelead.associate_payroll_payhead_history.PAYROLL_PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			String sql14 = "DELETE from sourcelead.ASSOCIATE_PAYROLL_PAYHEAD_HISTORY where sourcelead.ASSOCIATE_PAYROLL_PAYHEAD_HISTORY.ID > 0 and  sourcelead.ASSOCIATE_PAYROLL_PAYHEAD_HISTORY.PAYROLL_PAYHEAD IN (SELECT sourcelead.PAYROLL_PAYHEAD.ID  FROM sourcelead.PAYROLL_PAYHEAD where ORGLOCATION_ID != 1)";
 			PreparedStatement stmt14 = conn.prepareStatement(sql14);
 			stmt14.executeUpdate();
 			
-			String sql15 = "DELETE from sourcelead.payroll_payhead where ORGLOCATION_ID != 1";
+			String sql15 = "DELETE from sourcelead.PAYROLL_PAYHEAD where ORGLOCATION_ID != 1";
 			PreparedStatement stmt15 = conn.prepareStatement(sql15);
 			stmt15.executeUpdate();
 			
