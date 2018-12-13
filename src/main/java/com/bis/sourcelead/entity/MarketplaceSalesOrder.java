@@ -37,6 +37,9 @@ public class MarketplaceSalesOrder implements Serializable {
 	@Column(name = "ORDER_NO" , columnDefinition = "TEXT default NULL")
 	private String orderNo;
 	
+	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+	private String description;
+	
 	@Column(name = "PAYMENT_STATUS" )
 	private String paymentStatus;
 	
@@ -44,13 +47,25 @@ public class MarketplaceSalesOrder implements Serializable {
 	private Double totalResumePrice;
 	
 	@Column(name = "NO_OF_RESUMES")
-	private Double noOfResumes;
+	private String noOfResumes;
 	
 	@Column(name = "PAYMENT_ID" , columnDefinition = "TEXT default NULL")
 	private String paymentId;
 	
 	@Column(name = "ORDER_DATE ")
 	private Date orderDate;
+	
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	@Column(name = "SALES_UUID ")
+	private String salesUuid;
+
 
 	public Long getId() {
 		return id;
@@ -109,11 +124,11 @@ public class MarketplaceSalesOrder implements Serializable {
 		this.totalResumePrice = totalResumePrice;
 	}
 
-	public Double getNoOfResumes() {
+	public String getNoOfResumes() {
 		return noOfResumes;
 	}
 
-	public void setNoOfResumes(Double noOfResumes) {
+	public void setNoOfResumes(String noOfResumes) {
 		this.noOfResumes = noOfResumes;
 	}
 
@@ -125,17 +140,27 @@ public class MarketplaceSalesOrder implements Serializable {
 		this.paymentId = paymentId;
 	}
 
-	public Date getOrderDate() {
-		return orderDate;
+
+	public String getSalesUuid() {
+		return salesUuid;
 	}
 
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public void setSalesUuid(String salesUuid) {
+		this.salesUuid = salesUuid;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }
 
 	
