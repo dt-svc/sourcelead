@@ -1477,6 +1477,32 @@ public class RequirementRestController {
 									array.put(npItem);
 								}
 								
+								if(StringUtils.isNotBlank(candidate.getCurrentRate())) {
+									JSONObject ctcItem = new JSONObject();
+									ctcItem.put("label", "Current CTC");
+									ctcItem.put("type", "text");
+									ctcItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									ctcItem.put("name", "CurrentCTC");
+									ctcItem.put("value", candidate.getCurrentRateCurrency()+" "+candidate.getCurrentRate()+" / "+candidate.getCurrentRateType());
+									labelItems.put("currentCTCRateType", candidate.getCurrentRateCurrency());
+									labelItems.put("CurrentCTC", candidate.getCurrentRate());
+									labelItems.put("currentCTCRatePer", candidate.getCurrentRateType());
+									array.put(ctcItem);
+								}
+								
+								if(StringUtils.isNotBlank(candidate.getExpectedRate())) {
+									JSONObject ectcItem = new JSONObject();
+									ectcItem.put("label", "Expected CTC");
+									ectcItem.put("type", "text");
+									ectcItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									ectcItem.put("name", "ExpectedCTC");
+									ectcItem.put("value", candidate.getExpectedRateCurrencey()+" "+candidate.getExpectedRate()+" / "+candidate.getRateType());
+									labelItems.put("expectedCTCRateType", candidate.getExpectedRateCurrencey());
+									labelItems.put("ExpectedCTC", candidate.getExpectedRate());
+									labelItems.put("expectedCTCRatePer", candidate.getRateType());
+									array.put(ectcItem);
+								}
+								
 								
 								String con = array.toString();
 								RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
