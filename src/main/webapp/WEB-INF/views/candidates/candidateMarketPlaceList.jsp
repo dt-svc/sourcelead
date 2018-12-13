@@ -405,18 +405,18 @@ function marketPlacePagination(){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		var experienceYears='';
-                		if(opt.experienceYears == null || opt.experienceYears == "null" || opt.experienceYears == '' || opt.experienceYears == "undefined" || opt.experienceYears == 0){
-                			experienceYears = 0;
+                		if(opt.experienceYears == null || opt.experienceYears == "null" || opt.experienceYears == '' || opt.experienceYears == "undefined"){
+                			experienceYears = "--, ";
    	             	 	}else{
-   	             	 		experienceYears = opt.experienceYears;
+   	             	 		experienceYears = opt.experienceYears+" Years, ";
    	             	 	}
                 		var experienceMonths='';
-                		if(opt.experienceMonths == null || opt.experienceMonths == "null" || opt.experienceMonths == '' || opt.experienceMonths == "undefined" || opt.experienceMonths == 0){
-                			experienceMonths = 0;
+                		if(opt.experienceMonths == null || opt.experienceMonths == "null" || opt.experienceMonths == '' || opt.experienceMonths == "undefined"){
+                			experienceMonths = "--";
    	             	 	}else{
-   	             	 		experienceMonths = opt.experienceMonths;
+   	             	 		experienceMonths = opt.experienceMonths+" MOnths";
    	             	 	}
-                		var experience = experienceYears+" Years, "+experienceMonths+" Months";
+                		var experience = experienceYears+experienceMonths;
                 		result = result + "<td><div class='tblminwidth-50' onclick='#'><span title='"+experience+"'>"+experience+"</span></div></td>";
    	            	  
     	              return result;

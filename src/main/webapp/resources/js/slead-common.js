@@ -53,6 +53,8 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
 			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 if(skillsArray[i] == '' || skillsArray[i] == 'undefined' || skillsArray[i] == null)
+        		        		     continue;
 			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
 			        			 select.append(option);
 			 		             select.find(option).prop('selected', true);

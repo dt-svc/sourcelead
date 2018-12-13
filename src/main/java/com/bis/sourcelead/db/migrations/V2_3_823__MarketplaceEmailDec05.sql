@@ -7,7 +7,7 @@ VALUES ('CartDetailsMailToMarketPlaceCandidates',
 'Cart DetailsMail To MarketPlace Candidates',
 'New resumes added to the cart by [Current_User]',
 'org',
-'Best Regards, \n [Company_Name]' ,
+'Best Regards, \n Source Lead.' ,
 'Dear [Other_User], \n New profile added to the cart by [Current_User] on [Date_And_Time] \n [html_Body] \n',
 'N', 
 'SLADMIN', 
@@ -18,5 +18,4 @@ VALUES ('CartDetailsMailToMarketPlaceCandidates',
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'currentUser', '[Current_User]');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'otherUser', '[Other_User]');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'dateAndTime', '[Date_And_Time]');
-INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'companyName', '[Company_Name]');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'htmlBody', '[html_Body]');
