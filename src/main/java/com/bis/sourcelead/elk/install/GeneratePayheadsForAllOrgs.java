@@ -37,6 +37,28 @@ public void generatePayheadsByOrg() throws IOException, SQLException {
 			DataSource dataSource = comboPooledDataSource();
 			conn = dataSource.getConnection();
 			
+			String sql11 = "DELETE from sourcelead.payroll_loan_and_advances where sourcelead.payroll_loan_and_advances.id > 0 and  sourcelead.payroll_loan_and_advances.PAY_HEAD_ID IS NOT NULL and sourcelead.payroll_loan_and_advances.ORGLOCATION_ID IN (SELECT sourcelead.org_locations.id FROM sourcelead.org_locations where sourcelead.org_locations.COUNTRY='India')";
+			PreparedStatement stmt11 = conn.prepareStatement(sql11);
+			stmt11.executeUpdate();
+			
+			String sql12 = "DELETE from sourcelead.payroll_payhead_salary_setup_history where sourcelead.payroll_payhead_salary_setup_history.id > 0 and  sourcelead.payroll_payhead_salary_setup_history.PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			PreparedStatement stmt12 = conn.prepareStatement(sql12);
+			stmt12.executeUpdate();
+			
+			String sql13 = "DELETE from sourcelead.associate_salary_payhead_ind where sourcelead.associate_salary_payhead_ind.id > 0 and  sourcelead.associate_salary_payhead_ind.PAYROLL_PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			PreparedStatement stmt13 = conn.prepareStatement(sql13);
+			stmt13.executeUpdate();
+			
+			String sql14 = "DELETE from sourcelead.associate_payroll_payhead_history where sourcelead.associate_payroll_payhead_history.id > 0 and  sourcelead.associate_payroll_payhead_history.PAYROLL_PAYHEAD IN (SELECT sourcelead.payroll_payhead.id  FROM sourcelead.payroll_payhead where ORGLOCATION_ID != 1)";
+			PreparedStatement stmt14 = conn.prepareStatement(sql14);
+			stmt14.executeUpdate();
+			
+			String sql15 = "DELETE from sourcelead.payroll_payhead where ORGLOCATION_ID != 1";
+			PreparedStatement stmt15 = conn.prepareStatement(sql15);
+			stmt15.executeUpdate();
+			
+			
+			
 				 String sql = "SELECT * FROM sourcelead.ORG_LOCATIONS";
 				 stmt = conn.prepareStatement(sql);
 				 ResultSet rs = stmt.executeQuery();
