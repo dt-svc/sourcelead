@@ -34,9 +34,6 @@
 				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				<li><a href='${appPath}/associateJoineReports'>Associate Joine Report</a></li>
-				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
@@ -249,6 +246,9 @@
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>
+					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>  
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -520,7 +520,10 @@
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
-					</sec:authorize>               
+					</sec:authorize>  
+					<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>             
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

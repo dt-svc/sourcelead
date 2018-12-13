@@ -672,9 +672,9 @@ public class UserServiceImpl implements UserService {
 			 * @author Laxman
 			 * Update the leaveTypes
 			 */
-//			if(associateBalance == true) {
+			if(associateBalance == true) {
 			     associateBalanceLeaveService.addAssociateLeaveType(user1,orgLocations.getId(),employee,userRole);
-//			}
+			}
 			
 			
 			/**
@@ -2394,7 +2394,7 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
 		
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, locations, notificationScenario, new HashMap<String, String>());
 	}
 
 	@Override

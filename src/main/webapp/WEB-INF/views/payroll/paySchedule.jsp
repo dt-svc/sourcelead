@@ -23,7 +23,7 @@ $(document).ready(function(){
         <h2>Pay Schedule</h2>
       </div>
         <div class="success_pop" id="selector2" style="display: none;">
-          <i class="fa fa-check-circle"></i><span id="messageFadeDIV "></span>
+          <i class="fa fa-check-circle"></i><span id="msgFadeDiv"></span>
         </div>
         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
           <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
@@ -96,17 +96,18 @@ $(document).ready(function(){
 			  <div class="clearfix"></div>
             </div>
 			  
-			  <div class="form-group clearfix mt">
-				<label class="col-md-4">Pay Date</label>
-              <div class="col-md-8">
-                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="Pay Check Date">
+			  <div class="form-group clearfix">
+				<label class="col-md-4">Run Payroll</label> 
+              <div class="col-md-8" id=runPayrollDateDiv>
+                <input class="form-control calendar" placeholder="Date" type="text" id="runPayrollDate" name="runPayDate" data-validation="required" field-name="Run Payroll Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
-			  <div class="form-group clearfix">
-				<label class="col-md-4">Run Payroll</label> 
-              <div class="col-md-8">
-                <input class="form-control calendar" placeholder="Date" type="text" id="runPayrollDate" name="runPayDate" data-validation="required" field-name="Run Payroll Date">
+            
+            <div class="form-group clearfix mt">
+				<label class="col-md-4">Pay Date</label>
+              <div class="col-md-8" id=payCheckDateDiv>
+                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="Pay Check Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
@@ -171,7 +172,7 @@ function savePayrollSchedule(){
 		                	    location.replace(sourceleadUrl+ "/payrollScheduleList"); 
 			        		    $("#selector2").removeAttr("style");
 				     			 $("#selector2").css({ display: "block" });
-				     			 $("#messageFadeDIV ").html("Added Successfully");
+				     			 $("#msgFadeDiv").html("Added Successfully");
 				     			msgFadein();
 		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
@@ -211,6 +212,7 @@ $('#payCheckDate').datepicker({
     			dt.setDate(dt.getDate()-1);
     			$("#runPayrollDate").datepicker("option", "maxDate", dt);
 // 			removeStartValid();
+			removepPayCheckDate();
 			}
 });
 
@@ -224,6 +226,7 @@ $('#runPayrollDate').datepicker({
 			dt.setDate(dt.getDate()+1);
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 // 			removeEndValid();
+			removeRunPayrollDate();
 	}
 });
 
@@ -244,6 +247,7 @@ $('#payPeriodStartDate').datepicker({
 			$("#payPeriodEndDate").html(dt);
 			$("#endDateDIV").show();
 			$("#payCheckDate").datepicker("option", "minDate", dt);
+			removePayPeriodStartDate();
 	}
     //minDate: 0  this line for to restrict selection of previous dates  Bi-Weekly
 });
@@ -287,6 +291,19 @@ function weekOnChange() {
 	
 	checkDuplicatePaySchedule(frequency);
 }	
+</script>
+<script>
+function removePayPeriodStartDate(){
+	$('#payperiodDiv1').find('p.jquery_form_error_message').remove();
+}
+
+function removeRunPayrollDate(){
+	$('#runPayrollDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removepPayCheckDate(){
+	$('#payCheckDateDiv').find('p.jquery_form_error_message').remove();
+}
 </script>
 
 

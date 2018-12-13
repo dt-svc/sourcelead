@@ -20,7 +20,7 @@
 	      
 	      	<div class="select-fild col-md-2 mt10">
                     <select id="araginglistSel">
-                        <option value="associateJoined" >Associate Joine Reports</option>
+                        <option value="associateJoined" >Associate Joined Reports</option>
                         <option value="associateTerminated" sel>Associate Terminated Report</option>
                     </select>
                 </div>

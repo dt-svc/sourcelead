@@ -2210,7 +2210,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	  				
 	  			 }
 	   			else{
-	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   				if(jsonObj.has("value") && StringUtils.isNotBlank(jsonObj.getString("value"))) {
+	   					jsonObj.put("value", jsonObj.getString("value"));
+	   				}
 	   			}
    			}
    			jsonArray.put(jsonObj);
@@ -5683,7 +5685,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 				payTerm=payTerm.replaceAll("\\D", "");
 				int result = Integer.parseInt(payTerm);
-				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
 				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
