@@ -344,8 +344,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			java.sql.Date startDate = new java.sql.Date(freqStartDate.getTime());
 			java.sql.Date endDate = new java.sql.Date(freqEndDate.getTime());
 			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT ")
-			.append("sal.CANDIDATE_ID as candidateId,")
+			sb.append("SELECT distinct ")
+			.append(" sal.CANDIDATE_ID as candidateId,")
 			.append("sal.PAY_FREQUENCY as payFrequency,")
 			.append("can.FIRST_NAME as firstName,")
 			.append("can.LAST_NAME as lastName,")
@@ -356,7 +356,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			.append(" where usr.ID = role.USER_ID")
 			.append(" AND  can.CONSULTANT_USER_ID = usr.ID")
 			.append(" AND emp.USER_ID = can.CONSULTANT_USER_ID")
-			.append(" AND sal.CANDIDATE_ID = can.ID")
+			.append(" AND sal.CANDIDATE_ID = can.ID")  //
+			.append(" AND emp.ORG_LOCATIONS_ID = can.ORG_LOCATION_ID")
 			.append(" AND can.ID =:candidateId AND sal.ORG_LOCATION_ID = :locationId ");
 			//.append(" AND role.TERMINATE_DATE >= :startDate AND role.TERMINATE_DATE <= :endDate");// OR (role.TERMINATE_DATE IS NULL OR role.TERMINATE_DATE IS NULL))");
 			Query queryObj = session.createSQLQuery(sb.toString());
