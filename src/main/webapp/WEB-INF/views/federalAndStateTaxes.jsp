@@ -90,10 +90,10 @@
 					              
 					              <c:if test="${empty SourceLeadWeb_orglocationDepositTaxes.fillerType}">
 					                <label class="col-md-5 noPad">
-					                <input name="fillerType" type="radio" value="940"  >
+					                <input name="fillerType" type="radio" value="940" >
 					                <strong class="paddingLeft">940</strong></label>
 					                <label class="col-md-5 noPad">
-					                <input name="fillerType" type="radio" value="941" checked >
+					                <input name="fillerType" type="radio" value="941" >
 					                <strong class="paddingLeft">941</strong></label>
 					              </c:if>
 					              
