@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -4084,7 +4085,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
 					 		+ " urole.TERMINATE_DATE as terminateDate, urole.TERMINATE_REASON as terminatedReason,emp.HIRE_DATE as hireDate,  urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4149,6 +4150,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
 							  		.addScalar("terminatedReason", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("terminateDate", StandardBasicTypes.DATE)
 					  				.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
@@ -4191,7 +4193,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						List<Long> countlist = null;
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4255,6 +4257,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("rate", StandardBasicTypes.STRING)
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
 		                associateJoineReportDTOList = queryString.list();
@@ -4301,6 +4304,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	
 	@Override
 	@Transactional
+	public 	List<RequirementSubmission> getCandidateInvoiceJobClosureDashboard(OrgLocations orgLocations,Long orgRelationId,Long summissionId,Long candidateId)
+ {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementSubmission> finalSubmission = null;
+		String query = "from RequirementSubmission rs left join fetch rs.candidate can left join fetch rs.requirement req where rs.orgLocations.id =:locationId and rs.candidate.id =:candidateId and rs.id =:summissionId and req.isClientJob = 'Y' and req.clientId.id =:orgRelationId";
+		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameter("candidateId", candidateId).setParameter("summissionId", summissionId);
+		finalSubmission =finalQuery.list();
+		return finalSubmission;
+	}
+	
+	
+	@Override
+	@Transactional
 	public List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations, User user,
 			Long orgRelationId, List<Long> selectedAssociates) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -4336,6 +4352,149 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		Query finalQuery = session.createQuery(query).setParameter("locationId", orgLocations.getId()).setParameter("orgRelationId", orgRelationId).setParameterList("selectedAssociates", selectedAssociates);
 		finalList =finalQuery.list();
 		return finalList;
+	}
+	
+	@Override
+	@Transactional
+	public long getRequirementClientCountByRequirementIdAndUserIdAndDates(BigInteger requirementID, BigInteger userId, Date[] searchDates)
+	{
+		 Integer count= 0;
+		try {
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+			String betweenDateQuery = "";
+			String resultQuery = "";
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(*) from Requirement requirement where requirement.id = :requirementID and (requirement.managerUserId = :userId OR requirement.primaryRecruiterUserId = :userId)";
+			
+			if (fromDate != null && toDate != null) {
+				betweenDateQuery = " and  date(requirement.createdDate) BETWEEN :fromDate AND :toDate ";
+			}
+			resultQuery = query.concat(betweenDateQuery);
+		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("requirementID", requirementID.intValue()).setLong("userId", userId.intValue())
+		    		 .setDate("fromDate", fromDate)
+		    		 .setDate("toDate", toDate).list();
+			
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getRequirementCountByUserIdAndDates(BigInteger userId, Date[] searchDates)
+	{
+		 Integer count= 0;
+		try {
+			java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+			java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+			java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+			java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+			String betweenDateQuery = "";
+			String resultQuery = "";
+			Session session = this.sessionFactory.getCurrentSession();
+
+			String query = "select count(*) from RequirementAssignTo reqAssign where reqAssign.assignUserId = :userId";
+			
+			if (fromDate != null && toDate != null) {
+				betweenDateQuery = " and date(reqAssign.createdDate) BETWEEN :fromDate AND :toDate ";
+			}
+			resultQuery = query.concat(betweenDateQuery);
+		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("userId", userId.intValue())
+		    		 .setDate("fromDate", fromDate)
+		    		 .setDate("toDate", toDate).list();
+			
+			 
+			 if(appliedCount != null && !appliedCount.isEmpty()){
+					count = appliedCount.get(0).intValue();
+			 }
+			return count;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getOfferCountByUserIdAndDates(String userCode, Date[] searchDates)
+	{
+		 Integer count= 0;
+			try {
+				java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+				java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+				java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+				java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+				String betweenDateQuery = "";
+				String resultQuery = "";
+				Session session = this.sessionFactory.getCurrentSession();
+
+				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'OFFERMADE' or reqSub.submissionStatus='OFFERACCEPTED' or reqSub.previousSubmissionStatus='OFFERMADE' or reqSub.previousSubmissionStatus='OFFERACCEPTED') and reqSub.createdBy = :userCode ";
+				
+				if (fromDate != null && toDate != null) {
+					betweenDateQuery = " and date(reqSub.updatedDate) BETWEEN :fromDate AND :toDate ";
+				}
+				resultQuery = query.concat(betweenDateQuery);
+			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)
+			    		 .setDate("fromDate", fromDate)
+			    		 .setDate("toDate", toDate).list();
+				
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return count;
+	}
+	
+	@Override
+	@Transactional
+	public long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates)
+	{
+		 Integer count= 0;
+			try {
+				java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+				java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+				java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+				java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+				String betweenDateQuery = "";
+				String resultQuery = "";
+				Session session = this.sessionFactory.getCurrentSession();
+				
+				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'JOINED' or  reqSub.previousSubmissionStatus='JOINED' ) and reqSub.createdBy = :userCode ";
+				
+				if (fromDate != null && toDate != null) {
+					betweenDateQuery = " and date(reqSub.updatedDate) BETWEEN :fromDate AND :toDate ";
+				}
+				resultQuery = query.concat(betweenDateQuery);
+			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)
+			    		 .setDate("fromDate", fromDate)
+			    		 .setDate("toDate", toDate).list();
+				
+				 
+				 if(appliedCount != null && !appliedCount.isEmpty()){
+						count = appliedCount.get(0).intValue();
+				 }
+				return count;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return count;
 	}
 
 }

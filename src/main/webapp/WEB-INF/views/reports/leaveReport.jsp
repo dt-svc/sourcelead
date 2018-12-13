@@ -29,31 +29,15 @@ $( document ).ready(function() {
 </a> &raquo; Leave Report</div>
  <div id="popUp"></div>
     </section>
-      <div class="positionRelative reportHead clearfix" style="display:none" id="hearderId">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="searchReportCollapse();" oncontextmenu="return false"></a></span>
-         
-      <ul class="pull-right list-unstyled list-inline">
-        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" oncontextmenu="return false"></a>
-					<div class="newActPop">
-						<span>
-							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
-						</span>
-					</div>
-				</li>
-		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="leaveReport();"></span></li>
-        </ul>
-      </div>
-    <form id="leaveReportForm" name="leaveReportForm">
-    <div class="contentareaInner-styles clearfix">
-    <h4 class="panel-title">
-          <a href="javascript:void(0)" id="showReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a>
+   <h4 class="panel-title clearfix fontSmall mb10" id="showReport" style="display:none;">
+          <a href="javascript:void(0)"><i class="fa fa-angle-double-left paddingRight"></i>Back to Filters</a>
 <!--           <a href="javascript:void(0)" onclick="searchReportCollapse();" id="searchReport" style="display:none;"><i class="fa fa-angle-double-left paddingRight"></i>Search Report</a> -->
     </h4>
-    <div id="reportCollapse" class="rundiv mt">
+    
+
+    <form id="leaveReportForm" name="leaveReportForm">
+    <div class="contentareaInner-styles clearfix">
+    <div id="reportCollapse" class="rundiv">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
             <div class="col-md-5">
@@ -120,9 +104,9 @@ $( document ).ready(function() {
                     <div class="col-md-5">
               <label class="clearfix">Status</label>
               <div class="clearfix">
-                <select class="form-control chosen-select" id="status" name="status" data-placeholder="Status" multiple field-name="Status" >
+                <select class="form-control chosen-select" id="status" name="status" data-placeholder="Select Status" multiple >
 	                 <option value="PENDING">PENDING</option>
-	                 <option value="APPROVED" selected>APPROVED</option>
+	                 <option value="APPROVED">APPROVED</option>
 	                 <option value="REJECTED">REJECTED</option>
 	                 <option value="CANCELLED">CANCELLED</option>
                 </select>
@@ -137,6 +121,7 @@ $( document ).ready(function() {
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" id="runDiv" class="btn btn-success btnSuccess" type="button" onclick="leaveReport();">
+            <input value="Reset" class="btn btn-warning ml10" type="button" onclick="resetReportCollapse();">
             <input value="cancel" class="btn btn-default ml10" type="button" onclick="resetValues();">
           </div>
         </div>
@@ -144,7 +129,25 @@ $( document ).ready(function() {
       </div>
       </div>     
 </form>		
-      <!-- Content Area Ends--> 
+      <!-- Content Area Ends-->
+     <div class="positionRelative reportHead clearfix" style="display:none" id="hearderId">
+      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="searchReportCollapse();" oncontextmenu="return false"></a></span>
+         
+      <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();" oncontextmenu="return false"></a>
+					<div class="newActPop">
+						<span>
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='leaveReportDataTableSearch'/><span class="repSearchIcon" onClick="leaveReport();"></span></li>
+        </ul>
+      </div> 
         <div class="candidate_wrap_table datatable_filter">
 	           <div id="leaveReportsList"></div>
           </div>
@@ -266,7 +269,6 @@ function exportUserData(){
 <script>
 function leaveReport(){
 // 	var formData = getFormData("leaveReportForm");
-document.getElementById("showReport").style.display="none";
 //document.getElementById("hearderId").style.display="block";
 var reportRolesId="";
 var employmentType="";
@@ -299,19 +301,21 @@ var status="";
 	searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl+"/leaveReportsList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&startDate="+fromDate+"&endDate="+toDate+"&departmentIds="+departmentIds+"&reportRolesId="+reportRolesId+"&employmentType="+employmentType+"&associateListId="+associateListId+"&leaveTypeIds="+leaveTypeIds+"&status="+status;
 //     var url = sourceleadUrl+"/leaveReportsList?searchValue="+searchValue;
-    if ($('#leaveReportForm').validate(false, validationSettings)){	
+    if ($('#leaveReportForm').validate(false, validationSettings)){
+    	document.getElementById("showReport").style.display="block";
     	$("#hearderId").show();
     	prepareAllLeaveReportList(url);
     }else{ 
 		return false;
  } 
 	reportCollapse();
-	$("#showReport, #reportCollapse").hide();
+	//$("#showReport, #reportCollapse").hide();
+	$("#reportCollapse, #leaveReportForm").hide();
 	$("#searchReport, #leaveReportsList").show();
 }
 function prepareAllLeaveReportList(url){
 	var result = "";
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a mt">';
+		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
 		result = result + '<table id="leaveReportsListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -765,7 +769,7 @@ function reportCollapse() {
 	$("#reportCollapse").slideToggle(300);
 	//$("#leaveReportsList").slideUp();
 }
-function searchReportCollapse() {
+function resetReportCollapse() {
 	$("#hearderId").hide();
 	document.getElementById("showReport").style.display="none";
 // 	document.getElementById("hearderId").style.display="none";
@@ -780,8 +784,8 @@ function searchReportCollapse() {
 	$("#designationType").val('');
 	$("#associateList").val('');
 	$("#leaveTypeList").val('');
-	$("#status").val('');
-	$('#status').trigger("chosen:updated");
+ 	$("#status").val('');
+ 	$('#status').trigger("chosen:updated");
 	$('#departmentList').trigger("chosen:updated");
 	$('#reportRoles').trigger("chosen:updated");
 	$('#designationType').trigger("chosen:updated");
@@ -792,6 +796,19 @@ function searchReportCollapse() {
 	$("#reportCollapse").show();
 	
 }
+function searchReportCollapse() {
+	$("#leaveReportDataTableSearch").val('');
+	leaveReport();
+}
+
+</script>
+<script>
+$("#showReport").click(function() {
+	document.getElementById("hearderId").style.display = "block";
+	document.getElementById("leaveReportForm").style.display = "block";
+	$("#showReport").hide();
+	$("#reportCollapse").show();
+})
 
 </script>
 
