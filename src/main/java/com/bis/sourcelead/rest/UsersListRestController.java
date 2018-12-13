@@ -2302,7 +2302,7 @@ public class UsersListRestController {
 			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
 			probationHistory.setFromStatus(previousStatus);
 			probationHistory.setToStatus(addUserDTO.getProbationStatus());
-			if(addUserDTO.getConfirmationDate() != null)
+			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate()))
 				probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
 			else
 				probationHistory.setActualConfirmationDate(null);

@@ -569,23 +569,22 @@ public class PayrollReportPdfUtil {
 	    	PdfWriter.getInstance(document, new FileOutputStream(file));
 	    	document.open();
 	    	
-	    	PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
 	    	PdfHeaderDTO headerDTO = new PdfHeaderDTO();
-	    	
-	    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
-	    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
-	    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
-	    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
-	    	headerDTO.setPayrollType(payrollReportDTO.getType());
-	    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
-	    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
-	    	headerDTO.setReportType("CONTRIBUTION REPORTS");
-	    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
-	    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
+	    	if(deductionHisList.size() > 0)
+	    	{
+		    	PayrollReportDTO payrollReportDTO = deductionHisList.get(0);
+		    	headerDTO.setCheckDate(payrollReportDTO.getCheckDate());
+		    	headerDTO.setGroupName(payrollReportDTO.getGroupName());
+		    	headerDTO.setOrgName(orgLocation.getOrgLocationName());
+		    	headerDTO.setPayPeriod(payrollReportDTO.getGroupFrequency());
+		    	headerDTO.setPayrollType(payrollReportDTO.getType());
+		    	headerDTO.setPeriodBeginDate(payrollReportDTO.getFreqStartDate());
+		    	headerDTO.setPeriodEndDate(payrollReportDTO.getFreqEndDate());
+		    	headerDTO.setReportType("CONTRIBUTION REPORTS");
+		    	headerDTO.setRunDate(payrollReportDTO.getRunDate());
+		    	headerDTO.setRunNumber(Integer.parseInt(payrollReportDTO.getRunNo()));
+	    	}
 	    	createHeaderTable(document, headerDTO, orgLocation);
-	    	
-
-	    	
 	    	
 	    	
 	    	PdfPTable empTable = new PdfPTable(9);

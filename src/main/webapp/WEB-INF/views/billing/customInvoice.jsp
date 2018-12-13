@@ -28,14 +28,36 @@
 						<label class="clearfix text-muted">Font Family</label>
 						<div class="clearfix">
 							<select id="textFontFamily" class="form-control input-sm" onchange="applyTextSettings(false)" data-type="font_family" data-prefix="font-family" data-suffix="">
-								<option value="Arial">Arial</option>
+								<!-- <option value="Arial">Arial</option>
 								<option value="SansSerif">Sans Serif</option>
 								<option value="Courier New">Courier</option>
 								<option value="Georgia">Georgia</option>
 								<option value="Impact">Impact</option>
 								<option value="Magneto">Magneto</option>
 								<option value="Times New Roman">Times New Roman</option>
-								<option value="Verdana">Verdana</option>
+								<option value="Verdana">Verdana</option> -->
+								
+								<!-- QA Fonts -->
+								<!-- <option value="DejaVu Sans">DejaVu Sans</option>
+								<option value="DejaVu Sans Condensed">DejaVu Sans Condensed</option>
+								<option value="DejaVu Sans Light">DejaVu Sans Light</option>
+								<option value="DejaVu Sans Mono">DejaVu Sans Mono</option>
+								<option value="DejaVu Serif">DejaVu Serif</option>
+								<option value="DejaVu Serif Condensed">DejaVu Serif Condensed</option>
+								<option value="SansSerif">SansSerif</option> -->
+								
+								
+								<!-- Production Fonts -->
+								<!-- <option value="Lucida Bright">Lucida Bright</option>
+								<option value="Lucida Sans">Lucida Sans</option>
+								<option value="Lucida Sans Typewriter">Lucida Sans Typewriter</option>
+								<option value="SansSerif">SansSerif</option> -->
+								
+								<c:forEach items="${fonts}" var="font">
+									<option value="${font}" ${font == systemDefaultFont ? "selected" : ""}>${font}</option>
+								</c:forEach>
+								
+								
 							</select>
 						</div>
 					</div>
@@ -360,4 +382,5 @@
 	var activeElement = null;
 	var orgLocationId = "${orgLocationId}";
 	var orgRelationId = "${orgRelationId}";
+	var systemDefaultFont = "${systemDefaultFont}";
 </script>
