@@ -1655,8 +1655,8 @@ public class DashboardRestController {
 //						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
 						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-//						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
+						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
 					}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){

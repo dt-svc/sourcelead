@@ -356,9 +356,7 @@ function getUserList(teamType){
 					} else {
 	                    showError("Operation failed, please try again");
 	                }
-          		},complete: function (data) {
-                	selectAssignUsers();
-                }
+          		}
        		});
   	} 
 </script>
@@ -378,9 +376,9 @@ function getUserAssingedJobCounts(){
 		             	  		             	  
 		             	  $("#"+userId+"requirementAssignedCount").empty();
 		             	  $("#"+userId+"requirementAssignedCount").html(data.assignedJobsCount);
-		             	  
-		             	 
-		            }
+		            },complete: function (data) {
+		            	selectAssignUsers();
+	                }
 			    });
 		 }
 			
