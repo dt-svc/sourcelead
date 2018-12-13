@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -247,11 +248,19 @@ public interface RequirementSubmissionDao {
 	
 	List<RequirementSubmission> getCandidateForInvoiceJobClosure(OrgLocations orgLocations,User user,Long orgRelationId);
 	
+	List<RequirementSubmission> getCandidateInvoiceJobClosureDashboard(OrgLocations orgLocations,Long orgRelationId,Long summissionId,Long candidateId);
+	
 	List<RequirementSubmission> getCandidateForInvoiceJobClosureEdit(OrgLocations orgLocations,User user,Long orgRelationId,List<Long> selectedAssociates);
 
     List<RequirementSubmission> getCandidateForBillJobClosure(OrgLocations orgLocations, User user,Long orgRelationId);
     
     List<RequirementSubmission> getCandidateForBillJobClosureEdit(OrgLocations orgLocations, User user,Long orgRelationId, List<Long> selectedAssociates);
 
+    long getRequirementClientCountByRequirementIdAndUserIdAndDates(BigInteger requirementID, BigInteger userId, Date[] searchDates);
 
+	long getRequirementCountByUserIdAndDates(BigInteger userId, Date[] searchDates);
+
+	long getOfferCountByUserIdAndDates(String userCode, Date[] searchDates);
+
+	long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates);
 }

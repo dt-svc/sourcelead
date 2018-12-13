@@ -76,9 +76,9 @@ $(document).ready(function(){
           </div>
           </div>
           <div class="form-group">
-              <label class="col-md-4">Notify Before</label>
+              <label class="col-md-4">Notify Before (day's)</label>
 				<div class="col-md-8">
-					<input type="text" data-validation="validate_int validate_Space validate_length length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control">
+					<input type="text" data-validation="required validate_int validate_Space validate_length  length1-2" value="0" id="notifyMember" name="notifyMember" class="form-control" field-name="Notify Before" >
 				</div>
             </div>
           </div>
@@ -99,7 +99,7 @@ $(document).ready(function(){
 			  <div class="form-group clearfix mt">
 				<label class="col-md-4">Pay Date</label>
               <div class="col-md-8">
-                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="payCheckDate">
+                <input class="form-control calendar" placeholder="Date" type="text" id="payCheckDate" name="payCheckDate" data-validation="required" field-name="Pay Check Date">
               </div>
 			  <div class="clearfix"></div>
             </div>
@@ -187,6 +187,10 @@ function savePayrollSchedule(){
     		return false;
     	  } 
 }
+$('body').on('blur', '#add_payroll_schedule_form', function() {
+	$("#add_payroll_schedule_form").showHelpOnFocus();
+	$("#add_payroll_schedule_form").validateOnBlur(false, validationSettings);  
+});
 </script>
   
 

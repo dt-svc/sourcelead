@@ -46,8 +46,8 @@
 					<label for="columnsPickerUnCheckAll" class="checkbox-custom-label">Uncheck All</label>
 				</span> -->
 				<span class="checkbox-new pull-left">
-					<input id="columnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
-					<label for="columnsPickerCheckAll" class="checkbox-custom-label" >Check All</label>
+					<input id="joinedColumnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllJoinedColumns(this);"  type="checkbox">
+					<label for="joinedColumnsPickerCheckAll" class="checkbox-custom-label" >Check All</label>
 				</span>
 			</div>
 		</div>
@@ -57,55 +57,55 @@
 			<li>
 				<span class="checkbox-new clearfix">
 					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="0" type="checkbox" checked="" data-name="joinedempId">
-					<label for="a" class="checkbox-custom-label" >Employee ID</label>
+					<label for="a" class="checkbox-custom-label" >Associate ID</label>
 				</span>
 			</li>
 			
 						<li>
 				<span class="checkbox-new clearfix">
-					<input id="b" class="checkbox-custom toggle-vis" name="paidComponent" data-column="1" type="checkbox" checked="" data-name="empName">
-					<label for="b" class="checkbox-custom-label" >Employee Name</label>
+					<input id="b" class="checkbox-custom toggle-vis" name="paidComponent" data-column="1" type="checkbox" checked="" data-name="joinedEmpName">
+					<label for="b" class="checkbox-custom-label" >Associate Name</label>
 				</span>
 			</li>
 			
 									<li>
 				<span class="checkbox-new clearfix">
-					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" data-name="gender">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" data-name="joinedEmpGender">
 					<label for="c" class="checkbox-custom-label" >Gender</label>
 				</span>
 			</li>
 			
 												<li>
 				<span class="checkbox-new clearfix">
-					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="" data-name="empType">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="3" type="checkbox" checked="" data-name="joinedEmpType">
 					<label for="d" class="checkbox-custom-label" >Emp Type</label>
 				</span>
 			</li>
 			
 															<li>
 				<span class="checkbox-new clearfix">
-					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox"  data-name="deptName">
+					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox"  data-name="joinedDeptName">
 					<label for="e" class="checkbox-custom-label" >Department</label>
 				</span>
 			</li>
 			
 																		<li>
 				<span class="checkbox-new clearfix">
-					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox"  data-name="userRole">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox"  data-name="joinedUserRole">
 					<label for="f" class="checkbox-custom-label" >Role</label>
 				</span>
 			</li>
 			
 																					<li>
 				<span class="checkbox-new clearfix">
-					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" data-name="rate">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" data-name="joinedRate">
 					<label for="g" class="checkbox-custom-label" >Rate</label>
 				</span>
 			</li>
 			
 																								<li>
 				<span class="checkbox-new clearfix">
-					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="" data-name="fromDate">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="" data-name="joinedFromDate">
 					<label for="h" class="checkbox-custom-label" >Date Of Join</label>
 				</span>
 			</li>
@@ -113,22 +113,28 @@
 						
 																								<li>
 				<span class="checkbox-new clearfix">
-					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" checked="" data-name="reportingManager">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" checked="" data-name="joinedReportingManager">
 					<label for="i" class="checkbox-custom-label">Manager</label>
 										</span>
 			</li>
 									
 																								<li>
 				<span class="checkbox-new clearfix">
-					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="shift">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="joinedShift">
 					<label for="j" class="checkbox-custom-label">Shift</label>
+										</span>
+			</li>
+																											<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox" checked="" data-name="probationStatus">
+					<label for="k" class="checkbox-custom-label">Probation Status</label>
 										</span>
 			</li>
 		</ul>
 		</div>
 	</div>
 	<div class="colPopFot">
-		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="joinedColumHide();">Apply</a>
 		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
 	</div>
 </div>			
@@ -238,6 +244,12 @@
 				</span>
 			</li>
 
+				<span class="checkbox-new clearfix">
+					<input id="w" class="checkbox-custom toggle-vis" name="paidComponent" data-column="12" type="checkbox" checked="" data-name="probationStatus">
+					<label for="w" class="checkbox-custom-label">Probation Status</label>
+										</span>
+			</li>
+			
 			</ul>
 		</div>
 	</div>
@@ -483,6 +495,7 @@ function associateTerminatedReportList(url){
 		result = result + '<th>Shift</th>';
 		result = result + '<th>Department</th>';
 		result = result + '<th>Rate</th>';
+		result = result + '<th>Probation Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
 		result = result + '</table>';
@@ -521,6 +534,7 @@ function daywiseLeaveReportsListPagination(url){
             { "data": "shift"},
             { "data": "Department"},
             { "data": "Rate"},
+            { "data": "probationStatus"},
             
         ],
         "columnDefs": [ {
@@ -698,7 +712,21 @@ function daywiseLeaveReportsListPagination(url){
 	    	  		   }
 	    	  		return result;
             }
-          }],
+          }	,
+          {
+              "targets": colIndex++,
+              "data": "probationStatus",
+              "visible": $("input[data-name='probationStatus']").is(":checked"),
+              "render": function ( data, type, opt, meta ) {
+              		var result = "";
+              		if(opt.probationStatus !=null && opt.probationStatus !='' && opt.probationStatus !='undefined'){
+    							result = result + ' <td><div><span>'+opt.probationStatus+'</span></div></td>';
+    						}else{
+    							result = result + ' <td><div><span>---</span></div></td>';
+    						}
+    	              return result;
+              }
+        }],
 		    "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -800,6 +828,8 @@ function prepareOfferList(url){
 		result = result + '<th>Date Of Join</th>';
 		result = result + '<th>Manager</th>';
 		result = result + '<th>Shift</th>';
+		result = result + '<th>Probation Status</th>';
+		
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -827,15 +857,16 @@ function offerpagination(url){
         }),
         "columns": [
             { "data": "joinedempId" },
-            { "data": "empName"},
-            { "data": "gender"},
-            { "data": "empType"},
-            { "data": "Department"},
-            { "data": "Role"},
-            { "data": "Rate"},
-            { "data": "DateOfJoin"},
-            { "data": "manager"},
-            { "data": "shift"},
+            { "data": "joinedEmpName"},
+            { "data": "joinedEmpGender"},
+            { "data": "joinedEmpType"},
+            { "data": "joinedDeptName"},
+            { "data": "joinedUserRole"},
+            { "data": "joinedRate"},
+            { "data": "joinedFromDate"},
+            { "data": "joinedReportingManager"},
+            { "data": "joinedShift"},
+            { "data": "probationStatus"},
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -854,8 +885,8 @@ function offerpagination(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "empName",
-              "visible": $("input[data-name='empName']").is(":checked"),
+              "data": "joinedEmpName",
+              "visible": $("input[data-name='joinedEmpName']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.empName !=null && opt.empName !='' && opt.empName !='undefined'){
@@ -871,8 +902,8 @@ function offerpagination(url){
 	          },
 	          {
 	              "targets": colIndex++,
-	              "data": "gender",
-	              "visible": $("input[data-name='gender']").is(":checked"),
+	              "data": "joinedEmpGender",
+	              "visible": $("input[data-name='joinedEmpGender']").is(":checked"),
 	              "render": function ( data, type, opt, meta ) {
 	              		var result = "";
 	              		if(opt.gender !=null && opt.gender !='' && opt.gender !='undefined'){
@@ -886,8 +917,8 @@ function offerpagination(url){
 	      
 	      {
 	    	  "targets": colIndex++,
-              "data": "empType",
-              "visible": $("input[data-name='empType']").is(":checked"),
+              "data": "joinedEmpType",
+              "visible": $("input[data-name='joinedEmpType']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.empType !=null && opt.empType !='' && opt.empType !='undefined'){
@@ -901,8 +932,8 @@ function offerpagination(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "Department",
-            "visible": $("input[data-name='deptName']").is(":checked"),
+            "data": "joinedDeptName",
+            "visible": $("input[data-name='joinedDeptName']").is(":checked"),
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	
@@ -915,8 +946,8 @@ function offerpagination(url){
             }
           } ,{
               "targets": colIndex++,
-              "data": "Role",
-              "visible": $("input[data-name='userRole']").is(":checked"),
+              "data": "joinedUserRole",
+              "visible": $("input[data-name='joinedUserRole']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 	    	  		   if(opt.userRole != null && opt.userRole !='' && opt.userRole != 'undefined'){
@@ -929,8 +960,8 @@ function offerpagination(url){
             },
             {
                 "targets": colIndex++,
-                "data": "Rate",
-                "visible": $("input[data-name='rate']").is(":checked"),
+                "data": "joinedRate",
+                "visible": $("input[data-name='joinedRate']").is(":checked"),
                 "render": function ( data, type, opt, meta ) {
               	  var result = "";
   	    	  		   if(opt.rate != null && opt.rate !='' && opt.rate != 'undefined'){
@@ -943,8 +974,8 @@ function offerpagination(url){
               },
           {
                 "targets": colIndex++,
-                "data": "DateOfJoin",
-                "visible": $("input[data-name='fromDate']").is(":checked"),
+                "data": "joinedFromDate",
+                "visible": $("input[data-name='joinedFromDate']").is(":checked"),
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.fromDate !=null && opt.fromDate !='' && opt.fromDate !='undefined'){
@@ -957,8 +988,8 @@ function offerpagination(url){
           },
           {
               "targets": colIndex++,
-              "data": "manager",
-              "visible": $("input[data-name='reportingManager']").is(":checked"),
+              "data": "joinedReportingManager",
+              "visible": $("input[data-name='joinedReportingManager']").is(":checked"),
               "render": function ( data, type, opt, meta ) {
               		var result = "";
               		if(opt.reportingManager !=null && opt.reportingManager !='' && opt.reportingManager !='undefined'){
@@ -971,8 +1002,8 @@ function offerpagination(url){
         },
         {
             "targets": colIndex++,
-            "data": "shift",
-            "visible": $("input[data-name='shift']").is(":checked"),
+            "data": "joinedShift",
+            "visible": $("input[data-name='joinedShift']").is(":checked"),
             "render": function ( data, type, opt, meta ) {
             		var result = "";
             		if(opt.shiftName !=null && opt.shiftName !='' && opt.shiftName !='undefined'){
@@ -982,7 +1013,21 @@ function offerpagination(url){
 						}
 	              return result;
             }
-      }],
+      },
+      {
+          "targets": colIndex++,
+          "data": "ProbationStatus",
+          "visible": $("input[data-name='probationStatus']").is(":checked"),
+          "render": function ( data, type, opt, meta ) {
+          		var result = "";
+          		if(opt.probationStatus !=null && opt.probationStatus !='' && opt.probationStatus !='undefined'){
+							result = result + ' <td><div><span>'+opt.probationStatus+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+          }
+    }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 // 	    	"aaSorting": [[3,'desc']],
@@ -1253,7 +1298,7 @@ $(function() {
 	 	e.stopPropagation();
 	});		
 		
-	function columHide(){
+	function joinedColumHide(){
 		hideColumns=[]; // reset the array object.
 		$("#joinedCustomColumns input").each(function() {
 			joinedtable.column($(this).attr('data-column'))
@@ -1272,6 +1317,9 @@ $(function() {
 			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 			  }
 	    });
+		$(".colPop").hide();
+	}
+	function columHide(){
 		$("#terminatedCustomColumns input").each(function() {
 			columClose();// 
 		   var chkdVal= $(this).prop('checked');
@@ -1288,20 +1336,35 @@ $(function() {
 		$(".colPop").hide();
 	   
 	}
+	function checkAllJoinedColumns(obj){
+		var id = obj.id;
+// 		var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+		var chkdVal = $(obj).is(":checked");
+		if(chkdVal == true){
+		if(id =='joinedColumnsPickerCheckAll'){
+			$('#joinedCustomColumns input:checkbox').prop('checked',true);
+		}
+		}
+		else{
+			if(id =='joinedColumnsPickerCheckAll'){
+				$('#joinedCustomColumns input:checkbox').prop('checked',false);
+			}
+		} 
+	}
 	function checkAllColumns(obj){
 		var id = obj.id;
-		var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+		//var chkdVal= $("#terminatedCustomColumns").find("input[class='toggle-vis']").prop('checked');
+		var chkdVal = $(obj).is(":checked");
 		if(chkdVal == true){
 		if(id =='columnsPickerCheckAll'){
-			$('.toggle-vis:input:checkbox').prop('checked',true);
+			$('#terminatedCustomColumns input:checkbox').prop('checked',true);
 		}
 		}
 		else{
 			if(id =='columnsPickerCheckAll'){
-				$('.toggle-vis:input:checkbox').prop('checked',false);
+				$('#terminatedCustomColumns input:checkbox').prop('checked',false);
 			}
 		} 
-			
 	}
 	</script>
 	<script>
@@ -1380,6 +1443,7 @@ $(function() {
 	        	    			var totalJoinedCount = data[0].totalJoinedCount;
 	        	    			var totalTerminatedCount = data[0].totalTerminatedCount;
 	        	    			
+
 	        	    			
 	        	    			$("#partTimeCount").text(partTimeCount);
 	        	    			$("#ptMale").text(ptMaleCount);

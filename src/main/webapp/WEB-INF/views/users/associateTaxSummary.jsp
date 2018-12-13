@@ -109,7 +109,7 @@ function associateTaxSummary(userId){
         		result = result + '  <span>---</span>';
        		result = result + '       <div class="clearfix"></div>';
        		result = result + '     </div>';
-       		result = result + '     <div class="project_details_cta"> <strong>Mediacare:</strong>';
+       		result = result + '     <div class="project_details_cta"> <strong>Medicare:</strong>';
        		if(json.medicareExempt != null && json.medicareExempt != '' && json.medicareExempt != 'undefined')
        			result = result + '  <span title="'+json.medicareExempt+'" >'+json.medicareExempt+'</span>';
         	else
@@ -249,7 +249,7 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousResidenceTaxAllowances != opt.residenceTaxAllowances){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Residence Tax Allowances:</label>';
-								result += '			<span class="col-md-10">'+opt.previousResidenceTaxFilliingStatus+' to '+opt.residenceTaxAllowances+'</span>';
+								result += '			<span class="col-md-10">'+opt.previousResidenceTaxAllowances+' to '+opt.residenceTaxAllowances+'</span>';
 								result += '		</div>  ';
 							}
 						}
@@ -279,7 +279,12 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousFederalExempt != opt.federalExempt){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Federal Exempt:</label>';
-								result += '			<span class="col-md-10">'+opt.previousFederalExempt+' to '+opt.federalExempt+'</span>';
+								if(opt.previousFederalExempt == 'true'){
+									result += '			<span class="col-md-10">Exempt to Non-Exempt</span>';
+								}
+								else{
+									result += '			<span class="col-md-10">Non-Exempt to Exempt</span>';
+								}
 								result += '		</div>  ';
 							}
 						}
@@ -288,8 +293,13 @@ function getAssociateTaxHistory(userId){
 							&& opt.mediacareExempt != null && opt.mediacareExempt != '' && opt.mediacareExempt != 'undefined'){
 							if(opt.previousMediacareExempt != opt.mediacareExempt){
 								result += '		<div class="clearfix">';
-								result += '			<label class="col-md-2 text-muted">Mediacare Exempt:</label>';
-								result += '			<span class="col-md-10">'+opt.previousMediacareExempt+' to '+opt.mediacareExempt+'</span>';
+								result += '			<label class="col-md-2 text-muted">Medicare Exempt:</label>';
+								if(opt.previousMediacareExempt == 'true'){
+									result += '			<span class="col-md-10">Exempt to Non-Exempt</span>';
+								}
+								else{
+									result += '			<span class="col-md-10">Non-Exempt to Exempt</span>';
+								}
 								result += '		</div>  ';
 							}
 						}
@@ -299,7 +309,12 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousSocialSecurityExempt != opt.socialSecurityExempt){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Social Security Exempt:</label>';
-								result += '			<span class="col-md-10">'+opt.previousSocialSecurityExempt+' to '+opt.socialSecurityExempt+'</span>';
+								if(opt.previousSocialSecurityExempt == 'true'){
+									result += '			<span class="col-md-10">Exempt to Non-Exempt</span>';
+								}
+								else{
+									result += '			<span class="col-md-10">Non-Exempt to Exempt</span>';
+								}
 								result += '		</div>  ';
 							}
 						}
@@ -309,7 +324,12 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousFutaExempt != opt.futaExempt){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Futa Exempt:</label>';
-								result += '			<span class="col-md-10">'+opt.previousFutaExempt+' to '+opt.futaExempt+'</span>';
+								if(opt.previousFutaExempt == 'true'){
+									result += '			<span class="col-md-10">Exempt to Non-Exempt</span>';
+								}
+								else{
+									result += '			<span class="col-md-10">Non-Exempt to Exempt</span>';
+								}
 								result += '		</div>  ';
 							}
 						}
@@ -319,7 +339,13 @@ function getAssociateTaxHistory(userId){
 							if(opt.previousSutaExempt != opt.sutaExempt){
 								result += '		<div class="clearfix">';
 								result += '			<label class="col-md-2 text-muted">Suta Exempt:</label>';
-								result += '			<span class="col-md-10">'+opt.previousSutaExempt+' to '+opt.sutaExempt+'</span>';
+								if(opt.previousSutaExempt == 'true'){
+									result += '			<span class="col-md-10">Exempt to Non-Exempt</span>';
+								}
+								else{
+									result += '			<span class="col-md-10">Non-Exempt to Exempt</span>';
+								}
+									
 								result += '		</div>  ';
 							}
 						}
@@ -338,7 +364,7 @@ function getAssociateTaxHistory(userId){
 							&& opt.localTaxState != null && opt.localTaxState != '' && opt.localTaxState != 'undefined'){
 							if(opt.previousLocalTaxState != opt.localTaxState){
 								result += '		<div class="clearfix">';
-								result += '			<label class="col-md-2 text-muted">Local Tax:</label>';
+								result += '			<label class="col-md-2 text-muted">Local Tax State:</label>';
 								result += '			<span class="col-md-10">'+opt.previousLocalTaxState+' to '+opt.localTaxState+'</span>';
 								result += '		</div>  ';
 							}
@@ -358,6 +384,7 @@ function getAssociateTaxHistory(userId){
 		  	 $("#editButtonDiv").hide();
              $("#summaryBodyDiv").hide();
              $("#editBodyDiv").hide();
+             $("#historyDiv").empty();
              $("#historyDiv").append(result);
              $("#historyDiv").show();
              
@@ -573,7 +600,7 @@ function backToSummary(){
               result = result + '  </div>';
               result = result + '</div>';
               result = result + ' <div class="col-md-5">';
-              result = result + ' <label>Mediacare</label>';
+              result = result + ' <label>Medicare</label>';
               result = result + ' <div>';
               if(json.medicareExempt == 'YES'){
             	  result = result + '  <label class="radioIput mr">';

@@ -17,7 +17,7 @@
 	getEmployeeTaskRepotList();    
  });
  
- </script>
+ </script> 
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -31,8 +31,10 @@
     </section>
     <div class="candidate_wrap_table clearfix project_wrap">
       <div class="" id="payrollRegister" style="display: block;">
-        <div class="clearfix">
+      
+        <div class="clearfix positionRelative">
           <div class="positionRelative reportHead clearfix">
+          
 			  <span class="pull-left refreIcon mb5">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
 			  </span>
@@ -44,8 +46,10 @@
 			 </li>
             </ul>
           </div>
-          <div class="datatable_filter dataSeaTop" id="employeeReportListDivId"/>
-           
+          <div id="loading"></div>
+          <div class="datatable_filter dataSeaTop" id="employeeReportListDivId">
+          
+          </div>
         </div>
       </div>
       
@@ -56,6 +60,7 @@
  <script>
 function getEmployeeTaskRepotList(){
 	 var sourceleadUrl = '${sourceleadUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl+ "/getEmployeeTaskRepotList?${_csrf.parameterName}=${_csrf.token}",
@@ -99,6 +104,7 @@ function getEmployeeTaskRepotList(){
 				result = result +'</table>';
 				$("#employeeReportListDivId").empty();
 				$("#employeeReportListDivId").append(result);
+				$("#loading").removeAttr('style');
 				employeeTaskPagination();
 			}
 		})
@@ -106,6 +112,11 @@ function getEmployeeTaskRepotList(){
 }
  
 </script>
+<script>
+ function resetFilter(){
+	 getEmployeeTaskRepotList();
+ }
+ </script>
  <script>
  function employeeTaskPagination(){
 		$('#employeeTaskPagination').DataTable( { 

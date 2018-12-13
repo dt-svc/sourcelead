@@ -2248,7 +2248,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2258,7 +2258,7 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId())){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
@@ -2559,7 +2559,7 @@ String sortingQry ="";
 				applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
 			groupSubQuery=" group by u.ID,req.ID";
 		}
-		if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
+		/*if(StringUtils.isNotBlank(applicantsJoinedReportDTO.getSortColumn())) {
 			sortingQry = " order by "+ applicantsJoinedReportDTO.getSortColumn() +" "+applicantsJoinedReportDTO.getSortOrder();
 		}
 		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
@@ -2580,6 +2580,17 @@ String sortingQry ="";
 				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
 				+ query1
+				+groupSubQuery;*/
+		
+		query = "SELECT" + " u.ID as userId," + "req.ID as requirementID,"
+				+ "req.ORG_LOCATION_ID as orglocationId,"
+				+ "reqSub.CREATED_DATE as reqSubCreatedDate," + "req.ORG_RELATION_ID as clientId,"
+				+ "reqSub.CREATED_BY as createdBy, "
+			
+				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name "
+				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
+				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
+				+ query1+" group by u.ID "
 				+groupSubQuery;
 		/*
 		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
