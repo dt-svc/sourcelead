@@ -2278,8 +2278,9 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-						
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId() !=reportDTO.getAssignedUserId() && reportDTO.getManagerUserId() !=reportDTO.getAssignedUserId()) {
+					System.out.println("pid>>>"+reportDTO.getPrimaryUserId());
+					System.out.println("assid>>>"+reportDTO.getAssignedUserId());
+					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
