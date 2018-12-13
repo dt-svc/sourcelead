@@ -13,6 +13,8 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private long userId;
 	private long id;
 	private long submissionId;
+	private long orgRelationId;
+	private long spocId;
 	private String submissionType;
 	private String loginUserRole;
 	private String userCode;
@@ -397,6 +399,18 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	}
 	public void setContractsList(List<Contracts> contractsList) {
 		this.contractsList = contractsList;
+	}
+	public long getOrgRelationId() {
+		return orgRelationId;
+	}
+	public void setOrgRelationId(long orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+	public long getSpocId() {
+		return spocId;
+	}
+	public void setSpocId(long spocId) {
+		this.spocId = spocId;
 	}
 	
 	

@@ -51,6 +51,8 @@ public class PayAdjustmentDTO {
     
     private BigDecimal totLopAmount;
     
+    private BigDecimal preAssSalaryAmount;
+    
 	public BigDecimal getAssSalaryAmount()
 	{
 		return assSalaryAmount;
@@ -258,6 +260,13 @@ public class PayAdjustmentDTO {
 	{
 		this.totLopAmount = totLopAmount;
 	}
-	
+
+	public BigDecimal getPreAssSalaryAmount() {
+		return preAssSalaryAmount;
+	}
+
+	public void setPreAssSalaryAmount(BigDecimal preAssSalaryAmount) {
+		this.preAssSalaryAmount = preAssSalaryAmount;
+	}
 	
 }

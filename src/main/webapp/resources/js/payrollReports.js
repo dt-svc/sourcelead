@@ -4,7 +4,7 @@ function getPayGroupList(id,customEnable){
 	        url: sourceleadUrl+"/getPayGroupList?"+tokenParamName+"="+tokenValue                 , 
 	        success: function(json) {
 	        var output = "";
-	        output = output + "<option value=''>select</option>";
+	        output = output + "<option value=''>select group</option>";
 			for (var i=0; i<json.length; i++)
 			{
 				var opt = json[i];
@@ -38,7 +38,7 @@ function getPayPeriodByGroupId(payGroupid,payPeriodId1,payPeriodId2,customDivId)
 				var opt = json.data[i];
 //				var startDate  = moment(opt.freqStartDate).format(locDateFormat);
 //				var endDate  = moment(opt.freqEndDate).format(locDateFormat);
-				output = output + "<option value='"+opt.convertedFreqStartDate+"#"+opt.convertedFreqEndDate+"'>"+opt.convertedFreqStartDate+" "+opt.convertedFreqEndDate+"</option>";
+				output = output + "<option value='"+opt.convertedFreqStartDate+"#"+opt.convertedFreqEndDate+"'>"+opt.convertedFreqStartDate+" To "+opt.convertedFreqEndDate+"</option>";
 			}
 			$("#"+payPeriodId1).empty();
 			$("#"+payPeriodId1).append(output);
@@ -65,7 +65,7 @@ function getDepartments(id){
         url: sourceleadUrl+"/getDepartmentList?&departmentStatus=1", 
         success: function(json) {
         var output = "";
-//        output = output + "<option value=''>select</option>";
+//        output = output + "<option value=''>Select Department</option>";
 		for (var i=0; i<json.data.length; i++)
 		{
 			var opt = json.data[i];

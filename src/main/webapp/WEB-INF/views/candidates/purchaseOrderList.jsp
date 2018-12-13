@@ -3,8 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script>
+$(document).ready(function(){
+   getPurchaseOrderList();
+});
+</script>
+
 <!-- Content Area -->
-  <section class="content-wraper contentWraper">
+  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Purchase Order List</h2>
@@ -18,10 +25,8 @@
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
             <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
-             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
-           
-         
-         <div class="clearfix"></div>
+             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>        
+         <div class="clearfix"></div>         
      </ul>
 </div>
     
@@ -43,70 +48,9 @@
 			</li>
             </ul>
           </div>
-          <div class="require_wrap_table tableFirstSecond clearfix">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order No</th>
-                  <th>Order date</th>
-                  <th>Order By</th>
-				  <th>Total Resumes</th>
-                  <th>Total Price</th>
-                  <th>Service fee</th>
-                  <th>Discount</th>
-                  <th>Grant Total</th>
-                  <th>Payment Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                 <td><div class="tblminwidth-75"  id=""><a href="${appPath}/PurchaseOrder">MIS00414</a></div></td>    
-                  <td><div class="tblminwidth-75">2/07/2018</div></td>
-				  <td><div class="tbldata-dotdot">ANBC Corporation PVT. Ltd</div></td>
-                  <td><div class="tblminwidth-75">150</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-                  <td><div class="tblminwidth-50">20%</div></td>
-                  <td><div class="tblminwidth-50">2%</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-				  <td><div class="tblminwidth-75 reColor">Failed</div></td>
-                </tr>
-				  <tr>
-                   <td><div class="tblminwidth-75"  id=""><a href="${appPath}/PurchaseOrder">MIS00414</a></div></td>    
-                  <td><div class="tblminwidth-75">2/07/2018</div></td>
-				  <td><div class="tbldata-dotdot">ANBC Corporation PVT. Ltd</div></td>
-                  <td><div class="tblminwidth-75">150</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-                  <td><div class="tblminwidth-50">20%</div></td>
-                  <td><div class="tblminwidth-50">2%</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-                  <td><div class="tblminwidth-75 suColor">Pending</div></td>
-                </tr>
-				  <tr>
-                  <td><div class="tblminwidth-75"  id=""><a href="${appPath}/PurchaseOrder">MIS00414</a></div></td>    
-                  <td><div class="tblminwidth-75">2/07/2018</div></td>
-				  <td><div class="tbldata-dotdot">ANBC Corporation PVT. Ltd</div></td>
-                  <td><div class="tblminwidth-75">150</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-                  <td><div class="tblminwidth-50">20%</div></td>
-                  <td><div class="tblminwidth-50">2%</div></td>
-                  <td><div class="tblminwidth-50">112,2233</div></td>
-                  <td><div class="tblminwidth-75 apColor">Success</div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav>
+        <div class="candidate_wrap_table datatable_filter">
+        <div id="purchaseList"></div>
+        </div>
         </div>
       </div>
     </div>
@@ -134,6 +78,220 @@
 	}
   
   </script>
+  
+  <script>
+  
+   function getPurchaseOrderList(){
+	  
+	   	var url = sourceleadUrl+"/getPurchasedOrderList";
+	   	getPurchaseOrderListPagin(url);	  
+  }
+  </script>
+  
+   
+  
+  <script>
+function getPurchaseOrderListPagin(url){
+ 	var result = "";
+ 
+ 	
+ 	result = result + '<table id="purchaseTable" class="display" cellspacing="0" width="100%" >';
+	result = result + '<thead>';
+	result = result +'       <tr>                             ';		                            
+	result = result +'         <th>Order No</th>    ';
+	result = result +'         <th>Order Date</th>                    ';
+	result = result +'         <th>Company Name</th>          ';
+	result = result +'         <th>Total Resumes</th>              ';
+	result = result +'         <th>Total Price</th>  ';
+	result = result +'         <th>Service fee</th>        ';
+	result = result +'         <th>Discount</th>               ';
+	result = result +'         <th>Grant Total</th>                  ';
+	result = result +'         <th>Payment Status</th>            ';
+	result = result +'       </tr>                            ';
+	result = result + '</thead>	';
+    result = result +"</table>";
+    $("#purchaseList").empty();  
+    $("#purchaseList").append(result);
+    purchasePagination(url); 
+	
+}
+
+</script>
+
+<script>
+function purchasePagination(url){
+	var colIndex = 0;
+    $('#purchaseTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'GET',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "orderNo" },
+            { "data": "orderDate"},
+            { "data": "companyName"},
+            { "data": "totalResume" },
+            { "data": "totalPrice" },
+            { "data": "serviceFee"},
+            { "data": "discount"},
+            { "data": "grandTotal"},
+            { "data": "paymentStatus"},
+        ],
+        "columnDefs": [{
+            "targets": colIndex++,
+            "data": "orderNo",
+            "sortable": false,
+            "render": function ( data, type, report, meta ) {
+            	var result = "";
+            	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?orderNo='+report.orderNo+'" title="'+report.orderNo+'">'+report.orderNo+'</a></div>';	 
+            		         		 
+         		}else{
+         		  result = result +'<div class="tblminwidth-100">--</div>';
+         		} 
+            	
+            	 return result;
+            }
+    }, {
+	    	  	"targets": colIndex++,
+	    	  	"data": "orderDate",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	  		var result = "";
+	            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
+	           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
+	         		}else{
+	         		  result = result +'<div class="tblminwidth-100">--</div>';
+	         		} 
+	    	  		
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "companyName",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+             	  if(report.companyName != null && report.companyName != '' && report.companyName !='undefined'){
+            		  result = result +'<div class="tblminwidth-100">'+report.companyName+'</div>';
+          		}else{
+          		  result = result +'<div class="tblminwidth-100">--</div>';
+          		} 
+            	 
+          
+	              return result;
+              		
+              }
+	          },{
+            "targets": colIndex++,
+            "data": "totalResume",
+            "render": function ( data, type, report, meta ) {
+            	var result = "";
+           	  if(report.totalResume != null && report.totalResume != '' && report.totalResume !='undefined'){
+        		  result = result +'<div class="tblminwidth-100">'+report.totalResume+'</div>';
+      		}else{
+      		  result = result +'<div class="tblminwidth-100">--</div>';
+      		} 
+        	 
+            
+            	 return result;
+            }
+          }, {
+              "targets": colIndex++,
+              "data": "totalPrice",
+              "render": function ( data, type, report, meta ) {
+            	  var result = "";
+             	  if(report.totalPrice != null && report.totalPrice != '' && report.totalPrice !='undefined'){
+            		  result = result +'<div class="tblminwidth-100">'+report.totalPrice+'</div>';
+          		}else{
+          		  result = result +'<div class="tblminwidth-100">--</div>';
+          		} 
+            	
+            	
+            	  return result;
+              }
+            }, {
+                "targets": colIndex++,
+                "data": "serviceFee",
+                "render": function ( data, type, report, meta ) {
+                	var result = "";
+               	  if(report.serviceFee != null && report.serviceFee != '' && report.serviceFee !='undefined'){
+            		  result = result +'<div class="tblminwidth-100">'+report.serviceFee+'</div>';
+          		}else{
+          		  result = result +'<div class="tblminwidth-100">--</div>';
+          		} 
+            	  
+                	
+    	              return result;
+                }
+          },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "discount",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	   	  if(report.discount != null && report.discount != '' && report.discount !='undefined'){
+            		  result = result +'<div class="tblminwidth-100">'+report.discount+'</div>';
+          		}else{
+          		  result = result +'<div class="tblminwidth-100">--</div>';
+          		} 
+            	 
+	    	  	
+  	              return result;
+	    	  	}
+	    	  },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "grandTotal",
+	    	  	"render": function(data, type, report, meta) {
+	    	  		var result = "";
+	    	   	  if(report.grandTotal != null && report.grandTotal != '' && report.grandTotal !='undefined'){
+            		  result = result +'<div class="tblminwidth-100">'+report.grandTotal+'</div>';
+          		}else{
+          		  result = result +'<div class="tblminwidth-100">--</div>';
+          		} 
+            	
+	    	  	
+	    	  		 return result;
+	    	  	}
+	    	  }, {
+                  "targets": colIndex++,
+                  "data": "paymentStatus",
+                  "render": function ( data, type, report, meta ) {
+                	  var result = "";
+               	  if(report.paymentStatus != null && report.paymentStatus != '' && report.paymentStatus !='undefined'){
+                		  result = result +'<div class="tblminwidth-100">'+report.paymentStatus+'</div>';
+              		}else{
+              		  result = result +'<div class="tblminwidth-100">--</div>';
+              		} 
+                	  return result;
+                  }
+                    } ],
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[4,'desc']],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#purchaseTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#purchaseTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+    		   getPurchaseOrderList();
+    	   }
+    	});
+}
+
+</script>
+  
+  
  
   
   <jsp:include page="../masterFooter.jsp" /> 

@@ -1930,8 +1930,8 @@ function employementType(){
         		} else if (result.response === "AWKWARD") {
         	    	location.href = "/errorPage";
         		} else if (result.response === "SUCCESS") {
+        			$("#loading").removeAttr('style');
         			getProfessionalInfo();
-           	  		$("#loading").removeAttr('style');
         		} else if (result.indexOf('Sign In') !== -1) {
            			location.replace(sourceleadUrl);
 	           	} else {
