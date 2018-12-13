@@ -103,17 +103,16 @@
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					
-					
-					<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
-					
 					<div class="project_details_cta">
-						<strong>Submitted Amount:</strong><span>${entry.submittedamount}</span><div class="clearfix"></div>
+						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
-					 </c:forEach> 
 					
-					<div class="project_details_cta">
-						<strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div>
-					</div> 
+					 <div class="project_details_cta">
+					  <c:if test="${submissionStatus == 'APPROVED'}">
+					      <strong>Approved Amount:</strong><span>${expenses.totalAmount}</span><div class="clearfix"></div> 	
+					    </c:if>
+					    </div>
+					
 					<div class="project_details_cta">
 						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
@@ -136,7 +135,77 @@
 			</tr>
 		</thead>	
 			<tbody>
-			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+			
+			
+			
+			
+			
+			<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
+			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick ="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
+			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
+			       <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			             <td><div id="expenseSubmittedAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
+		               <c:choose>
+		               	<c:when test="${submissionStatus == 'APPROVED'}">
+		           			<td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>    	
+		               	</c:when>
+		               	<c:otherwise>
+		               		<td><div id="expenseAmountDiv${entryCount.count}">---</div></td>
+		               	</c:otherwise>
+		               </c:choose>
+			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
+			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
+			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
+			            
+					    
+			           
+			           
+			        </tr>
+			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
+				        <td colspan="10">
+						<div class="expDetails">
+							<ul>
+							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
+								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
+								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
+								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
+								<li><strong>Submitted Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
+								<li><strong>Approved Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
+								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
+								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
+								
+								<div class="clearfix"></div>
+								</li>
+								<div class="clearfix">
+								<div id='attachmentSection' class='col-md-4 noPad mt10'>
+				                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
+					                <div id='timesheetDocumentsId' class=''>
+					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
+					                        <c:if test = '${entryDoc.status == 1}'>
+						                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
+						                               <a class='downicon' href='${entryDoc.fileURL}' download>
+							                                 <i class='glyphicon glyphicon-save'></i>
+												             <input type='button' value='${entryDoc.fileName}'/>
+												        </a>
+											           <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.contentType}');"></a>
+						                         </strong>
+					                         </c:if>
+					                       </c:forEach>
+					                 </div> 
+					             </div>
+					             </div>
+					             </div>   				
+								<div class="clearfix"></div>
+							</ul>
+						</div>
+					  </td>			
+			        </tr>
+			     </c:forEach> 
+			
+			
+			   <%--   <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
 			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
@@ -165,7 +234,7 @@
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
-								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
+								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
@@ -194,7 +263,7 @@
 						</div>
 					  </td>			
 			        </tr>
-			     </c:forEach> 
+			     </c:forEach>  --%>
 		   </tbody>
 	</table>
    </div>
@@ -225,3 +294,16 @@ function exportMyExpenses(type,Expid,ApproverType){
 	window.location.href = sourceleadUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
 </script> 
+
+<script>
+function withdrawMyExpense(id){
+	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+	      type : "POST",
+   	       url: sourceleadUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
+	      success :function(result) {
+	    	  location.replace(sourceleadUrl+"/addExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
+	      }
+ }); 
+}
+</script>

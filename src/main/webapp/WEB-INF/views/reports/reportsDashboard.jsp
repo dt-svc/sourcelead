@@ -34,9 +34,6 @@
 				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				<li><a href='${appPath}/applicantsjoinedlist'>Applicants Joined Report</a></li>
 				</sec:authorize>
-				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				<li><a href='${appPath}/associateJoineReports'>Associate Joine Report</a></li>
-				</sec:authorize>
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
 				 <li><a href='${appPath}/recruitersReports'>Recruiter(s) Report</a></li>
 				 </sec:authorize>
@@ -182,8 +179,6 @@
 
                 <li><a href="${appPath}/assetsReport">Assigned Assets History</a></li>
 
-				<li><a href="${appPath}/projectReport">Project Report</a></li>
-
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
 				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 				</sec:authorize>
@@ -251,6 +246,9 @@
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
 					</sec:authorize>
+					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>  
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
@@ -313,8 +311,8 @@
 				<li><a href="${appPath}/deductionReport">Deduction Reports</a></li>
 				<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 
-				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+				<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				<li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 				<!-- <li><a href="companysnapshot.html">Tax Liability Report</a></li>
 				<li><a href="companysnapshot.html">Payroll Timesheet Report</a></li> -->
@@ -522,7 +520,10 @@
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign(s) Report</a></li>
-					</sec:authorize>               
+					</sec:authorize>  
+					<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
+				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
+				</sec:authorize>             
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
@@ -569,8 +570,8 @@
 							<li><a href="${appPath}/contributionReport">Contribution Reports</a></li>
 						</sec:authorize>
 
-						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->DeductionSummaryReport</a></li>
-				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->ContributionSummaryReport</a></li>
+						<li><a href="${appPath}/usDeductionSummaryReport" ><!-- Us -->Deduction Summary Report</a></li>
+				        <li><a href="${appPath}/usContributionSummaryReport" ><!-- Us -->Contribution Summary Reports</a></li>
 
 						<sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
 							<li><a href="${appPath}/directDepositReport">Direct Deposit</a></li>

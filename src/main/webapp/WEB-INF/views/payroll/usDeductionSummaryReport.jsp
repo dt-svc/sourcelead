@@ -11,7 +11,7 @@
         <h2>Deduction Summary</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-       <a href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction Summary
+       <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -22,16 +22,15 @@
 		  <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-12">
+				<div class="col-md-12" id="fromDateDiv">
 					<input type="text" id="fromDate" class="form-control calendar" readonly field-name="From Date" data-validation="required">
-					<input type="hidden" id="emptyUsDeductionId" name="emptyUsDeductionId"/>
 				</div>
             </div>
             </div>
             <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <div class="col-md-12" id="toDateDiv">
                 <input type="text" id="toDate" class="form-control calendar" readonly field-name="To Date" data-validation="required">
               </div>
             </div>
@@ -96,6 +95,7 @@
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeFromDateValid();
 				}
 			});
 		
@@ -107,6 +107,7 @@
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeToDateValid();
 			}
 		});
 	});
@@ -133,6 +134,14 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
+
+function removeFromDateValid(){
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeToDateValid(){
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
 
 </script>
 
@@ -210,13 +219,12 @@ function deductionSummaryReportData(url) {
 									"data" : "type",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										$("#emptyUsDeductionId").val(1);
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-175" id="usDeductionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
-											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
+											result = result+ '<td><div class="tblminwidth-175">--</div></td>';
 										} 
 										
 										return result;
@@ -245,7 +253,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.currentAmt != null && opt.currentAmt != '' && opt.currentAmt != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.currentAmt+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.currentAmt+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -260,7 +268,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.qtd != null && opt.qtd != '' && opt.qtd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.qtd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.qtd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -274,7 +282,7 @@ function deductionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.ytd != null && opt.ytd != '' && opt.ytd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.ytd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.ytd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -320,8 +328,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsDeductionId').val();
-     if(emptyExport>0){
+     var usDeduction = $('#usDeductionTypeDiv').html();
+  	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=pdf";
      }else{
 		var result = " ";
@@ -350,8 +358,8 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
-     var emptyExport = $('#emptyUsDeductionId').val();
-     if(emptyExport>0){
+     var usDeduction = $('#usDeductionTypeDiv').html();
+   	if(usDeduction != null && usDeduction !='' && usDeduction !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=DEDUCTION&exportType=xls";
  }else{
 		var result = " ";

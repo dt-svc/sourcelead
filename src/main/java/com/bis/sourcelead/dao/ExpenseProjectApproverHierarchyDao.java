@@ -18,4 +18,6 @@ public interface ExpenseProjectApproverHierarchyDao {
 	public ExpenseProjectApproverHierarchy saveProjectExpenseProjectApproverHierarchy(ExpenseProjectApproverHierarchy expenseProjectApproverHierarchy) throws Exception;
 	
 	public ExpenseProjectApproverHierarchy getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
+	
+	String getExpenseApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception;
 }

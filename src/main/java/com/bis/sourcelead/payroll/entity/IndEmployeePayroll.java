@@ -117,6 +117,12 @@ public class IndEmployeePayroll implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
 	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indPayroll")
+	private Set<PayrollLopHis> payrollLopHis;
+	
+	@Column(name = "LOP_AMOUNT")
+	private BigDecimal lopAmount;
+	
 	public Long getId() {
 		return id;
 	}
@@ -344,6 +350,22 @@ public class IndEmployeePayroll implements Serializable {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Set<PayrollLopHis> getPayrollLopHis() {
+		return payrollLopHis;
+	}
+
+	public void setPayrollLopHis(Set<PayrollLopHis> payrollLopHis) {
+		this.payrollLopHis = payrollLopHis;
+	}
+
+	public BigDecimal getLopAmount() {
+		return lopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount) {
+		this.lopAmount = lopAmount;
 	}
 
 	

@@ -142,12 +142,14 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 				       "  proj.PROJECT_NAME as projectName, " + 
 				       "  lData.ID as lookupId, " + 
 				       "  lData.NAME as taskStatus " + 
-				       " FROM sourcelead.PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can " + 
+				       " FROM sourcelead.PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc " + 
 				       " where assignTask.PROJECT_TASK_ID = ptasks.ID AND ptasks.PROJECT_ID = proj.ID  " + 
 				       " AND lData.ID = ptasks.TASK_STATUS " + 
 				       " AND projMem.ID = assignTask.PROJECT_MEMBER_ID " + 
 				       " AND can.ID = projMem.CANDIDATE_ID " + 
-				       " AND proj.ORG_LOCATIONS_ID ="+orglocationId;
+				       " AND pc.PROJECT_ID = proj.ID "+
+				       " AND can.ORG_LOCATION_ID = pc.ORG_LOCATIONS_ID "+
+				       " AND pc.ORG_LOCATIONS_ID ="+orglocationId;
 				       
 				        Query queryObj = session.createSQLQuery(query);
 						queryObj.setResultTransformer(Transformers.aliasToBean(ProjectassignTasksDTO.class));
@@ -228,13 +230,13 @@ public class ProjectAssignTasksDaoImpl implements ProjectAssignTasksDao{
 		 }
 		String query = "from ProjectAssignTask  projectAssignTask "
 				      + " where projectAssignTask.projectMemberId.projectMemberCandidteId.id =:candidateId"
-				      + " and projectAssignTask.projectTaskId.projectId.orgLocationsId.id =:orglocationId and projectAssignTask.status ='1'"
+				      + " and projectAssignTask.projectTaskId.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orglocationId ) and projectAssignTask.status ='1'"
 				      + " "+subQueryStr+" "+query1+" "+sortingQry+" ";
 		List<ProjectAssignTask> projectassignTaskList = session.createQuery(query).setLong("candidateId", projectassignTasksDTO.getCandidateid()).setLong("orglocationId", projectassignTasksDTO.getOrgLocationId()).setFirstResult(projectassignTasksDTO.getStart()).setMaxResults(projectassignTasksDTO.getLength()).list();
 		
 		String queryStrForCount = "Select count (*) from ProjectAssignTask  projectAssignTask "
 				+ " where projectAssignTask.projectMemberId.projectMemberCandidteId.id =:candidateId"
-				+ " and projectAssignTask.projectTaskId.projectId.orgLocationsId.id =:orglocationId and projectAssignTask.status ='1' "
+				+ " and projectAssignTask.projectTaskId.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orglocationId ) and projectAssignTask.status ='1' "
 				+ " "+subQueryStr+" "+query1+" "+sortingQry+" " ;
 		countlist = session.createQuery(queryStrForCount.toString()).setLong("candidateId", projectassignTasksDTO.getCandidateid()).setLong("orglocationId", projectassignTasksDTO.getOrgLocationId()).list();
 

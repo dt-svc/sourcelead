@@ -19,7 +19,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Comparison Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">USPayroll Reports List</a> &raquo; Payroll Comparison Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usPayrollReport'/>">US Payroll Reports List</a> &raquo; Payroll Comparison Report</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -41,7 +41,7 @@ $(document).ready(function(){
               <div class="col-md-12">
                 <select class="form-control sel" id="payrollType" name="payrollType" field-name="Payroll Type" data-validation="required">
 					    <option>Select Type</option>
-						<option>Regular</option>
+						<option selected>Regular</option>
 						<option>Additional</option>
 					</select>
               </div>
@@ -336,9 +336,9 @@ $(".overIcon, .newActPop").click(function(e){
 function resetData() {
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
-	 $("#payrollType").val('');
-	 $("#payPeriod").val('');
-	 $("#payPeriod2").val('');
+// 	 $("#payrollType").val('');
+	 $("#payPeriod").empty();
+	 $("#payPeriod2").empty();
 	 $("#payrollDepartment").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 	
@@ -362,7 +362,7 @@ function runPayrollregister(){
          $.ajax({
 				type : "POST",
      	    	data: formData,
-				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&compareDate1="+compareDate1+"&compareDate2="+compareDate2,
+				url : sourceleadUrl+"/runPayrollComparison?"+tokenParamName+"="+tokenValue,
 				success : function(result) {
 					
 					
