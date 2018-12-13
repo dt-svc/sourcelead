@@ -11,7 +11,7 @@
         <h2>Deduction Summary</h2>
       </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-       <a href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Deduction Summary
+       <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Deduction Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -22,7 +22,7 @@
 		  <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-12">
+				<div class="col-md-12" id="fromDateDiv">
 					<input type="text" id="fromDate" class="form-control calendar" readonly field-name="From Date" data-validation="required">
 				</div>
             </div>
@@ -30,7 +30,7 @@
             <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <div class="col-md-12" id="toDateDiv">
                 <input type="text" id="toDate" class="form-control calendar" readonly field-name="To Date" data-validation="required">
               </div>
             </div>
@@ -95,6 +95,7 @@
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeFromDateValid();
 				}
 			});
 		
@@ -106,6 +107,7 @@
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeToDateValid();
 			}
 		});
 	});
@@ -132,6 +134,14 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
+
+function removeFromDateValid(){
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeToDateValid(){
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
 
 </script>
 

@@ -195,18 +195,43 @@ public class DataMigrationCommonController {
 		public void downloadDataImportTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			logger.debug("download job template is for Import downloadJobsDataImportTemplate method");
 	        @SuppressWarnings("resource")
-			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("JobTemplate");
+	        HSSFWorkbook workbook = new HSSFWorkbook();
+	        HSSFSheet sheet = workbook.createSheet("JobTemplate");
 	        String[] tableColumns = Constants.IMPORT_JOB_EXCEL_HEADERS;
-	 
+	        
 	        Row row = sheet.createRow(0);
 	        int cellnum = 0;
 	        for (String key : tableColumns) {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
+	            
+	            if(key.contentEquals("Notice Period")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.NOTICE_PERIOD, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Cooling-off Period")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.COOLING_OFF_PERIOD, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Priority")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.PRIORITIES, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Travel Allowance")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.TRAVEL_ALLOWANCE, cellnum-1, "xls"));
+	            }else if(key.contentEquals("Employment Type")) {
+	            	sheet.addValidationData(getDropDownListForCell(Constants.EMPLOYMENT_TYPES, cellnum-1, "xls"));
+	            }/*else if(key.contentEquals("Industry")) {
+		            List<String> industryList = lookUpDataService.getAllSkillsByIndustryCategory();
+	            	if(industryList != null && !industryList.isEmpty()) {
+	            		String [] industry = industryList.toArray(new String[industryList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(industry, cellnum-1, "xls"));
+	            	}
+	            }*//*else if(key.contentEquals("Immigration Status")) {
+	            	List<String> visaList = lookUpDataService.getAllVisaByCategory();
+	            	if(visaList != null && !visaList.isEmpty()) {
+	            		String [] visa = visaList.toArray(new String[visaList.size()]);
+		            	sheet.addValidationData(getDropDownListForCell(visa, cellnum-1, "xls"));
+	            	}
+	            } */
+	            
 	        }
 	        try {
-	            File file = new File("Job_Import_Template.xlsx");
+	            File file = new File("Job_Import_Template.xls");
 	    		FileOutputStream out = new FileOutputStream(file);
 	    		workbook.write(out);
 	            

@@ -35,6 +35,10 @@ public class PayrollLopHis {
 	private EmployeePayroll payroll;
 	
 	@ManyToOne
+	@JoinColumn(name = "IND_PAYROLL_ID")
+	private IndEmployeePayroll indPayroll;
+	
+	@ManyToOne
 	@JoinColumn(name = "LEAVE_TYPE_ID")
 	private LeaveType leaveTypeId;
 	
@@ -170,6 +174,14 @@ public class PayrollLopHis {
 	public void setPayroll(EmployeePayroll payroll)
 	{
 		this.payroll = payroll;
+	}
+
+	public IndEmployeePayroll getIndPayroll() {
+		return indPayroll;
+	}
+
+	public void setIndPayroll(IndEmployeePayroll indPayroll) {
+		this.indPayroll = indPayroll;
 	}
 
 	public void setLeaveTypeName(String leaveTypeName)

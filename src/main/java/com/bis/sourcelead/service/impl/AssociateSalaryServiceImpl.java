@@ -75,9 +75,13 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 //					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
 					candidate = candidateDao.getCandidateByConsultantUserId(associateSalaryDTO.getUserId(),orgLocation.getId());
 					associateSalary = associateSalaryDao.findAssociateSalaryByCandidateId(candidate.getId());
+		
 					if(associateSalary != null) {
 						associateSalary.setUpdatedDate(new Date());
 						associateSalary.setUpdatedBy(loginUser.getId());
+						
+						createdDate = associateSalary.getEffectiveDate();
+						
 					}else {
 						associateSalary  = new AssociateSalary();
 //						User user = userService.getUserById(associateSalaryDTO.getUserId());
@@ -89,6 +93,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 						associateSalary.setCreatedBy(loginUser.getId());
 					}
 				}
+				
+				if(StringUtils.isNotBlank(associateSalaryDTO.getEffectiveDate()))
+					updatedDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate());
+				
 				/*else {
 					associateSalary  = new AssociateSalary();
 //					User user = userService.getUserById(associateSalaryDTO.getUserId());
@@ -110,9 +118,9 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				associateSalary.setAllowOverTimePay(associateSalaryDTO.getAllowOverTimePay());
 				associateSalary.setOrgLocations(orgLocation);
 //				associateSalary.setCreatedDate(new Date());
-//				associateSalary.setUpdatedDate(new Date());
+				associateSalary.setUpdatedDate(new Date());
 //				associateSalary.setCreatedBy(loginUser.getId());
-//				associateSalary.setUpdatedBy(loginUser.getId());
+				associateSalary.setUpdatedBy(loginUser.getId());
 				associateSalary.setStatus(1);
 				associateSalary.setAssociateSalaryUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				if(associateSalaryDTO.getIncreasePer() != null) {

@@ -18,7 +18,7 @@ $(document).ready(function(){
         <h2>Contribution</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;<a
-				href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Contribution
+				href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Contribution
 		</div>
     </section>
     
@@ -120,7 +120,7 @@ $(document).ready(function(){
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 	 $("#payGroup").trigger("chosen:updated"); 
-	 $("#payPeriod").val('');
+	 $("#payPeriod").empty();
 	 $("#payPeriod").trigger("chosen:updated"); 
 	 $("#contributionId").val('');
 	 $("#contributionId").trigger("chosen:updated"); 

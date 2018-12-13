@@ -23,10 +23,11 @@
 		<li id="formsLi"  class=""><a onclick="formsDiv(); highlight('formsLi');" title="Forms">Forms</a></li>
 	</ul>
    </div>
-   </div>
+   
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
    <div id="runPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
+   </div>
 </section>
 
 <script>

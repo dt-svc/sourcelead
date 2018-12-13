@@ -1127,7 +1127,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setRoles(roles);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(roles.getDisplayName());
-		
+		if(orgLocations.getUser() != null) {
+			userRole.setResourceManager(orgLocations.getUser());
+			userRole.setReportingManager(orgLocations.getUser());
+		}
 		userRole.setCreatedBy(user.getUserCode());
 		userRole.setCreatedDate(new Date());
 		userRole.setUpdatedBy(user.getUserCode());

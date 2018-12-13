@@ -651,7 +651,50 @@ function preapareCustomFieldDetails(candidateId){
 --%>
 
 <script>
-function deleteCandidate(candidateId,candidateType) {
+
+function deleteCandidate(candidateId,candidateType){
+	if ($('#terminate_candidate_form').validate(false, validationSettings)) {
+		var reason = document.getElementById("rejectReason").value;
+		if(reason.length > 250){
+			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
+		}else{
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					showSuccessStatusPopup("Candidate marked as teminated");
+					var json = result.object;
+					if(candidateType == 'Associates') {
+						location.replace(sourceleadUrl+"/associatesList");
+					} else {
+						location.replace(sourceleadUrl+"/candidatesList");
+					}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}	
+			});
+		}
+	
+		return true;
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#terminate_candidate_form', function() {
+	$("#terminate_candidate_form").showHelpOnFocus();
+	$("#terminate_candidate_form").validateOnBlur(false, validationSettings);
+});
+
+/* 
+function deleteCandidate111(candidateId,candidateType) {
 	if(document.getElementById("rejectReason")!==null) {
 		var reason = document.getElementById("rejectReason").value;
 		reason = reason.replace(/\s/g, "");
@@ -689,7 +732,7 @@ function deleteCandidate(candidateId,candidateType) {
 	} else {
 		showError("Reason is required");
 	}
-}
+} */
 </script>
 <script>
    function candiateRemoveSpacesForRejectReason() {
@@ -725,13 +768,17 @@ function cancelAlert(){
 function removeCandidateAlertMessage(candidateId,candidateType){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
-	
+	result = result +"<form:form id='terminate_candidate_form' name='terminate_candidate_form' method='post'> ";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
-	result = result +"		<div class='rejectErrorMsgs'/>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='width:500px'>";
+	result = result +"	<div class='clearfix'>";
+	result = result +"		<textarea id='rejectReason' class='form-control mt mb5' field-name='Reject Reason'  data-validation='required validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"	</div>";
+	result = result +"	<div class='rejectErrorMsgs'/>";
+	result = result +'		<b href="javascript:void(0)" class="mt10"><input style="width:50%" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input style="width:50%" class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +"	</div>";
+	result = result +"</form:form>";
+	
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
