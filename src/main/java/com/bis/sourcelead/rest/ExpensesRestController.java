@@ -172,7 +172,7 @@ public class ExpensesRestController {
         ResponseList<Expenses> expensesList = expensesService.getAllExpenses(orgLoc, loginUser,expenseStatus, elDTO.getStartDate(), elDTO.getEndDate(),elDTO.getSearchValue(),elDTO.getStart(),elDTO.getLength());
         List<ExpensesDTO> expensesDTOList = new ArrayList<>();
         for(Expenses expenses :expensesList.getData()){
-            Set<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
+            List<ExpensesApproverHierarchy> hierarchyList = expenses.getApproverHierarchyList();
             for(ExpensesApproverHierarchy eah :hierarchyList){
                 if(eah.getHierarchyId() != null && eah.getHierarchyId().getProjectClientsId() != null){
                     ProjectClients pc = eah.getHierarchyId().getProjectClientsId();
