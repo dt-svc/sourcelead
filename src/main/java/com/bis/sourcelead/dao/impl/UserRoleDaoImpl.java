@@ -862,12 +862,12 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				"where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID " + 
 				"and u.ID not in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.ID not in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1";
+				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1 ";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			sqlQuery = sqlQuery.concat(subQuery.toString());
 		}
-		sqlQuery = sqlQuery.concat(" order by count DESC, userName");
+		sqlQuery = sqlQuery.concat(" order by count DESC");
 		
 		Query queryString = session.createSQLQuery(sqlQuery);
 		queryString.setParameter("loginUserId", userId); //setting same parameters multiple times in query
