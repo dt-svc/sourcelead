@@ -30,10 +30,7 @@
           <div class="clearfix mb5">
             <label class="col-md-2"><strong>Deposit Type:</strong></label>
             <div class="col-md-5">
-              <select class="sel" title="Select Type" id="depositType" name="depositType">
-                <option value="Direct Deposit">Direct Deposit</option>
-                <option value = "By Check">By Check</option>
-              </select>
+              <input type="text" id="depositType" name="depositType" value="" readOnly>
               <input type="hidden" id="payRate" name="payRate"/>
                <input type="hidden" id="payrollId" name="payrollId"/>
                 <input type="hidden" id="payrollUUID" name="payrollUUID"/>
@@ -232,6 +229,7 @@
 		            }
 		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
+		            $("#depositType").val(json.depositType);
 		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
