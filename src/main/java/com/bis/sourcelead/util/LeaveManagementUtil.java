@@ -3,9 +3,6 @@ package com.bis.sourcelead.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,17 +11,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
@@ -33,11 +33,14 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
-import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
@@ -66,6 +69,12 @@ public class LeaveManagementUtil {
 	@Autowired
 	HolidayService holidayService;
 	
+	@Autowired
+	AssociateBalanceLeaveDao associateBalanceLeaveDao;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(LeaveManagementUtil.class);
@@ -73,7 +82,7 @@ public class LeaveManagementUtil {
 	public static List<Date> getDaysBetweenDates(Date startDate, Date endDate, String orgFormat) throws ParseException
 	{
 		List<Date> dates = new ArrayList<Date>();
-		List<String> dateStr = new ArrayList<>();
+		List<String> dagetExperienceTyper = new ArrayList<>();
 		DateFormat formatter;
 		formatter = new SimpleDateFormat(orgFormat);
 		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
@@ -680,7 +689,7 @@ public class LeaveManagementUtil {
 
 	public List<Date> getDaysBetweenLeaveDates(Date fromDate, Date toDate) {
 		List<Date> dates = new ArrayList<Date>();
-		List<String> dateStr = new ArrayList<>();
+		List<String> dagetExperienceTyper = new ArrayList<>();
 //		DateFormat formatter;
 //		formatter = new SimpleDateFormat(orgFormat);
 		long interval = 24 * 1000 * 60 * 60; // 1 hour in millis
@@ -924,53 +933,114 @@ public class LeaveManagementUtil {
 		return totalLeaves;
 	}
 	
-	public String test(LeaveType type, Employees emp, User loginUser) throws ParseException
+	public String getExperienceType(LeaveType type, Employees emp, User loginUser) throws ParseException
 	{
 		String userType = "";
-		if (type.getPeriod() != null) {
-					if (emp.getHireDate() != null) {
-						Date joinDate = emp.getHireDate();
-						Date currentDate = new Date();
-						int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
-						int expDays = 0;
-						if ("Year".equalsIgnoreCase(type.getExperiencedType())) {
-							expDays = type.getExperiencedDuration() * 365;
-						}
-						else if ("Month".equalsIgnoreCase(type.getExperiencedType())) {
-							expDays = type.getExperiencedDuration() * 30;
-						}
-						else {
-							expDays = type.getExperiencedDuration();
-						}
-						if (diffDays > expDays) {
-							
-//							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
-//								totalLeaves = type.getExperiencedApplicableDays();
-//							}else {
-//								totalLeaves = type.getExperiencedPerPeriod();
-//							}
-							userType = "EXP";
-							
-						}
-						else {
-//							if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
-//								totalLeaves = type.getNewJoinee();
-//							}else {
-//								totalLeaves = type.getNewJoinPerPeriod();
-//							}
-							userType = "FRESHER";
-							
-						}
+		try {
+			if (type.getPeriod() != null) {
+				if (emp.getHireDate() != null) {
+					Date joinDate = emp.getHireDate();
+					Date currentDate = new Date();
+					int diffDays = commonUtil.getNumberOfDaysBetweenTwoDates(joinDate, currentDate);
+					int expDays = 0;
+					if ("Year".equalsIgnoreCase(type.getExperiencedType())) {
+						expDays = type.getExperiencedDuration() * 365;
+					}
+					else if ("Month".equalsIgnoreCase(type.getExperiencedType())) {
+						expDays = type.getExperiencedDuration() * 30;
 					}
 					else {
-//						if(Constants.ANNUALLY.equalsIgnoreCase(type.getPeriod()) || Constants.NO.equalsIgnoreCase(type.getAccuralPolicy())) {
-//							totalLeaves = type.getExperiencedApplicableDays();
-//						}else {
-//							totalLeaves = type.getExperiencedPerPeriod();
-//						}
+						expDays = type.getExperiencedDuration();
+					}
+					if (diffDays > expDays) {
 						userType = "EXP";
 					}
+					else {
+						userType = "FRESHER";
+					}
+				}
+				else {
+					userType = "EXP";
+				}
+	}
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		return userType;
 	}
+	
+	public Set<PayrollLopHis> getToalAppliedLeavesByCandidaet(List<LeaveType> leavTypeList, OrgLocations orgLocation, Date startDate, Date endDate, Long userId, EmployeePayroll payroll)
+	{
+		Set<PayrollLopHis> lopHis = new HashSet<>();
+		try {
+			for (LeaveType leaveType : leavTypeList) {
+				if(leaveType.getIncludeInPayroll() != null && "Y".equalsIgnoreCase(leaveType.getIncludeInPayroll()) && "Billable".equalsIgnoreCase(leaveType.getLeaveType())) {
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+					List<AppliedLeaveDateView> appliedLeaves  = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), startDate, endDate, userId, orgLocation.getOrg().getId());
+					float appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv, startDate, endDate, leaveType);
+					if (appliedLeaves != null && appliedLeaves.size() > 0) {
+						float associateBalanceLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocation.getId(), orgLocation.getOrg().getId());
+						float balLeave = associateBalanceLeaves - appliedNoofLeaves;
+						if (balLeave < 0) {
+							PayrollLopHis payrollLopHis = new PayrollLopHis(); 
+							payrollLopHis.setPayroll(payroll);
+							payrollLopHis.setTotalBalanceLeaves(associateBalanceLeaves);
+							payrollLopHis.setTotalAppliedLeaves(appliedNoofLeaves);
+							payrollLopHis.setPayrollStartDate(startDate);
+							payrollLopHis.setPayrollEndDate(endDate);
+							payrollLopHis.setLeaveTypeName(leaveType.getName());
+							payrollLopHis.setLeaveTypeId(leaveType);
+							payrollLopHis.setLopLeaves(-balLeave);
+							lopHis.add(payrollLopHis);
+//							minusLeave = minusLeave + balLeave;
+						}
+					}
+				}	
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHis;
+	}
+	
+	
+	public Set<PayrollLopHis> getToalAppliedLeavesByCandidaetInd(List<LeaveType> leavTypeList, OrgLocations orgLocation, Date startDate, Date endDate, Long userId, IndEmployeePayroll payroll)
+	{
+		Set<PayrollLopHis> lopHis = new HashSet<>();
+		try {
+			for (LeaveType leaveType : leavTypeList) {
+				if(leaveType.getIncludeInPayroll() != null && "Y".equalsIgnoreCase(leaveType.getIncludeInPayroll()) && "Billable".equalsIgnoreCase(leaveType.getLeaveType())) {
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+					List<AppliedLeaveDateView> appliedLeaves  = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), startDate, endDate, userId, orgLocation.getOrg().getId());
+					float appliedNoofLeaves = (float) getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv, startDate, endDate, leaveType);
+					if (appliedLeaves != null && appliedLeaves.size() > 0) {
+						float associateBalanceLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), userId, orgLocation.getId(), orgLocation.getOrg().getId());
+						float balLeave = associateBalanceLeaves - appliedNoofLeaves;
+						if (balLeave < 0) {
+							PayrollLopHis payrollLopHis = new PayrollLopHis(); 
+							payrollLopHis.setIndPayroll(payroll);
+							payrollLopHis.setTotalBalanceLeaves(associateBalanceLeaves);
+							payrollLopHis.setTotalAppliedLeaves(appliedNoofLeaves);
+							payrollLopHis.setPayrollStartDate(startDate);
+							payrollLopHis.setPayrollEndDate(endDate);
+							payrollLopHis.setLeaveTypeName(leaveType.getName());
+							payrollLopHis.setLeaveTypeId(leaveType);
+							payrollLopHis.setLopLeaves(-balLeave);
+							lopHis.add(payrollLopHis);
+						}
+					}
+				}	
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lopHis;
+	}
+	
+	
 }

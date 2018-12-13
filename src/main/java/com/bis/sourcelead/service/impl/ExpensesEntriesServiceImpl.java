@@ -113,9 +113,9 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						}
 						
 						if(StringUtils.isEmpty(entryCategory.getCategoryAmountType()) || (StringUtils.isNotEmpty(currencyType) && !currencyType.equalsIgnoreCase(entryCategory.getCategoryAmountType()))){
-							entries.setCurrencyType(currencyType);
-						}else {
 							entries.setCurrencyType(entryCategory.getCategoryAmountType());
+						}else {
+							entries.setCurrencyType(currencyType);
 						}
 						
 						
@@ -212,5 +212,11 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 	public List<ExpensesEntries> getExpensesEntriesByExpenseId(long expenseId) {
 		return expensesEntriesDao.getExpensesEntriesByExpenseId(expenseId);
 	}
+
+	@Override
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		return expensesEntriesDao.dumpExpenceCategoryAmountToOldRecords();
+	}
+
 	
 }

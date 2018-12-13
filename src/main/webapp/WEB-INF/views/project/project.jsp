@@ -130,6 +130,26 @@
 						</div>
 						
 						
+						
+					<div class="form-group">
+						<label class="col-md-3">Timesheet Approval Mechanism</label>
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" checked onclick="projectApprovalForCheckValidation(this)" name="projectApprovalType"><span class="mr5"></span>Parallel</label>
+							<label class="paddingRight"><input type="radio" id="sequentialTimesheetsApproval"  value="Sequential" onclick="projectApprovalForCheckValidation(this)" name="projectApprovalType"><span class="mr5"></span>Sequential</label>
+						    <input type="hidden"  id="projectApprovalTypeValue" name="projectApprovalTypeValue"  field-name="Timesheet Approval Mechanism" data-validation="required" value="Parallel" /> 
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Expense Approval Mechanism</label>
+						<div class="col-md-9">
+							<label class="paddingLeft paddingRight"><input type="radio" id="parallelExpenseApproval" value="Parallel" checked onclick="expenseApprovalForCheckValidation(this)"  name="expenseApprovalType"><span class="mr5"></span>Parallel</label>
+							<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" onclick="expenseApprovalForCheckValidation(this)" name="expenseApprovalType"><span class="mr5"></span>Sequential</label>
+						    <input type="hidden"  id="expenseApprovalTypeValue" name="expenseApprovalTypeValue"  field-name="Expense Approval Mechanism" data-validation="required" value="Parallel" /> 
+						</div>
+					</div>
+						
+						
 					<div class="form-group">
 						<label class="col-md-3">Project For<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9">
@@ -523,6 +543,19 @@
 	function projectForCheckValidation(id){
 		document.getElementById("projectForValue").value = id.value;
 	} 
+	
+	function projectApprovalForCheckValidation(id){
+		$('#projectApprovalTypeValue').val('');
+		document.getElementById("projectApprovalTypeValue").value = id.value;
+	} 
+	
+	function expenseApprovalForCheckValidation(id){
+		$('#expenseApprovalTypeValue').val('');
+		document.getElementById("expenseApprovalTypeValue").value = id.value;
+	} 
+	
+	
+	
 </script>
 
 <script>

@@ -83,9 +83,9 @@ function errRemoveClientContact(){
 				              <div class="col-md-9 select-field chooRadius" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
-				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();" data-validation="required" field-name="clientName">             
+				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();getInvoiceTemplateList();" data-validation="required" field-name="clientName">             
 				                </select>
-				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
+				                <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createInvoiceEmptyClientContact();getInvoiceTemplateList();"><i class="fa fa-refresh "></i></span>
 				                </div>
 				                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
                                  <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
@@ -169,6 +169,14 @@ function errRemoveClientContact(){
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
 			                    </c:forEach>
+			                </select>
+			              </div>
+			            </div>
+			            <div class="form-group">
+			              <label class="col-md-3">Invoice Template</label>
+			              <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
+			                <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+			                   <option value="0">--Select Invoice Template--</option>
 			                </select>
 			              </div>
 			            </div>
@@ -943,7 +951,7 @@ function cancelDelDoc(){
 			
 			
 			$('#'+maxRowNum+'candidateId').val(checkbox_value[0]);
-			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]+",Job:"+checkbox_value[2]);
+			$('#'+maxRowNum+'candidateName').val(checkbox_value[1]);
 			$('#'+maxRowNum+'rate').val(checkbox_value[3]);
 			$('#'+maxRowNum+'requirementSubmissionId').val(checkbox_value[4]);
 			getSow(checkbox_value[0],maxRowNum); 
@@ -1051,7 +1059,11 @@ function cancelPopup(){
 	                    	 }else{
 	                    	 result = result +'<td>---</td>'; 
 	                    	 }
-	                    	 result = result +'<td>'+opt.joinedDate+'</td>';
+	                    	 if(opt.joinedDate != null && opt.joinedDate !='' && opt.joinedDate !='undefined'){
+		                    	 result = result +'<td>'+opt.joinedDate+'</td>';
+	                    	 }else{
+	                    		 result = result +'<td>---</td>';  
+	                    	 }
 	                    	 result = result +'</tr>';
 	                    }
 	                     result = result +" </tbody>";
@@ -1711,9 +1723,9 @@ function getClients(){
 		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
-			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "'"+selected+" data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
 		}else{
-			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"'>"+opt.orgName+"</option>";
+			output = output + "<option value='" +opt.id+ "' data-Invoice = '"+opt.generateInvoice+"' data-responder_location_id=" + opt.responderId + ">"+opt.orgName+"</option>";
 		}
 		}
 		
@@ -1982,6 +1994,24 @@ function createInvoiceEmptyClientContact(){
 	$("#clientContact").empty();
 	 $('#clientContact').append('<option value="">--select Client contact--</option>');
     $('#clientContact').trigger("chosen:updated");
+}
+function getInvoiceTemplateList() {
+	var orgRelationId = $("#clientOrgRelationId").val();
+	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
+	$("#invoiceTemplateId").empty("");
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
+		success : function(data) {
+			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+			if(data && data.data != null && data.data.length > 0) {
+				for(var e in data.data) {
+					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
+				}
+			}
+		}
+	});
 }
 </script>
  <script>

@@ -24,7 +24,7 @@ public class MarketplaceSalesOrder implements Serializable {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	@JoinColumn(name ="ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
