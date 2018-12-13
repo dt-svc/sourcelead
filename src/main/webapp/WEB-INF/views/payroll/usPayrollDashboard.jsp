@@ -122,17 +122,15 @@ function approvePayrollDiv(){
 	<div class="row">
 	
 	<div class="col-md-5">
-		<div class="row">
-			<label class="col-md-7">No. of Payroll Generated  :</label>
-			<div class="col-md-5" id="totalNoPayroll"><strong>00.00</strong></div>
+		<div>
+			<label class="pull-left">No. of Payroll Generated  :</label>
+			<div id="totalNoPayroll" class="pull-left ml"><strong>00.00</strong></div>
 		</div>
 	</div>
 	
 	<div class="col-md-7">
-			<div class="row">
-			<label class="col-md-3">Total Net Pay  :</label>
-			<div class="col-md-9" id="totalPayrollAmount"><strong>00.00</strong></div>
-		</div>
+			<label class="pull-left">Total Net Pay  :</label>
+			<div class="pull-left ml" id="totalPayrollAmount"><strong>00.00</strong></div>
 	</div>
 	
 	</div>
@@ -685,8 +683,9 @@ function confirmPayroll(){
 	$("#reviewPayrollDiv").hide();
 	$("#approveDiv").show();
 	 var confirmType = "DRAFT";
+	 var payType = $("#payType").val();
 	 var formData = $($('#submit_for_approver')[0]).serialize();
-	 calculateTotalPay(formData,confirmType);
+	 calculateTotalPay(formData,confirmType,"",payType);
 }
 </script>
 

@@ -80,6 +80,9 @@ function getConfiguredList(){
     $('#configure').show();
     $('#unsubscribe').hide();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getUnsubscribeList(){
@@ -88,6 +91,9 @@ function getUnsubscribeList(){
     $('#configure').hide();
     $('#unsubscribe').show();
     $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getLinkAccounts(){
@@ -95,8 +101,53 @@ function getLinkAccounts(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#myBankDetails').hide();
     $('#mylinkaccounts').show();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
+
+function getBankDetails(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $("#taxDate").hide();
+//     $('#myBankDetails').show();
+    $('.tabsMenu_tabs_inn').show();
+      associateBankData();
+}
+
+ function getTax(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $('#associateBankData').hide();
+    $('#myBankDetails').hide();
+//     $("#myTax").show();
+    $('.tabsMenu_tabs_inn').show();
+     associateTaxSummary();
+     getResidenceLocation();
+} 
+ 
+ function getDocuments(){
+	 $('#profile').hide();
+	    $('#updatepassword').hide();
+	    $('#configure').hide();
+	    $('#unsubscribe').hide();
+	    $('#myBankDetails').hide();
+	    $('#mylinkaccounts').hide();
+	    $('#associateBankData').hide();
+	    $("#taxDate").hide();
+	    $("#myTax").hide();
+	    $('#myBankDetails').hide();
+// 	    $("#myDocuments").show();
+// 	    $(".welCo1").show();
+	    candidateDocuments();
+ }
 </script>
 
 
@@ -133,6 +184,9 @@ function getLinkAccounts(){
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
+			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
+			<li onclick="getTax();"><a data-toggle="tab" href="#myTax">Tax</a></li>
+			<li onclick="getDocuments();"><a data-toggle="tab" href="#myDocuments">Documents</a></li>
 		  </ul>        
 <div class="accountsettings-tab noMar">
 
@@ -444,6 +498,9 @@ function getLinkAccounts(){
 		   </div>
 		   
 		  <jsp:include page="userAccounts.jsp" />
+		  <jsp:include page="userBankDetails.jsp" />
+		  <jsp:include page="userTax.jsp" />
+		  <jsp:include page="userDocuments.jsp" />
 		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
@@ -901,80 +958,76 @@ function generateJson() {
 	    	
 	    	 
 	var search = {}
-				search["firstName"] = data.firstName;
+				search["FirstName"] = data.firstName;
 				if (data.lastName != null) {
-					search["lastName"] = data.lastName;
+					search["LastName"] = data.lastName;
 				} else {
-					search["lastName"] = "";
+					search["LastName"] = "";
 				}
 				if (data.email != null) {
-					search["email"] = data.email;
+					search["Email"] = data.email;
 				} else {
-					search["email"] = "";
+					search["Email"] = "";
 				}
 				if (data.designation != null) {
-					search["designation"] = data.designation;
+					search["Designation"] = data.designation;
 				} else {
-					search["designation"] = " ";
+					search["Designation"] = " ";
 				}
-				if (data.mobilePhone != null) {
-					search["mobilePhone"] = data.mobilePhone;
+				if (data.mobileNumber != null) {
+					search["MobilePhone"] = data.mobileNumber;
 				} else {
-					search["mobilePhone"] = "";
+					search["MobilePhone"] = "";
 				}
-				if (data.userLocation != null) {
-					search["userLocation"] = data.userLocation;
+				if (data.location != null) {
+					search["Location"] = data.location;
 
 				} else {
-					search["userLocation"] = "";
-
-				}
-				if (data.linkedIn != null) {
-					search["linkedIn"] = data.linkedIn;
-				} else {
-					search["linkedIn"] = " ";
-				}
-
-				if (data.facebook != null) {
-					search["facebook"] = data.facebook;
-
-				} else {
-					search["facebook"] = "";
+					search["Location"] = "";
 
 				}
-				if (data.twitter != null) {
-					search["twitter"] = data.twitter;
+				if (data.linkedinURL != null) {
+					search["LinkedIn"] = data.linkedinURL;
+				} else {
+					search["LinkedIn"] = " ";
+				}
+
+				if (data.facebookURL != null) {
+					search["Facebook"] = data.facebookURL;
 
 				} else {
-					search["twitter"] = data.twitter;
+					search["Facebook"] = "";
 
 				}
-				if (data.googlePlus != null) {
-					search["googlePlus"] = data.googlePlus;
+				if (data.twitterURL != null) {
+					search["Twitter"] = data.twitterURL;
 
 				} else {
-					search["googlePlus"] = data.googlePlus;
+					search["Twitter"] = " ";
+
+				}
+				if (data.googlePlusURL != null) {
+					search["GooglePlus"] = data.googlePlusURL;
+
+				} else {
+					search["GooglePlus"] = " ";
 
 				}
 				if (data.ipaddresses != null) {
-					search["ipaddresses"] = data.ipaddresses;
+					search["Ipaddresses"] = data.ipaddresses;
 				} else {
-					search["ipaddresses"] = data.ipaddresses;
+					search["Ipaddresses"] = " ";
 				}
-				let
-				dataStr = JSON.stringify(search);
-				let
-				dataUri = 'data:application/json;charset=utf-8,'
+				var dataStr = JSON.stringify(search);
+				var dataUri = 'data:application/json;charset=utf-8,'
 						+ encodeURIComponent(dataStr);
-
-				let
-				exportFileDefaultName = 'data.json';
-
-				let
-				linkElement = document.createElement('a');
+				var exportFileDefaultName = 'Profile.json';
+				var linkElement = document.createElement('a');
 				linkElement.setAttribute('href', dataUri);
 				linkElement.setAttribute('download', exportFileDefaultName);
-				linkElement.click();
+			    document.body.appendChild(linkElement);
+			    linkElement.click();
+			    linkElement.remove();
 
 			}
 		});

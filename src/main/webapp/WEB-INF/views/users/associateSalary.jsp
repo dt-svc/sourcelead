@@ -398,6 +398,13 @@ function calculateHourlyRateSal(){
   
  <script type="text/javascript">
  function saveAssocioateSal() {
+	 if($("#allowEmployeeToFill").is(':checked')){
+		 $("#save_associate_bank_data_button").val("Proceed To Next Step");
+			$(".infoMask").show();
+		}else{
+			$(".infoMask").hide();
+			$("#save_associate_bank_data_button").val("Save & Continue");
+		}
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
 
@@ -494,6 +501,13 @@ function selectAllCheckBox(allCheck){
 
 <script>
 function skipSalaryJsp(){
+	if($("#allowEmployeeToFill").is(':checked')){
+		$("#save_associate_bank_data_button").val("Proceed To Next Step");
+		$(".infoMask").show();
+	}else{
+		$(".infoMask").hide();
+		$("#save_associate_bank_data_button").val("Save & Continue");
+	}
 	var associateBanking = document.getElementById("associateBanking");
 	document.getElementById("associateBanking").removeAttribute("class"); 
 	associateBanking.href="#tab-2"; 

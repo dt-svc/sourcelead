@@ -2125,7 +2125,7 @@ background-color: #fff; height: 200px !important; background-image:url(../images
     background-color:#fff;
 }    
 .width175 {
-    width: 190px !important;
+    width: 200px !important;
 }
 .noMailImg {
     background-image:url(../images/no-mails.jpg); background-repeat:no-repeat; background-position:center; width: 100px; height: 100px;
@@ -4469,7 +4469,7 @@ border: 1px solid #333;
 }
 /*   Reports CSS  */
 .ReqRepHead {
-	padding: 6px 0px; border-bottom: 1px solid #dedede; background-color: #f5f5f5; box-shadow: 0px 0px 3px #999;
+	padding: 6px 0px; border-bottom: 1px solid #dedede; background-color: #fff; 
 	border-radius: 5px;
 }
 .ReqRepWrap {
@@ -7807,7 +7807,7 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 
 aside {
 	width: 56px; overflow: hidden; overflow-y: hidden; position: fixed; left: 0px; top: 0px; min-height: 100%; max-height: 100%;
-	z-index: 1000; box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
+	z-index: 1500; box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
 }
 aside:hover {
 	overflow: hidden; overflow-y: auto; width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0.2);
@@ -8259,7 +8259,7 @@ aside.asideAct {
 }
 .sortable-hidden-show {opacity: 0.3;}
 .cusInList label {
-	display: inline-block; width: 90%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
+	display: inline-block; /* width: 90%; */ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
 }
 .textError {
 	background-color: #e36363; color:#fff; position: absolute; top: 66px; text-align: center; width: 100%; left: 0px;
@@ -8326,7 +8326,7 @@ aside.asideAct {
 	border-color: rgba(136, 183, 213, 0); border-bottom-color: #0084bf; border-width: 10px; margin-left: -10px; }
 .headPopInn ul { margin: 0px 0px !important; padding: 0px 5px 5px !important; max-height: 520px; overflow: auto;}
 .headPopInn ul li { list-style-type: none; border-top: 1px solid #e9e9e9 !important; text-align: center; float: none;}
-.headPopInn ul li a { display: block; padding: 10px 15px; font-size: 13px; font-weight: 500; color: #666; width: 100%; text-align: left; height: auto;}
+.headPopInn ul li a { display: block; padding: 10px 10px; font-size: 13px; font-weight: 500; color: #666; width: 100%; text-align: left; height: auto;}
 .headPopInn ul li a.logColor { color: #d54a4a;}
 .headPopInn ul li a:hover { background-color: #f5f5f5;}
 .headPopUser { background-color: #0084bf; padding: 10px 12px; min-height: 80px; color: #fff;}
@@ -8404,27 +8404,33 @@ background-position: center top; width: 60px !important; height: 60px !important
 }
 .connectionIC {
 	width: 20px; height: 20px; display: block; background: url("../images/connectionsSVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .contactsIC {
 	width: 20px; height: 20px; display: block; background: url("../images/contactsSVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .invitecompanyIC {
 	width: 20px; height: 20px; display: block; background: url("../images/invitecompanySVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .addtaskIC {
 	width: 20px; height: 20px; display: block; background: url("../images/addtaskSVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .reporttaskIC {
 	width: 20px; height: 20px; display: block; background: url("../images/reportbugSVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .logOutIC {
 	width: 20px; height: 20px; display: block; background: url("../images/logoutSVG.svg"); background-repeat: no-repeat;
-	background-position: top; background-size: 20px; cursor: pointer; float: left; margin-right: 10px;
+	background-position: top; background-size: 18px; cursor: pointer; float: left; margin-right: 10px;
+	position: relative; top: -2px;
 }
 .width90percnt {width: 90% !important;}
 .customErrorTag .phoneValidator p.jquery_form_error_message {
@@ -8460,11 +8466,68 @@ bottom: auto !important; top: 55px !important;
 .reqrementsummary { color: #fff !important;}
 .reqrementsummary .professinal-details ul li { border: none !important; background-color: #21C3A0; padding: 2px 6px;}
 
+.payTotalFiled { border: none; text-align: right; width: 100%; padding: 7px 7px 0px 0px;}
+
+/* Custom Invoice PDF */
+
+.activeElement {
+    border: 1px solid #86bbec;
+}
+.previewInnerCta {
+    width: 48%; margin: 1%; min-height: 140px; float: left;
+}
+.previewInnerCta h3 {padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 18px; font-weight: 500; color: #454545;}
+.previewInnerCta span {display: none;}
+.previewInnerCta span.active {display: inline-block;}
+.previewInnerCta.previewInnerCtaFull, .previewInnerCta.previewInnerCtaFull span{width: 98%;}
+.previewInnerCta img {max-height: 120px;}
+.cusPerPop {
+    position: fixed; left: 0px; right: 0px; top: 0px; z-index: 10005; display: none; 
+    background: rgba(0,0,0,0.6); height: 100%; overflow: auto;
+}
+.cusPerPopInn {width: 92%; max-width:920px; background-color: #fff; margin: 30px auto; }
 
 
+.invLeftWrap {
+    position: fixed; left: auto; top: 78px; z-index: 100; width: 400px; box-shadow: 0px 2px 3px rgba(0,0,0,0.15);
+    background: #fff; border-radius: 3px;
+}
+.invTabs { margin: 0px 0px;}
+.invTabs li {
+    list-style-type: none; float: left; width: 33.33333%; 
+}
+.invTabs li a {
+    display: block; padding: 10px 5px 10px; text-align: center; font-size: 14px; font-weight: 400; color: #787878;
+    border-bottom: 3px solid #ededed;
+}
+.invTabs li a.Act {border-bottom: 3px solid #368ee0; color: #368ee0;}
+.invLeftWrapCta { padding: 20px;}
+.invLeftWrapCta label { font-size: 12px;}
+.invLeftWrap a {display: inline-block;}
+.invoicePreview {
+    background-color: #fff; box-shadow: 0px 3px 4px rgba(0,0,0,0.15); margin: 25px 0px 0px 420px;
+    border-radius: 3px;
+}
+.invoicePreview .footer-area { margin: 0px !important; width: auto !important;}
+.invoicePreviewInn { padding: 10px; background-color: #fff; border-bottom: 1px solid #e0e0e0;}
+.invBtn {text-align: right; padding: 10px 0px 8px 0px;}
+.invBtn input { height: 32px; background-color: #2FC32C; border: 1px solid #28B025; color: #fff;}
+.invBtn input:hover {background-color: #28B025; border: 1px solid #28B025; color: #fff;}
 
+.disabled {
+	pointer-events: none; background-color: #C2C5C8 !important; color: #6C7686 !important;
+}
+/* .eleRight {
+	border: 2px solid #f00 !important;
+} */
+.hide {display: none;}
+.configureBtn.disabled {box-shadow: none; opacity: .65;}
 
+/* Custom Invoice PDF */
 
+.searchPad {
+	position: relative; padding: 0px 240px 0px 0px;
+}
 
 
 

@@ -3,9 +3,9 @@
 
 
 <script type="text/javascript">
-function calculateTotalPay(formData,confirmType,payPerionNum){
+function calculateTotalPay(formData,confirmType,payPerionNum,payType){
 			approvePayrollDiv();
-		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum, formData, function(json) {
+		      $.post(sourceleadUrl+"/confirmPayroll?"+tokenParamName+"="+tokenValue+"&confirmType="+confirmType+"&payPerionNum="+payPerionNum+"&payType="+payType, formData, function(json) {
 		    	  $("#totRegularHours").text(json.regularHours.toFixed(2));
 		    	  $("#totRegularEarningsAmt").text(json.regularHoursAmount.toFixed(2));
 		    	  $("#totOverTimeHours").text(json.overTimeHours.toFixed(2));

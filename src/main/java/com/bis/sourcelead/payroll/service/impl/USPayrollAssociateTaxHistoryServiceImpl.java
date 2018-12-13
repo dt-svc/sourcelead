@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +33,10 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 		USPayrollAssociateTaxHistory associateTax = new USPayrollAssociateTaxHistory();
 		associateTax.setAssTaxId(assTax.getId());
 		associateTax.setUpdatedBy(assTax.getUpdatedBy());
-		if(assTax.getUpdatedDate() != null)
-			associateTax.setUpdatedDate(assTax.getUpdatedDate());
-		else 
-			associateTax.setUpdatedDate(assTax.getCreatedDate());
+//		if(assTax.getUpdatedDate() != null)
+//			associateTax.setUpdatedDate(assTax.getUpdatedDate());
+//		else 
+			associateTax.setUpdatedDate(new Date());
 		associateTax.setCandidate(assTax.getCandidate().getId());
 		associateTax.setCreatedBy(assTax.getCreatedBy());
 		associateTax.setCreatedDate(assTax.getCreatedDate());
@@ -55,7 +56,7 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 		associateTax.setResidenceTaxAllowances(assTax.getResidenceTaxAllowances());
 		associateTax.setResidenceTaxAdditionnalWithHolding(assTax.getResidenceTaxAdditionnalWithHolding());
 		associateTax.setLocalTax(assTax.getLocalTax());
-		associateTax.setLocalTaxState(assTax.getLocalTax());
+		associateTax.setLocalTaxState(assTax.getLocalTaxState());
 		associateTax.setStatus(assTax.getStatus());
 		associateTax.setOrgLocationId(assTax.getOrgLocationId().getId());
 		associateTax.setSupplementType(assTax.getSupplementType());
@@ -76,7 +77,7 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 			associateTax.setPreviousResidenceTaxAllowances(preAssTax.getResidenceTaxAllowances());
 			associateTax.setPreviousResidenceTaxAdditionnalWithHolding(preAssTax.getResidenceTaxAdditionnalWithHolding());
 			associateTax.setPreviousLocalTax(preAssTax.getLocalTax());
-			associateTax.setPreviousLocalTaxState(preAssTax.getLocalTax());
+			associateTax.setPreviousLocalTaxState(preAssTax.getLocalTaxState());
 		}else {
 			associateTax.setPreviousFederalTaxFilliingStatus("NA");
 			associateTax.setPreviousFederalTaxAllowances("NA");
@@ -136,13 +137,13 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 				dto.setPreviousStateTaxAdditionnalWithHolding(assTax.getPreviousStateTaxAdditionnalWithHolding());
 				dto.setPreviousStateTaxAllowances(assTax.getPreviousStateTaxAllowances());
 				dto.setFederalExempt(assTax.getFederalExempt().toString());
-				dto.setPreviousFederalExempt(assTax.getFederalExempt().toString());
+				dto.setPreviousFederalExempt(assTax.getPreviousFederalExempt().toString());
 				dto.setMediacareExempt(assTax.getMediacareExempt().toString());
 				dto.setPreviousMediacareExempt(assTax.getPreviousMediacareExempt().toString());
 				dto.setSocialSecurityExempt(assTax.getSocialSecurityExempt().toString());
 				dto.setPreviousSocialSecurityExempt(assTax.getPreviousSocialSecurityExempt().toString());
 				dto.setFutaExempt(assTax.getFutaExempt().toString());
-				dto.setPreviousFutaExempt(assTax.getFutaExempt().toString());
+				dto.setPreviousFutaExempt(assTax.getPreviousFutaExempt().toString());
 				dto.setSutaExempt(assTax.getSutaExempt().toString());
 				dto.setPreviousSutaExempt(assTax.getPreviousSutaExempt().toString());
 				dto.setAssociateTaxUuid(assTax.getAssociateTaxUuid());
@@ -154,8 +155,8 @@ public class USPayrollAssociateTaxHistoryServiceImpl implements USPayrollAssocia
 				dto.setPreviousResidenceTaxAdditionnalWithHolding(assTax.getPreviousResidenceTaxAdditionnalWithHolding());
 				dto.setLocalTax(assTax.getLocalTax());
 				dto.setPreviousLocalTax(assTax.getPreviousLocalTax());
-				dto.setLocalTaxState(assTax.getLocalTax());
-				dto.setPreviousLocalTaxState(assTax.getPreviousLocalTax());
+				dto.setLocalTaxState(assTax.getLocalTaxState());
+				dto.setPreviousLocalTaxState(assTax.getPreviousLocalTaxState());
 				dto.setStatus(assTax.getStatus());
 				dto.setOrgLocationId(assTax.getOrgLocationId());
 				dto.setSupplementType(assTax.getSupplementType());

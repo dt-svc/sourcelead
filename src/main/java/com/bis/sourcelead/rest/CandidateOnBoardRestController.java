@@ -682,6 +682,8 @@ public class CandidateOnBoardRestController {
 			candidateDTO.setCity(candidate.getCity());
 			candidateDTO.setZipcode(candidate.getZipCode());
 			candidateDTO.setGender(candidate.getGender());
+			if(loginOrgLocation.getProbationPeriod() != null)
+				candidateDTO.setDefaultOrgProbationPeriod(loginOrgLocation.getProbationPeriod());
 			if(candidate.getDateOfBirth() != null) {
 				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),candidate.getDateOfBirth()));
 			}

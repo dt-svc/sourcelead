@@ -25,6 +25,8 @@ public class INDPayrollDTO {
 	
 	private BigDecimal netPay;
 	
+	private BigDecimal lopAmount;
+	
 	private BigDecimal regularHrsAmt;
 	
 	private BigDecimal otHoursAmt;
@@ -139,6 +141,14 @@ public class INDPayrollDTO {
 
 	public void setNetPay(BigDecimal netPay) {
 		this.netPay = netPay;
+	}
+
+	public BigDecimal getLopAmount() {
+		return lopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount) {
+		this.lopAmount = lopAmount;
 	}
 
 	public BigDecimal getNoOfLeaves() {
