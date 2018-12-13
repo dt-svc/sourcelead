@@ -509,6 +509,8 @@ function resetData(){
 	$("#toDate").val('');
 	$("#freqStartDate").val('');
 	$("#freqEndDate").val('');
+	$("#payPeriod").empty();
+	
 // 	document.getElementById("payrollTaxAndWagesList").reset();
 }
 </script>
