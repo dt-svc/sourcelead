@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,7 +30,7 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String purchaseUuid;
 	private String salesUuid;
 	private String orderDate;
-	
+	private String description;
 	
 	public String getOrderDate() {
 		return orderDate;
@@ -114,6 +115,12 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	}
 	public void setSalesUuid(String salesUuid) {
 		this.salesUuid = salesUuid;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
    

@@ -33,13 +33,13 @@ public class MarketplacePurchaseOrder implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name ="MARKET_PLACE_ID", nullable = false)
 	private  CandidateMarketPlace  candidateMarketplace;
-	
-
 
 	@Column(name = "ORDER_NO", columnDefinition = "TEXT default NULL")
 	private String orderNo;
 	
-
+	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+	private String description;
+	
 	@Column(name = "COMPANY_NAME" )
 	private String companyName;
 	
@@ -74,7 +74,6 @@ public class MarketplacePurchaseOrder implements Serializable {
 	private String purchaseUuid;
 	
 	
-	
 	public String getPurchaseUuid() {
 		return purchaseUuid;
 	}
@@ -99,7 +98,6 @@ public class MarketplacePurchaseOrder implements Serializable {
 		this.orgLocationId = orgLocationId;
 	}
 
-	
 	public CandidateMarketPlace getCandidateMarketplace() {
 		return candidateMarketplace;
 	}
@@ -171,7 +169,7 @@ public class MarketplacePurchaseOrder implements Serializable {
 	public void setTax(String tax) {
 		this.tax = tax;
 	}
-
+	
 	public String getTotalresume() {
 		return totalresume;
 	}
@@ -188,7 +186,6 @@ public class MarketplacePurchaseOrder implements Serializable {
 		this.paymentId = paymentId;
 	}
 
-
 	public Date getOrderDate() {
 		return orderDate;
 	}
@@ -200,4 +197,13 @@ public class MarketplacePurchaseOrder implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

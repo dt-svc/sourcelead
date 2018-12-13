@@ -37,6 +37,9 @@ public class MarketplaceSalesOrder implements Serializable {
 	@Column(name = "ORDER_NO" , columnDefinition = "TEXT default NULL")
 	private String orderNo;
 	
+	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+	private String description;
+	
 	@Column(name = "PAYMENT_STATUS" )
 	private String paymentStatus;
 	
@@ -149,6 +152,15 @@ public class MarketplaceSalesOrder implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }
 
 	
