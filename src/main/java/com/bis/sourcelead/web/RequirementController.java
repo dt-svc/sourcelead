@@ -882,14 +882,14 @@ public class RequirementController {
 		
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
-			/*	List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
 				List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 				model.addObject("educationsList", educationsList);
 				
 				List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-				model.addObject("documentsList", documentsList);*/
+				model.addObject("documentsList", documentsList);
 		
 				// This code is commented as not in use 
 		
