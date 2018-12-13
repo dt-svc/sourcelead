@@ -977,8 +977,14 @@ public class USPayrollRestController {
 	@ResponseBody
 	public List<AssociateSalaryHistoryDTO> findAssociateSalHistory(@RequestParam(value = "associateSalid",required = false) Long associateSalid, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<AssociateSalaryHistoryDTO>  associateSalaryHisDTO = associateSalaryHistoryService.findAssociateSalHistory(associateSalid,orgLocation);
+		List<AssociateSalaryHistoryDTO>  associateSalaryHisDTO = null;
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    associateSalaryHisDTO = associateSalaryHistoryService.findAssociateSalHistory(associateSalid,orgLocation);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return associateSalaryHisDTO;
 	}
 	
