@@ -2395,7 +2395,6 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		
 		String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, user, locations, notificationScenario, new HashMap<String, String>());
-		System.out.println("Hello");
 	}
 
 	@Override
