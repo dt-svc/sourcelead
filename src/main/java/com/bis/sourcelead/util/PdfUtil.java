@@ -1889,9 +1889,10 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 				payTerm=payTerm.replaceAll("\\D", "");
 				int result = Integer.parseInt(payTerm);
-				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
+				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+				
 			   userArray[13] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
 
 			}

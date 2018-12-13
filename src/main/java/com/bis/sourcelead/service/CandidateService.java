@@ -13,6 +13,7 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
@@ -263,7 +265,7 @@ public interface CandidateService {
 
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
 	
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId)throws Exception;
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations)throws Exception;
 	
 	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue);
 
@@ -292,7 +294,28 @@ public interface CandidateService {
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
 
 	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
+
 	
-	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId)throws Exception;
+
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId)throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception;
+
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+	
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id)throws Exception;
+	
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
+
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations) throws Exception;
+
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByOrderNo(String orderNo, OrgLocations orgLocations)throws Exception;
+	
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception;
+
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo)throws Exception;
 
 }

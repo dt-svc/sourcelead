@@ -43,7 +43,7 @@ public interface InvoiceService {
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
-	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO)throws Exception;
+	Invoice saveInvoice(User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, InvoiceDTO invoiceDTO, String defaultFont)throws Exception;
 	
 	CreditDebitNote saveCreditDebitNote(User user, OrgLocations orgLocation, String saveType,String noteType, CreditDebitNoteDTO creditDebitNoteDTO,String currencyCode)throws Exception;
 	
@@ -106,7 +106,7 @@ public interface InvoiceService {
 	
 	boolean reactiveCreditDebitNote(String noteUUID,String noteType,User user,OrgLocations orgLocations)throws Exception;
 
-	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
+	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory, String defaultFont)throws Exception;
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 

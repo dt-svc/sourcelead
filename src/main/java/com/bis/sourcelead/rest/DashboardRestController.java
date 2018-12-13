@@ -1639,10 +1639,12 @@ public class DashboardRestController {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
 					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+						if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
 						String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 						payTerm=payTerm.replaceAll("\\D", "");
 						Integer result = Integer.parseInt(payTerm);
 						rshDTO.setPayTerm(result);
+						}
 
 					}
 					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
@@ -1653,8 +1655,8 @@ public class DashboardRestController {
 //						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
 						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-//						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
+						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
 					}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
