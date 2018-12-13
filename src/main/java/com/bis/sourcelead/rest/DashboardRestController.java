@@ -1639,10 +1639,12 @@ public class DashboardRestController {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
 					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+						if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
 						String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 						payTerm=payTerm.replaceAll("\\D", "");
 						Integer result = Integer.parseInt(payTerm);
 						rshDTO.setPayTerm(result);
+						}
 
 					}
 					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){

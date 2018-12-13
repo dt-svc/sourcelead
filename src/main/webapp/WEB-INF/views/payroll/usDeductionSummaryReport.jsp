@@ -22,7 +22,7 @@
 		  <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-12">
+				<div class="col-md-12" id="fromDateDiv">
 					<input type="text" id="fromDate" class="form-control calendar" readonly field-name="From Date" data-validation="required">
 				</div>
             </div>
@@ -30,7 +30,7 @@
             <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <div class="col-md-12" id="toDateDiv">
                 <input type="text" id="toDate" class="form-control calendar" readonly field-name="To Date" data-validation="required">
               </div>
             </div>
@@ -95,6 +95,7 @@
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeFromDateValid();
 				}
 			});
 		
@@ -106,6 +107,7 @@
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeToDateValid();
 			}
 		});
 	});
@@ -132,6 +134,14 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
+
+function removeFromDateValid(){
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function removeToDateValid(){
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
+}
 
 </script>
 
