@@ -2151,6 +2151,7 @@ public class RequirementListRestController {
 					BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
 					teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
 					teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "SUBMITTED"));
 					teamOwnerQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "REJECTED"));
 					assignedBoolQueryBuilder.should(teamOwnerQueryBuilder);
 					
