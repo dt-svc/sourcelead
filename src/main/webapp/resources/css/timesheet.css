@@ -4469,7 +4469,7 @@ border: 1px solid #333;
 }
 /*   Reports CSS  */
 .ReqRepHead {
-	padding: 6px 0px; border-bottom: 1px solid #dedede; background-color: #f5f5f5; box-shadow: 0px 0px 3px #999;
+	padding: 6px 0px; border-bottom: 1px solid #dedede; background-color: #fff; 
 	border-radius: 5px;
 }
 .ReqRepWrap {
@@ -7807,7 +7807,7 @@ background: url("../images/sort2.png"); background-repeat: no-repeat; background
 
 aside {
 	width: 56px; overflow: hidden; overflow-y: hidden; position: fixed; left: 0px; top: 0px; min-height: 100%; max-height: 100%;
-	z-index: 1000; box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
+	z-index: 1500; box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
 }
 aside:hover {
 	overflow: hidden; overflow-y: auto; width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0.2);
@@ -8509,7 +8509,7 @@ bottom: auto !important; top: 55px !important;
     border-radius: 3px;
 }
 .invoicePreview .footer-area { margin: 0px !important; width: auto !important;}
-.invoicePreviewInn { padding: 10px; background-color: #f9f9f9; border-bottom: 1px solid #e0e0e0;}
+.invoicePreviewInn { padding: 10px; background-color: #fff; border-bottom: 1px solid #e0e0e0;}
 .invBtn {text-align: right; padding: 10px 0px 8px 0px;}
 .invBtn input { height: 32px; background-color: #2FC32C; border: 1px solid #28B025; color: #fff;}
 .invBtn input:hover {background-color: #28B025; border: 1px solid #28B025; color: #fff;}
@@ -8525,7 +8525,12 @@ bottom: auto !important; top: 55px !important;
 
 /* Custom Invoice PDF */
 
+.searchPad {
+	position: relative; padding: 0px 240px 0px 0px;
+}
 
-
+.popCusDate {
+	left: 0px !important; top:135px !important;
+}
 
 

@@ -256,7 +256,7 @@ public class CustomInvoicePDFHelper {
 
 	public File createCustomInvoicePDF(Invoice invoice, OrgLocations orgLocation, User user, Org org,
 			String vendorCurrencyCode, String loginOrgCurrencyCode, CustomInvoiceTemplate customInvoiceTemplate,
-			String pdfType) {
+			String pdfType, String defaultFont) {
 		try {
 			File invoiceFile = new File(
 					orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime() + ".pdf");
@@ -306,19 +306,18 @@ public class CustomInvoicePDFHelper {
 										tableFlag1 = true;
 										break;
 									case "text":
-										cellBuilder1 = getTextDataFromJSON(jsonObject1, invoice.getOrgLocation(), user,
-												invoice, false);
+										cellBuilder1 = getTextDataFromJSON(jsonObject1, invoice.getOrgLocation(), user, invoice, false, defaultFont);
 										break;
 									case "footer":
-										cellBuilder1 = getFooterDataFromJSON(jsonObject1, invoice.getOrgLocation());
+										cellBuilder1 = getFooterDataFromJSON(jsonObject1, invoice.getOrgLocation(), defaultFont);
 										footerFlag1 = true;
 										break;
 									default:
-										cellBuilder1 = getEmptyDataFromJSON();
+										cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 										break;
 									}
 								} else {
-									cellBuilder1 = getEmptyDataFromJSON();
+									cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 									empty1 = true;
 								}
 								cellFlag1 = true;
@@ -343,19 +342,18 @@ public class CustomInvoicePDFHelper {
 										tableFlag2 = true;
 										break;
 									case "text":
-										cellBuilder2 = getTextDataFromJSON(jsonObject2, invoice.getOrgLocation(), user,
-												invoice, false);
+										cellBuilder2 = getTextDataFromJSON(jsonObject2, invoice.getOrgLocation(), user, invoice, false, defaultFont);
 										break;
 									case "footer":
-										cellBuilder2 = getFooterDataFromJSON(jsonObject2, invoice.getOrgLocation());
+										cellBuilder2 = getFooterDataFromJSON(jsonObject2, invoice.getOrgLocation(), defaultFont);
 										footerFlag2 = true;
 										break;
 									default:
-										cellBuilder2 = getEmptyDataFromJSON();
+										cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 										break;
 									}
 								} else {
-									cellBuilder2 = getEmptyDataFromJSON();
+									cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 									empty2 = true;
 								}
 								cellFlag2 = true;
@@ -366,7 +364,7 @@ public class CustomInvoicePDFHelper {
 										.setGap(50).add(cellBuilder1.heightFixedOnTop())
 										.add(cellBuilder2.heightFixedOnTop())).setFixedWidth(560);
 							} else if (cellFlag1 && cellBuilder1 != null) {
-								cellBuilder2 = getEmptyDataFromJSON();
+								cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 								if (tableFlag2) {
 									horizontalListBuilderArray[index].add(cmp.horizontalList().setStyle(stl.style(10))
 											.setGap(50).add(cellBuilder1.heightFixedOnTop())).setFixedWidth(560);
@@ -382,7 +380,7 @@ public class CustomInvoicePDFHelper {
 
 								}
 							} else if (cellFlag2 && cellBuilder2 != null) {
-								cellBuilder1 = getEmptyDataFromJSON();
+								cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 								if (tableFlag1) {
 									tableIndex = index;
 									if (empty1) {
@@ -454,19 +452,18 @@ public class CustomInvoicePDFHelper {
 										tableFlag1 = true;
 										break;
 									case "text":
-										cellBuilder1 = getTextDataFromJSON(jsonObject1, invoice.getOrgLocation(), user,
-												invoice, false);
+										cellBuilder1 = getTextDataFromJSON(jsonObject1, invoice.getOrgLocation(), user, invoice, false, defaultFont);
 										break;
 									case "footer":
-										cellBuilder1 = getFooterDataFromJSON(jsonObject1, invoice.getOrgLocation());
+										cellBuilder1 = getFooterDataFromJSON(jsonObject1, invoice.getOrgLocation(), defaultFont);
 										footerFlag1 = true;
 										break;
 									default:
-										cellBuilder1 = getEmptyDataFromJSON();
+										cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 										break;
 									}
 								} else {
-									cellBuilder1 = getEmptyDataFromJSON();
+									cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 									empty1 = true;
 								}
 								cellFlag1 = true;
@@ -485,25 +482,23 @@ public class CustomInvoicePDFHelper {
 											tableReport = getOtherTableDataFromJSON(jsonObject2,
 													invoice.getOrgLocation(), invoice.getInvoiceLineItems(), invoice);
 										} else {
-											tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(),
-													invoice.getInvoiceLineItems());
+											tableReport = getTableDataFromJSON(jsonObject2, invoice.getOrgLocation(), invoice.getInvoiceLineItems());
 										}
 										tableFlag2 = true;
 										break;
 									case "text":
-										cellBuilder2 = getTextDataFromJSON(jsonObject2, invoice.getOrgLocation(), user,
-												invoice, false);
+										cellBuilder2 = getTextDataFromJSON(jsonObject2, invoice.getOrgLocation(), user, invoice, false, defaultFont);
 										break;
 									case "footer":
-										cellBuilder2 = getFooterDataFromJSON(jsonObject2, invoice.getOrgLocation());
+										cellBuilder2 = getFooterDataFromJSON(jsonObject2, invoice.getOrgLocation(), defaultFont);
 										footerFlag2 = true;
 										break;
 									default:
-										cellBuilder2 = getEmptyDataFromJSON();
+										cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 										break;
 									}
 								} else {
-									cellBuilder2 = getEmptyDataFromJSON();
+									cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 									empty2 = true;
 								}
 								cellFlag2 = true;
@@ -514,7 +509,7 @@ public class CustomInvoicePDFHelper {
 										.setGap(50).add(cellBuilder1.heightFixedOnTop())
 										.add(cellBuilder2.heightFixedOnTop())).setFixedWidth(560);
 							} else if (cellFlag1 && cellBuilder1 != null) {
-								cellBuilder2 = getEmptyDataFromJSON();
+								cellBuilder2 = getEmptyDataFromJSON(defaultFont);
 								if (tableFlag2) {
 									horizontalListBuilderArray[index].add(cmp.horizontalList().setStyle(stl.style(10))
 											.setGap(50).add(cellBuilder1.heightFixedOnTop())).setFixedWidth(560);
@@ -530,7 +525,7 @@ public class CustomInvoicePDFHelper {
 
 								}
 							} else if (cellFlag2 && cellBuilder2 != null) {
-								cellBuilder1 = getEmptyDataFromJSON();
+								cellBuilder1 = getEmptyDataFromJSON(defaultFont);
 								if (tableFlag1) {
 									tableIndex = index;
 									if (empty1) {
@@ -1244,7 +1239,7 @@ public class CustomInvoicePDFHelper {
 		return tableReport;
 	}
 
-	private HorizontalListCellBuilder getFooterDataFromJSON(JSONObject jsonObject, OrgLocations orgLocations) {
+	private HorizontalListCellBuilder getFooterDataFromJSON(JSONObject jsonObject, OrgLocations orgLocations, String defaultFont) {
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style());
 		HorizontalListCellBuilder cellBuilder = null;
 		try {
@@ -1272,7 +1267,7 @@ public class CustomInvoicePDFHelper {
 					}
 				}
 				HorizontalAlignment textAlign = HorizontalAlignment.LEFT;
-				cellBuilder = cmp.hListCell(createSectionItem(textAlign, itemTitle, valuesArray, stylesArray, true))
+				cellBuilder = cmp.hListCell(createSectionItem(textAlign, itemTitle, valuesArray, stylesArray, true, defaultFont))
 						.heightFixedOnTop();
 			}
 		} catch (Exception e) {
@@ -1282,7 +1277,7 @@ public class CustomInvoicePDFHelper {
 	}
 
 	private HorizontalListCellBuilder getTextDataFromJSON(JSONObject jsonObject, OrgLocations orgLocation, User user,
-			Invoice invoice, boolean topBorderFlag) throws Exception {
+			Invoice invoice, boolean topBorderFlag, String defaultFont) throws Exception {
 		HorizontalListCellBuilder cellBuilder = null;
 		try {
 			String itemTitle = jsonObject.getString("name");
@@ -1309,7 +1304,7 @@ public class CustomInvoicePDFHelper {
 									valuesArray[0] = itemTitle;
 								}
 
-								stylesArray[0] = "font-family:Times New Roman;font-weight:400;font-size:16px;color:#545454;";
+								stylesArray[0] = "font-family:" + defaultFont + ";font-weight:400;font-size:16px;color:#545454;";
 								stylesArray[0] += (position % 2 == 0) ? "text-align:right;" : "text-align:left;";
 							}
 							stylesArray[i + 1] = subItemObject.getString("style");
@@ -1508,7 +1503,7 @@ public class CustomInvoicePDFHelper {
 				}
 
 				cellBuilder = cmp
-						.hListCell(createSectionItem(textAlign, itemTitle, valuesArray, stylesArray, topBorderFlag))
+						.hListCell(createSectionItem(textAlign, itemTitle, valuesArray, stylesArray, topBorderFlag, defaultFont))
 						.heightFixedOnTop();
 			}
 		} catch (JSONException e) {
@@ -1517,10 +1512,10 @@ public class CustomInvoicePDFHelper {
 		return cellBuilder;
 	}
 
-	private HorizontalListCellBuilder getEmptyDataFromJSON() {
+	private HorizontalListCellBuilder getEmptyDataFromJSON(String defaultFont) {
 		HorizontalListCellBuilder cellBuilder = null;
 		try {
-			cellBuilder = cmp.hListCell(createSectionItem(HorizontalAlignment.LEFT, "", null, null, false)).widthFixed()
+			cellBuilder = cmp.hListCell(createSectionItem(HorizontalAlignment.LEFT, "", null, null, false, defaultFont)).widthFixed()
 					.heightFixedOnTop();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1529,7 +1524,7 @@ public class CustomInvoicePDFHelper {
 	}
 
 	private ComponentBuilder<?, ?> createSectionItem(HorizontalAlignment horizontalAlignment, String label,
-			String[] args, String[] styles, boolean addTopBorder) {
+			String[] args, String[] styles, boolean addTopBorder, String defaultFont) {
 		HorizontalListBuilder list = null;
 		if (addTopBorder)
 			list = cmp.horizontalList().setBaseStyle(stl.style().setTopBorder(stl.pen1Point()));
@@ -1550,7 +1545,8 @@ public class CustomInvoicePDFHelper {
 									styleBuilder.setFontName(style[1]);
 								} catch (Exception e) {
 									System.out.println("Font Exception : " + style[1]);
-									styleBuilder.setFontName("Arial");
+									logger.error("Font Exception : " + style[1]);
+									styleBuilder.setFontName(defaultFont);
 								}
 								break;
 

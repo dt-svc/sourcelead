@@ -1,7 +1,9 @@
 package com.bis.sourcelead.web;
 
+import java.awt.GraphicsEnvironment;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -56,6 +58,9 @@ public class InvoiceController {
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${system.default.font}")
+	private String systemDefaultFont;
 	
 	@Autowired
 	 CandidateService candidateService;
@@ -273,7 +278,7 @@ public class InvoiceController {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if(projectId !=null && !"".equalsIgnoreCase(projectId) && !"null".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
-		}else if(invoice.getIsJobClosure().equals("Y")){
+		}else if(invoice.getIsJobClosure() !=null && invoice.getIsJobClosure().equals("Y")){
 			model.setViewName("billing/createInvoiceForJobClosure");
 		}else{
 			model.setViewName("billing/createInvoice");
@@ -685,6 +690,14 @@ public class InvoiceController {
 					modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByUUIDAndOrgRelationIdAndOrgLocationId(uuid, orgRelationId, orgLocationId, loggedInOrgLocations));
 					// modelAndView.addObject("invoiceTemplate", invoiceService.getCustomInvoiceTemplateListByOrgRelationIdAndOrgLocationId(orgRelationId, orgLocationId));
 				}
+				
+				List<String> fontList = new LinkedList<>();
+				GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+				for(String font : g.getAvailableFontFamilyNames()) {
+					fontList.add(font);
+				}
+				modelAndView.addObject("fonts", fontList);
+				modelAndView.addObject("systemDefaultFont", systemDefaultFont);
 				modelAndView.setViewName("billing/customInvoice");
 			} else {
 				modelAndView.setViewName("login");
@@ -694,5 +707,19 @@ public class InvoiceController {
 		}
 		return modelAndView;
 	}
+	
+/*	@RequestMapping(value="/getAvailableFonts")
+	@ResponseBody
+	public void getAvailableSystemFonts(HttpServletRequest request) {
+		try {
+			System.out.println("Available Fonts");
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			for(String font : g.getAvailableFontFamilyNames()) {
+				System.out.println(font);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
 	
 }
