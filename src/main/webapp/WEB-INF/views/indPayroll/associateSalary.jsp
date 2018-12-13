@@ -149,10 +149,11 @@
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
-                    <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <c:if test="${status == 'NEW' || status == 'NODATA'}">
-						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                    
-                    </c:if>
+                    <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+<%--                    <c:if test="${status == 'NEW' || status == 'NODATA'}">						     --%>
+<!-- 						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                     -->
+<%--                     </c:if>  --%>
                     </div>
                   </div>
                 </div>
