@@ -83,21 +83,6 @@ function datatableBody(){
  </script> -->
 		
 <script>
-$("#SearchExpensesData").keyup(function(event) {
-	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
-    if (event.keyCode === 13) {
-    	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
-    	var searchData = $('#SearchExpensesData').val();
-    	var regex =  new RegExp(/[\\]/g);
-    	if(regex.test(searchData) == false){
-    		getExpensesList();
-    	}else{
-    		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
-    	}
-    	$('#SearchExpensesData').val(searchData);
-    }
-});
-
 function searchExpensesDataIcon(){
 	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
 	var searchData = $('#SearchExpensesData').val();
