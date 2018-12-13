@@ -223,9 +223,9 @@ function contributionSummaryReportData(url) {
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75" id="usContributionTypeDiv">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-175" id="usContributionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
-											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
+											result = result+ '<td><div class="tblminwidth-175">--</div></td>';
 										} 
 										
 										return result;
@@ -254,7 +254,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.currentAmt != null && opt.currentAmt != '' && opt.currentAmt != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.currentAmt+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.currentAmt+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -269,7 +269,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.qtd != null && opt.qtd != '' && opt.qtd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.qtd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.qtd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -283,7 +283,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.ytd != null && opt.ytd != '' && opt.ytd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.ytd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.ytd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
