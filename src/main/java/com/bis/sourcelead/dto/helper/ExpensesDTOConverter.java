@@ -19,6 +19,7 @@ public class ExpensesDTOConverter {
 		expensesDTO.setExpenseAutoId(expenses.getExpenseId());
 		expensesDTO.setExpensePurpose(expenses.getPurpose());
 		expensesDTO.setTotalAmount(expenses.getTotalAmount()); 
+		expensesDTO.setTotalsubmittedAmount(expenses.getTotalsubmittedAmount());
 		
 		if(expenses.getOrgRelationUUID() != null){
 		expensesDTO.setOrgRelationUUID(expenses.getOrgRelationUUID());

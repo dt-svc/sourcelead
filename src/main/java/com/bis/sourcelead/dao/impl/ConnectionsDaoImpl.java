@@ -115,7 +115,7 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 					" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");
 			resultSqlQuery = resultSqlQuery.concat(subQuery.toString());
 		}
-		resultSqlQuery = resultSqlQuery.concat(" order by count DESC, userName");
+		resultSqlQuery = resultSqlQuery.concat(" order by count DESC");
 		Query queryString = session.createSQLQuery(resultSqlQuery);
 		queryString.setParameter("loginUserId", userId);// setting same parameters multiple times in query
 		if (status.equalsIgnoreCase("connected")) {

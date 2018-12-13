@@ -25,10 +25,12 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
 import com.bis.sourcelead.service.PayrollTaxService;
@@ -63,6 +65,9 @@ public class PayrollConfigurationController {
 	
 	@Autowired
 	private PayrollTaxService payrollTaxService;
+	
+	@Autowired
+	private PayrollPaySlipIndService payrollPaySlipIndService;
 	
 	
 	@RequestMapping(value = "/indPayrollConfiguration")
@@ -266,4 +271,42 @@ public class PayrollConfigurationController {
 		return modelAndView;
 	}
 
+	
+	/**
+	 * @author Laxman
+	 * @param request
+	 * @param paySlipUUID
+	 * @return model
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/payrollPaySlip")
+	public ModelAndView paySlip(HttpServletRequest request,@RequestParam(value="paySlipUUID", required=false)String paySlipUUID ) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		if(paySlipUUID != null && paySlipUUID != "") {
+			PayrollPaySlipInd payslipInd  = payrollPaySlipIndService.getPayrollPayslipByUUID(paySlipUUID);
+			model.addObject("payslipInd", payslipInd);
+		}
+		model.setViewName("indPayroll/payrollPaySlipInd");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	/**
+	 * @author Laxman
+	 * @param request
+	 * @return model
+	 */
+	@RequestMapping(value = "/payrollPaySlipView")
+	public ModelAndView payrollPaySlipView(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollPaySlipIndView");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
 }

@@ -12,7 +12,7 @@
             <div class="clearfix row minHeightcol5">
              <form:form id="associate_tax_form"  name="associate_tax_form" method="post">
               <div class="col-md-12 mb">
-                <div class="clearfix row">
+                <div class="clearfix row positionRelative">
                   <h4 class="col-md-12">Federal Tax</h4>
                   <div class="col-md-5">
                     <label>Filling Status<span class="text-danger">&nbsp;*</span></label>
@@ -175,6 +175,13 @@
                     </div>
                   </div>
                   
+                  <div class="infoMask infoMask1">
+               		<i class="fa fa-info-circle"></i>Associate will update information...
+               </div>
+               
+               </div>
+                  
+                  
 					<div class="clearfix"></div>
                   <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
@@ -188,7 +195,6 @@
                     </div>
                   </div>
                 </div>
-                </div>
               </div>
               </form:form>
             </div>
@@ -198,11 +204,20 @@
  <script type="text/javascript">
  function saveAssociateTax() {
 	 var userId = $("#associateId").val();  
+	 var assTaxButton = $("#associate_tax_button").val();
+	 if(assTaxButton == 'Proceed To Next Step'){
+		 var associateDeduction = document.getElementById("associateDeduction");
+			document.getElementById("associateDeduction").removeAttribute("class"); 
+			associateDeduction.href="#tab-4"; 
+			$("#associateDeduction").click();
+			$("#associate_tax_button").removeAttr("disabled");
+			//$("#associate_tax_button").addClass('button').val('Save & Continue');
+	 }else{
 		 if ($('#associate_tax_form').validate(false, validationSettings)){ 
 			   var formData = getFormData("associate_tax_form");
 				$("#associate_tax_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	            $( "#associate_tax_button" ).addClass('button').val('Processing..');
+//	            $( "#associate_tax_button" ).addClass('button').val('Processing..');
 	            
 	            $.ajax({
 					type : "POST",
@@ -236,9 +251,11 @@
 	            
 		        return true;
 			
-		  }else{
+		  }
+		else{
 			return false;
 		  } 
+	  }
     }
  
    $('body').on('blur', '#associate_tax_form', function() {
@@ -253,7 +270,10 @@ function shiftToBankingTab(){
 	document.getElementById("associateBanking").removeAttribute("class"); 
 	associates.href="#tab-2"; 
 	$("#loading").removeAttr('style');
-	$("#save_associate_bank_data_button" ).addClass('button').val('Save & Continue');
+	if($("#allowEmployeeToFill").is(':checked')){
+	    $("#save_associate_bank_data_button" ).addClass('button').val('Proceed To Next Step');
+	}
+	
     $("#save_associate_bank_data_button").removeAttr("disabled");
     $("#associateBanking").click();
 }

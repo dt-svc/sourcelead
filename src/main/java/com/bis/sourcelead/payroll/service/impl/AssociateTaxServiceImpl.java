@@ -168,7 +168,7 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		associateTax.setResidenceTaxAllowances(assTax.getResidenceTaxAllowances());
 		associateTax.setResidenceTaxAdditionnalWithHolding(assTax.getResidenceTaxAdditionnalWithHolding());
 		associateTax.setLocalTax(assTax.getLocalTax());
-		associateTax.setLocalTaxState(assTax.getLocalTax());
+		associateTax.setLocalTaxState(assTax.getLocalTaxState());
 		associateTax.setStatus(assTax.getStatus());
 		associateTax.setSupplementType(assTax.getSupplementType());
 		return associateTax;
@@ -262,10 +262,11 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	@Override
 	public AssociateTaxDTO findAssociateTaxSummaryByCandidateId(Long candidateId, OrgLocations orgLocation)
 	{
-		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
+		AssociateTaxDTO associateTaxDTO = null;
 		try {
 			AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByCandidateId(candidateId,orgLocation);
 			if(associateTax != null) {
+				associateTaxDTO = new AssociateTaxDTO();
 				associateTaxDTO.setId(associateTax.getId());
 				associateTaxDTO.setFederaltaxFillingStatus(associateTax.getFederalTaxFilliingStatus());
 				associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
@@ -307,16 +308,18 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 				}else {
 					associateTaxDTO.setSutaExempt("NO");
 				}
+				
+				StringBuilder sb = new StringBuilder();
+				if(orgLocation.getCity() != null && orgLocation.getState() != null) {
+					sb.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",").append(orgLocation.getCity());
+				}else {
+					sb.append(orgLocation.getCountry());
+				}
+				
+				associateTaxDTO.setLocation(sb.toString());
 			}
 			
-			StringBuilder sb = new StringBuilder();
-			if(orgLocation.getCity() != null && orgLocation.getState() != null) {
-				sb.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(",").append(orgLocation.getCity());
-			}else {
-				sb.append(orgLocation.getCountry());
-			}
 			
-			associateTaxDTO.setLocation(sb.toString());
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

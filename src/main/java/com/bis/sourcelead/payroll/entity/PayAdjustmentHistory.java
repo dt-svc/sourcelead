@@ -65,9 +65,14 @@ public class PayAdjustmentHistory {
 	@Column( name = "OVERTIME_HOURS")
 	private String overtimeHours;
 	
+	@Column( name = "PRE_LOP_AMOUNT")
+	private BigDecimal preLopAmount;
+	
 	@Column( name = "OVERTIME_HOURS_AMOUNT")
 	private BigDecimal overtimeHoursAmt;
 	
+	@Column( name = "LOP_AMOUNT")
+	private BigDecimal lopAmount;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -304,6 +309,26 @@ public class PayAdjustmentHistory {
 	public void setPayPerSalary(BigDecimal payPerSalary)
 	{
 		this.payPerSalary = payPerSalary;
+	}
+
+	public BigDecimal getPreLopAmount()
+	{
+		return preLopAmount;
+	}
+
+	public BigDecimal getLopAmount()
+	{
+		return lopAmount;
+	}
+
+	public void setPreLopAmount(BigDecimal preLopAmount)
+	{
+		this.preLopAmount = preLopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount)
+	{
+		this.lopAmount = lopAmount;
 	}
 	
 
