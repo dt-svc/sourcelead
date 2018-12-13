@@ -44,17 +44,22 @@ public class MarketplaceSalesOrder implements Serializable {
 	private Double totalResumePrice;
 	
 	@Column(name = "NO_OF_RESUMES")
-	private Double noOfResumes;
+	private String noOfResumes;
 	
 	@Column(name = "PAYMENT_ID" , columnDefinition = "TEXT default NULL")
 	private String paymentId;
 	
-	@Column(name = "CREATED_DATE ")
-	private Date createdDate;
+	@Column(name = "ORDER_DATE ")
+	private Date orderDate;
 	
-	@Column(name = "UPDATED_DATE ")
-	private Date updatedDate;
-	
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	@Column(name = "SALES_UUID ")
 	private String salesUuid;
 
@@ -116,11 +121,11 @@ public class MarketplaceSalesOrder implements Serializable {
 		this.totalResumePrice = totalResumePrice;
 	}
 
-	public Double getNoOfResumes() {
+	public String getNoOfResumes() {
 		return noOfResumes;
 	}
 
-	public void setNoOfResumes(Double noOfResumes) {
+	public void setNoOfResumes(String noOfResumes) {
 		this.noOfResumes = noOfResumes;
 	}
 
@@ -132,22 +137,6 @@ public class MarketplaceSalesOrder implements Serializable {
 		this.paymentId = paymentId;
 	}
 
-	
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
 
 	public String getSalesUuid() {
 		return salesUuid;

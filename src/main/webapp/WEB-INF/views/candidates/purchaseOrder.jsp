@@ -24,7 +24,7 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>${marketplacePurchaseOrder.createdDate}</label>
+                      <label>${marketplacePurchaseOrder.orderDate}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -36,37 +36,37 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Total Resumes :</label>
                     <div class="col-md-8">
-                      <label>${marketplacePurchaseOrder.totalresume}</label>
+                      <label>${marketplacePurchaseOrder.totalresume != null ? marketplacePurchaseOrder.totalresume : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Total Price :</label>
                     <div class="col-md-8">
-                      <label>${marketplacePurchaseOrder.totalPrice}</label>
+                      <label>${marketplacePurchaseOrder.totalPrice != null ? marketplacePurchaseOrder.totalPrice : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Service Fee :</label>
                     <div class="col-md-8">
-                      <label>${marketplacePurchaseOrder.serviceFee}</label>
+                      <label>${marketplacePurchaseOrder.serviceFee != null ? marketplacePurchaseOrder.serviceFee : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Discount :</label>
                     <div class="col-md-8 addressInvoice">
-                      <label>${marketplacePurchaseOrder.discount}</label>
+                      <label>${marketplacePurchaseOrder.discount != null ? marketplacePurchaseOrder.discount : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Tax :</label>
                     <div class="col-md-8 addressInvoice">
-                      <label>${marketplacePurchaseOrder.tax}</label>
+                      <label>${marketplacePurchaseOrder.tax  != null ? marketplacePurchaseOrder.tax : "---" }</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Grand Total :</label>
                     <div class="col-md-8">
-						<label class="text-primary textBold">${marketplacePurchaseOrder.grandTotal}</label>
+						<label class="text-primary textBold">${marketplacePurchaseOrder.grandTotal  != null ? marketplacePurchaseOrder.grandTotal : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -93,12 +93,12 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td><div class="tbldata-dotdot">${marketplacePurchaseOrder.candidateName}</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
+                      <td><div class="tbldata-dotdot">${marketplacePurchaseOrder.candidateName != null ? marketplacePurchaseOrder.candidateName : "---"}</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
                     </tr>
                   </tbody>
                 </table>

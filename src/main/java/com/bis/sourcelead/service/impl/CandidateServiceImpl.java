@@ -3080,7 +3080,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
 			newMarketplacePurchaseorder.setPurchaseUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
-			newMarketplacePurchaseorder.setCreatedDate(candidateMarketCart.getCreatedDate());
+			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
 			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
 			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
 			newMarketplacePurchaseorder.setPaymentStatus(Constants.SUCCESS);
@@ -3103,7 +3103,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
 		 newMarketplaceSalesorder.setSalesUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
-		 newMarketplaceSalesorder.setCreatedDate(candidateMarketCart.getCreatedDate());
+		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
 		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
 		 newMarketplaceSalesorder.setPaymentStatus(Constants.SUCCESS);
 		 newMarketplaceSalesorder.setCompanyName(sourceOrgName);
@@ -3127,17 +3127,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations)  throws Exception{
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
 		
-		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId());
+		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
 		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
 		for (MarketplacePurchaseOrder mps : purchaseOrder) {
 			
 			MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
-			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getCreatedDate());
+			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
 			
 			mpsDto.setOrderNo(mps.getOrderNo());
-			mpsDto.setCreatedDate(startTime);
+			mpsDto.setOrderDate(startTime);
 			mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
 			mpsDto.setDiscount(mps.getDiscount());
 			mpsDto.setGrandTotal(mps.getGrandTotal());
@@ -3158,9 +3158,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId());
 		
 		MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
-		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getCreatedDate());
+		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
 		mpsDto.setOrderNo(mps.getOrderNo());
-		mpsDto.setCreatedDate(startTime);
+		mpsDto.setOrderDate(startTime);
 		mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
 		mpsDto.setDiscount(mps.getDiscount());
 		mpsDto.setGrandTotal(mps.getGrandTotal());
@@ -3181,7 +3181,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			MarketplacePurchaseSalesDTO salesDto = new MarketplacePurchaseSalesDTO();
 			BeanUtils.copyProperties(sales, salesDto);
 			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
-			salesDto.setOrderDateStr(formattedTime);
+			salesDto.setOrderDate(formattedTime);
 			salesDtoList.add(salesDto);
 		}
 		return salesDtoList;
@@ -3195,9 +3195,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			salesOrderDto = new MarketplacePurchaseSalesDTO();
 			salesOrderDto.setOrderNo(sales.getOrderNo());
 			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
-			salesOrderDto.setOrderDateStr(formattedTime);
+			salesOrderDto.setOrderDate(formattedTime);
 			salesOrderDto.setCompanyName(sales.getCompanyName());
-			//salesOrderDto.setTotalresume(sales.getNoOfResumes());
+			salesOrderDto.setTotalresume(sales.getNoOfResumes());
 			salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
 			salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
 			salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());

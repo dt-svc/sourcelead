@@ -67,12 +67,9 @@ public class MarketplacePurchaseOrder implements Serializable {
 	@Column(name = "PAYMENT_ID", columnDefinition = "TEXT default NULL")
 	private String paymentId;
 	
-	@Column(name = "CREATED_DATE" )
-	private Date createdDate;
-	
-	@Column(name = "UPDATED_DATE" )
-	private Date updatedDate;
-	
+	@Column(name = "ORDER_DATE" )
+	private Date orderDate;
+		
 	@Column(name = "PURCHASE_UUID" )
 	private String purchaseUuid;
 	
@@ -191,20 +188,13 @@ public class MarketplacePurchaseOrder implements Serializable {
 		this.paymentId = paymentId;
 	}
 
-	public Date getCreatedDate() {
-		return createdDate;
+
+	public Date getOrderDate() {
+		return orderDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
 	}
 
 	public static long getSerialversionuid() {

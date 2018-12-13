@@ -26,13 +26,17 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String totalresume;
 	private String paymentId;
 	private String candidateName;
-	private String createdDate;
-	private String updatedDate;	
 	private String purchaseUuid;
 	private String salesUuid;
+	private String orderDate;
 	
 	
-	
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -99,18 +103,6 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
 	}
-	public String getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(String createdDate) {
-		this.createdDate = createdDate;
-	}
-	public String getUpdatedDate() {
-		return updatedDate;
-	}
-	public void setUpdatedDate(String updatedDate) {
-		this.updatedDate = updatedDate;
-	}
 	public String getPurchaseUuid() {
 		return purchaseUuid;
 	}
@@ -123,6 +115,7 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	public void setSalesUuid(String salesUuid) {
 		this.salesUuid = salesUuid;
 	}
+	
    
 	
 }
