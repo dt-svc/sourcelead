@@ -1639,10 +1639,12 @@ public class DashboardRestController {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
 					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+						if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
 						String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 						payTerm=payTerm.replaceAll("\\D", "");
 						Integer result = Integer.parseInt(payTerm);
 						rshDTO.setPayTerm(result);
+						}
 
 					}
 					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
@@ -2128,6 +2130,10 @@ public class DashboardRestController {
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
 					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
@@ -2248,7 +2254,9 @@ public class DashboardRestController {
 					if(rsh.getShiftName() !=null){
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
-					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());

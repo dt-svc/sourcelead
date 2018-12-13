@@ -168,7 +168,7 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		associateTax.setResidenceTaxAllowances(assTax.getResidenceTaxAllowances());
 		associateTax.setResidenceTaxAdditionnalWithHolding(assTax.getResidenceTaxAdditionnalWithHolding());
 		associateTax.setLocalTax(assTax.getLocalTax());
-		associateTax.setLocalTaxState(assTax.getLocalTax());
+		associateTax.setLocalTaxState(assTax.getLocalTaxState());
 		associateTax.setStatus(assTax.getStatus());
 		associateTax.setSupplementType(assTax.getSupplementType());
 		return associateTax;
