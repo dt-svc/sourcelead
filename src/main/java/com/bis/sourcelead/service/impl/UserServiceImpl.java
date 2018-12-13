@@ -2394,7 +2394,8 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
 		
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, locations, notificationScenario, new HashMap<String, String>());
+		System.out.println("Hello");
 	}
 
 	@Override
