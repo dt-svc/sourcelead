@@ -94,6 +94,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
      model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
+	 model.addObject("loginUserRole", loginUserRole);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
 	 model.setViewName("reports/recruitersReports");
 	 return model;

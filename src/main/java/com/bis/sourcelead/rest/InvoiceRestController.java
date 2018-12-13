@@ -118,6 +118,9 @@ import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
 @RequestMapping("/app")
 public class InvoiceRestController {
 	
+	@Value("${system.default.font}")
+	private String systemDefaultFont;
+	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
 	@Autowired
 	private OrgService orgService;
@@ -256,7 +259,7 @@ public class InvoiceRestController {
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					invoiceDTO.setStaticPath(staticPath);
-					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
 					if (null != invoice) {
 						if (null != invoice.getProjectID()) {
 							invoiceService.updateSubmissionApproverHiearachy(invoice, invoiceType);
@@ -302,7 +305,7 @@ public class InvoiceRestController {
 					if(StringUtils.isNotBlank(isJobClosure)){
 						invoiceDTO.setIsJobClosure(isJobClosure);	
 					}
-					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
 					// update requirement submission 
 					if(invoice !=null){
 					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
@@ -360,7 +363,7 @@ public class InvoiceRestController {
 					if(StringUtils.isNotBlank(isJobClosure)){
 						invoiceDTO.setIsJobClosure(isJobClosure);	
 					}
-					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO);
+					Invoice invoice = invoiceService.saveInvoice(user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceDTO, systemDefaultFont);
 					// update requirement submission 
 					if(invoice !=null){
 					Set<InvoiceLineItems> lineItemsList = invoice.getInvoiceLineItems();
@@ -2566,7 +2569,7 @@ return responseList;
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		Org org = orgLocation.getOrg();
-		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceCategory);
+		Invoice invoice = invoiceService.saveExpenseInvoice(invoiceDTO, user, orgLocation, saveType, invoiceType, org, currencyCode, invoiceCategory, systemDefaultFont);
 		if (invoice != null && invoice.getExpensesId() != null) {
 			invoiceService.updateExpensesForinvoice(invoice, invoiceType);
 		}
@@ -2762,7 +2765,7 @@ return responseList;
 			
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(5L);
-			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project");
+			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont);
 			/*if(file!= null){
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {

@@ -137,7 +137,7 @@ function showTextSettingsTab(ele) {
 		}
 		
 		//getting pre-filled values of activeElement
-		var fontFamily = savedFontFamily === "" ? "Arial" : savedFontFamily;
+		var fontFamily = savedFontFamily === "" ? systemDefaultFont : savedFontFamily;
 		var fontStyle = savedFontStyle === "" ? "" : savedFontStyle;
 		var fontWeight = savedFontWeight === "" ? "font-weight:400;" : savedFontWeight;
 		
@@ -224,6 +224,8 @@ function showTextSettingsTab(ele) {
 		$(ele).data("prev_padding_left", dataPaddingLeft);
 		
 		$(ele).data("style_saved", true);
+		
+		$(ele).attr("style", "font-family:" + fontFamily);
 		
 		//hiding other tabs and showing text-settings tab
 		$("#textSettingsTab").fadeIn();
@@ -355,7 +357,7 @@ function applyTextSettings(saveFlag) {
 }
 
 function refreshTextSettings() {
-	$("#textFontFamily").val("Arial");
+	$("#textFontFamily").val(systemDefaultFont);
 	$("#textFontStyle").val("font-weight:400;");
 	$("#textFontSize").val("medium");
 	$("#textFontAlign").val("left");
