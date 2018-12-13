@@ -672,9 +672,9 @@ public class UserServiceImpl implements UserService {
 			 * @author Laxman
 			 * Update the leaveTypes
 			 */
-//			if(associateBalance == true) {
+			if(associateBalance == true) {
 			     associateBalanceLeaveService.addAssociateLeaveType(user1,orgLocations.getId(),employee,userRole);
-//			}
+			}
 			
 			
 			/**

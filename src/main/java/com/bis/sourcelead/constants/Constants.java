@@ -204,7 +204,8 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
-	public static final String CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES= "CartDetailsMailToMarketPlaceCandidates";
+	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
+	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -249,6 +250,8 @@ public class Constants {
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	public static final String PURCHASED = "Purchased";
+	public static final String SUCCESS = "Success";
+	public static final String FAILED = "Failed";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
@@ -1356,6 +1359,9 @@ public class Constants {
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
 	
+
+	public static final String PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR = "purchasedCandidateDetailsToContributor";
+
 	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
 	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
 	public static final String PMS_Ticket_Status_Updated_Email = "PMSTicketStatusUpdatedEmail";
