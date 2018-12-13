@@ -2210,7 +2210,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	  				
 	  			 }
 	   			else{
-	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   				if(jsonObj.has("value") && StringUtils.isNotBlank(jsonObj.getString("value"))) {
+	   					jsonObj.put("value", jsonObj.getString("value"));
+	   				}
 	   			}
    			}
    			jsonArray.put(jsonObj);
