@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,12 +26,18 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String tax;
 	private String totalresume;
 	private String paymentId;
-	private Date orderDate;	
 	private String candidateName;
-	private String orderDateStr;	
+	private String purchaseUuid;
+	private String salesUuid;
+	private String orderDate;
+	private String description;
 	
-	
-	
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -97,20 +104,25 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
 	}
-	public Date getOrderDate() {
-		return orderDate;
+	public String getPurchaseUuid() {
+		return purchaseUuid;
 	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public void setPurchaseUuid(String purchaseUuid) {
+		this.purchaseUuid = purchaseUuid;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getSalesUuid() {
+		return salesUuid;
 	}
-	public String getOrderDateStr() {
-		return orderDateStr;
+	public void setSalesUuid(String salesUuid) {
+		this.salesUuid = salesUuid;
 	}
-	public void setOrderDateStr(String orderDateStr) {
-		this.orderDateStr = orderDateStr;
+	public String getDescription() {
+		return description;
 	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+   
 	
 }

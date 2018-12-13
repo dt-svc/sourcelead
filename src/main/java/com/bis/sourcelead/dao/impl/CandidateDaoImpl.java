@@ -2890,10 +2890,21 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) throws Exception{
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder queryBuilder2 = new StringBuilder("");
+			if(marketplacePurchaseSalesDTO != null){
+			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
+				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
+				if(sortColumnName.equalsIgnoreCase("totalPrice")){
+					queryBuilder2.append(" order by cmpth." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+				}else{
+					queryBuilder2.append(" order by cmpth.id " + marketplacePurchaseSalesDTO.getSortOrder());
+				}
+			}
+			}
 			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId";
 			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
 			return  marketplacePurchaseOrder;
@@ -2906,12 +2917,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id) throws Exception {
-		
+	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id) throws Exception {
+		      logger.debug("fetching single record from marketplace purchase table using uuid");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query="from MarketplacePurchaseOrder cmpth where cmpth.orderNo = :orderNo";
-			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("orderNo", orderNo).uniqueResult();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.purchaseUuid = :purchaseUuid";
+			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("purchaseUuid", purchaseUuid).uniqueResult();
 			return  marketplacePurchaseOrder;
 		}
 		catch(Exception e) {
