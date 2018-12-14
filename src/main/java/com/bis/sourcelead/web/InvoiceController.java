@@ -278,7 +278,7 @@ public class InvoiceController {
 			model.setViewName("billing/createExpensesReceivableInvoice");
 		}else if(projectId !=null && !"".equalsIgnoreCase(projectId) && !"null".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectReceivableInvoice");
-		}else if(invoice.getIsJobClosure().equals("Y")){
+		}else if(invoice.getIsJobClosure() !=null && invoice.getIsJobClosure().equals("Y")){
 			model.setViewName("billing/createInvoiceForJobClosure");
 		}else{
 			model.setViewName("billing/createInvoice");
