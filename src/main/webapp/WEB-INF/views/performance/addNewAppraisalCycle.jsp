@@ -44,7 +44,7 @@
 											id="appraisalDepartment" data-validation-optional="true">
 							  <c:forEach var="dept" items="${departmentList}">
 									<option value="${dept.id}">${dept.departmentName}</option>
-							</c:forEach>
+							  </c:forEach>
 							</select>          	
 					  </div>
 					</div> 
@@ -127,6 +127,7 @@
               </div>
             </div>
             </div>
+            
 	<div class="clearfix"></div>		
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 				<div class="clearfix">
@@ -142,6 +143,23 @@
 						</div>
 				</div>
 			</div>
+			
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+	   		  <h2>Add Categories</h2>
+				<div class="col-md-6">
+				  <label class="col-md-3">Categories</label>
+				  <div class="col-md-9">
+						<select  multiple class="chosen-select form-control"
+												name="appraisalCategories" data-placeholder="Categories"
+												id="appraisalCategories" data-validation-optional="true">
+						 <c:forEach var="categories" items="${categoriesList}">
+									<option value="${categories.id}">${categories.name}</option>
+							  </c:forEach>
+						</select>
+				  </div>
+				</div> 
+			<div class="clearfix"></div>
+		</div> 
 		  <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
 	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.saveAppraisalCycleDetails();" >Save</button>
@@ -168,6 +186,7 @@
     $('#appraisalDepartment').chosen();
     $('#appraisalRoles').chosen();
     $('#appraisalEmpType').chosen();
+    $('#appraisalCategories').chosen();
     
     $('.chosen-select').each(function() {
 			var $this = $(this);

@@ -117,6 +117,7 @@ public class PerformanceManagementController {
 		model.setViewName("performance/addNewAppraisalCycle");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("locationDateFormat", orgLocation.getDateFormat());
+		
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocation.getId(), Constants.MEMBER_ACTIVE);
 		model.addObject("departmentList", departmentList);
 		
@@ -125,6 +126,9 @@ public class PerformanceManagementController {
 		
 		List<String> employeeTypeList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
 		model.addObject("employeeTypeList", employeeTypeList);
+		
+		List<PerformanceFeedbackTemplate> categoriesList = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateList(orgLocation.getId());
+		model.addObject("categoriesList", categoriesList);
 		
 		return model;
 	}
