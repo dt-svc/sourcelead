@@ -1419,12 +1419,11 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/getDynamicSalesOrderList")
 	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
 	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-	 		 @RequestParam(value = "orderNo", required = false)String orderNo, 
 			 @RequestParam(value = "searchValue", required = false)String searchValue,	 
-			 HttpServletRequest request) throws Exception {
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 HttpServletRequest request)  {
 		try{
+			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
@@ -1436,13 +1435,13 @@ public class CandidateRestController {
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		}catch(Exception e){
-	  			e.printStackTrace();
-	  			return null;
-	  		}
-		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, orderNo, searchValue);
-		responseList.setData(salesOrderList);
-		return responseList;
+	  		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+	  		responseList.setData(salesOrderList);
+	  		return responseList;
+		}catch(Exception e){
+  			e.printStackTrace();
+  			return null;
+  		}
 	}
 	
 	/*
