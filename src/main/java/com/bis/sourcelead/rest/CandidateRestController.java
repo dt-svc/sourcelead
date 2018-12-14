@@ -1445,6 +1445,50 @@ public class CandidateRestController {
 		return responseList;
 	}
 	
-	
+	/*
+     *  walletList
+     */
+	 @RequestMapping(value = "/app/walletList")
+	 public ModelAndView goToWalletList(HttpServletRequest request) throws Exception {
+		logger.debug("inisde walletList  conroller =========>");
+		ModelAndView model = new ModelAndView();
+		model.setViewName("candidates/walletList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	 
+	    @RequestMapping(value = "/app/getWalletList", method = RequestMethod.POST)
+		public @ResponseBody ResponseList<MarketplacePurchaseSalesDTO> getWalletList(
+				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+				@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
+			ResponseList<MarketplacePurchaseSalesDTO> saleOrdersListDTOList = null;
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			marketplacePurchaseSalesDTO.setOrgLocationId(orgLocations.getId());
+			logger.debug("inisde getWalletList  conroller =========> --> ");
+			try {
+				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
+																															
+				// entity names
+				int sortColumnIndex = -1; // by default sorting using updated date
+				String sortColumnOrder = "desc"; // by default ascending order
+				if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(marketplacePurchaseSalesDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+					marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder); // direction
+				}
+
+				if (sortColumnIndex != -1)
+					marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+				saleOrdersListDTOList = candidateService.getWalletList(marketplacePurchaseSalesDTO,searchValue);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			logger.debug("after controller  getWalletList  --> " + saleOrdersListDTOList.getRecordsTotal());
+			
+			return saleOrdersListDTOList;
+		}
+
 }
 
