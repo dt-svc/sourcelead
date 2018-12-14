@@ -80,7 +80,8 @@ function PerformanceManagement(){
   		     success :function(response) {
   		    	    $("#performanceManagementDiv").empty();  
   		    	    $("#performanceManagementDiv").append(response);
-  		    	   performanceManagement.appraisalStartDateAndEndDatePickers();
+  		    	    performanceManagement.appraisalStartDateAndEndDatePickers();
+  		    	    performanceManagement.appraisalDescriptionEditor();
   				},
   			}); 
     }
@@ -220,57 +221,6 @@ function PerformanceManagement(){
    }
    
     
-  this.appraisalStartDateAndEndDatePickers = function(){
-	  var locationDateFormat = 'MM-dd-yyyy'; 
-	  var finalDateFormat = getJSDateFormat(locationDateFormat);
-	   $(function() {
-			  $('#appraisalStartDate').datepicker({
-			      dateFormat: finalDateFormat,
-			      changeMonth: true,
-			  	  changeYear: true, 
-			  	  maxDate:0,
-			  	  onSelect : function(selected) {
-			  		var dt = $(this).datepicker('getDate', '+1d');
-					dt.setDate(dt.getDate() + 1);
-					$("#appraisalEndDate").datepicker("option", "minDate", dt);
-					performanceManagement.validAppraisalDates();
-			 	  }
-			  });
-		  });
-	   
-	   
-	   
-	   $(function() {
-			  $('#appraisalEndDate').datepicker({
-			      dateFormat: finalDateFormat,
-			      changeMonth: true,
-			  	  changeYear: true, 
-			  	  maxDate:0,
-			  	  onSelect : function(selected) {
-			  		var dt = $(this).datepicker('getDate', '-1d');
-					dt.setDate(dt.getDate() - 1);
-					$("#appraisalStartDate").datepicker("option", "maxDate", dt);
-					performanceManagement.validAppraisalDates();
-			 	  }
-			  });
-		  });
-  }
-  
-  
-  this.validAppraisalDates = function(){
-	  var appraisalStartDate = document.getElementById("appraisalStartDate").value;
-		 if(appraisalStartDate){
-			 $('#appraisalStartDateDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-		
-	 var appraisalEndDate = document.getElementById("appraisalEndDate").value;
-		 if(appraisalEndDate){
-			 $('#appraisalEndDateDiv').find('p.jquery_form_error_message').remove(); 
-		 }
-  }
-  
-  
-  
   this.applicableType = function(){
   	 var applicableForRadio = $('input[name=applicableFor]');
        var applicableForType = applicableForRadio.filter(':checked').val();
@@ -327,6 +277,150 @@ function PerformanceManagement(){
   	$('#experienceMonths').append(result);
   }
 
+  this.appraisalStartDateAndEndDatePickers = function(){
+	  var locationDateFormat = 'MM-dd-yyyy'; 
+	  var finalDateFormat = getJSDateFormat(locationDateFormat);
+	   $(function() {
+			  $('#appraisalStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#appraisalEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+	   
+	   
+	   
+	   $(function() {
+			  $('#appraisalEndDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#appraisalStartDate").datepicker("option", "maxDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+	   
+	   
+	   
+		    $(function() {
+			  $('#selfAppraisalStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#selfAppraisalEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+		
+		
+		
+			$(function() {
+					  $('#selfAppraisalEndDate').datepicker({
+					      dateFormat: finalDateFormat,
+					      changeMonth: true,
+					  	  changeYear: true, 
+					  	  maxDate:0,
+					  	  onSelect : function(selected) {
+					  		var dt = $(this).datepicker('getDate', '-1d');
+							dt.setDate(dt.getDate() - 1);
+							$("#selfAppraisalStartDate").datepicker("option", "maxDate", dt);
+							performanceManagement.validAppraisalDates();
+					 	  }
+					  });
+		  });
+			
+			
+			
+		$(function() {
+			  $('#appraisalApprovingStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#appraisalApprovingEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+		
+		
+		
+			$(function() {
+					  $('#appraisalApprovingEndDate').datepicker({
+					      dateFormat: finalDateFormat,
+					      changeMonth: true,
+					  	  changeYear: true, 
+					  	  maxDate:0,
+					  	  onSelect : function(selected) {
+					  		var dt = $(this).datepicker('getDate', '-1d');
+							dt.setDate(dt.getDate() - 1);
+							$("#appraisalApprovingStartDate").datepicker("option", "maxDate", dt);
+							performanceManagement.validAppraisalDates();
+					 	  }
+					  });
+		  });
+			
+			
+  }
   
+  
+  this.validAppraisalDates = function(){
+	  var appraisalStartDate = document.getElementById("appraisalStartDate").value;
+		 if(appraisalStartDate){
+			 $('#appraisalStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		
+	 var appraisalEndDate = document.getElementById("appraisalEndDate").value;
+		 if(appraisalEndDate){
+			 $('#appraisalEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+		 
+     var selfAppraisalStartDate = document.getElementById("selfAppraisalStartDate").value;
+		 if(selfAppraisalStartDate){
+			 $('#selfAppraisalStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+     var selfAppraisalEndDate = document.getElementById("selfAppraisalEndDate").value;
+		 if(selfAppraisalEndDate){
+			 $('#selfAppraisalEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var appraisalApprovingStartDate = document.getElementById("appraisalApprovingStartDate").value;
+		 if(appraisalApprovingStartDate){
+			 $('#appraisalApprovingStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+     var appraisalApprovingEndDate = document.getElementById("appraisalApprovingEndDate").value;
+		 if(appraisalApprovingEndDate){
+			 $('#appraisalApprovingEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+  }
+  
+  this.appraisalDescriptionEditor = function(){
+	    $("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-4000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+  }
 	
 }

@@ -72,8 +72,29 @@
 							</select>         	
 					  </div>
 					</div>
+					
+					<div class="form-group">
+			          <label class="col-md-3">Self Appraisal</label>
+			          <div class="col-md-9">
+						  			  <div class="row">
+							  <div class="col-md-6" id="selfAppraisalStartDateDiv"><input type="text" class="form-control calendar" value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation="required" readonly="readonly" ></div>
+							  <div class="col-md-6" id="selfAppraisalEndDateDiv"><input type="text" class="form-control calendar" value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation="required" readonly="readonly" ></div>
+						  </div>
 			
-				<div class="clearfix">
+					  </div>
+			        </div>
+			        
+			        <div class="form-group">
+			          <label class="col-md-3">Approving From</label>
+			          <div class="col-md-9">
+						  <div class="row">
+							 <div class="col-md-6" id="appraisalApprovingStartDateDiv"><input type="text" class="form-control calendar" value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Self Appraisal Start Date" data-validation="required" readonly="readonly" ></div>
+							  <div class="col-md-6" id="appraisalApprovingEndDateDiv"><input type="text" class="form-control calendar" value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Self Appraisal End Date" data-validation="required" readonly="readonly" ></div>
+						  </div>
+					  </div>
+			        </div>
+			
+				<div class="form-group">
 						<span class="radioStyles mr">
 						<input id="applicableForAll" name="applicableFor"  value="All" type="radio" onClick="performanceManagement.applicableType();">
 						<label for="applicableForAll">All</label>
@@ -131,7 +152,6 @@
 		    </div>
 		    </div>
 	  </div>
- </div>
  
     
 
@@ -154,12 +174,4 @@
 			$this.next().css({'width': '100%'});
 	  })
 });
-</script>
-
-<script>
-		$(document).ready(function() {
-			$("#txtEditor").Editor();
-			$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-4000');
-			$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
-		});
 </script>
