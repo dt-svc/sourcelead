@@ -802,21 +802,27 @@ public class CandidateController {
 			return model;
 		}
 		
-		// Note this method is sales order  method
+		// Sales Order Controller.
 	    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
      	@RequestMapping(value = "/SalesOrder")
 	    public ModelAndView goToSalesOrder(
 	    		MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-	    		@RequestParam(value = "orderNo", required = true) String orderNo,
-	    		HttpServletRequest request) throws Exception {
-		  ModelAndView model = new ModelAndView();
-		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderByOrderNumber(orgLocations, orderNo);
-		  model.addObject("marketplaceSalesOrder", salesOrder);
-		  model.setViewName("candidates/salesOrder");
-		  model.addObject("sourceleadUrl", sourceleadUrl);
-		  return model;
+	    		@RequestParam(value = "salesUuid", required = true) String salesUuid,
+	    		HttpServletRequest request) {
+	    	try{
+	    		ModelAndView model = new ModelAndView();
+	    		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    		MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderBySalesUuid(orgLocations, salesUuid);
+	    		model.addObject("marketplaceSalesOrder", salesOrder);
+	    		model.setViewName("candidates/salesOrder");
+	    		model.addObject("sourceleadUrl", sourceleadUrl);
+	    		return model;
+	    	}catch(Exception e){
+	    		e.printStackTrace();
+	    		return null;
+	    	}
+		  
 	}
 	
 }
