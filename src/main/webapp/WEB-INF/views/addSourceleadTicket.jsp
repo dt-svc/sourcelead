@@ -115,11 +115,11 @@ $(function() {
 			         </div>
 		         </div>
 		         </c:if>
-		          <div class="timesheet_week_comm slticket" >
+		          <div class="timesheet_week_comm slticket width100percnt" >
 		          <div id="0ticketdocFileuploadFileGroup"> 
 		          <span>
 		          <input type="file"  id="0ticketdocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);">
-		          <i class="fa fa-refresh faRefresh" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
+		          <i class="fa fa-refresh faRefresh mt5" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
 		          <i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addTicketAttachment()"></i>
 		          </span> </div>
 		          </div>
@@ -155,7 +155,7 @@ $(function() {
 
 
   <div id="divTicketAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm slticket">
+	<div class="timesheet_week_comm slticket width100percnt">
 		<div class="" id="REPLACEROWIDticketdocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDticketdocFile'
 				id='REPLACEROWIDticketdocFile'

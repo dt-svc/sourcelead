@@ -60,6 +60,7 @@ import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -124,6 +125,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1513,11 +1515,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
 	    	
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	if(stateCode != null) {
-	    		candidate.setResidenceStateCode(stateCode);
+	    	if(StringUtils.isNotBlank(addUserDTO.getResidenceState()) && StringUtils.isNotBlank(addUserDTO.getResidenceCountry())) {
+	    		Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	if(stateCode != null) {
+		    		candidate.setResidenceStateCode(stateCode);
+		    	}
 	    	}
 	    	
 	    }
@@ -3076,6 +3079,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
 			newMarketplacePurchaseorder.setOrderNo(orderNo);
 			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
+			newMarketplacePurchaseorder.setPurchaseUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
 			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
 			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
@@ -3098,6 +3102,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
 		 newMarketplaceSalesorder.setOrderNo(orderNo);
 		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setSalesUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
 		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
 		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
@@ -3123,8 +3128,83 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) {
-		return candidateDao.getMarketplacePurchaseOrder(id);
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
+		
+		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
+		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
+		for (MarketplacePurchaseOrder mps : purchaseOrder) {
+			
+			MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+			
+			mpsDto.setOrderNo(mps.getOrderNo());
+			mpsDto.setOrderDate(startTime);
+			mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
+			mpsDto.setDiscount(mps.getDiscount());
+			mpsDto.setGrandTotal(mps.getGrandTotal());
+			mpsDto.setTotalPrice(mps.getTotalPrice());
+			mpsDto.setPaymentStatus(mps.getPaymentStatus());
+			mpsDto.setTotalresume(mps.getTotalresume());
+			mpsDto.setCompanyName(mps.getCompanyName());
+			mpsDto.setServiceFee(mps.getServiceFee());	
+			list.add(mpsDto);
+		}			
+		return list;
 	}
 
+	@Override
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations) throws Exception {
+		
+		
+		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId());
+		
+		MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+		mpsDto.setOrderNo(mps.getOrderNo());
+		mpsDto.setOrderDate(startTime);
+		mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
+		mpsDto.setDiscount(mps.getDiscount());
+		mpsDto.setGrandTotal(mps.getGrandTotal());
+		mpsDto.setTotalPrice(mps.getTotalPrice());
+		mpsDto.setPaymentStatus(mps.getPaymentStatus());
+		mpsDto.setTotalresume(mps.getTotalresume());
+		mpsDto.setCompanyName(mps.getCompanyName());
+		mpsDto.setServiceFee(mps.getServiceFee());
+		mpsDto.setCandidateName(mps.getCandidateMarketplace().getCandidateId().getFullName());
+		 return mpsDto;      
+	}
+
+	@Override
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations.getId(), orderNo, searchValue);
+		List<MarketplacePurchaseSalesDTO> salesDtoList = new ArrayList<>();
+		for(MarketplaceSalesOrder sales : salesOrder){
+			MarketplacePurchaseSalesDTO salesDto = new MarketplacePurchaseSalesDTO();
+			BeanUtils.copyProperties(sales, salesDto);
+			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
+			salesDto.setOrderDate(formattedTime);
+			salesDtoList.add(salesDto);
+		}
+		return salesDtoList;
+	}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo) throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(null, orgLocations.getId(), orderNo, null);
+		MarketplacePurchaseSalesDTO salesOrderDto = null;
+		for(MarketplaceSalesOrder sales : salesOrder){
+			salesOrderDto = new MarketplacePurchaseSalesDTO();
+			salesOrderDto.setOrderNo(sales.getOrderNo());
+			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
+			salesOrderDto.setOrderDate(formattedTime);
+			salesOrderDto.setCompanyName(sales.getCompanyName());
+			salesOrderDto.setTotalresume(sales.getNoOfResumes());
+			salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
+			salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
+			salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
+		}
+		return salesOrderDto;
+	}
+
+	
 }

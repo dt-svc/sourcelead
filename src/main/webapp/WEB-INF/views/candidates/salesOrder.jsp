@@ -13,48 +13,55 @@
     
     </section>
     <div class="clearfix backgroundWhite">
+		
 		<div class="col-md-12 mt mb">
+			
+		<div id="dynamicSalesOrderHeader">
+                <!-- Dynamic gridView here... -->
+				</div>
+							
 		<div class="invoiceview_area clearfix">
                 <div class="form-horizontal row">
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order No :</label>
                     <div class="col-md-8">
-                      <label><strong>MIS00414</strong></label>
+                      <label><strong>${marketplaceSalesOrder.orderNo != null ? marketplaceSalesOrder.orderNo : "---"}</strong></label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>2/07/2018</label>
+                      <label>${marketplaceSalesOrder.orderDate != null ? marketplaceSalesOrder.orderDate : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Name of the Company :</label>
                     <div class="col-md-8">
-                      <label>ANBC Corporation PVT. Ltd</label>
+                      <label>${marketplaceSalesOrder.companyName != null ? marketplaceSalesOrder.companyName : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">No. of Resumes :</label>
                     <div class="col-md-8">
-                      <label>150</label>
+                      <label>${marketplaceSalesOrder.totalresume != null ? marketplaceSalesOrder.totalresume : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Total Resumes Price :</label>
                     <div class="col-md-8">
-                      <label>112,2233</label>
+                      <label>${marketplaceSalesOrder.totalPrice != null ? marketplaceSalesOrder.totalPrice : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Payment Status :</label>
                     <div class="col-md-8">
-						<label class="text-success">Successful</label>
+						<label class="text-success">${marketplaceSalesOrder.paymentStatus != null ? marketplaceSalesOrder.paymentStatus : "---"}</label>
                       <p></p>
                     </div>
                   </div>
                 </div>
               </div>
+              
 		<div class="clearfix">
 		<div class="invoiceGridview clearfix">
                 <table width="100%" cellspacing="0" cellpadding="0">
@@ -70,12 +77,12 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td><div class="tbldata-dotdot">Rajat Rana</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
+                      <td><div class="tbldata-dotdot">${marketplaceSalesOrder.candidateName != null ? marketplaceSalesOrder.candidateName : "---"}</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
                     </tr>
                   </tbody>
                 </table>
@@ -83,6 +90,8 @@
 			
 		</div>
 		</div>
+		
+		
     </div>
   </section>
 </div>
@@ -139,6 +148,7 @@
 
 	});
 </script> 
+
 <script>	
 function getActions(){
 	$(".action-pop").slideToggle(200);

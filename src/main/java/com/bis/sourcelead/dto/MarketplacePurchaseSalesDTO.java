@@ -3,7 +3,16 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-public class MarketplacePurchaseSalesDTO implements Serializable{
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+
+
+public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -17,7 +26,24 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	private String tax;
 	private String totalresume;
 	private String paymentId;
-	private Date orderDate;
+	private String candidateName;
+	private String purchaseUuid;
+	private String salesUuid;
+	private String orderDate;
+	private String description;
+	
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
 	public String getOrderNo() {
 		return orderNo;
 	}
@@ -78,14 +104,25 @@ public class MarketplacePurchaseSalesDTO implements Serializable{
 	public void setPaymentId(String paymentId) {
 		this.paymentId = paymentId;
 	}
-	public Date getOrderDate() {
-		return orderDate;
+	public String getPurchaseUuid() {
+		return purchaseUuid;
 	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public void setPurchaseUuid(String purchaseUuid) {
+		this.purchaseUuid = purchaseUuid;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getSalesUuid() {
+		return salesUuid;
 	}
+	public void setSalesUuid(String salesUuid) {
+		this.salesUuid = salesUuid;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+   
 	
 }

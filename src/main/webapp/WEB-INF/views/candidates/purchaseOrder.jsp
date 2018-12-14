@@ -8,7 +8,7 @@
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Purchase Order</h2>
-      </div>
+      </div>  
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/PurchaseOrderList'/>">Purchase Order List</a>  &raquo;Purchase Order</div>
     </section>
     <div class="clearfix backgroundWhite">
@@ -18,61 +18,61 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order No :</label>
                     <div class="col-md-8">
-                      <label><strong>MIS00414</strong></label>
+                      <label><strong>${marketplacePurchaseOrder.orderNo}</strong></label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>2/07/2018</label>
+                      <label>${marketplacePurchaseOrder.orderDate}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order By :</label>
                     <div class="col-md-8">
-                      <label>ANBC Corporation PVT. Ltd</label>
+                      <label>${marketplacePurchaseOrder.companyName}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Total Resumes :</label>
                     <div class="col-md-8">
-                      <label>150</label>
+                      <label>${marketplacePurchaseOrder.totalresume != null ? marketplacePurchaseOrder.totalresume : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Total Price :</label>
                     <div class="col-md-8">
-                      <label>112,2233</label>
+                      <label>${marketplacePurchaseOrder.totalPrice != null ? marketplacePurchaseOrder.totalPrice : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Service Fee :</label>
                     <div class="col-md-8">
-                      <label>20%</label>
+                      <label>${marketplacePurchaseOrder.serviceFee != null ? marketplacePurchaseOrder.serviceFee : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Discount :</label>
                     <div class="col-md-8 addressInvoice">
-                      <label>2%</label>
+                      <label>${marketplacePurchaseOrder.discount != null ? marketplacePurchaseOrder.discount : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Tax :</label>
                     <div class="col-md-8 addressInvoice">
-                      <label>10%</label>
+                      <label>${marketplacePurchaseOrder.tax  != null ? marketplacePurchaseOrder.tax : "---" }</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Grand Total :</label>
                     <div class="col-md-8">
-						<label class="text-primary textBold">123333.00</label>
+						<label class="text-primary textBold">${marketplacePurchaseOrder.grandTotal  != null ? marketplacePurchaseOrder.grandTotal : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Payment Status :</label>
                     <div class="col-md-8">
-						<label class="text-success">Successful</label>
+						<label class="text-success">${marketplacePurchaseOrder.paymentStatus}</label>
                       <p></p>
                     </div>
                   </div>
@@ -93,12 +93,12 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td><div class="tbldata-dotdot">Ramkishore Kumar Adibatal</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
-                      <td><div class="tblminwidth-100">0022557788</div></td>
+                      <td><div class="tbldata-dotdot">${marketplacePurchaseOrder.candidateName != null ? marketplacePurchaseOrder.candidateName : "---"}</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
+                      <td><div class="tblminwidth-100">---</div></td>
                     </tr>
                   </tbody>
                 </table>
