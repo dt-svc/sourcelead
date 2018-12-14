@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -38,6 +43,12 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceFeedbackTemplateService performanceFeedbackTemplateService;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	RolesService rolesService;
 	
 	
 	
@@ -99,11 +110,22 @@ public class PerformanceManagementController {
 	
 	
 	@RequestMapping(value = "/addNewAppraisalCycle")
-	public ModelAndView addNewAppraisalCycle(HttpServletRequest request)
+	public ModelAndView addNewAppraisalCycle(HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		model.setViewName("performance/addNewAppraisalCycle");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("locationDateFormat", orgLocation.getDateFormat());
+		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocation.getId(), Constants.MEMBER_ACTIVE);
+		model.addObject("departmentList", departmentList);
+		
+		List<Roles> rolesList = rolesService.getRoles(orgLocation.getId());
+		model.addObject("rolesList", rolesList);
+		
+		List<String> employeeTypeList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
+		model.addObject("employeeTypeList", employeeTypeList);
+		
 		return model;
 	}
 	

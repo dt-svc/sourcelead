@@ -5,6 +5,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 <script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->

@@ -80,6 +80,7 @@ function PerformanceManagement(){
   		     success :function(response) {
   		    	    $("#performanceManagementDiv").empty();  
   		    	    $("#performanceManagementDiv").append(response);
+  		    	   performanceManagement.appraisalStartDateAndEndDatePickers();
   				},
   			}); 
     }
@@ -203,7 +204,6 @@ function PerformanceManagement(){
  			    	 
  			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
  	     	    		    showError("Invalid User");
- 	     	    		   // $("#badgeDetailsLoading").removeAttr('style');
  	     	    		}
  			        	else if (response === "AWKWARD") {
  			        	    location.href = "/errorPage";
@@ -218,5 +218,115 @@ function PerformanceManagement(){
  					},
  				}); 
    }
+   
+    
+  this.appraisalStartDateAndEndDatePickers = function(){
+	  var locationDateFormat = 'MM-dd-yyyy'; 
+	  var finalDateFormat = getJSDateFormat(locationDateFormat);
+	   $(function() {
+			  $('#appraisalStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#appraisalEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+	   
+	   
+	   
+	   $(function() {
+			  $('#appraisalEndDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  maxDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#appraisalStartDate").datepicker("option", "maxDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+		  });
+  }
+  
+  
+  this.validAppraisalDates = function(){
+	  var appraisalStartDate = document.getElementById("appraisalStartDate").value;
+		 if(appraisalStartDate){
+			 $('#appraisalStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		
+	 var appraisalEndDate = document.getElementById("appraisalEndDate").value;
+		 if(appraisalEndDate){
+			 $('#appraisalEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+  }
+  
+  
+  
+  this.applicableType = function(){
+  	 var applicableForRadio = $('input[name=applicableFor]');
+       var applicableForType = applicableForRadio.filter(':checked').val();
+       if(applicableForType == 'Experienced'){
+      	 $('#experienceYears').removeAttr('data-validation-optional');
+   		 $('#experienceYears').attr("data-validation","required");
+   		 
+   		 $('#experienceMonths').removeAttr('data-validation-optional');
+   		 $('#experienceMonths').attr("data-validation","required");
+   		 document.getElementById("experienceDiv").style.display="";
+   		 performanceManagement.getYearsDropDownCount();
+    	 performanceManagement.getMonthsDropDownCount();
+   		
+       }else{
+      	 $('#experienceYears').val('');
+      	 $('#experienceMonths').val('');
+      	 
+      	 $('#experienceYears').attr('data-validation-optional');
+   		 $('#experienceYears').removeAttr("data-validation","required");
+   		 
+   		 $('#experienceMonths').attr('data-validation-optional');
+   		 $('#experienceMonths').removeAttr("data-validation","required"); 
+   		 
+   		 $('#experienceYearsDiv').find('p.jquery_form_error_message').remove(); 
+   		 $('#experienceMonthsDiv').find('p.jquery_form_error_message').remove(); 
+   		 document.getElementById("experienceDiv").style.display="none";
+       }
+  }
+
+  this.getYearsDropDownCount = function(){
+  	var i = "";
+  	result = "";
+  	result = result
+  	+ '("<option selected value="">Select Years</option>")';
+  	for (var i = 0; i <= 50; i++) {
+  		result = result + '("<option value='+i+'>' + i + '</option>")';
+  		
+  	}
+  	result = result + '</select>';
+  	$('#experienceYears').empty();
+  	$('#experienceYears').append(result);
+  }
+
+  this.getMonthsDropDownCount = function(){
+  	var i = "";
+  	result = "";
+  	result = result
+  	+ '("<option selected value="">Select Months</option>")';
+  	for (var i = 0; i <= 12; i++) {
+  		result = result + '("<option value='+i+'>' + i + '</option>")';
+  	}
+  	result = result + '</select>';
+  	$('#experienceMonths').empty();
+  	$('#experienceMonths').append(result);
+  }
+
+  
 	
 }
