@@ -253,6 +253,10 @@ $(document).ready(function() {
 	  $("#overViewDiv").show();
 	  $("#searchDivForEmployee").hide();
 	  $("#reviewPayrollDiv").show();
+	  $('#payrollPayDateDivId').find('p.jquery_form_error_message').remove();
+	  $('#payTypeIdDiv').find('p.jquery_form_error_message').remove();
+	  $('#payPeriodDiv').find('p.jquery_form_error_message').remove();
+	  $('#groupIdDiv').find('p.jquery_form_error_message').remove();
   }
   </script>
   
