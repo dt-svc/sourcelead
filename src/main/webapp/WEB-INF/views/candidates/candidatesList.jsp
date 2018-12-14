@@ -1111,6 +1111,7 @@ function imageCancel(){
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
          <div class="clearfix"></div>
          </sec:authorize>
      </ul>
@@ -3170,5 +3171,10 @@ function goToPurchaseOrderList(){
 function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
+
+function goToWalletList(){
+	location.href = "${appPath}/walletList";
+}
+
 </script> 
 <jsp:include page="../masterFooter.jsp" /> 
