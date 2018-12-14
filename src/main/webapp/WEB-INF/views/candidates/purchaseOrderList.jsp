@@ -22,11 +22,12 @@ $(document).ready(function(){
     
           <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-            <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
-             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>        
+          <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li> 
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
          <div class="clearfix"></div>         
      </ul>
 </div>
@@ -83,7 +84,10 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-  
+	function goToWalletList(){
+	    location.href = "${appPath}/walletList";
+	}
+
   </script>
   
   <script>

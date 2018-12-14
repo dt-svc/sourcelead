@@ -2963,5 +2963,73 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
+			String searchValue) {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug(" inside getWalletList searchValue is: " + searchValue);
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+
+		List<MarketplaceSalesOrder> marketplaceSalesOrderList = null;
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+		try {
+
+			StringBuilder query1 = new StringBuilder("");
+			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+				
+				query1.append(" or (saleOrder.totalResumePrice like '%" + searchValue + "%' )");
+				query1.append(" or (saleOrder.orderNo like '%" + searchValue + "%' )) ");
+			}
+			StringBuilder query2 = new StringBuilder("");
+			String sortingQry = "";
+			if (StringUtils.isNotBlank(saleOrdersListDTO.getSortColumn())) {
+				String sortColumnName = saleOrdersListDTO.getSortColumn();
+				if(sortColumnName.equalsIgnoreCase("marketPrice")){
+					sortingQry = " order by saleOrder." + sortColumnName + " " + saleOrdersListDTO.getSortOrder();
+				}
+			}
+			String  listQuery = "from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			String 	listQueryCount = "select count(*) from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			Query hqlQuery = session.createQuery(listQuery);
+			marketplaceSalesOrderList = hqlQuery.setFirstResult(saleOrdersListDTO.getStart()).setMaxResults(saleOrdersListDTO.getLength()).setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			Query hqlQuery1 = session.createQuery(listQueryCount);
+			countlist = hqlQuery1.setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			int totalCount = 0;
+			if (saleOrdersListDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			List<MarketplacePurchaseSalesDTO> globalMarketCandDTOList = new ArrayList<MarketplacePurchaseSalesDTO>();
+			Double totalSum =0d;
+			for (MarketplaceSalesOrder source : marketplaceSalesOrderList) {
+				MarketplacePurchaseSalesDTO target = new MarketplacePurchaseSalesDTO();
+				
+				target.setOrderDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getOrderDate()));
+				target.setTotalPrice(source.getTotalResumePrice());
+				target.setOrderNo(source.getOrderNo());
+				//Total Sum Amount calculation for View Purpose(Above The Table In walletList.Jsp)
+				totalSum = totalSum + source.getTotalResumePrice();
+				target.setSumOfOrdersAmount(totalSum);
+				
+				globalMarketCandDTOList.add(target);
+			}
+			logger.debug(" After executing query result  list size is :::>>" + marketplaceSalesOrderList.size());
+			responseList.setData(globalMarketCandDTOList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
 
 }

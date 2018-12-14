@@ -32,6 +32,9 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String orderDate;
 	private String description;
 	
+	private Double sumOfOrdersAmount;
+	private Long orgLocationId;
+	
 	public String getOrderDate() {
 		return orderDate;
 	}
@@ -122,7 +125,17 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-   
+	public Double getSumOfOrdersAmount() {
+		return sumOfOrdersAmount;
+	}
+	public void setSumOfOrdersAmount(Double sumOfOrdersAmount) {
+		this.sumOfOrdersAmount = sumOfOrdersAmount;
+	}
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
 	
 }

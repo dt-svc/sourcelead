@@ -317,5 +317,7 @@ public interface CandidateService {
 	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception;
 
 	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo)throws Exception;
+	
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO, String searchValue);
 
 }
