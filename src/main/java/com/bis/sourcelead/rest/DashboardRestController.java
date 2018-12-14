@@ -1658,11 +1658,14 @@ public class DashboardRestController {
 					
 					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 //						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
-						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
-						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
-					}
+						if(rshDTO.getPayTerm() != 0){
+							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
+							DateTime dtOrg = new DateTime(generatedInvoiceDate);
+							DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+							rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+							
+						}
+}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
 						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
