@@ -10,7 +10,7 @@
         <h2>Contribution Summary</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
-      <a href="<c:url value='${appPath}/usPayrollReport'/>"> USPayroll Reports List</a>&raquo;Contribution Summary
+      <a href="<c:url value='${appPath}/usPayrollReport'/>"> US Payroll Reports List</a>&raquo;Contribution Summary
 		</div>
     </section>
     <div class="contentareaInner-styles clearfix">
@@ -20,7 +20,7 @@
 		  <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12 paddingRight">From Date<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-12">
+				<div class="col-md-12" id="fromDateDiv">
 					<input type="text" class="form-control calendar" readonly field-name="From Date" id="fromDate" data-validation="required">
 				</div>
             </div>
@@ -28,7 +28,7 @@
             <div class="col-md-5">
             <div class="form-group">
               <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <div class="col-md-12" id="toDateDiv">
                 <input type="text" class="form-control calendar" readonly field-name="To Date" id="toDate" data-validation="required">
               </div>
             </div>
@@ -118,6 +118,7 @@ $(".overIcon, .newActPop").click(function(e){
 				var dt = $(this).datepicker('getDate', '+1d');
 				dt.setDate(dt.getDate());
 				$("#toDate").datepicker("option", "minDate", dt);
+				removeFromDateValid();
 				}
 			});
 		
@@ -129,11 +130,21 @@ $(".overIcon, .newActPop").click(function(e){
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
 			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeToDateValid();
 			}
 		});
 	});
+	
+	function removeFromDateValid(){
+		$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+	}
+
+	function removeToDateValid(){
+		$('#toDateDiv').find('p.jquery_form_error_message').remove();
+	}
 </script>
 
+<div id="popUp"></div>
 <script>
 function runContributionSummary(){
 	
@@ -151,6 +162,11 @@ function runContributionSummary(){
 	}  
 	
 }
+$('body').on('blur', '#contribution_summary_report_form', function() {
+	$("#contribution_summary_report_form").showHelpOnFocus();
+	$("#contribution_summary_report_form").validateOnBlur(false, validationSettings);
+});
+
 
 
 function contributionSummaryReportsList(url) {
@@ -204,13 +220,12 @@ function contributionSummaryReportData(url) {
 									"data" : "type",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										
 										var result = "";
 										
 										if(opt.deductionType != null && opt.deductionType != '' && opt.deductionType != 'undefined'){
-											result = result+ '<td><div class="tblminwidth-75">'+opt.deductionType+'</div></td>';
+											result = result+ '<td><div class="tblminwidth-175" id="usContributionTypeDiv">'+opt.deductionType+'</div></td>';
 										}else{
-											result = result+ '<td><div class="tblminwidth-75">--</div></td>';
+											result = result+ '<td><div class="tblminwidth-175">--</div></td>';
 										} 
 										
 										return result;
@@ -239,7 +254,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.currentAmt != null && opt.currentAmt != '' && opt.currentAmt != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.currentAmt+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.currentAmt+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -254,7 +269,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.qtd != null && opt.qtd != '' && opt.qtd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.qtd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.qtd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -268,7 +283,7 @@ function contributionSummaryReportData(url) {
 									"render" : function(data, type, opt,meta) {
 										var result = "";
 										if(opt.ytd != null && opt.ytd != '' && opt.ytd != 'undefined'){
-											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar"style="color:#454545;"></i><div>'+opt.ytd+'</div></td>';
+											result = result + '<td class="tblminwidth-75"><i class="fa fa-dollar mr5"style="color:#454545;"></i>'+opt.ytd+'</td>';
 										}else{
 											result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 										}
@@ -313,9 +328,30 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
+     var usContribution = $('#usContributionTypeDiv').html();
+ 	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=pdf";
- }
+ 	}else{
+		var result = " ";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Summary List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
  
+ </script>
+
+ <script type="text/javascript">
+ function cancelExport(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
+ }
  </script>
  
    <script>
@@ -324,11 +360,30 @@ function resetDiv(){
 	 searchValue = searchValue ? searchValue : "";
      var fromDate = $("#fromDate").val();
      var toDate = $("#toDate").val();
+     var usContribution = $('#usContributionTypeDiv').html();
+  	if(usContribution != null && usContribution !='' && usContribution !='undefined'){
 	 window.location.href = sourceleadUrl+"/exportdeductionContributionSummaryReport?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&searchValue="+searchValue+"&type=CONTRIBUTION&exportType=xls";
+ }else{
+		var result = " ";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Contribution Summary List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_receivable_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+<script type="text/javascript">
+ function cancelExport(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
  }
- 
- </script>
-  
+ </script>  
 
 
 <jsp:include page="../masterFooter.jsp" />

@@ -72,7 +72,7 @@ $(document).ready(function(){
        <div class="col-md-2" id="getPaidBillreport">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getReceivedInvoicereport();">Run</button>
 		</div>
-        <div class="col-md-1">
+       <!--  <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="glyphicon glyphicon-export"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -80,7 +80,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Best recruiters  -->
       <div class="content-dashboard clearfix"> 

@@ -2017,7 +2017,9 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName,"
 				+ " CAND.MOBILE_PHONE AS phoneNumber, " + " CAND.EMAIL AS email, " + " CAND.LOCATION AS location, "
 				+ " CAND.COUNTRY AS country, " + " CAND.STATE AS state, " + " CAND.CITY AS city, "
-				+ " CAND.NOTICE_PERIOD AS noticePeriod, " + " CAND.PROFILE_PERCENTAGE AS profilePercentage "
+				+ " CAND.NOTICE_PERIOD AS noticePeriod, " + " CAND.PROFILE_PERCENTAGE AS profilePercentage, "
+				+ " CAND.CURRENT_RATE AS currentRate, " + " CAND.CURRENT_RATE_TYPE AS currentRateType, "  + " CAND.CURRENT_RATE_CURRENCY AS currentRateCurrency, "
+				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey "
 				+ " FROM CANDIDATE CAND " + " WHERE " + " CAND.ID = :candidateId ";
 
 		Query queryObj = session.createSQLQuery(query);
@@ -2888,10 +2890,21 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id) throws Exception{
+	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder queryBuilder2 = new StringBuilder("");
+			if(marketplacePurchaseSalesDTO != null){
+			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
+				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
+				if(sortColumnName.equalsIgnoreCase("totalPrice")){
+					queryBuilder2.append(" order by cmpth." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+				}else{
+					queryBuilder2.append(" order by cmpth.id " + marketplacePurchaseSalesDTO.getSortOrder());
+				}
+			}
+			}
 			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId";
 			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
 			return  marketplacePurchaseOrder;
@@ -2904,12 +2917,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public MarketplacePurchaseOrder getPurchaseDetailByOrderNo(String orderNo, Long id) throws Exception {
-		
+	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id) throws Exception {
+		      logger.debug("fetching single record from marketplace purchase table using uuid");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query="from MarketplacePurchaseOrder cmpth where cmpth.orderNo = :orderNo";
-			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("orderNo", orderNo).uniqueResult();
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.purchaseUuid = :purchaseUuid";
+			MarketplacePurchaseOrder marketplacePurchaseOrder=  (MarketplacePurchaseOrder) session.createQuery(query).setString("purchaseUuid", purchaseUuid).uniqueResult();
 			return  marketplacePurchaseOrder;
 		}
 		catch(Exception e) {

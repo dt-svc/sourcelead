@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,6 +29,9 @@ import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -141,8 +145,10 @@ public interface LeaveService {
 	
 	
     Float getTakenLeavesByOrgLocationIdAndUserId(Long leaveId,Long userId,Long orglocationId)throws Exception;
+
+    Set<PayrollLopHis> getLeaveByFrequency(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, EmployeePayroll employeePayroll);
     
-    
+    Set<PayrollLopHis> getLeaveByFrequencyInd(Long candidateId, Date freqStartDate, Date freqEndDate, OrgLocations orgLocation, IndEmployeePayroll employeePayroll);
 }
 
 

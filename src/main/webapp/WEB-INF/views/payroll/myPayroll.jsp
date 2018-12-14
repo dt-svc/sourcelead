@@ -146,18 +146,6 @@ function loansAdvances(){
                						</tr>
                					</thead>
                					<tbody id="postTaxDeductioDIV">
-               						<!-- <tr>
-               							<td>401(R)</td>
-               							<td>50$</td>
-               						</tr>
-               						<tr>
-               							<td>Post Tax</td>
-               							<td>50$</td>
-               						</tr>
-               						<tr>
-               							<td><strong>Total</strong></td>
-               							<td>100$</td>
-               						</tr> -->
                					</tbody>
                				</table>
                		</div>
@@ -336,18 +324,7 @@ function loansAdvances(){
                						</tr>
                					</thead>
                					<tbody id="loanAdvDiv">
-               						<!-- <tr>
-               							<td>401(R)</td>
-               							<td>999$</td>
-               						</tr>
-               						<tr>
-               							<td>Post Tax</td>
-               							<td>999$</td>
-               						</tr>
-               						<tr>
-               							<td><strong>Total</strong></td>
-               							<td>999$</td>
-               						</tr> -->
+               						
                					</tbody>
                				</table>
                		</div>
@@ -361,21 +338,6 @@ function loansAdvances(){
                  </div>
                  </div>					
                <div class="clearfix"></div>
-               
-               
-               <!--  <div class="clearfix"></div>
-                 <div class="clearfix footerstyelsNew">
-                 <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack">Skip</a>
-			     </div>
-                  <div class="col-md-6">
-                   <div class="pull-right">
-                    <input value="Save & Continue" class="btn btn-success btnSuccess" type="button">
-                    <input value="Cancel" class="btn btn-default ml10" type="button">
-                    </div>
-                  </div>
-                </div> -->
-              
             </div>
       </div>
       

@@ -674,12 +674,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 					 subQueryStr = subQueryStr+" and date(pt.dueDate) BETWEEN '"+customeStartDate+"' and '"+customeEndDate+"' ";
 				 }
 				 
-		String query = "from ProjectTasks pt where pt.projectId.orgLocationsId.id = :orgLocationId and pt.status='1'"
+		String query = "from ProjectTasks pt where pt.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orgLocationId) and pt.status='1'"
 				+ " and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC "+query1+" "+subQueryStr+" "+sortingQry+" " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setLong("orgLocationId", projectTasksDTO.getOrgLocationId()).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDate).setDate("endDateUTC", endDate).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list(); 
 		
 		String queryStrForCount = "Select count (*) from ProjectTasks pt "
-				+ " where pt.projectId.orgLocationsId.id = :orgLocationId and pt.status='1' "
+				+ " where pt.projectId.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.id = :orgLocationId)  and pt.status='1' "
 				+ "and pt.dueDate < :dt and pt.createdDate >= :startDateUTC and pt.createdDate <= :endDateUTC "+query1+" "+subQueryStr+" "+sortingQry+" ";
 		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", projectTasksDTO.getOrgLocationId()).setDate("dt", commonUtil.currentDate()).setDate("startDateUTC", startDate).setDate("endDateUTC", endDate).list();
 

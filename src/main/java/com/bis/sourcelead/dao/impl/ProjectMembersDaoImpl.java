@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -226,8 +227,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 														.setLong("orgRelationId", orgRelationId)
 				                                        .setLong("orgLocationId", orgLocationId)
 				                                        .setLong("projectId", projectId)
-				                                        
-				                                        .list(); 
+				                                    	.list(); 
 		      
 	    return projectMembersList.size();
 }
@@ -356,8 +356,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).list();
 		return projectMemberList;
 	}
-	
-	
 	
 	
 	@Override
@@ -591,11 +589,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	    	 frequencyQuery = " and pm.projects.invoiceFrequency = :timesheetFrequency ";
 	     }
 	     
+	     String globalUserQueryForApMechnism = "";
+		    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQueryForApMechnism = " and  pah.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+		    }else {
+		    	globalUserQueryForApMechnism = " and  pah.projectClientsId.orgLocationsId.id = :locationsId";
+		    }
+		    
 	     if(StringUtils.isEmpty(timesheetFor) || (StringUtils.isNotEmpty(timesheetFor) && !timesheetFor.equalsIgnoreCase("reports"))) {
 	    	 fillingOptionQuery = " and ((pclient.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = projects.id and subPm.masterCandidateId.id = mc.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = projects.id )) "
 	 	     		+ "                   OR ( pm.masterCandidateId.id IN(select sah.submissionId.masterCandidateId.id from SubmissionApproverHierarchy sah where sah.submissionId.projects.id = projects.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate "
 	 	     		+ "                         and (sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REJECTED+"' OR sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.REOPENED+"'))))";
 	 	     
+	    	 
 	 	     fillingOptionCountQuery =        "	and ("
 	 								+	 "           (pm.projectClientsId.id IN"
 	 								+	 "               (select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') and pc.projectId.id = pm.projects.id)"
@@ -606,24 +612,36 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	 							    +    "      )";
 	      }
 	     userQuery =  " and ( "
-					+  "      (  projects.id IN "
-					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  "
-					+ "               )"
+					+  "        projects.id IN "
+					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  " +globalUserQueryForApMechnism+" and "
+					+ "                  (pah.projectId.projectApprovalType ='"+Constants.PARALLEL+"' OR "
+					+ "                     (pah.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and   "
+					+ "                               (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
+					+ "                             OR  (pah.level= '1' and (pah.projectClientsId.level+1) IN ( select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))"
+					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
+					+ "                     )          "
+					+ "                  ) "
 					+ "       )"
-					+ "       OR  (pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE'))"
-					+ "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
-					+ "       OR  (pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
-					+ "     ) ";
+				    + "       OR  (pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE') and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))"
+				   + "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id) and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( pm.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((pm.projectClientsId.level+1) IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))) )"
+					 + "       OR  (pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id) and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( pm.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((pm.projectClientsId.level+1) IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))))"
+					 + "     ) ";
 	     
 	     
 	     userCountQuery =  " and ( "
-					+  "      (  pm.projects.id IN "
-					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId  "
-					+ "               )"
+					+  "        pm.projects.id IN "
+					+ "               ( select pah.projectId.id from ProjectApproverHierarchy pah  where pah.approverUserId.id =:userId " +globalUserQueryForApMechnism+" and "
+					+ "                  (pah.projectId.projectApprovalType ='"+Constants.PARALLEL+"' OR "
+					+ "                     (pah.projectId.projectApprovalType ='"+Constants.SEQUENTIAL+"' and  "
+					+ "                               (pah.level = '1' and pah.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
+					+ "                             OR  (pah.level= '1' and (pah.projectClientsId.level+1) IN ( select sah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectId.id = pah.projectId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))"
+					+ "                             OR  (pah.level= '2' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pah.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate)) "
+					+ "                     )          "
+					+ "                  ) "
 					+ "       )"
-					 + "       OR  pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE')"
-					 + "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
-					 + "       OR  (pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
+					 + "       OR  (pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE') and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))"
+				     + "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id) and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( pm.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((pm.projectClientsId.level+1) IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))) )"
+					 + "       OR  (pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id) and (pm.projects.projectApprovalType = '"+Constants.PARALLEL+"' OR (pm.projects.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( pm.projectClientsId.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = pm.projects.id and subPm.masterCandidateId.id = pm.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((pm.projectClientsId.level+1) IN (select sah.hierarchyId.level from SubmissionApproverHierarchy sah where sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and sah.hierarchyId.projectClientsId.id = pm.projectClientsId.id and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))))))"
 					 + "     ) ";
 	     
 	     
@@ -1695,59 +1713,77 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
                 + "  )  ";
 	     }
 		
+		String memberStatusQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getAssociateStatus() != null && !dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ALL")) {
+			if(dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ACTIVE")) {
+				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE')) ";
+			} else {
+				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'INACTIVE')) ";
+			}
+		}
+		
+		
+		
 		String employmentTypeQuery = "";
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
-			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			employmentTypeQuery = " and can.designationType IN (:empType) and can.orgLocationId.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'";
 		}
 	
 		String projectQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
-			//String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			projectQuery = "  projects.id  IN (:projectIds)";
 		}
 		
-		String groupByCandidateId = "Group By pm.masterCandidateId.id";
+		String groupByCandidateId = " group by pm.masterCandidateId.id";
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal") ) {
-			//can.orgLocationId.id = :locationId
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where "
-					 +projectQuery
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
-//			(pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId)
-			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where  "
+			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where "
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else {
-//			/can.orgLocationId.id = :locationId
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where  "
-					 +projectQuery
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +memberStatusQuery
 					  +groupByCandidateId;
 		}
-		Query queryObj = session.createQuery(query);
-		if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
-			queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		try {
+			System.out.println(query);
+			Query queryObj = session.createQuery(query);
+			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+				queryObj.setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds());
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()) {
+				queryObj.setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType());
+			}
+			pmList =queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
-		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
-			queryObj.setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds());
-		}
-		
-		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()) {
-			queryObj.setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType());
-		}
-		pmList =queryObj.list();
 		return pmList;
 	}
 	@Override
