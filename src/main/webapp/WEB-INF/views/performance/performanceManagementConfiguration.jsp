@@ -25,7 +25,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Appraisal Cycle</h3>
-				<span><a onclick="addNewAppraisalCycle();" class="colB">Add</a><a href="#" class="">View</a></span>
+				<span><a onclick="performanceManagement.addNewAppraisalCycle();" class="colB">Add</a><a onclick="performanceManagement.viewAppraisalCycle();" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>

@@ -60,7 +60,7 @@ function PerformanceManagement(){
     			
     }
 
-    this.addFeedbackTemplate = function (templateId){
+    this.addFeedbackTemplate = function(templateId){
     	$.ajax({
     		  type: "GET",
     		    url: sourceleadUrl+"/addNewFeedbackTemplate",
@@ -71,6 +71,28 @@ function PerformanceManagement(){
     				},
     			}); 
     			
+    }
+    
+    this.addNewAppraisalCycle = function(){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/addNewAppraisalCycle",
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  				},
+  			}); 
+    }
+    
+    this.viewAppraisalCycle = function(){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/getPerformanceAppraisalCyclesList",
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  				},
+  			}); 
     }
 
 

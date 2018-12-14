@@ -16,7 +16,6 @@
 
     <section class="content-header clearfix">
 	    <div class="pull-left">
-	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Feedback Template</h2>
 	    </div>
 	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.getFeedbackList();">Feddback List</a> &raquo; Feedback Template</div>

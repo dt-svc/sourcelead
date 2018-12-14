@@ -98,4 +98,24 @@ public class PerformanceManagementController {
 	}
 	
 	
+	@RequestMapping(value = "/addNewAppraisalCycle")
+	public ModelAndView addNewAppraisalCycle(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		model.setViewName("performance/addNewAppraisalCycle");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/getPerformanceAppraisalCyclesList")
+	public ModelAndView getPerformanceAppraisalCyclesList(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("performance/performanceAppraisalCyclesList");
+		return model;
+	}
+	
+	
 }
