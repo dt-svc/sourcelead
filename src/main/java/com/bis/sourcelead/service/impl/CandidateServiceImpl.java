@@ -3205,6 +3205,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return salesOrderDto;
 	}
+	
+	@Override
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
+			String searchValue) {
+		return candidateDao.getWalletList(saleOrdersListDTO, searchValue);
+	}
 
 	
 }

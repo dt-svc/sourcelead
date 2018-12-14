@@ -18,6 +18,7 @@
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             <li id="" class="current"><a href="javascript:void(0)">Sales Orderlist</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
      
      </ul>
 </div>
@@ -240,7 +241,9 @@
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-  	
+	function goToWalletList(){
+	    location.href = "${appPath}/walletList";
+	}
 	function refreshPage(){
 		location.reload();
 	}
