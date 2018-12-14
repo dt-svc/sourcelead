@@ -5,8 +5,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
-<script type="text/javascript" src="/resources/js/performance/performanceBadge.js"></script>
 <script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
@@ -25,7 +25,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Appraisal Cycle</h3>
-				<span><a href="#" class="colB">Add</a><a href="#" class="">View</a></span>
+				<span><a onclick="addNewAppraisalCycle();" class="colB">Add</a><a href="#" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
@@ -40,7 +40,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Feedback</h3>
-				<span><a onclick="addFeedbackTemplate();" class="colB">Add</a><a onclick="getFeedbackList();" class="">View</a></span>
+				<span><a onclick="performanceManagement.addFeedbackTemplate();" class="colB">Add</a><a onclick="performanceManagement.getFeedbackList();" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
@@ -50,7 +50,7 @@
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Rewards & Badges</h3>
-				<span><a onclick="addBadgePopup();" class="colB">Add</a><a onclick="getBadgesList();" class="">View</a></span>
+				<span><a onclick="performanceManagement.addBadgePopup();" class="colB">Add</a><a onclick="performanceManagement.getBadgesList();" class="">View</a></span>
 			</div>															
 		</div>	
 	</div>

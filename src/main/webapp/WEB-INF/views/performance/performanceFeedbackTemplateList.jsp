@@ -14,7 +14,7 @@
         <div class="clearfix">
           <div class="positionRelative clearfix">
             <ul class="pull-right list-unstyled list-inline mb0">
-              <li class="noMar"><a class="newAdBtn" title="Add" id="addPop" onclick="addFeedbackTemplate();">+ Add Category</a></li>
+              <li class="noMar"><a class="newAdBtn" title="Add" id="addPop" onclick="performanceManagement.addFeedbackTemplate();">+ Add Category</a></li>
             </ul>
           </div>
           <div class="clearfix row">
@@ -36,9 +36,9 @@
 		               </div>
 						  <div class="col-md-1">
 							  <ul class="list-unstyled list-inline text-center mt25">
-							  	<li><a onclick="addFeedbackTemplate('${feedback.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							    <li><a onclick="viewFeedbackTemplate('${feedback.id}');" title="View"><i class="fa fa-eye"></i></a></li>
-							  	<li><a onclick="deleteFeedbackTemplate('${feedback.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	<li><a onclick="performanceManagement.addFeedbackTemplate('${feedback.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							    <li><a onclick="performanceManagement.viewFeedbackTemplate('${feedback.id}');" title="View"><i class="fa fa-eye"></i></a></li>
+							  	<li><a onclick="performanceManagement.deleteFeedbackTemplate('${feedback.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 							  </ul>
 						  </div>
 		              </div>

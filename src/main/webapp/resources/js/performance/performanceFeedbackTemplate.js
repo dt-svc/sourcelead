@@ -119,7 +119,7 @@ $('body').on('submit', '#sjfb', function(e){
       	           if (result === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (result === "SUCCESS") {
-		        		getFeedbackList();
+		        		performanceManagement.getFeedbackList();
 		        		$(".mask, #modalTasktype").fadeOut();
 		        	} else {
 		        	    showError("Operation failed, please try again");
@@ -160,77 +160,4 @@ $('body').on('submit', '#sjfb', function(e){
     	$("#choicepopUp").empty();
     	$(".project_inn_mask").fadeOut(200);
     }
-    
-    
-    
-   function getBadgesList(){
-    	$.ajax({
-    		  type: "GET",
-    		    url: sourceleadUrl+"/getPerformanceRewardsAndBadgesList",
-    		     success :function(response) {
-    		    	    $("#performanceManagementDiv").empty();  
-    		    	    $("#performanceManagementDiv").append(response);
-    				},
-    			}); 
-    			
-    }
-
-    function addFeedbackTemplate(templateId){
-    	$.ajax({
-    		  type: "GET",
-    		    url: sourceleadUrl+"/addNewFeedbackTemplate",
-    		     success :function(response) {
-    		    	    $("#performanceManagementDiv").empty();  
-    		    	    $("#performanceManagementDiv").append(response);
-    		    	    customizeFields(sourceleadUrl,templateId);
-    				},
-    			}); 
-    			
-    }
-
-
-    function getFeedbackList(){
-    	$.ajax({
-    		  type: "GET",
-    		    url: sourceleadUrl+"/getPerformanceFeedbackTemplateList",
-    		     success :function(response) {
-    		    	    $("#performanceManagementDiv").empty();  
-    		    	    $("#performanceManagementDiv").append(response);
-    				},
-    			}); 
-    }
-    
-    
-    function viewFeedbackTemplate(templateId){
-    	$.ajax({
-    		  type: "GET",
-    		    url: sourceleadUrl+"/viewPerformanceFeedbackTemplate",
-    		     success :function(response) {
-    		    	    $("#performanceManagementDiv").empty();  
-    		    	    $("#performanceManagementDiv").append(response);
-    		    	    generateForm(sourceleadUrl,templateId);
-    				},
-    			}); 
-    			
-    }
-    
-    
-    function deleteFeedbackTemplate(templateId){
-    	$.ajax({
-    		  type: "POST",
-    		    url: sourceleadUrl+"/deletePerformanceFeedbackTemplate?templateId="+templateId,
-    		     success :function(response) {
-    		    	 
-    		           if (response === "AWKWARD") {
-			        	    location.href = "/errorPage";
-			        	} else if (response === "SUCCESS") {
-			        		getFeedbackList();	
-			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
-			        	} else {
-			        	    showError("Operation failed, please try again");
-			        	}
-    		     },
-			}); 
-    			
-    }
+   

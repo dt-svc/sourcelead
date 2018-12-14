@@ -16,7 +16,7 @@
         <div class="clearfix">
           <div class="positionRelative clearfix">
             <ul class="pull-right list-unstyled list-inline mb0">
-              <li class="noMar"><a class="newAdBtn" title="Add" id="addPop" onclick="addBadgePopup();">+ Add Bage</a></li>
+              <li class="noMar"><a class="newAdBtn" title="Add" id="addPop" onclick="performanceManagement.addBadgePopup();">+ Add Bage</a></li>
             </ul>
           </div>
           <div class="clearfix row">
@@ -41,8 +41,8 @@
 		               </div>
 						  <div class="col-md-1">
 							  <ul class="list-unstyled list-inline text-center mt25">
-							  	<li><a onclick="editBadge('${badges.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	<li><a onclick="deleteBadge('${badges.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	<li><a onclick="performanceManagement.editBadge('${badges.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							  	<li><a onclick="performanceManagement.deleteBadge('${badges.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 							  </ul>
 						  </div>
 		              </div>
@@ -68,32 +68,5 @@
   
    <jsp:include page="../performance/addNewPerformanceBadge.jsp" />
    
-   
-   
-   <script>
-  function deleteBadge(badgeId){
-		$.ajax({
-			  type: "POST",
-			    url: sourceleadUrl+"/deletePerformanceRewardsAndBadgeById?badgeId="+badgeId,
-			     success :function(response) {
-			    	 
-			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
-	     	    		    showError("Invalid User");
-	     	    		   // $("#badgeDetailsLoading").removeAttr('style');
-	     	    		}
-			        	else if (response === "AWKWARD") {
-			        	    location.href = "/errorPage";
-			        	} else if (response === "SUCCESS") {
-			        		getBadgesList();
-			        	} else if (response.indexOf('Sign In') !== -1) {
-			        		location.replace(sourceleadUrl);
-			        	} else {
-			        	    showError("Operation failed, please try again");
-			        	}
-			    	  
-					},
-				}); 
-  }
-  </script>
   
   

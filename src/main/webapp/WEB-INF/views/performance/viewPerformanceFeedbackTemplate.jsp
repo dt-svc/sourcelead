@@ -7,7 +7,7 @@
      
   <section class="content-header clearfix">
    <h2 class="pull-left">Feedback Template</h2>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="getFeedbackList();">Feddback List</a> &raquo; Feedback Template</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.getFeedbackList();">Feddback List</a> &raquo; Feedback Template</div>
   </section>
   
   <div class="timesheet_out">
@@ -29,7 +29,7 @@
 		        </div>
 		        <div class="form-footer clearfix">
 		        <div class="pull-right mr">
-		         <input type="button" value="Cancel" onclick="getFeedbackList()" class="btn btn-default" >
+		         <input type="button" value="Cancel" onclick="performanceManagement.getFeedbackList()" class="btn btn-default" >
 		        </div>
 		        </div>
 		                
