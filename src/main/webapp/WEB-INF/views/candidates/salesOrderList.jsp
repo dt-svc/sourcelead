@@ -36,8 +36,8 @@
                 <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+                <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
+                <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
 			</li>
             </ul>
           </div>
@@ -87,8 +87,8 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-  		
-  		url = sourceleadUrl + "/getDynamicSalesOrderList";  
+	  	var searchValue = $("#searchByValue").val();
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?searchValue="+searchValue;  
   		dynamicSalesOrderList(url);
   	}
   
@@ -119,7 +119,7 @@
 	            "render": function ( data, type, report, meta ) {
 	            	var result = "";
 	            	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100"><a onclick="goToSalesOrder('+report.orderNo+')">'+report.orderNo+'</a></div>';
+	           		  result = result +'<div class="tblminwidth-100"><a onclick="goToSalesOrder(\''+report.salesUuid+'\')">'+report.orderNo+'</a></div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 
@@ -217,8 +217,8 @@
 	    	});
 	}
   
-  function goToSalesOrder(orderNo){
-	  location.href = "${appPath}/SalesOrder?orderNo="+orderNo;
+  function goToSalesOrder(salesUuid){
+	  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
   }
   
   </script>
