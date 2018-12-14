@@ -1104,7 +1104,7 @@ function openFilterTaskPop(){
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
 						class="fa fa-close"></i></a>
 				</h5>
-				<div class="addInner">
+				<div class="addInner paddingBtm">
 					<div class="row">
 						<div class="col-md-2">
 						<div class="row">
@@ -1203,7 +1203,7 @@ function openFilterTaskPop(){
 							 </div> 
 							 <div class="clearfix"></div>
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-4 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myTagsInput" onkeyup="myTagsFunction()" placeholder="Tags" title="Type in a tags">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1217,7 +1217,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div> 
 							 
-							 <div class="col-md-4 mb positionRelative">
+							 <div class="col-md-4 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="myCreatedByInput" onkeyup="myCreatedByFunction()" placeholder="Created By" title="Type in a created By">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -1231,7 +1231,7 @@ function openFilterTaskPop(){
 									 </div> 
 							 </div>  
 							 
-							 <div class="col-md-3 mb positionRelative">
+							 <div class="col-md-3 positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="mySeverityInput" onkeyup="mySeverityFunction()" placeholder="Severity" title="Type in a severity">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
