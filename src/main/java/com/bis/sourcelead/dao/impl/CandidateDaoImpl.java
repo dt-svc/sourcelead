@@ -2961,23 +2961,17 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
 			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
-			System.out.println(query + queryBuilder1.toString() + queryBuilder2.toString());
 			if(salesOrderList != null){
 			for(MarketplaceSalesOrder sales : salesOrderList){
 				salesOrderDto = new MarketplacePurchaseSalesDTO();
-				if(salesUuid == null){
 				BeanUtils.copyProperties(sales, salesOrderDto);
-				}
 				formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
-				salesOrderDto.setOrderNo(sales.getOrderNo());
 				salesOrderDto.setOrderDate(formattedDate);
-				salesOrderDto.setCompanyName(sales.getCompanyName());
 				salesOrderDto.setTotalresume(sales.getNoOfResumes());
 				salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
-				salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
 				salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
 				salesOrderDtoList.add(salesOrderDto);
-			}
+				}
 			}
 			return salesOrderDtoList;
 		}catch(Exception e){
