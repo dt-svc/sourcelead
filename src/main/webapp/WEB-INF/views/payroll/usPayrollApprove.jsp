@@ -80,7 +80,7 @@ function calculateTotalPay(formData,confirmType,payPerionNum,payType){
     
     
     <div class="clearfix"></div>
-    <div class="timesheet_out" id="approveDiv">
+    <div class="timesheet_out" id="approveDiv" style="display:none">
     <div id="approvePayrollDivLoding"></div>
       <div class="clearfix mt">
       <form:form id="approve_payroll_form" name="approve_payroll_form" method="post">

@@ -116,7 +116,7 @@ function approvePayrollDiv(){
 
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
-	<div id="submitButtonDiv">
+	<div id="submitButtonDiv" style="display:none">
 	
 <div class="col-md-7">
 	<div class="row">
@@ -162,7 +162,7 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	 <div class='reportHead' id="historySearchDiv">
+	 <div class='reportHead' id="historySearchDiv" style = "display : none">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>

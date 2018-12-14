@@ -1129,13 +1129,14 @@ public class USPayrollRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView getPayrollList(@RequestParam(value="redirect",required=false)String redirect,HttpServletRequest request, HttpServletResponse response)
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
+		model.addObject("redirect",redirect);		
 		model.setViewName("payroll/usPayrollDashboard");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
