@@ -224,7 +224,8 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			globalVarsMap.put("frequency", dateFormat.format(savedPF.getFrequencyStartDate()).toString());	
 		}
 		
-		double amount = savedPF.getEmployeepayroll().stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
+		Set<EmployeePayroll> filteredEmpPayroll = savedPF.getEmployeepayroll().stream().filter(p->!"MISSED".equalsIgnoreCase(p.getSubmitForAproverStatus())).collect(Collectors.toSet());
+		double amount = filteredEmpPayroll.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
 		globalVarsMap.put("amount", String.valueOf(amount));
 		
 		globalVarsMap.put("loginOrg", orgLocation.getOrgLocationName());
