@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -27,13 +27,9 @@ import com.bis.sourcelead.dao.ExpensesApprovalDao;
 import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectDocuments;
-import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -388,7 +384,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 							 */
 					          + " OR ( :approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where  subsah.expenseApprovalStatus != 'APPROVED' and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:locationId and subsah.expenseId.id = :expenseId ) and  "+Constants.loginUserAsAdminWithMaxHeirarchyLevelForExp+")  "
 				              + " OR  (:approverUserId NOT IN( select subsah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subsah where  subsah.expenseApprovalStatus != 'APPROVED' and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:locationId and subsah.expenseId.id = :expenseId ) and sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and pm.projects.isReportingManagerAsApprover = 'Y'  and sah.hierarchyId.projectClientsId.orgLocationsId.id = pm.projectMemberCandidteId.orgLocationId.id and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
-					          + ") ";
+					          + ") order by pc.level ASC";
 		@SuppressWarnings("unchecked")
 		List<ExpensesApproverHierarchy> sahMainList = session.createQuery(query)
 																	  .setLong("expenseId", expenseId)	
@@ -399,7 +395,6 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 		
 		Integer maxLevel = 0;
-		ArrayList<String> expenseStatus = new ArrayList<>();
 		if(sahMainList != null && !sahMainList.isEmpty()){
 	    	for(ExpensesApproverHierarchy sah :sahMainList){
 	    		/*
@@ -413,7 +408,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		}
 	    		
 	    		if(status!=null && status.equalsIgnoreCase("REJECTED")){
-	    			expenseStatus.add(Submission_Status.REJECTED.getValue());
+	    			//expenseStatus.add(Submission_Status.REJECTED.getValue());
             	 	sah.setExpenseApprovalStatus(Submission_ApprovalStatus.REJECTED);
             	 	sah.setExpenseStatus(Submission_Status.REJECTED);
             	 	sah.setActionPerformedBy(""+actionPerformedBy);
@@ -424,7 +419,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
             	    sah.setReopenRejectedReason(null);
             	 	
 	             }else if(status!=null && status.equalsIgnoreCase("APPROVED")){
-	            	 expenseStatus.add(Submission_Status.APPROVED.getValue());
+	            	// expenseStatus.add(Submission_Status.APPROVED.getValue());
 	            	 sah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
 	            	 sah.setExpenseStatus(Submission_Status.APPROVED);
 	            	 sah.setReopenReason(null);
@@ -449,7 +444,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 	if(approversList != null && !approversList.isEmpty()){
                 		for(ExpensesApproverHierarchy approver  :  approversList){
                 			 if(status!=null && status.equalsIgnoreCase("REJECTED")){
-                			    expenseStatus.add(Submission_Status.APPROVED.getValue());
+                			    //expenseStatus.add(Submission_Status.APPROVED.getValue());
                 			    Expenses expenses =approver.getExpenseId();
             	    			expenses.setExpenseStatus(Submission_Status.REJECTED);
             	    			session.saveOrUpdate(expenses);
@@ -468,7 +463,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 					approver.getHierarchyId().getProjectClientsId().getOrgLocationsId() != null && 
                 				    approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg() != null && 
                 				     approver.getHierarchyId().getProjectClientsId().getOrgLocationsId().getOrg().getOrgType().equals(Constants.GUEST)) {
-                					     expenseStatus.add(Submission_Status.APPROVED.getValue());
+                					    // expenseStatus.add(Submission_Status.APPROVED.getValue());
                 					     Expenses expenses =approver.getExpenseId();
                      	    			 expenses.setExpenseStatus(Submission_Status.APPROVED);
                      	    			 session.saveOrUpdate(expenses);
@@ -482,7 +477,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
                 				 }
                 				 else if((approver.getHierarchyId().getProjectClientsId().getLevel() >  sah.getHierarchyId().getProjectClientsId().getLevel())
                 					     || (approver.getHierarchyId().getProjectClientsId().getLevel() ==  sah.getHierarchyId().getProjectClientsId().getLevel() && sah.getHierarchyId().getLevel()==(maxLevel))){
-                					      expenseStatus.add(Submission_Status.APPROVED.getValue());
+                					     // expenseStatus.add(Submission_Status.APPROVED.getValue());
                 					      Expenses expenses =approver.getExpenseId();
                       	    			  expenses.setExpenseStatus(Submission_Status.APPROVED);
                       	    			  session.saveOrUpdate(expenses);
@@ -494,9 +489,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
     	                 				 approver.setReopenedUser(null);
     	                 				 approver.setReopenRejectedReason("");
                     		     }
-                				 else{
+                				/* else{
                 					 expenseStatus.add(Submission_Status.SUBMITTED.getValue());
-                				 }
+                				 }*/
                 			 }
                 	        try {
                 	        	updateSubmissionApproverHierarchy(approver);
@@ -507,6 +502,8 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    	}
 	    }
 		Expenses expenses = expensesDao.getExpenseById(expenseId);
+		List<Submission_ApprovalStatus> expenseStatus = new ArrayList<>();
+		expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus()).collect(Collectors.toList());
 		if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
 			expenses.setExpenseStatus(Submission_Status.REJECTED);
 		}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
