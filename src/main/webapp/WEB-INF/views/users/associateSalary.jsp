@@ -304,7 +304,7 @@ function calculateHourlyRateSal(){
 					 for (var i=0; i<response.data.length; i++)
 						{
 			        		 var opt = response.data[i];
-			        		result = result +' <tr>';
+			        		result = result +' <tr id="'+i+'">';
 			        		result = result +' <td>';
 			        		result = result +' 	<div class="checkbox-new">';
 			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
@@ -374,7 +374,13 @@ function calculateHourlyRateSal(){
 					  $("#"+i+"effectiveDate").datepicker({
 						 dateFormat: finalDateFormat,
 						 changeMonth: true,
-						  changeYear: true
+						  changeYear: true,
+						  onSelect : function(selected) {
+							  var dt = $(this).datepicker('getDate', '+1d');
+							  dt.setDate(dt.getDate() +1);
+							  var id = $(this).closest('tr').attr("id");
+							  $("#"+id+"endDate").datepicker("option", "minDate", dt);
+						  }
 						 });
 						 $("#"+i+"endDate").datepicker({
 							 dateFormat: finalDateFormat,
@@ -393,11 +399,19 @@ function calculateHourlyRateSal(){
 			} 
 		}); 
   }
+  
   </script>
   
   
  <script type="text/javascript">
  function saveAssocioateSal() {
+	 if($("#allowEmployeeToFill").is(':checked')){
+		 $("#save_associate_bank_data_button").val("Proceed To Next Step");
+			$(".infoMask").show();
+		}else{
+			$(".infoMask").hide();
+			$("#save_associate_bank_data_button").val("Save & Continue");
+		}
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
 
@@ -494,6 +508,13 @@ function selectAllCheckBox(allCheck){
 
 <script>
 function skipSalaryJsp(){
+	if($("#allowEmployeeToFill").is(':checked')){
+		$("#save_associate_bank_data_button").val("Proceed To Next Step");
+		$(".infoMask").show();
+	}else{
+		$(".infoMask").hide();
+		$("#save_associate_bank_data_button").val("Save & Continue");
+	}
 	var associateBanking = document.getElementById("associateBanking");
 	document.getElementById("associateBanking").removeAttribute("class"); 
 	associateBanking.href="#tab-2"; 

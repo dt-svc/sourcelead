@@ -8,21 +8,16 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -46,7 +41,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.CandidateEducationDao;
+import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
@@ -62,8 +60,7 @@ import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
-import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -85,6 +82,8 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
@@ -125,7 +124,6 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
-import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
@@ -255,7 +253,15 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
     CandidateTimelineActivityService candidateTimelineActivityService;
+    
+    @Autowired
+    CandidateCertificationsDao candidateCertificationsDao;
+    
+    @Autowired
+    CandidateEmployersDao candidateEmployersDao;
 
+    @Autowired
+    CandidateEducationDao candidateEducationDao;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -1509,11 +1515,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	candidate.setResidenceZipCode(addUserDTO.getResidenceZipCode());
 	    	candidate.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
 	    	
-	    	
-	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
-	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
-	    	if(stateCode != null) {
-	    		candidate.setResidenceStateCode(stateCode);
+	    	if(StringUtils.isNotBlank(addUserDTO.getResidenceState()) && StringUtils.isNotBlank(addUserDTO.getResidenceCountry())) {
+	    		Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+		    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+		    	if(stateCode != null) {
+		    		candidate.setResidenceStateCode(stateCode);
+		    	}
 	    	}
 	    	
 	    }
@@ -2796,7 +2803,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, Long orgLocationId) throws Exception {
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations) throws Exception {
 		// TODO Auto-generated method stub
 		CandidateMarketCart newMarketCart = new CandidateMarketCart();
 		newMarketCart.setMarketplaceId(marketplace);
@@ -2805,8 +2812,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		newMarketCart.setMarketplaceUUID(marketplace.getMarketplaceUUID());
 		newMarketCart.setMarketCartUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgLocations orgLocation = new OrgLocations();
-		orgLocation.setId(orgLocationId);
+		orgLocation.setId(orgLocations.getId());
 		newMarketCart.setSourceOrgLocationId(marketplace.getOrgLocationId());
+		newMarketCart.setSourceOrgId(marketplace.getOrgLocationId().getOrg());
+		newMarketCart.setTargetOrgId(orgLocations.getOrg());
 		newMarketCart.setTargetOrgLocationId(orgLocation);
 		newMarketCart.setAmount(Double.valueOf(marketplace.getMarketPrice()));
 		newMarketCart.setCurrency(marketplace.getMarketRateCurrencey());
@@ -2923,8 +2932,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			String[] skills = marketPlace.getCandidateId().getSkillsName().split(",");
 			marketPlaceDTO.setSkills(skills);
 		}
-		Set<CandidateEmployers> candidateEmployers = marketPlace.getCandidateId().getCandidateEmployers();
-		Set<CandidateEmployerDTO> candidateEmployerDTOs = new HashSet();
+		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
 		for(CandidateEmployers employers : candidateEmployers){
 			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
 			BeanUtils.copyProperties(employers, employerDTO);
@@ -2943,8 +2952,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidateEmployerDTOs.add(employerDTO);
 		}
 		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
-		Set<CandidateEducation> educations = marketPlace.getCandidateId().getCandidateEducation();
-		Set<CandidateEducationDTO> educationDTOs = new HashSet<>();
+		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
 		for(CandidateEducation education : educations){
 			CandidateEducationDTO educationDTO = new CandidateEducationDTO();
 			BeanUtils.copyProperties(education, educationDTO);
@@ -2968,8 +2977,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			educationDTOs.add(educationDTO);
 		}
 		marketPlaceDTO.setCandidateEducation(educationDTOs);
-		Set<CandidateCertifications> certifications = marketPlace.getCandidateId().getCandidateCertifications();
-		Set<CandidateCertificationDTO> certificationDTOs = new HashSet<>();
+		//Set<CandidateCertifications> certifications = marketPlace.getCandidateId().getCandidateCertifications();
+		List<CandidateCertifications> certifications = candidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
+		List<CandidateCertificationDTO> certificationDTOs = new ArrayList<>();
 		for(CandidateCertifications certification : certifications){
 			CandidateCertificationDTO certificationDTO = new CandidateCertificationDTO();
 			BeanUtils.copyProperties(certification, certificationDTO);
@@ -3016,7 +3026,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return marketPlaceDTO;
 	}
-
+	
+	@Override
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId) throws Exception {
 		List<CandidateMarketCart> marketCartIds = candidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
 		return marketCartIds;
@@ -3024,36 +3035,32 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids) throws Exception {
-		List<CandidateDTO> candidate = candidateDao.getCandidatesListByIds(Ids);
-		return candidate;
+		return candidateDao.getCandidatesListByIds(Ids);
 	}
 
 	@Override
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId) throws Exception {
 		return candidateDao.updateMarketCartStatus(marketCartIds, orgLocationId);
 	}
+	
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception{
+		return candidateDao.getMarketplaceTransactionDetails(orgLocationId);
+	}
+	
+	@Override
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception{
+		return candidateDao.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+	}
 
 	@Override
-	public void saveCandidateMarketplacePaymentTranscationHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory, Long orgLocationId, List<Long> marketCartIds) throws Exception {
-		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
-			tranHistory.setId(orgLicensePaymentTransactionHistory.getId());
-			OrgLocations orgLocation = new OrgLocations();
-			orgLocation.setId(orgLocationId);
-			tranHistory.setOrgLocationId(orgLocation);
-			if(marketCartIds != null && marketCartIds.size() > 0){
-				String ids = StringUtils.join(marketCartIds, ",");
-				tranHistory.setMarketPlaceCartIds(ids);
-			}
-			tranHistory.setCurrency(orgLicensePaymentTransactionHistory.getCurrency());
-			tranHistory.setInvoiceAmount(orgLicensePaymentTransactionHistory.getInvoiceAmount());
-			tranHistory.setPaymentId(orgLicensePaymentTransactionHistory.getPaymentId());
-			tranHistory.setOrderId(orgLicensePaymentTransactionHistory.getOrderId());
-			tranHistory.setInvoiceNumber(orgLicensePaymentTransactionHistory.getInvoiceNumber());
-			tranHistory.setTransactionId(orgLicensePaymentTransactionHistory.getTransactionId());
-			tranHistory.setTransactionPayerId(orgLicensePaymentTransactionHistory.getTransactionPayerId());
-			tranHistory.setTransactionUser(orgLicensePaymentTransactionHistory.getTransactionUser());
-			tranHistory.setTransactionUserEmail(orgLicensePaymentTransactionHistory.getTransactionUserEmail());
-			tranHistory.setTransactionDate(orgLicensePaymentTransactionHistory.getTransactionDate());
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception{
+		return candidateDao.getCandidateDetailsByCandidateId(candidateId);
+	}
+	
+
+	@Override
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory) throws Exception {
 		 candidateDao.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
 	}
 
@@ -3062,4 +3069,138 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			storeCandidate(candidateDto, orgLocations, user);
 	}
 
+	@Override
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId) throws Exception {
+		
+		
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+			
+			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
+			newMarketplacePurchaseorder.setOrderNo(orderNo);
+			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
+			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
+			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
+			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
+			newMarketplacePurchaseorder.setOrgLocationId(orgLocations);
+			newMarketplacePurchaseorder.setPaymentStatus(Constants.SUCCESS);
+         	candidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			
+		}
+		
+	}
+
+	@Override
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId) throws Exception {
+	
+		
+		String sourceOrgName ;
+		for (CandidateMarketCart candidateMarketCart : marketCartList) {
+			
+		 sourceOrgName = candidateMarketCart.getSourceOrgId().getOrgName();	
+		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+		 newMarketplaceSalesorder.setOrderNo(orderNo);
+		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
+		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
+		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
+		 newMarketplaceSalesorder.setPaymentStatus(Constants.SUCCESS);
+		 newMarketplaceSalesorder.setCompanyName(sourceOrgName);
+		 
+			candidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+	}
+
+}
+
+	@Override
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception {
+		
+		return candidateDao.getOrderNo(id);
+	}
+
+
+	@Override
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId) throws Exception {
+		candidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
+		
+	}
+
+	@Override
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations)  throws Exception{
+		
+		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId());
+		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
+		for (MarketplacePurchaseOrder mps : purchaseOrder) {
+			
+			MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+			
+			mpsDto.setOrderNo(mps.getOrderNo());
+			mpsDto.setOrderDateStr(startTime);
+			mpsDto.setDiscount(mps.getDiscount());
+			mpsDto.setGrandTotal(mps.getGrandTotal());
+			mpsDto.setTotalPrice(mps.getTotalPrice());
+			mpsDto.setPaymentStatus(mps.getPaymentStatus());
+			mpsDto.setTotalresume(mps.getTotalresume());
+			mpsDto.setCompanyName(mps.getCompanyName());
+			mpsDto.setServiceFee(mps.getServiceFee());	
+			list.add(mpsDto);
+		}			
+		return list;
+	}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByOrderNo(String orderNo, OrgLocations orgLocations) throws Exception {
+		
+		
+		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByOrderNo(orderNo,orgLocations.getId());
+		
+		MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
+		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
+		mpsDto.setOrderNo(mps.getOrderNo());
+		mpsDto.setOrderDateStr(startTime);
+		mpsDto.setDiscount(mps.getDiscount());
+		mpsDto.setGrandTotal(mps.getGrandTotal());
+		mpsDto.setTotalPrice(mps.getTotalPrice());
+		mpsDto.setPaymentStatus(mps.getPaymentStatus());
+		mpsDto.setTotalresume(mps.getTotalresume());
+		mpsDto.setCompanyName(mps.getCompanyName());
+		mpsDto.setServiceFee(mps.getServiceFee());
+		mpsDto.setCandidateName(mps.getCandidateMarketplace().getCandidateId().getFullName());
+		 return mpsDto;      
+	}
+
+	@Override
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations.getId(), orderNo, searchValue);
+		List<MarketplacePurchaseSalesDTO> salesDtoList = new ArrayList<>();
+		for(MarketplaceSalesOrder sales : salesOrder){
+			MarketplacePurchaseSalesDTO salesDto = new MarketplacePurchaseSalesDTO();
+			BeanUtils.copyProperties(sales, salesDto);
+			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
+			salesDto.setOrderDateStr(formattedTime);
+			salesDtoList.add(salesDto);
+		}
+		return salesDtoList;
+	}
+
+	@Override
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo) throws Exception {
+		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(null, orgLocations.getId(), orderNo, null);
+		MarketplacePurchaseSalesDTO salesOrderDto = null;
+		for(MarketplaceSalesOrder sales : salesOrder){
+			salesOrderDto = new MarketplacePurchaseSalesDTO();
+			salesOrderDto.setOrderNo(sales.getOrderNo());
+			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
+			salesOrderDto.setOrderDateStr(formattedTime);
+			salesOrderDto.setCompanyName(sales.getCompanyName());
+			//salesOrderDto.setTotalresume(sales.getNoOfResumes());
+			salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
+			salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
+			salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
+		}
+		return salesOrderDto;
+	}
+
+	
 }

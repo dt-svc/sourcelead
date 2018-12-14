@@ -22,6 +22,8 @@
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
+		          <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+                 <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
 		         <div class="clearfix"></div>
 		     </ul>
       </div>
@@ -528,7 +530,7 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, gridType
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +" <b>Do you want to remove "+candidateName+" from the cart!</b>";
+		result = result +" <div class='modal-body'><b>Do you want to remove "+candidateName+" from the cart!</b></div>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+gridType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
 		result = result +"	</div>";
@@ -837,6 +839,13 @@ function cardModel() {
 
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
+}
+
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
 }
 </script>
 <script>

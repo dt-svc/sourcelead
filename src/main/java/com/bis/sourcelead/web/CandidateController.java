@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -196,11 +197,10 @@ public class CandidateController {
 			HttpServletRequest request) {
 		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
 		logger.debug("inisde getOrgMarketplaceList  conroller =========> --> ");
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		candidateMarketPlaceDTO.setOrgLocationId(orgLocations.getId().toString());
 		try {
-			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage", "marketPrice" };// should
+			String[] tableColumns = { "", "firstName", "location", "skillsName", "currentRate", "expectedRate", "candidateProfilePercentage", "marketPrice" };// should
 																														// be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
@@ -222,8 +222,6 @@ public class CandidateController {
 		}
 		logger.debug(
 				"after controller  getOrgMarketplaceList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
-		System.out.println("inisde getOrgMarketplaceList  conroller =========>"
-				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
 	//Note this method is ResumeParsing Candidate method
@@ -803,4 +801,22 @@ public class CandidateController {
 	        model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 		}
+		
+		// Note this method is sales order  method
+	    @PreAuthorize("hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')")
+     	@RequestMapping(value = "/SalesOrder")
+	    public ModelAndView goToSalesOrder(
+	    		MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+	    		@RequestParam(value = "orderNo", required = true) String orderNo,
+	    		HttpServletRequest request) throws Exception {
+		  ModelAndView model = new ModelAndView();
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  MarketplacePurchaseSalesDTO salesOrder = candidateService.getMarketplaceSalesOrderByOrderNumber(orgLocations, orderNo);
+		  model.addObject("marketplaceSalesOrder", salesOrder);
+		  model.setViewName("candidates/salesOrder");
+		  model.addObject("sourceleadUrl", sourceleadUrl);
+		  return model;
+	}
+	
 }

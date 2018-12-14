@@ -277,7 +277,7 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, obj){
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-		result = result +" <b>Do you want to remove "+candidateName+" from the cart!</b>";
+		result = result +" <div class='modal-body'><b>Do you want to remove "+candidateName+" from the cart!</b></div>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+obj+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
 		result = result +"	</div>";
@@ -301,6 +301,7 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
             }else if(result.response === "SUCCESS") {
 				//$(obj).closest('tr').find("div[id='addCartDiv"+candidateMarketUUID+"']").empty().append('<a href="javascript:void(0)"  onclick="addCandidateToMarketCart(\''+candidateName+'\',\''+candidateMarketUUID+'\', \''+obj+'\')">Add Cart</a>');
 				globalRecommendationpagination();
+				updateMarketplaceCartCountAndPrice();
 				$("#remove_marketCart_pop").fadeOut(200);
 				$(".project_inn_mask").fadeOut(200);
 				}else{
@@ -318,6 +319,7 @@ function addCandidateToMarketCart(candidateName, UUID, obj) {
 	        	 if (result.response === "AWKWARD") {
 	                 location.href = "/errorPage";
 	             }else if(result.response === "SUCCESS") {
+	            	 updateMarketplaceCartCountAndPrice();
 		        	$(obj).closest('tr').find("div[id='addCartDiv"+UUID+"']").empty().append('<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')"> Added Cart <a href="javascript:void(0)" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\',\''+obj+'\');"> Delete </a></sec:authorize>');
 	        	}else{
 	            	 showError("Operation failed, please try again");

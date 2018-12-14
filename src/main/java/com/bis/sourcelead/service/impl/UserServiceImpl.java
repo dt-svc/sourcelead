@@ -46,6 +46,7 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
@@ -122,6 +123,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.ibm.icu.math.BigDecimal;
 
 /**
  * This Service Class is used to get User Object
@@ -246,6 +248,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private ProbationHistoryService probationHistoryService;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -452,13 +457,17 @@ public class UserServiceImpl implements UserService {
 		if(employee != null) {
 			ProbationHistory probationHistory = new ProbationHistory();
 			probationHistory.setEmployeeId(employee);
+			if(StringUtils.isNotBlank(addUserDTO.getDateofJoin())){
 			probationHistory.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getDateofJoin()));
+			}
 			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
 			probationHistory.setFromStatus(employee.getProbationStatus());
 			probationHistory.setToStatus(addUserDTO.getProbationStatus());
+			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate())){
 			probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
+			}
 			
-			if(addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
+			if(StringUtils.isNotBlank(addUserDTO.getProbationStatus()) && addUserDTO.getProbationStatus().equalsIgnoreCase(Constants.CONFIRMED)) {
 				probationHistory.setConfirmedDate(new Date());
 			}else {
 				probationHistory.setConfirmedDate(null);
@@ -791,6 +800,12 @@ public class UserServiceImpl implements UserService {
 	    }else{
 	    	 user.setMaritalStatus(null);
 	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getAllowEmployeeToFill()) && ("Y".equals(addUserDTO.getAllowEmployeeToFill()))){
+	    	user.setAllowEmployeeToFill(Status.Y);
+			}else{
+				user.setAllowEmployeeToFill(Status.N);
+			}
 	    
 	    if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
 			try {
@@ -2072,6 +2087,22 @@ public class UserServiceImpl implements UserService {
 	{
 		ResponseList<ApplicantsJoinedReportDTO> response = userDao.getApplicantsJoinedReport(applicantsJoinedReportDTO,orglocationId,searchDates,teamsList,type,clientIdsList);
 		
+		if(response.getData() != null && !response.getData().isEmpty()) {
+			for(ApplicantsJoinedReportDTO applicantsJoinedReportDTO2 : response.getData()) {
+				
+				long reqClientCount = requirementSubmissionDao.getRequirementClientCountByRequirementIdAndUserIdAndDates(applicantsJoinedReportDTO2.getRequirementID(), applicantsJoinedReportDTO2.getUserId(), searchDates);
+				long requirementCount = requirementSubmissionDao.getRequirementCountByUserIdAndDates(applicantsJoinedReportDTO2.getUserId(), searchDates);
+				long offerCount = requirementSubmissionDao.getOfferCountByUserIdAndDates(applicantsJoinedReportDTO2.getCreatedBy(), searchDates);
+				long joinedCount = requirementSubmissionDao.getJoinedCountByUserIdAndDates(applicantsJoinedReportDTO2.getCreatedBy(), searchDates);
+				
+				applicantsJoinedReportDTO2.setReqClientCount(new BigInteger(reqClientCount+""));
+				applicantsJoinedReportDTO2.setRequirementCount(new BigInteger(requirementCount+""));
+				applicantsJoinedReportDTO2.setOfferCount(new BigInteger(offerCount+""));
+				applicantsJoinedReportDTO2.setJoinedCount(new BigInteger(joinedCount+""));
+			}
+		}
+		
+		
 //		Map<Long, List<>> map = res.getData().stream().collect(Collectors.groupingBy(ApplicantsJoinedReportDTO::getUserId,Collectors.mapping(ApplicantsJoinedReportDTO::getUserId, Collectors.toList()));
 		
 		Map<BigInteger, List<ApplicantsJoinedReportDTO>> map = response.getData().stream().collect(Collectors.groupingBy(ApplicantsJoinedReportDTO::getUserId));
@@ -2363,7 +2394,7 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
 		
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, locations, notificationScenario, new HashMap<String, String>());
 	}
 
 	@Override

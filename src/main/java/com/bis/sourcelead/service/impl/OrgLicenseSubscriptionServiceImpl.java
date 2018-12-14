@@ -366,6 +366,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			projects.setUpdatedDate(new Date());
 			projects.setIsProjectForTimeSheets(Constants.YES);
 			projects.setIsProjectForExpenses(Constants.YES);
+			projects.setProjectApprovalType(Constants.PARALLEL);
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 			Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());

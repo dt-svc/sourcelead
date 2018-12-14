@@ -130,6 +130,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					    	String level1UserDetails[] = projectsDTO.getLevel1Manager().split(",");
 				    		approverUserId1.setId(Long.parseLong(level1UserDetails[0]));
 					    	pah1.setApproverUserId(approverUserId1);
+					    	//pah1.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 					    	pah1.setLevel(1);
 					    	pah1.setStatus("1");
 					    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
@@ -145,6 +146,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 						pah2.setProjectClientsId(projectClients);
 						approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2Manager()));
 						pah2.setApproverUserId(approverUserId2);
+						//pah2.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 						pah2.setLevel(2);
 						pah2.setStatus("1");
 						//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
@@ -165,6 +167,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					    		approverHierarchy.setApproverUserId(approverUserId1);
 					    		approverHierarchy.setLevel(1);
 					    		approverHierarchy.setStatus("1");
+					    		//approverHierarchy.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 						    	ids[0] = approverUserId1.getId();
 						    	projectApproverHierarchyList.add(approverHierarchy);
 						 }
@@ -182,6 +185,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 								approverHierarchy.setApproverUserId(approverUserId2);
 								approverHierarchy.setLevel(2);
 								approverHierarchy.setStatus("1");
+								//approverHierarchy.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 								ids[1] = approverUserId2.getId();
 								projectApproverHierarchyList.add(approverHierarchy);
 						 }
@@ -198,6 +202,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 						pah2.setApproverUserId(approverUserId2);
 						pah2.setLevel(2);
 						pah2.setStatus("1");
+						//pah2.setApprovalMechanismType(projectsDTO.getProjectApprovalTypeValue());
 						ids[1] = approverUserId2.getId();
 						projectApproverHierarchyList.add(pah2);
 					}
@@ -318,6 +323,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 				    	}
 				    	
 				    	eah1.setApproverUserId(approverUserId1);
+				    	//eah1.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 				    	eah1.setLevel(1);
 				    	eah1.setStatus("1");
 				    	//ProjectApproverHierarchy saveProjectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah1);
@@ -338,6 +344,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					}
 					
 					eah2.setApproverUserId(approverUserId2);
+					//eah2.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 					eah2.setLevel(2);
 					eah2.setStatus("1");
 					//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
@@ -353,6 +360,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					eah2.setApproverUserId(approverUserId2);
 					eah2.setLevel(2);
 					eah2.setStatus("1");
+					//eah2.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 					//ProjectApproverHierarchy projectApproverHierarchy = projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
 					ids[1] = approverUserId2.getId();
 					expenseApproverHierarchyList.add(eah2);
@@ -375,6 +383,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 					    	}
 					    	
 				    		expenseHierarchy.setApproverUserId(approverUserId1);
+				    		//expenseHierarchy.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 				    		expenseHierarchy.setLevel(1);
 				    		expenseHierarchy.setStatus("1");
 					    	ids[0] = approverUserId1.getId();
@@ -394,6 +403,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 							expenseHierarchy.setApproverUserId(approverUserId2);
 							expenseHierarchy.setLevel(2);
 							expenseHierarchy.setStatus("1");
+							//expenseHierarchy.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 							ids[1] = approverUserId2.getId();
 							expenseApproverHierarchyList.add(expenseHierarchy);
 					 }
@@ -412,6 +422,7 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 						approverUserId2.setId(Long.parseLong(projectsDTO.getLevel2Manager()));
 					}
 					eah2.setApproverUserId(approverUserId2);
+					//eah2.setApprovalMechanismType(projectsDTO.getExpenseApprovalTypeValue());
 					eah2.setLevel(2);
 					eah2.setStatus("1");
 					ids[1] = approverUserId2.getId();
@@ -424,6 +435,12 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	
 	return expenseApproverHierarchyList;
 
+	}
+
+
+	@Override
+	public String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception {
+		return projectApproverHierarchyDao.getApprovalMechanismTypeByProjectClientId(projectClientId);
 	}
 	
 }

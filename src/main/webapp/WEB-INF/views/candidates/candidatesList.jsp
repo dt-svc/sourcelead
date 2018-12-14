@@ -814,7 +814,7 @@ function deleteImage(candidateId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");this.disabled=true'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");this.disabled=true'><input class='u_can_color' type='button'  value='Cancel' onClick='imageCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1059,6 +1059,11 @@ function cancel(candidateId){
 	$(".project_inn_mask").fadeOut(200);
 	refreshImageBlock(candidateId);
 }
+function imageCancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+
 </script>
 
 
@@ -1104,6 +1109,8 @@ function cancel(candidateId){
          <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
          <div class="clearfix"></div>
          </sec:authorize>
      </ul>
@@ -3156,6 +3163,12 @@ function goToGlobalMarketPlaceList(){
 
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
+}
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
 }
 </script> 
 <jsp:include page="../masterFooter.jsp" /> 

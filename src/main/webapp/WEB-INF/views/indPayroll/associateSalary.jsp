@@ -144,15 +144,16 @@
                 <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
                  <c:if test="${status == 'NEW'}">
-                 <input type="button" value="Previous" onclick="shiftToLoanAndAdvancesDetails();" class="btn btn-default">
+                 <input type="button" value="Previous" onclick="shiftToLeaveTypeDetails();" class="btn btn-default">
 			     </c:if>
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
-                    <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <c:if test="${status == 'NEW' || status == 'NODATA'}">
-						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                    
-                    </c:if>
+                    <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
+                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+<%--                    <c:if test="${status == 'NEW' || status == 'NODATA'}">						     --%>
+<!-- 						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                     -->
+<%--                     </c:if>  --%>
                     </div>
                   </div>
                 </div>
@@ -169,11 +170,11 @@
 </script>
 
 <script type="text/javascript">
-function shiftToLoanAndAdvancesDetails(){
-	var indLoanAndAdvancesDetails = document.getElementById("indLoanAndAdvancesDetails");
-	 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
-	 indLoanAndAdvancesDetails.href="#tab-4";
-	 $("#indLoanAndAdvancesDetails").click();
+function shiftToLeaveTypeDetails(){
+	var indLoanAndAdvancesDetails = document.getElementById("indLeaveTypeDetails");
+	 document.getElementById("indLeaveTypeDetails").removeAttribute("class");
+	 indLoanAndAdvancesDetails.href="#tab-6";
+	 $("#indLeaveTypeDetails").click();
 }
 </script>
 
@@ -257,9 +258,9 @@ function saveAssociateSalaryInd(){
 		var annualSalary = document.getElementById("annualSal").value;
 		var annualPayheadTotal = 0.00;
 		$("#phTblBody input:checked").each(function(){
-			if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){
+			/* if(document.getElementById("payheadSC["+$(this).attr('id')+"]").value == 'Earnings'){ */
 				annualPayheadTotal += parseFloat(document.getElementById("payHeadYearly["+$(this).attr('id')+"]").value);
-			}
+			/* } */
 		});
 		if(parseFloat(annualSalary) != parseFloat(annualPayheadTotal)){
 			payheadsNotMatchedAlert('mismatch');

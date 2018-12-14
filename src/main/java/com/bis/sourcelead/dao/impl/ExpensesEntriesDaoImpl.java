@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ExpensesEntriesDao;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -109,6 +112,35 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 		}
 	}
 
-	
+	@Override
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public int dumpExpenceCategoryAmountToOldRecords() {
+		int count = 0;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Expenses";
+			List<Expenses> expensesList = session.createQuery(query).list();
+			if(expensesList != null && !expensesList.isEmpty()) {
+				for(Expenses expenses: expensesList) {
+					double totalSubmittedAmount = 0;
+					Set<ExpensesEntries> expensesEntriesSet = expenses.getExpensesEntries();
+					if(expensesEntriesSet != null && !expensesEntriesSet.isEmpty()) {
+						for(ExpensesEntries expensesEntries : expensesEntriesSet) {
+							totalSubmittedAmount += expensesEntries.getSubmittedamount().doubleValue();
+						}
+					}
+					System.out.println(totalSubmittedAmount);
+					expenses.setTotalsubmittedAmount(new BigDecimal(totalSubmittedAmount));
+					session.saveOrUpdate(expenses);
+					count++;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
 	
 }

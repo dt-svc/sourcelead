@@ -2252,15 +2252,15 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				}
 				
-				if (dataMigrationDTOJsonCopy.getString("beneficiaryPhone") != null && !"".equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("beneficiaryPhone"))) {
+				if (!dataMigrationDTOJsonCopy.getString("beneficiaryPhone").equals("null")) {
 					String mobileNumber = dataMigrationDTOJsonCopy.getString("beneficiaryPhone");
 					if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
-						boolean isValidated = isMobileNumberValid(mobileNumber);
-						if (isValidated == false) {
-							errorSet.put("beneficiaryPhone", "Phone Number is not valid");
-						}
+					boolean isValidated = isMobileNumberValid(mobileNumber);
+					if (isValidated == false) {
+					errorSet.put("beneficiaryPhone", "Phone Number is not valid");
 					}
-				}
+					}
+					}
 
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 				errorSet.put("dateOfBirth", "DOB is missing");
@@ -2276,9 +2276,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 				}
 				}*/
-				if (dataMigrationDTOJsonCopy.getString("experience").matches("^[a-zA-Z]+$")) {
-					errorSet.put("experience", "experience should be (3.0 years,3years,1.2) Allowd");
-				}
+				if (!dataMigrationDTOJsonCopy.getString("experience").equals("null")) {
+					if(dataMigrationDTOJsonCopy.getString("experience").matches("^[a-zA-Z]+$")){
+					errorSet.put("exp", "experience should be (3.0 years,3years,1.2) Allowd");
+					}
+					}
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
 				  errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.

@@ -1059,6 +1059,7 @@ padding: 10px 15px; border-bottom: 1px solid #f4f4f4; position: relative;
 	padding: 10px 15px;
 }
 .mail-box.mail-content {
+
 	padding-top: 10px; padding-bottom: 15px; box-shadow: 0 0 3px #999;
 }
 .mail-box.mail-content .mail-box-header {
@@ -5231,6 +5232,7 @@ padding: 15px 15px 25px 15px;
     background-color:none !important;
 }
 .icon_fa {
+
     position: relative; top: 5px;
 }
 /* Billing Dashboard css */
@@ -8500,7 +8502,7 @@ table.tableNetpay thead > tr >  th {
 	border:1px solid #A8B7C7; padding-right: 5px; 
 }
 .tablePayslip .formControl {
-	border: transparent; width: 100%; padding:0px; text-align: left;
+	border: transparent; width: 95%; padding:0px; text-align: left;
 }
 .tablePayslip .formControl.activeEdit {
 	border:1px solid #A8B7C7; padding:1px 5px; 
@@ -9313,7 +9315,7 @@ a.removeSelected:hover, .removeSelectedAll  {
 	background: #eb4d4b; color: #fff;
 }
 .profileDetails-headerFixed {
-	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index: 99; top: 55px;
+	position: fixed; width: 92.5%; background-color: #f5f5f5; z-index:100; top: 55px;
 	box-shadow: 0px 2px 2px 0px #ddd; border-bottom: 1px solid #fff;
 }
 .fontSmall {
@@ -9611,6 +9613,7 @@ ul.timelineDots li .media-object img {
 .customeProjectDetails .project_details_cta span {
     width: 50%;
 }
+
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {

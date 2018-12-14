@@ -61,6 +61,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TOTAL_AMOUNT")
 	private BigDecimal totalAmount;
 	
+	@Column(name = "Total_Submitted_Amount")
+	private BigDecimal totalsubmittedAmount;
+	
 	@Column(name = "CLIENT_NAME")
 	private String clientName;
 	
@@ -127,7 +130,7 @@ private static final long serialVersionUID = 1L;
 	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
-    private Set<ExpensesApproverHierarchy> approverHierarchyList;
+    private List<ExpensesApproverHierarchy> approverHierarchyList;
 
 	@Transient
 	@JsonProperty
@@ -323,11 +326,11 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
-	public Set<ExpensesApproverHierarchy> getApproverHierarchyList() {
+	public List<ExpensesApproverHierarchy> getApproverHierarchyList() {
 		return approverHierarchyList;
 	}
 
-	public void setApproverHierarchyList(Set<ExpensesApproverHierarchy> approverHierarchyList) {
+	public void setApproverHierarchyList(List<ExpensesApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
 	}
 
@@ -533,6 +536,15 @@ private static final long serialVersionUID = 1L;
 		this.expenseAutoId = expenseAutoId;
 	}
 
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
+
+	
 	
 	
 
