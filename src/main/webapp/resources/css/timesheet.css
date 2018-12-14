@@ -8529,5 +8529,8 @@ bottom: auto !important; top: 55px !important;
 	position: relative; padding: 0px 240px 0px 0px;
 }
 
+.popCusDate {
+	left: 0px !important; top:135px !important;
+}
 
 

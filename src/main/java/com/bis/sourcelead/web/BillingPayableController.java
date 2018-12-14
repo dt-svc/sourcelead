@@ -201,7 +201,7 @@ public class BillingPayableController {
 			model.setViewName("billing/createExpensesPayableBill");
 		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectPayableInvoice");
-		}else if(invoice.getIsJobClosure().equals("Y")){
+		}else if(invoice.getIsJobClosure() != null && invoice.getIsJobClosure().equals("Y")){
 			model.setViewName("billing/createPaybleForJobClosure");
 		}else{
 			model.setViewName("billing/createPayables");
