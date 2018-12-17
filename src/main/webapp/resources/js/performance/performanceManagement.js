@@ -422,5 +422,48 @@ function PerformanceManagement(){
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-4000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
   }
+  
+  $(document).on('change', '#appraisalCategories', function(evt, params) {
+		if (params.selected != undefined) {
+			performanceManagement.updateSelectedTemplatesRows(params.selected, false);
+		}
+		if (params.deselected != undefined) {
+			performanceManagement.updateSelectedTemplatesRows(params.deselected,true);
+		}
+	});
+  
+  this.updateSelectedTemplatesRows = function(id,removedFlag){
+	  if(id===0 && removedFlag){
+			$("#selectedTemplatesDiv").empty();
+		} else {	
+			$("#appraisalCategories option").each(function () {
+				if($(this).val() === id) {
+					if(removedFlag) {
+						$("#selectedTemplatesDiv").find("div[data-template_id=" + $(this).val() + "]").remove();
+						return;
+					} else {
+						var text="<div class='multiJob positionRelative' data-template_id=" + $(this).val() + ">";
+						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
+						text += "<div class='multiJobTitle clearfix'>";
+						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
+						text += "<span class='pull-right mr'><input type='text' class='form-control' field-name='percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+						text += "</div>";
+						text += "<div class='multiJobDate clearfix' data-id=" + $(this).val() + " data-name='" + $(this).text() + "'>";
+						text += "</div>";
+						text += "</div>";
+						$("#selectedTemplatesDiv").append(text);
+						return;
+					}
+				}
+			});
+		}
+  }
+  
+  
+  this.closeSelectedJobDiv = function(ele) {
+		$(ele).parent().remove();
+		var id = $(ele).parent().data("template_id");
+		$('#appraisalCategories').find("option[value='" + id + "']").prop("selected",false).end().trigger('chosen:updated');
+	}
 	
 }

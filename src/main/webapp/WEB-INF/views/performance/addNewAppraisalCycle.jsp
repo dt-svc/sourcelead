@@ -158,7 +158,12 @@
 						</select>
 				  </div>
 				</div> 
+				
 			<div class="clearfix"></div>
+			<div class="col-md-6">
+			<div class="clearfix" id="selectedTemplatesDiv">
+			</div>
+			</div>
 		</div> 
 		  <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
@@ -171,8 +176,6 @@
 		    </div>
 	  </div>
  
-    
-
  <script>
  $(function(){
     var config = {
