@@ -2440,6 +2440,12 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		
 	}
 
+	@Override
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		return userDao.validateSSNDuplicate(ssnNumber,locationId,userId);
+	}
+
 	
 }
 
