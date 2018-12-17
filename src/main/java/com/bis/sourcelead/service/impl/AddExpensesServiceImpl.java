@@ -231,7 +231,7 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	expenses.setTotalsubmittedAmount(sa);
 	HashMap<Integer,User> managers = new HashMap<>() ;
 	if(projMembers != null){
-		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
+		List<ExpensesApproverHierarchy> eaHierarchyList = new ArrayList<ExpensesApproverHierarchy>();
 		if (expensesDTO.getId() != null){
 		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expensesDTO.getId());
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
