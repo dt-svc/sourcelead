@@ -575,7 +575,7 @@ public class LeaveServiceImpl implements LeaveService{
 		try {
 			int isDeleted = leaveDao.deleteApproversByLeaveId(leave.getId());
 		} catch (Exception excp) {
-			excp.printStackTrace();
+			//excp.printStackTrace();
 		}
 		
 		if(leaveDTO.getOtherApproverUser() != null) {
@@ -586,22 +586,24 @@ public class LeaveServiceImpl implements LeaveService{
 			allUsers.addAll(leaveDTO.getOtherApproverUser());
 			leaveDTO.setApproverUser(allUsers);
 		}
-		leaveDTO.getApproverUser().forEach(userId->{
-			try {
-				LeaveApproveHierarchy leaveApproveHierarchy = new LeaveApproveHierarchy();
-				User approveruser = userService.getUserById(Long.parseLong(userId));
-				leaveApproveHierarchy.setApproverUserId(approveruser);
-				leaveApproveHierarchy.setLeaveid(leave);
-				leaveApproveHierarchy.setStatus("1");
-				leaveApproveHierarchy.setCreatedBy(user.getUserCode());
-				leaveApproveHierarchy.setUpdatedBy(user.getUserCode());
-				leaveApproveHierarchy.setCreatedDate(new Date());
-				leaveApproveHierarchy.setUpdatedDate(new Date());
-				approverList.add(leaveApproveHierarchy);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+		if(leaveDTO.getApproverUser() != null && leaveDTO.getApproverUser().size() > 0) {
+			leaveDTO.getApproverUser().forEach(userId->{
+				try {
+					LeaveApproveHierarchy leaveApproveHierarchy = new LeaveApproveHierarchy();
+					User approveruser = userService.getUserById(Long.parseLong(userId));
+					leaveApproveHierarchy.setApproverUserId(approveruser);
+					leaveApproveHierarchy.setLeaveid(leave);
+					leaveApproveHierarchy.setStatus("1");
+					leaveApproveHierarchy.setCreatedBy(user.getUserCode());
+					leaveApproveHierarchy.setUpdatedBy(user.getUserCode());
+					leaveApproveHierarchy.setCreatedDate(new Date());
+					leaveApproveHierarchy.setUpdatedDate(new Date());
+					approverList.add(leaveApproveHierarchy);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
 		return approverList;
 	}
 
