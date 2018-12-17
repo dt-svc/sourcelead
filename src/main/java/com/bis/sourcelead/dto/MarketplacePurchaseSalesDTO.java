@@ -31,6 +31,7 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String salesUuid;
 	private String orderDate;
 	private String description;
+	private Long orglocationId;
 	
 	public String getOrderDate() {
 		return orderDate;
@@ -122,7 +123,11 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-   
+	public Long getOrglocationId() {
+		return orglocationId;
+	}
+	public void setOrglocationId(Long orglocationId) {
+		this.orglocationId = orglocationId;
+	}
 	
 }

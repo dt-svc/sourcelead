@@ -3,6 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script>
+$(document).ready(function(){
+	getSalesOrderList();
+});
+</script>
  <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -35,8 +41,8 @@
                 <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+                <input class="repSearchBar" placeholder="Search" id="salesOrderDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getSalesOrderList();"></span>
 			</li>
             </ul>
           </div>
@@ -66,13 +72,19 @@
   </section>
   
   <script>
-  $(document).ready(function () {
-	  getDynamicSalesOrderList();
-	});
-  function getDynamicSalesOrderList(){
+  
+   function getSalesOrderList(){
+	   var sourceleadUrl = '${sourceleadUrl}';	
+		var searchValue = $("#salesOrderDataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+	   	var url = sourceleadUrl+"/getDynamicSalesOrderList?searchValue="+searchValue;
+	   	getDynamicSalesOrderList(url);
+  }
+  </script>
+  
+  <script>
+  function getDynamicSalesOrderList(url){
 	  	var result = "";
-	  	var sourceleadUrl = '${sourceleadUrl}';	
-	  	var url ="";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
@@ -85,9 +97,8 @@
 	  	result = result +"</tr>";
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
-	  	$("#dynamicSalesOrderList").html(result);
-  		
-  		url = sourceleadUrl + "/getDynamicSalesOrderList";  
+	  	$("#dynamicSalesOrderList").empty();
+	  	$("#dynamicSalesOrderList").append(result);
   		dynamicSalesOrderList(url);
   	}
   
@@ -130,12 +141,11 @@
 		    	  	"data": "orderDate",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		var result = "";
-		            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
+		            	  if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
 		           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
 		         		}else{
 		         		  result = result +'<div class="tblminwidth-100">--</div>';
-		         		} 
+ 		         		} 
 		    	  		
 			             return result;
 		    	  	}
@@ -209,9 +219,9 @@
 	    } );
 	    $("#salesOrderListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#salesOrderListTableSearch").keyup(function(e) {
+	    $("#salesOrderDataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getDynamicSalesOrderList();
+	    		   getSalesOrderList();
 	    	   }
 	    	});
 	}
@@ -242,7 +252,8 @@
 	}
   	
 	function refreshPage(){
-		location.reload();
+		$("#salesOrderDataTableSearch").val('');
+		getSalesOrderList();
 	}
 	
   </script>
