@@ -31,7 +31,7 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>${marketplaceSalesOrder.orderDateStr != null ? marketplaceSalesOrder.orderDateStr : "---"}</label>
+                      <label>${marketplaceSalesOrder.orderDate != null ? marketplaceSalesOrder.orderDate : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">

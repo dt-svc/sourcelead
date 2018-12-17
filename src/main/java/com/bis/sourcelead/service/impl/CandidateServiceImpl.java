@@ -3079,6 +3079,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
 			newMarketplacePurchaseorder.setOrderNo(orderNo);
 			newMarketplacePurchaseorder.setCompanyName(purchasedOrgName);
+			newMarketplacePurchaseorder.setPurchaseUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			newMarketplacePurchaseorder.setTotalPrice(candidateMarketCart.getAmount());			
 			newMarketplacePurchaseorder.setOrderDate(candidateMarketCart.getCreatedDate());
 			newMarketplacePurchaseorder.setCandidateMarketplace(candidateMarketCart.getMarketplaceId());
@@ -3101,6 +3102,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
 		 newMarketplaceSalesorder.setOrderNo(orderNo);
 		 newMarketplaceSalesorder.setTotalResumePrice(candidateMarketCart.getAmount());
+		 newMarketplaceSalesorder.setSalesUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		 newMarketplaceSalesorder.setOrgLocationId(candidateMarketCart.getSourceOrgLocationId());
 		 newMarketplaceSalesorder.setOrderDate(candidateMarketCart.getCreatedDate());
 		 newMarketplaceSalesorder.setCandidateMarketPlace(candidateMarketCart.getMarketplaceId());
@@ -3126,9 +3128,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations)  throws Exception{
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)  throws Exception{
 		
-		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId());
+		List<MarketplacePurchaseOrder> purchaseOrder =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
 		List<MarketplacePurchaseSalesDTO> list = new ArrayList<>();
 		for (MarketplacePurchaseOrder mps : purchaseOrder) {
 			
@@ -3136,7 +3138,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
 			
 			mpsDto.setOrderNo(mps.getOrderNo());
-			mpsDto.setOrderDateStr(startTime);
+			mpsDto.setOrderDate(startTime);
+			mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
 			mpsDto.setDiscount(mps.getDiscount());
 			mpsDto.setGrandTotal(mps.getGrandTotal());
 			mpsDto.setTotalPrice(mps.getTotalPrice());
@@ -3150,15 +3153,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public MarketplacePurchaseSalesDTO getPurchaseDetailByOrderNo(String orderNo, OrgLocations orgLocations) throws Exception {
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations) throws Exception {
 		
 		
-		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByOrderNo(orderNo,orgLocations.getId());
+		MarketplacePurchaseOrder mps = candidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId());
 		
 		MarketplacePurchaseSalesDTO mpsDto = new MarketplacePurchaseSalesDTO();
 		String startTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),mps.getOrderDate());
 		mpsDto.setOrderNo(mps.getOrderNo());
-		mpsDto.setOrderDateStr(startTime);
+		mpsDto.setOrderDate(startTime);
+		mpsDto.setPurchaseUuid(mps.getPurchaseUuid());
 		mpsDto.setDiscount(mps.getDiscount());
 		mpsDto.setGrandTotal(mps.getGrandTotal());
 		mpsDto.setTotalPrice(mps.getTotalPrice());
@@ -3171,35 +3175,27 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception {
-		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations.getId(), orderNo, searchValue);
-		List<MarketplacePurchaseSalesDTO> salesDtoList = new ArrayList<>();
-		for(MarketplaceSalesOrder sales : salesOrder){
-			MarketplacePurchaseSalesDTO salesDto = new MarketplacePurchaseSalesDTO();
-			BeanUtils.copyProperties(sales, salesDto);
-			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
-			salesDto.setOrderDateStr(formattedTime);
-			salesDtoList.add(salesDto);
-		}
-		return salesDtoList;
-	}
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue)throws Exception {
+		List<MarketplacePurchaseSalesDTO> salesOrderDtoList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, null, searchValue);
+		if(salesOrderDtoList != null){
+		return salesOrderDtoList;
+		}else{
+		return null;
+	}}
 
 	@Override
-	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo) throws Exception {
-		List<MarketplaceSalesOrder> salesOrder = candidateDao.getMarketplaceSalesOrderList(null, orgLocations.getId(), orderNo, null);
-		MarketplacePurchaseSalesDTO salesOrderDto = null;
-		for(MarketplaceSalesOrder sales : salesOrder){
-			salesOrderDto = new MarketplacePurchaseSalesDTO();
-			salesOrderDto.setOrderNo(sales.getOrderNo());
-			String formattedTime =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
-			salesOrderDto.setOrderDateStr(formattedTime);
-			salesOrderDto.setCompanyName(sales.getCompanyName());
-			//salesOrderDto.setTotalresume(sales.getNoOfResumes());
-			salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
-			salesOrderDto.setPaymentStatus(sales.getPaymentStatus());
-			salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
-		}
-		return salesOrderDto;
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderBySalesUuid(OrgLocations orgLocations, String salesUuid) throws Exception {
+		List<MarketplacePurchaseSalesDTO> salesOrderDto = candidateDao.getMarketplaceSalesOrderList(null, orgLocations, salesUuid, null);
+		if(salesOrderDto != null && salesOrderDto.size() > 0){
+		return salesOrderDto.get(0);
+		}else{
+		return null;
+	}}
+	
+	@Override
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
+			String searchValue) {
+		return candidateDao.getWalletList(saleOrdersListDTO, searchValue);
 	}
 
 	

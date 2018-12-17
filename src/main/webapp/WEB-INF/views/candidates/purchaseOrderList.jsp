@@ -10,6 +10,7 @@ $(document).ready(function(){
 });
 </script>
 
+
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -21,26 +22,33 @@ $(document).ready(function(){
     
           <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-            <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
-             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>        
+          <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li> 
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
          <div class="clearfix"></div>         
      </ul>
 </div>
     
-    <div class="contentareaInner-styles clearfix">
+    <div class="clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix">
-			  <span class="pull-left refreIcon noPad mb10">
+			  <span class="pull-left refreIcon mb10">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
 			  </span>
-            <ul class="pull-right list-unstyled list-inline noPad">
+            <ul class="pull-right list-unstyled list-inline mr">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+              
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> 
+                <span>
+                <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
+                <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+                 </span> 
+                 </div>
               </li>
             <li class="noMar">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
@@ -76,7 +84,10 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-  
+	function goToWalletList(){
+	    location.href = "${appPath}/walletList";
+	}
+
   </script>
   
   <script>
@@ -148,7 +159,7 @@ function purchasePagination(url){
             "render": function ( data, type, report, meta ) {
             	var result = "";
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?orderNo='+report.orderNo+'" title="'+report.orderNo+'">'+report.orderNo+'</a></div>';	 
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
             		         		 
          		}else{
          		  result = result +'<div class="tblminwidth-100">--</div>';
@@ -162,8 +173,8 @@ function purchasePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		var result = "";
-	            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
+	            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
+	           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 
@@ -290,8 +301,6 @@ function purchasePagination(url){
 }
 
 </script>
-  
-  
- 
+
   
   <jsp:include page="../masterFooter.jsp" /> 
