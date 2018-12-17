@@ -26,7 +26,7 @@
 							<table onclick="showTableSettingsTab(this)" id="invoiceTable" data-id="invoiceTable">
 								<c:forEach begin="0" end="${item.getJSONArray('subItems').length() -1}" var="index">
 									<c:if test="${item.getJSONArray('subItems').getJSONObject(index).get('value') == 'th'}">
-										<thead>
+										<thead data-style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">
 											<tr>
 												<th style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">Column 1</th>
 												<th style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">Column 2</th>
@@ -38,7 +38,7 @@
 										</thead>
 									</c:if>
 									<c:if test="${item.getJSONArray('subItems').getJSONObject(index).get('value') == 'td'}">
-										<tbody>
+										<tbody data-style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">
 											<tr>
 												<td style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">Value 1</td>
 												<td style="${item.getJSONArray('subItems').getJSONObject(index).get('style')}">Value 2</td>
