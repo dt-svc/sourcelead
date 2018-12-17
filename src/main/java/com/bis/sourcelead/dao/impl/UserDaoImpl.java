@@ -2254,7 +2254,6 @@ public class UserDaoImpl implements UserDao {
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
 						}*/
-						System.out.println("manager");
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
@@ -2264,7 +2263,6 @@ public class UserDaoImpl implements UserDao {
 							if(userDTO.getUserRequirementsCount() != null) {
 								bd = bd.add(userDTO.getUserRequirementsCount());
 							}*/
-							System.out.println("primary");
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
@@ -2298,7 +2296,6 @@ public class UserDaoImpl implements UserDao {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 							if(userDTO != null){
 									jobIds.add(reportDTO.getRequirementId());
-									System.out.println("assign");
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
 						}
