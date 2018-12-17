@@ -133,9 +133,30 @@ public class OrgRelations implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name="IS_OFFSHORE_RELATION")
+	private String isOffShoreRelation;
+	
+	@Column(name="GENERATE_INVOICE")
+	private String generateInvoice;
+	
+	@Column(name="GENERATE_BILL")
+	private String generateBill;
+
+	
 	@Transient
 	@JsonProperty
     private String orgName;
+	
+	@Transient
+	@JsonProperty
+    private Long immigrationRelatedId;
 	
 	@Transient
 	@JsonProperty
@@ -1118,6 +1139,55 @@ public class OrgRelations implements Serializable{
 	public void setLocationJsonId(Long locationJsonId)
 	{
 		this.locationJsonId = locationJsonId;
+	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public Long getImmigrationRelatedId() {
+		return immigrationRelatedId;
+	}
+
+	public void setImmigrationRelatedId(Long immigrationRelatedId) {
+		this.immigrationRelatedId = immigrationRelatedId;
+	}
+	public String getIsOffShoreRelation() {
+		return isOffShoreRelation;
+	}
+
+	public void setIsOffShoreRelation(String isOffShoreRelation) {
+		this.isOffShoreRelation = isOffShoreRelation;
+
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
 	}
 
 	

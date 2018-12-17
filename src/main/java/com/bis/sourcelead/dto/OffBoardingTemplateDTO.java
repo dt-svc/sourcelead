@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+
 /**
  * @author Laxman
  *
@@ -13,8 +15,10 @@ public class OffBoardingTemplateDTO implements Serializable {
 	
 	 private String templateId;
 	 
+	 @Required(desc = "templateName")
 	 private String templateName;
 	 
+	 @Required(desc="description")
 	 private String description;
  
 	 private String staticPath;

@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -137,6 +139,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -233,6 +238,44 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setCompanyEmail(null);
 		}
 		
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getGender())){
+			candidateOnBoarding.setGender(candidateOnBoardingDTO.getGender());
+		}else{
+			candidateOnBoarding.setGender(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getDateOfBirth())){
+			candidateOnBoarding.setDateOfBirth(candidateOnBoardingDTO.getDateOfBirth());
+		}else{
+			candidateOnBoarding.setDateOfBirth(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAuthorizedWorkUntil())){
+			candidateOnBoarding.setAuthorizedWorkUntil(candidateOnBoardingDTO.getAuthorizedWorkUntil());
+		}else{
+			candidateOnBoarding.setAuthorizedWorkUntil(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentEligibility())){
+			candidateOnBoarding.setEmploymentEligibility(candidateOnBoardingDTO.getEmploymentEligibility());
+		}else{
+			candidateOnBoarding.setEmploymentEligibility(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getUscisAlien())){
+			candidateOnBoarding.setUscisAlien(candidateOnBoardingDTO.getUscisAlien());
+		}else{
+			candidateOnBoarding.setUscisAlien(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getShift())){
+			Shift shift = new Shift();
+			shift.setId(Long.valueOf(candidateOnBoardingDTO.getShift()));
+			candidateOnBoarding.setShift(shift);
+		}else{
+			candidateOnBoarding.setShift(null);
+		}
 		
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getOnboardCandidateRole())){
 			Roles roles = new Roles();
@@ -399,7 +442,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
 		    if("Newly Registered".equalsIgnoreCase(onboardingUser.getRegistrationType()))
-		    	registrationService.sendActivationEmail(onboardingUser);
+		    	registrationService.sendActivationEmail(onboardingUser,orgLocations);
 		}
 		
 		
@@ -432,6 +475,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		if(null != candidate){
+			if(candidateOnBoarding.getShift() != null) {
+				candidate.setShift(candidateOnBoarding.getShift());
+			}
 			candidate.setConsultantUser(onboardingUser);
 			candidateService.addCandidate(candidate);
 		}
@@ -441,6 +487,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	    if(onboardingEmployee == null){
 	    	onboardingEmployee = saveOnboardingEmployee(candidateOnBoarding,onboardingUser,loginUser,orgLocations);
 	 	    employeesDao.addEmployee(onboardingEmployee);
+	 	   associateBalanceLeaveService.addAssociateLeaveType(onboardingUser,orgLocations.getId(),onboardingEmployee,onboardingUserRole);
 	    }
 	    
 	    if(null != candidateOnBoarding.getTeamId()){
@@ -590,8 +637,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
         }
 	    
 	    user.setLocation(candidateOnBoarding.getAddress1());
-	   
-	    
+	    user.setGender(candidateOnBoarding.getGender());
 	    user.setPassword(sourceleadPasswordEncoder.encode(password));
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
@@ -670,6 +716,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    employees.setUpdatedBy(loginUser.getUserCode());
 		    employees.setUpdatedDate(commonUtil.currentDate());
 		    
+		    if(candidateOnBoarding.getProbationNotice() != null)
+		    employees.setProbationPeriod(candidateOnBoarding.getProbationNotice());
+		    
 		    Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		    if(candidate.getOrgRelationId() != null) {
 		    	employees.setOrgRelationId(candidate.getOrgRelationId());
@@ -727,44 +776,26 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuilder builder=new StringBuilder();
 		 if(user.getLastName() != null && user.getLastName() !=""){
-			 globalVarsMap.put("firstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
+			 globalVarsMap.put("FirstName",builder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());	 
 		 }else{
-			 globalVarsMap.put("firstName", user.getFirstName());	 
+			 globalVarsMap.put("FirstName", user.getFirstName());	 
 		 }
 
 		 String loginUserFullName = loginUser.getFullName().substring(0, 1).toUpperCase() + loginUser.getFullName().substring(1);
 		 globalVarsMap.put("loginUser",loginUserFullName);
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
-		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("Role",userRole.getUserType());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 globalVarsMap.put("userEmailId",user.getEmail());
+		 globalVarsMap.put("LoginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("UserEmailId",user.getEmail());
 		 if(password != null){
-			 globalVarsMap.put("password",password);
+			 globalVarsMap.put("Password",password);
 		 }else{
-			 globalVarsMap.put("password","Login with your existing sourcelead credentials");
+			 globalVarsMap.put("Password","Login with your existing sourcelead credentials");
 		 }
 		 
-		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER,new ArrayList<EmailAttachment>());
 		
 	}
 	
@@ -832,43 +863,30 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the Email 
 		 
 		 if(!isNullOrEmpty(task.getAlertType())){
 			 if(task.getAlertType().equalsIgnoreCase("Email")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
 			 if(task.getAlertType().equalsIgnoreCase("Email,Notification")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 		 }
 

@@ -46,6 +46,8 @@ public interface RequirementInterviewDao {
 
 	RequirementInterview getinterviewBySubmissionId(Long submissionId);
 	
+	RequirementInterview getLatestInterviewBySubmissionId(Long submissionId);
+	
 	List<Date> getInterviewDatesForCalendarEvent(Long userId,Long orgLocationId) throws Exception;
 	
 	List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds,Long orgLocationId) throws Exception;

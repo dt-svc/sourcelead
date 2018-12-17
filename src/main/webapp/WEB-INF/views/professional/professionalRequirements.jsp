@@ -240,8 +240,8 @@ window.onload = function () {
                 <div class="col-md-4">
                   <label>Job Title</label>
                   <div class="clearfix">
-                    <input type="text" id="requirementTitle" name="requirementTitle" class="form-control input-sm" placeholder="Job Title">
-                  </div>
+					 <select class="chosen-select form-control input-sm" multiple data-placeholder="Job Title" id="requirementTitle" name="requirementTitle"></select>
+				 </div>
                 </div>
                 <div class="col-md-8">
                   <div class="row">
@@ -598,6 +598,7 @@ function minMaxExperienceOfProfessional(){
 		    });
 		    
 		    
+		    
 		  //Adding Customized Skills to the list
 		       var selectfour, chosenfour;
 			    selectfour = $("#skills");
@@ -635,6 +636,28 @@ function minMaxExperienceOfProfessional(){
 			                }
 					       
 		    	         }
+			    });
+			    
+			    
+			    var selectfive, chosenfive;
+			    selectfive = $("#requirementTitle");
+			    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+			    chosenfive = selectfive.data('chosen');
+			    chosenfive.search_field.on('keyup', function(e3)
+			    {
+			    	var requirementTitle = this.value.replace(",","");
+			        if ((e3.which == 13 || e3.which == 188) && (requirementTitle != null  && requirementTitle != '' && requirementTitle != 'undefined'))
+			        {
+			        	var par = this.parent;
+			            var option = $("<option>").val(requirementTitle).text(requirementTitle);
+			            selectfive.append(option);
+			            selectfive.find(option).prop('selected', true);
+	                    $("#requirementTitle option").each(function(){
+	                          $(this).siblings("[value='"+ this.value+"']").remove();
+	                    });
+		        		$("#requirementTitle").trigger("chosen:updated");
+		        		
+			        }
 			    });
 			    
 			    
@@ -2268,16 +2291,20 @@ function createAlert(requirementUUID){
 					        	    	$.ajax({
 					        		    	type: "POST",
 					        		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-					        		        success: function(data) {
-					        		        	var primarySkill = data;
-					        		        	      $("#primarySkill").val(primarySkill);
-					        		        	
+					        		        success: function(response) {
+					        		        	if (response.response === "AWKWARD") {
+					        		        	    location.href = "/errorPage";
+					        		        	} else if (response.response === "SUCCESS") {
+					        		        		var primarySkill = response.object;
+						        		        	$("#primarySkill").val(primarySkill);
+					        		        	} else if (response.indexOf('Sign In') !== -1) {
+					        		        		location.replace(sourceleadUrl);
+					        		        	} else {
+					        		        	    showError("Operation failed, please try again");
+					        		        	}
 					        		        },
 					        		    });
-					        	    	
 					        	    });
-					        	    
-					        	    
 					        	  if(json['skills'] != 'undefined' && json['skills'] != null && json['skills'] != ''){
 					        		  
 					        		  var alertSkillsList = json['skills'].split(',');
@@ -2367,10 +2394,9 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#create_alert_form', function(e){
-        	 
         	  if ($(this).validate(false, validationSettings)){
-        		
         		var sourceleadUrl = '${sourceleadUrl}';
+        		e.preventDefault();
         	    var formData = getFormData1("create_alert_form");
         		$.ajax({
         					type : "POST",
@@ -2379,11 +2405,24 @@ var validationSettings = {
         	  		         contentType:false, 
         					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-	        					    $("#selector4").removeAttr("style");
+        						if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	        	    		    showError(result.responseMessage);
+    	        	    		}
+    	                  		else if (result.response === "AWKWARD") {
+    	        	    		    location.href = "/errorPage";
+    	        	    		}
+    	                  		else if(result.response === "SUCCESS"){
+    	                  			$("#selector4").removeAttr("style");
 			            			$("#selector4").css({ display: "block" });
 			            			$("#eduMsgDiv").html("Job Alert updated successfully"); 
 			            			alertMsgFadeinFunction();
-        							location.replace(sourceleadUrl+"/professionalRequirements");
+        							location.replace(sourceleadUrl+"/professionalRequirements"); 
+    				        	    }
+    	                  		else if (result.indexOf('Sign In') !== -1) {
+    	        					location.replace(sourceleadUrl);
+    	        				} else {
+    	        				    showError("Operation failed, please try again");
+    	        				}
         					},
         				});
                 

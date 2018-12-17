@@ -58,7 +58,7 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 				if(!dbReadRoleIds.contains(Long.valueOf(rr))) {
 					ProjectDocumentPermission pdp = null;
 					if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
-						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()),Long.valueOf(rr));
 						 if(pdp == null) {
 							 pdp = new ProjectDocumentPermission();
 						 }
@@ -100,7 +100,7 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 						if(!dbWriteRoleIds.contains(Long.valueOf(wr))) {
 							ProjectDocumentPermission pdp = null;
 							if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
-								 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+								 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()),Long.valueOf(wr));
 								 if(pdp == null) {
 									 pdp = new ProjectDocumentPermission();
 								 }
@@ -142,7 +142,7 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 				if(!dbReadMemberIds.contains(Long.valueOf(rom))) {
 					ProjectDocumentPermission pdp = null;
 					if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
-						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+						 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()),Long.valueOf(rom));
 						 if(pdp == null) {
 							 pdp = new ProjectDocumentPermission();
 						 }
@@ -173,9 +173,9 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 				projectDocumentPermissionDao.deleteAllProjectDocumentPermissionByFoderIdAndMemberAndAccess(Long.valueOf(projectsDocumentFolderDTO.getFolderId()), dbReadMemberIds, Constants.DOCUMENT_READ_ACCESS);
 		}	
 		
+		 //readOtheMemberIds functionality
 		List<Long> dbWriteMemberIds = projectDocumentPermissionDao.projectDocumentPermissionMemberIdListByFolderIdAndAccessStatus(Long.valueOf(projectsDocumentFolderDTO.getFolderId()),documentId, Constants.DOCUMENT_WRITE_ACCESS);
 		List<Long> freshWriteMemberIds = new ArrayList<>();
-		   //readOtheMemberIds functionality
 			if(projectsDocumentFolderDTO.getWriteOtherMemberIds() != null) {
 				String[] writeMemberIds  = projectsDocumentFolderDTO.getWriteOtherMemberIds();
 				for (String wm:writeMemberIds){
@@ -183,7 +183,7 @@ public class ProjectDocumentPermissionServiceImpl implements ProjectDocumentPerm
 					if(!dbWriteMemberIds.contains(Long.valueOf(wm))) {
 						ProjectDocumentPermission pdp = null;
 						if(projectsDocumentFolderDTO.getDocumentId() != null && !projectsDocumentFolderDTO.getDocumentId().equalsIgnoreCase("undefined")) {
-							 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()));
+							 pdp = projectDocumentPermissionDao.getDocumentPermissionByDocumentId(Long.valueOf(projectsDocumentFolderDTO.getDocumentId()),Long.valueOf(wm));
 							 if(pdp == null) {
 								 pdp = new ProjectDocumentPermission();
 							 }

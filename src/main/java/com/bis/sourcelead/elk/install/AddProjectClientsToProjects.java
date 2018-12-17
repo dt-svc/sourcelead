@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddProjectClientsToProjects {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is adding project clients to projects
@@ -37,7 +38,7 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * from sourcelead.PROJECTS where (IS_DEFAULT_PROJECT = 'N' OR IS_DEFAULT_PROJECT IS NULL) ";
+			 String sql1 = "SELECT * from "+dbconfig.getSchema()+".PROJECTS where (IS_DEFAULT_PROJECT = 'N' OR IS_DEFAULT_PROJECT IS NULL) ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -49,14 +50,14 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 				 Date startDate = rs1.getDate("CREATED_DATE");
 				 String createdBy = rs1.getString("CREATED_BY");
 				 
-				 String query = "SELECT * from sourcelead.USER where USER_CODE = '"+createdBy+"' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".USER where USER_CODE = '"+createdBy+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 				 
 				 if (rs2.next()) {
 					 Long  userId = rs2.getLong("ID");
 						 
-				 		String query2 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS, LEVEL,  "
+				 		String query2 = " insert into "+dbconfig.getSchema()+".PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS, LEVEL,  "
 								+ "CREATED_DATE, CREATED_BY)"
 								+ " values (?, ?, ?, ?, ?, ?, ?)";
 			    		
@@ -77,13 +78,13 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
 					 
 				 }
 				 
-				 String query3 = "SELECT * from sourcelead.PROJECT_CLIENTS where ORG_LOCATIONS_ID = '"+orgLocationId+"' and PROJECT_ID = '"+projectId+"' ";
+				 String query3 = "SELECT * from "+dbconfig.getSchema()+".PROJECT_CLIENTS where ORG_LOCATIONS_ID = '"+orgLocationId+"' and PROJECT_ID = '"+projectId+"' ";
 				 java.sql.PreparedStatement pstmt1 = conn.prepareStatement(query3); 
 				 ResultSet rs3 = pstmt1.executeQuery();
 				 if (rs3.next()) {
 					 Long  projectClientId = rs3.getLong("ID");
 					 
-						String query4 = " update sourcelead.PROJECT_APPROVER_HIERARCHY set PROJECT_CLIENTS_ID = ? where PROJECT_ID = ? ";
+						String query4 = " update "+dbconfig.getSchema()+".PROJECT_APPROVER_HIERARCHY set PROJECT_CLIENTS_ID = ? where PROJECT_ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query4); 
 			    		pstmt3.setLong(1, projectClientId);
 			    		pstmt3.setLong(2, projectId);
@@ -111,10 +112,6 @@ public void dumpProjectClientsToProjects() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

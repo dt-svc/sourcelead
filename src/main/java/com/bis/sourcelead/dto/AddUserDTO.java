@@ -4,6 +4,8 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
@@ -35,7 +37,18 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String status;
 		
+		private String isGlobalAccess;
+		
+		private String grade;
+		
+		@Required(desc = "reportingManager")
 		private String reportingManager;
+		
+		@Required(desc = "resourceManager")
+		private String resourceManager;
+		
+		@Required(desc = "shift")
+		private String shiftId;
 		
 		private String isMailSent;
 		
@@ -108,6 +121,14 @@ import com.bis.sourcelead.entity.UserRole;
 		private String vendorcontact;
 		
 		private String dateofJoin;
+		
+		private String middleName;
+		
+		private String gender;
+		
+		private String maritalStatus;
+		
+		private String dateofBirth;
 
 		private String isPrimary;
 
@@ -124,11 +145,15 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String EmailId;
 		
+		private String panNumber;
+		
 		private String phoneNumber;
 		
 		private String extensionNumber;
 		
 		private String assignReportingManagers;
+		
+		private String assignResourceManagers;
 		
 		private String managerUsers;
 		
@@ -150,13 +175,48 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String reason;
 		
+		private String terminateDate;
+		
 		private String registeredOrgLocationId;
 		
 		private String registredOrgId;
 		
 		private String userId;
+		
+		private String residenceAddress;
+
+		private String residenceStreetAddress;
+		
+		private String residenceState;
+		
+		private String residenceCountry;
+		
+		private String residenceCity;
+		
+		private String residenceZipCode;
+		
+		private String residenceStateCode;
+		
+		private String residenceLatitude;
+		
+		private String residenceLongitude;
+		
+		private String workLocation;
 
 		private List<CustomFormFieldDTO> customFormData;
+		
+		private String associateId;
+		
+		private Long candidateId;
+		
+		private String allowEmployeeToFill;
+
+		private String probationPeriod;
+		
+		private String confirmationDate;
+		
+		private String probationStatus;
+		
 		
 		public String getFirstName() {
 			return firstName;
@@ -395,6 +455,14 @@ import com.bis.sourcelead.entity.UserRole;
 			return terminateReason;
 		}
 
+		public String getTerminateDate() {
+			return terminateDate;
+		}
+
+		public void setTerminateDate(String terminateDate) {
+			this.terminateDate = terminateDate;
+		}
+
 		public void setTerminateReason(String terminateReason) {
 			this.terminateReason = terminateReason;
 		}
@@ -567,6 +635,14 @@ import com.bis.sourcelead.entity.UserRole;
 			EmailId = emailId;
 		}
 
+		public String getPanNumber() {
+			return panNumber;
+		}
+
+		public void setPanNumber(String panNumber) {
+			this.panNumber = panNumber;
+		}
+
 		public String getPhoneNumber() {
 			return phoneNumber;
 		}
@@ -712,6 +788,225 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 			this.customFormData = customFormData;
 		}
-			
+
+		public String getResidenceAddress()
+		{
+			return residenceAddress;
+		}
+
+		public void setResidenceAddress(String residenceAddress)
+		{
+			this.residenceAddress = residenceAddress;
+		}
+
+		public String getResidenceStreetAddress()
+		{
+			return residenceStreetAddress;
+		}
+
+		public void setResidenceStreetAddress(String residenceStreetAddress)
+		{
+			this.residenceStreetAddress = residenceStreetAddress;
+		}
+
+		public String getResidenceState()
+		{
+			return residenceState;
+		}
+
+		public void setResidenceState(String residenceState)
+		{
+			this.residenceState = residenceState;
+		}
+
+		public String getResidenceCity()
+		{
+			return residenceCity;
+		}
+
+		public void setResidenceCity(String residenceCity)
+		{
+			this.residenceCity = residenceCity;
+		}
+
+		public String getResidenceZipCode()
+		{
+			return residenceZipCode;
+		}
+
+		public void setResidenceZipCode(String residenceZipCode)
+		{
+			this.residenceZipCode = residenceZipCode;
+		}
+
+		public String getResidenceStateCode()
+		{
+			return residenceStateCode;
+		}
+
+		public void setResidenceStateCode(String residenceStateCode)
+		{
+			this.residenceStateCode = residenceStateCode;
+		}
+
+		public String getResidenceLatitude()
+		{
+			return residenceLatitude;
+		}
+
+		public void setResidenceLatitude(String residenceLatitude)
+		{
+			this.residenceLatitude = residenceLatitude;
+		}
+
+		public String getResidenceLongitude()
+		{
+			return residenceLongitude;
+		}
+
+		public void setResidenceLongitude(String residenceLongitude)
+		{
+			this.residenceLongitude = residenceLongitude;
+		}
+
+		public String getResidenceCountry()
+		{
+			return residenceCountry;
+		}
+
+		public void setResidenceCountry(String residenceCountry)
+		{
+			this.residenceCountry = residenceCountry;
+		}
+
+		public String getWorkLocation()
+		{
+			return workLocation;
+		}
+
+		public void setWorkLocation(String workLocation)
+		{
+			this.workLocation = workLocation;
+		}
+
+		public String getMiddleName() {
+			return middleName;
+		}
+
+		public void setMiddleName(String middleName) {
+			this.middleName = middleName;
+		}
+
+		public String getGender() {
+			return gender;
+		}
+
+		public void setGender(String gender) {
+			this.gender = gender;
+		}
+
+		public String getDateofBirth() {
+			return dateofBirth;
+		}
+
+		public void setDateofBirth(String dateofBirth) {
+			this.dateofBirth = dateofBirth;
+		}
+
+		public String getMaritalStatus() {
+			return maritalStatus;
+		}
+
+		public void setMaritalStatus(String maritalStatus) {
+			this.maritalStatus = maritalStatus;
+		}	
+
+		public String getIsGlobalAccess() {
+			return isGlobalAccess;
+		}
+
+		public void setIsGlobalAccess(String isGlobalAccess) {
+			this.isGlobalAccess = isGlobalAccess;
+		}
+
+		public String getResourceManager() {
+			return resourceManager;
+		}
+
+		public void setResourceManager(String resourceManager) {
+			this.resourceManager = resourceManager;
+		}
+
+		public String getAssignResourceManagers() {
+			return assignResourceManagers;
+		}
+
+		public void setAssignResourceManagers(String assignResourceManagers) {
+			this.assignResourceManagers = assignResourceManagers;
+		}
+
+		public String getGrade() {
+			return grade;
+		}
+
+		public void setGrade(String grade) {
+			this.grade = grade;
+		}
+
+		public String getShiftId() {
+			return shiftId;
+		}
+
+		public void setShiftId(String shiftId) {
+			this.shiftId = shiftId;
+		}
+
+		public String getAssociateId() {
+			return associateId;
+		}
+
+		public void setAssociateId(String associateId) {
+			this.associateId = associateId;
+		}
+
+		public Long getCandidateId() {
+			return candidateId;
+		}
+
+		public void setCandidateId(Long candidateId) {
+			this.candidateId = candidateId;
+		}
+
+		public String getAllowEmployeeToFill() {
+			return allowEmployeeToFill;
+		}
+
+		public void setAllowEmployeeToFill(String allowEmployeeToFill) {
+			this.allowEmployeeToFill = allowEmployeeToFill;
+		}
+		
+		public String getProbationPeriod() {
+			return probationPeriod;
+		}
+
+		public void setProbationPeriod(String probationPeriod) {
+			this.probationPeriod = probationPeriod;
+		}
+
+		public String getConfirmationDate() {
+			return confirmationDate;
+		}
+
+		public void setConfirmationDate(String confirmationDate) {
+			this.confirmationDate = confirmationDate;
+		}
+
+		public String getProbationStatus() {
+			return probationStatus;
+		}
+
+		public void setProbationStatus(String probationStatus) {
+			this.probationStatus = probationStatus;
+		}
 		
 }

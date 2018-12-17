@@ -33,100 +33,6 @@ function getTicketCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
-		 
-	 }else{
-		 document.getElementById("customSearch").style.display="none";
-		 $("#jobReportList_custome").removeAttr("disabled");
-		 $("#fromDate").val('');
-		 $("#toDate").val('');
-		 getSourceleadTicketList();
-		 document.getElementById("fromDateDiv").style.display="none";
-		 document.getElementById("toDateDiv").style.display="none";
-	 }
-}
-
-</script>
-<section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Issues List</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Issues List</div>
-    </section>
-		    <div class="content-area content-new clearfix">
-		      <div class="clearfix form-horizontal">
-		
-						<div class="project_wrap">
-						
-						
-						        
-			                 <div class="timesheet_head minHeight40">
-								<ul>
-								<li>
-									<div class="col-md-12 dropdown-select tblminwidth-175 paddingLeft paddingRight">
-						        <div class="dropdown-select positionRelative">
-						        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getTicketCustomDates();">
-						            <option value=''>Select Date</option>
-						            <option value='Last_7_days' >Last 7 days</option>
-						            <option value='Last_15_days'>Last 15 days</option>
-						            <option value='1_month' selected>1 month</option>
-						            <option value='3_months'>3 months</option>
-						            <option value='YTD' >YTD</option>
-						            <option value='Last_Year'>Last Year</option>
-						            <option value="custom">Custom</option>
-						          </select>
-						    <!-- Top Leave Takers Custom Date -->
-						          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
-						            <div class="pull-left">
-						              <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
-						                <input type="text" class="form-control calendar margin-top0" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-						                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
-						              </div>
-						              
-						              <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
-						                <input type="text" class="form-control calendar margin-top0" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-						                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
-						              </div>
-						              <button type="button" class="btn btn-primary btn-sm" onclick="getSourceleadTicketList();"><i class="fa fa-search"></i></button>
-						            </div>
-						          </div>
-						      </div>
-						
-						        </div>
-								</li>
-								<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
-								<li id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Company</span><i class="glyphicon glyphicon-play"  ></i>|
-				                	<div id="filter1ApprovedPop" class="approved_pop">
-				                    	<ul>
-				                    	  <c:forEach var="orgList" items="${orgLocationsList}">  
-				                        	<li><input  id="companyName${orgList.id}" name="selectCompanyById" value ="${orgList.id}"  onclick="getSourceleadTicketList();"  type="checkbox"><label for="companyName${orgList.id}">${orgList.orgLocationName}</label></li>
-										  </c:forEach>
-				                        </ul>
-				                    </div>                	
-				                </li>
-				                </c:if>
-								
-								<li> <a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue"><i class="fa fa-plus paddingRight"></i>Add Issue</a> </li>
-								<div class="clearfix"></div>
-								</ul>
-								<div class="clearfix"></div>
-								<div class="remove_search">
-								<input placeholder="Search" type="text" id="ticketDataTableSearch">
-								</div>
-			                 </div>
-				                 <div class="project_wrap_table datatable_filter backgroundWhite">
-				                     <div id="sourceleadTicketListDivId"></div>
-				                </div>    
-				</div>     
-		      
-		    </div>
-		</div>
- <div class="sideMask"></div>
- <div id="ticketcommentPopup"></div>
-  </section>
-  
-  <script>
-  $( function() {
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormaTicket = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -138,7 +44,7 @@ function getTicketCustomDates(){
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormaTicket = 'yy-dd-mm'; 
 		  }
-    
+   
 	  $('#fromDate').datepicker({
 			dateFormat : finalDateFormaTicket,
 			changeMonth: true,
@@ -163,8 +69,88 @@ function getTicketCustomDates(){
 				removeErrTo();
 			}
 		});
-  } );
+
+	 }else{
+		 document.getElementById("customSearch").style.display="none";
+		 $("#jobReportList_custome").removeAttr("disabled");
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
+		 $("#fromDate").val('');
+		 $("#toDate").val('');
+		 getSourceleadTicketList();
+		 document.getElementById("fromDateDiv").style.display="none";
+		 document.getElementById("toDateDiv").style.display="none";
+	 }
+}
+
+</script>
+<section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Issues List</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Issues List</div>
+    </section>
+    
+			<div class="project_wrap">
+						
+			 <div class="positionRelative reportHead clearfix">
+			      <ul class="pull-right list-unstyled list-inline">
+					<li>
+						<div class="col-md-12 dropdown-select tblminwidth-175 paddingLeft paddingRight">
+				        <div class="dropdown-select positionRelative">
+				        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getTicketCustomDates();">
+				            <option value=''>Select Date</option>
+				            <option value='Last_7_days' >Last 7 days</option>
+				            <option value='Last_15_days'>Last 15 days</option>
+				            <option value='1_month' selected>1 month</option>
+				            <option value='3_months'>3 months</option>
+				            <option value='YTD' >YTD</option>
+				            <option value='Last_Year'>Last Year</option>
+				            <option value="custom">Custom</option>
+				          </select>
+				    <!-- Top Leave Takers Custom Date -->
+				          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+				            <div class="pull-left">
+				              <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
+				                <input type="text" class="form-control calendar margin-top0" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+				                <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
+				              </div>
+				              
+				              <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
+				                <input type="text" class="form-control calendar margin-top0" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+				                <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
+				              </div>
+				              <button type="button" class="btn btn-primary btn-sm" onclick="getSourceleadTicketList();"><i class="fa fa-search"></i></button>
+				            </div>
+				          </div>
+				      </div>
+				      </div>
+					</li>  
+											
+					<li>
+						<a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue" class="action newAdBtn mr5">+ Issue</a>
+					</li>	
+						
+					<c:if test="${SourceLeadWeb_orgLocationId == 1}">
+					<li id="filter1ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
+			           </li>
+			           </c:if> 		
+					    
+					  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='ticketDataTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+			        </ul>
+			      </div>						
+                
+                 <div class="project_wrap_table datatable_filter backgroundWhite">
+                     <div id="sourceleadTicketListDivId"></div>
+                </div>    
+				</div>     
+		      
+ <div class="sideMask"></div>
+ <div id="ticketcommentPopup"></div>
+  </section>
   
+  <script>
   function removeErrsgFrom (){
 	  document.getElementById("fromDateDiv").style.display="none";
 	  
@@ -206,14 +192,19 @@ function getTicketCustomDates(){
 	     {
 			selectCompanyIds.push($(this).val());
 		 });
-		
+		  var ticketStatus = [];
+			$('input:checkbox[name=ticketStatus]:checked').each(function() 
+		     {
+				ticketStatus.push($(this).val());
+			 });
 	  if(flag){
 	  var sourceleadUrl = '${sourceleadUrl}';
 		var searchValue = $("#ticketDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
+		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate+"&ticketStatus="+ticketStatus;
 		prepareSourceleadTicketList(url);
 	  }
+	  $("#customSearch").hide();
   }
   </script>
 <script>
@@ -227,7 +218,7 @@ function prepareSourceleadTicketList(url){
 		result = result + '<table id="dynamicTicketListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		 result = result + '<th>Tick_Id</th>';
+		 result = result + '<th>Issue Id</th>';
 	    result = result + '	<th>Title</th>';
         result = result + ' <th>Type</th>';
         result = result + ' <th>Module</th>';
@@ -243,12 +234,12 @@ function prepareSourceleadTicketList(url){
 		$("#sourceleadTicketListDivId").empty();
 		$("#sourceleadTicketListDivId").append(result);
 		dynamicTicketListPagination(url);
-		document.getElementById("customSearch").style.display="none";
 }
 
 function dynamicTicketListPagination(url){
 	 var sourceleadUrl = '${sourceleadUrl}';
 	 var loginRoleName = '${SourceLeadWeb_loginUserRole}'
+		 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var colIndex = 0;
    table =  $('#dynamicTicketListView').DataTable( { 
 	  "processing": true,
@@ -340,13 +331,17 @@ function dynamicTicketListPagination(url){
 		  	"data": "",
 		  	"render": function(data, type, report, meta) {
 		  		var result = "";
-		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN'){
-		  			result = result + ' <td><div class="tbldata-dotdot-100" style="width:75px">';
+		  		 if(loginRoleName == 'ROLE_SOURCELEAD_ADMIN' || orgLocationId == '1' ){
+		  			result = result + ' <td><div class="tbldata-dotdot-100" style="width:100px">';
 			  		result = result + ' <select id="ticketStatus" name="ticketStatus" onchange="changeStatus(\''+report.ticketUUID+'\',this);">';
 					result = result + '<option value="Open"  '+ (report.ticketStatus == "Open" ? "selected" : '') +'>Open</option>';
 					result = result + '<option value="On-Hold"  '+ (report.ticketStatus == "On-Hold" ? "selected" : '') +'>On-Hold</option>';
 					result = result + '<option value="Closed"  '+ (report.ticketStatus == "Closed" ? "selected" : '') +'>Closed</option>';
-			  		result = result + ' </select>';
+					result = result + '<option value="In-progress"  '+ (report.ticketStatus == "In-progress" ? "selected" : '') +'>In-progress</option>';
+					result = result + '<option value="Invalid"  '+ (report.ticketStatus == "Invalid" ? "selected" : '') +'>Invalid</option>';
+					result = result + '<option value="Duplicate"  '+ (report.ticketStatus == "Duplicate" ? "selected" : '') +'>Duplicate</option>';
+
+					result = result + ' </select>';
 			  		result = result + '</div></td>';
 		  		 }else{
 		  			result = result + ' <td><div class="tbldata-dotdot-100"> '+report.ticketStatus+'</div></td>';
@@ -390,6 +385,10 @@ function dynamicTicketListPagination(url){
     } );
     $("#dynamicTicketListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+	
+}
+
+$(function() {
     $("#ticketDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getSourceleadTicketList();
@@ -399,9 +398,7 @@ function dynamicTicketListPagination(url){
     				  } 
     	   }
     	});
-	
-}
-
+});
 function changeStatus(ticketUUID,e){
 	var ticketStatus = e.value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -409,7 +406,19 @@ function changeStatus(ticketUUID,e){
 		 type : "POST",
 		 url : sourceleadUrl+ "/changeTicketStatus?${_csrf.parameterName}=${_csrf.token}&ticketStatus="+ticketStatus+"&ticketUUID="+ticketUUID,
 		 success : function(result) {
-			location.replace(sourceleadUrl+"/sourceleadTicketList");
+			 
+			 if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			location.replace(sourceleadUrl+"/sourceleadTicketList");			 			
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+			 
 		},
 	});
 	
@@ -479,4 +488,102 @@ $('body').on('blur', '#sourceleadTicketComment_form', function() {
 	$("#sourceleadTicketComment_form").validateOnBlur(false, validationSettings);
 });
 </script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<script>
+function closeTicketFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openPop(){
+	 $("#invoiceFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetTicketFilter(){
+	$("ul#myTicketUL > li input:checkbox").prop("checked",false);
+	getSourceleadTicketList();
+	
+}
+function myTicketFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTicketInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTicketUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+</script>
+
+<div class="advancedsearch-mask"></div>
+      <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="invoiceFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeTicketFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-4">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="paymnetFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox"  value="Open" name="ticketStatus"><label for="onboard3">Open</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="On-Hold" name="ticketStatus"><label for="onboard2">On-Hold</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Closed" name="ticketStatus"><label for="onboard4">Closed</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="In-progress" name="ticketStatus"><label for="onboard1">In-progress</label></li>
+                        	        <li class="checkBox positionRelative" ><input type="checkbox"  value="Invalid" name="ticketStatus"><label for="onboard4">Invalid</label></li>
+                        	        <li class="checkBox positionRelative" ><input type="checkbox"  value="Duplicate" name="ticketStatus"><label for="onboard4">Duplicate</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						<c:if test="${!empty orgLocationsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTicketInput" onkeyup="myTicketFunction()" placeholder="Companies" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTicketUL">
+									<c:forEach var="orgList" items="${orgLocationsList}">  
+				                      	<li class="checkBox positionRelative"><input  type="checkbox" name="selectCompanyById" value ="${orgList.id}" ><label>${orgList.orgLocationName}</label></li>
+								 	 </c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeTicketFilterPop();getSourceleadTicketList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetTicketFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
  <jsp:include page="masterFooter.jsp" />	

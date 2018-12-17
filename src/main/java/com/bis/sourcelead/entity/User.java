@@ -3,7 +3,6 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -22,16 +21,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
-import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -84,7 +79,7 @@ public class User implements Serializable{
 	
 	
 	@Column(name = "SSN")
-	private Integer ssn;
+	private String ssn;
 	
 	@Column(name = "FILE_NAME")
 	private String fileName;
@@ -107,7 +102,6 @@ public class User implements Serializable{
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
-	
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
@@ -146,6 +140,24 @@ public class User implements Serializable{
 	
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
+	
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+		
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+		
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_USER_ID")
+	@JsonIgnore
+	private User linkUserId;
 	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -201,6 +213,10 @@ public class User implements Serializable{
     
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
+    
+    @Column(name = "ALLOW_EMPLOYEE_TO_FILL")
+	@Enumerated(EnumType.STRING)
+	private Status allowEmployeeToFill;
 	
 	@Transient
 	private String isPrimaryAdmin;
@@ -209,18 +225,22 @@ public class User implements Serializable{
     private String tempPwd;
 	
 	@Transient
+	@JsonProperty
     private int assignJobCount;
 	
 	@Transient
 	private String role;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeamId;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeam;
 	
 	@Transient
+	@JsonProperty
 	private String isAssignedOwner;
 	
 	@Transient
@@ -270,6 +290,28 @@ public class User implements Serializable{
 	
 	@Transient
 	private String isMailSent;
+	
+	@Transient
+	private String associateUserCode;
+	
+	@Transient
+	private Long userId;
+	
+	@Transient
+	private Long candidateId;
+	
+	@Transient
+    @JsonProperty
+    private String associateTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
+	
+	@Transient
+    @JsonProperty
+    private String isPayRollApprover;
 	
 
 	public Status getPreviousUserState() {
@@ -492,14 +534,14 @@ public class User implements Serializable{
 		if(StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else{
-			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			}
-			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = lastName;
-			}
-			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}
@@ -773,12 +815,13 @@ public class User implements Serializable{
 		this.isMailSent = isMailSent;
 	}
 
-
-	public Integer getSsn() {
+	public String getSsn()
+	{
 		return ssn;
 	}
 
-	public void setSsn(Integer ssn) {
+	public void setSsn(String ssn)
+	{
 		this.ssn = ssn;
 	}
 
@@ -836,6 +879,102 @@ public class User implements Serializable{
 
 	public void setVendorContactName(String vendorContactName) {
 		this.vendorContactName = vendorContactName;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public User getLinkUserId() {
+		return linkUserId;
+	}
+
+	public void setLinkUserId(User linkUserId) {
+		this.linkUserId = linkUserId;
+	}
+
+	public String getAssociateUserCode() {
+		return associateUserCode;
+	}
+
+	public void setAssociateUserCode(String associateUserCode) {
+		this.associateUserCode = associateUserCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getAssociateTags() {
+		return associateTags;
+	}
+
+	public void setAssociateTags(String associateTags) {
+		this.associateTags = associateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
+	}
+
+	public Status getAllowEmployeeToFill() {
+		return allowEmployeeToFill;
+	}
+
+	public void setAllowEmployeeToFill(Status allowEmployeeToFill) {
+		this.allowEmployeeToFill = allowEmployeeToFill;
 	}
 
 	

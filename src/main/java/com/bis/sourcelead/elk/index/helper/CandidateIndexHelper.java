@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -40,7 +41,9 @@ public class CandidateIndexHelper {
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			candidateIndex.setFirstName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
 			candidateIndex.setLastName(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
-			
+			candidateIndex.setMiddleName(candidate.getMiddelName());
+			candidateIndex.setGender(candidate.getGender());
+			candidateIndex.setMaritalStatus(candidate.getMaritalStatus());
 			if(StringUtils.isNoneBlank(candidate.getLastName())) {
 				StringBuilder fullName = new StringBuilder();
 				fullName = fullName.append(commonUtil.firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
@@ -66,6 +69,9 @@ public class CandidateIndexHelper {
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
 			
+			if(StringUtils.isNotBlank(candidate.getPanNumber())){
+				candidateIndex.setPanNumber(candidate.getPanNumber());
+			}
 			
 		if(null != candidate.getConsultantUser()){
 				candidateIndex.setUserId(candidate.getConsultantUser().getId());
@@ -123,15 +129,15 @@ public class CandidateIndexHelper {
 				}
 			}
 			
-			CandidateResumes candidateResumes = candidateResumesService.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
+			CandidateResumesDTO candidateResumes = candidateResumesService.getCandidateLatesResumeDetails(candidate.getId());
 			if(null != candidateResumes){
-				candidateIndex.setCurrentResumeId(candidateResumes.getId());
-				candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
+				candidateIndex.setCurrentResumeId(candidateResumes.getResumeId().longValue());
+				candidateIndex.setCurrentResumeName(candidateResumes.getResumeName());
 				candidateIndex.setFileContentType(candidateResumes.getFileContentType());
-				//candidateIndex.setRecommendationFileUrl(candidateResumes.getFileURL());
-				candidateIndex.setFileUrl(candidateResumes.getFileURL());
+				candidateIndex.setFileUrl(candidateResumes.getFileUrl());
 				candidateIndex.setResumeContent("");
 			}
+			
 			if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
 				if(candidate.getExperienceYears().equalsIgnoreCase("25+")){
 					candidateIndex.setExperienceYears(Constants.EXPERIENCE_26YEARS);
@@ -186,6 +192,11 @@ public class CandidateIndexHelper {
 			if(null != candidate.getIsAssociate()){
 				candidateIndex.setIsAssociate(candidate.getIsAssociate());	
 			}
+			
+			if(null != candidate.getIsSharedInMarketplace()){
+				candidateIndex.setIsSharedInMarketplace(candidate.getIsSharedInMarketplace());	
+			}
+			
 			if(null != candidate.getSpocId()){
 				candidateIndex.setSpocId(candidate.getSpocId().getId());	
 			}else{
@@ -199,12 +210,15 @@ public class CandidateIndexHelper {
 			}
 			
 			candidateIndex.setTerminateReason(candidate.getTerminateReason());
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			if(candidate.getCreatedDate() != null){
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setCreatedDate(df.format(new Date(candidate.getCreatedDate().getTime())));
 			}
 			
-			
+			if(null != candidate.getDateOfBirth()){
+				String dateofBirth  = df.format(candidate.getDateOfBirth());
+				candidateIndex.setDateofBirth(dateofBirth);
+			}
 			if(candidate.getCreatedBy() != null && !candidate.getCreatedBy().isEmpty()) {
 				User user = userService.getUserByUserCode(candidate.getCreatedBy());
 				StringBuilder sb = new StringBuilder();
@@ -213,17 +227,22 @@ public class CandidateIndexHelper {
 				}else{
 					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 				}
+				candidateIndex.setCreatedByUserCode(user.getUserCode());
 			}
 			
 			
 			if(candidate.getUpdatedDate() != null){
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				candidateIndex.setUpdatedDate(df.format(new Date(candidate.getUpdatedDate().getTime())));
 			}
 			
 			if(null != candidate.getIsProfilePublic()){
 				candidateIndex.setIsProfilePublic(candidate.getIsProfilePublic());
 			}
+			
+			if(candidate.getCandidateTags() != null && !candidate.getCandidateTags().isEmpty()) {
+				candidateIndex.setTags(candidate.getCandidateTags());
+			}
+			
 			
 			candidateIndex.setUpdatedBy(candidate.getUpdatedBy());
 			

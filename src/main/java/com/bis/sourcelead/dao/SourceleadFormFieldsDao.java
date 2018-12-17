@@ -8,4 +8,6 @@ public interface SourceleadFormFieldsDao {
 
 	List<SourceleadFormFields> getAllFormFieldsBySectionId(Long sectionId) throws Exception;
 
+	List<SourceleadFormFields> getSourceleadSectionDetailsById(Long section, Long sourceleadFormId, Long locationId);
+
 }

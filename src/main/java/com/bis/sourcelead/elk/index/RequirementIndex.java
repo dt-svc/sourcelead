@@ -42,9 +42,9 @@ public class RequirementIndex implements Serializable {
 	
 	private String clientRateType;
 	
-	private String minExperience;
+	private Float minExperience;
 	
-	private String maxExperience;
+	private Float maxExperience;
 	
 	private String requirementStatus;
 	
@@ -203,6 +203,22 @@ public class RequirementIndex implements Serializable {
 	
 	private List<String> locationsList;
 	
+	private String isClientJob;
+	
+	private String primaryRecruiterUserId;
+	
+	private String tags;
+	
+	private String process;
+	
+	public String getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(String primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -366,19 +382,19 @@ public class RequirementIndex implements Serializable {
 		this.clientRateType = clientRateType;
 	}
 
-	public String getMinExperience() {
+	public Float getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(String minExperience) {
+	public void setMinExperience(Float minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public String getMaxExperience() {
+	public Float getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(String maxExperience) {
+	public void setMaxExperience(Float maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
@@ -1029,5 +1045,31 @@ public class RequirementIndex implements Serializable {
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
-	
+
+	public String getIsClientJob() {
+		return isClientJob;
+	}
+
+	public void setIsClientJob(String isClientJob) {
+		this.isClientJob = isClientJob;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
 }

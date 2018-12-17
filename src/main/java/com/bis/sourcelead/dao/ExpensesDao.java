@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +21,12 @@ public interface ExpensesDao {
 	public List<Expenses> getIndividualExpense(Long orgLocId,Long loginUserId,String expenseId);
 	public List<ExpensesEntries> getExpensesEntries(String expenseId);
 	public Expenses getExpenseById(long id);
-    public Expenses getExpenseByExpenseUniqueId(String expenseId, Long loginUserId)throws Exception;
+    public Expenses getExpenseByExpenseUniqueId(String expenseId, Long loginUserId,String isGlobalUser)throws Exception;
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType);
 	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId);
 	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long orglocationId,Date startDate, Date endDate);
+	public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate);
 }
 	
 

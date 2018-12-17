@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,14 +14,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.TimeToFillDTO;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -41,27 +55,193 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	private TeamService teamService;
+	
+	@Autowired
+	private RolesService rolesService;
+	
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
 	@RequestMapping(value = "/recruitersReports")
 	public ModelAndView recruitersReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
 	 
 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+
 	 
+		Collection<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+
+	 ModelAndView model = new ModelAndView();
+	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+	 List<Team> teamsList = null;
+	 if(!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+		teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+	 }
+	 else{
+		 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+	 }
+	 model.addObject("rolesList", rolesList);
+     model.addObject("teamsList", teamsList);
+	 model.addObject("userList", userList);
+	 model.addObject("requirementTabAccess", requirementTabAccess);
+	 model.addObject("loginUserRole", loginUserRole);
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.setViewName("reports/recruitersReports");
+	 return model;
+		
+    }
+	
+	@RequestMapping(value = "/myPerformanceReports")
+	public ModelAndView myPerformanceReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	 
+	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+	 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+
 	 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
 	
 	 
 	 
 	 ModelAndView model = new ModelAndView();
 	 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+	 List<Team> teamsList =null;
+	 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+     model.addObject("teamsList", teamsList);
 	 model.addObject("userList", userList);
 	 model.addObject("requirementTabAccess", requirementTabAccess);
 	 model.addObject("sourceleadUrl", sourceleadUrl);
-	 model.setViewName("reports/recruitersReports");
+	 model.setViewName("reports/myPerformanceReports");
 	 return model;
 		
-    }	
+    }
 	
+	@RequestMapping(value = "/recruiterJobsReport")
+	public ModelAndView recruiterJobsReport(@RequestParam(value="userCode", required=false)String recruiterUserCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User recruiterUser = userService.getUserByUserCode(recruiterUserCode);
+		 
+		 
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(recruiterUser.getId(), orgLocations.getId());
+		 model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("recruiterUser", recruiterUser);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/recruiterJobsReport");
+		 return model;
+    }
+	
+	@RequestMapping(value = "/recruiterCandidatesReportList")
+	public ModelAndView recruiterCandidatesReportList(@RequestParam(value="userCode", required=false)String userCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User associateUser = userService.getUserByUserCode(userCode);
+		 
+		 
+		 boolean candidateTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_CANDIATE));
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(associateUser.getId(), orgLocations.getId());
+		 model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("associateUser", associateUser);
+		 model.addObject("userCode", userCode);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
+		 model.addObject("candidateTabAccess", candidateTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/recruiterCandidatesReport");
+		 return model;
+    }
+	
+	@RequestMapping(value = "/recruiterApplicantsReportList")
+	public ModelAndView recruiterApplicantsReportList(@RequestParam(value="userCode", required=false)String userCode, 
+			@RequestParam(value="searchValue", required=false)String searchValue,
+			@RequestParam(value="timePeriod", required=false)String timePeriod,
+			@RequestParam(value="customStartDate", required=false)String customStartDate,
+			@RequestParam(value="customEndDate", required=false)String customEndDate,
+			@RequestParam(value="toStage", required=false)String toStage,
+			@RequestParam(value="orgTeams", required=false)String orgTeams,
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+		 
+		 User associateUser = userService.getUserByUserCode(userCode);
+		 
+		 
+		 boolean candidateTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_CANDIATE));
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		 List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(associateUser.getId(), orgLocations.getId());
+		 model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("associateUser", associateUser);
+		 model.addObject("userCode", userCode);
+		 model.addObject("toStage", toStage);
+		 
+		 model.addObject("searchValue", searchValue);
+		 model.addObject("timePeriod", timePeriod);
+		 model.addObject("customStartDate", customStartDate);
+		 model.addObject("customEndDate", customEndDate);
+		 model.addObject("orgTeams", orgTeams);
+		 
+		 model.addObject("candidateTabAccess", candidateTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/recruiterAllstageApplicantsReport");
+		 return model;
+    }
 	
 	
 	@RequestMapping(value = "/reportsDashboard")
@@ -154,6 +334,39 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/requirementStageReports");
 		  return model;		
 	 }	
+	 
+	 
+	 @RequestMapping(value = "/financialReportsList")
+		public ModelAndView financialReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/financialReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/performanceReportList")
+		public ModelAndView performanceReportList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/performanceReportList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/hrReportsList")
+		public ModelAndView hrReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/hrReportsList");
+		  return model;		
+	 }	
+	 
+	 @RequestMapping(value = "/associateReportsList")
+		public ModelAndView associateReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/associateReportsList");
+		  return model;		
+	 }	
 
 	 /**
 	  * returns requirement assign to reports jsp page
@@ -190,4 +403,226 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/vendorsReport");
 		 return model;
 	 }	
+	 
+	 @RequestMapping(value = "/userUsageReport")
+		public ModelAndView userUsageReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+//		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/usersUsageReportList");
+		 return model;
+	 }	
+	 
+	 @RequestMapping(value = "/userUsageReportsGraph")
+		public ModelAndView userUsageReportsGraph(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 
+//		 boolean vendorTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_VENDOR));
+		 
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+//		 model.addObject("vendorTabAccess", vendorTabAccess);
+		 model.setViewName("reports/userUsageReportsGraph");
+		 return model;
+	 }
+	 
+	 @RequestMapping(value = "/placementReportListForReports")
+		public ModelAndView placementsReportListForReports() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/placementReport");
+		  return model;		
+	 }
+	 
+	 @RequestMapping(value = "/jobsPerformanceReport")
+		public ModelAndView jobsPerformanceReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			if(null != orgClientList && orgClientList.size() > 0){
+				for(OrgRelations ocl :orgClientList){
+					ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+					ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+				 }
+			    model.addObject("orgClientList", orgClientList);
+			}
+			model.addObject("loginOrgLocId", orgLocations.getId());
+		 model.setViewName("reports/jobsPerformanceReport");
+		  return model;		
+	 }
+	 
+	 @RequestMapping(value = "/jobPerformanceCandidatesByStatus")
+		public ModelAndView jobPerformanceCandidatesByStatus(@RequestParam(value="tab", required=true) String tab,
+				@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+				@RequestParam(value="requirementId", required=true) String requirementId,
+				@RequestParam(value="statusType", required=true) String statusType,
+				HttpServletRequest request) throws Exception {
+			
+			ModelAndView model = new ModelAndView();
+		
+			model.addObject("tab",tab);
+			model.addObject("reqList","interList");
+			model.addObject("requirementId",requirementId);
+			model.addObject("statusType",statusType);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("reports/jobsPerformanceCandidateList");
+			return model;
+		}
+	 
+	 @RequestMapping(value = "/applicantsjoinedlist")
+		public ModelAndView applicantsjoinedlist(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		
+		 
+		 
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+		 List<Team> teamsList = null;
+		 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+	     model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/applicantsjoinedlist");
+		 return model;
+			
+	    }
+
+	 	@RequestMapping(value = "/associateJoineReports")
+		public ModelAndView associateJoinedReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+		 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 boolean requirementTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_REQUIREMENT));
+		 List<TimeToFillDTO> yearList = new ArrayList<>();
+		 Calendar now = Calendar.getInstance();
+		 now.add(Calendar.YEAR, 1);
+		 int currentYearyear = Calendar.getInstance().get(Calendar.YEAR);
+		 int year = now.get(Calendar.YEAR);
+		 for(int i=0; i<=5; i++) {
+			 TimeToFillDTO timeToFillDTO = new TimeToFillDTO();
+			 timeToFillDTO.setYear(year-i);
+			 yearList.add(timeToFillDTO);
+		 }
+		 
+		 ModelAndView model = new ModelAndView();
+		 List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());	
+		 List<Team> teamsList = null;
+		 if(loginUserRole.equalsIgnoreCase("ROLE_LEAD_RECRUITER")) {
+			teamsList = teamService.getTeamListByTeamOwnerAndStatus(user.getId(),orgLocations.getId()); 
+		 }
+		 else{
+			 teamsList = teamService.getTeamListByOrgLocationID(orgLocations.getId()); 
+		 }
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+	     model.addObject("teamsList", teamsList);
+		 model.addObject("userList", userList);
+		 model.addObject("requirementTabAccess", requirementTabAccess);
+		 model.addObject("currentYear", currentYearyear);
+		 model.addObject("yearList", yearList);
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/associateJoineReport");
+		 return model;
+			
+	    }
+
+	 @RequestMapping(value = "/employeeTasksReport")
+		public ModelAndView employeeTasksReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/employeeTasksReportList");
+		 return model;
+	 }
+	 
+	 @RequestMapping(value = "/projectReportList")
+		public ModelAndView projectReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/projectReportList");
+		 return model;
+	 }
+	 
+	 @RequestMapping(value = "/overdueTaskReport")
+		public ModelAndView overdueTaskReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 
+		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		 model.addObject("projectList", projectList);
+		 
+		 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
+		 model.addObject("taskTypeList", taskTypeList);
+		 
+		 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
+		 model.addObject("taskPriorityList", taskPriorityList);
+		 
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/overdueTaskReport");
+		 return model;
+	 }
+	 
+	 
+	 @RequestMapping(value = "/employeeTasksReportSummary")
+		public ModelAndView employeeTasksReportSummary(ProjectassignTasksDTO projectassignTasksDTO,HttpServletRequest request) throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 
+		 List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		 model.addObject("projectList", projectList);
+		 
+		 List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE,orgLocations.getId());
+		 model.addObject("taskTypeList", taskTypeList);
+		 
+		 List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY,orgLocations.getId());
+		 model.addObject("taskSeverityList", taskSeverityList);
+		 
+		 List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY,orgLocations.getId());
+		 model.addObject("taskPriorityList", taskPriorityList);
+		 
+		 List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS,orgLocations.getId());
+		 model.addObject("taskStatusList", taskStatusList);
+		 
+		 model.addObject("candidateId", projectassignTasksDTO.getCandidateId());
+		 model.addObject("taskStatus", projectassignTasksDTO.getTaskType());
+		 
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/employeeTasksReportSummary");
+		 return model;
+	 }
+	 
 }

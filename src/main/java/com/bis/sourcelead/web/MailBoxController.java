@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -165,13 +166,43 @@ public class MailBoxController {
  			
  			return model;
  	}
+
 	@RequestMapping(value = "/app/emailSettings")
- 	public ModelAndView emailSettings(HttpServletRequest request) {
-		    ModelAndView model = new ModelAndView();
- 			model.setViewName("emailSettings");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			return model;
- 	}
+	@ResponseBody
+	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
+		ModelAndView model = new ModelAndView();
+		String incomingServer = "secure.emailsrvr.com";
+		String incomingPort = "993";
+		String outgoingServer = "secure.emailsrvr.com";
+		String outgoingPort = "465";
+		switch (source) {
+		case "gmail":
+			incomingServer = "imap.gmail.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.gmail.com";
+			outgoingPort = "465";
+			break;
+		case "yahoo":
+			incomingServer = "imap.mail.yahoo.com";
+			incomingPort = "993";
+			outgoingServer = "smtp.mail.yahoo.com";
+			outgoingPort = "465";
+			break;
+		default:
+			break;
+		}
+		EmailAccountSettingsDTO emailAccountSettingsDTO = new EmailAccountSettingsDTO();
+		emailAccountSettingsDTO.setIncomingServer(incomingServer);
+		emailAccountSettingsDTO.setIncomingPort(incomingPort);
+		emailAccountSettingsDTO.setIncomingSSL(true);
+		emailAccountSettingsDTO.setOutgoingServer(outgoingServer);
+		emailAccountSettingsDTO.setOutgoingPort(outgoingPort);
+		emailAccountSettingsDTO.setOutgoingSSL(true);
+		model.addObject("emailAccount", emailAccountSettingsDTO);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("emailConfiguration");
+		return model;
+	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
@@ -432,6 +463,7 @@ public class MailBoxController {
 	
 	
 	
+	@SuppressWarnings("static-access")
 	public void calculateDays(List<CampaignIndex> mailBoxList, Timezone timezone) throws ParseException {
 		for (CampaignIndex userMailBox : mailBoxList) {
 			long diff = commonUtil.currentDate().getTime() - userMailBox.getCreatedDate().getTime();

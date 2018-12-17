@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.SearchDTO;
 public class PayrollBalance extends SearchDTO implements Serializable{
 	
 	private String income;
+	private String empIncome;
 	private String orgLocationId;
 	private String directDepositGross;
 	private String directDepositNet;
@@ -24,6 +25,9 @@ public class PayrollBalance extends SearchDTO implements Serializable{
 	private String due;
 	private String billed;
 	private String empName;
+	private String searchValue;
+	private String empBalance;
+	private String empBilled;
 	
 	public String getBalance() {
 		return balance;
@@ -33,8 +37,16 @@ public class PayrollBalance extends SearchDTO implements Serializable{
 		this.balance = balance;
 	}
 
-	
-	
+	public String getEmpIncome()
+	{
+		return empIncome;
+	}
+
+	public void setEmpIncome(String empIncome)
+	{
+		this.empIncome = empIncome;
+	}
+
 	public String getOrgLocationId() {
 		return orgLocationId;
 	}
@@ -170,6 +182,32 @@ public class PayrollBalance extends SearchDTO implements Serializable{
 	public void setEmpName(String empName) {
 		this.empName = empName;
 	}
-	
 
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getEmpBalance()
+	{
+		return empBalance;
+	}
+
+	public void setEmpBalance(String empBalance)
+	{
+		this.empBalance = empBalance;
+	}
+
+	public String getEmpBilled()
+	{
+		return empBilled;
+	}
+
+	public void setEmpBilled(String empBilled)
+	{
+		this.empBilled = empBilled;
+	}
 }

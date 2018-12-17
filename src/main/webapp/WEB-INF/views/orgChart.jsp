@@ -19,12 +19,17 @@
   <!--   Org Chart   -->
 
 	<div class="OrgChartNew">
-		<div class="OrgSearch">
-			<input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
-			<!-- <p class="OrgChBtn"></p> --> <i class="fa fa-times refresh" id='orgChartSearchClear'></i> 
-			<div class="clearfix"></div>
-		</div>
-		
+		 <div class="OrgSearch">
+			<select class="form-control select-styles" id="chartLocation">
+                    <c:forEach items="${locations}" var='l'>
+                        <option ${l.id == SourceLeadWeb_orgLocationId ? "selected='selected'" : ""} value="${l.id}">${l.orgLocationName} - ${l.city}${l.state == null || l.state.isEmpty() ? "" : ", ".concat(l.state)}${l.country == null || l.country.isEmpty() ? "" : ", ".concat(l.country)}</option>
+                    </c:forEach>
+                </select>
+            <input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
+		<i class="fa fa-times refresh" id='orgChartSearchClear'></i>
+		<div class="clearfix"></div>
+		</div> 
+		 
 		<div id="chart-container" class="text-center"></div>
 	</div>
 
@@ -35,7 +40,8 @@
 <script type="text/javascript">
 var sourceleadUrl = '${sourceleadUrl}';
 $(document).ready(function(){
-	getOrgChartData();
+    $("#chartLocation").change(function() { getOrgChartData($("#chartLocation").val()); });
+    getOrgChartData($("#chartLocation").val());
 	
 	/* $(".OrgChBtn").click(function(){
 		$(this).toggleClass("OrgChBtnAct");
@@ -102,12 +108,14 @@ function filterNodes(keyWord) {
       .end().find('.slide-up, .slide-left, .slide-right').removeClass('slide-up slide-right slide-left');
   }
   var data = {};
-  function getOrgChartData() {
-	$.post('${sourceleadUrl}/org/orgChart', {}, function(ds) {
+  function getOrgChartData(id) {
+	    $.post('${sourceleadUrl}/org/orgChart', {id: id}, function(ds) {
+	         data = {};
 	    $.each(ds, function(i) {
 	    		if(ds[i]["parentId"] == "0") {
 	    			var obj  = {};
 	    			obj.id = ds[i].id;
+	    			obj.userCode = ds[i].userCode;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
@@ -144,18 +152,20 @@ function filterNodes(keyWord) {
 }
 
 function initChart(data) {
+	$('#chart-container').html("");  
 	 $('#chart-container').orgchart({
 	        'data' : data,
 	        'depth': 2,
 	        'nodeTitle': 'name',
 	        'nodeContent': 'designation',
 	        'nodeID': 'id',
+	        'nodeCode': 'userCode',
 	        'createNode': function($node, data) {
 	          var nodePrompt = $('<i>', {
 	            'class': 'fa fa-info-circle second-menu-icon',
 	            'title': "Show Profile",
 	            click: function() {
-	              window.open('${sourceleadUrl}/userSummaryDetails?userId='+data["id"], "_blank");
+	            	window.open('${sourceleadUrl}/userSummaryDetails?userCode='+data["userCode"], "_blank");
 	            }
 	          });
 //	          var secondMenu = '<div class="second-menu">Extra Details</div>';

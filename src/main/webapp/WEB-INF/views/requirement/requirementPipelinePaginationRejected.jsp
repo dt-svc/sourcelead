@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -431,6 +431,7 @@
 														+ "<font color='red'>Category</font>: "
 														+ opt.rejectedCategoryType
 														+ '<br>'
+														+ "<font>Reason</font> : "
 														+ opt.rejectedReason
 														+ '</p></div></i></div></td>';
 											}

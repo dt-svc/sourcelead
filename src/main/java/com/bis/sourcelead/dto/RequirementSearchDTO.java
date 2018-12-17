@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String status;
@@ -22,6 +23,11 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String filterAssignTo;
 	private String visaType;
 	private String requirementSkills;
+	private String filterSpecJobs;
+	private String filterProjectId;
+    private List<String> jobsTags;
+    private String cityName; 
+
 	
 	public String getStatus() {
 		return status;
@@ -129,5 +135,30 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	public void setRequirementSkills(String requirementSkills) {
 		this.requirementSkills = requirementSkills;
 	}
-	
+	public String getFilterSpecJobs() {
+		return filterSpecJobs;
+	}
+	public void setFilterSpecJobs(String filterSpecJobs) {
+		this.filterSpecJobs = filterSpecJobs;
+	}
+	public String getFilterProjectId() {
+		return filterProjectId;
+	}
+	public void setFilterProjectId(String filterProjectId) {
+		this.filterProjectId = filterProjectId;
+	}
+	public List<String> getJobsTags() {
+		return jobsTags;
+	}
+	public void setJobsTags(List<String> jobsTags) {
+		this.jobsTags = jobsTags;
+	}
+	public String getCityName()
+	{
+		return cityName;
+	}
+	public void setCityName(String cityName)
+	{
+		this.cityName = cityName;
+	}
 }

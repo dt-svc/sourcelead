@@ -63,15 +63,16 @@ private static final long serialVersionUID = 1L;
 	private String address2;
 	
 	@Column(name = "LOCATION")
+	@Type(type="text")
 	private String location;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name = "ZIPCODE")
@@ -86,11 +87,29 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "COMPANY_EMAIL")
 	private String companyEmail;
 	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "DATE_OF_BIRTH")
+	private String dateOfBirth;
+	
+	@Column(name = "EMPLOYMENT_ELIGIBILITY")
+	private String employmentEligibility;
+
+	@Column(name = "USCIS_ALIEN")
+	private String uscisAlien;
+	
+	@Column(name = "AUTHORIZED_WORK_UNTIL")
+	private String authorizedWorkUntil;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID")
 	private Department departmentId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ROLE_ID")
@@ -355,12 +374,60 @@ private static final long serialVersionUID = 1L;
 		this.companyEmail = companyEmail;
 	}
 
+	public String getGender() {
+		return gender;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public String getEmploymentEligibility() {
+		return employmentEligibility;
+	}
+
+	public String getUscisAlien() {
+		return uscisAlien;
+	}
+
+	public String getAuthorizedWorkUntil() {
+		return authorizedWorkUntil;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public void setEmploymentEligibility(String employmentEligibility) {
+		this.employmentEligibility = employmentEligibility;
+	}
+
+	public void setUscisAlien(String uscisAlien) {
+		this.uscisAlien = uscisAlien;
+	}
+
+	public void setAuthorizedWorkUntil(String authorizedWorkUntil) {
+		this.authorizedWorkUntil = authorizedWorkUntil;
+	}
+
 	public Department getDepartmentId() {
 		return departmentId;
 	}
 
 	public void setDepartmentId(Department departmentId) {
 		this.departmentId = departmentId;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
 	}
 
 	public Roles getRoleId() {

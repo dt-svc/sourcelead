@@ -1,9 +1,16 @@
 package com.bis.sourcelead.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +47,11 @@ import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +60,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.ShiftDao;
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
@@ -60,11 +78,17 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -75,21 +99,30 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -97,6 +130,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -106,6 +141,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -142,6 +179,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private PayrollPayheadService payrollPayheadService;
 	
 	@Autowired
 	private UserService userService;
@@ -204,7 +244,89 @@ public class CommonUtil {
 	@Autowired
 	private ProjectTasksDao tasksDao;
 	
+	@Autowired
+	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
+	@Value("${paymentSuccessReturnEmail}")
+	private String paymentSuccessReturnEmail;
+	
+	@Value("${static.path}")
+    private String staticPath;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	private ShiftDao shiftDao;
+
+	@Autowired
+	RequirementSubmissionService requirementSubmissionService;
+
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	
+	@Autowired
+	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	/**
+	 * This method is used to convert JSON String to HashMap<Key,Value>
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static HashMap<String, String> getJsonAsMap(String json)
+	{
+	    try
+	    {
+	        ObjectMapper mapper = new ObjectMapper();
+	        TypeReference<Map<String,String>> typeRef = new TypeReference<Map<String,String>>() {};
+	        HashMap<String, String> result = mapper.readValue(json, typeRef);
+
+	        return result;
+	    }
+	    catch (Exception e)
+	    {
+	        throw new RuntimeException("Couldnt parse json:" + json, e);
+	    }
+	}
+	
+	/**
+	 * This method is used to clean html content
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public static String cleanContent(String content) {
+		Whitelist allowedTags = Whitelist.simpleText(); 
+		   // This whitelist allows only simple text formatting: b, em, i, strong, u. All other HTML (tags and attributes) will be removed.
+		   allowedTags.addTags("a", "b", "blockquote", "br", "caption", "cite", "code", "col",
+              "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+              "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
+              "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
+              "ul","xml","br","font","span");
+	        allowedTags.addAttributes("a", "href", "title");
+	        allowedTags.addAttributes("blockquote", "cite");
+	        allowedTags.addAttributes("col", "span", "width");
+	        allowedTags.addAttributes("colgroup", "span", "width");
+	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width","style","class");
+	        allowedTags.addAttributes("ol", "start", "type");
+	        allowedTags.addAttributes("q", "cite");
+	        allowedTags.addAttributes("table", "summary", "width");
+	        allowedTags.addAttributes("td", "abbr", "axis", "colspan", "rowspan", "width");
+	        allowedTags.addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
+	        allowedTags.addAttributes("ul", "type");
+	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
+	        
+	        allowedTags.addProtocols("blockquote", "cite", "http", "https","style");
+	        allowedTags.addProtocols("cite", "cite", "http", "https");
+	        allowedTags.addProtocols("img", "src", "http", "https");
+	        allowedTags.addProtocols("q", "cite", "http", "https");
+	        allowedTags.addAttributes(":all","class","style","title");
+ 		Document dirty = Jsoup.parseBodyFragment(content, "");
+ 		Cleaner cleaner = new Cleaner(allowedTags);
+ 		Document clean = cleaner.clean(dirty);
+ 		clean.outputSettings().escapeMode(EscapeMode.xhtml); // Non fa l'escape dei caratteri utf-8
+ 		String safe = clean.body().html();
+		    return safe;
+	}
 	
 	/**
 	 * This method is used to store pre-defined sourcelead tasks for the particular project
@@ -215,6 +337,9 @@ public class CommonUtil {
 	public static Date currentDate() {
         return new Date();
     }
+	
+	
+	
 	
 	/**
 	 * Converting Org based date format as string
@@ -231,6 +356,21 @@ public class CommonUtil {
 		return dateStr;
 	}
 	
+	public  Date stringToDate(String dateString){
+
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		try {
+
+		date = df.parse(dateString);
+
+		} catch (Exception e) {
+
+		e.printStackTrace();
+
+		}
+		return date;
+		}
 	/**
 	 * Convert String to Capitalized String
 	 * @param name
@@ -305,7 +445,17 @@ public class CommonUtil {
 	    }
 		return date;
 	}
-	
+
+	public static boolean isValidDate(String inDate) {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	  //  dateFormat.setLenient(false);
+	    try {
+	      dateFormat.parse(inDate.trim());
+	    } catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 	/**
 	 *  returns current date based on orglocation date format
 	 * @param orgDateFormat
@@ -371,14 +521,44 @@ public class CommonUtil {
 	 * @author: Naresh Bolisetty
 	 * 
 	 */
-	public Boolean isSuperAdminForProjectMemberToReopenTimeOrExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+	public Boolean isSuperAdminForProjectMemberToReopenTimesheets(Long projectMemberId,User loginUser,OrgLocations loginLocation,String isGlobalAccess) throws Exception{
 		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
 	    ProjectApproverHierarchy pah =  null;
 	    Boolean isSuperUser = false;
 	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
 	    {
 	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
-	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
+	    	pah =  projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId(),loginLocation.getOrg().getId(),isGlobalAccess);
+		    if(     
+		    		//If the Login User As Location Admin Of Client
+		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
+		    		  && clientProjectMember.getProjectClientsId().getOrgLocationsId().getId().longValue() == loginLocation.getId().longValue() && userRole != null && StringUtils.isNotEmpty(userRole.getUserType()) && userRole.getUserType().equalsIgnoreCase("Admin"))
+		    		||
+		    		//If the Login User As Top-Level(Level2) Approver Of Client
+		    		(null != pah && null != pah.getApproverUserId() && null != pah.getApproverUserId().getId()
+		    		  && pah.getApproverUserId().getId().longValue() == loginUser.getId().longValue())
+		    		
+		      ){
+		    	isSuperUser = true;
+		     }
+	    }
+	    return isSuperUser;
+	}
+	
+	
+	/**
+	 * This method is used to Get the Approver User of Time or Expense Reopen Requests
+	 * @author: Naresh Bolisetty
+	 * 
+	 */
+	public Boolean isSuperAdminForProjectMemberToReopenExpenseses(Long projectMemberId,User loginUser,OrgLocations loginLocation) throws Exception{
+		ProjectMembers clientProjectMember = projectMembersService.getClientProjectMemberByProjectMemberId(projectMemberId);
+	    ExpenseProjectApproverHierarchy pah =  null;
+	    Boolean isSuperUser = false;
+	    if(null != clientProjectMember && null != clientProjectMember.getProjects() && null != clientProjectMember.getProjectClientsId())
+	    {
+	    	UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(), loginLocation.getId());
+	    	pah =  expenseProjectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());
 		    if(     
 		    		//If the Login User As Location Admin Of Client
 		    		(null != clientProjectMember.getProjectClientsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId() && null != clientProjectMember.getProjectClientsId().getOrgLocationsId().getUser()
@@ -440,9 +620,9 @@ public class CommonUtil {
 		 }
 		 
 		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-		 emailMessage.setLastName(pmh.getProjectMemberId().getEmployee().getUser().getLastName());
-		 emailMessage.setToEmail(pmh.getProjectMemberId().getEmployee().getUser().getEmail());
+		 emailMessage.setFirstName(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		 emailMessage.setLastName(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 emailMessage.setToEmail(pmh.getProjectMemberId().getProjectMemberCandidteId().getEmail());
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		// StringBuilder msgBuild = new StringBuilder();
@@ -455,23 +635,21 @@ public class CommonUtil {
 		 
 		 String statrDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectAssignedDate());
 		 
-		 if(null!= pmh.getProjectMemberId().getEmployee()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-				 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-					 StringBuilder empName = new StringBuilder();
-					 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-				 }	 
-		 else{
-			 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
-		 }
+		 StringBuilder employeeName = new StringBuilder();
+		 	 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+		 	 }else {
+		 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+		  		 }
+		  		 
+		 	 globalVarsMap.put("EmployeeName", employeeName.toString());
+		 	 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
 			 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
-				 globalVarsMap.put("Project Name", pmh.getProjectMemberId().getProjects().getProjectName());
+				 globalVarsMap.put("ProjectName", pmh.getProjectMemberId().getProjects().getProjectName());
 			}else{
-				 globalVarsMap.put("Project Name", "--");
+				 globalVarsMap.put("ProjectName", "--");
 			 }
 		 }
 		 
@@ -484,7 +662,7 @@ public class CommonUtil {
 		 if(null != pmh.getProjectTerminationDate()){
 			 globalVarsMap.put("Project EndDate",endDate);
 		 }else{
-			 globalVarsMap.put("Project EndDate", "--");
+			 globalVarsMap.put("ProjectEndDate", "--");
 		 }
 		 
 		 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
@@ -519,35 +697,26 @@ public class CommonUtil {
 		 StringBuilder linkBuild = new StringBuilder();
 	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	   
-		
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
-
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
-
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario);
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION,new ArrayList<EmailAttachment>());
+		 
+		 if(pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser() != null) {
+	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
+	 			 String actionLink="";
+	 			 emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			  
+ 		 }
+
+		 
+		 
+		
 
 			
 		}
@@ -804,6 +973,30 @@ public class CommonUtil {
  		 }
 	}
 	
+ 	
+ 	public  String getCleanHTML(String html) throws Exception{
+      	 URL url = new URL(sourceleadUrl);
+         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+         conn.setDoInput(true);
+         conn.setRequestMethod("POST");
+         byte data[] = ("html="+(URLEncoder.encode(String.valueOf(html), "utf-8"))).getBytes();
+         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+         conn.setRequestProperty("Content-Length", String.valueOf(data.length));
+         conn.setDoOutput(true);
+         OutputStream os = conn.getOutputStream();
+         os.write(data);
+         os.flush();
+         
+         conn.getResponseCode();
+         
+         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+         String line = null;
+         StringBuilder sb = new StringBuilder();
+         while((line = br.readLine()) != null) {
+            sb.append(line);
+         }
+         return sb.toString();
+     }
 	
 	/**
 	 * This method is used to storeTimesheetSubmissionRecords based on projectMemberAssignDate and projectMemberEndDate(optional)
@@ -1202,16 +1395,18 @@ public class CommonUtil {
 			float cthHours = hours1;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
+			cthMinutesValue = (float) Math.round(cthMinutesValue * 100) / 100;
 			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
 
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
 
-			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			float actualHours = (int) (totalMinutes / 60); 
 			float actualMinutes = (totalMinutes % 60)/100;
 
 			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
@@ -1219,7 +1414,29 @@ public class CommonUtil {
 			return Float.parseFloat(actualTimeString);
 		}
 		
-		public static String getHoursDisplayFormat(Float hours2){
+
+		public static double getTotalRegularOverTimeHours(double regulraHours,double overTimeHours){
+			double cthHours = regulraHours;
+			double cthHoursValue = (int) cthHours;
+			double cthMinutesValue = cthHours - cthHoursValue;
+			double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+			double wthHours = overTimeHours;
+			double wthHoursValue = (int) wthHours;
+			double wthMinutesValue = wthHours - wthHoursValue;
+			double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+			double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+			double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+			double actualMinutes = (totalMinutes % 60)/100;
+
+			String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
+			
+			return Double.parseDouble(actualTimeString);
+		}
+		
+	/*	public static String getHoursDisplayFormat(Float hours2){
 			float cthHours = 0;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
@@ -1231,7 +1448,16 @@ public class CommonUtil {
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
-
+			return paymentSuccessReturnEmail;
+		}*/
+		public static String getHoursDisplayFormat(Float hours2,Float totalMinutes){
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
 			float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
 			float actualMinutes = (totalMinutes % 60)/100;
 			String actualTimeString = null;
@@ -1243,6 +1469,20 @@ public class CommonUtil {
 			}
 			
 			return actualTimeString;
+		}
+		
+		public static String getTimeFormat(Float hours2,Float totalMinutes) {
+			if(totalMinutes == null) {
+				float wthHours = hours2;
+				float wthHoursValue = (int) wthHours;
+				float wthMinutesValue = wthHours - wthHoursValue;
+				wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
+			    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+			}
+			int hours = (int) (totalMinutes / 60); 
+			int mins = (int)(totalMinutes % 60);
+	        String finalTime = (hours < 10 ? "0" + hours : hours) + ":" + (mins < 10 ? "0" + mins : mins);
+	        return finalTime;
 		}
 
 		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
@@ -1508,7 +1748,7 @@ public class CommonUtil {
 			return bytesArray;
 		}
 		/**
-		 * Get Number of days Between two given dates
+		 * Get Number of days Between two given dates including boundaries
 		 * @param fromDate
 		 * @param toDate
 		 * @return
@@ -1520,6 +1760,18 @@ public class CommonUtil {
 				return nuberOfDays+1;
 			}
 		
+		/**
+		 * Get Number of days Between two given dates excluding boundaries
+		 * @param fromDate
+		 * @param toDate
+		 * @return int
+		 * @throws ParseException
+		 */
+		public int diffBtwTowDates(Date fromDate, Date toDate) throws ParseException {
+				long diff = toDate.getTime() - fromDate.getTime();
+				int  nuberOfDays = (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				return nuberOfDays;
+			}
 		
 		public  Date[] getStartDateEndDateByYear(int year){
 			Date[] dates = new Date[2];
@@ -1568,9 +1820,9 @@ public class CommonUtil {
 		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
 			  Candidate candidate = null;
 			  OrgLocations vendorOrgLocation = null;
-			  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+			  if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 				  vendorOrgLocation = orgRelation.getResponderLocationId();
-			  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+			  }else if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
 				  vendorOrgLocation = orgRelation.getLocationId();
 			  }
 			  
@@ -1611,6 +1863,7 @@ public class CommonUtil {
 					}
 				
 				candidate.setIsAssociate(Constants.NO);
+				candidate.setDesignationType("W-2");
 				
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
@@ -1937,16 +2190,18 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId,String isGlobalAccess) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
-				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
+						ExpenseProjectApproverHierarchy expenseApproverHierarchy = expenseProjectApproverHierarchyService.getExpenseApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());
-						if(approverHierarchy != null || pm != null) {
+						Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+						if(expenseApproverHierarchy != null || approverHierarchy != null || pm != null || projects.getCreatedBy().equalsIgnoreCase(loginUser.getUserCode()) || isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
 							flag = true;
 						}
 					}else {
@@ -1998,6 +2253,23 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		return sbuilder.append(convetredRequirementsId).toString();
 	}
+
+	public void saveDefaultEmployeeVerificationTemplate(Org org, OrgLocations orgLocations, User user, String template) {
+		 EmployeeVerificationTemplate employeeVerificationTemplate = new EmployeeVerificationTemplate();
+		 StringBuilder sb = new StringBuilder();
+		 employeeVerificationTemplate.setTemplateName(sb.append(orgLocations.getOrgLocationName()).append(" ").append(template).toString());
+		 employeeVerificationTemplate.setSignatory(org.getUser());
+		 employeeVerificationTemplate.setDescription(template);
+		 employeeVerificationTemplate.setTemplateContent(DefaultEmployeeVerificationTemplateUtil.getDefaultTemplates(template));
+		 employeeVerificationTemplate.setOrgLocationId(orgLocations);
+		 employeeVerificationTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 employeeVerificationTemplate.setTemplateStatus(Constants.MEMBER_ACTIVE);
+		 employeeVerificationTemplate.setUpdatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setUpdatedDate(new Date());
+		 employeeVerificationTemplate.setCreatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setCreatedDate(new Date());
+		 employeeVerificationTemplateService.saveDefaultEmployeeVerificationTemplate(employeeVerificationTemplate);
+	}
 	
 	public void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,OrgLocations orgLocations) throws Exception {
 		 
@@ -2021,15 +2293,14 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 String endDate = dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pmh.getProjectTerminationDate());
 		 
-		 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
-			 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
-				 StringBuilder empName = new StringBuilder();
-				 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
-			 }
-		 else{
-			 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
-			}
-		 }
+	     StringBuilder employeeName = new StringBuilder();
+	 		 if(StringUtils.isNotBlank(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName())) {
+	 			 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName()).append(" ").append(pmh.getProjectMemberId().getProjectMemberCandidteId().getLastName());
+	 		 }else {
+	 		 employeeName = employeeName.append(pmh.getProjectMemberId().getProjectMemberCandidteId().getFirstName());
+	  		 }
+	  		 
+	 	 globalVarsMap.put("EmployeeName", employeeName.toString());
 		 
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
@@ -2063,44 +2334,437 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			}
 		
 		 if (null != pmh.getProjectMemberId().getTerminateReason() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getTerminateReason())) {
-			 globalVarsMap.put("Reason", pmh.getProjectMemberId().getTerminateReason());
+			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
 			 } else {
-				 globalVarsMap.put("Reason", "--");
+				 globalVarsMap.put("reason", "--");
 			}
 		 
 		 StringBuilder linkBuild = new StringBuilder();
 	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	   
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
 		}
+	
+	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
+		TimesheetActivities timesheetActivity = null;
+		if(sah != null) {
+			timesheetActivity = new TimesheetActivities();
+			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
+			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
+			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
+			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
+			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
+			timesheetActivity.setRejectedReason(sah.getRejectedReason());
+			timesheetActivity.setActionPerformedBy(sah.getActionPerformedBy());
+			timesheetActivity.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			timesheetActivity.setStatus(sah.getStatus());
+			timesheetActivity.setReopenedUser(sah.getReopenedUser());
+			timesheetActivity.setReopenReason(sah.getReopenReason());
+			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
+			Date createdDate = addCurrentTimeToDate(sah.getCreatedDate());
+			timesheetActivity.setCreatedDate(createdDate);
+			timesheetActivity.setCreatedBy(sah.getCreatedBy());
+			timesheetActivity.setActionPerformedbyUserId(sah.getTimesheetActivityLoginUser());
+			if(sah.getSubmissionId() != null) {
+				timesheetActivity.setWeekComments(sah.getSubmissionId().getWeekcomments());
+			}
+			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
+			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
+			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
+		}
+		return timesheetActivity;
+	}
+	
+	
+  private static Date addCurrentTimeToDate(Date createdDate) {
+	  SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(createdDate);
+	  
+	  Calendar calender = Calendar.getInstance();
+	  calender.setTime(new Date());
+	     
+      String currentdate =  sdf.format(calender.getTime());
+      String hh = currentdate.split(":")[0];
+      String mm = currentdate.split(":")[1];
+      String ss = currentdate.split(":")[2];
+      
+      cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(hh));
+      cal.add(Calendar.MINUTE, Integer.parseInt(mm));
+      cal.add(Calendar.SECOND, Integer.parseInt(ss));
+      
+      Date newDate = cal.getTime();
+      System.out.println(newDate);
+      return newDate;
+	}
+
+public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
 		
+		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
+		history.setOrgLicenseSubscription(orgLicenseSubscription);
+		history.setSubscriptionType(orgLicenseSubscription.getSubscriptionType());
+		history.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType());
+		history.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType());
+		history.setCurrency(orgLicenseSubscription.getCurrency());
+		history.setInvoiceAmount(orgLicenseSubscription.getInvoiceAmount());
+		history.setSubscriptionTabs(orgLicenseSubscription.getSubscriptionTabs());
+		history.setFromDate(orgLicenseSubscription.getFromDate());
+		history.setToDate(orgLicenseSubscription.getToDate());
+		history.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		history.setTimezone(orgLicenseSubscription.getTimezone());
+		history.setCreatedBy(loginUser);
+		history.setUpdatedBy(loginUser);
+		history.setCreatedDate(new Date());
+		history.setUpdatedDate(new Date());
+		return history;
+		
+	}
+  
+  
+  public void paymentAcknowledgementMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromEmail("donotreply@sourcelead.com");
+		emailMessage.setFromName("donotreply@sourcelead.com");
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("customerName", paymentHistory.getTransactionUser());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		// calling the sendEmail method of emailScenerioUtil
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT,new ArrayList<EmailAttachment>());
+
+  }
+  
+  
+  
+  public void paymentAcknowledgementDetailsMail(OrgLicensePaymentTransactionHistory paymentHistory,User loginUser,Org org, OrgLocations orgLocations)
+			throws Exception {
+	  
+	    EmailMessage emailMessage = new EmailMessage();
+	    emailMessage.setFirstName(paymentHistory.getTransactionUser());
+		emailMessage.setToEmail(paymentSuccessReturnEmail);
+		emailMessage.setFromEmail(paymentHistory.getTransactionUserEmail());
+		emailMessage.setFromName(paymentHistory.getTransactionUser());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("companyName", orgLocations.getOrgLocationName());
+		
+		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
+		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
+		// calling the sendEmail method of emailScenerioUtil
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS,new ArrayList<EmailAttachment>());
+
 }
+  
+  
+  public StringBuilder paymentDetailsTable(OrgLicensePaymentTransactionHistory paymentHistory) throws Exception {
+	  StringBuilder tempHTML = new StringBuilder();
+	  String transactionDate = dateStrFromOrgDateFormatter("dd-MM-yyyy",paymentHistory.getTransactionDate());
+	  
+	     tempHTML.append("<table style='display:table-cell;vertical-align:middle; width:650px; font-size: 12px;  margin:0px;'>");
+		 tempHTML.append("<tr align='center'>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>License Type<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Order Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='15%' bgcolor='#E5E8E8'><span>Transaction Id<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='20%' bgcolor='#E5E8E8'><span>Transaction Date<span></th>");
+		 tempHTML.append("<th style='padding:5px 10px' width='30%' bgcolor='#E5E8E8'><span>Amount<span></th>");
+		 tempHTML.append("</tr>");
+		 tempHTML.append("<tbody>");
+		 tempHTML.append("<tr align='center'>");
+		 
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getSubscriptionType()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getOrderId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getTransactionId()+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+transactionDate+"</td>");
+		 tempHTML.append("<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+paymentHistory.getCurrency()+"&nbsp;"+paymentHistory.getInvoiceAmount()+"</td>");
+		 
+		 tempHTML.append("</tr>");
+		 tempHTML.append("</tbody>");
+		 tempHTML.append("</table>");
+	  
+	     return tempHTML;
+  }
+
+  
+  
+  public Map<String, String> sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
+	  Map<String, String> returnMap = new HashMap<>();
+	  try{
+		//setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			 
+			 /*String emailBody = null;
+			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 try {
+				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+				   // System.out.println(emailBody);
+				   
+				} catch (IOException ex) {
+				    System.err.println(ex);
+				}*/
+
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 
+			 returnMap.put("emailBody", body);
+			 returnMap.put("emailSubject", subject);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,org,orgLocations);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+			
+	  }catch (Exception e) {
+		  e.printStackTrace();
+	}
+	  return returnMap;
+	  
+  }
+
+/**
+ * Conert Date to OrgLocation format with HH:MM:SS 
+ * @param dateFormat
+ * @param date
+ * @return String
+ */
+public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
+{
+	DateFormat sdf = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+	return sdf.format(date);
+}
+
+  
+  public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
+	  
+	     String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocationId);
+		 if(emailConfigMailList != null){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+ 					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocationId);
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 return fromEmail;
+  }
+  
+	
+  public Shift saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
+	     Shift shift = new Shift();
+	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	     shift.setOrgLocations(orgLocations);
+	     shift.setShiftName(shiftName);
+	     shift.setTimeIn("9:00 AM");
+	     shift.setTimeOut("6:00 PM");
+	     shift.setMinmumHours("9 hrs");
+	     shift.setTotalHours("9 hrs");
+	     shift.setShiftDescription("Genearal Shift");
+	     
+	     shift.setMondayInTime("9:00 AM");
+	     shift.setMondayOutTime("6:00 PM");
+	     
+	     shift.setTuesdayInTime("9:00 AM");
+	     shift.setTuesdayOutTime("6:00 PM");
+	     
+	     shift.setWednesdayInTime("9:00 AM");
+	     shift.setWednesdayOutTime("6:00 PM");
+	     
+	     shift.setThursdayInTime("9:00 AM");
+	     shift.setThursdayOutTime("6:00 PM");
+	     
+	     shift.setFridayInTime("9:00 AM");
+	     shift.setFridayOutTime("6:00 PM");
+	     
+	     shift.setSaturdayInTime("9:00 AM");
+	     shift.setSaturdayOutTime("6:00 PM");
+	     
+	     shift.setSundayInTime("9:00 AM");
+	     shift.setSundayOutTime("6:00 PM");
+	     shift.setDefaultStatus("Y");
+	     shift.setStatus(Constants.RECORD_ACTIVE.toString());
+	     if(user != null) {
+			 shift.setUpdatedBy(user.getUserCode());
+			 shift.setCreatedBy(user.getUserCode());
+	     }
+		 shift.setUpdatedDate(new Date());
+		 shift.setCreatedDate(new Date());
+		 shiftDao.saveShift(shift);
+		 return shift;
+	}
+  
+  
+  public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
+			// to update submission history
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+			// to update Submission status
+			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setUpdatedBy(user.getUserCode());
+			StringBuilder sb = new StringBuilder();
+			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());
+			requirementSubmission.setUpdatedDate(new Date());
+			
+			if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+				try {
+					Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+					requirementSubmission.setJoinedDate(convertedDate);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				requirementSubmission.setJoinedDate(null);
+			}
+			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		}
+		return "success";
+	}
+
+  	public void storeDefaultPayheadsWithOrgLocation(User user, OrgLocations orgLocations) throws Exception{
+	  OrgLocations sourceLeadOrgLocations = new OrgLocations();
+	  sourceLeadOrgLocations.setId(1l);
+		ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(sourceLeadOrgLocations);
+		for(PayrollPayheadDTO payrollPayheadDTO : responsePayheadList.getData()) {
+			payrollPayheadDTO.setUuid(null);
+			payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+		}
+	}
+
+  
+	public static String toFixed2(double d) {
+		String str;
+		d = d * 100;
+		d = Math.round(d);
+		d = d / 100;
+		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
+		return str;
+	}
+
+	/**
+	 * @author:Vikram Reddy 
+	 * @param createExcelsheet
+		 * @param style
+		 * @param headers
+		 * @param rowCount 
+		 * @return sheet
+	 */
+
+	public Sheet setExcelHeader(Sheet createExcelsheet, CellStyle style, List<String> headers, int rowCount) {
+		Row excelHeader = createExcelsheet.createRow(rowCount);
+		int i=0;
+		for (String head:headers) {
+			Cell cell = excelHeader.createCell(i);
+			cell.setCellValue(head);
+			cell.setCellStyle(style);
+			i++;
+		}
+		return createExcelsheet;
+	}
+
+	public List<FileInfo> getListOfFileInfo(List<File> filesList, String type,
+			@RequestParam(defaultValue = "0") long orgId, @RequestParam(defaultValue = "0") long orgLocationId)
+			throws IOException {
+		//System.out.println(" orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		 logger.debug("***** orgId :   "+orgId +", orgLocationId : "+orgLocationId);
+		List<FileInfo> fileInfoList = new ArrayList<>();
+		try {
+			filesList.forEach(fileObj -> {
+				FileInfo fileInfo = new FileInfo();
+				String fileName = fileObj.getName();
+				File file = new File(staticPath, "tempResumes" + System.getProperty("file.separator") + fileName);
+				FileUploadUtil fileUploadUtil = new FileUploadUtil();
+				String extenstion = fileName.substring(fileName.lastIndexOf("."));
+				if (extenstion.equalsIgnoreCase(".rar"))
+					return;
+				if (extenstion.equalsIgnoreCase(".zip")) {
+					fileInfoList.addAll(fileUploadUtil.uploadZipFile(staticPath, orgId, orgLocationId, type, file));
+				} else {
+					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, file);
+					fileInfo.setFileName(fileName);
+					fileInfo.setFileURL(fileURL);
+					try {
+						fileInfo.setContentType(Files.probeContentType(file.toPath()));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					fileInfoList.add(fileInfo);
+				}
+			}); // for each close.
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// System.out.println(" before file return list size ");
+		return fileInfoList;
+	}
+	
+	public Date calculateBeforeDate(Date date, int before) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, -before);
+		return cal.getTime();
+	}
+	
+}
+

@@ -82,12 +82,19 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		for(RequirementInterviewer requirementInterviewer : requirementInterviewersList) {
 			RequirementInterviewerDTO requirementInterviewerDTO = new RequirementInterviewerDTO();
 			requirementInterviewerDTO.setId(requirementInterviewer.getId());
-			if(requirementInterviewer.getInterviewerUser().getLastName() != null) {
-				StringBuilder intName = new StringBuilder();
-				requirementInterviewerDTO.setInterviewerName(intName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+			requirementInterviewerDTO.setUuid(requirementInterviewer.getUuid());
+			
+			if(requirementInterviewer.getInterviewerUser() != null) {
+				if(requirementInterviewer.getInterviewerUser().getLastName() != null) {
+					StringBuilder intName = new StringBuilder();
+					requirementInterviewerDTO.setInterviewerName(intName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+				}else {
+					requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getInterviewerUser().getFirstName());
+				}
 			}else {
-				requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getInterviewerUser().getFirstName());
+				requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getExternalInterviewerName());
 			}
+		
 			list.add(requirementInterviewerDTO);
 		}
 		return list;
@@ -145,6 +152,77 @@ public class RequirementInterviewerDaoImpl implements RequirementInterviewerDao{
 		 }
 		return flag;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public RequirementInterviewer getRequirementInterviewerByUUID(String uuid) throws Exception {
+		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.uuid = :uuid and interviewer.status = 1";
+		List<RequirementInterviewer> interviewerList =  session.createQuery(query).setString("uuid", uuid).list();
+		RequirementInterviewer interviewer = null;
+		if(interviewerList != null && !interviewerList.isEmpty()){
+			interviewer = interviewerList.iterator().next();
+		}
+		return interviewer;
+	}
+
+	@Override
+	@Transactional
+	public List<RequirementInterviewerDTO> getInterviwersListByInterviewIdAndSubmissionIdFromDTO(Long interviewId,
+			Long submissionId) {
+		List<RequirementInterviewerDTO> list = new ArrayList<>();
+		logger.debug("In RequirementInterviewerDaoImpl class getInterviwersListByInterviewId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser left join fetch interviewer.requirementInterview interview left join fetch interview.submissionId submission where interviewer.requirementInterview.id = :requirementInterviewId "
+				+ " and submission.id = :submissionId and interviewer.status = 1";
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", interviewId).setLong("submissionId", submissionId).list();
+		for(RequirementInterviewer requirementInterviewer : requirementInterviewersList) {
+			RequirementInterviewerDTO requirementInterviewerDTO = new RequirementInterviewerDTO();
+			requirementInterviewerDTO.setId(requirementInterviewer.getId());
+			requirementInterviewerDTO.setUuid(requirementInterviewer.getUuid());
+			
+			if(requirementInterviewer.getInterviewerUser() != null) {
+				if(requirementInterviewer.getInterviewerUser().getLastName() != null) {
+					StringBuilder intName = new StringBuilder();
+					requirementInterviewerDTO.setInterviewerName(intName.append(requirementInterviewer.getInterviewerUser().getFirstName()).append(requirementInterviewer.getInterviewerUser().getLastName()).toString());
+				}else {
+					requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getInterviewerUser().getFirstName());
+				}
+			}else {
+				requirementInterviewerDTO.setInterviewerName(requirementInterviewer.getExternalInterviewerName());
+			}
+		
+			list.add(requirementInterviewerDTO);
+		}
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public RequirementInterviewer getRequirementInterviewerByInterviewIdAndExternalInterviewerEmail(
+			Long requirementInterviewId, String email) throws Exception {
 	
+
+		logger.debug("In RequirementInterviewer getInterviwerstByInterviewIdAndUserId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterviewer rir where rir.requirementInterview.id = :requirementInterviewId and rir.externalInterviewerEmail = :email" ;
+		List<RequirementInterviewer> interviewerList =session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setString("email", email).list(); 
+		RequirementInterviewer interviewer = null;
+		if(interviewerList != null && !interviewerList.isEmpty()){
+			interviewer = interviewerList.iterator().next();
+		}
+		return interviewer;
+		
+	}
+
+	@Override
+	@Transactional
+	public List<RequirementInterviewer> getInterviwersListByInterviewIdAndUserID(Long requirementInterviewId,Long interviewerUserId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementInterviewer interviewer left join fetch interviewer.interviewerUser where interviewer.requirementInterview.id = :requirementInterviewId and interviewer.interviewerUser.id = :interviewerUserId and interviewer.status = 1";
+		List<RequirementInterviewer> requirementInterviewersList =  session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setLong("interviewerUserId", interviewerUserId).list();
+		return requirementInterviewersList;
+	}
 	
 }

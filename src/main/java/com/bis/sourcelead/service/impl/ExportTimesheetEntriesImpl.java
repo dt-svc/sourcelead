@@ -145,7 +145,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
 
 	@Override
-	public File exportTimesheets(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate,OrgLocations orgLocations,String requestFrom,User loginUser) throws Exception {
+	public File exportTimesheets(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate,OrgLocations orgLocations,String requestFrom,User loginUser,String globalUser) throws Exception {
 
 		File file = null;
 		Workbook wb = new XSSFWorkbook();
@@ -171,7 +171,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			if(requestFrom.equalsIgnoreCase("employee")) {
 				 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
 			}else if(requestFrom.equalsIgnoreCase("dashboard") || requestFrom.equalsIgnoreCase("approver")) {
-				 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(), projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), orgLocations.getId(),employeeStartDate, employeeEndDate);
+				 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(), projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), orgLocations.getId(),employeeStartDate, employeeEndDate,globalUser);
 			}
 			if(sah != null) {
 				Submission_Status submissionStatus = sah.getSubmissionStatus();
@@ -707,15 +707,22 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 	@Override
-	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client, String stage,String frequencyMonth,String weekFrequency) throws Exception {
+	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client,String project, String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
 		}
+		
+		Long projectId;
+		if(!project.equalsIgnoreCase("") && !project.equalsIgnoreCase("All")){
+			projectId = Long.parseLong(project) ;
+		}else{
+			projectId = null;
+		}
 		String searchValue = "";
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0,"");
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId, stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
          if(projectMembers != null){
         	
@@ -822,7 +829,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	        java.util.List<String[]> timesheetApproval = new ArrayList<>();
 	        for(ProjectMembers proMembers : freshProjectMembers){
 	        	document =  prepareHeadres(orgLocations,proMembers,file);
-	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate, proMembers,orgLocations));
+	        	timesheetApproval.add(prepareTimesheetPdfToArray(proMembers,client,timesheetFrequency,stage,user,startDate,endDate, proMembers,orgLocations,globalUser));
 	        }
 	        
 	        for (String[] reqArray: timesheetApproval) {
@@ -863,7 +870,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return headerListString;
 	}
 
-	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate, ProjectMembers projectMember, OrgLocations loginOrgLocations) throws Exception {
+	private String[] prepareTimesheetPdfToArray(ProjectMembers projMembers,String client,String timesheetFrequency,String Stage,User user,Date startDate, Date endDate, ProjectMembers projectMember, OrgLocations loginOrgLocations,String isGlobalAccess) throws Exception {
 		String[] timeSheetApprovalArray;
 			Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
@@ -943,7 +950,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		LinkedHashMap<Date,Date> displayWeeksList= getTotalCountFromStartAndEndDate(startDate, endDate,orgLocations.getDateFormat());
 			Float totalHours = 0f;
 		    Float estimatedTotalHours = 0f;
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate);
+			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate,isGlobalAccess);
 			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
@@ -1052,13 +1059,20 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	
 	@Override
-	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency) throws Exception {
+	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String project,String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
 		File file= null;
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
+		}
+		
+		Long projectId;
+		if(!project.equalsIgnoreCase("") && !project.equalsIgnoreCase("All")){
+			projectId = Long.parseLong(project) ;
+		}else{
+			projectId = null;
 		}
 		//for creating workbook and sheet in excel.
 		Workbook createExcelworkbook = new XSSFWorkbook();
@@ -1068,7 +1082,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Row writeRow = null;
 		// to get list of project members from data base.
 		String searchValue = "";
-		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,0,0,"");
+		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId,stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
         if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
@@ -1092,7 +1106,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		int column = 0;
 		for (ProjectMembers proMembers : projectMembers.getData()) {
 			writeRow = createExcelsheet.createRow(column + 5);
-			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations, proMembers);
+			createExcelsheet = createXlsSheetTimesheetApproval(createExcelsheet, writeRow,proMembers,client,timesheetFrequency,startDate,endDate,user,orgLocations, proMembers,globalUser);
 			column++;
 		}
 		// output the file using file output stream.
@@ -1109,7 +1123,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		return file;
 	}
 	// creating excel sheet data here depending upon input frequency.
-	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,OrgLocations loginOrg, ProjectMembers projectMember) throws Exception {
+	private Sheet createXlsSheetTimesheetApproval(Sheet createExcelsheet, Row writeRow,ProjectMembers projMembers,String client,String timesheetFrequency,Date startDate,Date endDate,User user,OrgLocations loginOrg, ProjectMembers projectMember,String isGlobalAccess) throws Exception {
 		Projects projects = projectsService.getProjectById(projMembers.getProjects().getId());
 		
 		StringBuilder fullname=	new StringBuilder();
@@ -1156,7 +1170,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 				Float totalHours = 0f;
 				Float estimatedTotalHours = 0f;
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
-				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(user.getId(),projMembers.getProjects().getId(),projMembers.getMasterCandidateId().getId(),orgLocations.getId(), startDate, endDate,isGlobalAccess);
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 						for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {

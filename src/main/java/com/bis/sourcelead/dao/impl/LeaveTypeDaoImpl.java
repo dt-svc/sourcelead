@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LeaveTypeHistory;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -111,5 +113,62 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 		return projectTasks;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveType> leaveTypeList = null;
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1' and lt.name IN (:typeList)" ).setLong("orgLocationId", orgLocation.getId()).setParameterList("typeList", typeList).list();
+		return leaveTypeList;
+	}
+
+	@Override
+	@Transactional
+	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation)
+	{
+		LeaveType leaveType = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<LeaveType> leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1' and lt.name = :leaveTypeName").setLong("orgLocationId", orgLocation.getId()).setString("leaveTypeName", leaveTypeName).list();
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				leaveType = leaveTypeList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return leaveType;
+	}
+
+	@Override
+	@Transactional
+	public List<String> getLeaveTypeNameListByLocationId(Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select leaveType.name from LeaveType leaveType where leaveType.orgLocations.id = :orgLocationId"; 
+		List<String> leaveTypesNamesList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return leaveTypesNamesList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void storeLeaveTypeHistory(LeaveTypeHistory lt) {
+		// TODO Auto-generated method stub
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (lt != null) {
+				session.saveOrUpdate(lt);
+			}
+			logger.debug("LeaveType Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"LEAVETYPEHISTORY"));
+			try {
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			} catch (SourceLeadConstraintViolationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

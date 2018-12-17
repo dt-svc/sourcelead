@@ -27,5 +27,7 @@ public interface ReferContactsDao {
 	ReferContacts findByEmail(String recipientMail)throws Exception;
 	
 	ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception;
+	
+	ReferContacts deleteContactById(ReferContacts referContacts) throws Exception;
 
 }

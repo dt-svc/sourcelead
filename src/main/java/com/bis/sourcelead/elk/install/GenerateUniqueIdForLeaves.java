@@ -19,11 +19,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateUniqueIdForLeaves {
 
-
-	
-
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Pavan Jampana
  * this method is using for update the UUID for Connections
@@ -36,7 +34,7 @@ public void LeaveUUID() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.USER_LEAVE";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".USER_LEAVE";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding unique UUID leave  starts-----");
@@ -45,7 +43,7 @@ try {
 				 Long id = rs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.USER_LEAVE set LEAVE_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".USER_LEAVE set LEAVE_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -57,7 +55,7 @@ try {
 			 System.out.println("----Adding unique UUID org leave ends-----");
 			 
 			 
-			 String sql1 = "SELECT * FROM sourcelead.LEAVE_OPTION";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".LEAVE_OPTION";
 			 PreparedStatement pstmt1 = conn.prepareStatement(sql1);
 			 ResultSet rs1 = pstmt1.executeQuery();
 			 System.out.println("----Adding unique UUID leave option starts-----");
@@ -66,7 +64,7 @@ try {
 				 Long id = rs1.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.LEAVE_OPTION set OPTION_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".LEAVE_OPTION set OPTION_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -77,7 +75,7 @@ try {
 			 
 			 System.out.println("----Adding unique UUID org leave ends-----");
 			 
-			 String typeSql = "SELECT * FROM sourcelead.LEAVE_TYPE";
+			 String typeSql = "SELECT * FROM "+dbconfig.getSchema()+".LEAVE_TYPE";
 			 PreparedStatement pstmt2 = conn.prepareStatement(typeSql);
 			 ResultSet typers = pstmt2.executeQuery();
 			 System.out.println("----Adding unique UUID leave type starts-----");
@@ -86,7 +84,7 @@ try {
 				 Long id = typers.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.LEAVE_TYPE set LEAVE_TYPE_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".LEAVE_TYPE set LEAVE_TYPE_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -98,7 +96,7 @@ try {
 			 System.out.println("----Adding unique UUID org leave type ends-----");
 			 
 			 
-			 String shiftSql = "SELECT * FROM sourcelead.SHIFT";
+			 String shiftSql = "SELECT * FROM "+dbconfig.getSchema()+".SHIFT";
 			 PreparedStatement pstmt3 = conn.prepareStatement(shiftSql);
 			 ResultSet shiftrs = pstmt3.executeQuery();
 			 System.out.println("----Adding unique UUID leave shift starts-----");
@@ -107,7 +105,7 @@ try {
 				 Long id = shiftrs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.SHIFT set SHIFT_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".SHIFT set SHIFT_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -119,7 +117,7 @@ try {
 			 System.out.println("----Adding unique UUID org leave shift ends-----");
 	
 			 
-			 String holidaySql = "SELECT * FROM sourcelead.HOLIDAY";
+			 String holidaySql = "SELECT * FROM "+dbconfig.getSchema()+".HOLIDAY";
 			 PreparedStatement pstmt4 = conn.prepareStatement(holidaySql);
 			 ResultSet holidayrs = pstmt4.executeQuery();
 			 System.out.println("----Adding unique UUID leave holiday starts-----");
@@ -128,7 +126,7 @@ try {
 				 Long id = holidayrs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.HOLIDAY set HOLIDAY_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".HOLIDAY set HOLIDAY_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -140,7 +138,7 @@ try {
 			 System.out.println("----Adding unique UUID org leave holiday ends-----");
 			 
 			 
-			 String restrictSql = "SELECT * FROM sourcelead.RESTRICT_DAY";
+			 String restrictSql = "SELECT * FROM "+dbconfig.getSchema()+".RESTRICT_DAY";
 			 PreparedStatement pstmt5 = conn.prepareStatement(restrictSql);
 			 ResultSet restrictrs = pstmt5.executeQuery();
 			 System.out.println("----Adding unique UUID leave restrict day starts-----");
@@ -149,7 +147,7 @@ try {
 				 Long id = restrictrs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.RESTRICT_DAY set RESTRICT_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".RESTRICT_DAY set RESTRICT_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -179,10 +177,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

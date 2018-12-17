@@ -40,13 +40,13 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="clientOffer" name="clientOffer" value="N">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">Total candidates selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
 				if(clientSubmissions == 'Y'){
 				    result = result + '<input type="checkbox" name="isClientOffer" id="isClientOffer" class="isClient" onclick="myOfferFunction();">';
-			        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Offer</strong>&nbsp;&nbsp;</label>';
+			        result = result + '<label>&nbsp;&nbsp;<strong>Clients Offer</strong>&nbsp;&nbsp;</label>';
 				} 
 				
 				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
@@ -68,7 +68,7 @@ function addOffer(requirementId){
 				result = result + '<div class="ne-ch">';
 				
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" value="Y" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+				result= result + '<input type="checkbox" onclick="NotifyToApplicant();" id="notifyToApplicant" value="Y" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
 					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
@@ -107,10 +107,12 @@ function addOffer(requirementId){
 				$(".clearUpload").click(function(){
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
 					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+			        $("#OfferAttachmentuploadFileGroup").find("p.jquery_form_error_message").remove();
 					$(".clearUpload").hide();
-					document.getElementById("OfferAttachmentuploadFile").value("");
-				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
-				        
+					$("#OfferAttachmentuploadFile").val('');
+				    $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist');
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist-errormsg');   
 				});
 				
 	        },
@@ -161,7 +163,7 @@ function selectOfferApplicants(){
 
 
 <div id="divOfferTd3" style="display: none; float: left;">
-   	 <div class="positionRelative float select-field">
+   	 <div class="float select-field tblminwidth-75">
            <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
 	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
@@ -257,7 +259,7 @@ function selectOfferApplicants(){
 		cell0.innerHTML = divTsTd1Str;
 		
 		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
+		cell1.innerHTML = "<div class='positionRelative date tblminwidth-100' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
 		
 		var cell2 = row.insertCell(2);
 		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;
@@ -466,15 +468,15 @@ function validateRateAndRateType(){
   <script type="text/javascript">
 function alertOfferMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOfferPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOfferPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOfferPopup();'></b>";
 	result = result +"	</div>";
 	$("#offerPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".comMask").fadeIn(200);
 
 }
 </script>
@@ -482,7 +484,7 @@ function alertOfferMessage(message){
 <script type="text/javascript">
 function cancelOfferPopup(){
 	$("#offerPopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".comMask").fadeOut(200);
 }
 </script>
  

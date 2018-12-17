@@ -78,9 +78,36 @@
 	    	<i class="fa fa-check-circle"></i><span id="relMsgDiv"></span>
 	    </div>
          <div class="clearfix">
-          <h2 onclick="opennetwork();">Release To Open Networks</h2>
+          <h2 onclick="opennetwork();">Release To Other Networks</h2>
           <div class="content clearfix" >
             <div class="row">
+                <div class="col-md-12">
+                <div class="panel panel-success">
+                  <div class="panel-heading ">Select Job Board(s)</div>
+                  <div class="panel-body">
+                    <ul class="list-unstyled sl-jobboard">
+                        <c:forEach items="${jobBoardList}" var="j">
+                            <li class="bg-${j.name}">
+                                    <label class="checkbox-inline">
+                                    <input type="checkbox" data-check="jobBoardCheckBox" name="optradio" value="${j.id}">
+                                    <span><img src="${j.logoUrl}" alt="${j.name}" title="${j.name}"></span>
+                                </label>
+                                <label id="jobBoardOption${j.id}" class="radio-inline hidden" >
+                                    <select id='jobBoardAccount${j.id}' class="selectpicker">
+                                        <option selected="selected" value='0'>--Select Account--</option>
+                                        <c:forEach items="${jobBoardAccountList}" var="j1">
+                                            <c:if test="${j.id == j1.orgJobBoardId && j1.active}">
+                                                <option value='${j1.id}'>${j1.name}</option>
+                                            </c:if>
+                                        </c:forEach>
+                                    </select>
+                                </label>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                  </div>
+                </div> 
+                </div>
               <div class="col-md-6">
                 <div class="row">
                   <div class="form-group clearfix toggle-button-lbl">
@@ -189,7 +216,7 @@
         <div class="form-footer clearfix row mt" id="releaseToCrowdSourcing" style="display: none">
         <div class="col-lg-12">
           <div class="pull-right">
-            <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Public / Crowdsourcing  is mandatory</span>
+            <span id="openNetworkRelease" class="text-danger small" style="font-size: 11px; display: none;">Job Board / Public / Crowd Sourcing is mandatory</span>
 	           <c:if test="${!empty jobRecommendations}">
 	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/jobRecommendations?requirementUUID=${requirementUUID}'/>'"></a>
 	           </c:if>
@@ -220,6 +247,17 @@
     
     
     <script>
+        
+        $(function() {
+            $("[data-check=jobBoardCheckBox]").click(function() {
+                $("#jobBoardOption"+$(this).val()).toggleClass('hidden');
+            });
+            
+            <c:forEach items="${requirement.requirementJobBoardInfoList}" var="r">
+                $("[data-check=jobBoardCheckBox][value=${r.orgJobBoardAccount.orgJobBoard.id}]").click();
+                $("#jobBoardAccount${r.orgJobBoardAccount.orgJobBoard.id}").val(${r.orgJobBoardAccount.id});
+            </c:forEach>
+        });
 function getPercentageValue(){
 	var percentageValue = document.getElementById("percentageRewardValue").value;
 	if(percentageValue > 100 || percentageValue < 0){
@@ -350,8 +388,8 @@ function releaseTo(){
 	    var percentageRewardValue = '';
 	    var jobRecommendations = '${jobRecommendations}';
 	    var requirementUUID = '${requirementUUID}';
-	    
-	    	 if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
+            
+            if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
 	 	    	$('#vendorRelease').find('span.jquery_form_error_message').remove();
 	 	    	$("#releaseBtn").prop('disabled', true);
@@ -360,17 +398,25 @@ function releaseTo(){
 	 		    var sourceleadUrl ='${sourceleadUrl}';
 	 		    var requirementId = '${requirementId}';
 	 		    
-	 		 	 $.ajax({
+	 		 	$.ajax({
 	 		           type : "POST",
 	 		           url: sourceleadUrl+"/releaseJobsToClientsOrVendors?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&contactsIds="+contactsIds+"&vendorIds="+vendorIds,    
-	 		            success :function(data) {
-	 		            	
- 		            	if(jobRecommendations){
-	 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
- 		     		    }else{
- 		     		    	   location.replace(sourceleadUrl+"/jobs");
- 	     		    	 } 		            
-	 		            	
+	 		            success :function(result) {
+	 		            	if (result.response === "SESSION_TIMEDOUT") {
+				  				location.replace(sourceleadUrl);
+			                } else if (result.response === "AWKWARD") {
+			                    location.href = "/errorPage";
+			                } else if (result.response === "SUCCESS") {
+			                	if(jobRecommendations){
+			 		       			   location.replace(sourceleadUrl+"/jobRecommendations?requirementUUID="+requirementUUID);	
+		 		     		    }else{
+		 		     		    	   location.replace(sourceleadUrl+"/jobs");
+		 	     		    	 } 	
+			                } else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 	 		            },
 	 		    });  
 	 	    }else{
@@ -427,11 +473,25 @@ function releaseToOneVendor(vendorcheckboxId){
      		}
      		  var jobRecommendations = '${jobRecommendations}';
      		  var requirementUUID = '${requirementUUID}';
-       	    
-	        if(isContinue){
+                  
+                  var jobBoardAccounts = [];
+                  var i = 0;
+            var valid = true;
+            $("[data-check=jobBoardCheckBox]").each(function() {
+                if($(this).is(":checked")) {
+                    var val = $("#jobBoardAccount"+$(this).val()).val();
+                    if(val === "0" || val === 0) {
+                        valid = false;
+                    } else {
+                        jobBoardAccounts[i++]= val;
+                    }
+                }
+            });
+//            jsonData["jobBoardAccounts"] = jobBoardAccounts;
+	        if((jobBoardAccounts.length > 0 && valid) || isContinue){
 	       	     $.ajax({
 			    	type: "POST",
-			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId, 
+			    	 url: sourceleadUrl+"/releaseToCrowdSourcingNetwork?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&requirementId="+requirementId+"&jobBoardAccounts="+jobBoardAccounts, 
 			        success: function(result) {
 			        	$("#relTocro").removeAttr("style");
 		    			$("#relTocro").css({ display: "block" });

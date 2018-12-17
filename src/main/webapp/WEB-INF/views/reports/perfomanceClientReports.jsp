@@ -16,9 +16,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Clients Report</h2>
+        <h2>Client(s) Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Clients Report</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Client(s) Report</div>
    </section>
     <div class="clearfix"></div>
     <div class="clearfix row mb">
@@ -82,7 +82,7 @@ $(document).ready(function(){
     </div>
     <div class="ReqRepHead clearfix">
       <div class="col-md-2 dropdown-select positionRelative col-md-offset-9">
-        <select class="form-control" id="dateFrequency" onchange="refreshWithNewFreq(); showCustomFields();">
+        <select class="form-control" id="dateFrequency" onchange="showCustomFields();">
           <option value="Last_7_days" selected>Last 7 days</option>
           <option value="Last_15_days">Last 15 days</option>
           <option value="1_month">1 month</option>
@@ -104,6 +104,10 @@ $(document).ready(function(){
         </div>
         <!-- Top Leave Takers Custom Date --> 
       </div>
+      
+       <div class="col-md-1" id = "RunDivId">
+        <button type="button" class="btn btn-primary btn-sm	mt2 pull-right" id="customize_btn" onclick="refreshWithNewFreq();">Run</button>
+		</div>
 <!--       <div class="col-md-1">
         <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
           <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
@@ -792,7 +796,6 @@ function getTimeToFillReports(){
 <script>
 function getTimeToFillAmchartData(data){
     
-    
     AmCharts.makeChart("timeToFill",
         {
 "type": "pie",
@@ -830,32 +833,32 @@ function getTimeToFillAmchartData(data){
 "dataProvider": [
 {
     "category": "Applicants",
-    "column-1": data.applicantsDays,
+    "column-1": data.object.applicantsDays,
     "color": "#80CBC4"
 },
 {
     "category": "Shortlisted",
-    "column-1": data.shortlistedDays,
+    "column-1": data.object.shortlistedDays,
     "color": "#FFB74D"
 },
 {
     "category": "Submit to Client",
-    "column-1": data.submitToClientDays,
+    "column-1": data.object.submitToClientDays,
     "color": "#9575CD"
 },
 {
     "category": "Interviewed",
-    "column-1": data.interviewsDays,
+    "column-1": data.object.interviewsDays,
     "color": "#4DD0E1"
 },
 {
     "category": "Offered",
-    "column-1": data.offeredDays,
+    "column-1": data.object.offeredDays,
     "color": "#AED581"
 },
 {
     "category": "Joined",
-    "column-1": data.offeredAcceptedDays,
+    "column-1": data.object.offeredAcceptedDays,
     "color": "#81D4FA"
 }
 ]
@@ -921,32 +924,32 @@ function getSuccessPercentageAmchartData(data){
             "dataProvider": [
                 {
                     "category": "Applicants",
-                    "column-1": data.applicantsMove,
+                    "column-1": data.object.applicantsMove,
                     "color": "#9575CD"
                 },
                 {
                     "category": "Shortlisted",
                     "color": "#9575CD",
-                    "column-1": data.shortlistedMove,
+                    "column-1": data.object.shortlistedMove,
                 },
                 {
                     "category": "Submit to Client",
-                    "column-1": data.submitToClientMove,
+                    "column-1": data.object.submitToClientMove,
                     "color": "#FFB74D"
                 },
                 {
                     "category": "Interviewed",
-                    "column-1": data.interviewsMove,
+                    "column-1": data.object.interviewsMove,
                     "color": "#5C6BC0"
                 },
                 {
                     "category": "Offered",
-                    "column-1": data.offeredMove,
+                    "column-1": data.object.offeredMove,
                     "color": "#9CCC65"
                 },
                 {
                     "category": "Joined",
-                    "column-1": data.offeredAcceptedMove,
+                    "column-1": data.object.offeredAcceptedMove,
                     "color": "#1E88E5"
                 }
             ]

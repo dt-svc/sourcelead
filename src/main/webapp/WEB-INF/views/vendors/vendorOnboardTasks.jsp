@@ -99,7 +99,7 @@
                                   <div class="row">
                                     <div class="col-md-12">
 
-                                      <label><strong>Due Before:<span class="text-danger">*</span></strong></label>
+                                      <label><strong>Due date:<span class="text-danger">*</span></strong></label>
 
                                                                             
                                       <!-- Form inline Due after -->
@@ -108,7 +108,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due date" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<c:forEach begin="1" end="12" varStatus="loop">
 															<option>${loop.index}</option>
@@ -210,9 +210,9 @@ function getVendorOnboardTasksList(){
 			        		result = result +'<div class="clearfix taskheder">';
 			        		
 			        		if(report.taskType == 'Onboard Task'){
-			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteOnboardTask('+report.id+');"></i></a></label>';
+			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary" title="'+report.taskName+'" >'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteOnboardTask('+report.id+');"></i></a></label>';
 			        		}else{
-			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
+			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary" title="'+report.taskName+'">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
 			        		}
 			        		
 			        		
@@ -247,7 +247,8 @@ function getVendorOnboardTasksList(){
 		        	
 		        	result = result +'<div class="form-footer clearfix mt">';
 		        	result = result +'<span class="pull-left">';
-		        	result = result +'&nbsp;&nbsp;<input type="checkbox" name="isMailSent" id="isMailSent" value="Y" checked>&nbsp;&nbsp;Send Invitation';
+		        	//changed to hidden by Pavan Jampana.
+		        	result = result +'&nbsp;&nbsp;<input type="hidden"  name="isMailSent" id="isMailSent" value="Y" checked>&nbsp;&nbsp;';
 		        	result = result +' </span>';
 		    		result = result +'<div class="pull-right mr">';
 		    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn btn-sm btn-primary">';
@@ -267,14 +268,23 @@ function getVendorOnboardTasksList(){
 
 <script>
 function deleteTask(taskId){
-	
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(data) {
-	        	if(data == 'success'){
-	        		document.getElementById("onboardTask"+taskId).remove();
-	        	}
+	        success: function(result) {
+	        	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			document.getElementById("onboardTask"+taskId).remove();
+	        		getVendorOnboardTasksList();
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
+	        		
 	        },
 	    });
 }
@@ -316,10 +326,13 @@ function saveOnboardTask(){
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
 			        	getVendorOnboardTasksList();
+			        	$("#addTask").hide();
+			        	$(".modal-backdrop").fadeOut(150);
 			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+			        	$("body").removeClass("modal-open");
 		        	}
 		        	
 		        },
@@ -364,16 +377,24 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(json) {
-	    	 var result = "";
-        	 for (var i=0; i<json.length; i++)
- 			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var result = "";
+	    		var json = response.data;
+	        	 for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }

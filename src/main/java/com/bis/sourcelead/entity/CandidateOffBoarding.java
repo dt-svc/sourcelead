@@ -50,16 +50,16 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String address2;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name = "ZIPCODE")

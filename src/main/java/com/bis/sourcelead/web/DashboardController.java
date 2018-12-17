@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,17 +22,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.DashboardCounts;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -69,6 +73,15 @@ public class DashboardController {
 	 
 	 @Autowired
 	 private OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 OrgSpocService orgSpocService;
+	 
+	 @Autowired
+	 TeamService teamService;
 
 	@RequestMapping(value = "/dashboard")
 	public ModelAndView projects() {
@@ -133,8 +146,31 @@ public class DashboardController {
 		
 //		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
 		
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		Long loginUserId=user.getId();
 		model.addObject("tab",tab);
 		model.addObject("reqList","appList");
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
+		
+		
 //		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -170,7 +206,28 @@ public class DashboardController {
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
 			}*/
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
 		
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		Long loginUserId=user.getId();
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
 		model.addObject("tab",tab);
 		model.addObject("reqList","subList");
 //		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
@@ -186,6 +243,7 @@ public class DashboardController {
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -193,17 +251,26 @@ public class DashboardController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="INTERVIEW" ;
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		/*List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
-	  // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
-			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
-			requirementSubmissionHistory2.getSubmissionId().setNumOfInterview(interviewedCount);
-			 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
-			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
-			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
-		    }
-		  }*/
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		Long loginUserId=user.getId();
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
 		model.addObject("tab",tab);
 		model.addObject("reqList","interList");
 //		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
@@ -218,6 +285,7 @@ public class DashboardController {
 			HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -225,31 +293,27 @@ public class DashboardController {
 		}
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="OFFERMADE" ;
-		
-		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		/*List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
-		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
-			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
-			for (RequirementOffers requirementOffers : offersList) {
-				requirementSubmissionHistory.getSubmissionId().setOfferId(requirementOffers.getId());
-				requirementSubmissionHistory.getSubmissionId().setOfferRate(requirementOffers.getAmount());
-				requirementSubmissionHistory.getSubmissionId().setRateType(requirementOffers.getPaymentType());
-				requirementSubmissionHistory.getSubmissionId().setRatePer(requirementOffers.getPaymentMode());
-				requirementSubmissionHistory.getSubmissionId().setOfferJoinDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementOffers.getDateOfJoining()));
-				if(null != requirementOffers.getPositionType()){
-					requirementSubmissionHistory.getSubmissionId().setPositionType(requirementOffers.getPositionType());
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
 				}
-				if(null != requirementOffers.getFileName()){
-					requirementSubmissionHistory.getSubmissionId().setAttachment(requirementOffers.getFileName());
-				}
+				
 			}
-				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
-					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
-				}
-		}*/
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
 		
-		
+		Long loginUserId=user.getId();
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
 		model.addObject("tab",tab);
 		model.addObject("reqList","offerlist");
 //		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
@@ -322,5 +386,174 @@ public class DashboardController {
 				loginOrgLocations.getId(), stage, tab, userType, user, startUTCDate, endUTCDate);
 	}
 
+	
+	
+	@RequestMapping(value = "/requirementRejectedList")
+	public ModelAndView requirementRejectedList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		
+		Long loginUserId=user.getId();
+		model.addObject("tab",tab);
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
+		model.addObject("reqList","rejectedlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementRejectedList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/requirementJoinedList")
+	public ModelAndView requirementJoinedList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		
+		Long loginUserId=user.getId();
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
+		model.addObject("tab",tab);
+		model.addObject("reqList","joinedlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementJoinedList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/requirementBackoutList")
+	public ModelAndView requirementBackoutList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		
+		Long loginUserId=user.getId();
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
+		model.addObject("tab",tab);
+		model.addObject("reqList","backoutlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("requirement/requirementBackoutList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/requirementShortList")
+	public ModelAndView requirementShortList(@RequestParam(value="tab", required=true) String tab,
+			@RequestParam(value="orgLocationId", required=true) String orgLocationId,
+			HttpServletRequest request) throws Exception {
+		
+		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Dashboard);
+		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId));
+		List<OrgRelationDTO> orgClientList1=new ArrayList<>();
+		for(OrgRelationDTO orgspoc:orgClientList){
+			OrgSpoc orgSpoc=orgSpocService.getSpocByVendorUserIdAndOrgRelationId(orgspoc.getOrgRelId().longValue(),user.getId());
+			if(orgSpoc != null){
+				if(orgSpoc.getVendorUser().getId().equals(user.getId())){
+					orgClientList1.add(orgspoc);	
+				}
+				
+			}
+		}
+		List<Team> teamsList = teamService.getUserAssignedTeamListByOrgLocationId(user.getId(), Long.parseLong(orgLocationId));
+		for(Team team:teamsList){
+			team.setOwnerId(team.getOwnerUserId().getId());
+		}
+		Long loginUserId=user.getId();
+		model.addObject("tab",tab);
+		model.addObject("reqList","shortlist");
+		request.getSession().setAttribute("sessionData",sessionData);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("allClients", orgRelationsService.getAllClientsListOrgLocationId(Long.parseLong(orgLocationId)));
+		model.addObject("myClients", orgClientList1);
+		model.addObject("teamsList", teamsList);
+		model.addObject("loginUserId", loginUserId);
+		model.setViewName("requirement/requirementShortList");
+		return model;
+	}
+	
 	
 }

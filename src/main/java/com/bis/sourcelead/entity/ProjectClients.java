@@ -68,6 +68,9 @@ public class ProjectClients implements Serializable{
     @Column(name = "IS_END_CLIENT")
     private String isEndClient;
     
+    @Column(name = "IS_PROJECT_SHARED")
+    private String isProjectShared;
+    
     
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -89,6 +92,22 @@ public class ProjectClients implements Serializable{
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList;
+	
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList;
 	
 	@Transient
 	@JsonProperty
@@ -222,6 +241,41 @@ public class ProjectClients implements Serializable{
 	public void setClientName(String clientName)
 	{
 		this.clientName = clientName;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Set<ProjectApproverHierarchy> getSharedClientProjectApproverHierarchyList() {
+		return sharedClientProjectApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectApproverHierarchyList(
+			Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList) {
+		this.sharedClientProjectApproverHierarchyList = sharedClientProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getExpenseProjectApproverHierarchyList() {
+		return expenseProjectApproverHierarchyList;
+	}
+
+	public void setExpenseProjectApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> expenseProjectApproverHierarchyList) {
+		this.expenseProjectApproverHierarchyList = expenseProjectApproverHierarchyList;
+	}
+
+	public Set<ExpenseProjectApproverHierarchy> getSharedClientProjectExpenseApproverHierarchyList() {
+		return sharedClientProjectExpenseApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectExpenseApproverHierarchyList(
+			Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList) {
+		this.sharedClientProjectExpenseApproverHierarchyList = sharedClientProjectExpenseApproverHierarchyList;
 	}
 
 }

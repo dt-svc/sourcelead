@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,7 +11,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +22,18 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateEmployersHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 
 /**
  * @author Ajith Matta
@@ -36,11 +43,16 @@ import com.bis.sourcelead.util.CommonUtil;
 @Service
 public class CandidateEmployersServiceImpl implements CandidateEmployersService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersServiceImpl.class);
+	
 	@Autowired
 	CandidateEmployersDao candidateEmployersDao;
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Value("${static.path}")
+	private String staticPath;
 	
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -163,6 +175,15 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         		candidateEmployers.setEndMonth("");
         	  }
         	
+            if(candidateEmployerDTO.getFileInfo() != null){
+    			FileInfo fileinfo = candidateEmployerDTO.getFileInfo().get(0);
+    			candidateEmployers.setEmployerFileUrl(fileinfo.getFileURL());
+    			candidateEmployers.setEmployerFileName(fileinfo.getFileName());
+    			candidateEmployers.setEmployerFileContentType(fileinfo.getContentType());
+    			FileUploadUtil.moveFile(candidateEmployerDTO.getStaticPath(), fileinfo, "candidateDocuments");
+    			
+    		}
+            
         	candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateEmployers.setCreatedBy(user.getUserCode());
         	candidateEmployers.setOrgLocationId(orgLocationId);
@@ -230,12 +251,27 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal) throws Exception {
+		
+		List<CandidateEmployers> ss = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(candidateId, searchVal);
+		for(CandidateEmployers exp:ss) {
+			if(StringUtils.isNotBlank(exp.getStartMonth())) {
+			String startMonth = exp.getStartMonth().substring(exp.getStartMonth().lastIndexOf('&') + 1);
+			exp.setStartMonth(startMonth);
+			}
+			if(StringUtils.isNotBlank(exp.getEndMonth())) {
+			String endMonth = exp.getEndMonth().substring(exp.getEndMonth().lastIndexOf('&') + 1);
+			exp.setEndMonth(endMonth);
+			}
+		}
+		 return ss;
+	}
+
+	@Override
 	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc) throws Exception {
 		
 		 return candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, loc);
 	}
-
-	
 	
 	/**
 	 * This method is used for display the get Candidate Employers Details list
@@ -322,6 +358,73 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	@Override
 	public CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception {
 		return candidateEmployersDao.getCandidateLastCompanyEmployer(candidateId, orgLocationId);
+	}
+
+	@Override
+	public String removeCandidateEmployerDocById(Long candidateEmployerId) throws Exception {
+		CandidateEmployers candidateEmployers = candidateEmployersDao.getCandidateEmployerById(candidateEmployerId);
+		if(candidateEmployers != null){
+		try {
+			String rootPath = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
+			File file = new File(rootPath + candidateEmployers.getEmployerFileUrl());
+			
+			if (file.delete()) {
+				logger.debug(file.getName() + " is deleted!");
+			} else {
+				logger.error(file.getName() + " is deleted!");
+			}
+				candidateEmployers.setEmployerFileName(null);
+				candidateEmployers.setEmployerFileUrl(null);
+				candidateEmployers.setEmployerFileContentType(null);
+			
+			candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+		return "success";
+	}
+
+	@Override
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId) {
+		return candidateEmployersDao.getCandidateActiveEmployersCountByCandidateId(candidateId);
+	}
+
+	@Override
+	public HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,
+			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+		
+          HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
+		  
+		  if(StringUtils.isNotBlank(candidateDTO.getCandidateEmployers())){
+	    	  String employers = candidateDTO.getCandidateEmployers();
+	    	  if(employers != null && !employers.isEmpty() ){
+		    	  employers = employers.replaceAll("\\[", "").replaceAll("\\]","");
+		  	      String[] candidateEmployers = employers.split(",");
+		    	  for (String emps : candidateEmployers) {
+		    		  CandidateEmployers cemp = new  CandidateEmployers();
+		    		  emps = emps.replace("\"", "");
+		    		  cemp.setName(emps);
+		    		  cemp.setCandidateId(candidate);
+		    		  cemp.setOrgLocationId(orgLocations);
+		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
+		    		  
+    		        HashSet<CandidateEmployersHistory> candidateEmployersHistorySet = new HashSet<CandidateEmployersHistory>();
+    				CandidateEmployersHistory candidateEmployersHistory = new CandidateEmployersHistory();
+    				candidateEmployersHistory.setCandidateEmployers(cemp);
+    				candidateEmployersHistory.setName(emps);
+    				candidateEmployersHistory.setCreatedUser(user);
+    				candidateEmployersHistory.setCreatedBy(user.getUserCode());
+    				candidateEmployersHistory.setCreatedDate(commonUtil.currentDate());
+    				candidateEmployersHistorySet.add(candidateEmployersHistory);
+    				cemp.setCandidateEmployersHistoryList(candidateEmployersHistorySet);	
+	    		    candidateEmployersList.add(cemp);
+		    	  }
+	    	  }  
+	    }
+		 
+		return candidateEmployersList;
 	}
 
 }

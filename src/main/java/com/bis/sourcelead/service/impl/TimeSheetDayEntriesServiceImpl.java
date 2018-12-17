@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 
 @Service
@@ -70,5 +70,30 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 	public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate,Long projectTaskId) {
 		return timeSheetDayEntriesDao.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate,projectTaskId);
 	}
+
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId,Date timesheetDate,Long projectMemberId) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectId, timesheetDate,projectMemberId);
+	}
+
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId,Date startDate, Date endDate, Long projectMembers) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectId, startDate,endDate,projectMembers);
+	}
+
+	@Override
+	public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,
+			Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
+		return timeSheetDayEntriesDao.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(masterCandidateId, startDate, endDate, orgLocations);
+	}
+
+	@Override
+	public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,
+			Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
+		return timeSheetDayEntriesDao.isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(masterCandidateId, startDate, endDate, orgLocations);
+	}
+	
+	
+
 
 }

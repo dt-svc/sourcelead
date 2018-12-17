@@ -20,7 +20,8 @@ public class UpdateJobUrl {
 	
 
 private ComboPooledDataSource comboPooledDataSource;
-	
+ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author sathish
  * this method is using for update the jobUrl	
@@ -34,14 +35,14 @@ try {
 		
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql2 = "SELECT * FROM sourcelead.REQUIREMENT";
+			 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs = stmt1.executeQuery(sql2);
 			 System.out.println("Updating JobURL Starts.....");
 			 while(rs.next()){
 					 String title = rs.getString("JOB_TITLE");
 					 if(title != null && !title.isEmpty()){
-						 String query = "update sourcelead.REQUIREMENT req set URL = ? where  req.JOB_TITLE = '"+title+"' ";
+						 String query = "update "+dbconfig.getSchema()+".REQUIREMENT req set URL = ? where  req.JOB_TITLE = '"+title+"' ";
 					  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
 					  	title = rs.getString("JOB_TITLE");
 					  	title = title.replaceAll("[^a-zA-Z0-9]+", "-").toLowerCase();
@@ -75,10 +76,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -1,30 +1,33 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+
+
  <!-- Applicant Authorization -->
-      <div class="col-md-12 pdRight pdLeft">
-        <div class="dashboard-widget">
-          <h4 class="clearfix">Applicant Permission
-          </h4>
+ <div class="col-md-6 mb"> 
+        <div class="dashNewWrap mb10">
+        
+        	<div class="dashNewWrapHead clearfix">
+				<h4 class="pull-left">Applicant Permission</h4>
+	            <ul class="nav nav-tabs pull-right">
+	              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
+	              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
+	              <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
+	            </ul>			
+        	</div>         
           <!-- <a href="javascript:void(0)" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-          <div class="clearfix require_wrap_table dashboard-data filter_position">
-         <div class="success_pop" id="selector4" style="display: none;">
-  		<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>
-   		 </div>
-            <ul class="nav nav-tabs">
-              <li class="active" id="acceptedTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('requestSent')">Sent</a></li>
-              <li id="requestSentTab"><a data-toggle="tab" href="javascript:void(0)" onclick="ApplicantAuthorization('accepted')">Accepted</a></li>
-                 <li id="rejectedTab"><a data-toggle="tab" onclick="ApplicantAuthorization('REJECTED');">Rejected</a></li>
-            </ul>
-            
-            <div class="tab-content clearfix mt">
+          <div class="clearfix project_tabs_inn_table dashboard-data newDashPadSearch dataSeaNew">
+         <div class="success_pop" id="selector4" style="display: none;"><i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span></div>
+            <div class="tab-content clearfix">
               <div id="accepted" class="tab-pane fade in active"></div>
               <div id="requestSent" class="tab-pane fade"></div>
             </div> 
           </div>
-        </div>
       </div>
+</div>
 <!-- Applicant Authorization Ends --> 
+
+
 <script>
 
 $(document).ready(function(){
@@ -52,8 +55,12 @@ function ApplicantAuthorization(status){
 			type : "POST",
 			url : sourceleadUrl+"/getApplicantsByStatus?${_csrf.parameterName}=${_csrf.token}&status="+status,
 			success : function(data) {
-				var json = JSON.parse(data);
-				/* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+	            	 	 var json = data.data;
 	              			$("#accepted").empty();
 	        	        	$("#requestSent").empty();
 	              			$("#accepted").removeAttr("style");
@@ -156,17 +163,11 @@ function ApplicantAuthorization(status){
 	            				$("#requestSentTab").removeClass("active");
 	            				
 	            	        } 
-					/* }else{
-	               	 	$("#accepted").removeAttr("style");
-	               	 	$("#accepted").empty();
-     	        		$("#requestSent").empty();
-	 	    	        var result ="";
-						result = result+"			<div class='blank-pages'>";
-						result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						result = result+"			        <p>No Applicants Found</p>";
-						result = result+"			 </div>";
-					    $("#accepted").append(result); 
-	               } */
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			},
 	});
 	return true;
@@ -230,15 +231,22 @@ function rejectApplicantAlertMessage(submissionId, status){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-                                	 ApplicantAuthorization('requestSent');
-                                	 $("#selector4").removeAttr("style");
-				            			$("#selector4").css({ display: "block" });
-			            				$("#eduMsgDiv").html("Accepted");
-                                    
-                                 	eduMsgFadeinFunction();
-                                   
-								 
+			    success: function(result) {
+				    	if (result.response === "FAILED") {
+		  		    		showError(result.responseMessage);
+		  		    	} else if (result.response === "AWKWARD") {
+		  		    		location.href = "/errorPage";
+		  		    	} else if (result.response === "SUCCESS") {
+		  		    		ApplicantAuthorization('requestSent');
+                       	 	$("#selector4").removeAttr("style");
+		            		$("#selector4").css({ display: "block" });
+	            			$("#eduMsgDiv").html("Accepted");
+                        	eduMsgFadeinFunction();
+		  		    	}else if (result.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
                      },
                 });return true;
 		}else{
@@ -302,17 +310,25 @@ function cancelAlert(){
 				type : "POST",
 	    	    data: formData,
 			    url: sourceleadUrl+"/acceptRejectCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,	    	   
-			    success: function(data) {
-			    	$("#popUp").empty();
-			    	$("#rejectApplicantAlert").empty();
-			    	$(".vendor_wrap_mask").fadeOut(200);
-			    	ApplicantAuthorization('requestSent');
-			    	 $("#selector4").removeAttr("style");
-         			$("#selector4").css({ display: "block" });
-     				$("#eduMsgDiv").html("Rejected");
-                 
-              	eduMsgFadeinFunction();
-			    	
+			    success: function(result) {
+			    	if (result.response === "FAILED") {
+	  		    		showError(result.responseMessage);
+	  		    	} else if (result.response === "AWKWARD") {
+	  		    		location.href = "/errorPage";
+	  		    	} else if (result.response === "SUCCESS") {
+	  		    		$("#popUp").empty();
+				    	$("#rejectApplicantAlert").empty();
+				    	$(".vendor_wrap_mask").fadeOut(200);
+				    	ApplicantAuthorization('requestSent');
+				    	$("#selector4").removeAttr("style");
+	         			$("#selector4").css({ display: "block" });
+	     				$("#eduMsgDiv").html("Rejected");
+	              		eduMsgFadeinFunction();
+	  		    	}else if (result.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 			return true;

@@ -163,6 +163,14 @@ public class ProjectTasks implements Serializable{
 	
 	@JsonProperty
 	@Transient
+	private String taskSeverity;
+	
+	@JsonProperty
+	@Transient
+	private String taskOwnerName;
+	
+	@JsonProperty
+	@Transient
 	private String taskStaus;
 	
 	@JsonProperty
@@ -172,6 +180,11 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
 	@Transient
 	private List<String> taskAssignedUsers;
+	
+	
+	@JsonProperty
+	@Transient
+	private List<String> assignedTaskUsers;
 	
 	
 	@JsonProperty
@@ -225,6 +238,14 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
 	@Transient
 	private String actionTimeStr;
+	
+	@Transient
+    @JsonProperty
+    private String taskTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
 	
 	public Long getId() {
 		return Id;
@@ -488,9 +509,9 @@ public class ProjectTasks implements Serializable{
 		if(projectAssignTask != null && !projectAssignTask.isEmpty()) {
 			for(ProjectAssignTask assignedTask: projectAssignTask) {
 				if(assignedTask.getProjectMemberId() != null && 
-						assignedTask.getProjectMemberId().getEmployee() != null && 
-						assignedTask.getProjectMemberId().getEmployee().getUser() != null) {
-					usersList.add(assignedTask.getProjectMemberId().getEmployee().getUser().getFullName());
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null && 
+						assignedTask.getProjectMemberId().getProjectMemberCandidteId() != null) {
+					usersList.add(assignedTask.getProjectMemberId().getProjectMemberCandidteId().getFullName());
 				}
 			}
 		}
@@ -635,6 +656,52 @@ public class ProjectTasks implements Serializable{
 	public void setHoliday(Holiday holiday) {
 		this.holiday = holiday;
 	}
-	
-	
+
+	public String getTaskSeverity() {
+		String taskSeverity = null;
+		if (severity != null) {
+			taskSeverity = severity.getName();
+		}
+		return taskSeverity;
+	}
+
+	public String getTaskOwnerName() {
+		String taskOwnerName = null;
+		if(ownerUserId != null) {
+			taskOwnerName = ownerUserId.getFullName();
+		}
+		return taskOwnerName;
+	}
+
+	public void setTaskSeverity(String taskSeverity) {
+		this.taskSeverity = taskSeverity;
+	}
+
+	public void setTaskOwnerName(String taskOwnerName) {
+		this.taskOwnerName = taskOwnerName;
+	}
+
+	public String getTaskTags() {
+		return taskTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTaskTags(String taskTags) {
+		this.taskTags = taskTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public List<String> getAssignedTaskUsers() {
+		return assignedTaskUsers;
+	}
+
+	public void setAssignedTaskUsers(List<String> assignedTaskUsers) {
+		this.assignedTaskUsers = assignedTaskUsers;
+	}
 }

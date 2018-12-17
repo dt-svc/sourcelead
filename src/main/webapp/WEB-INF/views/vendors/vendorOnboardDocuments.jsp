@@ -102,7 +102,10 @@ function validateSavedDocuments(){
 	 var docNames = [];
 	 var savedDoc = $("#vendorDocumentsList strong[id*=contractsdocument]").length;
 	 for (var i = 0; i <= savedDoc; i++) { 
-		  docNames.push($("#"+i+"savedDoc").val());
+		 var saveDoc = $("#"+i+"savedDoc").val();
+		 if(typeof  saveDoc !== "undefined"){
+			 docNames.push($("#"+i+"savedDoc").val());
+		 }
 	 }
 	 
 	 var documentName = "";

@@ -1,20 +1,33 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
-import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
+import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
+import com.bis.sourcelead.entity.CandidateMarketCart;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -57,7 +70,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception;
 	
 	/**
 	 * @param candidateId
@@ -127,6 +140,8 @@ public interface CandidateService {
 	
 	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
 	
+	Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId,Long orgLocationId) throws Exception;
+	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
 	public Candidate storeProfessionalParseCandidate(CandidateDTO candidateDTO,OrgLocations orgLocations,User user,Long candidateId) throws Exception;
@@ -152,7 +167,7 @@ public interface CandidateService {
 
 	List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId)throws Exception;
 	
-	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception ;
+	BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 
@@ -201,5 +216,106 @@ public interface CandidateService {
 	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
 	
 	public Candidate getCandidateByEmail(String email) throws Exception;
+	
+	 List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId, List<String> userCodesList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+
+	 public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,OrgLocations orgLocations) throws Exception;
+	 
+	 public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
+	 
+	 ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
+	 
+	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
+	 
+	 public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception;
+
+	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long locationId, String name);
+	
+	public List<CandidateDTO> getAllActiveCandidatesListByOrglocationId(Long orgLocationId, String employeementType) throws Exception;
+
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalMarketCandidateList(CandidateMarketPlaceDTO candidateMarketPlaceDTO, String searchValue);
+	
+	public List<Candidate> getAllCandidatesList() throws Exception;
+
+	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception;
+
+	public ResponseList<CandidateDTO> getCandidatesByCandidateIds(List<String> candidateUUIds);
+	
+	public Candidate getCandidateDetails(Candidate candidate, CandidateDTO candidateDto, User user,OrgLocations orgLocations,StringBuffer activitySummary) throws Exception;
+	
+	public void saveBulkCandidates(List<Candidate> candidatesList) throws Exception;
+
+	public void saveBulkCandidates(List<Candidate> candidatesList,Long orgLocationId) throws Exception;
+	
+	Long getCandidateIdByEmailAndOrgLocationId(String email,Long orgLocationId) throws Exception;
+	
+	List<String> getCandidateEmailsByOrgLocationId(Long orgLocationId) throws Exception;
+
+	public void saveCandidateMarketPlaceList(List<CandidateMarketPlaceDTO> marketPlaceList, User user) throws NumberFormatException, Exception;
+
+	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
+
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType);
+	
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
+	
+	public List<CandidateMarketPlace> getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(List<Long> id, Long orgLocationId)throws Exception;
+	
+	public void withdrawCandidateFromMarketplace(CandidateMarketPlace marketplace, String withdrawReason)throws Exception;
+
+	public CandidateMarketPlace getCandidateMarketPlaceDetailsByUUId(String uuid)throws Exception;
+	
+	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations)throws Exception;
+	
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue);
+
+	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
+	
+	Integer getCandidateProfilePercentageByCandidateId(Long id) throws Exception;
+
+	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
+	
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception;
+	
+	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public int updateMarketplaceCandidates(OrgLocations orgLocations, String companyNameFlag) throws Exception;
+
+	public ResponseList<CandidateMarketPlaceDTO> getGlobalDataRecommendations(CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
+
+	public CandidateMarketPlaceDTO getCandidateMarketPlaceDTODetailsByUUId(String marketplaceUUID, OrgLocations orgLocations) throws Exception;
+
+	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
+	
+	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
+	
+	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;
+	
+	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
+
+	public void saveTransactionCompletedCandidates(CandidateDTO candidate, OrgLocations orgLocations, User user)throws Exception;
+
+	
+	public void saveToMarketplacePurchaseOrder(List<CandidateMarketCart> marketCartList,OrgLocations orgLocations, String orderNo,String purchasedOrgName,String paymentId)throws Exception;
+
+	public void saveToMarketplaceSalesOrder(List<CandidateMarketCart> marketCartList, String orderNo,String paymentId)throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception;
+
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+	
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id)throws Exception;
+	
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
+
+	public List<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations) throws Exception;
+
+	public MarketplacePurchaseSalesDTO getPurchaseDetailByOrderNo(String orderNo, OrgLocations orgLocations)throws Exception;
+	
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String orderNo, String searchValue)throws Exception;
+
+	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderByOrderNumber(OrgLocations orgLocations, String orderNo)throws Exception;
 
 }

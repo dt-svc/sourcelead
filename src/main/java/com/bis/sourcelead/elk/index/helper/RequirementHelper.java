@@ -78,6 +78,12 @@ public class RequirementHelper {
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setUrl(requirement.getUrl());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getIsClientJob() !=null){
+				requirementIndex.setIsClientJob(requirement.getIsClientJob());
+			}
+			if(requirement.getProcess() !=null){
+				requirementIndex.setProcess(requirement.getProcess());
+			}
 			if(requirement.getMedicalClearence() != null){
 			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
 			}
@@ -98,7 +104,7 @@ public class RequirementHelper {
 			}
 			
 			if(requirement.getProjectClientID() != null){
-				requirementIndex.setProjectClientID(requirement.getProjectClientID().toString());
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().getId().toString());
 				}
 				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
 			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
@@ -120,11 +126,11 @@ public class RequirementHelper {
 			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
 				requirementIndex.setRateType(requirement.getRateType());
 			}
-			if (null != requirement.getMinExp()) {
-				requirementIndex.setMinExperience(requirement.getMinExp());
+			if (StringUtils.isNotEmpty(requirement.getMinExp())) {
+				requirementIndex.setMinExperience(Float.parseFloat(requirement.getMinExp()));
 			}
-			if (null != requirement.getMaxExp()) {
-				requirementIndex.setMaxExperience(requirement.getMaxExp());
+			if (StringUtils.isNotEmpty(requirement.getMaxExp())) {
+				requirementIndex.setMaxExperience(Float.parseFloat(requirement.getMaxExp()));
 			}
 			if(null != requirement.getCurrencyCode() && !"".equalsIgnoreCase(requirement.getCurrencyCode())){
 				requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
@@ -142,8 +148,13 @@ public class RequirementHelper {
 				requirementIndex.setClientRateType(requirement.getClientRateType());
 			}
 			
+			if(requirement.getJobsTags() != null && !requirement.getJobsTags().isEmpty()) {
+				requirementIndex.setTags(requirement.getJobsTags());
+			}
+			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
+			requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus() != null ? requirement.getRequirementSubmissionPreviousStatus().name() : "");
 			
 			StringBuilder country = new StringBuilder();
 			StringBuilder state = new StringBuilder();
@@ -212,6 +223,11 @@ public class RequirementHelper {
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			if (requirement.getManagerUserId() != null) {
 				requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			}
+			if (requirement.getPrimaryRecruiterUserId() != null) {
+				requirementIndex.setPrimaryRecruiterUserId(requirement.getPrimaryRecruiterUserId().getId().toString());
+			} else {
+				requirementIndex.setPrimaryRecruiterUserId("");
 			}
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if (null != requirement.getClosedDate()) {

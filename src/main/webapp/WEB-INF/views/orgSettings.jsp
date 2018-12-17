@@ -6,14 +6,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <style type="text/css">
 .selectChosen .chosen-container {
-width: 100% !important;
-}
+	width: 100% !important;
+	}
 .icon1 {
-right: 15px;
-}
+	right: 15px;
+	}
 </style>
 
 <!--success msg -->
@@ -90,7 +91,6 @@ window.onload = function () {
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -98,7 +98,7 @@ function alertMessage(message){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 
@@ -107,7 +107,6 @@ function alertMessage(message){
 <script type="text/javascript">
 function deleteImage(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete image?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -115,7 +114,7 @@ function deleteImage(){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 </script>
 
@@ -141,7 +140,7 @@ function deleteOrgImage(){
 <script type="text/javascript">
 function cancelOrgImg(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -159,45 +158,60 @@ function cancelOrgImg(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
     </section>
-    <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+    
+    <div class="project_wrap clearfix">
+      <div class="clearfix form-area form-horizontal customedTabStyles">
+      
       <div id="loading"></div>
       <div id="regLoading"></div>
       <div id="popUp"></div>  
       <div id="signatureLoading"></div>
       
-        <div class="success_pop" id="resendOrg" style="display: none;">
-			<i class="fa fa-check-circle"></i><span>Invitation sent successfully</span>
-		</div>
+<div class="success_pop" id="resendOrg" style="display: none;"><i class="fa fa-check-circle"></i><span>Invitation sent successfully</span></div>
+		
         <!-- Tab Pills navbar -->
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs newTabs">
         <li class="active"><a data-toggle="tab" href="#orgsetting">Settings</a></li>
         
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Taxes</a></li>
         </c:if>
-        <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
-        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+        <li><a data-toggle="tab" href="#informationDetails" onclick="resetInformation();">Information</a></li>
+        </c:if>
+         
+        <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments" onclick="resetDocument();">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
-        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
-        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-        	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
-        </c:if>
+        <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();getProbationPeriod();">Configure</a></li>
+		<li><a data-toggle="tab" href="#emailNotifications" onclick="resetEmailConfguration();">Email Configuration</a></li> 
+       
+        <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
+         <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
 
+<%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
+
+        <li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
+                <%--<c:if test="${SourceLeadWeb_orgLocations.country == 'United States' || SourceLeadWeb_orgLocations.country == 'USA'}">--%>
+		<li><a data-toggle="tab" href="#paymentAccount" onclick="getPaymentAccounts();">Payment Accounts</a></li>
+                <%--</c:if>--%>
+<%--         </c:if> --%>
       </ul>
+      
+      
       <!-- Tab Pills navbar -->
       <div class="tab-content">
-        <div id="orgsetting" class="tab-pane fade in active">   
-        <div class="row">
-          <div class="clearfix">
+      
+        <div id="orgsetting" class="tab-pane fade in active">  
+         
 		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab org-settings-area">
-		  <div class="tab-content panel-body">
+		  <div class="accountsettings-tab org-settings-area noMar">
+		  <div class="tab-content panel-body noBor">
+		  
 		  	<form:form class="login-form mt10"  id="orgImage_form"  name="orgImage_form" method="post" > 
 		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
@@ -208,7 +222,7 @@ function cancelOrgImg(){
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -222,75 +236,74 @@ function cancelOrgImg(){
 				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			  </form:form>
+			  
+			  
 			<div class="clearfix">
 			  <form:form class="login-form  mt10"  id="orgSettings_form"  name="orgSettings_form" method="post" > 
-			  
-			  
 			  <div id="popUp" ></div>
-			  			
-				<div class="col-xs-12 col-sm-9 col-md-9">
+				<div class="col-xs-12 col-sm-9 col-md-9 clearfix">
 					<div class="row">
-						<div class="col-md-7">
-							<div class="form-group" id="companyNameDiv">
-							<label class="col-md-3">Company<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="col-md-6">
+							<div class="clearfix mb" id="companyNameDiv">
+							<label class="labText">Company <b class="valStar">*</b></label>
+							<div class="clearfix">
 							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
 							</div>
 							</div>
 							
 							 
-							<div class="form-group">
-								<label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">Country <b class="valStar">*</b></label>
+								<div class="clearfix">
 								 <input type="text" class=" form-control" name="country" value="${SourceLeadWeb_country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
 								</div>
 							</div>
 								
-							<div class="form-group">
-								<label class="col-md-3">City<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">City <b class="valStar">*</b></label>
+								<div class="clearfix positionRelative">
 								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" id="orgEditCity" field-name="City" data-validation="required">
-								 <i class="fa fa-refresh btn btn-primary refresh-icon icon1 " title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
+								 <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-md-3">State<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">State <b class="valStar">*</b></label>
+								<div class="clearfix">
 								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
 								</div>
 							</div>
 								
-							<div class="form-group">
-								<label class="col-md-3">ZipCode</label>
-								<div class="col-md-9">
+							<div class="clearfix mb">
+								<label class="labText">ZipCode</label>
+								<div class="clearfix">
 								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 								</div>
 							</div>
 							
-						<div class="form-group">
-							<label class="col-md-3">Email regarding Po</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Email id for PO</label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
 							</div>
 						</div>
 						
-						<div class="form-group">
-							<label class="col-md-3">Email for Remittance</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Email for Remittance</label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
 							</div>
 						</div>
 							
-							<div class="form-group">
-							<label class="col-md-3">Address</label>
-							<div class="col-md-9">
+							<div class="clearfix mb">
+							<label class="labText">Address</label>
+							<div class="clearfix">
 							<input type="text" id="address" name="address" class="form-control"  field-name="Address" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_address}" />
 							</div>
 							</div>
 							
-							<div class="form-group">
-				            <label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>
-				            <div class="col-md-9">
+							<div class="clearfix mb">
+							<label class="labText">Time Zone <b class="valStar">*</b></label>
+							<div class="clearfix">
 								 <select class="chosen-select form-control" data-placeholder="Time Zone" field-name="Timezone" data-validation="required" id="timeZone" name="timeZone">
 									 <option value="" >Select Timezone</option>
 									 <c:forEach items="${timezoneList}" var="timezone">
@@ -308,10 +321,9 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-						<div class="form-group">
-							<label class="col-md-3">Date Format</label>
-							<div class="col-md-9">
-							
+						<div class="clearfix mb">
+							<label class="labText">Date Format</label>
+							<div class="clearfix">
 							 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
 							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
 							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
@@ -321,28 +333,20 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-							<div class="form-group mt" id="generatedUserIdDiv">
-							<label class="col-md-3">Org Short Code<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
-							<div class="col-md-9">
+						<div class="clearfix mb mt" id="generatedUserIdDiv">
+							<label class="labText">Org Short Code <b class="valStar">* </b> <i class='fa fa-info-circle' title="The internal unique code used to auto generate the ID's for jobs, candidates, etc"></i></label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
 						</div>
-						
-						<div class="form-group mt">
-							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
-							</div>
-						</div>
-							
-							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
+						<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
 				
-					<div class="col-md-5">
+					<div class="col-md-6">
 							
-						<div class="form-group">
-							<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">DBA <b class="valStar">*</b></label>
+							<div class="clearfix">
 								 <div class="col-md-10 noPad">
 				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="required validate_Space validate_length length2-250">
 				                </div>
@@ -356,9 +360,9 @@ function cancelOrgImg(){
 							</div>
 						</div>
 							
-							<div class="form-group">
-							<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9" id="websiteDiv">
+							<div class="clearfix mb">
+							<label class="labText">Website <b class="valStar">*</b></label>
+							<div class="clearfix" id="websiteDiv">							
 							<c:if test="${SourceLeadWeb_website == null}">
 							   <input type="text"  class="form-control"  onblur="validateOrgLocationWebsite();" data-validation="required" field-name="Website" id="website"  name="website" value="${SourceLeadWeb_website}">
 							</c:if>
@@ -370,23 +374,55 @@ function cancelOrgImg(){
 							</div>
 							</div>
 							
-						<div class="form-group mt">
-							<label class="col-md-3">Phone</label>
-							<div class="col-md-9">
+							
+						<div class="clearfix mb">
+							<label class="labText">Week Off Days</label>
+							<div class="clearfix">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation="required" field-name="Week Off Days">
+								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
+								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
+								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
+								 <option  value='Wed' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Wed') ? 'selected' : ''}>Wednesday</option>
+								 <option  value='Thu' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Thu') ? 'selected' : ''}>Thursday</option>
+								 <option  value='Fri' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Fri') ? 'selected' : ''}>Friday</option>
+								 <option  value='Sat' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sat') ? 'selected' : ''}>Saturday</option>
+							 </select>
+							</div>
+						</div>
+							
+						
+						<div class="clearfix mb" id="averageWorkingHoursDiv">
+							<label class="labText">Working Hours <b class="valStar">*</b></label>
+							<div class="clearfix">
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required validate_int" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							</div>
+						</div>
+						
+						<div class="clearfix mb">
+								<div class="col-md-11">
+									<div class="checkBox">
+										<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+									</div>
+								</div>
+					    </div>
+							
+						<div class="clearfix mb">
+							<label class="labText">Phone </label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
 							</div>
 						</div>
-						<div class="form-group mt">
-							<label class="col-md-3">Fax</label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Fax </label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
 							</div>
 						</div>
 						
 						
-						<div class="form-group mt">
-							<label class="col-md-3">Business type<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb">
+							<label class="labText">Business type <b class="valStar">*</b></label>
+							<div class="clearfix">
 									<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
 									<option value="">--Select Business type--</option>
 									<c:forEach var="bt" items="${bussinessTypesList}">
@@ -412,23 +448,23 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						<div class="form-group mt" id="otherBusinessTypeDiv" style="display: none;">
-							<label class="col-md-3">Other Business type<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+						<div class="clearfix mb" id="otherBusinessTypeDiv" style="display: none;">
+							<label class="labText">Other Business type <b class="valStar">*</b></label>
+							<div class="clearfix">
 							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
 							</div>
 						</div>
 						
-						
-						<div class="form-group comp-textarea mt">
-						  <label class="col-md-3">About</label>
-							<div class="col-md-9">
+					    
+					    <div class="clearfix mb comp-textarea">
+							<label class="labText">About </label>
+							<div class="clearfix">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
 							</div>
 						</div>
 							
 						</div>
-						</div>
+					</div>
 					<div class="clearfix">
 					<div class="pull-right">
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
@@ -438,22 +474,19 @@ function cancelOrgImg(){
 					</div>
 					</div>
 					</div>
-					</form:form>
-				</div>
+			</form:form>
+			</div>
 
-			
-			</div>
-			</div>
 		   </div>
 		</div>
 		</div>
 		
 		<div id="orgRegisteredlocations" class="tab-pane fade form-horizontal"> 
-			<div class="accountsettings-tab">
-	                        <div class="tab-content panel-body">
-	                            <div class="clearfix mb">
+			<div class="accountsettings-tab noMar">
+	                        <div class="tab-content panel-body noBor">
+	                            <div class="clearfix mb10">
 	                                <div class="pull-left">
-	                                    <h4 id="locationOrgsName"></h4>
+	                                    <h4 id="locationOrgsName" class="loaHeadtxt"></h4>
 	                                </div>
                                <div class="pull-right">
                                 <button class="btn btn-default btm-sm pull-right" id="orgsList" data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();" style="display: none"><i class="fa fa-map-marker"></i>
@@ -462,10 +495,10 @@ function cancelOrgImg(){
                                     &nbsp;&nbsp;Add Location</button>
                                </div>
 	                            </div>
-	                			<div class="clearfix form-area form-horizontal mt">
+	                			<div class="clearfix form-area form-horizontal">
 	                			
 	                			<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" >
-	                			<div id="registeredOrgs"></div>  
+	                			<div id="registeredOrgs" class="newLocaWrap clearfix"></div>  
 	                			</form:form>
 	                			
 	                			<form:form class="login-form clearfix"  id="update_module_form"  name="update_module_form" method="post" >
@@ -524,6 +557,50 @@ function cancelOrgImg(){
             			</div>
             			
             			
+            			 <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="profilePercentageHeading">Profile Percentage</h4>
+                                    <div class="success_pop" id="profilePercentageSelector"  style="display: none;">
+		       								  <i class="fa fa-check-circle"></i><span id="successMsgDiv"></span>
+									</div>
+                                    <div id="profilePercentageLoading"></div>
+                                </div>
+                            </div>
+                			<form id="profilePercentage_form"  name="profilePercentage_form" method="post">
+                			<div class="form-group">
+                			<label class="col-md-3">Profile Percentage&nbsp;&nbsp;<i class="fa fa-info-circle" title="A Profile Percentage is for an applicant is eligible for job submission or not."></i></label>  
+                			<div class="col-md-4"><input type="text" name="profilePercentage" value="${orgLocations.profilePercentage}" id="profilePercentage" onblur="validateProfilePercentage()" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="Profile Percentage">
+                			<div class="row mxrateerror" id="profilePercentageValidateId">
+                				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
+             			    </div>
+             			    </div>
+                			</div>
+                			        
+                			<div class="clearfix"></div>
+                			 <div class="pull-right">
+								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+							</div> 
+                			<div class="clearfix"></div> 
+                			</form>
+                			
+            			</div>
+            			
+            			<sec:authorize access="hasRole('ROLE_SHARE_PROFILE')">
+            			<div class="tab-content panel-body">
+                			<h4>Marketplace</h4>
+                			<div class="form-group">
+	                			<label class="col-md-3">Display company name on marketplace profiles</label>  
+	                			<div class="col-md-4">
+	                				<label class="switch" style="position:relative; top:5px;">
+	                				 <input onclick="changeMarketplaceCompanyNameConfig(this)" type="checkbox"  ${orgLocations.showCompanyNameInMarkeplace == "Y"? 'checked' : ''}>
+	                				 <span class="slider round"></span>
+									</label>
+	                			</div>
+                			</div>
+                		</div>
+            			</sec:authorize>
                         <div class="tab-content panel-body">
                             <div class="clearfix mb">
                                 <div class="pull-left">
@@ -825,25 +902,37 @@ function cancelOrgImg(){
 							</form>
             			</div>
            			      <!-- Recommendations Configure ends -->     		
+           			      
+           			      
+           			      <!-- Probation Period Starts -->
+           			      
+           			       <div class="tab-content panel-body">
+                            <div class="clearfix mb">
+                                <div class="pull-left">
+                                    <h4 id="probationPer">Probation Period</h4>
+                                    <div id="probationPeriodLoading"></div>
+                                </div>
+                            </div>
+                			<div id="probationPeriodDiv"></div>            
+            			</div>
+            			
+            			<!-- Probation Period Ends -->
            			           			
         			</div>
     			</div>
     			
     			<div id="whiteListIp" class="tab-pane fade form-horizontal"> 
                 <!-- Tab for Profile setting-area -->
-                    <div class="accountsettings-tab">
-                        <div class="tab-content panel-body">
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
                         <div id="whiteListLoading"></div>
-                            <div class="clearfix mb">
-                                <div class="pull-left">
-                                    <h4 id="whiteListHeading">Whitelist Ips</h4>
-                                </div>
-                                <div class="pull-right">
-                                	<button data-toggle="modal" type="button" class="btn btn-primary" onClick="addipPopup();"><i class="fa fa-plus paddingRight"></i>Add IP</button>
-                                </div>
+                            <div class="reportHead reportHeadDataTab clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn" onClick="addipPopup();" href="javascript:void(0)">+ IP</a></li>
+                                </ul>
                              </div>
                             
-                            <div class="clients_wrap_table datatable_filter mt40">
+                            <div class="clients_wrap_table datatable_filter dataSeaTop">
                 				<div id="whiteListIpsDiv"></div>   
                 			</div>
                 			
@@ -851,11 +940,44 @@ function cancelOrgImg(){
             			</div>
             			
         			</div>
-        			
+        			<div id="paymentAccount" class="tab-pane fade form-horizontal"> 
+                <!-- Tab for Profile setting-area -->
+                    
+                    <div class="accountsettings-tab noMar">
+                        <div class="tab-content panel-body noPad noBor">
+                        <div id="paymentAccountLoading"></div>
+                        
+                            <div class="reportHead clearfix">
+                                <ul class="pull-right list-unstyled list-inline">
+                                	<li><a class="action newAdBtn mr5" onClick="showPaymentAccountPopup();" href="javascript:void(0)">+ Payment Account</a></li>
+                                </ul>
+                             </div>                        
+                            
+                            <div class="require_wrap_table datatable_filter">
+                				<div id="payemntAccountsDiv"></div>   
+                			</div>
+                			
+                			</div>         
+            			</div>
+            			
+        			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
+   			 <jsp:include page="locationInformationDetails.jsp" />
+     		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
      		 <jsp:include page="orglocationBankingDetails.jsp" />
+     		 </c:if>
+     		 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+     		 <jsp:include page="orglocationIndiaBankingDetails.jsp" />
+     		 </c:if> --%>
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
+     		 <jsp:include page="googleApiLocation.jsp" />
+     		 
+   			<jsp:include page="emailNontificationConfigure.jsp" />
+
+     		 <%--  <jsp:include page="emailNontificationConfigure.jsp" /> --%>
+
+     		 
      		 
     			</div>
      		
@@ -869,44 +991,140 @@ function cancelOrgImg(){
   </section>
   <!-- Tab for Profile setting-area starts Ends -->
   <!-- Content Area Ends-->
-
+  <style>
+      .clients_wrap_table.table1 tr td div { position: unset !important; }
+      </style>
 </body>
-<<div class="comMask"></div>
-<!-- Add IP Modal -->
-  <div class="modal addipPopup-modal" id="addipPopup" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closeWhiteListIp();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add IP</h4>
-        </div>
-        <div class="modal-body">
-        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
-        <input type="hidden" name="id" id="whiteListId"/>
-         <div class="form-group clearfix minHeight40" id="fromIpAddressDiv">
-           <label class="col-md-3">From IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
-           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
+<!-- Add Payment Account Modal -->
+  <div class="popupWrapMid" id="paymentAccountPopup" role="dialog">
+  	<div class="popupHead">Add/Edit Payment Account <i class="closePop pull-right popClose" onclick="closePaymentAccountPopup();"></i></div>
+  
+        <div class="popupContent popupContentFixed">
+        <form:form class="clearfix"  id="paymentaccount_form"  name="paymentaccount_form" method="POST" >
+         <inpu type="hidden" id='paymentAccountId' value='0'/>
+         <input type="hidden" name="id" id="paymentAccountId"/>
+          <div class="col-md-6 minHe">
+           <label class="noPad">Account Type <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
+                    <option value="0">--Select Location--</option>
+                    <option value="SAVINGS" data-type="1">Savings</option>
+                    <option value="CHECKING" data-type="2">Checking</option>
+                    <option value="WEPAY" data-type="3">WePay</option>
+                </select>
+           </div>
+          </div>
+           
+         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Location <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <select id="paymentAccountLocation" name="paymentAccountLocation" class="form-control" data-required="required">
+                    <option>Select Location</option>
+                </select>
+           </div>
+         </div>
+           
+        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="noPad">Bank Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
            </div>
            </div>
-           <div class="form-group clearfix minHeight40" id="toIpAddressDiv">
-           <label class="col-md-3">To IP<span class="text-danger">&nbsp;*</span></label>
-           <div class="col-md-9">
-           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
+          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+           <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
+          <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}"> 
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
+	           <div class="clearfix">
+	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
+	           </div>
+           </div>
+           
+           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
+              <label class="noPad">MICR Code <b class="valStar">*</b></label>
+	           <div class="clearfix">
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
+	           </div>
+           </div>
+           </c:if>
+        
+        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
+           <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+              <label class="noPad">Routing Number <b class="valStar">*</b></label>
+              <div class="clearfix">
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+           </div>
+           </c:if>
+           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+              <label class="noPad">IFSC Code <b class="valStar">*</b></label>
+              <div class="clearfix">
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFSC Code" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+           </div>
+           </c:if>
+           
+           </div>
+           <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
+           <label class="noPad">Email <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
+           </div>
+           </div>
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">First Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
+           </div>
+           </div>
+        
+        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
+           <label class="noPad">Last Name <b class="valStar">*</b></label>
+           <div class="clearfix">
+                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
+           </div>
+           </div>
+        
         
         </form:form>
           
         </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+          <button type="button" class="slBtn md popClose" onClick="closePaymentAccountPopup();">Cancel</button>
         </div>
-      </div>
-    </div>
+  </div>
+  
+<!-- Add IP Modal -->
+  <div class="popupWrap" id="addipPopup" role="dialog">
+	<div class="popupHead">Add IP <i class="closePop pull-right close" onclick="closeWhiteListIp();"></i></div>
+          
+
+        <div class="popupContent">
+        <form:form class="clearfix"  id="whiteListIp_form"  name="whiteListIp_form" method="GET" >
+        <input type="hidden" name="id" id="whiteListId"/>
+         <div class="clearfix mb" id="fromIpAddressDiv">
+           <label class="noPad">From IP <b class="valStar">*</b></label>
+           <div class="clearfix">
+           		<input type="text" id="fromIpAddress" name="fromIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('fromIpAddr');">
+           </div>
+           </div>
+           <div class="clearfix mb" id="toIpAddressDiv">
+           <label class="noPad">To IP <b class="valStar">*</b></label>
+           <div class="clearfix">
+           		<input type="text" id="toIpAddress" name="toIpAddress" class="form-control" onblur="ValidateIPaddress(); validateDuplicateIpAddress('toIpAddr');">
+           </div>
+           </div>
+        </form:form>
+        </div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" id="saveWhiteListbtn" onclick="saveWhiteListIps();" >Save</button>
+          <input type="button" value="Cancel" class="slBtn md" onclick="closeWhiteListIp();">
+        </div>
   </div>
   <!-- Add IP Modal -->
 
@@ -914,6 +1132,80 @@ function cancelOrgImg(){
 $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
+</script>
+
+<script>
+function validateProfilePercentage(){
+	var profilePercentage = $('#profilePercentage').val();
+	
+	 if(profilePercentage > 100 || profilePercentage < 0){
+		 if(profilePercentage < 0){
+			    $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not in negitive</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not in negitive'); 
+		 }else{
+			 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#profilePercentageValidation').attr('class','error signin_fild');
+				$("input#profilePercentageValidation").after("<p class='jquery_form_error_message'>Profile percentage should not more than 100</p>");
+				$('input#profilePercentageValidation').attr('record-exist','yes');
+				$('input#profilePercentageValidation').attr('record-exist-errorMsg','Profile percentage should not more than 100'); 
+		 }
+	 }else{
+		 
+	     $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove(); 
+    	 $('input#profilePercentageValidation').removeAttr( "class record-exist record-exist-errormsg");
+		 $('#profilePercentageValidateId').find('p.jquery_form_error_message').remove();
+	 }
+}
+
+
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   };  
+         $('body').on('submit', '#profilePercentage_form', function(e){
+        	  if ($(this).validate(false, validationSettings)){
+        		e.preventDefault();
+        		var formData = getFormData("profilePercentage_form");
+         		var sourceleadUrl ='${sourceleadUrl}';
+         		var profilePercentage = document.getElementById("profilePercentage").value;
+         		 	
+         		 $.ajax({
+       				type : "POST",
+       				url : sourceleadUrl+"/saveProfilePercentage?${_csrf.parameterName}=${_csrf.token}&profilePercentage="+profilePercentage,
+       				success : function(result) {
+       					
+       					if (result && result.response === "INVALID_DATA") {
+                            showError(result.responseMessage);
+                        }else if (result.response === "AWKWARD") {
+    		        	    location.href = "/errorPage";
+    		        	} else if (result.response === "SUCCESS") {
+    		        		$('#successMsgDiv').html("Profile Percentage Updated Successfully");
+    		        		 $("#profilePercentageSelector").fadeIn(200);
+    		        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+    		        	} else if (result.indexOf('Sign In') !== -1) {
+    		        		location.replace(sourceleadUrl);
+    		        	} else {
+    		        	    showError("Operation failed, please try again");
+    		        	}
+       				},
+       			});    
+                
+            	    return true;
+            }
+            else{
+            	return false;	
+               }
+            });
+            
+         $('body').on('blur', '#profilePercentage_form', function() {
+     		$("#profilePercentage_form").showHelpOnFocus();
+     		$("#profilePercentage_form").validateOnBlur(false, validationSettings);
+     	});
 </script>
 
 <script>
@@ -950,10 +1242,10 @@ $(function() {
                 applyCareerPageCode(data.split(';')[1]);
                 applyCareerPageStatusEvent();
             } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
-                alert("Session timedout");
+                showError("Session timedout");
                 window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
             } else {
-                alert("Operation failed, please try again");
+                showError("Operation failed, please try again");
             }
         });
     });
@@ -980,10 +1272,10 @@ function applyCareerPageStatusEvent() {
                 else
                     $("#changeCareerPageKeyStatus").removeProp('checked');
             } else  if(data && (data === "logout" || data.indexOf("Sign In") !== -1)) {
-                alert("Session timedout");
+                showError("Session timedout");
                 window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
             } else {
-                alert("Operation failed, please try again");
+                showError("Operation failed, please try again");
             }
         });
     });
@@ -1037,6 +1329,8 @@ function closeWhiteListIp(){
 	$("#fromIpAddress").val("");
 	 $("#toIpAddress").val("");
 	 $("#whiteListId").val("");
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();	 
 }
 
 function saveWhiteListIps(){
@@ -1057,15 +1351,28 @@ function saveWhiteListIps(){
 			      type : "GET",
 			      url : url,
 			               
-			       success :function(data) {
-			       if(data == "Success"){
+			       success :function(result) {
+			    		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	      	    		    showError(result.responseMessage);
+	      	    		    $("#loading").removeAttr('style');
+	      	    		}
+			    		else if(result.response === "AWKWARD"){
+			        		 location.href = "/errorPage";
+			        	}
+			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
 			    	   $("#toIpAddress").val("");
-			    	   $(".modal.addipPopup-modal").fadeOut();
-			    	   $(".comMask").fadeOut();
+			    	   $("#addipPopup").fadeOut(100);
+			    	   $(".mask").hide();
 			    	   closeWhiteListIp();
 			    	   getWhiteListIps();
 			       	} 
+			    		else if (result.indexOf('Sign In') !== -1) {
+	      					location.replace(sourceleadUrl);
+	      				} else {
+	      				    showError("Operation failed, please try again");
+	      				    $("#loading").removeAttr('style');
+	      				}
 			      },
 			  }); 
 		
@@ -1087,6 +1394,261 @@ function saveWhiteListIps(){
 </script>
 
 <script>
+    function savePaymentAccount() {
+    	var countryName = '${SourceLeadWeb_orgLocations.country}';
+        var data =  {};
+        var val = $("#paymentAccountType").val();
+        var flag = false;
+        if(validateSelect('paymentAccountType', 'Account Type')) {
+            if(val === "WEPAY") {
+                if(validateEmail('paymentAccountEmail')
+                        && validate('paymentAccountFirstName', "First Name")
+                        && validate('paymentAccountLastName', "Last Name")
+                        && validateSelect("paymentAccountLocation", 'Location')) {
+                    data["email"] = $("#paymentAccountEmail").val();
+                    flag = true;
+                }
+            } else {
+            	if( countryName =="India"){
+            		if(validate('paymentAccountBankName', "Bank Name")
+                            && validate('paymentAccountNumber', "Account Number")
+                            && validate('paymentBSRNumber', "BSR Number")
+                            && validate('paymentMICRCode', "MICR Code")
+                            && validate('paymentAccountRoutingNumber', "IFSC Code")
+                            && validate('paymentAccountFirstName', "First Name")
+                            && validate('paymentAccountLastName', "Last Name")
+                            && validateSelect("paymentAccountLocation", 'Location')) {
+                    	data["micrCode"] = $("#paymentMICRCode").val().trim();
+                    	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
+                        data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+                        data["bankName"] = $("#paymentAccountBankName").val().trim();
+                        data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+                        flag = true;
+                    }
+            	}else{
+            		if(validate('paymentAccountBankName', "Bank Name")
+                            && validate('paymentAccountNumber', "Account Number")
+                            && validate('paymentAccountRoutingNumber', "Routing Number")
+                            && validate('paymentAccountFirstName', "First Name")
+                            && validate('paymentAccountLastName', "Last Name")
+                            && validateSelect("paymentAccountLocation", 'Location')) {
+                        data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+                        data["bankName"] = $("#paymentAccountBankName").val().trim();
+                        data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+                        flag = true;
+                    }
+            	}
+                
+            }
+            data["firstName"] = $("#paymentAccountFirstName").val().trim();
+            data["lastName"] = $("#paymentAccountLastName").val().trim();
+            data["orgLocationId"] = $("#paymentAccountLocation").val();
+            data["accountType"] = val;
+            data["id"] = $("#paymentAccountId").val();
+        }
+        if(flag) {
+        	$("#savePaymentButton").attr("disabled", "disabled");
+            $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+                showError(data.responseMessage);
+                if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+                    closePaymentAccountPopup(val);
+                    $("#savePaymentButton").removeAttr("disabled", "disabled");
+                }
+                getPaymentAccounts(true);
+            });
+        }
+    }
+function getPaymentAccounts(flag) {
+    if(!flag) {
+        var idd = ${SourceLeadWeb_orgLocationId};
+        $("#paymentAccountLocation").empty();
+        $("#paymentAccountLocation").append("<option value='0'>Select Location</option>");
+        $.post(sourceleadUrl+"/org-location-list", {}, function(data) {
+            if(data && data.response === "SUCCESS") {
+                for (var e in data.data) {
+                    var report= data.data[e];
+                    $("#paymentAccountLocation").append("<option data-country='"+report.country+"' "+(idd === report.id ? "selected='selected'" : "")+" value='"+report.id+"'>"+report.orgLocationName+"</option>");
+                }
+            }
+        });
+    }
+    $.post(sourceleadUrl+"/payment-account-list", {}, function(data) {
+        if(data && data.response === "SUCCESS") {
+            $("#payemntAccountsDiv").empty();
+            var result = '';
+            result = result + '<table id="payemntAccountsTable" class="display" cellspacing="0" width="100%" >';
+            result = result + ' <thead>';
+            result = result + '   <tr>';
+            result = result + '    <th>Type</th>';
+            result = result + '    <th>Email</th>';
+            result = result + '    <th>Bank Name</th>';
+            result = result + '    <th>Account Number</th>';
+            result = result + '    <th>Routing Number</th>';
+            result = result + '    <th>First Name</th>';
+            result = result + '    <th>Last Name</th>';
+            result = result + '    <th>Location</th>';
+            result = result + '    <th>Default</th>';
+            result = result + '    <th>Active</th>';
+            result = result + '    <th></th>';
+            result = result + '   </tr>';
+            result = result + '	</thead>';
+            result = result + '	<tbody>';
+            
+            for (var e in data.data) {
+                var report= data.data[e];
+                result = result + '<tr>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.accountType ? report.accountType : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.email ? report.email : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.bankName ? report.bankName : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.accountNumber ? report.accountNumber : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.routingNumber ? report.routingNumber : "--")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.firstName ? report.firstName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-75">'+(report.lastName ? report.lastName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-125">'+(report.orgLocationName ? report.orgLocationName : "")+'</div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeDefaultPaymentAccount(this, '+report.id+')" type="checkbox" '+(report.defaultAccount ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
+                result = result + '</td>';
+                result = result + '<td>';
+                result = result + '<div class="tblminwidth-50"><div class="toggle-button"><label class="switch" style="top: 5px;"><input onclick="changeActivePaymentAccount('+report.id+')" type="checkbox" '+(!report.disabled ? 'checked' : '')+'/> <div class="slider round"></div> </label> </div></div>';
+                result = result + '</td>';
+                
+                if(report.accountType !== 'WEPAY') {
+                    result = result + '<td>';
+                    result = result + '<div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editPaymentAccount(\''+report.accountType+'\','+ report.id+','+report.orgLocationId+',\''+report.firstName+'\',\''+report.lastName+'\',\''+report.accountNumber+'\',\''+report.routingNumber+'\',\''+report.bankName+'\',\''+report.bsrNumber+'\',\''+report.micrCode+'\')">Edit</a></div>';
+                    result = result + '</td>';
+                } else {
+                    result = result + '<td>';
+                    result = result + '<div class="tblminwidth-50">'+(report.access ? "" : "<a href='javascript:void(0)' onclick='grantWePayAccess("+report.id+")'>Resend Mail</a>")+'</div>';
+                    result = result + '</td>';
+                    
+                }
+                result = result + '</tr>';
+            }
+            result = result + '	</tbody>';
+            result = result + '</table>';
+            $("#payemntAccountsDiv").append(result);
+            $('#payemntAccountsTable').DataTable({ 
+                        "scrollCollapse": false,
+                "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+                "bLengthChange": true,
+                "bDestroy": true,
+                "ordering": true,
+                "oLanguage": {
+                        "sSearch": "",
+                         "sZeroRecords": "", "sEmptyTable": ""
+                }
+            });
+        } else if(data && data.response === "SESSION_TIMEDOUT") {
+            showError("Session timedout");
+            window.setTimeout('location.href='+sourceleadLoginUrl, 3000);
+        } else if(data) {
+            showError(data.responseMessage);
+        } else {
+            showError("Operation failed, please try again");
+        }
+    });
+    
+}
+
+function grantWePayAccess(id) {
+    $.post(sourceleadUrl+"/resend-wepay-mail", {id: id}, function(data) {
+        showError(data.responseMessage);
+    });
+}
+
+function changeDefaultPaymentAccount(ele, id) {
+    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+        showError(data.responseMessage);
+        getPaymentAccounts();
+    });
+}
+function changeActivePaymentAccount(id){
+	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
+	        showError(data.responseMessage);
+	        getPaymentAccounts();
+	    });
+}
+
+function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
+	$("[data-fieldtype=account]").hide();
+	showOrHidePaymentFormFields(type);
+	$("#paymentAccountPopup").fadeIn(100);
+	$(".mask").show();
+	$("#paymentAccountFirstName").val(firstName);
+	$("#paymentAccountBankName").val(bankName);
+	$("#paymentAccountLastName").val(lastName);
+	$("#paymentAccountLocation").val(locationId);
+	$("#paymentAccountNumber").val(accountNumber);
+	$("#paymentBSRNumber").val(bsrNumber);
+	$("#paymentMICRCode").val(micrCode);
+	$("#paymentAccountRoutingNumber").val(routingNumber);
+	$("#paymentAccountId").val(id);
+}
+        
+function showPaymentAccountPopup() {
+    $("#paymentAccountId").val('0');
+    $("[data-fieldtype=account]").hide();
+    showOrHidePaymentFormFields('SAVINGS');
+    $("#paymentAccountPopup").fadeIn(100);
+    $(".mask").show();
+    $("input[id*=paymentAccount]").val("");
+    $('#paymentaccount_form')[0].reset();
+}
+function showOrHidePaymentFormFields(type) {
+    $("#paymentAccountLocation").val('0');
+    $("#paymentAccountLocation option").removeProp('disabled');
+    if(type === "WEPAY") {
+        $("#paymentAccountLocation option").prop('disabled', 'disabled');
+        $("#paymentAccountLocation option").each(function() {
+            if($(this).data('country') === "USA" || $(this).data('country') === "United States"
+                    ||  $(this).attr('value') === '0' ||  $(this).attr('value') === 0)
+                $(this).removeProp('disabled');        
+        });
+    }
+    $("[data-fieldtype=account]").hide();
+    $("#paymentAccountType").val(type);
+    var id = $("#paymentAccountType option[value="+type+"]").data('type');
+    $("[data-fieldtype=account]").each(function() {
+        var val = $(this).data('fieldfor');
+        if(typeof val === "number") {
+            if(parseInt(val) === parseInt(id)) 
+                $(this).show();
+        } else {
+            console.log(val);
+            val = val.split(",");
+            for(var e in val) {
+                if(parseInt(val[e]) === parseInt(id)) {
+                    $(this).show();
+                }
+            }
+        }
+    });
+}
+function closePaymentAccountPopup(type) {
+    $("#paymentAccountPopup").fadeOut(100);
+    $(".mask").hide();
+    if(type) {
+        showOrHidePaymentFormFields('0');
+        showOrHidePaymentFormFields(type);
+        $("input[id*=paymentAccount]").val("");
+    }
+}
 function getWhiteListIps(){
 	$.ajax({
       type : "GET",
@@ -1154,8 +1716,8 @@ function editWhiteListIp(id){
 	    type: "GET",
         url: sourceleadUrl+"/editWhiteListIp?whiteListId="+id,
         success: function(data) {
-        	$(".modal.addipPopup-modal").fadeIn();
-        	$(".comMask").fadeIn();
+        	$("#addipPopup").fadeIn(100);
+        	$(".mask").show();
         	if(data.id != null && data.id != '' && data.id != 'undefined'){
         		$("#whiteListId").val(data.id);
         	}
@@ -1229,7 +1791,7 @@ var validationSettings = {
         		    e.preventDefault(); 
 	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	           		var formData = getFormData("orgSettings_form");
+	           		var formData = $($('#orgSettings_form')[0]).serialize();
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
@@ -1242,9 +1804,22 @@ var validationSettings = {
 	              	      data: formData,
 	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
-	  			        	 if((result == 'home')){
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if(result.response === "SUCCESS"){
 	  			        		location.replace(sourceleadUrl+"/orgSettings");  
-	  			        	}
+	  			        	    }
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  });
              		}
@@ -1300,7 +1875,7 @@ function configCoolingOff(){
 					result = result + '<div class="form-group">';
 					result = result + '<label class="col-md-3">Cooling Off Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="A Cooling Off Period is the time during which an applicant is disqualified from applying for Jobs, because of applied recently."></i></label>';
 					result = result + '<div class="col-md-4 select-field selectChosen">';
-					result = result + '<select  class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
+					result = result + '<select class="form-control" name="coolingOff" id="coolingOff" field-name="CoolingOff">';
 					result = result + '		<option value="'+coolingOffPeriod+'" selected>'+coolingOffPeriod+'</option>';
 					result = result + '		<option value="0 Days">0 Days</option>';
                     result = result + '		<option value="1 Week">1 Week</option>';
@@ -1598,6 +2173,13 @@ function loadSignature(){
 </script>
 
 <script>
+function resetDocument(){
+	$("documents_form").validate().resetForm();
+}
+
+function resetEmailConfguration(){
+	$("email_configuration_form").validate().resetForm();
+}
 function colourpicker(){
 	$('#cp2, #cp3').colorpicker();
 }
@@ -1762,7 +2344,6 @@ function getSignaturePreview(){
 function restoreSignature(){
 	
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to restore</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -1770,7 +2351,7 @@ function restoreSignature(){
 	result = result +"	</div>";
 	$("#restorePopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 
 }
 </script>
@@ -1778,7 +2359,7 @@ function restoreSignature(){
 <script type="text/javascript">
 function cancel(){
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
@@ -1786,7 +2367,7 @@ function cancel(){
 function restSignature(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#restorePopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".mask").hide();
 	$("#signLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	   $.ajax({
@@ -1850,7 +2431,7 @@ function loadRegisteredOrgs(){
 	 			    	email = "---"
 	 			    }
 	 				
-	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
+	       	    	result = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4 noPad'>";
 	       	    	result = result +"<div class='user-profile'>";
 	       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 	       	    	result = result +"<div class='text-center image-parent'>";
@@ -2022,84 +2603,6 @@ function getOrgLocationDetails(orgLocationId){
 	    	        
     	            result = result +'</div>';
     	            
-    	             result = result +'<div class="col-md-6">';
-	    	            
-    	            	result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 clearfix">';
-		    	        result = result +'<h5>Registered Modules</h5>';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="form-group">';
-		    	        result = result +'<div class="col-md-12 checkbox">';
-		    	        
-		    	        if(json.modulesList != null && json.modulesList != "" && json.modulesList != 'undefined' && json.modulesList.length > 0){
-		    	        	
-		    	        	 for(var i=0; i<json.modulesList.length; i++){
-				    	        	var module = json.modulesList[i];
-				    	        	
-				    	       	 result = result +'<ul class="list-unstyled pull-left">';
-			    	        	 result = result +'<li>';
-			    	        	 
-			    	        	 	if(module.id == '1'){
-			    	        	 		result = result +'<label class="mr pull-left NoPad">';
-			    	        	        result = result +'<p>'+module.moduleName+'</p>';
-			    	        	        result = result +'</label>';
-			    	        	        
-			    	        	        result = result +'<ul class="list-unstyled pull-left tree-checkbox">';
-			    	        	        if(json.subModulesList != null && json.subModulesList != "" && json.subModulesList != 'undefined' && json.subModulesList.length > 0){
-			    	        	        	for(var j=0; j<json.subModulesList.length; j++){
-			    	        	        		var subModules = json.subModulesList[j];
-			    	        	        		    result = result +'<label>';
-			    	        	        	        if(subModules.isModuleConfigured == 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" id="submodules"  checked="checked" disabled="disabled">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        if(subModules.isModuleConfigured != 'Y'){
-				    	        	        	         result = result +'<input type="checkbox" class="allsubmodules" value="'+subModules.id+'"  id="submodules"  name="submodulesList[]">';
-				    	        	        	         result = result +'<p>'+subModules.moduleName+'</p>';
-			    	        	        			} 
-			    	        	        	        result = result +'</label><br/>';
-			    	        	        	}
-			    	        	        }
-			    	        	        
-			    	        	        result = result +'</ul>';
-			    	        	 	}
-			    	        	 
-			    	        	 result = result +'</li>';
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 
-			    	        	 result = result +'<li>';
-			    	             result = result +'<label class="mr pull-left">';
-				    	             if(module.id != "1" && module.isModuleConfigured  == "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting"  checked="checked" disabled="disabled" >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             }
-				    	             
-				    	             if(module.id != "1" && module.isModuleConfigured  != "Y"){
-				    	            	 result = result +'<input type="checkbox" id="isRecruiting" value="'+module.id+'"  name="modulesList[]"  >';
-				    	            	 result = result +'<p>'+module.moduleName+'</p>';
-				    	             } 
-			    	             result = result +'</label>';
-			    	             result = result +'</li>';
-			    	        	 
-			    	        	 result = result +'</ul>';
-				    	        	
-				    	        	
-				    	        }
-		    	        }
-		    	        
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
-		    	        
-		    	        result = result +'<div class="clearfix">';
-		    	        result = result +'<div class="pull-right">';
-		    	        result = result +'<input type="button" value="Upgrade" onclick="updateModules('+orgLocationId+');" id="save_button" class="btn btn-primary mr">';
-		    	        result = result +'<input type="button" value="Cancel" class="btn btn-default" onClick="loadRegisteredOrgs();">';
-		    	        result = result +'</div>';
-		    	        result = result +'</div>';
 		    	        
     	                result = result +'</div>'; 
     	       	
@@ -2112,27 +2615,18 @@ function getOrgLocationDetails(orgLocationId){
 </script>
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	function updateModules(orgLocationId) {
 		
 			var sourceleadUrl ='${sourceleadUrl}'; 
 			
-			 var modulesList = [];
-			 $("input[name='modulesList[]']:checked").each( function (i) {
-				modulesList[i] = $(this).val();
-			});
-			 
 			
-			 var submodulesList = [];
-			 $("input[name='submodulesList[]']:checked").each( function (i) {
-				submodulesList[i] = $(this).val();
-			});
 			 
 	 	 
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
+		    	 url: sourceleadUrl+"/updateOrgModules?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId+"&submodulesList="+submodulesList+"&orgLocationId="+orgLocationId,
 		        success: function(result) {
 		        	if((result == 'success')){
 		        		loadRegisteredOrgs();
@@ -2142,7 +2636,7 @@ function getOrgLocationDetails(orgLocationId){
 		  
 	}
 
-</script>
+</script> -->
 
 
 
@@ -2159,8 +2653,8 @@ function resendInvitation(userId){
 			        success: function(result) {
 			        	$("#user"+userId).html("<i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)'  onClick='resendInvitation("+userId+");'>&nbsp;Resend</a>");
 			        	$("#loading").removeAttr("style"); 
-			        	$("#resendOrg").fadeIn(200);
-		   		        $('#resendOrg').delay(2000).fadeOut('slow');
+			        	$("#resendOrg").fadeIn(100);
+		   		        $('#resendOrg').delay(2000).fadeOut(100);
 			        },
 			    });
 		 }
@@ -2175,7 +2669,14 @@ function createOrg(){
 	$("#registeredOrgs").empty();
 	$("#registeredOrgLocationSummary").empty();
 	$("#editPrimaryUserContactDiv").empty();
-	 
+	
+	var subscribedCountries = '${subscribedCountries}';
+	var countries= [];
+	var res = subscribedCountries.split(",");
+	for(var i=0; i <res.length; i++){
+		countries.push(res[i]);
+	};
+	
 	var result = '';
 	
 	result = result +'<div class="row">';
@@ -2188,7 +2689,23 @@ function createOrg(){
 	result = result +'<span class="hidden">Company</span>';
 	result = result +'</div>';
 	result = result +'</div>';
-          
+	
+	result = result +'<div class="form-group">';
+	result = result +'<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>';
+	result = result +'<div class="col-md-9">';
+	result = result +'<div class="col-md-10 noPad">';
+	result = result +'<input id="dbaLoc" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
+	result = result +'</div>';
+	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
+             
+	result = result +'<div class="ml10">';
+	result = result +'<input id="dbaLocCheckbox" name="dbaLocCheckbox"  class="checkbox-custom" onclick="getLocDBAName();"  type="checkbox">';
+	result = result +'<label for="dbaLocCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';
+	result = result +'</div>';	
+	
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Website<span class="text-danger">&nbsp;*</span></label>';
 	            result = result +'<div class="col-md-9">';
@@ -2230,36 +2747,26 @@ function createOrg(){
 	            result = result +'<span class="hidden">Phone Number</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
+	            
+	            result = result +'<div class="form-group" >';
+	        	result = result +'<label class="col-md-3">Org Short Code<span class="text-danger">*</span></label>';
+	        	result = result +'<div class="col-md-9">';
+	        	result = result +'<div id="generatedShortCodeIdDiv">';
+	        	result = result +'<input type="text"  class="form-control" name="generatedUserId" id="generatedShortCodeId" field-name="Org Short Code" style="text-transform:uppercase" data-validation="required validate_length length1-4"  onkeyup="validateOrgLocationShortCode();" maxlength="4" />';
+	            result = result +'<span class="hidden">Short Code</span>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	result = result +'</div>';
+	        	
+	        	
+	        	result = result +'<div class="form-group">';
+	            result = result +'<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>';
+	            result = result +'<div class="col-md-9" id="averageLocWorkingHoursDiv">';
+	            result = result +'<input type="text" class="form-control" onblur="validateWorkingHours()" id="averageLocWorkingHours" name="averageWorkingHours" maxlength="2" field-name="Working Hours" data-validation="required validate_int" />';
+	            result = result +'<span class="hidden">Working Hours</span>';
+	            result = result +'</div>';
+	            result = result +'</div>';
           
-	            result = result +'<div class="form-group">';
-	            result = result +'<label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>';
-	            result = result +'<div class="col-md-9 checkBox">';
-	            result = result +'<div class="clearfix reMar">';
-	            result = result +'<c:forEach var="module" items="${modulesList}">';
-	            result = result +'<ul class="list-unstyled pull-left">';
-	            result = result +'<li>';
-	            result = result +'<label class="mr pull-left">';
-	            result = result +'<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}';
-	            result = result +'</label>';
-	            result = result +'<ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">';
-	            result = result +'<li>';
-	            result = result +'<c:forEach var="submodules" items="${requirementSubModulesList}">';
-	            result = result +'<label>';
-	            result = result +'<input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >';
-	            result = result +'${submodules.moduleName}';
-	            result = result +'</label><br/>';
-	            result = result +'</c:forEach>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</li>';
-	            result = result +'</ul>';
-	            result = result +'</c:forEach>';
-	            result = result +'</div>';
-	            result = result +'<p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>';
-	            result = result +'<input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/>'; 			    
-	            result = result +'</div>';
-	            result = result +'</div>'; 
-        
         
 	            result = result +'</div>';
                                  
@@ -2269,7 +2776,7 @@ function createOrg(){
 				result = result +' 			<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>';
 				result = result +' 			 <div class="col-md-9" id="locationField">';
 				result = result +' 		          <div class="positionRelative">';
-				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="initLocationAuto(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\'orgSetLatitude\',\'orgSetLongitude\',\'invite\',\'addressId\');" data-validation="required"></input>';
+				result = result +' 			          <input class="form-control positionRelative" id="orgSetLocation" name="location" placeholder="Enter Addres"  type="text" field-name="Location" onclick="orgSubscriptionApiLocation(\'orgSetLocation\',\'orgSetCountry\',\'orgSetState\',\'orgSetCity\',\'orgSetZipCode\',\''+countries+'\',\'addressId\');" data-validation="required"></input>';
 				result = result +' 			          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="addOrgRefreshGoogleApiLocation();"></i>';
 				result = result +' 			        </div>';
 				result = result +' 	          </div>';
@@ -2308,20 +2815,15 @@ function createOrg(){
 				result = result +'       <div class="form-group" id="errCoutryMsg">';
 				result = result +'         <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>';
 				result = result +'         <div class="col-md-9">';
-			 	 result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
+			 	result = result + '   <select class="form-control chosen-select" name="country" id="orgSetCountry" field-name="Country" data-placeholder="Select Country" data-validation="required" onchange="changeCountry();">';
 			 	result = result + '       <option value="">Select Country</option>';
-				result = result + '       <option >Australia</option>';
-				result = result + '       <option >France</option>';
-				result = result + '       <option >India</option>';
-				result = result + '       <option >Singapore</option>';
-				result = result + '       <option >United Kingdom</option>';
-				result = result + '       <option >United States</option>'; 
+			 	result = result +'		<c:forEach var="subscibedCountries" items="${orgSubscribedCountriesList}">';
+			 	result = result + '       <option value="${subscibedCountries}">${subscibedCountries}</option>';
+		        result = result +'		</c:forEach>';
                 result = result + '    </select>';
 				result = result +'         </div>';
 				result = result +'       </div>';
 				
-						        
-	          
      
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Time Zone<span class="text-danger">&nbsp;*</span></label>';
@@ -2337,7 +2839,6 @@ function createOrg(){
 	            result = result +'<div class="col-md-9">';
 	            result = result +'<select class="chosen-select form-control" data-placeholder="Date Format" field-name="Date Format" data-validation="required" id="dateFormat" name="dateFormat">';
 	            result = result +'</select>';
-	            //result = result +'<span class="hidden">Time Zone</span>';
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
@@ -2885,23 +3386,32 @@ function validatePrimaryUserEmail(){
 		   }; 
 	 if ($('#editPrimaryUser_form').validate(false, validationSettings)){ 
 		 
-		 var frm = $('#editPrimaryUser_form').serializeFormJSON();
-         var con = JSON.stringify(frm);
-         con = con.replace(/[{}]/g, "");
-         var jsonData = encodeURIComponent(con);
          var sourceleadUrl ='${sourceleadUrl}';
-         
+         var formData = getFormData("editPrimaryUser_form");
          $("#editPrimaryUserLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           
           $.ajax({
              type: "POST",
-             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId+"&json="+jsonData,
-             success: function(data) {
-                 if(data == "success"){
-                	 $("#editPrimaryUserLoading").removeAttr("style");
-                	 getOrgLocationDetails(orgLocationId);
-                 }
-                 
+             data: formData,
+             url: sourceleadUrl+"/editOrgPrimaryUser?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgLocationId="+orgLocationId,
+             success: function(result) {
+            		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+    	    		    showError(result.responseMessage);
+    	    		    $("#editPrimaryUserLoading").removeAttr('style');
+    	    		}
+              		else if (result.response === "AWKWARD") {
+    	    		    location.href = "/errorPage";
+    	    		}
+              		else if(result.response === "SUCCESS"){
+              			 $("#editPrimaryUserLoading").removeAttr("style");
+                    	 getOrgLocationDetails(orgLocationId); 
+		        	    }
+              		else if (result.indexOf('Sign In') !== -1) {
+    					location.replace(sourceleadUrl);
+    				} else {
+    				    showError("Operation failed, please try again");
+    				    $("#editPrimaryUserLoading").removeAttr('style');
+    				}
              }
              });  
          
@@ -2934,37 +3444,35 @@ var validationSettings = {
         	
          		var sourceleadUrl ='${sourceleadUrl}';
          		var formData = getFormData("createOrg_form");
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
          		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		
          		$("#regLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	$.ajax({
           	      type: "POST",
           	      data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
+                	  url: sourceleadUrl+"/companyLocationRegistration?${_csrf.parameterName}=${_csrf.token}",
                 			  
                 			  
                   	success: function(result) {
-			        	if((result == 'orgList')){
-			        		$("#regLoading").removeAttr('style');
-			        		loadRegisteredOrgs();
-			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#regLoading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
-			        		showError("Invalid data");
-			        		$("#regLoading").removeAttr('style');
-			        	}
-			        	
+                  		
+                  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        	    		    showError(result.responseMessage);
+        	    		    $("#regLoading").removeAttr('style');
+        	    		}
+                  		else if (result.response === "AWKWARD") {
+        	    		    location.href = "/errorPage";
+        	    		}
+                  		else if(result.response === "SUCCESS"){
+                  		   $("#regLoading").removeAttr('style');
+                  			loadRegisteredOrgs();  
+			        	    }
+                  		else if (result.indexOf('Sign In') !== -1) {
+        					location.replace(sourceleadUrl);
+        				} else {
+        				    showError("Operation failed, please try again");
+        				    $("#regLoading").removeAttr('style');
+        				}
+                  		
 			        },  
                });  
                 
@@ -3015,24 +3523,77 @@ function validateOrgShortCode(){
 		        }
 		 }); 
 }
+
+function validateOrgLocationShortCode(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocShortId = $("#generatedShortCodeId").val();
+	$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		  $.ajax({
+		    	type: "POST",
+		    	url : sourceleadUrl+"/validateOrgShortCode?${_csrf.parameterName}=${_csrf.token}&orgShortId="+orgLocShortId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		$('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		$("input#generatedShortCodeId").parent().after("<p class='jquery_form_error_message'><span>Org Short Code Already Exists !!!</span>");
+		        		$("#register_button").attr("disabled","disabled");
+		        		
+		        	}else{
+		        		 $('#generatedShortCodeIdDiv').parent().find('p.jquery_form_error_message').remove();
+		        		 $("#register_button").removeAttr("disabled","disabled");
+		        	}
+		        }
+		 }); 
+}
+
+
 $(function(){
 	$("#generatedUserId").keypress(function (event) {
         return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
     });
 });
+
+
+$(function(){
+	$("#generatedShortCodeId").keypress(function (event) {
+        return event.key.length > 1 || event.ctrlKey || !!event.key.match(/[a-zA-Z]/);
+    });
+});
+
 $(function() {
 	  $('#averageWorkingHoursDiv').on('keydown', '#averageWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
 });
+
 $(function(){
     $("#averageWorkingHours").keyup(function(event){
         var ew = $("#averageWorkingHours").val();
         $('#averageWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
         if(ew > 24){
-        	$("#averageWorkingHours").val('');
+//         	$("#averageWorkingHours").val('');
         	$("input#averageWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+        	$('#averageWorkingHours').removeAttr('data-validation');
+        	$("#save_button").attr("disabled","true");
+        }else{
+        	$("#save_button").removeAttr("disabled","false");
         }
+        
     });
 });
+
+$(function() {
+	  $('#averageLocWorkingHoursDiv').on('keydown', '#averageLocWorkingHours', function(e){-1!==$.inArray(e.keyCode,[46,8,9,27,13,110,190])||/65|67|86|88/.test(e.keyCode)&&(!0===e.ctrlKey||!0===e.metaKey)||35<=e.keyCode&&40>=e.keyCode||(e.shiftKey||48>e.keyCode||57<e.keyCode)&&(96>e.keyCode||105<e.keyCode)&&e.preventDefault()});
+});
+
+function validateWorkingHours(){
+      var ew = $("#averageLocWorkingHours").val();
+      $('#averageLocWorkingHoursDiv').parent().find('p.jquery_form_error_message').remove(); 
+      if(ew > 24){
+      	$("input#averageLocWorkingHours").parent().after("<p class='jquery_form_error_message'><span>Average Working Hours should be less then or equal to 24</span>");
+      	$("#register_button").attr("disabled","true");
+      }else{
+    	  $("#register_button").removeAttr("disabled","false");
+      }
+}
+
 
 </script>
 
@@ -3046,6 +3607,20 @@ function getDBAName(){
 		 }
      }else{
     	 $("#dba").val('');
+     } 
+}
+</script>
+
+
+<script>
+function getLocDBAName(){
+	 if (document.getElementById('dbaLocCheckbox').checked) {
+		 var companyName = document.getElementById("companyName").value;
+		 if(companyName != null && companyName != '' && companyName != 'undefined'){
+			$("#dbaLoc").val(companyName); 
+		 }
+     }else{
+    	 $("#dbaLoc").val('');
      } 
 }
 </script>
@@ -3215,13 +3790,13 @@ function addipPopup(){
 	$('#toIpAddressDiv').val("");
 	$('#fromIpAddressDiv').find('p.jquery_form_error_message').remove();
 	$('#toIpAddressDiv').find('p.jquery_form_error_message').remove();
-	$(".modal.addipPopup-modal").fadeIn();
-	$(".comMask").fadeIn();
+	$("#addipPopup").fadeIn(100);
+	$(".mask").show();
 }
 $(function(){
 $(".close").click(function(){
-	$(".modal.addipPopup-modal").fadeOut();
-	$(".comMask").fadeOut();
+	$("#addipPopup").fadeOut(100);
+	$(".mask").hide();
 });
 })
 </script>
@@ -3292,19 +3867,18 @@ function validateDuplicateIpAddress(fromType){
 <script>
 function deleteWhiteListIp(whiteListIpId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteIP(\''+whiteListIpId+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 
 function cancelTermination(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").hide();
 }
 
 function deleteIP(id){
@@ -3313,7 +3887,7 @@ function deleteIP(id){
 				    url: sourceleadUrl+"/deleteIP?"+tokenParamName+"="+tokenValue+"&id="+id,
 		   		    success: function(data) {
 		   		    	$("#popUp").empty();
-		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	$(".mask").hide();
 		   			 getWhiteListIps()
 		   		    }
 			     });
@@ -3380,10 +3954,168 @@ function financialYear(){
 
 <script>
 	function msgFadein() {
-		$("#selector1").fadeIn(200);
-        $('#selector1').delay(2000).fadeOut('slow');
+		$("#selector1").fadeIn(100);
+        $('#selector1').delay(2000).fadeOut(100);
 	}
+function changeMarketplaceCompanyNameConfig(ele) {
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl+"/configShowCompanyNameInMarkeplace?${_csrf.parameterName}=${_csrf.token}&showCompnayName="+$(ele).is(":checked"),
+			success : function(result) {
+				if (result && result.response === "INVALID_DATA") {
+                showError(result.responseMessage);
+            }else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		$('#successMsgDiv').html("Display company name on marketplace updated successfully");
+        		 $("#profilePercentageSelector").fadeIn(200).css({"width":"485px"});
+        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+			},
+		});    
+}
 </script> 
+
+
+
+
+<script>
+function getProbationPeriod(){
+	
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getProbationData?${_csrf.parameterName}=${_csrf.token}", 
+	        success: function(data) {
+	        	
+					showOrgprobationData(data);
+	        }    
+	 	});
+}
+
+function showOrgprobationData(data){
+	var result = "";
+	result = result + '<form id="probation_form"  name="probation_form" method="post">'; 
+	
+	result = result + '<div class="form-group">';
+	result = result + '<label class="col-md-3">Probation Period &nbsp;&nbsp;<i class="fa fa-info-circle" title="This will represent the probation period for a associate in organisation."></i></label>';
+	result = result + '<div class="col-md-4 select-field selectChosen">';
+	result = result + '<select class="form-control chosen-select" id="probationPeriod" name="probationPeriod" field-name="Probation Period" data-validation = "required">';
+	
+	result = result + '<option value="">--Select Probation Period--</option>';
+	result = result + ' <option value="15 Days" '+(data.probationPeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
+	result = result + ' <option value="30 Days" '+(data.probationPeriod == "30 Days" ? "selected" : '') +'>1 Month</option>';
+	result = result + '	<option  value="60 Days" '+ (data.probationPeriod == "60 Days" ? "selected" : '') +'>2 Months</option>';
+	result = result + ' <option value="90 Days" '+(data.probationPeriod == "90 Days" ? "selected" : '') +'>3 Months</option>';
+	
+	result = result + ' </select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+	
+	result = result + '<div class="form-group">';
+	result = result + '<label class="col-md-3">No of Days &nbsp;&nbsp;</label>  ';
+	result = result + '<div class="col-md-4"><input type="text" name="noOfDays" value="'+data.noOfDays+'" id="noOfDays" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="No of Days">';
+		result = result + '</div>';
+	result = result + '</div> ';
+	
+	
+	result = result + '<div class="pull-right">';
+	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr">';
+	result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+	result = result + '</div>';
+	result = result + ' </form>';
+	$("#probationPeriodDiv").empty(); 
+	$("#probationPeriodDiv").append(result);
+	
+	 var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  $('.chosen-container').css({'width': '100%'});
+	 
+       $("#probationPeriod").chosen();
+       $("#probationPeriod").trigger('chosen:update');
+}
+
+
+$('body').on('submit', '#probation_form', function(e){
+ 	  if ($(this).validate(false, validationSettings)){
+ 		e.preventDefault();
+ 		var formData = getFormData("probation_form");
+  		var probationPeriod = document.getElementById("probationPeriod").value;
+  		var noOfDays = document.getElementById("noOfDays").value;
+  		 	
+   		 $.ajax({
+				type : "POST",
+				data : formData,
+				url : sourceleadUrl+"/saveProbationData?${_csrf.parameterName}=${_csrf.token}",
+				success : function(result) {
+					
+					 if (result && result.response === "INVALID_DATA") {
+                     showError(result.responseMessage);
+                 }else if (result.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (result.response === "SUCCESS") {
+		        		$('#successMsgDiv').html("Probation Data Updated Successfully");
+		        		 $("#profilePercentageSelector").fadeIn(200);
+		        		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
+		        	} else if (result.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	} 
+				},
+			});    
+         
+     	    return true;
+     }
+     else{
+     	return false;	
+        }
+     });
+     
+  /* $('body').on('blur', '#probation_form', function() {
+		$("#probation_form").showHelpOnFocus();
+		$("#probation_form").validateOnBlur(false, validationSettings);
+	}); */
+
+</script>
+
+<!-- <script>
+function loadEmailConfig(){
+	alert("hello")
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/emailNontificationConfigure",        
+	       success :function(data) {
+//	    	   $("#loading").removeAttr('style');
+	    	  /*  $("#enrolledLocDiv").removeAttr("style");
+	    	   $("#enrolledLocDiv").attr("style","display : block");
+	    	   $("#enrolledLocDiv").empty(); */
+	    	   //$("#emailNotifications").empty();
+	    	   $("#emailNotifications").append(data);
+	    	  /*  $(".signWrap").addClass("orgOutWrap");
+	    	   $(".SignSlide").hide();
+	    	   $(".orgWrap").show(); */
+//	    	   $(".signWrap").addClass("orgOutWrap");
+	      },
+	  }); 
+
+}
+
+</script> -->
 
 <jsp:include page="masterFooter.jsp" />
 

@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
+import com.bis.sourcelead.annotations.Required;
+
 public class ProjectMembersDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
@@ -28,12 +32,14 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String payRateCurrency;
 	
+	@Required(desc="payRate")
 	private Double payRate;
 	
 	private String payRateRateType;
 	
 	private String billRateCurrency;
 	
+	@Required(desc="billRate")
 	private Double billRate;
 	
 	private String billRateRateType;
@@ -52,11 +58,15 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private Long projectId;
 	
+	private String validateRow;
+	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
 	
 	private String orgRelationUUID;
 	
-	
+    private String isProjectForTimeSheets;
+	    
+	private String isProjectForExpenses;
 
 	public String getExpenseId() {
 		return expenseId;
@@ -261,6 +271,30 @@ public class ProjectMembersDTO implements Serializable {
 
 	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
 		this.payRateEstimatedDate = payRateEstimatedDate;
+	}
+
+	public String getValidateRow() {
+		return validateRow;
+	}
+
+	public void setValidateRow(String validateRow) {
+		this.validateRow = validateRow;
+	}
+
+	public String getIsProjectForTimeSheets() {
+		return isProjectForTimeSheets;
+	}
+
+	public void setIsProjectForTimeSheets(String isProjectForTimeSheets) {
+		this.isProjectForTimeSheets = isProjectForTimeSheets;
+	}
+
+	public String getIsProjectForExpenses() {
+		return isProjectForExpenses;
+	}
+
+	public void setIsProjectForExpenses(String isProjectForExpenses) {
+		this.isProjectForExpenses = isProjectForExpenses;
 	}
 	
 }

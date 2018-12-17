@@ -34,7 +34,7 @@
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
-			&raquo; Client Project
+			&raquo; Create Client Project
 	</section>
 	
 	<div class="content-area clearfix noPad">
@@ -56,12 +56,7 @@
 								data-validation="required" onchange="getEndClientProjects();">
 								<option value="">-- Select Client --</option>
 								<c:forEach var="report" items="${clientsList}">
-								 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
-								 </c:if>
-								 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
-								    <option value="${report.locationId.id}">${report.locationId.orgLocationName}</option>
-								 </c:if>
+								 	<option value="${report.clientLocationId}">${report.clientName}</option>
 								</c:forEach>
 							</select> 
                 </div>	
@@ -127,6 +122,43 @@
 			</div>
 			
 			
+			
+			<div class="col-md-12 clearfix mt5 mb5">
+			<div class="col-md-6 col-lg-6">
+				<div class="form-group mb10">
+					<label class="col-md-3 mt10" for="Project Manager">Expense Approver &nbsp;<i class='fa fa-info-circle' title='Expense Approver for project. If not selected managers will be the default approvers'></i>
+					</label>
+					<div class="col-md-9">
+						<div class="form-icon-min" id="chosen-level1Manager">
+							<select class="form-control chosen-select"
+											name="level1ExpenseApprover" id="level1ExpenseApprover" field-name="Expense Approver"
+											data-validation-optional="true" onchange="getLevel2ExpenseApprovers();">
+											<option value="">-- Select Level1 Approver --</option>
+											
+							</select>
+							
+							<span class="btn btn-default formic1 addExpenseApproverLevel"
+								id="level2ExpenseApproverToggle" onclick="getLevel2ExpenseApprovers();">Add
+							Level-II</span>
+						</div>
+						<span class="hidden">Select Project Manager</span>
+					</div>
+				</div>
+				</div>
+				
+				<div class="col-md-6 col-lg-6">
+				<div class="form-group expenselevel-second" id="level2ExpenseApproverDiv">
+								<label class="col-md-3" for="Level-II">Level-II Approver</label>
+								<div class="col-md-9">
+									<select class="form-control chosen-select" name="level2ExpenseApprover"
+										id="level2ExpenseApprover">
+									</select>
+								</div>
+							</div>
+				</div>
+			</div>
+			
+			
               <div class="clearfix"></div>
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
@@ -155,6 +187,7 @@
 <script>
 	$(document).ready(function() {
 		getProjectLevel1Approvers();
+		getProjectLevel1ExpenseApprovers();
 	});
 </script>
 
@@ -247,6 +280,98 @@ function getLevel2Approvers(level1ApproverUser){
 	
 } 
 </script>
+<script type="text/javascript">
+function getLevel2ExpenseApprovers(level1ExpenseApprover){
+	var currentExpenseApproverId = '';
+	$('#chosen-level1ExpenseApprover').find('p.jquery_form_error_message').remove();
+	if(level1ExpenseApprover != null && level1ExpenseApprover != '' && level1ExpenseApprover != 'undefined'){
+		currentExpenseApproverId = level1ExpenseApprover;
+	}else{
+		currentExpenseApproverId = document.getElementById("level1ExpenseApprover").value;
+	}
+	
+	var currentExpenseApprover = currentExpenseApproverId.split(',');
+	var currentExpenseApproverId = currentExpenseApprover[0];
+	var currentExpenseApproverType = currentExpenseApprover[1];
+	var count = 1;
+	$(".myCheckbox").each(
+					function() {
+						var localId = this.id;
+						document.getElementById(localId).checked = false; 
+	});
+	$(".myCheckbox").val('');
+	
+	$("#level2ExpenseApprover").empty();    
+	$('#level2ExpenseApprover').val('').trigger('chosen:updated');
+	if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType != 'Admin'){
+	    $("#level2ExpenseApproverToggle").show();
+		getChildLevel1ExpenseApprovers(currentExpenseApproverId);
+	}else if(currentExpenseApproverType != null && currentExpenseApproverType != '' && currentExpenseApproverType !='undefined' && currentExpenseApproverType == 'Admin'){
+	    $("#level2ExpenseApproverToggle").hide();   
+	    $("#level2ExpenseApproverDiv").removeClass("expenselevel-second-active");
+	}
+	
+	
+} 
+</script>
+
+<script type="text/javascript">
+function getChildLevel1ExpenseApprovers(currentExpenseApproverId,level2ExpenseApproverUserId){
+	 if(currentExpenseApproverId != null && currentExpenseApproverId != ''  && currentExpenseApproverId != 'undefined'){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getApproversByUserId?${_csrf.parameterName}=${_csrf.token}&currentApproverId="+currentExpenseApproverId,
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-Select Approver-</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		var selected = '';
+			        		if(level2ExpenseApproverUserId != null && level2ExpenseApproverUserId != 'undefied' && level2ExpenseApproverUserId != '' && level2ExpenseApproverUserId == opt.id){
+			        			selected = "selected";
+			        		}
+			        		output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	$("#level2ExpenseApprover").empty();
+			        $("#level2ExpenseApprover").append(output);
+			        $('#level2ExpenseApprover').trigger("chosen:updated");
+		        },
+		        error: function(e){
+		            
+		        }
+		    });
+	 }
+} 
+</script>
+
+
+<script type="text/javascript">
+function getProjectLevel1ExpenseApprovers(approverUserId){
+	 $("#level1ExpenseApprover").empty();
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getProjectLevel1Approvers?${_csrf.parameterName}=${_csrf.token}",
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Level1 Approver --</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var selected = "";
+		        		var opt = json[i];
+		        		if(approverUserId != null && approverUserId != 'undefied' && approverUserId != '' && approverUserId == opt.id){
+		        			selected = "selected";
+		        		}
+			        		output = output + "<option value='" +opt.id+ ","+opt.userType+"' "+selected+">"+opt.fullName+" ("+opt.userType+")</option>";
+					}
+		        	
+			        
+			        $("#level1ExpenseApprover").append(output);
+			        $('#level1ExpenseApprover').trigger("chosen:updated");
+		        }
+		    });
+	 }
+</script>
 
 <script type="text/javascript">
 function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
@@ -280,9 +405,6 @@ function getChildLevel1Approvers(currentApproverId,level2ApproverUserId){
 		            
 		        }
 		    });
-	 }else{
-		 getApproversLevel2();
-		
 	 }
 } 
 </script>
@@ -299,9 +421,23 @@ function saveClientProject(){
 				type : "POST",
   	    	    data : formData,
 				url : sourceleadUrl+"/storeClientProject?${_csrf.parameterName}=${_csrf.token}", 
-				success : function(project) {
-					 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
-					 $("#loading").removeAttr("style");
+				success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+							$("#loading").removeAttr("style");
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	var project = result.object;
+		                	 location.replace(sourceleadUrl+"/projectSummary?projectUUID="+project.projectUUID+"&projectClientUUID="+project.projectClientUUID+"&tabType=team");
+							 $("#loading").removeAttr("style");
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+					
+					
 				},
 			}); 
   		 return true;

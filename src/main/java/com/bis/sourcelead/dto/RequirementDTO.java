@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class RequirementDTO extends CommonDTO {
@@ -21,6 +23,9 @@ public class RequirementDTO extends CommonDTO {
 
 	@Required(desc = "job title")
 	private String jobTitle;
+	
+	@Required(desc = "profilePercentage")
+	private String profilePercentage;
 
 	private String jobType;
 
@@ -91,6 +96,7 @@ public class RequirementDTO extends CommonDTO {
 	
 	private List<String> visa;
 
+	@CleanHtml(escape=false)
 	private String description;
 
 	private List<String> noticePeriod;
@@ -101,6 +107,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isClient;
 
+	@Required(desc = "client", dependsOn = "isClient", parentValue = "Y")
 	private String selectClient;
 
 	private String clientCurrencyCode;
@@ -111,9 +118,20 @@ public class RequirementDTO extends CommonDTO {
 
 	private String clientRateType;
 
+	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "Y")
 	private String clientSubmissionForm;
 
 	private String cd;
+	
+	private String jobRate;
+	
+	private String incentivized;
+	
+	private String payOutPeriod;
+	
+	private List<RequirementIncentiveDTO> requirementIncentive;
+	
+	private String arrDeletedIds;
 
 	private String approver;
 
@@ -142,6 +160,14 @@ public class RequirementDTO extends CommonDTO {
 	private String noOfOfferedApplicants;
 	
 	private String noOfApplicants;
+	
+	private String noOfShortlistApplicants;
+	
+	private String noOfRejectedApplicants;
+	
+	private String noOfJoinedApplicants;
+	
+	private String noOfBackoutApplicants;
 	
 
 	private String projectClientID;
@@ -177,14 +203,78 @@ public class RequirementDTO extends CommonDTO {
 	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	private List<String> locationsList;
+	
+	private boolean walkIn;
+	
+	private String walkInDays;
+	
+	private boolean jobFair;
+	
+	private long jobFairId;
+	
+	private String[] jobFairDates;
+	
+	private Map<Long, String[]> jobFairMap;
+	
+	private String orgTeams;
+	
+	private String process;
+	
+	private String jobCreatedDateRange;
+	
+	private String clientIds;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
 	 * private List<AssinedTo> assinedTeamInfo;
 	 */
 
+	public Map<Long, String[]> getJobFairMap() {
+		return jobFairMap;
+	}
+
+	public boolean isJobFair() {
+		return jobFair;
+	}
+
+	public void setJobFair(boolean jobFair) {
+		this.jobFair = jobFair;
+	}
+
+	public void setJobFairMap(Map<Long, String[]> jobFairMap) {
+		this.jobFairMap = jobFairMap;
+	}
+
+	public String getOrgTeams() {
+		return orgTeams;
+	}
+
+	public void setOrgTeams(String orgTeams) {
+		this.orgTeams = orgTeams;
+	}
+
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
 	}
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
@@ -259,6 +349,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String saveType;
 
+	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "Y")
 	private String selectContact;
 
 	private String assignedToMaxCount;
@@ -295,6 +386,8 @@ public class RequirementDTO extends CommonDTO {
 	private String[] teamAssignUserId;
 
 	private String requirementUUID;
+	
+	private String[] reqUUIDArr;
 
 	private String requirementAppliedDate;
 
@@ -323,6 +416,8 @@ public class RequirementDTO extends CommonDTO {
 	private String reqLevel2ApproverStatus;
 
 	private String managerUserId;
+	
+	private long primaryRecruiterUserId;
 
 	private String client;
 
@@ -335,6 +430,11 @@ public class RequirementDTO extends CommonDTO {
 	private String releasedBy;
 
 	private String currentRateCurrency;
+	
+	private BigInteger reqId;
+	
+	private BigInteger requirementCreatedUserId;
+	
 
 	public String getRequirementStatus() {
 		return requirementStatus;
@@ -688,6 +788,46 @@ public class RequirementDTO extends CommonDTO {
 		this.cd = cd;
 	}
 
+	public String getJobRate() {
+		return jobRate;
+	}
+
+	public void setJobRate(String jobRate) {
+		this.jobRate = jobRate;
+	}
+
+	public String getIncentivized() {
+		return incentivized;
+	}
+
+	public void setIncentivized(String incentivized) {
+		this.incentivized = incentivized;
+	}
+
+	public String getPayOutPeriod() {
+		return payOutPeriod;
+	}
+
+	public void setPayOutPeriod(String payOutPeriod) {
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public List<RequirementIncentiveDTO> getRequirementIncentive() {
+		return requirementIncentive;
+	}
+
+	public void setRequirementIncentive(List<RequirementIncentiveDTO> requirementIncentive) {
+		this.requirementIncentive = requirementIncentive;
+	}
+
+	public String getArrDeletedIds() {
+		return arrDeletedIds;
+	}
+
+	public void setArrDeletedIds(String arrDeletedIds) {
+		this.arrDeletedIds = arrDeletedIds;
+	}
+
 	public String getApprover() {
 		return approver;
 	}
@@ -918,6 +1058,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
+	}
+
+	public String[] getReqUUIDArr() {
+		return reqUUIDArr;
+	}
+
+	public void setReqUUIDArr(String[] reqUUIDArr) {
+		this.reqUUIDArr = reqUUIDArr;
 	}
 
 	public String getRequirementAppliedDate() {
@@ -1261,6 +1409,38 @@ public class RequirementDTO extends CommonDTO {
 		this.noOfApplicants = noOfApplicants;
 	}
 
+	public String getNoOfShortlistApplicants() {
+		return noOfShortlistApplicants;
+	}
+
+	public void setNoOfShortlistApplicants(String noOfShortlistApplicants) {
+		this.noOfShortlistApplicants = noOfShortlistApplicants;
+	}
+
+	public String getNoOfRejectedApplicants() {
+		return noOfRejectedApplicants;
+	}
+
+	public void setNoOfRejectedApplicants(String noOfRejectedApplicants) {
+		this.noOfRejectedApplicants = noOfRejectedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
+	}
+
+	public String getNoOfBackoutApplicants() {
+		return noOfBackoutApplicants;
+	}
+
+	public void setNoOfBackoutApplicants(String noOfBackoutApplicants) {
+		this.noOfBackoutApplicants = noOfBackoutApplicants;
+	}
+
 	public String getUrl()
 	{
 		return url;
@@ -1341,4 +1521,96 @@ public class RequirementDTO extends CommonDTO {
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
+
+	public long getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(long primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+	
+	public BigInteger getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+
+	public BigInteger getRequirementCreatedUserId() {
+		return requirementCreatedUserId;
+	}
+
+	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
+		this.requirementCreatedUserId = requirementCreatedUserId;
+	}
+
+	public long getJobFairId() {
+		return jobFairId;
+	}
+
+	public void setJobFairId(long jobFairId) {
+		this.jobFairId = jobFairId;
+	}
+
+	public String[] getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String[] jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+
+	public String getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(String profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
+	public String getJobCreatedDateRange() {
+		return jobCreatedDateRange;
+	}
+
+	public void setJobCreatedDateRange(String jobCreatedDateRange) {
+		this.jobCreatedDateRange = jobCreatedDateRange;
+	}
+
+	public String getClientIds() {
+		return clientIds;
+	}
+
+	public void setClientIds(String clientIds) {
+		this.clientIds = clientIds;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+	
+	
 }

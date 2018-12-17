@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
@@ -21,7 +22,7 @@
 <link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -91,81 +92,25 @@ right: 15px;
 </style>
 
 
+
 <div class="wraper"> 
   <!--   Welcome Screens   -->
   
 	<section class="comLogBg">
 		<section class="comLogInn">
 		  <div class="comLogHead">
+	
+	     <jsp:include page="../userManageAccounts.jsp" />
 				
-	<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
-		<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-				                   </c:if>
-				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
-				                     <img src="/resources/images/office-image.jpg">
-				                   </c:if>
-				                     
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
-          
-          
-          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-          	<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-		              <li>
-		              <a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_prodSupportOrgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink">
-						                   <img src="/resources/images/office-image.jpg">
-						                     </div>
-						                   </div>
-					                       <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${SourceLeadWeb_prodSupportLoginOrgName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${SourceLeadWeb_prodSupportLoginUserDisplayName}</p>
-						                   </div>
-					                </div>
-				                </a>
-		              </li>
-	              </ul>
-	            </div>
-	            </div>		
-		              			
-              </c:if>
-				
-				
-				<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
+			<div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 			  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
-				  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+				  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+				  <li>Information</li>
+				  </c:if>
+				  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 				  <li>Federal & state taxes</li>
 				  </c:if>
 				  <li>Banking details</li>
@@ -195,10 +140,15 @@ right: 15px;
 				  <div class="btn-group uploadfile-onboard">
 					  <button type="button" class="btn btn-primary">
 					  <i class="fa fa-upload"></i></button>
-					   <label class="btn btn-sm btn-primary">
+					   <label class="btn btn-sm btn-primary" style="padding:4px 5px;">
 	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage1_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
-				  </div>
+	                  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+	                   <button type="button" class="btn btn-danger" onclick="deleteOnboardImage()">
+				  	 	<i class="fa fa-trash"></i></button>
+	                  </c:if>
+	                 
+				  </div> 
 				  </div>
 				  </div>
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
@@ -340,6 +290,21 @@ right: 15px;
 			
 		</div>
 		
+		<div class="col-md-6 clearfix mb">
+		<label class="col-md-3 noPad">Week Off Days</label>
+			<div class="col-md-9 padding_right">
+			 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" field-name="Week Off Days" data-validation="required">
+					 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
+					 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
+					 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
+					 <option  value='Wed' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Wed') ? 'selected' : ''}>Wednesday</option>
+					 <option  value='Thu' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Thu') ? 'selected' : ''}>Thursday</option>
+					 <option  value='Fri' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Fri') ? 'selected' : ''}>Friday</option>
+					 <option  value='Sat' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sat') ? 'selected' : ''}>Saturday</option>
+			 </select>
+			</div>
+		</div>
+		
 		<div class="col-md-6 clearfix mb" id="averageWorkingHoursDiv">
 			<label class="col-md-3 noPad">Working Hours<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
@@ -348,6 +313,15 @@ right: 15px;
 			</div>
 			</div>
 		</div>
+		
+		<div class="col-md-6 clearfix mb">
+				<label class="col-md-3 noPad"></label>
+				<div class="col-md-9">
+					<div class="checkBox">
+						<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+					</div>
+				</div>
+	    </div>
 		
 		<div class="col-md-6 clearfix mb">
 		<label class="col-md-3 noPad">Business type<span class="text-danger">&nbsp;*</span></label>
@@ -430,9 +404,9 @@ right: 15px;
   </div>
   
   <!--  Alert message for Switching Locaction -->
-  <div class="location-alert alert alert-danger alert-dismissable" id="locationAlert">
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
-    <strong>Alert !</strong> Your are not allowded to access this Location.
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
   </div>
 	
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
@@ -467,63 +441,7 @@ right: 15px;
  
 <script src="/resources/js/formvalidator.js"></script>
 
-<script type="text/javascript">
- var hasLocationAccess = "";
- function checkAuth(locationId,roleId,orgSecurity){
-	 checkLocationAccess(locationId,roleId,orgSecurity);
-	 
- }
- function otpClose(){
-	 $(".authenticationMask").fadeOut(); 
- }
- $(".loc-alertclose").click(function(){
-	 $(".location-alert").fadeOut();
- })
 
- function getUserDetailsbyroleId(roleId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-		 type : "POST",
-	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
-	       success :function(data) {
-	    	   if(data != null){
-	    		   $("#directtwoStepAuthDiv").empty();
-	    		   $("#directtwoStepAuthDiv").append(data);
-	    		   $("#gobackBtn").hide();
-	    		   $(".otpBackNew").show();
-	    		   $("#otpBackNewId").val("switchOtp");
-	    		   $("#resendOTP").attr("style","display:none");
-	    		   $("#sendOTP").attr("style","display:block");
-	    	   }
-	       },						     
-	}); 
- }
- 
- function checkLocationAccess(locationId,roleId,orgSecurity){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 $.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
-	       success :function(result) {
-	    	   if(result == true){
-	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
-	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
-	    				 $(".authenticationMask").fadeIn();
-	    				 getUserDetailsbyroleId(roleId);
-	    			 }else{
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
-	    			 }
-	    		 }else{
-	    			 $(".location-alert").fadeIn();
-	    			 $(".location-alert").fadeOut(5000);
-	    		 }
-	    	   
-	      },
-	  });
- }
- </script>
- 
   
  <!--  <script>
 	$('.sopcSwith, .authenticationMask').each(function() {
@@ -778,20 +696,34 @@ var validationSettings = {
         		    e.preventDefault(); 
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		
-	           		var formData = getFormData("orgSettings_form");
+	           		var formData = $($('#orgSettings_form')[0]).serialize();
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){
 		        		document.getElementById("errorImage").style.display=""; 
              		}else{
              		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	          		
              		$.ajax({
 	              	      type: "POST",
 	              	      data: formData,
 	                    	  url: sourceleadUrl+"/saveOrgSettings?"+tokenParamName+"="+tokenValue+"",
 	                      	success: function(result) {
+	                      		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	            	    		    showError(result.responseMessage);
+	            	    		    $("#loading").removeAttr('style');
+	            	    		}
+	                      		else if (result.response === "AWKWARD") {
+	            	    		    location.href = "/errorPage";
+	            	    		}
+	                      		else if (result.response === "SUCCESS") {
 	                      		location.replace(sourceleadUrl+"/companyOnboardLocations");	
+	                      		}
+	                      		else if (result.indexOf('Sign In') !== -1) {
+	            					location.replace(sourceleadUrl);
+	            				} else {
+	            				    showError("Operation failed, please try again");
+	            				    $("#loading").removeAttr('style');
+	            				}
 	  			        },  
 	                  }); 
              		}
@@ -946,13 +878,40 @@ $(function(){
 	
 	</script>
 	
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
+
+<script type="text/javascript">
+function deleteOnboardImage(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
 </script>
 
-
+<script type="text/javascript">
+function deleteProfileImage(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteOrgImage",
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.reload();
+        	 }
+	        
+	       },
+	        
+     }); 
+}
+</script>
 <script>
   $(document).ready(function(){
   	  $('html').click(function(){
@@ -967,8 +926,5 @@ $(function(){
 <script src="/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
+
 <div id='imagecrop' class='post_popup'></div>

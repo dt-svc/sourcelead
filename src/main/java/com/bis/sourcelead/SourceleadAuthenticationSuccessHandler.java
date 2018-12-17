@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -179,6 +180,19 @@ public class SourceleadAuthenticationSuccessHandler implements AuthenticationSuc
 			if(localip != null)
             ip = localip.getHostAddress();
         }
+        
+        String[] ipArray = ip.split(",");
+		if(ipArray.length > 1){
+			for(String s :ipArray){
+				if(StringUtils.isNotEmpty(s)){
+					ip =s.replaceAll("[^0-9.]", "");
+					break;
+				}
+			}
+			
+		}else{
+			ip = ip.replaceAll("[^0-9.]", "");
+		}
 	    return ip;  
 	}
 }

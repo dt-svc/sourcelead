@@ -98,6 +98,12 @@ public class InvoiceData implements Serializable {
 	@Column(name = "VERSION")
 	private int version;
 	
+	@Column(name = "PAY_RATE")
+	private String payRate;
+	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	@JsonProperty
 	private String dateStr;
@@ -331,4 +337,25 @@ public class InvoiceData implements Serializable {
 	{
 		this.version = version;
 	}
+
+	public String getPayRate()
+	{
+		return payRate;
+	}
+
+	public void setPayRate(String payRate)
+	{
+		this.payRate = payRate;
+	}
+
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
+
 }

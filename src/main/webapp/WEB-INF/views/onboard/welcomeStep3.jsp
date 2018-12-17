@@ -47,33 +47,7 @@
 		<section class="welcoInn">
 		  <div class="welcoHead">
 				
-			<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-			<div class="offOrg">
-	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-		              <div id="spockLinksList" style="display: none;">
-		              <ul class="list-unstyled">
-		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-			              <li>
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left mt5">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </li>
-		              </c:forEach>
-		              </ul>
-		            </div>
-		            </div>
-	          </c:if>
+			 <jsp:include page="../userManageAccounts.jsp" />
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
@@ -91,8 +65,11 @@
 			  <ul>
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span class="fill">2</span><b>Step two</b><i class="line"></i></li>
-				  <li class="actLi"><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">3</span><b>Step three</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">4</span><b>Step four</b><i class="line"></i></li>
+				  <li class="actLi"><span>5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
+				  
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -222,7 +199,8 @@
   </div>		  
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateStep2'/>'" >
+
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateTaxDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -267,8 +245,18 @@ function deleteDocument(documentUUID){
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -282,8 +270,16 @@ function acceptPolicy(documentUUID){
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	$("#loading").removeAttr("style"); 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		$("#loading").removeAttr("style"); 
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -304,19 +300,26 @@ function saveOnboardingCandidateDocs(saveType){
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
 		 var formData = getFormData1("onboardCandidateDocs_form");
 	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+	   $.ajax({
 	        type : "POST",
 		      data: formData,
 	          processData: false,
 	          contentType:false,
 	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	  location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
-	      }
-	    	  
+		      success :function(response) {
+		    	  if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			 location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+	      	}
 	  });
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
 }
@@ -412,19 +415,6 @@ function uploadPoliciesFile(id){
 </script>
 
 
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>

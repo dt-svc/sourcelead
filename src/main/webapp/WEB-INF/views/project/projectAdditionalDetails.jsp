@@ -159,7 +159,7 @@
 	  
 	<div class="pull-right">
 	  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger">
-	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save');"  class="btn btn-primary ml10">
+<!-- 	  <input type="button" value="Save" id="save_project" onclick="saveAdditionalDetails('Save');"  class="btn btn-primary ml10"> -->
 	  <input type="button" value="Save & Finish" id="save_Finish_project" onclick="saveAdditionalDetails('Finish');" class="btn btn-success ml10">
 	</div>
   </div>
@@ -505,8 +505,8 @@ function getAdditionalDetails(){
 		
 		if ($('#project_additional_form').validate(false, validationSettings)) {
 		  	
-			var formData = $($('#project_additional_form')[0]).serialize();
-	  		
+// 			var formData = $($('#project_additional_form')[0]).serialize();
+			var formData = getFormData("project_additional_form");
 			var sourceleadUrl = '${sourceleadUrl}';
      		$("#additionalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
@@ -516,17 +516,25 @@ function getAdditionalDetails(){
 			$.ajax({
 						 type : "POST",
 						 data: formData,
-		  	    	     processData: false,
 						 url : sourceleadUrl+ "/storeProjectAdditionalDetails?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType,
-						 success : function() {
-							 
-							 if(saveType == "Save"){
-								 $("#additionalDetailsLoading").removeAttr("style");
-								 getAdditionalDetails();
-							 }else{
-								 location.replace(sourceleadUrl+"/projectDashboard");  
-							 }
-							 
+						 success : function(result) {
+							 if (result && result.response === "INVALID_DATA") {
+	  								$("#additionalDetailsLoading").removeAttr("style");
+	  			                    showError(result.responseMessage);
+	  			                } else if (result.response === "AWKWARD") {
+	  			                    location.href = "/errorPage";
+	  			                } else if (result.response === "SUCCESS") {
+	  			                	 if(saveType == "Save"){
+	  									 $("#additionalDetailsLoading").removeAttr("style");
+	  									 getAdditionalDetails();
+	  								 }else{
+	  									 location.replace(sourceleadUrl+"/projectDashboard");  
+	  								 }
+	  			                } else if (result.indexOf('Sign In') !== -1) {
+	  								location.replace(sourceleadUrl);
+	  							} else {
+	  			                    showError("Operation failed, please try again");
+	  			                }
 
 						},
 					});

@@ -58,6 +58,10 @@
 			<c:if test="${!empty login_blocked_error}">
 					 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
 	      	</c:if>
+	      	
+	      	<c:if test="${!empty login_offboardUser_error}">
+	      			<div class="error"><font color="red">You are off boarded user</font></div>
+	    	</c:if>
 	      		
 	      	<c:if test="${!empty login_inActive_error}">
 	      			<div class="error"><font color="red">You are In active user</font></div>
@@ -79,7 +83,7 @@
 	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
-			         <span><font color="red">${msg}</font></span>
+			         <span><font color="green">${msg}</font></span>
 				</div>
            </c:if> 
            <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>

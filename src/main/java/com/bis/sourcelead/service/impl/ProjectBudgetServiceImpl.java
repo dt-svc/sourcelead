@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
@@ -59,6 +61,9 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 	
 	@Autowired
 	ProjectClientService projectClientService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Override
 	public ProjectBudget saveProjectBudget(ProjectBudget projectBudget) throws Exception {
@@ -130,12 +135,12 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 			projectBudgetDao.saveProjectTaskComments(projectBudget);
 			
 			if(user.getId().longValue() != Long.valueOf(projectBudgetRequestDTO.getBudgetApprover())) {
-				sendBudgetApproverEmail(user,projectBudgetRequestDTO,projects);
+				sendBudgetApproverEmail(user,projectBudget,projects);
 			}
 	}
 	 
-	private void sendBudgetApproverEmail(User loginUser, ProjectBudgetRequestDTO projectBudgetRequestDTO, Projects projects)throws Exception {
-		User approverUse = userService.getUserById(Long.valueOf(projectBudgetRequestDTO.getBudgetApprover()));
+	private void sendBudgetApproverEmail(User loginUser, ProjectBudget projectBudget, Projects projects)throws Exception {
+		User approverUse = userService.getUserById(projectBudget.getApproverUserId().getId());
 		ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(),projects.getOrgLocationsId().getId());
 		EmailMessage emailMessage = new EmailMessage();
         emailMessage.setFirstName(loginUser.getFirstName());
@@ -143,7 +148,6 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         emailMessage.setToEmail(approverUse.getEmail());
         emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setCreatedBy(loginUser.getUserCode());
-        emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
        
         Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -151,35 +155,26 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         globalVarsMap.put("approverName", approverUse.getFullName());
         globalVarsMap.put("loginUserName", loginUser.getFullName());
         
-        globalVarsMap.put("descrption", projectBudgetRequestDTO.getBaseLine());
-        globalVarsMap.put("estimatedBudget", projectBudgetRequestDTO.getEstimatedBudgetCurrency() +" "+ projectBudgetRequestDTO.getEstimatedBudget());
-        globalVarsMap.put("estimatedHours", String.valueOf(projectBudgetRequestDTO.getEstimatedHours()));
+        globalVarsMap.put("descrption", projectBudget.getBudgetDescription());
+        DecimalFormat df = new DecimalFormat("0.##");   
+        globalVarsMap.put("estimatedBudget", projectBudget.getEstimatedBudgetCurrency() +" "+ BigDecimal.valueOf(projectBudget.getEstimatedBudgetValue()));
+        globalVarsMap.put("estimatedHours", String.valueOf(df.format(projectBudget.getEstimatedHours())));
         
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
-        EmailScenario   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST,Constants.ENTITY_TYPE_EMAIL);
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId());
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
         String actionLink = null;
         StringBuilder actionLinkBuilder = new StringBuilder();
-        emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudgetRequestDTO.getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
-        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario);
+
+        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST,new ArrayList<EmailAttachment>());
+//        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
+        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+
+        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 
@@ -207,42 +202,31 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         String actionLink = null;
         StringBuilder actionLinkBuilder = new StringBuilder();
         if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)) {
-        	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED,Constants.ENTITY_TYPE_EMAIL);
-            notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ACCEPTED,new ArrayList<EmailAttachment>());
+        	notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)) {
-        	globalVarsMap.put("rejectedReason", projectBudget.getRejectedReason());
-        	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-            notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        	globalVarsMap.put("reason", projectBudget.getRejectedReason());
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_REJECTED_EMAIL,new ArrayList<EmailAttachment>());
+        	notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)) {
-        	globalVarsMap.put("rejectedReason", projectBudget.getRejectedReason());
-        	emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ONHOLD_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+        	globalVarsMap.put("reason", projectBudget.getRejectedReason());
+	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ONHOLD_EMAIL,new ArrayList<EmailAttachment>());
             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ONHOLD_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
         }
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId());
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,projectBudget.getProjectId().getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projectBudget.getProjectId().getOrgLocationsId(), notificationScenario);
+
+        emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projectBudget.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
 	}
 	
 	
 	private String generatebudgetRequestId(Projects projects) {
-		String companyShortCode = null;
+		String companyShortCode = "";
        	Long number = 1L;
    		String candidateId = null;
    		Integer generatedIdcount = 0;

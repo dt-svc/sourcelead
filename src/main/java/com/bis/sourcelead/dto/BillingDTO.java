@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
@@ -27,7 +28,9 @@ public class BillingDTO {
 	private Long linkInvoiceReferenceId;
 	private Date invoiceDate;
 	private Date dueDate;
+	@CleanHtml(escape=false)
 	private String billingAddress;
+	@CleanHtml(escape=false)
 	private String accountDetails;
 	private String discountAmount;
 	private String afterDiscountValue;
@@ -95,7 +98,7 @@ public class BillingDTO {
 	private String memberId;
 	private String expensesFrequency;
 	private String expId;
-	
+	private PaymentAccountDTO paymentAccountDTO;
 	private String orgRelationUUID;
 	
 	public Long getId()
@@ -770,5 +773,10 @@ public class BillingDTO {
 	{
 		this.orgRelationUUID = orgRelationUUID;
 	}
-	
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
 }

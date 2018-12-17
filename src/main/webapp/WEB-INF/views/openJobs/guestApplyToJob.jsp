@@ -27,7 +27,7 @@
 <script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
@@ -328,6 +328,8 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<button type="button" id="cancel_button"  class="btn btn-default ml" onClick="guestCancel();">Cancel</button>';
 		result = result + '</div>';
 		result = result + '<div class="pull-right mr">';
+// 	 Workaround to avoid corrupted XHR2 request body in IE10 / IE11
+		result = result + '<input type="hidden" name="_dontcare">';
 		result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -363,21 +365,24 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 	    
 	    $("#candidateSkills").chosen().change(function(event) {
 	    	var allSkills = $(event.target).val();
-	   
 	    	$.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-		        success: function(data) {
-		        	var primarySkill = data;
-		        	      $("#primarySkill").val(primarySkill);
-		        	
+		        url: sourceleadUrl+"/app/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var primarySkill = response.object;
+		        	    $("#primarySkill").val(primarySkill);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });
-	    	
 	    });
-	    
-	    chosen.search_field.on('keyup', function(e)
-			    {
+	    chosen.search_field.on('keyup', function(e) {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
 			        		 for (var i=0; i < skillsArray.length; i++) {
@@ -513,56 +518,65 @@ function uploadAddApplicantCandidateDoc(){
 			        contentType:false,
 		   	        dataType : 'json',
 		   	     url : sourceleadUrl+"/parseResume",
-					success : function(data) {
-						var json = JSON.parse(data);
-						var name = json.name;
-						var firstName = '';
-						var lastName = '';
-						if(name != null && name != 'undefined' && name != ''){
-							 firstName = name.split(".")[0]; 
-							 lastName = name.split(".")[1]; 
-							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-								 firstName = name;
-							 }
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							if(response.object !== null) {
+								var json = response.object;
+								var name = json.name;
+								var firstName = '';
+								var lastName = '';
+								if(name != null && name != 'undefined' && name != ''){
+									 firstName = name.split(".")[0]; 
+									 lastName = name.split(".")[1]; 
+									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+										 firstName = name;
+									 }
+								}
+								
+								 $("input[name=FirstName]").val(firstName);
+					        	 $("input[name=LastName]").val(lastName);
+					        	 $("input[name=EmailId]").val(json.email);
+					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+					        	 
+					        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
+					        	 $("#candidateSkills").empty();
+					        	 var internalOutput = "";
+						        	 var skills = json.skills;
+			 						 <c:forEach var="skill" items="${skillsList}">
+			 						var existed = 0;
+			 						if(skills != null && skills != 'undefined' && skills != ''){
+			 							var str_array = skills.split(',');
+			 							for(var i = 0; i < str_array.length; i++) {
+			 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+			 							  if(str_array[i] == "${skill.name}"){
+			 								 existed = 1;
+			 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+			 							  }
+			 							}
+			 						}
+			 						if(existed == 0){
+			 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
+					                }
+			 	                     </c:forEach>
+		 						
+		 						$("#candidateSkills").append(internalOutput);
+		 		        		$("#candidateSkills").trigger("chosen:updated");
+								 validateSubmissionCandidateEmail();
+							} else {
+								showError("Resume Parsing Failed");
+							}
+	 		        		 $("#loading").removeAttr("style");
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-						
-						
-						 $("input[name=FirstName]").val(firstName);
-			        	 $("input[name=LastName]").val(lastName);
-			        	 $("input[name=EmailId]").val(json.email);
-			        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-			        	 
-			        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
-			        	 $("#candidateSkills").empty();
-			        	 var internalOutput = "";
-				        	 var skills = json.skills;
-	 						 <c:forEach var="skill" items="${skillsList}">
-	 						var existed = 0;
-	 						if(skills != null && skills != 'undefined' && skills != ''){
-	 							var str_array = skills.split(',');
-	 							for(var i = 0; i < str_array.length; i++) {
-	 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	 							  if(str_array[i] == "${skill.name}"){
-	 								 existed = 1;
-	 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	 							  }
-	 							}
-	 						}
-	 						if(existed == 0){
-	 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-			                }
-	 	                     </c:forEach>
- 						
- 						$("#candidateSkills").append(internalOutput);
- 		        		$("#candidateSkills").trigger("chosen:updated");
-  						
- 		        		 $("#loading").removeAttr("style");
-						 validateSubmissionCandidateEmail();
-						
 					},
 				});
- 	 }
+ 	 	}
 	}
  });
 

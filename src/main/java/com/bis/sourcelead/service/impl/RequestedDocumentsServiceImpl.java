@@ -33,6 +33,7 @@ import com.bis.sourcelead.service.RequestedDocumentsHistoryService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -65,6 +66,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	
 	@Autowired
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -207,7 +211,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 emailMessage.setFromName(userName);
 		 emailMessage.setFromEmail(user.getEmail());
 		 emailMessage.setCreatedBy(user.getUserCode());
-		 
+		 emailMessage.setFirstName(candidateName);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("candidateName", candidateName);
@@ -219,25 +223,9 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 
 		 globalVarsMap.put("requestLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/requestedDocuments?").append("requestDocUUID=").append(requestDocUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Upload Documents</div></a>").toString());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUESTED_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUESTED_DOCUMENTS,new ArrayList<EmailAttachment>());
 		
 	}
 	
@@ -251,8 +239,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
 		 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
 		 emailMessage.setCreatedBy(requestedDocuments.getUserId().getUserCode());
-		 
-		 
+		 emailMessage.setFirstName(requestedDocuments.getCandidateId().getFirstName());
 		
 		/* String userName = null;
 		 String candidateName = null;*/
@@ -274,34 +261,21 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		
 		
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPLOADED_REQUESTED_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPLOADED_REQUESTED_DOCUMENTS,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,requestedDocuments.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId(),Constants.UPLOADED_REQUESTED_DOCUMENTS,new ArrayList<EmailAttachment>());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
-		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 	}
 
 	@Override

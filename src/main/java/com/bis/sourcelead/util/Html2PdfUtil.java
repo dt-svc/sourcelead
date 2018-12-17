@@ -13,10 +13,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Org;
@@ -137,7 +139,39 @@ public class Html2PdfUtil {
 	            		}
 	                    matchPattern.appendReplacement(sb, location.toString());    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Client Contact]") || matchPattern.group().equalsIgnoreCase("[Vendor Contact]")){
-	                    matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
+	                    if(contracts.getParentContractId() != null){
+	                    	for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
+	                    		if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+	                    			StringBuilder ownersb = new StringBuilder();
+	                    			if(StringUtils.isNotBlank(coh.getOwnerUserId().getLastName())){
+	                    				ownersb.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName());
+	                    			}else{
+	                    				ownersb.append(coh.getOwnerUserId().getFirstName());
+	                    			}
+	                    			matchPattern.appendReplacement(sb, ownersb.toString());
+	                    			break;
+	                    		}else if(Constants.SEQUENTIAL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+	                    			if(coh.getLevel() == 2){
+	                    				StringBuilder ownersb = new StringBuilder();
+		                    			if(StringUtils.isNotBlank(coh.getOwnerUserId().getLastName())){
+		                    				ownersb.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName());
+		                    			}else{
+		                    				ownersb.append(coh.getOwnerUserId().getFirstName());
+		                    			}
+		                    			matchPattern.appendReplacement(sb, ownersb.toString());
+		                    			break;
+	                    			}
+	                    		}
+	                    	}
+	                    }
+	                	
+	                	
+	                	//matchPattern.appendReplacement(sb, contracts.getContactUser().getFirstName());
+	                    
+	                    
+	                    
+	                    
+	                    
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company Location]")){
 	                	StringBuffer location = new StringBuffer();
 	                	if(null != contracts.getOrgLocationId().getCountry()&& !"".equalsIgnoreCase(contracts.getOrgLocationId().getCountry())){
@@ -180,7 +214,7 @@ public class Html2PdfUtil {
 						}
 		            }
 	                else if(matchPattern.group().equalsIgnoreCase("[Associate Name]") || matchPattern.group().equalsIgnoreCase("[Employee Name]")){
-		            	if(null != contracts.getRequirementSubmission().getId()){
+		            	if(null !=contracts.getRequirementSubmission() && null != contracts.getRequirementSubmission().getId()){
 			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
 			            	if(null != reqSub.getCandidate().getLastName()){
 								matchPattern.appendReplacement(sb, reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
@@ -193,7 +227,7 @@ public class Html2PdfUtil {
 		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Job Title]") || matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
-		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
+		            	if(null !=contracts.getRequirementSubmission() && null !=contracts.getRequirementSubmission().getRequirement().getId()){
 				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
 			                    matchPattern.appendReplacement(sb, req.getJobTitle());
 		            	}
@@ -205,7 +239,7 @@ public class Html2PdfUtil {
 	                }
 	                // need to know about offer rate
 		           else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
-		        	   if(null !=contracts.getRequirementSubmission().getId()){
+		        	   if(null !=contracts.getRequirementSubmission() && null !=contracts.getRequirementSubmission().getId()){
 		        		   RequirementOffers requirementOffers =  requirementOffersService.getRequirementOfferSubmissionById(contracts.getRequirementSubmission().getId());
 		        		   matchPattern.appendReplacement(sb,requirementOffers.getAmount());
 		        	   }

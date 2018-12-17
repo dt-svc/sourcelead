@@ -1,6 +1,12 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 
 @SuppressWarnings("serial")
 public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serializable{
@@ -8,6 +14,7 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String candidateName;
 	private String jobTitle;
 	private String requirementUUID;
+	private String requirementId;
 	private String orgLocationName;
 	private String email;
 	private String mobilePhone;
@@ -36,8 +43,41 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String paymentType;
 	private String paymentMode;
 	private String experienceMonths;
+	private Long orgLocationId;
+	private String tabType;
+	private String frequency;
+	private String fromDate;
+	private String toDate;
+	private String employmentType;
+	private String clientId;
+	private String teamId;
+	private String exportType;
+	private List<String> locationsList;
+	private String jobGeneratedId;
+	private String backoutType;
+	private String backoutReason;
+	private String incentivize;
+	private String searchType;
+	private String jobRating;
+	private String rejectedType;
+	private String rejectedReason;
+	private String joinDate;
+	private String incentivizedType;
+	private String applicants;
 	
- 
+	private int payTerm;
+	
+	private String jobRate;
+	
+	@Enumerated(EnumType.STRING)
+	private ApplicantSubmissionStatus finalsSubmissionStatus;
+	
+	private String type;
+	
+	private String payOutPeriod;
+	
+	private String generateInvoice;
+	
 	public String getCandidateName()
 	{
 		return candidateName;
@@ -286,6 +326,196 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	{
 		this.experienceMonths = experienceMonths;
 	}
-	
+	public Long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+	public void setOrgLocationId(Long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+	public String getTabType()
+	{
+		return tabType;
+	}
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
+	}
+	public String getFrequency()
+	{
+		return frequency;
+	}
+	public void setFrequency(String frequency)
+	{
+		this.frequency = frequency;
+	}
+	public String getFromDate()
+	{
+		return fromDate;
+	}
+	public void setFromDate(String fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+	public String getToDate()
+	{
+		return toDate;
+	}
+	public void setToDate(String toDate)
+	{
+		this.toDate = toDate;
+	}
+	public String getClientId() {
+		return clientId;
+	}
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+	public String getTeamId() {
+		return teamId;
+	}
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+	public String getEmploymentType() {
+		return employmentType;
+	}
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+	public String getJobGeneratedId() {
+		return jobGeneratedId;
+	}
+	public void setJobGeneratedId(String jobGeneratedId) {
+		this.jobGeneratedId = jobGeneratedId;
+	}
+	public String getBackoutType() {
+		return backoutType;
+	}
+	public String getBackoutReason() {
+		return backoutReason;
+	}
+	public String getIncentivize() {
+		return incentivize;
+	}
+	 
+	public void setBackoutType(String backoutType) {
+		this.backoutType = backoutType;
+	}
+	public void setBackoutReason(String backoutReason) {
+		this.backoutReason = backoutReason;
+	}
+	public void setIncentivize(String incentivize) {
+		this.incentivize = incentivize;
+	}
+	public String getSearchType() {
+		return searchType;
+	}
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+	public String getJobRating() {
+		return jobRating;
+	}
+	public void setJobRating(String jobRating) {
+		this.jobRating = jobRating;
+	}
+	public String getRejectedType() {
+		return rejectedType;
+	}
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+	public void setRejectedType(String rejectedType) {
+		this.rejectedType = rejectedType;
+	}
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
+	}
+	public String getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
+	}
+	public String getIncentivizedType() {
+		return incentivizedType;
+	}
+	public void setIncentivizedType(String incentivizedType) {
+		this.incentivizedType = incentivizedType;
+	}
+	public String getPayOutPeriod()
+	{
+		return payOutPeriod;
+	}
+	public void setPayOutPeriod(String payOutPeriod)
+	{
+		this.payOutPeriod = payOutPeriod;
+	}
+	public String getGenerateInvoice()
+	{
+		return generateInvoice;
+	}
+	public void setGenerateInvoice(String generateInvoice)
+	{
+		this.generateInvoice = generateInvoice;
+	}
+	public String getType()
+	{
+		return type;
+	}
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+	public String getRequirementId() {
+		return requirementId;
+	}
+	public void setRequirementId(String requirementId) {
+		this.requirementId = requirementId;
+	}
+	public ApplicantSubmissionStatus getFinalsSubmissionStatus() {
+		return finalsSubmissionStatus;
+	}
+	public void setFinalsSubmissionStatus(ApplicantSubmissionStatus finalsSubmissionStatus) {
+		this.finalsSubmissionStatus = finalsSubmissionStatus;
+	}
+	public String getApplicants()
+	{
+		return applicants;
+	}
+	public void setApplicants(String applicants)
+	{
+		this.applicants = applicants;
+	}
+	public int getPayTerm()
+	{
+		return payTerm;
+	}
+	public void setPayTerm(int payTerm)
+	{
+		this.payTerm = payTerm;
+	}
+	public String getJobRate()
+	{
+		return jobRate;
+	}
+	public void setJobRate(String jobRate)
+	{
+		this.jobRate = jobRate;
+	}
 	
 }

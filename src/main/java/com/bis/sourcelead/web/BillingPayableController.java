@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,17 +20,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -68,11 +72,14 @@ public class BillingPayableController {
     @Autowired
     InvoiceDocumentsService invoiceDocumentsService;
 	
+    @Autowired
+    private SourceleadTagsService sourceleadTagsService;
 	
 	
 	@RequestMapping(value = "/payablesList")
 	public ModelAndView billingPayablesList(@RequestParam(value="type", required=false) String type ,HttpServletRequest request) throws Exception {
-		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+
 		ModelAndView model = new ModelAndView();
 		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -85,6 +92,10 @@ public class BillingPayableController {
 			model.addObject("msg", msg);
 			SourceLeadSessionManager.removeSessionAttribute(request, "payableInvoiceCreateMsg");
 		}
+		
+		List<String> billsTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.BILLS.toString(), orgLocations.getId());
+        model.addObject("billsTagsList", billsTagsList);
+        
 		model.setViewName("billing/payablesList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Payables);
@@ -130,6 +141,38 @@ public class BillingPayableController {
 	}
 	
 	
+	@RequestMapping(value = "/createPaybleForJobClosure")
+	public ModelAndView createPaybleForJobClosure(@RequestParam(value="type", required=false) String type ,HttpServletRequest request,@RequestParam(value="orgRelationId", required=false) Long orgRelationId) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+		
+		if(null != countries){
+        model.addObject("loginCountryName", countries.getName());
+        model.addObject("currencyCode", countries.getCurrency());
+		}
+		if(orgRelationId != null){
+			model.addObject("orgRelationId", orgRelationId);
+		}
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(null == sessionData)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		//SimpleDateFormat dateFormatter = orgLocations.getLocFullFormDateFormatter();
+		Date currentDate = new Date();
+		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
+		model.addObject("currentDate", convertedDate);
+		model.setViewName("billing/createPaybleForJobClosure");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		sessionData.setNav(Constants.Payables);
+		request.getSession().setAttribute("sessionData",sessionData);
+	    return model;
+	}
+	
+	
 	@RequestMapping(value = "/getInvoiceByUUID")
 	public ModelAndView getInvoiceByUUID(@RequestParam(value="invoiceUUID", required=false) String invoiceUUID ,@RequestParam(value="projectId", required=false) String projectId,HttpServletRequest request) throws Exception {
 		
@@ -158,6 +201,8 @@ public class BillingPayableController {
 			model.setViewName("billing/createExpensesPayableBill");
 		}else if(null != projectId && !"".equalsIgnoreCase(projectId) && !"undefined".equalsIgnoreCase(projectId) && invoice.getInvoiceCategory() ==null){
 			model.setViewName("billing/createProjectPayableInvoice");
+		}else if(invoice.getIsJobClosure() != null && invoice.getIsJobClosure().equals("Y")){
+			model.setViewName("billing/createPaybleForJobClosure");
 		}else{
 			model.setViewName("billing/createPayables");
 		}
@@ -177,7 +222,7 @@ public class BillingPayableController {
 	}
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_CREATE_VENDOR','ROLE_VIEW_VENDOR','ROLE_VIEW_EDIT_VENDOR','ROLE_VENDOR_BULK_IMPORTS','ROLE_CREATE_VENDOR_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	@RequestMapping(value = "/getPayableVendorsList", method = RequestMethod.GET)
 	public @ResponseBody String getPayableVendorsList(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
@@ -208,8 +253,9 @@ public class BillingPayableController {
 	
 	
 	@RequestMapping(value = "/getPayableVendorContactsByOrgRelationId", method = RequestMethod.GET)
-	public @ResponseBody String getPayableVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody ResponseList<OrgSpoc> getPayableVendorContactsByOrgRelationId(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		List<OrgSpoc> orgSpocList = null;
+		ResponseList<OrgSpoc> responseList = new ResponseList<>();
 		if(orgRelationId !="" && orgRelationId != null) {
 		 orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(orgRelationId));
 		
@@ -234,7 +280,8 @@ public class BillingPayableController {
 			orgSpoc.setVendorCurrency(conversionUtil.getVendorOrgCurrencyCode(orgSpoc.getVendorLocationId().getCountry()));
 			}
 		}
-		return commonUtil.toJSON(orgSpocList);
+		responseList.setData(orgSpocList);
+		return responseList;
 	} 
 	
 	

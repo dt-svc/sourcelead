@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.reports.dao.TimeToFillDao;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class TimeToFillDaoImpl implements TimeToFillDao{
@@ -32,6 +33,9 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TimeToFillDaoImpl.class);
 
 	@Override
@@ -40,12 +44,39 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 			Date[] searchDates, String stage) throws Exception {
 		
 		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryByJobIdsAndStage method");
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmissionHistory rh left join fetch rh.submissionId left join fetch rh.submissionId.requirement where rh.submissionId.requirement.id IN (:jobIds) and rh.toStage = :toStage "
 				+ " and (rh.createdDate BETWEEN :startDate and :endDate)";
 		return  session.createQuery(query).setParameterList("jobIds", jobIdList).setString("toStage", stage).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).list();
+		
+	}
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmissionHistory>  getRequirementHistoryByJobIdsAndStageForTimeToFill(List<Long> jobIdList, Date[] searchDates) throws Exception {
+		
+		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryByJobIdsAndStage method");
+		
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
+	 	 String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
+		 StringBuilder resultQuery = new StringBuilder("");	
+	     
+	     resultQuery.append("SELECT ");
+	     resultQuery.append(" RH.* ");
+	     resultQuery.append(" FROM ");
+	     resultQuery.append(" REQUIREMENT_SUBMISSION_HISTORY RH, REQUIREMENT_SUBMISSION RS  ");
+	     resultQuery.append(" WHERE ");
+	     resultQuery.append(" RH.REQUIREMENT_SUBMISSION_ID = RS.ID ");
+	     resultQuery.append(" AND RH.TO_STAGE IN ('OFFERACCEPTED')");
+	     resultQuery.append(" AND RS.REQUIREMENT_ID IN (:jobIds) ");
+	     resultQuery.append(" AND DATE_FORMAT(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"' ");
+	     return  session.createSQLQuery(resultQuery.toString()).addEntity(RequirementSubmissionHistory.class).setParameterList("jobIds", jobIdList).list();
+		
 	}
 
+	
 	@Override
 	@Transactional
 	public RequirementSubmissionHistory getRequirementHistoryBySubmissionIdsAndStage(Long submissionId, String stage)

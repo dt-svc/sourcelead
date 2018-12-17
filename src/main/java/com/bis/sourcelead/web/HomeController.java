@@ -1,10 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +54,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import edu.emory.mathcs.backport.java.util.LinkedList;
 
 /**
  * This class is used for...
@@ -176,6 +180,19 @@ public class HomeController {
 		return model;
 
 	}
+	
+	
+	
+	@RequestMapping(value = {"/demoRequest"}, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView sourceleadDemoRequest() {
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("demoRequest", "demoRequest");
+		model.setViewName("static-web/index");
+
+		return model;
+
+	}
 
 	@RequestMapping(value = {"/login"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public ModelAndView loginPage(@RequestParam(value = "logout", required = false) String logout,
@@ -189,7 +206,7 @@ public class HomeController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {
-			if("false".equalsIgnoreCase(allowed)){
+			if("false".equalsIgnoreCase(allowed)) {
 				return new ModelAndView("redirect:/logout?allowed=false");
 			}
 			if (isNullOrEmpty(requirementUUID)) {
@@ -434,5 +451,20 @@ public class HomeController {
         String time = df.format(dateWithTime);
     	return time;
     }
+    
+	@RequestMapping(value="/getAvailableFonts")
+	@ResponseBody
+	public List<String> getAvailableSystemFonts(HttpServletRequest request) {
+		List<String> fontsList = new LinkedList();
+		try {
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			for(String font : g.getAvailableFontFamilyNames()) {
+				fontsList.add(font);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fontsList;
+	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -81,6 +82,28 @@ public class EmailScenario implements Serializable{
 	
 	@Column(name="DISCLAIMER_TEXT", columnDefinition = "TEXT default NULL")
 	private String disclaimerText;
+	
+	@Column(name="BODY_URL",columnDefinition = "TEXT default NULL")
+	private String bodyUrl;
+	
+	@Column(name="DEFAULT_TEMPLATE")
+	private String defaultTemplate;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID")
+    private OrgLocations orgLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PARENT_ID")
+    private EmailScenario parentId;
+	
+	
+	@Column(name="EMAIL_UUID")
+	private String emailUUID;
+	
+	@Column(name="STATUS")
+	private Integer status;
 	
 	@Transient
 	private String UUID;
@@ -246,4 +269,54 @@ public class EmailScenario implements Serializable{
 	public void setUUID(String uUID) {
 		UUID = uUID;
 	}
+
+	public String getBodyUrl() {
+		return bodyUrl;
+	}
+
+	public void setBodyUrl(String bodyUrl) {
+		this.bodyUrl = bodyUrl;
+	}
+
+	public String getDefaultTemplate() {
+		return defaultTemplate;
+	}
+
+	public void setDefaultTemplate(String defaultTemplate) {
+		this.defaultTemplate = defaultTemplate;
+	}
+
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public EmailScenario getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(EmailScenario parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getEmailUUID() {
+		return emailUUID;
+	}
+
+	public void setEmailUUID(String emailUUID) {
+		this.emailUUID = emailUUID;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
 }

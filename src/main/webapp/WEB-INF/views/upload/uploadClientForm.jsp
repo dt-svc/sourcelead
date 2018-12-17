@@ -38,16 +38,7 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-		 <%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')"> --%>
-		<%-- 	<div class="col-xs-12 col-md-6 hidden">
-			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
-			 <button class="btn btn-success btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
-			</a>
-			</div> --%>
-			<%-- </sec:authorize> --%>
-			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
+
 			<div class="col-xs-8 col-md-8">
 			 <a href="<c:url value='${appPath}/downloadClientTemplate?name=Contact'/>" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
@@ -69,14 +60,7 @@ margin:10px 220px 0;
 			
 			<div class="dropzone">
 			  <div class="clearfix">
-			<%--   <div class="btn-group pull-right hidden">
-			  <button class="btn btn-sm btn-primary" id="upload_button1" type="submit" onclick = "saveBulkImport(); check();uploadSave();checkFile()">
-				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
-			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
-				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
-			  </button>
-			  </div> --%>
+		
 			  </div>
 			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
 		<div class="col-md-12" id="clientNameDiv">
@@ -92,10 +76,7 @@ margin:10px 220px 0;
         	
         	
 			</div>
-			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
-			<%-- <p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p> --%>
-			<%-- <p class="text-danger text-center mt" id="success">${msg}</p> 
-			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div> --%>
+		
 		   	 
 		   	 <!--  Downloaded File show here -->
 		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
@@ -120,8 +101,8 @@ margin:10px 220px 0;
 			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox hidden">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+            <div class="panel-body checkBox">
+				  <label><input type="checkbox" id="sendEmailsCheck" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -140,7 +121,7 @@ margin:10px 220px 0;
             </div>
 		  </div>
         </div>
-        <div class="require_wrap_table filter-position mt25">
+        <div class="require_wrap_table filter-position mt25 datatable_filter">
         
         	<div id="excelimportData"></div>
         	
@@ -179,17 +160,7 @@ margin:10px 220px 0;
 	<p><i class="fa fa-info-circle"></i>The user will be created in the selected client</p>	
   </section> 
   
-  
- <script>
-/* $(document).ready(function(){
-	document.getElementById("uploadFile").value = '';
-	var errormsg = '${errorMessage}';
-	$("#fileAttached").hide();
-	if(errormsg){
-		$("#errorFileDiv").show();
-	}
-}); */
-</script>
+
 
 
 
@@ -206,6 +177,13 @@ if ($('#upload_form').validate(false, validationSettings)){
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
+	var isMailCheck = $('#sendEmailsCheck');
+    if (isMailCheck.is(':checked')) {
+          isMailCheck = "Y";
+    }else{
+          isMailCheck = "N";
+    }
+	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_form')[0];
@@ -220,7 +198,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
+		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
  		    success : function(json) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	
@@ -502,8 +480,8 @@ function mergeclose(){
 function excelimportDataPagination(){
 	$('#excelimportDataTable').DataTable({ 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -522,98 +500,7 @@ document.getElementById("uploadBtn").onchange = function () {
 }
 </script>
 
-<!-- <script>
-function check(){
-	var errormsg = '${errorMessage}';
-		$("#errorFileDiv").hide();
-		$("#fileExist").empty();
-		$("#success").empty();
-		$('#fileDiv').find('p.jquery_form_error_message').remove();
-}
 
-</script>
-
-<script>
-function errorMsgAppend(){
-	var errormsg = '${errorMessage}';
-	if(errormsg){
-	    $("#errorFileDiv").hide();
-	 	$("#fileExist").empty();
-		$("#success").empty();
-	}
-	
-}
-
-</script>
-
-<script type="text/javascript">
-function uploadSave() {
-	$('#upload_form').submit(function() {
-          if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            	return true;  
-          }
-          else{
-        	  return false;	
-          }
-          	
-          })
-}
-	$('body').on('blur', '#upload_form', function() {
-		$("#upload_form").showHelpOnFocus();
-		$("#upload_form").validateOnBlur(false, validationSettings);
-		
-	});
-</script>
-
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
-
-
-<script language="javascript" type="text/javascript">
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
-     var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx'];
-     if (res_field.length > 0)
-        {
-             if (allowedExtensions.indexOf(extension) === -1) 
-                {
-                  //alert('Invalid file Format. Only ' + allowedExtensions.join(', ') + ' are allowed.');
-                   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
-                    return false;
-                  return false;
-                }
-                	if (fsize < 4000 || fsize > 5120000)
-                    {
-                   	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"File size should between above 50kb & below 500 KB");
-                        return false;
-                    }  
-                
-       }
-		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-		$('input#uploadBtn').attr('class','valid form-control');
-		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-		$("#upload_form").click(function() {
-			if ($(this).validate(false, validationSettings)) {
-			}
-		});
-	   
-    }
-</script>  -->
 
   <!-- Footer Area -->
   <jsp:include page="../masterFooter.jsp" />

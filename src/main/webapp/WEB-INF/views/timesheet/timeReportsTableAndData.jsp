@@ -2,11 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script src="/resources/js/tableHeadFixer.js"></script>
-
-
 <script src="/resources/js/jquery.simplePagination.js"></script>
-
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <div id="reportTableData"></div>
 <div class="timesheetRepTab timesheetRep-table">
    	<table id="fixTable" class="display">
@@ -28,9 +25,9 @@
                 <tbody id="tableData">
                 	<jsp:include page="timeReportsSubmissionData.jsp"></jsp:include>
             	</tbody>
-   </table>
+      </table>
 </div>
-<div id="paginationDiv" class="clearfix">
+ <div id="paginationDiv" class="clearfix">
   <div class="col-md-6">
   <div class="pull-left mt5">
   <label class="pull-left"><span class="pull-left mt10 mr5">Show</span>
@@ -50,17 +47,35 @@
 		<ul id="pagination-demo" class="pagination-sm pull-right pagination"></ul>
 	</div>
 </div>
-
-
-<!-- <script>
-$(document).ready(function() {
-	$("#fixTable").tableHeadFixer({"head" : false, "left" : 4}); 
+<script>
+$(document).ready(function(){
+	datatableBody();
 });
-</script> --> 
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#fixTable').DataTable( { 
+		   /*  "sDom": "Rlfrtip", */
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#fixTable').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script>
 
  <script>
       function getTableDataByPageSize(){
-    	//  $('#pagination-demo').twbsPagination('destroy'); 
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
@@ -90,10 +105,12 @@ $(document).ready(function() {
 		  var pageCount = $('#pageCount').val();
 		  var pageSize = $("#pageSize").val();
 		  var searchData = '${timesheetReportsDTO.searchValue}';
+		  
 		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
 		  $('#paginationDiv').show();
 		  $('#dataTableSearchExpenses').val('') ;
 		  $('#dataTableSearchExpenses').val(searchData); 
+		  searchHighlight(searchData);
 		  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 		  var endingRecord = parseInt(pageNo*pageSize);
 		  if(endingRecord > totalRows){

@@ -95,6 +95,8 @@ public class CandidateIndex implements Serializable {
 	private String createdDate;
 
 	private String createdBy;
+	
+	private String createdByUserCode;
 
 	private String updatedDate;
 
@@ -180,6 +182,8 @@ public class CandidateIndex implements Serializable {
 		
 	private String isAssociate;
 	
+	private String isSharedInMarketplace;
+	
 	private int profilePercentage;
 	
 	private String currentResumeUUID;
@@ -193,6 +197,22 @@ public class CandidateIndex implements Serializable {
 	private String action;
 	
 	private String resumeName;
+	
+	private String middleName;
+	
+	private String gender;
+	
+	private String maritalStatus;
+	
+	private String dateofBirth;
+	
+	private String panNumber;
+	
+	private String tags;
+	
+	private Integer submittedJobsCount;
+	
+	private Integer candidateProfilePercentage;
 	
 	
 	public String getSearchType() {
@@ -849,6 +869,14 @@ public class CandidateIndex implements Serializable {
 	public void setIsAssociate(String isAssociate) {
 		this.isAssociate = isAssociate;
 	}
+	
+	public String getIsSharedInMarketplace() {
+		return isSharedInMarketplace;
+	}
+
+	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
+		this.isSharedInMarketplace = isSharedInMarketplace;
+	}
 
 	public Integer getIsFavouriteAssociate() {
 		return isFavouriteAssociate;
@@ -967,6 +995,82 @@ public class CandidateIndex implements Serializable {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+	
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getCreatedByUserCode() {
+		return createdByUserCode;
+	}
+
+	public void setCreatedByUserCode(String createdByUserCode) {
+		this.createdByUserCode = createdByUserCode;
+
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	public Integer getCandidateProfilePercentage() {
+		return candidateProfilePercentage;
+	}
+
+	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
+		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	
 	
 }
 

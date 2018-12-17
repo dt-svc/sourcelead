@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,18 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
+	private Employees employee;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RESOURCE_MANAGER_ID")
+	private User resourceManager;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -62,6 +71,9 @@ public class UserRole implements Serializable {
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
 	private OrgLocations orgLocations;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
@@ -87,6 +99,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+	@Column(name = "TERMINATE_DATE")
+	private Date terminateDate;
 
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -96,6 +111,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "IS_GLOBAL")
+	private String isGlobal;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -121,6 +139,11 @@ public class UserRole implements Serializable {
     
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "GRADE_ID")
+	private AssociateGrades gradeId;
 
 	@Transient
 	@JsonProperty
@@ -133,6 +156,11 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String employeeId;
+	
+	@Transient
+	@JsonProperty
+	private String orgName;
+
 
 	@Transient
 	@JsonProperty
@@ -173,6 +201,18 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String hireDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String terminateDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String dateofBirthStr;
+	
+	@Transient
+	@JsonProperty
+	private String panNumber;
 
 	@Transient
 	@JsonProperty
@@ -185,6 +225,14 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> allReportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<AssociateGrades> gradesList;
+	
+	@Transient
+	@JsonProperty
+	List<User> allResourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -209,6 +257,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> reportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<User> resourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -244,9 +296,12 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<Roles> rolesList;
-
+	
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedUsersCountToResourceManager;
 
 	@Transient
 	private Integer assignedAsVendorOwnerOrSpocCount;
@@ -272,14 +327,11 @@ public class UserRole implements Serializable {
 	@Transient
 	private Integer vendorDocumentsOwnerCount;
 	
-	
 	@Transient
 	List<User> clientDocumentsOwnerList;
 
-	
 	@Transient
 	List<User> vendorDocumentsOwnerList;
-
 
 	@Transient
 	@JsonProperty
@@ -310,11 +362,108 @@ public class UserRole implements Serializable {
 	
 	@Transient
 	private String employeMentType; 
+	
+	@Transient
+	@JsonProperty
+	private String candidateDesignation;
 
 	@Transient
 	@JsonProperty
 	private Map<Long,String> userCustomFieldlabelNameAndValue;
 	
+	
+	@Transient
+	@JsonProperty
+	private Long shiftId;
+	
+	@Transient
+	@JsonProperty
+	private String shiftName;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger orgLocId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleShiftId;
+	
+	@Transient
+	@JsonProperty
+	private BigInteger userRoleId;
+	
+	@Transient
+	@JsonProperty
+	private String isExistedOrgGlobalUser;
+	
+	@Transient
+	@JsonProperty
+	private String ssn;
+	
+	@Transient
+	@JsonProperty
+	private String workLocation;
+	
+	@Transient
+	@JsonProperty
+	private String residenceAddress;
+	
+	@Transient
+	@JsonProperty
+	private List<OrgLocations> locationList;
+	
+	@Transient
+	@JsonProperty
+	private Long workLocationId;
+	
+	@Transient
+	@JsonProperty
+	private String residenceCountry;
+	
+	@Transient
+	@JsonProperty
+	private String residenceState;
+	
+	
+	@Transient
+	@JsonProperty
+	private String residenceCity;
+	
+	@Transient
+	@JsonProperty
+	private String residenceZipCode;
+	
+	@Transient
+	@JsonProperty
+	private String residenceLatitude;
+	
+	@Transient
+	@JsonProperty
+	private String residenceLongitude;
+	
+	@Transient
+	@JsonProperty
+	private String confirmationDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String probationPeriod;
+	
+	@Transient
+	@JsonProperty
+	private String probationStatus;
+	
+	public BigInteger getUserRoleId() {
+		if(id != null) {
+			userRoleId = BigInteger.valueOf(id);
+		}
+		return userRoleId;
+	}
+
+	public void setUserRoleId(BigInteger userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -920,8 +1069,280 @@ public class UserRole implements Serializable {
 		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
 	}
 
-	
 
-	
-	
+	public String getDateofBirthStr() {
+		return dateofBirthStr;
+	}
+
+	public void setDateofBirthStr(String dateofBirthStr) {
+		this.dateofBirthStr = dateofBirthStr;
+	}
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getOrgName()
+	{
+		return orgName;
+	}
+
+	public void setOrgName(String orgName)
+	{
+		this.orgName = orgName;
+
+	}
+
+	public String getIsGlobal() {
+		return isGlobal;
+	}
+
+	public void setIsGlobal(String isGlobal) {
+		this.isGlobal = isGlobal;
+	}
+
+	public User getResourceManager() {
+		return resourceManager;
+	}
+
+	public void setResourceManager(User resourceManager) {
+		this.resourceManager = resourceManager;
+	}
+
+	public List<User> getAllResourceManagers() {
+		return allResourceManagers;
+	}
+
+	public void setAllResourceManagers(List<User> allResourceManagers) {
+		this.allResourceManagers = allResourceManagers;
+	}
+
+	public List<User> getResourceManagers() {
+		return resourceManagers;
+	}
+
+	public void setResourceManagers(List<User> resourceManagers) {
+		this.resourceManagers = resourceManagers;
+	}
+
+	public Integer getAssignedUsersCountToResourceManager() {
+		return assignedUsersCountToResourceManager;
+	}
+
+	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
+		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
+	}
+
+	public String getCandidateDesignation() {
+		return candidateDesignation;
+	}
+
+	public void setCandidateDesignation(String candidateDesignation) {
+		this.candidateDesignation = candidateDesignation;
+	}
+
+	public AssociateGrades getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(AssociateGrades gradeId) {
+		this.gradeId = gradeId;
+	}
+
+	public List<AssociateGrades> getGradesList() {
+		return gradesList;
+	}
+
+	public void setGradesList(List<AssociateGrades> gradesList) {
+		this.gradesList = gradesList;
+	}
+
+	public Date getTerminateDate() {
+		return terminateDate;
+	}
+
+	public void setTerminateDate(Date terminateDate) {
+		this.terminateDate = terminateDate;
+	}
+
+	public String getTerminateDateStr() {
+		return terminateDateStr;
+	}
+
+	public void setTerminateDateStr(String terminateDateStr) {
+		this.terminateDateStr = terminateDateStr;
+	}
+
+	public Shift getShift() {
+		return shift;
+	}
+
+	public Long getShiftId() {
+		return shiftId;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
+	}
+
+	public void setShiftId(Long shiftId) {
+		this.shiftId = shiftId;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
+
+	public BigInteger getOrgLocId() {
+		return orgLocId;
+	}
+
+	public void setOrgLocId(BigInteger orgLocId) {
+		this.orgLocId = orgLocId;
+	}
+
+	public BigInteger getUserRoleShiftId() {
+		return userRoleShiftId;
+	}
+
+	public void setUserRoleShiftId(BigInteger userRoleShiftId) {
+		this.userRoleShiftId = userRoleShiftId;
+
+	}
+
+	public String getIsExistedOrgGlobalUser() {
+		return isExistedOrgGlobalUser;
+	}
+
+	public void setIsExistedOrgGlobalUser(String isExistedOrgGlobalUser) {
+		this.isExistedOrgGlobalUser = isExistedOrgGlobalUser;
+	}
+
+	public Employees getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employees employee) {
+		this.employee = employee;
+	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(String workLocation) {
+		this.workLocation = workLocation;
+	}
+
+	public String getResidenceAddress() {
+		return residenceAddress;
+	}
+
+	public void setResidenceAddress(String residenceAddress) {
+		this.residenceAddress = residenceAddress;
+	}
+
+	public List<OrgLocations> getLocationList() {
+		return locationList;
+	}
+
+	public void setLocationList(List<OrgLocations> locationList) {
+		this.locationList = locationList;
+	}
+
+	public Long getWorkLocationId() {
+		return workLocationId;
+	}
+
+	public void setWorkLocationId(Long workLocationId) {
+		this.workLocationId = workLocationId;
+	}
+
+	public String getResidenceCountry() {
+		return residenceCountry;
+	}
+
+	public void setResidenceCountry(String residenceCountry) {
+		this.residenceCountry = residenceCountry;
+	}
+
+	public String getResidenceState() {
+		return residenceState;
+	}
+
+	public void setResidenceState(String residenceState) {
+		this.residenceState = residenceState;
+	}
+
+	public String getResidenceCity() {
+		return residenceCity;
+	}
+
+	public void setResidenceCity(String residenceCity) {
+		this.residenceCity = residenceCity;
+	}
+
+	public String getResidenceZipCode() {
+		return residenceZipCode;
+	}
+
+	public void setResidenceZipCode(String residenceZipCode) {
+		this.residenceZipCode = residenceZipCode;
+	}
+
+	public String getResidenceLatitude() {
+		return residenceLatitude;
+	}
+
+	public void setResidenceLatitude(String residenceLatitude) {
+		this.residenceLatitude = residenceLatitude;
+	}
+
+	public String getResidenceLongitude() {
+		return residenceLongitude;
+	}
+
+	public void setResidenceLongitude(String residenceLongitude) {
+		this.residenceLongitude = residenceLongitude;
+	}
+
+	public String getConfirmationDateStr() {
+		return confirmationDateStr;
+	}
+
+	public void setConfirmationDateStr(String confirmationDateStr) {
+		this.confirmationDateStr = confirmationDateStr;
+	}
+
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public String getProbationStatus() {
+		return probationStatus;
+	}
+
+	public void setProbationStatus(String probationStatus) {
+		this.probationStatus = probationStatus;
+	}
+
 }

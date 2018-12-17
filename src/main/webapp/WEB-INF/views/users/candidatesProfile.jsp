@@ -12,54 +12,21 @@
      3.ajax url implementation in CandidateListRestController.
 --%>
 <style>
- /*   .pac-container {
-   z-index: 1000000000 !important;
-   } */
-	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
-	width:100px;
-	}
-	.er .btn-default{
-	background:#337ab7;
-	border:1px solid #ccc;
-	color:#fff;
-	text-shadow: none;
-	}
-	.clsDatePicker {
-		z-index: 100000 !important;
-	}
-	#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.selp-custom-min .btn-default{
-	/* z-index: -55 !important; */
-	-webkit-border-radius:0 3px 3px 0;
-	-moz-border-radius:0 3px 3px 0;
-	-ms-border-radius:0 3px 3px 0;
-	border-radius:0 3px 3px 0;
-	}
-	/* .selp-custom-min .open {
-	z-index: 999999999 !important;
-	} */
-	.ratetype p {
-	bottom: -14px;
-	left:0px !important;
-	position: absolute;
-	}
-	
-	.pras.req-title p{
-	bottom:-14px;
-	}
-	.exprience .select-field select{
-	background-position: 96% center !important;
-	}
-	</style>
+.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){width:100px;}
+.er .btn-default{ background:#337ab7; border:1px solid #ccc; color:#fff; text-shadow: none;}
+.clsDatePicker { z-index: 100000 !important; }
+#uploadFileGroup p.jquery_form_error_message{ position: absolute; left:0; bottom:-16px;}
+.selp-custom-min .btn-default{ -webkit-border-radius:0 3px 3px 0; -moz-border-radius:0 3px 3px 0; -ms-border-radius:0 3px 3px 0; border-radius:0 3px 3px 0; }
+.ratetype p { bottom: -14px; left:0px !important; position: absolute;}
+.pras.req-title p{ bottom:-14px; }
+.exprience .select-field select{ background-position: 96% center !important;}
+.require_wrap_details{ text-align:left;}
+</style>
 	
 	<script>
 	function candUpdateMsgFadeinFunction() {
 		$("#selector1").fadeIn(200);
-        $('#selector1').delay(2000).fadeOut('slow');
+        $('#selector1').delay(20000).fadeOut('slow');
 	}
 </script> 
 
@@ -69,11 +36,6 @@
 	 </div>
 </c:if>
 
-<style type="text/css">
-.require_wrap_details{
-text-align:left;
-}
-</style>
 <script>
 function editCandidate(candidateId){
 	
@@ -83,13 +45,24 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	 var json = JSON.parse(data);
+         success :function(result) {  
+        	   var json = result.object;
+	      	   if(result.response === "SESSION_TIMEDOUT") {
+						location.replace(sourceleadUrl);
+					} else if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+	              	if(json != null){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
+            			 	
+            			 	var middleName = '';
+            			 	if(json.middleName != null && json.middleName != '' && json.middleName != 'undefined'){
+            			 		middleName = json.middleName;            			 		
+            			 	}
+            			 	
         			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
             			 		mobilePhone = json.mobilePhone;            			 		
@@ -188,26 +161,125 @@ function editCandidate(candidateId){
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
+							result = result + '		          <div class="col-md-4">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          <div class="col-md-4">';
+							if(json.lastName != null && json.lastName != 'undefined' && json.lastName != ''){
+								result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+json.lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							}else{
+								result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							}							result = result + '		          </div>';
+							result = result + '		          <div class="col-md-4">';
+							
+							if(middleName != null && middleName != 'undefined' && middleName != ''){
+								result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							}else{
+								result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							}
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							if(json.isAssociate == 'Y'){
 							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
 							}
 							// If Candidate Type equals Consultant email field should be Disable mode
+							
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3">Gender</label>  ';
+							result = result+'		<div class="col-md-9">    ';
+							if(json.gender == "Male"){
+							result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+							}
+							else if(json.gender == "Female"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else if(json.gender == "Transgender"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else{
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+							}
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3 paddingRight">Marital Status</label>  ';
+							result = result+'		<div class="col-md-9">';
+							if(json.maritalStatus == "Single"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+							else if(json.maritalStatus == "Married"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  checked value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Divorsed"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" checked name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Separated"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  checked value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else{
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							
+							result = result + ' <div class="col-md-6 mb10">';
+							result = result + '<div class="input-group">';
+							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
+								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder = "DateOfBirth" readonly="readonly" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}else{
+								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder = "DateOfBirth" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}
+							result = result + ' </div></div>';
+							
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
+								result = result + '<div class="input-group errorInptgroup">';
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
-								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								result = result + '<input type="text" class="form-control input-sm" id="email" readonly name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
+								result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+								result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+								result = result + '</i>';
+								result = result + '</span>';
+								
+								result = result + '</div>';
 							}
 							if(json.candidateType == "Consultant"){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" readonly value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							result = result + '</div>';
 							
@@ -260,7 +332,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text"></input>';
+							result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text" field-name="ZipCode" data-validation-optional="true" data-validation="validate_length length5-8 validate_int"></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields hidden">';
@@ -464,7 +536,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-12">';
-							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" data-validation="validate_Space validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
+							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" data-validation="validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
 							result = result + '</div>';
@@ -483,7 +555,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
+							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','editAssociate','address');
 							//zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
@@ -513,9 +585,19 @@ function editCandidate(candidateId){
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
 								  })
+								  
+								  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								  // written common method in slead-common.js for date formats start
+								  	var finalDateFormat = getJSDateFormat(locationDate); 
+											  $("#dateofbirth-candidate").datepicker({
+										     dateFormat: finalDateFormat,
+										    changeMonth: true,
+											  changeYear: true, 
+										    //minDate: 0  this line for to restrict selection of previous dates
+										  });
 							});
             		 
-                }else{
+                	}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -530,6 +612,11 @@ function editCandidate(candidateId){
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                  },
                    
               }); 
@@ -548,6 +635,9 @@ function editCandidate(candidateId){
 --%>
 
 <script>
+function cleardateofBirth(){
+	$("#dateofbirth-candidate").val("");
+	};
 function deleteCandidate(candidateId,candidateType){
 	 // var reason = document.getElementById("rejectReason").value;
 	  var reason = document.getElementById("rejectReason").value;
@@ -562,15 +652,20 @@ function deleteCandidate(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-            	  var json = JSON.parse(data);
-            	  /* if(candidateType == 'Associates'){ */
-            		  location.replace(sourceleadUrl+"/usersList");
-            	 /*  }else{
-            		  location.replace(sourceleadUrl+"/usersList");
-            	  } */
-                }
+         success :function(response) {
+        	 if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			location.replace(sourceleadUrl+"/usersList");
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
                  },
               }); 
 	  
@@ -646,19 +741,25 @@ function reActivateCandidateAlertMessage(candidateId){
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            			 location.replace(sourceleadUrl+"/usersList");
-	                } 
+	         success :function(result) {
+	        	 if (result && result.response === "INVALID_DATA") {
+	 			    $("#update_candidate").removeAttr("disabled");
+	 			    $("#update_candidate").removeAttr('button').val('Save');
+	 			    showError(result.responseMessage);
+	 			} else if (result.response === "AWKWARD") {
+	 			    location.href = "/errorPage";
+	 			} else if (result.response === "SUCCESS") {
+	 				 location.replace(sourceleadUrl+"/usersList");
+	 			} else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
 	                 },
 	              }); 
-		
 // 	}
-	
 }
 </script>
-
-
 
 <%-- 
      @author : sarath kumar.
@@ -673,9 +774,14 @@ function candidateProfile(candidateId,candidateType){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	var json = JSON.parse(data);
+         success :function(result) {
+        	 var json = result.object;
+      	   		if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
 							var result ="";
 							
 							result = result+'<div id="removeCandidateAlert" ></div>  ';
@@ -697,8 +803,10 @@ function candidateProfile(candidateId,candidateType){
 									  /*  '</sec:authorize>'; */
 								   }else{
 									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'; */
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-									  /*  '</sec:authorize>'; */ 
+									    if('${SourceLeadWeb_userId}' != json.userId){
+									   			result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									    }
+									   /*  '</sec:authorize>'; */ 
 									   
 									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">'; */
 									  /*  result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; */ 
@@ -976,7 +1084,7 @@ function candidateProfile(candidateId,candidateType){
 							     });
 							     event.preventDefault();
 								   
-              }else{
+              	}else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -992,6 +1100,11 @@ function candidateProfile(candidateId,candidateType){
       					$("#candidateSideDiv").empty();
       				    $("#candidateSideDiv").append(result); 
                       }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
                },
                  
             }); 
@@ -1056,15 +1169,23 @@ function candidateProfile(candidateId,candidateType){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-            	  var candidateType = "Candidates";
-            	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(response) {
+       	 	if (response && response.response === "INVALID_DATA") {
+       		    showError(response.responseMessage);
+       		} else if (response.response === "AWKWARD") {
+       		    location.href = "/errorPage";
+       		} else if (response.response === "SUCCESS") {
+       			var candidateType = "Candidates";
+             	  candidateProfile(candidateId,candidateType);
+             	  candidateQuickViewProfile(candidateId);
+             	  $("#loading").removeAttr('style');
+       		} else if (response.indexOf('Sign In') !== -1) {
+       			location.replace(sourceleadUrl);
+       		} else {
+       		    showError("Operation failed, please try again");
+       		}
        },
-         
     }); 
-	 
  }  
 </script>
  
@@ -1107,17 +1228,26 @@ function candidateProfile(candidateId,candidateType){
 				type : "POST",
         	    data: formData,
 				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
-				success : function(result) {
-					if(result && result === "failed") {
-						 $("#update_candidate").removeAttr("disabled");
-						showError("Invalid data");
-					} 
-					else {
-						$("#selector1").removeAttr("style");
-	         			 $("#selector1").css({ display: "block" });
-			        	 $("#candMsgDiv").html("Success!!  Associate Updated");
-			        	candUpdateMsgFadeinFunction();
-			        	profileDetails(candidateId);
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+					    showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						if(response.object === "success") {
+							$("#selector1").removeAttr("style");
+		         			 $("#selector1").css({ display: "block" });
+				        	 $("#candMsgDiv").html("Success!!  Associate Updated");
+				        	candUpdateMsgFadeinFunction();
+				        	profileDetails(candidateId);						
+						} else {
+							$("#update_candidate").removeAttr("disabled");
+							showError("Invalid data");
+						}
+					} else if (response.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
 					}
 				},
 			});
@@ -1238,77 +1368,85 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#employeeSubmissionDetailsList").empty();
-								var result = "";
-								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-								var json = JSON.parse(data);
-								for (var i = 0; i < json.length; i++) {
-									var opt = json[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									/* 
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth;
-									}else{
-										startMonth = " ";
-									} */
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear;
-									}else{
-										startYear = " ";
-									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth;  
-									} else {
-										endMonth = " ";
-									} */
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
-									result = result +'   <li>';
-									result = result +'   <div class="clearfix">';
-									result = result +' <h3>'+name+'</h3>';
-									result = result +' <p>'+designation+'</p>';
-									result = result +' <p>';
-								    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-								    	result = result + startYear +' To '+endYear; 
-								    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-								    	result = result + startYear; 
-								    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-								    	result = result + endYear; 
-								    }
-									result = result +'  </p>';
-									result = result +'  </div>';
-									result = result +'</li>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response && response.response === "INVALID_USER") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#employeeSubmissionDetailsList").empty();
+							var result = "";
+							result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+							for (var i = 0; i < response.data.length; i++) {
+								var opt = response.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#employeeSubmissionProfile").empty(); 
-								$("#employeeSubmissionProfile").append(result);
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								/* 
+								 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									startMonth=   opt.startMonth;
+								}else{
+									startMonth = " ";
+								} */
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
+									startYear=   opt.startYear;
+								}else{
+									startYear = " ";
+								}
+								
+								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									endMonth = opt.endMonth;  
+								} else {
+									endMonth = " ";
+								} */
+								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									endYear = opt.endYear;  
+								} else {
+									endYear = " ";
+								}
+								result = result +'   <li>';
+								result = result +'   <div class="clearfix">';
+								result = result +' <h3>'+name+'</h3>';
+								result = result +' <p>'+designation+'</p>';
+								result = result +' <p>';
+							    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+							    	result = result + startYear +' To '+endYear; 
+							    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+							    	result = result + startYear; 
+							    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+							    	result = result + endYear; 
+							    }
+								result = result +'  </p>';
+								result = result +'  </div>';
+								result = result +'</li>';
+							}
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+							$("#employeeSubmissionProfile").empty(); 
+							$("#employeeSubmissionProfile").append(result);
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
 					},
-
 				});
 	}
 </script>
@@ -1318,87 +1456,91 @@ function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#educationSubmissionDetailsList").empty();
-	                	 var result = "";
-	                	 
-	                	 
-	                	     result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-							
-							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) { 
-		                    	 var opt = json[i];  
-		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    		        EducationName = opt.name;
-		                    	    }else{
-		                    	    	EducationName = " ";
-		                    	    }
-			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-			                    	 specialization= '(' + opt.specialization +')';
-		                    	  }else{
-		                    		  specialization= " ";
-		                       	 }
-			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-			                    	 institute = opt.institute;
-		                    	 }else{
-		                    		 institute = " ";
-		                    	 }
-			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-			                    	 Educationgrade= opt.grade + ' , ';
-		                    	 }else{
-		                    		 Educationgrade = ""; 
-		                    	 }
-		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-		                    		 EducationgradeType  = opt.gradeType + ' - ';
-				                 }else{
-				                	 EducationgradeType = " "; 
-				                 }
-		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-		                    		 Educationaddress = ' , ' +opt.address;
-		                    	 }else{
-		                    		 Educationaddress = " ";
-		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr;
-		                    	 }else{
-		                    		 EducationstartDateStr = " ";
-		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
-		                    	 }
-			                        result = result +'                <li>';
-									result = result +'                  <div class="clearfix">';
-		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
-		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-		                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
-		                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
-		                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
-		                    	    }
-		                    	    result = result +'                  </div>';
-									result = result +'                </li>';
-		                     }
-							
-							
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-						 $("#educationSubmissionProfile").empty(); 
-	                     $("#educationSubmissionProfile").append(result); 
-        	  }
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#educationSubmissionDetailsList").empty();
+               	 var result = "";
+               	     result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   		        EducationName = opt.name;
+	                    	    }else{
+	                    	    	EducationName = " ";
+	                    	    }
+		                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+		                    	 specialization= '(' + opt.specialization +')';
+	                    	  }else{
+	                    		  specialization= " ";
+	                       	 }
+		                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+		                    	 institute = opt.institute;
+	                    	 }else{
+	                    		 institute = " ";
+	                    	 }
+		                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+		                    	 Educationgrade= opt.grade + ' , ';
+	                    	 }else{
+	                    		 Educationgrade = ""; 
+	                    	 }
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    		 EducationgradeType  = opt.gradeType + ' - ';
+			                 }else{
+			                	 EducationgradeType = " "; 
+			                 }
+	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+	                    		 Educationaddress = ' , ' +opt.address;
+	                    	 }else{
+	                    		 Educationaddress = " ";
+	                    	 }
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr;
+	                    	 }else{
+	                    		 EducationstartDateStr = " ";
+	                    	 }
+	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+	                    		 EducationendDateStr = opt.endDateStr;
+	                    	 }else{
+	                    		 EducationendDateStr = " ";
+	                    	 }
+		                        result = result +'                <li>';
+								result = result +'                  <div class="clearfix">';
+	                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
+	                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
+	                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
+	                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
+	                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
+	                    	    }
+	                    	    result = result +'                  </div>';
+								result = result +'                </li>';
+	                     }
+						
+						
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+					 $("#educationSubmissionProfile").empty(); 
+                    $("#educationSubmissionProfile").append(result);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 
@@ -1406,67 +1548,70 @@ function educationSubmissionProfile(candidateId){
 <script>
 function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]') {
-	                	 $("#certificationSubmissionProfile").empty();
-	                	 var result = "";
-	                	 
-	                	 result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-// 							 var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-		                    	var opt = json.data[i];  
-		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score =' ( ' + opt.score;
-				            	}else{
-				            		score = " ";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType +' ) ';
-				            	}else{
-				            		scoreType = " ";
-				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
-				            	}
-				            	
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
-								result = result +'                    <p>'+opt.provider+' </p>';
-								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
-										opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
-								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-									result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
-								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'                    <p> '+candidatevalidToDateToString+'</p>';
-								}
-								result = result +'                  </div>';
-								result = result +'                </li>';
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#certificationSubmissionProfile").empty();
+	               	 	var result = "";
+	               	 	result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+						for (var i = 0; i < response.data.length; i++) { 
+	                    	var opt = response.data[i];  
+	                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+			            		score =' ( ' + opt.score;
+			            	}else{
+			            		score = " ";
+			            	}
+			            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+			            		scoreType = opt.scoreType +' ) ';
+			            	}else{
+			            		scoreType = " ";
+			            	}
+			            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+			            	}else{
+			            		candidatevalidFromDateToString = " ";
+			            	}
+			            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+			            	}else{
+			            		candidatevalidToDateToString = " ";
+			            	}
+							result = result +'                <li>';
+							result = result +'                  <div class="clearfix">';
+							result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
+							result = result +'                    <p>'+opt.provider+' </p>';
+							if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
+									opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+								result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+							}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+								result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
+							}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+								result = result +'                    <p> '+candidatevalidToDateToString+'</p>';
 							}
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-							
-							$("#certificationSubmissionProfile").empty();
-							$("#certificationSubmissionProfile").append(result); 
-        	  }
+							result = result +'                  </div>';
+							result = result +'                </li>';
+						}
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+						$("#certificationSubmissionProfile").empty();
+						$("#certificationSubmissionProfile").append(result); 
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -1521,21 +1666,32 @@ function updateDesignationOtherType(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#candidateType').val(); 
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  $("#update_candidate").attr("disabled", "disabled");
-						  $("#update_candidate").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#update_candidate" ).addClass('button').val('Save');
-                         $("#update_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true') {
+			        		  $('#candidateType').val(); 
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  $("#update_candidate").attr("disabled", "disabled");
+							  $("#update_candidate").addClass('button').val('Processing..');
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_candidate" ).addClass('button').val('Save');
+	                         $("#update_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
 	 }else{
 		 $('#update_candidate').removeAttr('disabled');
@@ -1552,46 +1708,47 @@ function updateDesignationOtherType(){
 
 function rateValidations(){
 	
-var rateType = document.getElementById("expectedRateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#expectedRateType').removeAttr('data-validation');
-	 $('#expectedRateType').attr("data-validation-optional","true"); 
-}
-
-var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	 $('#expectedRateType').removeAttr('data-validation-optional');
-	 $('#expectedRateType').attr("data-validation","required"); 
-}else{
-$('#expectedRateType').removeAttr('data-validation');
-$('#expectedRateType').attr("data-validation-optional","true"); 
-}
-
-var currentRateType = document.getElementById("currentRateType").value; 
-	if(currentRateType != null && currentRateType != ""){
-		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
-	}else{
-		$('#currentRate').removeAttr('data-validation');
-	 	$('#currentRate').attr("data-validation-optional","true"); 
-		$('#currentRateType').removeAttr('data-validation');
-	 	$('#currentRateType').attr("data-validation-optional","true"); 
-	}
+	var rateType = document.getElementById("expectedRateType").value; 
+		if(rateType != null && rateType != ""){
+			 $('#expectedRate').removeAttr('data-validation-optional');
+			 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+		}else{
+			 $('#expectedRate').removeAttr('data-validation');
+			 $('#expectedRate').attr("data-validation-optional","true");
+			 $('#expectedRateType').removeAttr('data-validation');
+			 $('#expectedRateType').attr("data-validation-optional","true"); 
+		}
 	
-var currentRate = document.getElementById("currentRate").value; 
-	 if(currentRate != null && currentRate != ""){
+	var expectedRate = document.getElementById("expectedRate").value; 
+		if(expectedRate != null && expectedRate != ""){
+			 $('#expectedRateType').removeAttr('data-validation-optional');
+			 $('#expectedRateType').attr("data-validation","required"); 
+			 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+		}else{
+			$('#expectedRateType').removeAttr('data-validation');
+			$('#expectedRateType').attr("data-validation-optional","true"); 
+		}
+	
+	var currentRateType = document.getElementById("currentRateType").value; 
+		if(currentRateType != null && currentRateType != ""){
+			$('#currentRate').removeAttr('data-validation-optional');
+			$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+		}else{
+			$('#currentRate').removeAttr('data-validation');
+		 	$('#currentRate').attr("data-validation-optional","true"); 
+			$('#currentRateType').removeAttr('data-validation');
+		 	$('#currentRateType').attr("data-validation-optional","true"); 
+		}
 		
-		 $('#currentRateType').removeAttr('data-validation-optional');
-		 $('#currentRateType').attr("data-validation","required"); 
-	 }else{
-	 $('#currentRateType').removeAttr('data-validation');
-	 $('#currentRateType').attr("data-validation-optional","true"); 
-	 }
+	var currentRate = document.getElementById("currentRate").value; 
+		 if(currentRate != null && currentRate != ""){
+			 $('#currentRateType').removeAttr('data-validation-optional');
+			 $('#currentRateType').attr("data-validation","required");
+			 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+		 }else{
+			 $('#currentRateType').removeAttr('data-validation');
+			 $('#currentRateType').attr("data-validation-optional","true"); 
+		 }
 }
 </script>
 
@@ -1788,15 +1945,23 @@ function  removeValiationVendorContact() {
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-            	  var candidateType = "Candidates";
-           	  	  candidateProfile(candidateId,candidateType);
-            	  //candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(response) {
+        	 	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			var candidateType = "Candidates";
+             	  	  candidateProfile(candidateId,candidateType);
+              	  //candidateQuickViewProfile(candidateId);
+              	  $("#loading").removeAttr('style');
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
        },
-         
     }); 
-	 
  }  
 </script>
 

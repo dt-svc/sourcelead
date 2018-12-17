@@ -1,1 +1,1 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','CONNECTIONS','CONNECTION_UID','VARCHAR(20)  AFTER `STATUS`');
+CALL AlterTableAddColumn ('CONNECTIONS','CONNECTION_UID','VARCHAR(20)  AFTER `STATUS`');

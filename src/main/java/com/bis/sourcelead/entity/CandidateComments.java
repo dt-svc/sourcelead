@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Venkat Kesav
  *
@@ -65,18 +67,23 @@ public class CandidateComments implements Serializable{
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String commentTime;
 	
 	@Transient
+	@JsonProperty
 	private String commentAuthor;
 	
 	@Transient
+	@JsonProperty
 	private Long commentAuthorUserId;
 	
 	@Transient
+	@JsonProperty
 	private String commentAuthorUserImage;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 
 	public Long getId() {

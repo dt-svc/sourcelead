@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -27,14 +28,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.JobAlertDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.JobAlertService;
 import com.bis.sourcelead.service.JobAlertsHistoryService;
 import com.bis.sourcelead.service.RequirementService;
@@ -79,9 +83,25 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 	 }
 		 
     @RequestMapping(value = {"/app/ws/storeJobAlert" ,"/app/storeJobAlert"}, method = RequestMethod.POST)
-   	public @ResponseBody  void storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+    @ResponseBody
+   	public Response<String> storeJobAlert(JobAlertDTO  jobAlertDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
-       	  String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
+    	Response<String> responseJobAlert=new Response<>();
+    	try{
+    		if(Validator.validate(jobAlertDTO)){
+    			String jobAlert =  jobAlertService.saveJobAlert(jobAlertDTO);
+    			responseJobAlert.setResponse(Result.SUCCESS.name());
+    			responseJobAlert.setResponseMessage(Result.SUCCESS.getValue());
+    		}else{
+    			responseJobAlert.setResponse(Result.INVALID_DATA.name());
+    			responseJobAlert.setResponseMessage(Result.INVALID_DATA.getValue());
+    		}
+    	}catch (Exception e) {
+    		responseJobAlert.setResponse(Result.AWKWARD.name());
+    		responseJobAlert.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return responseJobAlert;
    	}
     
     
@@ -277,13 +297,13 @@ private static final Logger logger = LoggerFactory.getLogger(TimesheetRestContro
 							 
 							 StringBuilder experience = new StringBuilder();
 							 
-							 if(!isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() != null){
 								 experience = experience.append("(").append(requirementIndex.getMinExperience()).append("-").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 							 }
-							 else if(!isNullOrEmpty(requirementIndex.getMinExperience()) && isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 else if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() == null){
 								 experience = experience.append("(").append(requirementIndex.getMinExperience()).append(" Years").append(")");
 							 }
-							 else if(isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+							 else if(requirementIndex.getMinExperience() ==  null && requirementIndex.getMaxExperience() != null){
 								 experience = experience.append("(").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 							 }
 							 

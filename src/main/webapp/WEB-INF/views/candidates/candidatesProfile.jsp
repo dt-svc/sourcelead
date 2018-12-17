@@ -27,8 +27,8 @@ width: 100%; padding: 3px 20px 3px 15px;
 	
 	<script>
 	function candUpdateMsgFadeinFunction() {
-		$("#selector1").fadeIn(200);
-        $('#selector1').delay(2000).fadeOut('slow');
+		$("#selector11").fadeIn(200);
+        $('#selector11').delay(2000).fadeOut('slow');
 	}
 </script> 
 
@@ -47,12 +47,21 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	 var json = JSON.parse(data);
+         success :function(result) {
+           var json = result.object;
+      	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
             			 	var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
+            			 	}
+            			 	var middleName = '';
+            			 	if(json.middleName != null && json.middleName != '' && json.middleName != 'undefined'){
+            			 		middleName = json.middleName;            			 		
             			 	}
         			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
@@ -141,8 +150,8 @@ function editCandidate(candidateId){
             			 	
             			 	
 							var result ='';
-							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
-						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
+							result  = result + '<div class="success_pop" id="selector11" style="display: none;">';
+						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDivSum"></span>';
 						    result  = result + '</div>';
 							result = result + '		    <div class="candidate-editdetails col-md-10 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 							result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -152,26 +161,122 @@ function editCandidate(candidateId){
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
+							result = result + '		          <div class="col-md-4">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
+							result = result + '		          <div class="col-md-4">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          </div>';
+							
+							result = result + '		          <div class="col-md-4">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							if(json.isAssociate == 'Y'){
 							result = result + '	           <input type="hidden" name="isAssociate" id="isAssociate" value="Y"/>';
 							}
 							// If Candidate Type equals Consultant email field should be Disable mode
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3">Gender</label>  ';
+							result = result+'		<div class="col-md-9">    ';
+							if(json.gender == "Male"){
+							result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+							}
+							else if(json.gender == "Female"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else if(json.gender == "Transgender"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else{
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>     ';
+								result = result+' <input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		';
+
+							}
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3 paddingRight">Marital Status</label>  ';
+							result = result+'		<div class="col-md-9">';
+							if(json.maritalStatus == "Single"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+							else if(json.maritalStatus == "Married"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  checked value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Divorsed"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" checked name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Separated"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  checked value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else{
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							
+							result = result + ' <div class="col-md-6 mb10">';
+							result = result + '<div class="input-group">';
+							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
+								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder = "DateOfBirth" readonly="readonly" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}else{
+								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder = "DateOfBirth" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}
+							result = result + ' </div></div>';
+							
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
+								result = result + '<div class="input-group errorInptgroup">';
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
+
+								
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								
+
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
+								result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+								result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+								result = result + '</i>';
+								result = result + '</span>';
+								result = result + '		        </div>';
 							}
 							if(json.candidateType == "Consultant"){
-							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
+							     result = result + '<input type="text" class="form-control input-sm" name="email" readonly value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
 							}
 							result = result + '</div>';
 							
@@ -425,10 +530,10 @@ function editCandidate(candidateId){
 							
 							result = result + '</span>';
 							
-							result = result + '<div id="customFieldDataId" class="col-md-6 columnfields-custom"></div>';
-							
+							result = result + '<div id="customFieldDataId" class="myForm columnfields-custom"></div>';
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10 mt">';
-							result = result + '<div class="col-md-12">';
+							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
@@ -479,9 +584,18 @@ function editCandidate(candidateId){
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
 								  })
+							 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  							var finalDateFormat = getJSDateFormat(locationDate); 
+								  $("#dateofbirth-candidate").datepicker({
+								      dateFormat: finalDateFormat,
+								      changeMonth: true,
+								  	  changeYear: true, 
+								      //minDate: 0  this line for to restrict selection of previous dates
+								  });
 							});
             		 
-                }else{
+                	}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -492,13 +606,24 @@ function editCandidate(candidateId){
         					 result = result+"			 </div>";
         					 result = result+"		</div>"; 
         					 result = result+"	</div>"; 
-        					 result = result+"  </div> "; 
+        					 result = result+"  </div> ";
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
+
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
+
                  },
                    
               }); 
+	  
+	  
+	  //end
+	 
 		 
 }
 </script>
@@ -526,36 +651,88 @@ function preapareCustomFieldDetails(candidateId){
 --%>
 
 <script>
+
 function deleteCandidate(candidateId,candidateType){
-	 // var reason = document.getElementById("rejectReason").value;
-	  var reason = document.getElementById("rejectReason").value;
-	  reason = reason.replace(/\s/g, "") 
-	 
-	  if(reason.length == 0){
-		  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-    	  $(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+	if ($('#terminate_candidate_form').validate(false, validationSettings)) {
+		var reason = document.getElementById("rejectReason").value;
+		if(reason.length > 250){
+			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
+		}else{
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					showSuccessStatusPopup("Candidate marked as teminated");
+					var json = result.object;
+					if(candidateType == 'Associates') {
+						location.replace(sourceleadUrl+"/associatesList");
+					} else {
+						location.replace(sourceleadUrl+"/candidatesList");
+					}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}	
+			});
 		}
-		  if(reason.match(/^[^\s-](.*)*$/) != null){
-			  $(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-			  $(".rejectErrorMsgs").empty();
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-         success :function(data) {
-              if(data != null && data != 'undefined' && data != ""){
-            	  var json = JSON.parse(data);
-            	  if(candidateType == 'Associates'){
-            		  location.replace(sourceleadUrl+"/associatesList");
-            	  }else{
-            		  location.replace(sourceleadUrl+"/candidatesList");
-            	  }
-                }
-                 },
-              }); 
-	  
-			}
-	  
+	
+		return true;
+	}else {
+		return false;
+	}
 }
+$('body').on('blur', '#terminate_candidate_form', function() {
+	$("#terminate_candidate_form").showHelpOnFocus();
+	$("#terminate_candidate_form").validateOnBlur(false, validationSettings);
+});
+
+/* 
+function deleteCandidate111(candidateId,candidateType) {
+	if(document.getElementById("rejectReason")!==null) {
+		var reason = document.getElementById("rejectReason").value;
+		reason = reason.replace(/\s/g, "");
+		if(reason.length == 0){
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+	    	$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
+		}
+		if(reason.match(/^[^\s-](.*)*$/) != null) {
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$(".rejectErrorMsgs").empty();
+			$.post(sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					showSuccessStatusPopup("Candidate marked as teminated");
+					var json = result.object;
+					if(candidateType == 'Associates') {
+						location.replace(sourceleadUrl+"/associatesList");
+					} else {
+						location.replace(sourceleadUrl+"/candidatesList");
+					}
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}	
+			});
+			
+		}
+	} else {
+		showError("Reason is required");
+	}
+} */
 </script>
 <script>
    function candiateRemoveSpacesForRejectReason() {
@@ -591,13 +768,17 @@ function cancelAlert(){
 function removeCandidateAlertMessage(candidateId,candidateType){
 	$("#profileEditPopup").fadeOut();
 	var result = "";
-	
+	result = result +"<form:form id='terminate_candidate_form' name='terminate_candidate_form' method='post'> ";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
-	result = result +"		<div class='rejectErrorMsgs'/>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='width:500px'>";
+	result = result +"	<div class='clearfix'>";
+	result = result +"		<textarea id='rejectReason' class='form-control mt mb5' field-name='Reject Reason'  data-validation='required validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"	</div>";
+	result = result +"	<div class='rejectErrorMsgs'/>";
+	result = result +'		<b href="javascript:void(0)" class="mt10"><input style="width:50%" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input style="width:50%" class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +"	</div>";
+	result = result +"</form:form>";
+	
 	$("#removeCandidateAlert").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -622,15 +803,30 @@ function reActivateCandidateAlertMessage(candidateId){
 	if (message == true) { */
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		$.post(sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
+			if (result && result.response === "INVALID_DATA") {
+			    $("#update_candidate").removeAttr("disabled");
+			    $("#update_candidate").removeAttr('button').val('Save');
+			    showError(result.responseMessage);
+			} else if (result.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.replace(sourceleadUrl+"/candidatesList");
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}			
+		});
+		/* $.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
 	         success :function(data) {
 	               if(data != null && data != 'undefined' && data != ""){
 	            			 location.replace(sourceleadUrl+"/candidatesList");
 	                } 
-	                 },
-	              }); 
+	         },
+		}); */ 
 		
 // 	}
 	
@@ -647,124 +843,111 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId,candidateType){
+function candidateProfile(candidateId,candidateType,isAssociate){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null){  
-//               	var json = JSON.parse(data);
-							var result ="";
-							
-							result = result+'<div id="removeCandidateAlert" ></div>  ';
-							result = result+'<div id="loading" ></div>  ';
-							if(json.status == '0'){
+         success :function(result) { 
+        	 var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+  					location.replace(sourceleadUrl);
+  				} else if (result.response === "AWKWARD") {
+  					location.href = "/errorPage";
+  				} else if (result.response === "SUCCESS") {
+              		if(json != null) {
+							var result = "";
+							result = result+'<div id="removeCandidateAlert" ></div>';
+							result = result+'<div id="loading"></div>';
+							if(json.status == '0') {
 								'<sec:authorize access="hasAnyRole(\'ROLE_REACTIVATE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 								result = result + '<div class="project_tabs_inn_head mt10"><div class="anchor-inline"><a href="#" class="positionRelative showInfo"><i class="glyphicon glyphicon-info-sign"></i>Terminated<span class="infoContent col-xs-12 col-md-5"> '+json.terminateReason+' </span></a><a href="javascript:void(0)" onClick="reActivateCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>ReActivate</a> </div>';
 								'</sec:authorize>';
-							}else{
+							} else {
 								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
-								   
 								   if(candidateType == "Candidates"){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
-									   
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   if(isAssociate != "Y"){
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   }
 									   '</sec:authorize>';
-								   }else{
+								   } else {
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
-									   
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   if(isAssociate != 'Y'){
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   }
 									   '</sec:authorize>';
 								   }
-								   
-								   result = result + '</div>';
+								result = result + '</div>';
 							}
 							result = result + '<div id="profileEditPopup"></div>';
 							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
 							result = result +'		<h1>Summary:</h1>';
 							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
-							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
+								result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
 							}
-							else{
-					           	 result = result +'   <textarea placeholder="Enter description" readonly> --</textarea>';
-				    	        }
-							
+							else {
+					        	result = result +'   <textarea placeholder="Enter description" readonly> --</textarea>';
+				    		}
 							result = result +'		<div class="clearfix dashboard-widget candidate-profile mt">';
 							result = result +'		  <ul class="nav nav-tabs">                                                                                                                   ';
 							result = result +'		    <li class="active"><a data-toggle="tab" href="#skills">General View</a></li>                                                              ';
 							//result = result +'		    <li><a data-toggle="tab" href="#milestone">Milestone View</a></li>                                                                        ';
 							result = result +'		  </ul>                                                                                                                                       ';
 							result = result +'		  <div class="tab-content">                                                                                                                   ';
+							 
 							result = result +'		    <div id="skills" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="skills-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view skillsresult">                                                                                                             ';
-							
 							result = result +'		          <!-- Select Skills -->                                                                                                              ';
-							
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
-							if(candidateType == "Candidates"){
+							if(candidateType == "Candidates") {
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 								 '</sec:authorize>';
-							}else{
+							} else {
 								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
 								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 								'</sec:authorize>';
 							}
-							
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
-							
-							
 							result = result +'<div class="clearfix">';
-							
 							result = result + '<select multiple class="chosen-select form-control" name="skillName" id="skillName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
-							$.each( json.allAndCandidateSkills, function( i, skill ){
-								  var existed = 0;
-					                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != ''){
-						                var res = [];
-						                res = json.skillsName.split(",");
-						                res.forEach(function(item) {
-						                	if(skill == item){
-						                		existed = 1;
-						                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
-						                	}
-						                });
-					                }
-					                if(existed == 0){
-					                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
-					                }
-								  
-								});
-							
-							
+							$.each( json.allAndCandidateSkills, function( i, skill ) {
+							  var existed = 0;
+				                if(json.skillsName != null && json.skillsName != 'undefined' && json.skillsName != '') {
+					                var res = [];
+					                res = json.skillsName.split(",");
+					                res.forEach(function(item) {
+					                	if(skill == item){
+					                		existed = 1;
+					                		result = result + ' <option selected value="'+skill+'">'+skill+'</option>';
+					                	}
+					                });
+				                }
+				                if(existed == 0){
+				                	result = result + ' <option value="'+skill+'">'+skill+'</option>';
+				                }
+							});
 			                result = result + '</select>';
 							result = result +'</div>';
-							
 							result = result +'</div>';
-							
 							result = result +'		</div>';
-														
 							result = result + '<div class="clearfix"></div> ';
-							
-							
-							
 							
 							//visa type start
 							result = result +'		    <div id="visa" class="tab-pane fade in active">                                                                                         ';
 							result = result +'		      <div class="visa-summary positionRelative">                                                                                                            ';
 							result = result +'		        <div class="design-view visaresult">                                                                                                             ';
-							
 							result = result +'		          <!-- Select Visa -->                                                                                                              ';
-							
 							result = result +'		<div class="clearfix">';
 							result = result +'		          <h2 class="education  pull-left">Immigration Status:</h2>';
 							if(candidateType == "Candidates"){
@@ -776,13 +959,9 @@ function candidateProfile(candidateId,candidateType){
 								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 								'</sec:authorize>';
 							}
-							
 							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
 							result = result +'		</div>';
-							
-							
-	                     result = result +'<div class="clearfix">';
-							
+	                     	result = result +'<div class="clearfix">';
 							result = result + '<select multiple class="chosen-select form-control" name="visaType" id="visaName" data-validation="validate_Space" data-validation-optional="true">';
 							// here get lookup data skills and manually enter skills 
 							$.each( json.allAndCandidateVisa, function( i, visa ){
@@ -800,20 +979,13 @@ function candidateProfile(candidateId,candidateType){
 					                if(existed == 0){
 					                	result = result + ' <option value="'+visa+'">'+visa+'</option>';
 					                }
-								  
 								});
-							
 			                result = result + '</select>';
 							result = result +'</div>';
 							//visa Type End
-							
-							
-								
 							result = result +'</div>';
 							result = result +'</div>';
 							result = result +'</div> ';						
-							
-							
 							result = result +'<div class="design-view visaresult">';                                                                                                             		          
 							result = result +'<div class="clearfix">';		  
 							result = result +'<h2 class="education  pull-left">Additional Details:</h2>';		
@@ -830,20 +1002,12 @@ function candidateProfile(candidateId,candidateType){
 							result = result +'<div class="clearfix"></div>';
 							result = result +'</ul>';
 							result = result +'</div>';
-							
-							
-
-							
-							
 							//Employee Div
 							result = result + '<div id="employeeSubmissionProfile"></div> '; 
-							
 							//Education Div
 							result = result + '<div id="educationSubmissionProfile"></div> ';
-							
 							//Certification Div
 							result = result + '<div id="certificationSubmissionProfile"></div> ';
-							
 							result = result +'		      </div>                                                                                                                                  ';
 							result = result +'		    </div>                                                                                                                                    ';
 							result = result +'		    <div id="milestone" class="tab-pane fade">                                                                                                ';
@@ -863,11 +1027,9 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-5").empty();  
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
-							
 							employeeSubmissionProfile(candidateId);
 							educationSubmissionProfile(candidateId);
-							certificationSubmissionProfile(candidateId);
-
+							 certificationSubmissionProfile(candidateId); 
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -877,134 +1039,207 @@ function candidateProfile(candidateId,candidateType){
 							     $(".project_tabs_inn").not(tab).css("display", "none");
 							     $(tab).fadeIn();
 							 });
-								
-								$(".btn-addskills").click(function(){
-									$(".add-skills").css({"display":"block","opacity":"1"});
-									$("#skillName").val('');
-									 
-									 $("#skillName").val('').trigger("chosen:updated");
-									 
+							$(".btn-addskills").click(function(){
+								$(".add-skills").css({"display":"block","opacity":"1"});
+								$("#skillName").val('');
+								$("#skillName").val('').trigger("chosen:updated");
 									/* skill auto complete */
-									var config = {
-											  '.chosen-select'           : {},
-											  '.chosen-select-deselect'  : {allow_single_deselect:true},
-											  '.chosen-select-no-single' : {disable_search_threshold:10},
-											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-											  '.chosen-select-width'     : {width:"95%"}
-								    }
-									
-									for (var selector in config) {
-									  $(selector).chosen(config[selector]);
-									}
-									$('.chosen-select').each(function() {
-										var $this = $(this);
-										$this.next().css({'width': '100%'});
-										})
-												
-									
-									});
-								
-								//visa type
-								$(".btn-addvisa").click(function(){
-									$(".add-visa").css({"display":"block","opacity":"1"});
-									$("#visaName").val('');
-									 
-									 $("#visaName").val('').trigger("chosen:updated");
-									 
-									/* visa auto complete */
-									var config = {
-											  '.chosen-select'           : {},
-											  '.chosen-select-deselect'  : {allow_single_deselect:true},
-											  '.chosen-select-no-single' : {disable_search_threshold:10},
-											  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-											  '.chosen-select-width'     : {width:"95%"}
-								    }
-									
-									for (var selector in config) {
-									  $(selector).chosen(config[selector]);
-									}
-									$('.chosen-select').each(function() {
-										var $this = $(this);
-										$this.next().css({'width': '100%'});
-										})
-									});
-								
-								//end visa type
-								
 								var config = {
-										  '.chosen-select'           : {},
-										  '.chosen-select-deselect'  : {allow_single_deselect:true},
-										  '.chosen-select-no-single' : {disable_search_threshold:10},
-										  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-										  '.chosen-select-width'     : {width:"95%"}
-							    }
+									'.chosen-select'           : {},
+									'.chosen-select-deselect'  : {allow_single_deselect:true},
+									'.chosen-select-no-single' : {disable_search_threshold:10},
+									'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+									'.chosen-select-width'     : {width:"95%"}
+								}
 								for (var selector in config) {
-								  $(selector).chosen(config[selector]);
+									$(selector).chosen(config[selector]);
 								}
 								$('.chosen-select').each(function() {
 									var $this = $(this);
 									$this.next().css({'width': '100%'});
-									})
-									
-								$("#skillName").chosen();
-								$("#skillName").prop('disabled', true).trigger("chosen:updated");
-								$(".close-div").click(function(){
-									$(".add-skills").removeClass('add-skills-active');
-									});
-								$(".add-skills").click(function(e){
-									 e.stopPropagation();
-								});
-								
+								})
+							});
+							
+							
+							
+							//tags type
+							$(".btn-addtag").click(function(){
+								$(".add-tag").css({"display":"block","opacity":"1"});
+								$("#tagName").val('');
+								$("#tagName").val('').trigger("chosen:updated");
+								/* tag auto complete */
+								var config = {
+									'.chosen-select'           : {},
+									'.chosen-select-deselect'  : {allow_single_deselect:true},
+									'.chosen-select-no-single' : {disable_search_threshold:10},
+									'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+									'.chosen-select-width'     : {width:"95%"}
+								}
+								for (var selector in config) {
+									$(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+								})
+							});
+							//end of tags type
+							
+							
 								//visa type
-								$("#visaName").chosen();
-								$("#visaName").prop('disabled', true).trigger("chosen:updated");
-								$(".close-div").click(function(){
-									$(".add-visa").removeClass('add-visa-active');
-									});
-								$(".add-visa").click(function(e){
-									 e.stopPropagation();
-								});
+							$(".btn-addvisa").click(function(){
+								$(".add-visa").css({"display":"block","opacity":"1"});
+								$("#visaName").val('');
+								$("#visaName").val('').trigger("chosen:updated");
+								/* visa auto complete */
+								var config = {
+									'.chosen-select'           : {},
+									'.chosen-select-deselect'  : {allow_single_deselect:true},
+									'.chosen-select-no-single' : {disable_search_threshold:10},
+									'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+									'.chosen-select-width'     : {width:"95%"}
+								}
+								for (var selector in config) {
+									$(selector).chosen(config[selector]);
+								}
+								$('.chosen-select').each(function() {
+									var $this = $(this);
+									$this.next().css({'width': '100%'});
+								})
+							});
+								//end visa type
+							var config = {
+								'.chosen-select'           : {},
+								'.chosen-select-deselect'  : {allow_single_deselect:true},
+								'.chosen-select-no-single' : {disable_search_threshold:10},
+								'.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+								'.chosen-select-width'     : {width:"95%"}
+							}
+							for (var selector in config) {
+								$(selector).chosen(config[selector]);
+							}
+							$('.chosen-select').each(function() {
+								var $this = $(this);
+								$this.next().css({'width': '100%'});
+							})
+							
+							$("#skillName").chosen();
+							$("#skillName").prop('disabled', true).trigger("chosen:updated");
+							$(".close-div").click(function(){
+							$(".add-skills").removeClass('add-skills-active');
+							});
+							$(".add-skills").click(function(e){
+								e.stopPropagation();
+							});
+							
+							
+							//tag type
+							$("#tagName").chosen();
+							$("#tagName").prop('disabled', true).trigger("chosen:updated");
+							$(".close-div").click(function(){
+								$(".add-tag").removeClass('add-tag-active');
+							});
+							$(".add-tag").click(function(e){
+								e.stopPropagation();
+							});
+								//end tag type
 								
+								
+							//visa type
+							$("#visaName").chosen();
+							$("#visaName").prop('disabled', true).trigger("chosen:updated");
+							$(".close-div").click(function(){
+								$(".add-visa").removeClass('add-visa-active');
+							});
+							$(".add-visa").click(function(e){
+								e.stopPropagation();
+							});
 								//end visa type
 								
 // 								 $(".addUser-org").click(function(){
 // 									 $(".edit-details").toggleClass("edit-details-active");
 // 									 $(".collapse-div").removeClass("edit-details-active");
 // 								 });
-								 $(".close-div").click(function(){
-									 $(this).parent().toggleClass("edit-details-active");
-									 });
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .edit-details-active").click(function(e){
-									 e.stopPropagation();
-								 });
+							$(".close-div").click(function(){
+								$(this).parent().toggleClass("edit-details-active");
+							});
+							$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details, .edit-details-active").click(function(e){
+								e.stopPropagation();
+							});
 								/*  $('html').click(function(){
 								  $(".edit-details").removeClass("edit-details-active");
 							     });	 */
-							     $("#endDate").click(function(){
-								   $(".endDate").toggle(200);
-							     });
-							     event.preventDefault();
-								   
-              }else{
-                     	 $("#candidateSideDiv").removeAttr("style");
-       	    	         var result ="";
-      		    	     result = result+"   <div class='row'>"; 
-      					 result = result+"	<div class='col-lg-12'>"; 
-      					 result = result+"		<div class='content-area clearfix'>"; 
-      					 result = result+"			<div class='blank-pages'>";
-      					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-      					 result = result+"			        <p>No Candidates Found</p>";
-      					 result = result+"			 </div>";
-      					 result = result+"		</div>"; 
-      					 result = result+"	</div>"; 
-      					 result = result+"  </div> "; 
-      					$("#candidateSideDiv").empty();
-      				    $("#candidateSideDiv").append(result); 
-                      }
-               },
+							$("#endDate").click(function(){
+								$(".endDate").toggle(200);
+							});
+							     /* event.preventDefault(); */
+		              } else {
+							$("#candidateSideDiv").removeAttr("style");
+		       	    	    var result ="";
+		      		    	result = result+"   <div class='row'>"; 
+		      				result = result+"	<div class='col-lg-12'>"; 
+		      				result = result+"		<div class='content-area clearfix'>"; 
+		      				result = result+"			<div class='blank-pages'>";
+		      				result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+		      				result = result+"			        <p>No Candidates Found</p>";
+		      				result = result+"			 </div>";
+		      				result = result+"		</div>"; 
+		      				result = result+"	</div>"; 
+		      				result = result+"  </div> "; 
+		      				$("#candidateSideDiv").empty();
+		      				$("#candidateSideDiv").append(result); 
+					}
+  				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+		},
                  
-            }); 
+	}); 
 }
+</script>
+
+
+<script>
+
+ 
+
+
+function saveCandidateTags(candidateId){
+	 var tagName = $("#tagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&tagName="+""
+	 }
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#loading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		showSuccessStatusPopup("Tags details updated successfully");
+        		var candidateType = "Candidates";
+          	  	candidateProfile(candidateId,candidateType);
+          	  	candidateQuickViewProfile(candidateId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+
 </script>
 
 <script>
@@ -1056,24 +1291,33 @@ function candidateProfile(candidateId,candidateType){
 	 var jsonData = encodeURIComponent(skillName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 if(skillName != null && skillName != '' && skillName !='undefined'){
+	 if(skillName != null && skillName != '' && skillName !='undefined') {
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
-	 }else{
+	 } else {
 		 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-            	  var candidateType = "Candidates";
-            	  candidateProfile(candidateId,candidateType);
-            	  candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(result) {
+        	$("#loading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		showSuccessStatusPopup("Visa details updated successfully");
+        		var candidateType = "Candidates";
+          	  	candidateProfile(candidateId,candidateType);
+          	  	candidateQuickViewProfile(candidateId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
        },
-         
     }); 
-	 
  }  
 </script>
  
@@ -1106,34 +1350,61 @@ function candidateProfile(candidateId,candidateType){
 		rateValidations();
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
 		
-		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){ 
-			
+		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
 			$("#update_candidate").addClass('button').val('Processing..');
-				
-
-			$.ajax({
+			$.post(sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"", formData, function(result) {
+				if (result && result.response === "INVALID_DATA") {
+				    $("#update_candidate").removeAttr("disabled");
+				    $("#update_candidate").removeAttr('button').val('Save');
+				    showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+				    $("#selector11").removeAttr("style");
+				    $("#selector11").css({ display: "block" });
+				    $("#candMsgDivSum").text("Candidate Updated Successfully");
+				    candUpdateMsgFadeinFunction();
+				    candidateQuickViewProfile(candidateId);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    $("#update_candidate").removeAttr("disabled");
+				    showError("Operation failed, please try again");
+				}
+			});
+			/* $.ajax({
 				type : "POST",
         	    data: formData,
 				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
-					if(result && result === "failed") {
-						 $("#update_candidate").removeAttr("disabled");
-						showError("Invalid data");
-					} 
-					else {
-						 $("#selector1").removeAttr("style");
-	         			 $("#selector1").css({ display: "block" });
-			        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
-			        	candUpdateMsgFadeinFunction();
-						candidateQuickViewProfile(candidateId);
+					if (data.indexOf('Sign In') >= 0) {
+						location.replace(sourceleadUrl);
+					} else if (result && result.response === "INVALID_DATA") {
+					    $("#update_candidate").removeAttr("disabled");
+					    $("#update_candidate").removeAttr('button').val('Save');
+					    showError(result.responseMessage);
+					} else if (result.response === "SUCCESS") {
+					    $("#selector1").removeAttr("style");
+					    $("#selector1").css({ display: "block" });
+					    $("#candMsgDiv").html("Success!!  Candidate Updated");
+					    candUpdateMsgFadeinFunction();
+					    candidateQuickViewProfile(candidateId);
+					} else if (result.response === "SESSION_TIMEDOUT") {
+					    location.href = "/login";
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else {
+					    $("#update_candidate").removeAttr("disabled");
+					    showError("Invalid data");
+					    showError("Operation failed, please try again");
 					}
-				},
-			});
+				}
+			}); */
 			return true;
-		 }else{ 
-				return false;
+		 } else { 
+			return false;
 		 } 
 	}
 		 $('body').on('blur','#candidateProfileEdit_form',
@@ -1147,6 +1418,7 @@ function candidateProfile(candidateId,candidateType){
 <script>
 function cancelEdit(){
 	$("#profileEditPopup").empty();
+	$(".location-alert").fadeOut();
 }
 </script>
 
@@ -1247,77 +1519,84 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(json) {
-						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-								$("#employeeSubmissionProfile").empty();
-								var result = "";
-								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-							//	var json = JSON.parse(data);
-								for (var i = 0; i < json.data.length; i++) {
-									var opt = json.data[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									/* 
-									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth;
-									}else{
-										startMonth = " ";
-									} */
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
-										startYear=   opt.startYear;
-									}else{
-										startYear = " ";
-									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth;  
-									} else {
-										endMonth = " ";
-									} */
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
-									result = result +'   <li>';
-									result = result +'   <div class="clearfix">';
-									result = result +' <h3>'+name+'</h3>';
-									result = result +' <p>'+designation+'</p>';
-									result = result +' <p>';
-								    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-								    	result = result + startYear +' To '+endYear; 
-								    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-								    	result = result + startYear; 
-								    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-								    	result = result + endYear; 
-								    }
-									result = result +'  </p>';
-									result = result +'  </div>';
-									result = result +'</li>';
+					success : function(data) {
+						if (data && data.response === "INVALID_DATA") {
+						    $("#update_candidate").removeAttr("disabled");
+						    $("#update_candidate").removeAttr('button').val('Save');
+						    showError(data.responseMessage);
+						} else if (data.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						}  else if (data.response === "SUCCESS") {
+							$("#employeeSubmissionProfile").empty();
+							var result = "";
+							result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+						//	var json = JSON.parse(data);
+							for (var i = 0; i < data.data.length; i++) {
+								var opt = data.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#employeeSubmissionProfile").empty(); 
-								$("#employeeSubmissionProfile").append(result);
-						}
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								/* 
+								 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									startMonth=   opt.startMonth;
+								}else{
+									startMonth = " ";
+								} */
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
+									startYear=   opt.startYear;
+								}else{
+									startYear = " ";
+								}
+								
+								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									endMonth = opt.endMonth;  
+								} else {
+									endMonth = " ";
+								} */
+								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									endYear = opt.endYear;  
+								} else {
+									endYear = " ";
+								}
+								result = result +'   <li>';
+								result = result +'   <div class="clearfix">';
+								result = result +' <h3>'+name+'</h3>';
+								result = result +' <p>'+designation+'</p>';
+								result = result +' <p>';
+							    if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+							    	result = result + startYear +' To '+endYear; 
+							    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+							    	result = result + startYear; 
+							    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+							    	result = result + endYear; 
+							    }
+								result = result +'  </p>';
+								result = result +'  </div>';
+								result = result +'</li>';
+							}
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+							$("#employeeSubmissionProfile").empty(); 
+							$("#employeeSubmissionProfile").append(result);
+						} else if (data.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} 
 					},
-
 				});
 	}
 </script>
@@ -1327,155 +1606,166 @@ function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-	                	 $("#educationSubmissionProfile").empty();
-	                	 var result = "";
-	                	 
-	                	 
-	                	     result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-							
-							
-// 							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.data.length; i++) { 
-		                    	 var opt = json.data[i];  
-		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    		        EducationName = opt.name;
-		                    	    }else{
-		                    	    	EducationName = " ";
-		                    	    }
-			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-			                    	 specialization= '(' + opt.specialization +')';
-		                    	  }else{
-		                    		  specialization= " ";
-		                       	 }
-			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-			                    	 institute = opt.institute;
-		                    	 }else{
-		                    		 institute = " ";
-		                    	 }
-			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-			                    	 Educationgrade= opt.grade + ' , ';
-		                    	 }else{
-		                    		 Educationgrade = ""; 
-		                    	 }
-		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-		                    		 EducationgradeType  = opt.gradeType + ' - ';
-				                 }else{
-				                	 EducationgradeType = " "; 
-				                 }
-		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-		                    		 Educationaddress = ' , ' +opt.address;
-		                    	 }else{
-		                    		 Educationaddress = " ";
-		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr;
-		                    	 }else{
-		                    		 EducationstartDateStr = " ";
-		                    	 }
-		                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-		                    		 EducationendDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationendDateStr = " ";
-		                    	 }
-			                        result = result +'                <li>';
-									result = result +'                  <div class="clearfix">';
-		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
-		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-		                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
-		                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
-		                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
-		                    	    }
-		                    	    result = result +'                  </div>';
-									result = result +'                </li>';
-		                     }
-							
-							
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-						 $("#educationSubmissionProfile").empty(); 
-	                     $("#educationSubmissionProfile").append(result); 
-        	  }
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#educationSubmissionProfile").empty();
+               	 var result = "";
+               	     result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   		        EducationName = opt.name;
+	                    	    }else{
+	                    	    	EducationName = " ";
+	                    	    }
+		                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+		                    	 specialization= '(' + opt.specialization +')';
+	                    	  }else{
+	                    		  specialization= " ";
+	                       	 }
+		                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+		                    	 institute = opt.institute;
+	                    	 }else{
+	                    		 institute = " ";
+	                    	 }
+		                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+		                    	 Educationgrade= opt.grade + ' , ';
+	                    	 }else{
+	                    		 Educationgrade = ""; 
+	                    	 }
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    		 EducationgradeType  = opt.gradeType + ' - ';
+			                 }else{
+			                	 EducationgradeType = " "; 
+			                 }
+	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+	                    		 Educationaddress = ' , ' +opt.address;
+	                    	 }else{
+	                    		 Educationaddress = " ";
+	                    	 }
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr;
+	                    	 }else{
+	                    		 EducationstartDateStr = " ";
+	                    	 }
+	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+	                    		 EducationendDateStr = opt.endDateStr;
+	                    	 }else{
+	                    		 EducationendDateStr = " ";
+	                    	 }
+		                        result = result +'                <li>';
+								result = result +'                  <div class="clearfix">';
+	                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
+	                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
+	                    	    if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	    result = result +'                    <p>'+EducationstartDateStr+' To '+EducationendDateStr+'</p>';
+	                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    	    	result = result +'                    <p>'+EducationstartDateStr+'</p>';
+	                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    	    	result = result +'                    <p>'+EducationendDateStr+'</p>';
+	                    	    }
+	                    	    result = result +'                  </div>';
+								result = result +'                </li>';
+	                     }
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+					 $("#educationSubmissionProfile").empty(); 
+                    $("#educationSubmissionProfile").append(result); 
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 
 
 <script>
-function certificationSubmissionProfile(candidateId){
+function certificationSubmissionProfile(candidateId) {
+	
 	 $.ajax({  
-          type : "GET",
+          type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-	                	 $("#certificationSubmissionProfile").empty();
-	                	 var result = "";
-	                	 
-	                	 result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-// 							 var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-		                    	var opt = json.data[i];  
-		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score =' ( ' + opt.score;
-				            	}else{
-				            		score = " ";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType +' ) ';
-				            	}else{
-				            		scoreType = " ";
-				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = " ";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = " ";
-				            	}
+          success :function(data) {
+        	  if (data && data.response === "INVALID_DATA") {
+      		    showError(data.responseMessage);
+      		} else if (data && data.response === "INVALID_USER") {
+      		    showError(data.responseMessage);
+      		} else if (data.response === "AWKWARD") {
+      		    location.href = "/errorPage";
+				} else if (data.response === "SUCCESS") {
+					$("#certificationSubmissionProfile").empty();
+               	 	var result = "";
+               	 	result = result +'<div class="clearfix design-view">';
+					result = result +'<h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
+					result = result +'<div class="row">';
+					result = result +'<div class="col-md-12">';
+					result = result +'<ul class="list-unstyled personal-info">';
+//						var json = JSON.parse(data);
+					if(data.data.length > 0) {
+						for (var i = 0; i < data.data.length; i++) {
+							var opt = data.data[i]; 
+		                    if(opt.score != null && opt.score != 'undefined' && opt.score != "") {
+				            	score =' ( ' + opt.score;
+				            } else {
+				            	score = " ";
+				            }
+				            if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != "") {
+				            	scoreType = opt.scoreType +' ) ';
+				            } else {
+				            	scoreType = " ";
+				            }
+				            if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "") {
+				            	candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+				            } else {
+				            	candidatevalidFromDateToString = " ";
+				            }
+				            if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != "") {
+				            	candidatevalidToDateToString = opt.candidatevalidToDateToString;
+				            } else {
+				            	candidatevalidToDateToString = " ";
+				            }
 				            	
-								result = result +'                <li>';
-								result = result +'                  <div class="clearfix">';
-								result = result +'                    <h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
-								result = result +'                    <p>'+opt.provider+' </p>';
-								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
-										opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'                    <p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
-								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-									result = result +'                    <p> '+candidatevalidFromDateToString+'</p>';
-								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'                    <p> '+candidatevalidToDateToString+'</p>';
-								}
-								result = result +'                  </div>';
-								result = result +'                </li>';
+							result = result +'<li>';
+							result = result +'<div class="clearfix">';
+							result = result +'<h3>'+opt.name+' <span class="small text-muted">&nbsp;'+score+'  '+scoreType+'</span></h3>';
+							result = result +'<p>'+opt.provider+' </p>';
+							if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && 
+									opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != "") {
+									result = result +'<p> '+candidatevalidFromDateToString+' TO '+candidatevalidToDateToString+'</p>';
+							} else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "") {
+								result = result +'<p> '+candidatevalidFromDateToString+'</p>';
+							} else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != "") {
+								result = result +'<p> '+candidatevalidToDateToString+'</p>';
 							}
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-							
-							$("#certificationSubmissionProfile").empty();
-							$("#certificationSubmissionProfile").append(result); 
-        	  }
+							result = result +'</div>';
+							result = result +'</li>';
+						}
+					}
+					result = result +'</ul>';
+					result = result +'</div>';
+					result = result +'</div>';
+					result = result +'</div>';
+						
+					$("#certificationSubmissionProfile").empty();
+					$("#certificationSubmissionProfile").append(result); 
+				} else if (data.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} 
         },
-          
      }); 
 }
 </script>
@@ -1530,21 +1820,33 @@ function updateDesignationOtherType(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType="+candidateType, 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#candidateType').val(); 
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  $("#update_candidate").attr("disabled", "disabled");
-						  $("#update_candidate").addClass('button').val('Processing..');
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#update_candidate" ).addClass('button').val('Save');
-                         $("#update_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#candidateType').val(); 
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  $("#update_candidate").attr("disabled", "disabled");
+							  $("#update_candidate").addClass('button').val('Processing..');
+			        	}
+			        	else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_candidate" ).addClass('button').val('Save');
+	                         $("#update_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>'); 
 	 }
 	 }else{
 		 $('#update_candidate').removeAttr('disabled');
@@ -1562,29 +1864,30 @@ function updateDesignationOtherType(){
 function rateValidations(){
 	
 var rateType = document.getElementById("expectedRateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#expectedRateType').removeAttr('data-validation');
-	 $('#expectedRateType').attr("data-validation-optional","true"); 
-}
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+		 $('#expectedRateType').removeAttr('data-validation');
+		 $('#expectedRateType').attr("data-validation-optional","true"); 
+	}
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	 $('#expectedRateType').removeAttr('data-validation-optional');
-	 $('#expectedRateType').attr("data-validation","required"); 
-}else{
-$('#expectedRateType').removeAttr('data-validation');
-$('#expectedRateType').attr("data-validation-optional","true"); 
-}
+	if(expectedRate != null && expectedRate != ""){
+		 $('#expectedRateType').removeAttr('data-validation-optional');
+		 $('#expectedRateType').attr("data-validation","required"); 
+		 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#expectedRateType').removeAttr('data-validation');
+		$('#expectedRateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -1594,12 +1897,12 @@ var currentRateType = document.getElementById("currentRateType").value;
 	
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
 		 $('#currentRateType').attr("data-validation","required"); 
+		 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 	 }else{
-	 $('#currentRateType').removeAttr('data-validation');
-	 $('#currentRateType').attr("data-validation-optional","true"); 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 }
 </script>
@@ -1769,7 +2072,7 @@ function  removeValiationVendorContact() {
 
 
 <script>  
- function saveVisas(candidateId){
+ function saveVisas(candidateId) {
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
@@ -1783,15 +2086,59 @@ function  removeValiationVendorContact() {
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-            	  var candidateType = "Candidates";
-           	  	  candidateProfile(candidateId,candidateType);
-            	  //candidateQuickViewProfile(candidateId);
-            	  $("#loading").removeAttr('style');
+         success :function(result) {
+            	  	$("#loading").removeAttr('style');
+      				if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+              		showError(result.responseMessage);
+              		} else if (result.response === "AWKWARD") {
+              	    	location.href = "/errorPage";
+              		} else if (result.response === "SUCCESS") {
+              			showSuccessStatusPopup("Visa details updated successfully");
+              			var candidateType = "Candidates";
+              	  	  	candidateProfile(candidateId,candidateType);
+               	  	//candidateQuickViewProfile(candidateId);
+              		} else if (result.indexOf('Sign In') !== -1) {
+	              		location.replace(sourceleadUrl);
+	              	} else {
+	              	    showError("Operation failed, please try again");
+	              	}            	  
        },
-         
     }); 
+
 	 
  }  
+ 
+ function cleardateofBirth(){
+		$("#dateofbirth-candidate").val("");
+		};
+		
 </script>
+
+<script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+	
+	
+function showSuccessStatusPopup(status) {
+	$("#statusAlert").css("display","block");
+	$("#statusAlert span").html(status);
+/* 	setTimeout(function(){
+		$("#statusAlert").css("display","none");				 			
+	},2000); */
+    $('#statusAlert').delay(2000).fadeOut('slow');
+}	
+</script>
+
+
+ 
 

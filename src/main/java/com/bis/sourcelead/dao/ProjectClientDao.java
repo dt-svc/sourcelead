@@ -10,7 +10,7 @@ public interface ProjectClientDao {
 	
     List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long locationsId,Long userId) throws Exception;
     
-    List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId,Long locationsId) throws Exception;
+    List<ProjectClients> getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(Long userId,Long locationsId,String isGlobalUser,String purpose) throws Exception;
     
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationId(Long projectId,Long orgLocationsId) throws Exception;
 	
@@ -26,5 +26,15 @@ public interface ProjectClientDao {
 	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception;
 	
 	List<Long> getProjectClientsListByOrgRelationsListAndOrgLocationsId(List<Long> orgRelationId, Long orgLocationsId) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId,Long orgId) throws Exception;
+	
+	List<Long> getProjectClientsIDsByProjectId(Long projectId) throws Exception;
+	
+	ProjectClients getProjectClientsById(Long id) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndLevel(Long projectid,Integer level) throws Exception;
+	
+	List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception;
 
 }

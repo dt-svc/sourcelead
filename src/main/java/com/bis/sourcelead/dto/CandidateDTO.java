@@ -1,13 +1,15 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
-
 public class CandidateDTO extends SearchDTO{
 
 	private Long id;
@@ -36,6 +38,16 @@ public class CandidateDTO extends SearchDTO{
 	private String firstName;
 
 	private String lastName;
+	
+	private String maritalStatus;
+	
+	private String gender;
+	
+	private String middleName;
+	
+	private String dateofBirth;
+	
+	private String panNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -72,9 +84,12 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String vendor;
 
 	private String designation;
 
+    @Required(desc = "designation type")
 	private String designationType;
 
 	private String designationOtherType;
@@ -91,6 +106,7 @@ public class CandidateDTO extends SearchDTO{
 
 	private String expectedRateCurrencey;
 
+	@CleanHtml(escape=false)
 	private String summary;
 
 	private String visaType;
@@ -215,9 +231,39 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String vendorSpocId;
 	
+	private Long requirementId;
+	
+	private String docFile;
+	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
+	 
+	 private Long userId;
+	 
+	 private BigInteger candId;
+	 
+	 private Set<String> tagsList;
+	 
+	 private Set<String> candidateTagsList;
+	 
+	 private String candidateTags;
+	 
+	 private String generatedId;
+
+	 private String uploadId;
+	 
+	private String userCode; 
+	
+	private String timePeriod;
+		
+	private String customStartDate;
+		
+	private String customEndDate;
+	
+	private Integer submittedJobsCount;
+	
+	private String defaultOrgProbationPeriod;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1051,6 +1097,176 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setTeams(String teams) {
 		this.teams = teams;
+	}
+
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public BigInteger getCandId() {
+		return candId;
+	}
+
+	public void setCandId(BigInteger candId) {
+		this.candId = candId;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(String docFile) {
+		this.docFile = docFile;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
+	}
+
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+	
+	public String getUploadId() {
+		return uploadId;
+	}
+
+	public void setUploadId(String uploadId) {
+		this.uploadId = uploadId;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public String getTimePeriod() {
+		return timePeriod;
+	}
+
+	public void setTimePeriod(String timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+
+	public String getCustomStartDate() {
+		return customStartDate;
+	}
+
+	public void setCustomStartDate(String customStartDate) {
+		this.customStartDate = customStartDate;
+	}
+
+	public String getCustomEndDate() {
+		return customEndDate;
+	}
+
+	public void setCustomEndDate(String customEndDate) {
+		this.customEndDate = customEndDate;
+	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	public String getDefaultOrgProbationPeriod() {
+		return defaultOrgProbationPeriod;
+	}
+
+	public void setDefaultOrgProbationPeriod(String defaultOrgProbationPeriod) {
+		this.defaultOrgProbationPeriod = defaultOrgProbationPeriod;
 	}
 	
 }

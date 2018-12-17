@@ -12,14 +12,16 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmissionHistoryService {
@@ -64,6 +66,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
+		requirementSubmissionHistory.setMasterUserCode(requirementSubmission.getCreatedBy());
 		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
@@ -156,10 +159,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 
 	@Override
-	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+	public Integer getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception {
 		
-		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC);
+		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC,isGlobalUser);
 	}
 
 	@Override
@@ -172,6 +175,30 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
 			throws Exception {
 		return requirementSubmissionHistoryDao.addRequirementHistory(requirementSubmissionHistory);
+	}
+
+	@Override
+	public RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, String startDateUTC, String endDateUTC, String isGlobalUser,Long orgId) throws Exception {
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC, isGlobalUser,orgId);
+	}
+
+	@Override
+	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
+			List<String> userCodeList, String startDateUTC, String endDateUTC,
+			String isGlobalUser, Long orgId) throws Exception {
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode, String stage,Date[] searchDates) throws Exception {
+		
+		return requirementSubmissionHistoryDao.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,stage,searchDates);
+	}
+
+	@Override
+	public int updateSourceUserCodeForSubmissionHistory() {
+		return requirementSubmissionHistoryDao.updateSourceUserCodeForSubmissionHistory();
 	}
 
 }

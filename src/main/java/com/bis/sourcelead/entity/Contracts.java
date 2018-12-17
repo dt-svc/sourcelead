@@ -3,7 +3,9 @@ package com.bis.sourcelead.entity;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,12 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -47,7 +51,7 @@ public class Contracts {
 	private String typeOfContract;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY) 
+	@ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 
 	 
@@ -65,7 +69,7 @@ public class Contracts {
 	@Column(name = "JOIN_DATE")
 	private Date joinDate;
 	
-	@Column(name = "WORK_LOCATION")
+	@Column(name = "WORK_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String workLocation;
 	
 	@Column(name = "INITIATOR_TYPE")
@@ -206,123 +210,191 @@ public class Contracts {
 	@Column(name = "REJECTED_REASON" , columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
 	
+	@Column(name = "REVISED_REASON" , columnDefinition = "TEXT default NULL")
+	private String revisedReason;
+	
 	@Column(name = "TEMPLATE_FILE_URL")
 	private String templateFileURL;
 	
+	@Column(name = "AUTO_GEN_ID")
+	private String autoGenId;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@JsonBackReference
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "contract")
+	private Set<ContractOwnerHierarchy> ownerHierarchyList;
+	
 	@Transient
+	@JsonProperty
 	private String ownerName;
 	
 	@Transient
+	@JsonProperty
 	private String vendorContactName;
 	
 	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String endDateStr;
 
 	@Transient
+	@JsonProperty
 	private String parentId;
 	
 	@Transient
+	@JsonProperty
 	private Integer reqDocCount;
 	
 	@Transient
+	@JsonProperty
 	List<Contracts> vendorcontractsList;
 	
 	@Transient
+	@JsonProperty
 	List<Contracts> clientcontractsList;
 	
 	@Transient
+	@JsonProperty
 	List<Contracts> fullTimeoffercontractsList;
 
 	@Transient
+	@JsonProperty
 	List<ContractRequestDocuments>	contractRequestDocumentsList;
 	
 	@Transient
+	@JsonProperty
 	private String tempEnvId;
 
 	@Transient
+	@JsonProperty
 	private String tempdocId;
 	
 	@Transient
+	@JsonProperty
 	private String approverUserName;
 	
 	@Transient
+	@JsonProperty
 	private String contactUserName;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalDraftCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalWTACount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalWTSCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalWTVCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalFinalizedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalExpiredCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalRejectedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalDraftVendorCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalDraftClientCount;
 	
 	@Transient
+	@JsonProperty
 	private String createdDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String updatedDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String joinedDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String createdByName;
 	
 	@Transient
+	@JsonProperty
 	private String updatedByName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementName;
 	
 	@Transient
+	@JsonProperty
 	private String applicantName;
 	
 	@Transient
+	@JsonProperty
 	private String templateName;
 	
 	@Transient
+	@JsonProperty
 	private String offerValue;
 	
 	@Transient
+	@JsonProperty
 	private String contractWith;
 	
 	@Transient
+	@JsonProperty
 	private String empName;
 	
 	@Transient
+	@JsonProperty
 	private String tempUUID;
 	
 	@Transient
+	@JsonProperty
 	private Long approverUserId;
 	
 	@Transient
+	@JsonProperty
 	private Long ownerUser;
 	
 	@Transient
 	@JsonProperty
 	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String ownersType;
+	
+	@Transient
+	@JsonProperty
+	private Long sequentialOwner1;
+	
+	@Transient
+	@JsonProperty
+	private Long sequentialOwner2;
+	
+	@Transient
+	@JsonProperty
+	private Long parallelOwner;
+	
+	@Transient
+	@JsonProperty
+	private List<Long> parallelOwnerId;
 	
 	@Transient
 	@JsonProperty
@@ -332,6 +404,17 @@ public class Contracts {
 	@JsonProperty
 	private Map<Long,String> newContractCustomFieldlabelNameAndValue;
 	
+	@Transient
+	@JsonProperty
+	private String isParentContract;
+	
+	@Transient
+    @JsonProperty
+    private String contractTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
 	
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
@@ -1109,5 +1192,110 @@ public class Contracts {
 	public void setNewContractCustomFieldlabelNameAndValue(Map<Long, String> newContractCustomFieldlabelNameAndValue) {
 		this.newContractCustomFieldlabelNameAndValue = newContractCustomFieldlabelNameAndValue;
 	}
-	
+
+	public Set<ContractOwnerHierarchy> getOwnerHierarchyList()
+	{
+		return ownerHierarchyList;
+	}
+
+	public void setOwnerHierarchyList(Set<ContractOwnerHierarchy> ownerHierarchyList)
+	{
+		this.ownerHierarchyList = ownerHierarchyList;
+	}
+
+	public String getOwnersType()
+	{
+		return ownersType;
+	}
+
+	public void setOwnersType(String ownersType)
+	{
+		this.ownersType = ownersType;
+	}
+
+	public Long getSequentialOwner1()
+	{
+		return sequentialOwner1;
+	}
+
+	public void setSequentialOwner1(Long sequentialOwner1)
+	{
+		this.sequentialOwner1 = sequentialOwner1;
+	}
+
+	public Long getSequentialOwner2()
+	{
+		return sequentialOwner2;
+	}
+
+	public void setSequentialOwner2(Long sequentialOwner2)
+	{
+		this.sequentialOwner2 = sequentialOwner2;
+	}
+
+	public Long getParallelOwner()
+	{
+		return parallelOwner;
+	}
+
+	public void setParallelOwner(Long parallelOwner)
+	{
+		this.parallelOwner = parallelOwner;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
+	}
+
+	public String getAutoGenId()
+	{
+		return autoGenId;
+	}
+
+	public void setAutoGenId(String autoGenId)
+	{
+		this.autoGenId = autoGenId;
+	}
+
+	public String getIsParentContract()
+	{
+		return isParentContract;
+	}
+
+	public void setIsParentContract(String isParentContract)
+	{
+		this.isParentContract = isParentContract;
+	}
+
+	public List<Long> getParallelOwnerId()
+	{
+		return parallelOwnerId;
+	}
+
+	public void setParallelOwnerId(List<Long> parallelOwnerId)
+	{
+		this.parallelOwnerId = parallelOwnerId;
+	}
+
+	public String getContractTags() {
+		return contractTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setContractTags(String contractTags) {
+		this.contractTags = contractTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
 }

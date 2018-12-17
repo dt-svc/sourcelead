@@ -2,9 +2,12 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +16,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Shivayogi
@@ -65,6 +71,19 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ADDRESS")
 	private String address;
 	
+	// immigration related files purpose start
+	
+	@Column(name = "EDUCATION_FILE_CONTENT_TYPE")
+	private String educationFileContentType;
+	
+	@Column(name = "EDUCATION_FILE_URL",columnDefinition = "TEXT default NULL")
+	private String educationFileUrl;
+	
+	@Column(name = "EDUCATION_FILE_NAME")
+	private String educationFileName;
+	
+	// immigration related files purpose end
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -80,16 +99,21 @@ public class CandidateEducation implements Serializable{
 	@Column(name = " STATUS")
 	private Integer status;
 	
+	@OneToMany(mappedBy = "candidateEducation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<CandidateEducationHistory> candidateEducationHistoryList = new HashSet<CandidateEducationHistory>(0);
+	
 	@Transient
     private long candidateEduId;
 	
 	@Transient
+	@JsonProperty
     private String startDateStr;
 	
 	@Transient
 	private String msg;
 	
 	@Transient
+	@JsonProperty
 	private String endDateStr;
 	
 	@Transient
@@ -273,6 +297,39 @@ public class CandidateEducation implements Serializable{
 	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations) {
 		this.allAndCandidateEducations = allAndCandidateEducations;
 	}
+
+	public String getEducationFileContentType() {
+		return educationFileContentType;
+	}
+
+	public void setEducationFileContentType(String educationFileContentType) {
+		this.educationFileContentType = educationFileContentType;
+	}
+
+	public String getEducationFileUrl() {
+		return educationFileUrl;
+	}
+
+	public void setEducationFileUrl(String educationFileUrl) {
+		this.educationFileUrl = educationFileUrl;
+	}
+
+	public String getEducationFileName() {
+		return educationFileName;
+	}
+
+	public void setEducationFileName(String educationFileName) {
+		this.educationFileName = educationFileName;
+	}
+
+	public Set<CandidateEducationHistory> getCandidateEducationHistoryList() {
+		return candidateEducationHistoryList;
+	}
+
+	public void setCandidateEducationHistoryList(Set<CandidateEducationHistory> candidateEducationHistoryList) {
+		this.candidateEducationHistoryList = candidateEducationHistoryList;
+	}
+	
 	
 	
 }

@@ -37,7 +37,7 @@ window.onload = function () {
      <h3 id="role"></h3>
 	<select id="test-select" multiple="multiple">
 		 <c:forEach var="action" items="${actionsList}">
-		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName == 'Receivable' || action.tabs.tabName == 'Payables' ? 'Billing' : action.tabs.tabName == 'My Expenses' || action.tabs.tabName == 'Expenses Approval' ? 'Expenses' : action.tabs.tabName == 'Blogs' || action.tabs.tabName == 'User Manuals' ? 'Resources' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
+		  <option value="${action.id}" data-section="${action.tabs.tabName == 'My Timesheets' || action.tabs.tabName == 'Timesheet Approval' ? 'Timesheets' : action.tabs.tabName == 'Associates List' ? 'Associates' : action.tabs.tabName == 'Receivable' || action.tabs.tabName == 'Payables' ? 'Billing' : action.tabs.tabName == 'My Expenses' || action.tabs.tabName == 'Expenses Approval' ? 'Expenses' : action.tabs.tabName == 'Blogs' || action.tabs.tabName == 'User Manuals' ? 'Resources' : action.tabs.tabName == 'Immigrations' || action.tabs.tabName == 'My Immigration' ? 'Immigration'  : action.tabs.tabName == 'Run Payroll' || action.tabs.tabName == 'My Payroll' ? 'Pay Roll' : action.tabs.tabName}" ${action.isActionConfigured  == 'Y' ? 'selected' : ''} >${action.actionName}</option>
 	     </c:forEach>
     </select>
      </div>
@@ -111,13 +111,7 @@ function cancel(){
  <script type="text/javascript">
  // Multiselect script
       var roleName = '${roleName}';
-      if(roleName == 'ROLE_ADMIN'){
-    	  $("#test-select").treeMultiselect({ enableSelectAll: false},roleName);
-      }else{
-    	  $("#test-select").treeMultiselect({ enableSelectAll: true },roleName);
-      }
-      
-      
+      $("#test-select").treeMultiselect({ enableSelectAll: true},roleName);
     </script>
     
     
@@ -125,7 +119,7 @@ function cancel(){
     <script type="text/javascript">
 	function saveActions() {
 		
-		var roleId = '${roleId}';
+		var uuid = '${uuid}';
 		var sourceleadUrl = '${sourceleadUrl}';
 		var actionIds = [];
 		  
@@ -137,10 +131,10 @@ function cancel(){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&roleId="+roleId+"&actionIds="+actionIds,
+		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&actionIds="+actionIds,
 		        success: function(result) {
 		        	if((result == 'success')){
-		        		location.replace(sourceleadUrl+"/enrollRoleActions?roleId="+roleId); 
+		        		location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
 			        } 
 		        },
 		 }); 

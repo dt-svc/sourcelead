@@ -688,6 +688,18 @@ jQueryFormUtils.validateFloat = function(val) {
 	return val.match(/^-?\d*(\.\d+)?$/)!==null;
 };
 
+
+/**
+ * Validate LCA Number start letter or number and allow -(hyphen)
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateLcaNum = function(val) {
+	return val.match(/(^[a-zA-Z]?-)\d+(-\d+)*$|^\d+(-\d+)*$/)!==null;
+};
+
+//  \d+[a-zA-Z]|[a-zA-Z]+\d
 /**
  * Validate that given value is a number
  *
@@ -698,6 +710,17 @@ jQueryFormUtils.validateInteger = function(val) {
     return val !== '' && val.replace(/[0-9]/g, '') === '';
 };
 
+
+
+/**
+ * Validate that given value is a number starts from 1
+ *
+ * @param {String} val
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateIntegerStartfrom = function(val) {
+	return val !== '' && val.replace(/^[1-9][0-9]*/g,'') === '';
+};
 /**
  * Has month only 30 days?
  *
@@ -1023,11 +1046,19 @@ jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
 
+//******************Validate Allow at least one numeric,alphabet******
+jQueryFormUtils.validateAtleastOneNumericAlphabet = function(val) {
+	return val.trim().match(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/) !== null;
+};
+
 //**** validate Alphanumeric value must start with Alphabet and contains numeric and SpecialChar
 jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
 	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
 };
 
+jQueryFormUtils.validateNumber = function(val) {
+	return val.trim().match(/^-?\d+\.?\d*$/) !== null;
+};
 
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
@@ -1035,7 +1066,7 @@ jQueryFormUtils.validatespace = function(val) {
 };
 
 jQueryFormUtils.validatefile_image = function(val) {
-    return val.toLowerCase().match(/(.*)(jpg|gif|png)$/) !== null;
+    return val.toLowerCase().match(/(.*)(jpg|JPG|png|gif)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_doc = function(val) {
@@ -1049,12 +1080,23 @@ jQueryFormUtils.validatefile_docimgpdf = function(val) {
 jQueryFormUtils.validatefile_resume = function(val) {
     return val.toLowerCase().match(/(.*)(docx|doc|pdf|rtf)$/) !== null;
 };
+
+//images
+
+jQueryFormUtils.validatefile_img = function(val) {
+    return val.toLowerCase().match(/(.*)(jpg|jpeg|png|gif)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_pdf = function(val) {
     return val.toLowerCase().match(/(.*)(pdf)$/) !== null;
 };
 
 jQueryFormUtils.validate_importFile = function(val) {
     return val.toLowerCase().match(/(.*)(csv|xls|xlsx)$/) !== null;
+};
+
+jQueryFormUtils.validate_xls_importFile = function(val) {
+    return val.toLowerCase().match(/(.*)(xls|xlsx)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_csv = function(val) {
@@ -1127,6 +1169,11 @@ jQueryFormUtils.validateName = function(val) {
         if (validationRules.indexOf('validate_max_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length')) {
             return validationErrorMsg || language.tooLongStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
         }
+        
+     	// fixed length
+        if ((validationRules.indexOf('fixed_length') > -1 && value.length < jQueryFormUtils.attrInt(validationRules, 'length')) || (validationRules.indexOf('fixed_length') > -1 && value.length > jQueryFormUtils.attrInt(validationRules, 'length'))) {
+            return validationErrorMsg || fieldname + language.fixedSizeStart + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
+        }
 
         // Length range
         if (validationRules.indexOf('validate_length') > -1) {
@@ -1160,6 +1207,15 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_int') > -1 && !jQueryFormUtils.validateInteger(value)) {
             return validationErrorMsg || language.badInt;
         }
+        
+        else if (validationRules.indexOf('validate_intFromOne') > -1 && !jQueryFormUtils.validateIntegerStartfrom(value)) {
+            return validationErrorMsg || language.badIntFromOne;
+        }
+        
+        // LCA Number
+        else if (validationRules.indexOf('validate_LcaNum') > -1 && !jQueryFormUtils.validateLcaNum(value)) {
+            return validationErrorMsg || language.badLCA;
+        }
 
         // Time
         else if (validationRules.indexOf('validate_time') > -1 && !jQueryFormUtils.validateTime(value)) {
@@ -1179,6 +1235,11 @@ jQueryFormUtils.validateName = function(val) {
         // Phone number
         else if (validationRules.indexOf('validate_phone') > -1 && !jQueryFormUtils.validatePhoneNumber(value)) {
             return validationErrorMsg || language.badTelephone;
+        }
+        
+        // Number
+        else if (validationRules.indexOf('validate_number') > -1 && !jQueryFormUtils.validateNumber(value)) {
+            return validationErrorMsg || language.badNumber;
         }
         
         //ExtNo
@@ -1215,6 +1276,12 @@ jQueryFormUtils.validateName = function(val) {
             return validationErrorMsg || language.badResume;
         }
         
+        //simple img file check
+        
+        else if (validationRules.indexOf('validateImg') > -1 && !jQueryFormUtils.validatefile_img(value, validationRules)) {
+            return validationErrorMsg || language.badImage;
+        }
+        
         // simple File Pdf check
         else if (validationRules.indexOf('validatepdf') > -1 && !jQueryFormUtils.validatefile_pdf(value, validationRules)) {
             return validationErrorMsg || language.badPdf;
@@ -1225,6 +1292,10 @@ jQueryFormUtils.validateName = function(val) {
             return validationErrorMsg || language.badImportFile;
         }
         
+        // simple File .xls and xlsx
+        else if (validationRules.indexOf('validate_xls_importFile') > -1 && !jQueryFormUtils.validate_xls_importFile(value, validationRules)) {
+            return validationErrorMsg || language.badXlsImportFile;
+        }
         
 		 // simple File csv check
         else if (validationRules.indexOf('validatecsv') > -1 && !jQueryFormUtils.validatefile_csv(value, validationRules)) {
@@ -1295,6 +1366,10 @@ jQueryFormUtils.validateName = function(val) {
 // Validate if  Must start with Alphabet - Alphanumeric allowed
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
+      }
+     // Validate Allow at least one numeric,alphabet
+        else if (validationRules.indexOf('validate_AtLeastOneAlphaNumber') > -1 && !jQueryFormUtils.validateAtleastOneNumericAlphabet(value)) {
+            return validationErrorMsg || language.badAtLeastOneAlphaNumber;
       }
      // Validate if  Must start with Alphabet - Alphanumeric and special characters allowed       
         else if(validationRules.indexOf('validate_AlphaNumeric_SpecialChar') > -1 && !jQueryFormUtils.validateAlphaNumericSpecialChar(value)) {
@@ -1372,13 +1447,15 @@ jQueryFormUtils.LANG =  {
     errorTitle : 'Form submission failed!',
     requiredFields : ' is required',
     badTime : 'You have not given a correct time',
-    badEmail : 'You have not given a correct e-mail address',
+    badEmail : 'Incorrect email ID/ Please enter a valid email ID',
 	badzipcode: 'Zip code is invalid for the Selected Country',
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
+    badNumber : 'you entered invalid number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
+    fixedSizeStart : ' length should be ',
     tooLongStart : 'You have given an answer longer than ',
     tooLongEnd : ' characters',
     tooShortStart : 'You have given an answer shorter than ',
@@ -1391,6 +1468,8 @@ jQueryFormUtils.LANG =  {
     badFloat : 'Incorrect float value',
     badCustomVal : 'This is Custom Validation',
     badInt : 'Incorrect integer value',
+    badIntFromOne :'Must not Start With Zero',
+    badLCA : 'Incorrect LCA Number',
     badSecurityNumber : 'Your social security number was incorrect',
     badUKVatAnswer : 'Incorrect UK VAT Number',
     badNumberOfSelectedOptionsStart : 'You have to choose at least ',
@@ -1406,6 +1485,7 @@ jQueryFormUtils.LANG =  {
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
 	badNumberAndAlphabet:'Allows Only Alphanumeric',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
+	badAtLeastOneAlphaNumber:'Allow Only Alphanumeric and at Least One Alphabet and Number',
 	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',
@@ -1413,6 +1493,7 @@ jQueryFormUtils.LANG =  {
 	badResume:'Invalid Resume Type Use .doc,.docx,.pdf,.rtf formats only',
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',
+	badXlsImportFile:'Invalid File Type. Use xls and xlsx formats only',
 	badCsv:'Invalid Document Type Use .csv,txt formats only',
 	badMaskPhone:'Invalid characters in phone number',
 	badMaskZipCode:'Invalid characters in Zip Code',

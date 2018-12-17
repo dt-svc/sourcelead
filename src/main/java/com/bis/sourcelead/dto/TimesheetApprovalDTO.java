@@ -15,6 +15,7 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private String timesheetFrequency;
 	private String weekFrequency;
 	private String client;
+	private String project;
 	private String stage;
 	private Long userId;
 	private Long projectMembersId;
@@ -25,10 +26,12 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	private LinkedHashSet<String> timesheetFrequencyList;
 	private Map<String,String> weekFrequencyList;
 	private Map<Long,String> clientList;
+	private Map<Long,String> projectList;
 	private LinkedHashSet<String> stagesList;
 	private List<String> dataTableWeekDateList;
 	private LinkedHashMap<Date,Date> displayWeekList;
 	private List<TimesheetApprovalSubmissionDetailsDTO> timesheetSubmission;
+	private String projectName;
 	
 	private String exportType;
 	private int totalRows;
@@ -188,7 +191,23 @@ public class TimesheetApprovalDTO extends SearchDTO implements Serializable {
 	public void setTableRowFor(String tableRowFor) {
 		this.tableRowFor = tableRowFor;
 	}
-
-	
+	public String getProjectName() {
+		return projectName;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+	public Map<Long, String> getProjectList() {
+		return projectList;
+	}
+	public void setProjectList(Map<Long, String> projectList) {
+		this.projectList = projectList;
+	}
+	public String getProject() {
+		return project;
+	}
+	public void setProject(String project) {
+		this.project = project;
+	}
 	
 }

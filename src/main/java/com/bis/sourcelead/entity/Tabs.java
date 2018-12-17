@@ -49,6 +49,10 @@ public class Tabs implements Serializable{
     @Column(name = "STATUS", nullable = false)
    	private Integer status;
     
+    @Column(name = "TAB_ICON")
+	private String tabIcon;
+	
+    
     
 
 	public Long getId() {
@@ -97,6 +101,14 @@ public class Tabs implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getTabIcon() {
+		return tabIcon;
+	}
+
+	public void setTabIcon(String tabIcon) {
+		this.tabIcon = tabIcon;
 	}
     
     

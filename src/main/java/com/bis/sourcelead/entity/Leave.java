@@ -38,8 +38,7 @@ public class Leave {
     private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne(cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SELECT)
+	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "LEAVE_TYPE_ID", nullable = false)
 	private LeaveType leaveType;
@@ -66,6 +65,18 @@ public class Leave {
 	
 	@Column(name = "TO_HALF_DAY")
 	private String toHalfDay;
+	
+	@Column(name = "FROM_DATE_FROM_TIME")
+	private String fromDateFromHalfTime;
+	
+	@Column(name = "FROM_DATE_TO_TIME")
+	private String fromDateToHalfTime;
+	
+	@Column(name = "TO_DATE_FROM_TIME")
+	private String toDateFromHalfTime;
+	
+	@Column(name = "TO_DATE_TO_TIME")
+	private String toDateToHalfTime;
 
 //	 
 	@Column(name = "FILE_CONTENT_TYPE")
@@ -128,10 +139,17 @@ public class Leave {
 	@Column(name = "LEAVE_UUID")
 	private String leaveUUID;
 	
+	@Column(name = "NOTIFY_TO_OTHERS")
+	private String notifyToOthers;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
 	private Set<LeaveApproveHierarchy> approverHierarchyList;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leave")
+	private Set<AppliedLeaveDate> appliedLeaveDateSet;
 	
 	@Transient
 	@JsonProperty
@@ -463,4 +481,54 @@ public class Leave {
 		this.leaveUUID = leaveUUID;
 	}
 
+	public Set<AppliedLeaveDate> getAppliedLeaveDateSet()
+	{
+		return appliedLeaveDateSet;
+	}
+
+	public void setAppliedLeaveDateSet(Set<AppliedLeaveDate> appliedLeaveDateSet)
+	{
+		this.appliedLeaveDateSet = appliedLeaveDateSet;
+	}
+
+	public String getFromDateFromHalfTime() {
+		return fromDateFromHalfTime;
+	}
+
+	public void setFromDateFromHalfTime(String fromDateFromHalfTime) {
+		this.fromDateFromHalfTime = fromDateFromHalfTime;
+	}
+
+	public String getFromDateToHalfTime() {
+		return fromDateToHalfTime;
+	}
+
+	public void setFromDateToHalfTime(String fromDateToHalfTime) {
+		this.fromDateToHalfTime = fromDateToHalfTime;
+	}
+
+	public String getToDateFromHalfTime() {
+		return toDateFromHalfTime;
+	}
+
+	public void setToDateFromHalfTime(String toDateFromHalfTime) {
+		this.toDateFromHalfTime = toDateFromHalfTime;
+	}
+
+	public String getToDateToHalfTime() {
+		return toDateToHalfTime;
+	}
+
+	public void setToDateToHalfTime(String toDateToHalfTime) {
+		this.toDateToHalfTime = toDateToHalfTime;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
+	}
+	
 }

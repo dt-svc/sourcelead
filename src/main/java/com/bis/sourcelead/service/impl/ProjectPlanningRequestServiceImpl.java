@@ -1,7 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,20 +10,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.mail.internet.InternetAddress;
-
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.ProjectPlanningNewResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectPlanningRequestDao;
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AssociateRequestDTO;
+import com.bis.sourcelead.dto.ProjectResourceRequestDTO;
+import com.bis.sourcelead.dto.ResourceRequestDTO;
+import com.bis.sourcelead.dto.ResourcesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -35,6 +39,7 @@ import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -72,6 +77,12 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 CandidateDao candidateDao;
+	 
+	 @Autowired
+	 UserRoleDao userRoleDao;
 
 	@Autowired
 	ProjectPlanningNewResourceRequestDao projectPlanningNewResourceRequestDao;
@@ -81,42 +92,35 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		}
 
 	@Override
-	public void saveProjectPlanningRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,
-			String projectUUID,String saveType) throws JSONException, Exception {
+	public void saveProjectPlanningRequest(ProjectResourceRequestDTO  resourceRequestDTO, User loginUser, OrgLocations orgLocations) throws JSONException, Exception {
 		
 		ProjectPlanningRequest projectPlanningRequest  = null;
-		if(jsonObj.has("savedPlanningRequestUUID") && !"".equalsIgnoreCase(jsonObj.getString("savedPlanningRequestUUID"))){
-			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(jsonObj.getString("savedPlanningRequestUUID"));
-		}else{
+		if(StringUtils.isNotEmpty(resourceRequestDTO.getSavedPlanningRequestUUID())){
+			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(resourceRequestDTO.getSavedPlanningRequestUUID());
+		}else {
 			projectPlanningRequest = new ProjectPlanningRequest();
 			projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_ASSOCIATE_REQUEST);
 		}
-		
-		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
-			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
+		 
+		if(StringUtils.isNotEmpty(resourceRequestDTO.getRequestId())){
+			projectPlanningRequest.setRequestId(resourceRequestDTO.getRequestId());
 		}
 		
-		if(!isNullOrEmpty(projectUUID)){
-			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
+		if(!isNullOrEmpty(resourceRequestDTO.getProjectUUID())){
+			Projects projects = projectsDao.getProjectByProjectUUID(resourceRequestDTO.getProjectUUID());
 			projectPlanningRequest.setProjectId(projects);
 			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
 		
-		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
-			projectPlanningRequest.setDescription(jsonObj.getString("description"));
+		if(!isNullOrEmpty(resourceRequestDTO.getDescription())){
+			projectPlanningRequest.setDescription(resourceRequestDTO.getDescription());
+		}
+		 
+		
+		if(!isNullOrEmpty(resourceRequestDTO.getEstimatedBudgetCurrencyType())){
+			projectPlanningRequest.setEstimatedBudgetCurrency(resourceRequestDTO.getEstimatedBudgetCurrencyType());
 		}
 		
-		if(jsonObj.has("approver") && !"".equalsIgnoreCase(jsonObj.getString("approver"))){
-			User approverUser = userDao.getUserById(Long.valueOf(jsonObj.getString("approver")));
-			projectPlanningRequest.setApproverUser(approverUser);
-			projectPlanningRequest.setApproverName(approverUser.getFullName());
-			
-		}
-		
-		
-		if(jsonObj.has("estimatedBudgetCurrencyType") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudgetCurrencyType"))){
-			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
-		}
 		
 		projectPlanningRequest.setOrgLocationId(orgLocations);
 		projectPlanningRequest.setRequestedUser(loginUser.getFullName());
@@ -143,25 +147,26 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 }
 		}
 		
-		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = getResourceRequestList(resourceRequestDTO,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
 		projectPlanningRequest.setProjectPlanningResourceRequestList(projectPlanningResourceRequestList);
 		projectPlanningRequest.setRequestedResources(projectPlanningResourceRequestList.size()+approvedResources.size());
 		projectPlanningRequest.setAllocatedResources(0);
 		
-		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+		if(!isNullOrEmpty(resourceRequestDTO.getEstimatedHrs())){
+				projectPlanningRequest.setEstimatedHours(Double.valueOf(resourceRequestDTO.getEstimatedHrs())+approvedResourcesEstHours);
+			}
+			
+		if(!isNullOrEmpty(resourceRequestDTO.getEstimatedBudget())){
+				projectPlanningRequest.setEstimatedBudget(Double.valueOf(resourceRequestDTO.getEstimatedBudget())+approvedResourcesEstBudget);
+			}
+			
+		if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 		}
 		
-		if(jsonObj.has("estimatedHrs") && !"".equalsIgnoreCase(jsonObj.getString("estimatedHrs"))){
-			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("estimatedHrs"))+approvedResourcesEstHours);
-		}
-		
-		if(jsonObj.has("estimatedBudget") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudget"))){
-			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("estimatedBudget"))+approvedResourcesEstBudget);
-		}
-		
+	
 		projectPlanningRequestDao.saveProjectPlanningRequest(projectPlanningRequest);
 		
 		if(null != resourceRequestIds && resourceRequestIds.size() > 0){
@@ -171,7 +176,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			}
 		}
 		
-		if(!isNullOrEmpty(saveType) && !saveType.equalsIgnoreCase("Draft")){
+		if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && !resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 				sendMailToApprover(projectPlanningRequest,loginUser,orgLocations);	
 		}
 		
@@ -182,64 +187,53 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	public void sendMailToApprover(ProjectPlanningRequest projectPlanningRequest,User loginUser,OrgLocations orgLocations) throws Exception{
 		
-		EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setFirstName(loginUser.getFirstName());
-        emailMessage.setLastName(loginUser.getLastName());
-        emailMessage.setToEmail(projectPlanningRequest.getApproverUser().getEmail());
-        emailMessage.setFromEmail(loginUser.getEmail());
-        emailMessage.setCreatedBy(loginUser.getUserCode());
-        emailMessage.setFromEmail(loginUser.getEmail());
-        emailMessage.setCreatedBy(loginUser.getUserCode());
-        emailMessage.setFromName(projectPlanningRequest.getRequestedUser());
-        emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-       
-        Map<String, String> globalVarsMap = new HashMap<String, String>();
-        globalVarsMap.put("projectName", projectPlanningRequest.getProjectName());
-        globalVarsMap.put("approverName", projectPlanningRequest.getApproverName());
-        globalVarsMap.put("loginUserName", loginUser.getFullName());
-        globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
-        globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
-        globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
-        StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-        
-        Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
-        globalVarsMap.put("resourceCount", String.valueOf(projectPlanningResourceRequestList.size()));
-        String resourceTable = getRequestedResourcesTable(projectPlanningResourceRequestList);
-        globalVarsMap.put("resourceTable", resourceTable);
-        
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-        EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-        
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-        notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-        StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
-         
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+		Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
+		 for(ProjectPlanningResourceRequest planningResourceRequest : projectPlanningResourceRequestList){
+			 
+			   EmailMessage emailMessage = new EmailMessage();
+		        emailMessage.setFirstName(loginUser.getFirstName());
+		        emailMessage.setLastName(loginUser.getLastName());
+		        emailMessage.setToEmail(planningResourceRequest.getApproverUser().getEmail());
+		        emailMessage.setFromEmail(loginUser.getEmail());
+		        emailMessage.setCreatedBy(loginUser.getUserCode());
+		        emailMessage.setFromName(projectPlanningRequest.getRequestedUser());
+		        emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		       
+		        Map<String, String> globalVarsMap = new HashMap<String, String>();
+		        globalVarsMap.put("projectName", projectPlanningRequest.getProjectName());
+		        globalVarsMap.put("approverName", planningResourceRequest.getApproverName());
+		        globalVarsMap.put("loginUserName", loginUser.getFullName());
+		        globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
+		        DecimalFormat df = new DecimalFormat("0.##");    
+		        globalVarsMap.put("estimatedHours", String.valueOf(df.format(planningResourceRequest.getEstimatedHours())));
+		        globalVarsMap.put("estimatedBudget", planningResourceRequest.getEstimatedBudgetCurrency()+" "+planningResourceRequest.getEstimatedBudget());
+		        StringBuilder linkBuild = new StringBuilder();
+		        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		        
+		       
+		        globalVarsMap.put("resourceCount", "1");
+		        String resourceTable = getRequestedResourcesTable(planningResourceRequest);
+		        globalVarsMap.put("resourceTable", resourceTable);
+		        
+		        EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+		        
+		        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		        notificationScenario.setBody(notificationbody);
+		        
+				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
+
+		        StringBuilder notificationLink = new StringBuilder();
+		        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+		         
+		        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
+		 }
+		
+		
 	}
 	
 	
-	private String getRequestedResourcesTable(Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList) throws Exception{
-		
-		
+	private String getRequestedResourcesTable(ProjectPlanningResourceRequest planningResourceRequest) throws Exception{
 		 String tempHTML = null;
-		 
-		 
 		 tempHTML = "<table style='display:table-cell;vertical-align:middle'>";
 		 tempHTML = tempHTML+"<tr align='center'>";
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Resource Name<span></th>";
@@ -251,19 +245,36 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		 tempHTML = tempHTML+"<th style='padding:5px 10px' width='20%' bgcolor='#5bace8'><span>Estimated Budget<span></th>";
 		 tempHTML = tempHTML+"</tr>";
 		 
-		 for(ProjectPlanningResourceRequest planningResourceRequest : projectPlanningResourceRequestList){
-			
+				 
 			 tempHTML = tempHTML+"<tr align='center'>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getCandidateName()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getPayRateStr()+"</td>";
 			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getBillRateStr()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getStartDateStr()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEndDateStr()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEstimatedHours()+"</td>";
-			 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEstimatedBudgetCurrency()+" "+planningResourceRequest.getEstimatedBudget()+"</td>";
+			 if(planningResourceRequest.getStartDateStr() != null) {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getStartDateStr()+"</td>";
+			 }else {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>--</td>";
+			 }
+			 if(planningResourceRequest.getEndDateStr() != null) {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEndDateStr()+"</td>";
+			 }else {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>--</td>";
+			 }
+			
+			 if(planningResourceRequest.getEstimatedHours() != null && planningResourceRequest.getEstimatedHours() > 0) {
+				 DecimalFormat df = new DecimalFormat("0.##");
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+df.format(BigDecimal.valueOf(planningResourceRequest.getEstimatedHours()))+"</td>";
+			 }else {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>--</td>";
+
+			 }
+			 if(planningResourceRequest.getEstimatedBudget() != null && planningResourceRequest.getEstimatedBudget() > 0) {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>&nbsp;"+planningResourceRequest.getEstimatedBudgetCurrency()+" "+BigDecimal.valueOf(planningResourceRequest.getEstimatedBudget())+"</td>";
+			 }else {
+				 tempHTML = tempHTML+"<td style='padding:5px 10px' bgcolor='#f2f2f2'>--</td>";
+			 }
 			 tempHTML = tempHTML+"</tr>";
 			 
-		 }
 		 tempHTML = tempHTML+"</table>";
 		 
 		 return tempHTML;
@@ -271,49 +282,49 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 	
 	
 	@Override
-	public void saveProjectNewResourceRequest(JSONObject jsonObj, User loginUser, OrgLocations orgLocations,String projectUUID, String saveType) throws JSONException, Exception {
+	public void saveProjectNewResourceRequest(ResourceRequestDTO  resourceRequestDTO, User loginUser, OrgLocations orgLocations) throws JSONException, Exception {
 		
 		ProjectPlanningRequest projectPlanningRequest  = null;
-		if(jsonObj.has("savedPlanningRequestUUID") && !"".equalsIgnoreCase(jsonObj.getString("savedPlanningRequestUUID"))){
-			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(jsonObj.getString("savedPlanningRequestUUID"));
+		if(StringUtils.isNotEmpty(resourceRequestDTO.getSavedPlanningRequestUUID())){
+			projectPlanningRequest = projectPlanningRequestDao.getProjectPlanningRequestByRequestUUID(resourceRequestDTO.getSavedPlanningRequestUUID());
 		}else{
 			projectPlanningRequest = new ProjectPlanningRequest();
 			projectPlanningRequest.setRequestType(Constants.RESOURCE_REQUEST_NEW_REQUEST);
 		}
 		
-		if(jsonObj.has("requestId") && !"".equalsIgnoreCase(jsonObj.getString("requestId"))){
-			projectPlanningRequest.setRequestId(jsonObj.getString("requestId"));
+		if(resourceRequestDTO.getRequestId() != null ){
+			projectPlanningRequest.setRequestId(resourceRequestDTO.getRequestId());
 		}
 		
-		if(!isNullOrEmpty(projectUUID)){
-			Projects projects = projectsDao.getProjectByProjectUUID(projectUUID);
+		if(!isNullOrEmpty(resourceRequestDTO.getProjectUUID())){
+			Projects projects = projectsDao.getProjectByProjectUUID(resourceRequestDTO.getProjectUUID());
 			projectPlanningRequest.setProjectId(projects);
 			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
-		if(jsonObj.has("description") && !"".equalsIgnoreCase(jsonObj.getString("description"))){
-			projectPlanningRequest.setDescription(jsonObj.getString("description"));
+		if(resourceRequestDTO.getDescription() != null){
+			projectPlanningRequest.setDescription(resourceRequestDTO.getDescription());
 		}
-		if(jsonObj.has("approver") && !"".equalsIgnoreCase(jsonObj.getString("approver"))){
-			User approverUser = userDao.getUserById(Long.valueOf(jsonObj.getString("approver")));
+		if(resourceRequestDTO.getApprover() != null){
+			User approverUser = userDao.getUserById(Long.valueOf(resourceRequestDTO.getApprover()));
 			projectPlanningRequest.setApproverUser(approverUser);
 			projectPlanningRequest.setApproverName(approverUser.getFullName());
 			
 		}
 		
-		if(jsonObj.has("totalResourcesValue") && !"".equalsIgnoreCase(jsonObj.getString("totalResourcesValue"))){
-			projectPlanningRequest.setRequestedResources(jsonObj.getInt("totalResourcesValue"));
+		if(resourceRequestDTO.getTotalResourcesValue() > 0){
+			projectPlanningRequest.setRequestedResources(resourceRequestDTO.getTotalResourcesValue());
 		}
 		
-		if(jsonObj.has("totalEstHours") && !"".equalsIgnoreCase(jsonObj.getString("totalEstHours"))){
-			projectPlanningRequest.setEstimatedHours(Double.valueOf(jsonObj.getString("totalEstHours")));
+		if(resourceRequestDTO.getTotalEstHours() != null){
+			projectPlanningRequest.setEstimatedHours(Double.valueOf(resourceRequestDTO.getTotalEstHours()));
 		}
 		
-		if(jsonObj.has("totalEstBudget") && !"".equalsIgnoreCase(jsonObj.getString("totalEstBudget"))){
-			projectPlanningRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString("totalEstBudget")));
+		if(resourceRequestDTO.getTotalEstBudget() != null){
+			projectPlanningRequest.setEstimatedBudget(Double.valueOf(resourceRequestDTO.getTotalEstBudget()));
 		}
 		
-		if(jsonObj.has("estimatedBudgetCurrencyType") && !"".equalsIgnoreCase(jsonObj.getString("estimatedBudgetCurrencyType"))){
-			projectPlanningRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
+		if(resourceRequestDTO.getEstimatedBudgetCurrencyType() != null){
+			projectPlanningRequest.setEstimatedBudgetCurrency(resourceRequestDTO.getEstimatedBudgetCurrencyType());
 		}
 		
 		projectPlanningRequest.setOrgLocationId(orgLocations);
@@ -330,12 +341,11 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			 resourceRequestIds = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 		}
 		
-		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(jsonObj,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations,saveType);
+		Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList = getNewResourceRequestList(resourceRequestDTO,loginUser,projectPlanningRequest,resourceRequestIds,orgLocations);
 		projectPlanningRequest.setProjectPlanningNewResourceRequestList(projectPlanningNewResourceRequestList);
-//		projectPlanningRequest.setRequestedResources(projectPlanningNewResourceRequestList.size());
 		projectPlanningRequest.setAllocatedResources(0);
 		
-		if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+		if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
 		}else{
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
@@ -350,7 +360,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			}
 		}
 		
-		if(!isNullOrEmpty(saveType) && !saveType.equalsIgnoreCase("Draft")){
+		if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && !resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 			sendMailToNewResourceRequestApprover(projectPlanningRequest,loginUser,orgLocations);
 		}
 		
@@ -375,7 +385,8 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         globalVarsMap.put("approverName", projectPlanningRequest.getApproverName());
         globalVarsMap.put("loginUserName", loginUser.getFullName());
         globalVarsMap.put("loginOrgName", orgLocations.getOrgLocationName());
-        globalVarsMap.put("estimatedHours", String.valueOf(BigDecimal.valueOf(projectPlanningRequest.getEstimatedHours())));
+        DecimalFormat df = new DecimalFormat("0.##");  
+        globalVarsMap.put("estimatedHours", String.valueOf(df.format(BigDecimal.valueOf(projectPlanningRequest.getEstimatedHours()))));
         globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+BigDecimal.valueOf(projectPlanningRequest.getEstimatedBudget()));
         StringBuilder linkBuild = new StringBuilder();
         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
@@ -385,29 +396,15 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         String resourceTable = getNewRequestedResourcesTable(projectPlanningNewResourceRequestList);
         globalVarsMap.put("resourceTable", resourceTable);
         
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
 	
 private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceRequest> projectPlanningNewResourceRequestList) throws Exception{
@@ -429,18 +426,10 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	tempHTML = tempHTML+"<tbody>";
 		
 	 for(ProjectPlanningNewResourceRequest planningResourceRequest : projectPlanningNewResourceRequestList){
-		 Integer minEx = 0;
-		 Integer MaxEx = 0;
 		 String starDate = "";
 		 String endDate = "";
 		 String billRate = "";
 		 String payRate = "";
-		if(planningResourceRequest.getMinExperience() != null){
-			 minEx = planningResourceRequest.getMinExperience();
-		}
-		if(planningResourceRequest.getMaxExperience() != null){
-			MaxEx = planningResourceRequest.getMaxExperience();
-		}
 		if(planningResourceRequest.getStartDateStr() != null && planningResourceRequest.getStartDateStr() !=""){
 			starDate = planningResourceRequest.getStartDateStr();
 		}else{
@@ -467,9 +456,16 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getNoOfResource()+"</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>";
 	 tempHTML = tempHTML+"		<div style='float:left; width:80px;'>";
-	 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+minEx+"</div>";
-	 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+MaxEx+"</div>";
-	 tempHTML = tempHTML+"			<div style='float:left; width:30px; text-align:center;'>Yr(s)</div>";
+	 if(planningResourceRequest.getMinExperience() != null && planningResourceRequest.getMaxExperience() != null ) {
+		 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+planningResourceRequest.getMinExperience()+" To </div>";
+		 tempHTML = tempHTML+"			<div style='float:left; width:25px; text-align:center;'>"+planningResourceRequest.getMaxExperience()+" Year(s)</div>";
+	 }else if(planningResourceRequest.getMinExperience() != null && planningResourceRequest.getMaxExperience() == null){
+		 tempHTML = tempHTML+"			<div style='float:left; width:60px; text-align:center;'>"+planningResourceRequest.getMinExperience()+" Year(s) </div>";
+	 }else if(planningResourceRequest.getMinExperience() == null && planningResourceRequest.getMaxExperience() != null){
+		 tempHTML = tempHTML+"			<div style='float:left; width:60px; text-align:center;'>"+planningResourceRequest.getMaxExperience()+" Year(s)</div>";
+	 }else if(planningResourceRequest.getMinExperience() == null && planningResourceRequest.getMaxExperience() == null){
+		 tempHTML = tempHTML+"			<div style='float:left; width:60px; text-align:center;'>--</div>";
+	 }
 	 tempHTML = tempHTML+"		</div>";
 	 tempHTML = tempHTML+"	</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getSkills()+"</td>";
@@ -487,7 +483,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 tempHTML = tempHTML+"	</td>";
 	 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+planningResourceRequest.getConsultingType()+"</td>";
 	 if(planningResourceRequest.getEstimatedHours() != null) {
-		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+BigDecimal.valueOf(planningResourceRequest.getEstimatedHours())+"</td>";
+		 DecimalFormat df = new DecimalFormat("0.##");  
+		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>"+df.format(BigDecimal.valueOf(planningResourceRequest.getEstimatedHours()))+"</td>";
 	 }else {
 		 tempHTML = tempHTML+"	<td style='background:#f2f2f2; vertical-align:top;'>--</td>";
 
@@ -506,115 +503,125 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	 return tempHTML;
 }
 
-	private Set<ProjectPlanningResourceRequest> getResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations,String saveType) throws Exception {
+	private Set<ProjectPlanningResourceRequest> getResourceRequestList(ProjectResourceRequestDTO resourceRequestDTO, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds,OrgLocations orgLocations) throws Exception {
 		
 		 Set<ProjectPlanningResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedResourceRequests = new ArrayList<Long>();
-		 
-		/* String pattern = "dd-MM-yyyy";
-	     SimpleDateFormat format = new SimpleDateFormat(pattern);*/
-		 
-		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxTsRowNum"));
-		 
-		 for(int i=1;i<=maxRowCount;i++){
-			 if(jsonObj.has(i+"candidateId") && !isNullOrEmpty(jsonObj.getString(i+"candidateId"))){
-				 ProjectPlanningResourceRequest resourceRequest = new ProjectPlanningResourceRequest();
-				 
-				 if(jsonObj.has(i+"resourceRequestId") &&  null != jsonObj.getString(i+"resourceRequestId") && !"".equalsIgnoreCase(jsonObj.getString(i+"resourceRequestId"))){
-					 resourceRequest.setId(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
-					 ProjectPlanningResourceRequest savedresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+		 if(resourceRequestDTO.getAssociateResources() != null && !resourceRequestDTO.getAssociateResources().isEmpty()) {
+		 for(AssociateRequestDTO associateRequestDTO:resourceRequestDTO.getAssociateResources()) {
+			 if(StringUtils.isEmpty(associateRequestDTO.getCandidateId()))
+				 continue;
+			  ProjectPlanningResourceRequest resourceRequest = new ProjectPlanningResourceRequest();
+			  
+			  if(!isNullOrEmpty(associateRequestDTO.getResourceRequestId())){
+					 resourceRequest.setId(Long.valueOf(associateRequestDTO.getResourceRequestId()));
+					 ProjectPlanningResourceRequest savedresourceRequest = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestById(Long.valueOf(associateRequestDTO.getResourceRequestId()));
 					 resourceRequest.setRequestUUID(savedresourceRequest.getRequestUUID());
 					 resourceRequest.setRejectedReason(savedresourceRequest.getRejectedReason());
-					 
 					 if(!isNullOrEmpty(savedresourceRequest.getResourceStatus()) && savedresourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
 						 resourceRequest.setResourceStatus(savedresourceRequest.getResourceStatus());
 					 }
-					 
-					 updatedResourceRequests.add(Long.valueOf(jsonObj.getString(i+"resourceRequestId")));
+					 updatedResourceRequests.add(Long.valueOf(associateRequestDTO.getResourceRequestId()));
 				 }else{
 					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 }
-				 
-				 
-				 Candidate candidate = new Candidate();
-				 candidate.setId(Long.valueOf(jsonObj.getString(i+"candidateId")));
+			  
+			  
+				 Candidate candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(associateRequestDTO.getCandidateId()));
 				 resourceRequest.setCandidateId(candidate);
 				 
-				 
-				 
-				 if(jsonObj.has(i+"candidateFullName") && !isNullOrEmpty(jsonObj.getString(i+"candidateFullName"))){
-					 resourceRequest.setCandidateName(jsonObj.getString(i+"candidateFullName"));
+				 if(!isNullOrEmpty(associateRequestDTO.getCandidateFullName())){
+					 resourceRequest.setCandidateName(associateRequestDTO.getCandidateFullName());
 				 }
 				 
-				 if(jsonObj.has(i+"candidatePayRate") && !isNullOrEmpty(jsonObj.getString(i+"candidatePayRate"))){
-					 resourceRequest.setPayRate(Double.valueOf(jsonObj.getString(i+"candidatePayRate")));
+				 if(!isNullOrEmpty(associateRequestDTO.getCandidatePayRate())){
+					 resourceRequest.setPayRate(Double.valueOf(associateRequestDTO.getCandidatePayRate()));
 				 }
 				 
-				 if(jsonObj.has(i+"candidatePayRateCurrency") && !isNullOrEmpty(jsonObj.getString(i+"candidatePayRateCurrency"))){
-					 resourceRequest.setPayRateCurrency(jsonObj.getString(i+"candidatePayRateCurrency"));
+				 if(!isNullOrEmpty(associateRequestDTO.getCandidatePayRateCurrency())){
+					 resourceRequest.setPayRateCurrency(associateRequestDTO.getCandidatePayRateCurrency());
 				 }
 				 
-				 if(jsonObj.has(i+"candidatePayRateType") && !isNullOrEmpty(jsonObj.getString(i+"candidatePayRateType"))){
-					 resourceRequest.setPayRateType(jsonObj.getString(i+"candidatePayRateType"));
+				 if(!isNullOrEmpty(associateRequestDTO.getCandidatePayRateType())){
+					 resourceRequest.setPayRateType(associateRequestDTO.getCandidatePayRateType());
 				 }
 				 
-				 if(jsonObj.has(i+"billRate") && !isNullOrEmpty(jsonObj.getString(i+"billRate"))){
-					 resourceRequest.setBillRate(Double.valueOf(jsonObj.getString(i+"billRate")));
+				 if(!isNullOrEmpty(associateRequestDTO.getBillRate())){
+					 resourceRequest.setBillRate(Double.valueOf(associateRequestDTO.getBillRate()));
 				 }else{
 					 resourceRequest.setBillRate(null);
 				 }
 				 
-				 if(jsonObj.has(i+"billRateCurrency") && !isNullOrEmpty(jsonObj.getString(i+"billRateCurrency"))){
-					 resourceRequest.setBillRateCurrency(jsonObj.getString(i+"billRateCurrency"));
+				 if(!isNullOrEmpty(associateRequestDTO.getBillRateCurrency())){
+					 resourceRequest.setBillRateCurrency(associateRequestDTO.getBillRateCurrency());
 				 }
 				 
-				 if(jsonObj.has(i+"billRateRateType") && !isNullOrEmpty(jsonObj.getString(i+"billRateRateType"))){
-					 resourceRequest.setBillRateType(jsonObj.getString(i+"billRateRateType"));
+				 if(!isNullOrEmpty(associateRequestDTO.getBillRateRateType())){
+					 resourceRequest.setBillRateType(associateRequestDTO.getBillRateRateType());
 				 }
 				 
-				 if(jsonObj.has(i+"requestStartDate") && !isNullOrEmpty(jsonObj.getString(i+"requestStartDate"))){
-					 Date requestStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(i+"requestStartDate"));
+				 if(!isNullOrEmpty(associateRequestDTO.getRequestStartDate())){
+					 Date requestStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),associateRequestDTO.getRequestStartDate());
 					 resourceRequest.setStartDate(requestStartDate);
-				 }else{
-					 resourceRequest.setStartDate(null);
 				 }
 				 
-				 if(jsonObj.has(i+"requestEndDate") && !isNullOrEmpty(jsonObj.getString(i+"requestEndDate"))){
-					 Date requestEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString(i+"requestEndDate"));
+				 if(!isNullOrEmpty(associateRequestDTO.getRequestEndDate())){
+					 Date requestEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),associateRequestDTO.getRequestEndDate());
 					 resourceRequest.setEndDate(requestEndDate);
 				 }else{
 					 resourceRequest.setEndDate(null);
 				 }
 				 
-				 if(jsonObj.has(i+"consultingType") && !isNullOrEmpty(jsonObj.getString(i+"consultingType"))){
-					 resourceRequest.setConsultingType(jsonObj.getString(i+"consultingType"));
+				 if(!isNullOrEmpty(associateRequestDTO.getConsultingType())){
+					 resourceRequest.setConsultingType(associateRequestDTO.getConsultingType());
 				 }else{
 					 resourceRequest.setConsultingType(null);
 				 }
 				 
-				 if(jsonObj.has(i+"estHours") && !isNullOrEmpty(jsonObj.getString(i+"estHours"))){
-					 resourceRequest.setEstimatedHours(Double.valueOf(jsonObj.getString(i+"estHours")));
+				 if(!isNullOrEmpty(associateRequestDTO.getEstHours())){
+					 resourceRequest.setEstimatedHours(Double.valueOf(associateRequestDTO.getEstHours()));
 				 }else{
 					 resourceRequest.setEstimatedHours(null);
 				 }
 				 
-				 if(jsonObj.has("estimatedBudgetCurrencyType") && !isNullOrEmpty(jsonObj.getString("estimatedBudgetCurrencyType"))){
-					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("estimatedBudgetCurrencyType"));
+				
+				 if(!isNullOrEmpty(associateRequestDTO.getEstimatedBudgetCurrencyType())){
+					 resourceRequest.setEstimatedBudgetCurrency(associateRequestDTO.getEstimatedBudgetCurrencyType());
 				 }
 				 
-				 if(jsonObj.has(i+"estBudget") && !isNullOrEmpty(jsonObj.getString(i+"estBudget"))){
-					 resourceRequest.setEstimatedBudget(Double.valueOf(jsonObj.getString(i+"estBudget")));
+				 
+				 if(!isNullOrEmpty(associateRequestDTO.getEstBudget())){
+					 resourceRequest.setEstimatedBudget(Double.valueOf(associateRequestDTO.getEstBudget()));
 				 }else{
 					 resourceRequest.setEstimatedBudget(null);
 				 }
 				 
-				 
-			    if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
+			     if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
-				}else{
+				 }else{
 					 resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 				}
-				 
+			     
+			     
+			     if(candidate.getConsultantUser() != null){
+			    	    UserRole userRole = userRoleDao.getUserDetailsByUserIdAndLocationId(candidate.getConsultantUser().getId(), candidate.getOrgLocationId().getId()); 
+			    	    if(userRole.getResourceManager() != null) {
+			    	    	resourceRequest.setApproverUser(userRole.getResourceManager());
+				    	    resourceRequest.setApproverName(userRole.getResourceManager().getFullName());
+			    	    }else {
+			    	    	resourceRequest.setApproverUser(orgLocations.getUser());
+				    	    resourceRequest.setApproverName(orgLocations.getUser().getFullName());
+			    	    }
+			    	    
+						
+					}
+			     
+			     if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
+			    	 	resourceRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
+					}else{
+						resourceRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+					}
+			     
 				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
@@ -623,9 +630,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 resourceRequest.setCreatedDate(new Date());
 				 resourceRequest.setUpdatedDate(new Date());
 				 resourceRequestSet.add(resourceRequest);
-			 }
+		    }
 		 }
-		 
 		 
 		 if(null != projectPlanningRequest.getId()){
 			 updatedResourceRequests.retainAll(resourceRequestIds);
@@ -636,99 +642,94 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 	}
 
 	
-	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(JSONObject jsonObj, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations,String saveType) throws Exception {
+	private Set<ProjectPlanningNewResourceRequest> getNewResourceRequestList(ResourceRequestDTO resourceRequestDTO, User loginUser,ProjectPlanningRequest projectPlanningRequest,List<Long> resourceRequestIds, OrgLocations orgLocations) throws Exception {
 		 Set<ProjectPlanningNewResourceRequest> resourceRequestSet = new HashSet<>();
 		 List<Long> updatedNewResourceRequests = new ArrayList<Long>();
-	     //SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
-		 int maxRowCount = Integer.parseInt(jsonObj.getString("maxRecCount"));
-		 for(int i=1;i<=maxRowCount;i++){
-			 if(jsonObj.has("noOfResources"+i) && !isNullOrEmpty(jsonObj.getString("noOfResources"+i))){
+		 if(resourceRequestDTO.getPlanningResources() != null && !resourceRequestDTO.getPlanningResources().isEmpty()) {
+			 for(ResourcesDTO resourcesDTO:resourceRequestDTO.getPlanningResources()) {
+				 if(StringUtils.isEmpty(resourcesDTO.getNoOfResources()))
+					 continue;
 				 ProjectPlanningNewResourceRequest resourceRequest = new ProjectPlanningNewResourceRequest();
-				 resourceRequest.setNoOfResource(jsonObj.getInt("noOfResources"+i));
-				 
-				 if(jsonObj.has("resourceRequestId"+i) &&  null != jsonObj.getString("resourceRequestId"+i) && !"".equalsIgnoreCase(jsonObj.getString("resourceRequestId"+i))){
-					 resourceRequest.setId(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));
+				 resourceRequest.setNoOfResource(Integer.parseInt(resourcesDTO.getNoOfResources()));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getResourceRequestId())){
+					 resourceRequest.setId(Long.valueOf(resourcesDTO.getResourceRequestId()));
 					 
-					 ProjectPlanningNewResourceRequest savedNewResourceRequest = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestById(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));
+					 ProjectPlanningNewResourceRequest savedNewResourceRequest = projectPlanningNewResourceRequestDao.getProjectPlanningNewResourceRequestById(Long.valueOf(resourcesDTO.getResourceRequestId()));
 					 resourceRequest.setRequestUUID(savedNewResourceRequest.getRequestUUID());
 					 resourceRequest.setRejectedReason(savedNewResourceRequest.getRejectedReason());
 					 
 					 if(!isNullOrEmpty(savedNewResourceRequest.getResourceStatus()) && savedNewResourceRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
 						 resourceRequest.setResourceStatus(savedNewResourceRequest.getResourceStatus());
 					 }
-					 updatedNewResourceRequests.add(Long.valueOf(jsonObj.getString("resourceRequestId"+i)));	 
+					 updatedNewResourceRequests.add(Long.valueOf(resourcesDTO.getResourceRequestId()));	 
 				 }else{
 					 resourceRequest.setRequestUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				 }
 				 
-				if(jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
-					resourceRequest.setRoleId(null);
-					 resourceRequest.setRoleName(jsonObj.getString("role"+i));
-					 if(jsonObj.has("customRole"+i) && !isNullOrEmpty(jsonObj.getString("customRole"+i))){
-						 resourceRequest.setOtherRole(jsonObj.getString("customRole"+i));
+				 
+				 if(StringUtils.isNotEmpty(resourcesDTO.getRoleId()) && resourcesDTO.getRoleId().equalsIgnoreCase("Other")){
+						resourceRequest.setRoleId(null);
+						 resourceRequest.setRoleName(resourcesDTO.getRoleId());
+						 if(StringUtils.isNotEmpty(resourcesDTO.getCustomRole())){
+							 resourceRequest.setOtherRole(resourcesDTO.getCustomRole());
+						 }
+						 
+					}else if(StringUtils.isNotEmpty(resourcesDTO.getRoleId())){
+						if(!resourcesDTO.getRoleId().equalsIgnoreCase("Other")){
+							Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(resourcesDTO.getRoleId()));
+							 resourceRequest.setRoleId(roles);
+							 resourceRequest.setRoleName(roles.getDisplayName());	
+						}
 					 }
-					 
-				}else if(jsonObj.has("role"+i) && !isNullOrEmpty(jsonObj.getString("role"+i))){
-					if(!jsonObj.getString("role"+i).equalsIgnoreCase("Other")){
-						Roles roles = rolesServiceImpl.getRolesById(Long.parseLong(jsonObj.getString("role"+i)));
-						 resourceRequest.setRoleId(roles);
-						 resourceRequest.setRoleName(roles.getDisplayName());	
-					}
-					 
+				 
+				 if(StringUtils.isNotEmpty(resourcesDTO.getMin())){
+					 resourceRequest.setMinExperience(Integer.parseInt(resourcesDTO.getMin()));
 				 }
-			
-				 if(jsonObj.has("min"+i) && !isNullOrEmpty(jsonObj.getString("min"+i))){
-					 resourceRequest.setMinExperience(jsonObj.getInt("min"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getMax())){
+					 resourceRequest.setMaxExperience(Integer.parseInt(resourcesDTO.getMax()));
 				 }
-				 if(jsonObj.has("max"+i) && !isNullOrEmpty(jsonObj.getString("max"+i))){
-					 resourceRequest.setMaxExperience(jsonObj.getInt("max"+i));
-				 }
-				 if(jsonObj.has("primarySkill"+i) && !isNullOrEmpty(jsonObj.getString("primarySkill"+i))){
-					 resourceRequest.setSkills(jsonObj.getString("primarySkill"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getPrimarySkill())){
+					 resourceRequest.setSkills(resourcesDTO.getPrimarySkill());
 				 }
 				 
-				 if(jsonObj.has("currencyCode"+i) && !isNullOrEmpty(jsonObj.getString("currencyCode"+i))){
-					 resourceRequest.setRateCurrency(jsonObj.getString("currencyCode"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getCurrencyCode())){
+					 resourceRequest.setRateCurrency(resourcesDTO.getCurrencyCode());
 				 }
-				 if(jsonObj.has("billRate"+i) && !isNullOrEmpty(jsonObj.getString("billRate"+i))){
-					 resourceRequest.setBillRate(jsonObj.getString("billRate"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getBillRate())){
+					 resourceRequest.setBillRate(resourcesDTO.getBillRate());
 				 }
-				 if(jsonObj.has("payRate"+i) && !isNullOrEmpty(jsonObj.getString("payRate"+i))){
-					 resourceRequest.setPayRate(jsonObj.getString("payRate"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getPayRate())){
+					 resourceRequest.setPayRate(resourcesDTO.getPayRate());
 				 }
-				 if(jsonObj.has("rateType"+i) && !isNullOrEmpty(jsonObj.getString("rateType"+i))){
-					 resourceRequest.setRateType(jsonObj.getString("rateType"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getRateType())){
+					 resourceRequest.setRateType(resourcesDTO.getRateType());
 				 }
-				 if(jsonObj.has("startDate"+i) && !isNullOrEmpty(jsonObj.getString("startDate"+i))){
-					 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("startDate"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getStartDate())){
+					 Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),resourcesDTO.getStartDate());
 					 resourceRequest.setStartDate(startDate);
 				 }
-				 if(jsonObj.has("endDate"+i) && !isNullOrEmpty(jsonObj.getString("endDate"+i))){
-					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getEndDate())){
+					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),resourcesDTO.getEndDate());
 					 resourceRequest.setEndDate(endDate);
 				 }
-				 if(jsonObj.has("estimatedHours"+i) && !isNullOrEmpty(jsonObj.getString("estimatedHours"+i))){
-					 resourceRequest.setEstimatedHours(jsonObj.getDouble("estimatedHours"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getEstimatedHours())){
+					 resourceRequest.setEstimatedHours(Double.parseDouble(resourcesDTO.getEstimatedHours()));
 				 }
-				 if(jsonObj.has("estimatedBudget"+i) && !isNullOrEmpty(jsonObj.getString("estimatedBudget"+i))){
-					 resourceRequest.setEstimatedBudget(jsonObj.getDouble("estimatedBudget"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getEstimatedBudget())){
+					 resourceRequest.setEstimatedBudget(Double.parseDouble(resourcesDTO.getEstimatedBudget()));
 				 }
-				 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
-					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getBudgetCurrency())){
+					 resourceRequest.setEstimatedBudgetCurrency(resourcesDTO.getBudgetCurrency());
 				 }
-				 if(jsonObj.has("consulting"+i) && !isNullOrEmpty(jsonObj.getString("consulting"+i))){
-					 resourceRequest.setConsultingType(jsonObj.getString("consulting"+i));
-				 }
-				 if(jsonObj.has("budgetCurrency"+i) && !isNullOrEmpty(jsonObj.getString("budgetCurrency"+i))){
-					 resourceRequest.setEstimatedBudgetCurrency(jsonObj.getString("budgetCurrency"+i));
+				 if(StringUtils.isNotEmpty(resourcesDTO.getConsulting())){
+					 resourceRequest.setConsultingType(resourcesDTO.getConsulting());
 				 }
 				 
-
-				if(!isNullOrEmpty(saveType) && saveType.equalsIgnoreCase("Draft")){
-					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
-				}else{
-					resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
-				}
+				 if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
+						resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_DRAFT);
+					}else{
+						resourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
+					}
 				 
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);
 				 resourceRequest.setStatus(Constants.RECORD_ACTIVE);
@@ -738,7 +739,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 				 resourceRequest.setCreatedDate(new Date());
 				 resourceRequest.setUpdatedDate(new Date());
 				 resourceRequestSet.add(resourceRequest);
-				 }
+				 
+			 }
 		 }
 		 if(null != projectPlanningRequest.getId()){
 			 updatedNewResourceRequests.retainAll(resourceRequestIds);

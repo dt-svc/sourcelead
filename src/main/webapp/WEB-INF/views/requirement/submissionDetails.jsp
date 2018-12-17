@@ -680,7 +680,7 @@ function getInternalInterviewsList(submissionId){
 	   					     if(submissionId == report.interviewSubmissionId){
 	   					    	 if(report.interviewersList != null && report.interviewersList != 'undefined' && report.interviewersList != ""){
 			   						  if(report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback('+report.interviewId.id+',\''+report.interviewTemplateid+'\',\''+report.id+'\');"></i>';  
+			   							result = result + '<i class="fa fa-handshake-o pull-right" title="FeedBack" onclick="interviewFeedback(\''+report.interviewId.id+'\',\''+report.interviewTemplateUUId+'\',\''+report.id+'\',\''+submissionId+'\');"></i>';  
 			   						  }
 			   					  }
 	   					     }
@@ -699,6 +699,8 @@ function getInternalInterviewsList(submissionId){
 		                    	   //Latest interview for Reschedule  start
 		                    	   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
 		                    	   if(report.submissionStatus == "REJECTED"){
+		                    	   }else if(report.submissionStatus == "SELECTED_ON_INTERVIEW"){
+		                    		   
 		                    	   }else{
 				                    	//Latest interview for Reschedule  ends
 			                    		 result = result + '<a href="javascript:void(0)" onclick="changeInterviewStatus('+submissionId+','+report.interviewId.id+',\'Attending\');" title="Attending"><i class="fa fa-check text-success"></i></a>';
@@ -719,17 +721,24 @@ function getInternalInterviewsList(submissionId){
 		                    }
 		                    	 if(submissionId == report.interviewSubmissionId){
 		                    		   if(i == 0){
-				                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
-											result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
-											result = result + '			</div>';
-											result = result + '			 </a> ';
-				                    				                    		
+		                    			   if(report.interviewId.interviewPhase != "Selected" && report.interviewId.interviewPhase != "Rejected"  && report.submissionStatus != "REJECTED"){
+					                    		result = result + '		  <a title="Reschedule"><i  class="fa fa-retweet text-warning" onclick="rescheduleInterView(\''+report.interviewId.id+'\',\''+report.timezone+'\',\''+submissionId+'\');"></i>';
+												result = result + '			<div class="reSchPop" id="rescheduleInterViewdiv" >';
+												result = result + '			</div>';
+												result = result + '			 </a> ';
+		                    			   }		                    		
 				                    	}
 		                    	   }
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.interviewId.id+'showStatus"></span>';
 	                    	 if(report.interviewId.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green" class="brder-int">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red" class="brder-int">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green" class="brder-int">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewId.interviewStatus == "Not_Attending"){
 	                    		 result = result +' <font color="red" class="brder-int">Not Attending</font>';
@@ -992,7 +1001,13 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    	 result = result + '</span>';
 	                    	 result = result + '<span id="'+report.id+'showStatus"></span>';
 	                    	 if(report.interviewStatus == "Attending"){
-	                    		 result = result +' <font color="green">Attending</font>';
+	                    		 if(report.interviewId.interviewPhase == "Selected"){
+	                    			 result = result +' <font color="green">Selected</font>';
+	                    		 }else if(report.interviewId.interviewPhase == "Rejected"){
+	                    			 result = result +' <font color="red">Rejected</font>';
+	                    		 }else{
+	                    			 result = result +' <font color="green">Attending</font>';
+	                    		 }
 	                    	 }
 	                    	 if(report.interviewStatus == "Not Attending"){
 	                    		 result = result +' <font color="red">Not Attending</font>';
@@ -1335,9 +1350,19 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 	 {
 		 reason = '';
 	 }
+	 var formData = new FormData();
+     formData.append("tokenParamName", tokenValue);
+     formData.append("submissionId", submissionId);
+     formData.append("offerStatus", offerStatus);
+     formData.append("reason", reason);
+     formData.append("OfferId", offerId);
 	 $.ajax({  
-         type : "POST",
-         url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+		  type : "POST",
+          data: formData,
+          processData: false,
+          contentType:false, 
+     	  url: sourceleadUrl+"/acceptingOffer",
+         //url: sourceleadUrl+"/acceptingOffer?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
          success :function(data) {
 
         	 $("#rejectOfferAlert").empty();
@@ -1349,7 +1374,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
           		$("#"+(offerId)+"showOfferStatus").html("<font color='red' >OFFERREJECTED</font>");
           	 }
              $("#offerLoading").removeAttr('style');
-             $("#remove_user_pop, .project_inn_mask").fadeOut(200);
+             $("#remove_user_pop, .comMask").fadeOut(200);
         	 getOfferDetails(submissionId);
         	 
        },
@@ -1801,11 +1826,34 @@ function closeComment(){
 		        	    dataType : 'json',
 						url : sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,
 						success : function(result) {
-							savedCommentAndCount(candidateId,submissionId);
+							if (result && result.response === "INVALID_USER") {
+				    		    showError(result.responseMessage);
+				    		} else if (result.response === "AWKWARD") {
+				    		    location.href = "/errorPage";
+				    		} else if (result.response === "SUCCESS") {
+				    			savedCommentAndCount(candidateId,submissionId);
+				    		} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
-					});
-					$('.add-comment').toggle(200);
-					return true;
+				});
+				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId+"&submissionId="+submissionId,{},function(result){
+					if (result && result.response === "INVALID_USER") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			savedCommentAndCount(candidateId,submissionId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				});
+				$('.add-comment').toggle(200);
+				return true;
 			 }else{ 
 					return false;
 			 }
@@ -1818,69 +1866,67 @@ function closeComment(){
 </script>
 
 <script>
-function savedCommentAndCount(candidateId,submissionId){
+function savedCommentAndCount(candidateId,submissionId) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId,        
          success :function(data) {
-        	 var result = "";
-              if(data != null && data != 'undefined' && data != ""){
-              	 	 var json = JSON.parse(data);
-            		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-            		 else if (data.indexOf('exception') >= 0) {
-            			 location.replace(sourceleadUrl+"/errorPage");
-            		 }
-            		 else{
-            			 var totalComments = 0;
-            			 if(json.length>0){
-            				totalComments = json.length;
-         	            	var report = json[0];
-	 			            
-	 			            result = result+'    <div class="commentsimg">';
-				            result = result+'    <i class="fa fa-comments"></i>';
-				            result = result+'        <div class="commentsimg-inner">';
-				            
-				            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
-				            result = result+'        </div>';
-				            result = result+'    </div>';
-				            result = result+'     <div class="comments-content">';
-				            result = result+'         <div class="pull-left" id="latestMessage">';
-				            result = result+'         <p class="comment-by">';
-				            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
-				            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-				            result = result+'         <p class="comment-text">'+report.comment+'</p>';
-				            result = result+'         </div>';
-				            result = result+'         <div class="pull-right cmt-button">';
-				            result = result+'          <span class="comments-button">';
-				            
-				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
-				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
-				            result = result+'            </button>';
-				            result = result+'            <div class="add-comment">';
-				            result = result+'            </div>';
-				            result = result+'          </span>';
-				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
-				 			result = result+'		</div>';
-				            result = result+'     </div>';
-	 			           
-	 			           $("#latestMessage").empty();
-	 			           $("#latestMessage").append(result);
-            			 }
-            			 
-            		 }
-              }
+        	 if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+        		    showError(data.responseMessage);
+        		} else if (data.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (data.response === "SUCCESS") {
+        			var result = "";
+               	 	var json = data.data;
+               	 	var totalComments = 0;
+    			 	if(json.length > 0) {
+    					totalComments = json.length;
+ 	            		var report = json[0];
+			            
+			            result = result+'    <div class="commentsimg">';
+    		            result = result+'    <i class="fa fa-comments"></i>';
+    		            result = result+'        <div class="commentsimg-inner">';
+    		            
+    		            result = result+'        	<img onerror="predefineProfileImage(this);" src="'+report.commentAuthorUserImage+'"/>';
+    		            result = result+'        </div>';
+    		            result = result+'    </div>';
+    		            result = result+'     <div class="comments-content">';
+    		            result = result+'         <div class="pull-left" id="latestMessage">';
+    		            result = result+'         <p class="comment-by">';
+    		            result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
+    		            result = result+'            <span class="small">('+report.commentTime+')</span></p>';
+    		            result = result+'         <p class="comment-text">'+report.comment+'</p>';
+    		            result = result+'         </div>';
+    		            result = result+'         <div class="pull-right cmt-button">';
+    		            result = result+'          <span class="comments-button">';
+    		            
+    		            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+','+submissionId+')">';
+    		            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
+    		            result = result+'            </button>';
+    		            result = result+'            <div class="add-comment">';
+    		            result = result+'            </div>';
+    		            result = result+'          </span>';
+    		            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+    		 			result = result+'		</div>';
+    		            result = result+'     </div>';
+    			           
+			           	$("#latestMessage").empty();
+			           	$("#latestMessage").append(result);
+    			 	} 
+        		} else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 			},
       });
 }
 </script>
 
-
 <!-- this script using for interview feedback Start -->
 <script type="text/javascript">
-function interviewFeedback(interviewId,templateId,id){
+function interviewFeedback(interviewId,templateId,id,submissionId) {
 	$("#mask_inner").fadeIn();
 	$("#feedbackdiv"+interviewId+"").show();
 	$(".reSchPop").removeClass("reSchPopActive");
@@ -1889,8 +1935,8 @@ function interviewFeedback(interviewId,templateId,id){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	var sourceleadUrl ='${sourceleadUrl}';
 	$.ajax({
-	type: "GET",
-	url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId,
+		type: "GET",
+		url: sourceleadUrl+"/getInterviewrsFeedbackList?"+tokenParamName+"="+tokenValue+"&interviewId="+interviewId+"&locationId="+locationId+"&submissionId="+submissionId,
 		success: function(json) {
 			var result = "";
 			result = result +"<strong>Interview Feedback</strong>";
@@ -1903,8 +1949,7 @@ function interviewFeedback(interviewId,templateId,id){
 		    result = result +"  </tr>"; 
 		    result = result +"</thead>";
 		    result = result +"<tbody>"; 
-			for (var i=0; i<json.length; i++)
-			{
+			for (var i=0; i<json.length; i++) {
 				var report = json[i];
 				if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
 					feedbackDate  = report.feedbackDate;
@@ -1915,7 +1960,7 @@ function interviewFeedback(interviewId,templateId,id){
 				    result = result +'<td><div class="tbldata-dotdot-me">'+report.interviewerName+'</div></td>'; 
 				    result = result +' <td><div class="tblminwidth-100">'+feedbackDate+'</div></td>'; 
 				    if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-				    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback('+report.id+',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
+				    	result = result +' <td><div class="tblminwidth-50"><span class="text-primary"><a onclick="viewfeedback(\''+report.uuid+'\',\''+templateId+'\',\''+report.feedbackStatus+'\');">View</a></span></div></td>';
 				    }else{
 				    	result = result +'<td><div class="tblminwidth-50"> &nbsp;<span class="text-danger">Notfilled</span></div></td>';
 				    }
@@ -1929,20 +1974,19 @@ function interviewFeedback(interviewId,templateId,id){
 			
 		},
 	});
-    
 }
 
 </script>
 <script type="text/javascript">
 function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
-		var sourceleadUrl ='${sourceleadUrl}';
+	var sourceleadUrl ='${sourceleadUrl}';
 		if(feedbackStatus == "Y"){
 			$('.shownofeedback').hide();
 			$('.showfeedback').show();
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	 var submissionDetails = "";
@@ -1988,7 +2032,7 @@ function viewfeedback(requirementInterviewerId,templateId,feedbackStatus){
 			$(".bg_mask").fadeIn(200);
 			$.ajax({
 		    	type: "GET",
-		    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
+		    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewerId, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 			        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -2167,7 +2211,7 @@ $('#rescheduleDate').datepicker({
 	dateFormat : finalDateFormatRescheduleDate,
 	 changeMonth: true,
 	changeYear: true, 
-	minDate : 0,
+	/* minDate : 0, */
 	onSelect : function(selected) {
 		var dt = new Date(selected);
 		dt.setDate(dt.getDate() + 1);
@@ -2398,13 +2442,14 @@ $("#notMail").click(function(){
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
 function reActivateApplicant(submissionId,candidateId,requirementId,type){
-	$("#reactiveApplicantBtnDiv").remove();
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#reactiveApplicantBtnDiv").hide();
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
 	//$("#reactiveApplicant").attr("disabled","disabled");
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        
@@ -2440,6 +2485,7 @@ function pipelineList(requirementId){
 	$("#submitToClientli").removeClass("pipeline-active");
 	$("#interviewli").removeClass("pipeline-active");
 	$("#offerMadeli").removeClass("pipeline-active");
+	$("#joinedli").removeClass("pipeline-active");
 	$("#rejectedli").removeClass("pipeline-active");
 	$("#applicantli").addClass("pipeline-active");
 // 	filterReq(requirementId,submissionType);

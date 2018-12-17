@@ -51,9 +51,9 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 	}
 
 	@Override
-	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId)
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId,String reportFor)
 			throws Exception {
-		return projectMembersHistoryDao.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMemberId);
+		return projectMembersHistoryDao.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMemberId,reportFor);
 	}
 
 	@Override
@@ -93,6 +93,12 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 	@Override
 	public HashMap<String, Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId) {
 		return projectMembersHistoryDao.getAssignDateandEndDateByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId, Long orgId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryByProjectMemberIdAndOrgId(projectMemberId,orgId);
 	}
 
 	

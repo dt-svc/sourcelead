@@ -233,12 +233,12 @@ function getClientContactList(){
 				    	  	"render": function(data, type, report, meta) {   
 				    	  		 var result = "";
 				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-						   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
+						   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\',\''+report.spocEmail+'\')"; title="Remove client contact"></i></div></td>';
 						   	 '</sec:authorize>';
 						   	 
-						   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-							    result = result + '<td><div>---</div></td>';
-							 '</sec:authorize>';
+						   //	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+							 //   result = result + '<td><div>---</div></td>';
+							 //'</sec:authorize>';
 				    	  		 return result; 
 				    	  	}
 		    	  }],

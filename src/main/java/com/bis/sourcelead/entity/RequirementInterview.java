@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -24,6 +25,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW")
@@ -100,6 +103,18 @@ import org.hibernate.annotations.NotFoundAction;
 	@Column(name = "CUSTOM_INTERVIEW_TYPE")
 	private String customInterviewType;
 	
+	@Column(name = "INTERVIEW_SCORE")
+	private Integer interviewScore;
+	
+	@Column(name = "INTERVIEW_PHASE")
+	private String interviewPhase;
+	
+	@Column(name = "INTERVIEW_COMMENT", columnDefinition = "TEXT default NULL")
+	private String interviewComment;
+	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Transient
 	private String remainderTime;
 	
@@ -116,18 +131,26 @@ import org.hibernate.annotations.NotFoundAction;
 	private String interviewersList;
 	
 	@Transient
+	@JsonProperty
+	private List<InterviewFeedbackTemplate> interviewFeedbackTemplateList;
+	
+	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
    	private String requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartDateTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndtDateTimeStr;
 	
 	@Transient
@@ -151,6 +174,30 @@ import org.hibernate.annotations.NotFoundAction;
 
 	public void setCustomInterviewType(String customInterviewType) {
 		this.customInterviewType = customInterviewType;
+	}
+
+	public Integer getInterviewScore() {
+		return interviewScore;
+	}
+
+	public void setInterviewScore(Integer interviewScore) {
+		this.interviewScore = interviewScore;
+	}
+
+	public String getInterviewPhase() {
+		return interviewPhase;
+	}
+
+	public void setInterviewPhase(String interviewPhase) {
+		this.interviewPhase = interviewPhase;
+	}
+
+	public String getInterviewComment() {
+		return interviewComment;
+	}
+
+	public void setInterviewComment(String interviewComment) {
+		this.interviewComment = interviewComment;
 	}
 
 	public String getInterviewStatus() {
@@ -336,6 +383,14 @@ import org.hibernate.annotations.NotFoundAction;
 		this.interviewersList = interviewersList;
 	}
 
+	public List<InterviewFeedbackTemplate> getInterviewFeedbackTemplateList() {
+		return interviewFeedbackTemplateList;
+	}
+
+	public void setInterviewFeedbackTemplateList(List<InterviewFeedbackTemplate> interviewFeedbackTemplateList) {
+		this.interviewFeedbackTemplateList = interviewFeedbackTemplateList;
+	}
+
 	public String getCandidateName() {
 		return candidateName;
 	}
@@ -416,6 +471,14 @@ import org.hibernate.annotations.NotFoundAction;
 	public void setScheduleType(String scheduleType)
 	{
 		this.scheduleType = scheduleType;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 }

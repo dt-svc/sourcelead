@@ -28,7 +28,7 @@
 
 <script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -59,33 +59,7 @@
 		<section class="welcoInn">
 		  <div class="welcoHead">
 				
-		<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-		<div class="offOrg">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-			              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
+		 <jsp:include page="../userManageAccounts.jsp" />
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
@@ -104,7 +78,9 @@
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span>2</span><b>Step two</b><i class="line"></i></li>
 				  <li><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li><span>4</span><b>Step four</b><i class="line"></i></li>
+				  <li><span>5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -138,7 +114,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${!empty candidateOnBoarding.address1 ? candidateOnBoarding.address1 : ''}">
 			  </div>
 			</div>
 		</div>
@@ -146,7 +122,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 2</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
+				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${candidateOnBoarding.address2}">
 			  </div>
 			</div>
 		</div>
@@ -195,7 +171,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Zipcode</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${SourceLeadWeb_candidateOnBoarding.zipCode}"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
+				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${!empty candidateOnBoarding.zipCode ? candidateOnBoarding.zipCode : '' }"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
 			  </div>
 			</div>
 		</div>	
@@ -203,7 +179,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" id="mobileNumber" value="${SourceLeadWeb_candidateOnBoarding.mobileNumber}" name="mobileNumber" >
+				<input type="text" class="form-control input-sm" id="mobileNumber" value="${candidateOnBoarding.mobileNumber}" name="mobileNumber" >
 			  </div>
 			</div>
 		</div>
@@ -226,6 +202,79 @@
 			  </div>
 			</div>
 		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Date of Birth</label>
+			  <div class="col-md-8">
+			    <input type="text" class="form-control input-sm calendar" id="employeeDateOfBirth" name="dateOfBirth" value="${SourceLeadWeb_candidateOnBoarding.dateOfBirth}" readonly="readonly">
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Gender</label>
+			  <div class="col-md-8">
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Male'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Female'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  checked value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${SourceLeadWeb_candidateOnBoarding.gender eq 'Transgender'}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" checked id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  <c:if test="${empty SourceLeadWeb_candidateOnBoarding.gender}">
+				  <label class="paddingRight"><input type="radio" id="male" value="Male" checked name="gender" ><span class="mr5"></span>Male</label>
+				  <label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" ><span class="mr5"></span>Female</label>
+				  <label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender"><span class="mr5"></span>Transgender</label>
+			  </c:if>
+			  </div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Employment Eligibility </label>
+			  <div class="col-md-8">
+				  <select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">
+				  <option value="">-- Select Citizenship --</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Citizenship of United States' ? 'selected' : '' } >Citizenship of United States</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Resident Card' ? 'selected' : '' }>Resident Card</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'An alien authorized to work' ? 'selected' : '' }>An alien authorized to work</option>
+				  <option ${SourceLeadWeb_candidateOnBoarding.employmentEligibility eq 'Non-citizen' ? 'selected' : '' } >Non-citizen</option>
+				  </select>
+			  </div>
+			</div>
+		</div>
+	 
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="residentCardId" style="display:none">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">USCIS /Alien registration Number</label>
+			  <div class="col-md-8">
+					<input type="text" class="form-control input-sm" id="uscisAlien" name="uscisAlien"  data-validation-optional="true"  value="${SourceLeadWeb_candidateOnBoarding.uscisAlien}" data-validation="validate_length length9-13 validate_int">
+			  </div>
+			</div>
+		</div>
+		
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="nonCittizenId" style="display:none">               
+			<div class="form-group">
+			  <label class="col-md-4 control-label">Authorized work until</label>
+			  <div class="col-md-8">
+					<input type="text" class="form-control input-sm calendar" id="authorizedDate" name="authorizedWorkUntil" value="${SourceLeadWeb_candidateOnBoarding.authorizedWorkUntil}" readonly="readonly">
+			  </div>
+			</div>
+		</div>
+		</c:if>
+		
 	</div>
 	 
 </div>
@@ -363,7 +412,11 @@
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
   
-  
+  				<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  		  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
   <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
   <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
@@ -388,118 +441,61 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})		 
 </script> 
 
 <script src="/resources/js/formvalidator.js"></script>
-
-
-
-
-<script type="text/javascript">
-function getOnBoardCandidateCountry(country){
-	$.ajax({
-    	type: "POST",
-    	dataType: "json",
-    	 url: '${sourceleadUrl}'+"/countryAutoComplete?${_csrf.parameterName}=${_csrf.token}",
-          success: function(data) {
-        	var json = JSON.parse(data);
-        	$('#country').empty();
-        	$('#country').append('<option value="">---Select---</option>');
-            for(var i=0;i<json.length;i++){
-            	if(json[i] == country){
-            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-            	}
-            	else{
-            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-            	}
-            	
-            }
-            $('#country').trigger("chosen:updated");
-        },
-        error: function(e){
-        }
-    }); 
-} 
-</script>
-
+<script src="../resources/js/jquery-ui.js"></script>
 <script>
-  function getStates(){
-	  var countryName = $("#country").val();
-	  getOnBoardCandidateStates(countryName);
-  }
-  </script>
-  
-  <script>
-function getOnBoardCandidateStates(country,state){
-	
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---Select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(state != null && state != 'undefined' && json[i] == state){
-	            		$('#state').append('<option value="'+state+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	}
-	            }
-	            $('#state').trigger("chosen:updated");
-	            
-	            $('#city').empty();
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	
-}
+$(function (){
+	changeCitizenShip();
+	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
+		  
+	$('#employeeDateOfBirth').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
+		  	  maxDate:0
+		  });
+	 $('#authorizedDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+});
 </script>
-
- <script>
-  function getCities(){
-	  var countryName = $("#country").val();
-	  var stateName = $("#state").val();
-	  getOnBoardCandidateCities(countryName,stateName);
-  }
-  </script>
-  
- <script>
-function getOnBoardCandidateCities(country,state,city){
+<script>
+	function changeCitizenShip(){
+		var eligibility = $("#employmentEligibility").val();
+		if(eligibility == 'Resident Card'){
+			document.getElementById("residentCardId").style.display="block";
+			document.getElementById("nonCittizenId").style.display="none";
+			$("#authorizedDate").val('');
+		}else if(eligibility == 'An alien authorized to work'){
+			document.getElementById("nonCittizenId").style.display="block";
+			document.getElementById("residentCardId").style.display="block";
+		}else{
+			document.getElementById("nonCittizenId").style.display="none";
+			document.getElementById("residentCardId").style.display="none";
+			$("#authorizedDate").val('');
+			$("#uscisAlien").val('');
 	
-	if(country != null && country != "" && country !="undefined" && state != null && state != "" && state !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?${_csrf.parameterName}=${_csrf.token}&countryName="+country+"&stateName="+state, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---Select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	var selected = '';
-	            	if(city != null && city != "" && city !="undefined" && json[i] == city){
-	            		selected = 'selected';
-	            	}
-	            	$('#city').append('<option value="'+json[i]+'" '+selected+'>'+json[i]+'</option>');
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---Select---</option>');
-    	$('#city').trigger("chosen:updated");
+		}
 	}
-}
-</script> 
-
+</script>
 
 <script>
  function saveOnboardingCandidateDetails(){
@@ -509,23 +505,32 @@ function getOnBoardCandidateCities(country,state,city){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         }; 
-	 
+	 var country = '${SourceLeadWeb_orgLocations.country}';
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-	        
 	        var formData = getFormData("onboardCandidate_form");
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
 		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(onboardId) {
-		        	
-		        	location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+			        		location.replace(sourceleadUrl+"/onboardingCandidateBankingDetails");  
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
  }
@@ -569,12 +574,6 @@ function getOnBoardCandidateCities(country,state,city){
 
         
 </script>  
-
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
 
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId) {
@@ -654,12 +653,5 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 	}
 </script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 <script src="/resources/js/slead-common.js?staticTime=${staticTime}"></script>

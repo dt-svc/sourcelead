@@ -65,6 +65,9 @@ public class ProfessionalRequirementsController {
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	@Autowired
 	RequirementService requirementService;
 	
@@ -120,7 +123,8 @@ public class ProfessionalRequirementsController {
 	 @RequestMapping(value = "/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
+	 			@RequestParam(value = "referUUID", required = false) String referUUID,
+	 			@RequestParam(value = "type", required = false) String type) throws Exception {
 	 			ModelAndView model = new ModelAndView();
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
 	 			
@@ -164,9 +168,10 @@ public class ProfessionalRequirementsController {
 	 				}
 	 				
 	 			}else{
+	 				model.addObject("type", type);
 	 				model.setViewName("registration");
 	 			}
-	 			
+	 			model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 	 			return model;
 	 	}
 	 
@@ -366,6 +371,7 @@ public class ProfessionalRequirementsController {
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		        if(null != requirement.getOrgLocationId()){
 		        	if(null != requirement.getOrgLocationId().getOrg()){
+		        		requirement.setOrgImageUrl(requirement.getOrgLocationId().getOrg().getFileUrl());
 		        		if(null != requirement.getOrgLocationId().getOrg().getOrgCode()){
 		        			requirement.setOrgcode(requirement.getOrgLocationId().getOrg().getOrgCode());	
 		        		}

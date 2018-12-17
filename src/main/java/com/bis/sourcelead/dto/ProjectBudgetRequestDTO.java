@@ -6,14 +6,20 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.annotations.Required;
+
 @SuppressWarnings("serial")
 public class ProjectBudgetRequestDTO implements Serializable {
+	 @Required(desc="baseLine")
 	 private String baseLine;
 	 
+	 @Required(desc="budgetApprover")
 	 private String budgetApprover;
 	 
+	 @Required(desc="estimatedHours")
 	 private double estimatedHours;
 	 
+	 @Required(desc="estimatedBudget")
 	 private double estimatedBudget;
 	 
 	 private String projectUUID;

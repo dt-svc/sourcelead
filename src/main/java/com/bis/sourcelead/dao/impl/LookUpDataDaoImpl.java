@@ -1,9 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 /**
  * 
@@ -24,6 +28,7 @@ import com.bis.sourcelead.entity.LookUpData;
  */
 @Repository
 @Transactional(rollbackFor = { Exception.class })
+@SuppressWarnings("unchecked")
 public class LookUpDataDaoImpl implements LookUpDataDao {
 	private static final Logger logger = LoggerFactory.getLogger(LookUpDataDaoImpl.class);
 	
@@ -58,7 +63,9 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	@Transactional
 	public List<LookUpData> getLookUpDataByCategory(String category) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from LookUpData lookupdata where lookupdata.category = :category ";
+		String query = null;
+		query = "from LookUpData lookupdata where lookupdata.category = :category  ";
+	    
 	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).list();
       
 	    return educationsList;
@@ -129,7 +136,6 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	    return visaList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public LookUpData getTasksById(Long id) throws Exception {
@@ -142,6 +148,19 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 		} else {
 			return null;
 		}		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public LookUpData getLookUpdataByCategoryAndName(String category,String name) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.name = :name";
+		List<LookUpData> lookupList = session.createQuery(query.toString()).setString("category", category).setString("name", name).list();
+		LookUpData lookUpData = null;
+		if (lookupList != null && lookupList.size() > 0) {
+			lookUpData = (LookUpData) lookupList.iterator().next();
+		}
+		return lookUpData;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -169,5 +188,109 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 			return null;
 		}		
 	}
- 
+
+	@Override
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.id = :id";
+		LookUpData lookupData = (LookUpData) session.createQuery(query.toString()).setString("category", visaType).setLong("id", id).uniqueResult();
+		return lookupData;
+	}
+	
+	@Override
+	public LookUpData getLookUpDataById(long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lookupdata where lookupdata.id = :id";
+		LookUpData lookupData = (LookUpData) session.createQuery(query.toString()).setLong("id", id).uniqueResult();
+		return lookupData;
+	}
+
+	@Override
+	public LookUpData saveLookupData(LookUpData lookUpData) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (lookUpData != null) {
+				session.saveOrUpdate(lookUpData);
+			}
+			logger.debug("Saving lookUpData");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"LOOKUP_DATA"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return lookUpData;
+	}
+
+	@Override
+	public List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "from LookUpData lookupdata where (lookupdata.category = :category and lookupdata.orgLocationId IS NULL ) or (lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId) ";
+	    List<LookUpData> taskTypeList = session.createQuery(query.toString()).setString("category", category).setLong("orgLocationId", orgLocationId).list();
+	    return taskTypeList;
+	}
+
+	@Override
+	public void deleteLookupDateByLookupId(LookUpData lookUpData) throws Exception{
+		Session session =  this.sessionFactory.getCurrentSession();
+		try {
+			if(lookUpData != null) {
+				session.delete(lookUpData);
+			}
+		}catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"LOOKUP_DATA"));
+			 throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
+	@Override
+	public List<LookUpData> getReferLookUpDataByCategory(String category) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "from LookUpData lookupdata where lookupdata.category = :category and  lookupdata.orgLocationId IS NULL ORDER BY lookupdata.name DESC";
+	    List<LookUpData> educationsList = session.createQuery(query.toString()).setString("category", category).list();
+      
+	    return educationsList;
+	}
+
+	@Override
+	public Boolean validateTaskTypeName(String taskTypeName,String category,Long orgLocationId) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(taskTypeName != null){
+				String query = "from LookUpData lookupdata where lookupdata.category = :category and ((lookupdata.name = :taskTypeName and  lookupdata.orgLocationId =:orgLocationId) or (lookupdata.name = :taskTypeName and  lookupdata.orgLocationId IS NULL) )";
+				Collection<LookUpData> lookUpDataNoteList = session.createQuery(query.toString()).setString("taskTypeName", taskTypeName).setLong("orgLocationId", orgLocationId).setString("category", category).list();
+				if (lookUpDataNoteList != null && lookUpDataNoteList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
+
+	@Override
+	public LookUpData validateTaskTypeNameByTaskNameAndLookupId(String taskTypeName, Long lookupId,String category,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lookupdata  where lookupdata.name = :taskTypeName and lookupdata.id =:lookupId and lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId";
+		List<LookUpData> lookUpDataNoteList = session.createQuery(query.toString()).setString("taskTypeName", taskTypeName).setLong("lookupId", lookupId).setLong("orgLocationId", orgLocationId).setString("category", category).list();
+		LookUpData lkp = null;
+		if(lookUpDataNoteList != null && !lookUpDataNoteList.isEmpty())
+		{
+			lkp = (LookUpData) lookUpDataNoteList.iterator().next();
+		}
+		return lkp;
+	}
+
+	@Override
+	public List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocationId)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="SELECT "
+				+" LD.NAME "
+				+" FROM LOOKUP_DATA LD "
+				+" WHERE "
+				+" ( LD.CATEGORY = :category AND LD.ORG_LOCATIONID IS NULL ) OR (LD.CATEGORY = :category AND LD.ORG_LOCATIONID =:orgLocationId )";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId).setString("category", category);	
+		List<String> taskTypeList = (List<String>)queryObj.list();
+	    return taskTypeList;
+	}
+	 
 }

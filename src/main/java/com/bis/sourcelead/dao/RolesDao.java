@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.UserRole;
 
 public interface RolesDao {
 	
@@ -40,5 +41,13 @@ public interface RolesDao {
 	List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId,Long hierarchyId,String orgCode) throws Exception;
 	
 	Roles getRolesByRoleNameAndOrgId(String roleName,Long orgId) throws Exception;
+	
+	List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception;
+	
+	Roles getRolesByUUIDAndOrgLocationId(String uuid,Long orgLocationId) throws Exception;
+	
+	Roles getRolesByUUID(String uuid) throws Exception;
+	
+	List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception;
 
 }

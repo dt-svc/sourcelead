@@ -206,21 +206,31 @@ function uploadProfileResume(){
 		        var formData = getFormData("candidateResume_form");
 				$("#add_resume").attr("disabled", "disabled");
          		$("#add_resume" ).addClass('button').val('Processing..');
-		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData, function(data) {
-		        	closeResumePopup();
-		        	$("#selector2").removeAttr("style");
-         			$("#selector2").css({ display: "block" });
-         			if(resumeId != null){
-         			$("#resumeMsgDiv").html("Resume details updated");
-         			}else{
-         			$("#resumeMsgDiv").html("Success!! New Resume added");
-         			}
-		        	candidateResumesList(candidateId);
-			 		resumesMsgFadein();
+		        $.post(sourceleadUrl+"/saveCandidateResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, formData,
+		        		function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		closeResumePopup();
+			        	$("#selector2").removeAttr("style");
+	         			$("#selector2").css({ display: "block" });
+	         			if(resumeId != null){
+	         				$("#resumeMsgDiv").html("Resume details updated");
+	         			} else {
+	         				$("#resumeMsgDiv").html("Success!! New Resume added");
+	         			}
+			        	candidateResumesList(candidateId);
+				 		resumesMsgFadein();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        });
-				
 					return true;
-			 }else{ 
+			 } else { 
 					return false;
 			 } 
 		}
@@ -398,30 +408,38 @@ function deleteSelectedResume(candidateId, resumeId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/terminateResume?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-		    success: function(data) {
-		    	//candidateResumesList(candidateId);
-		    	if(data != null && data != 'undefined' && data != ""){
+		    success: function(response) {
+		    	if (response && response.response === "INVALID_DATA") {
+		    	    showError(response.responseMessage);
+		    	} else if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		//candidateResumesList(candidateId);
+		    		var data = response.object;
 		    		$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-        			 if(data<50){
-	          			  /* $("#perVal").removeClass("progress-bar-success"); */
-	          			   $("#perVal").removeClass('progress-bar-success');
-	          			  $("#perVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#perVal").removeClass('progress-bar-danger');
-	          				 $("#perVal").addClass("progress-bar-success");
-	          			 }
+        			if(data<50){
+	          			/* $("#perVal").removeClass("progress-bar-success"); */
+	          			$("#perVal").removeClass('progress-bar-success');
+	          			$("#perVal").addClass("progress-bar-danger");
+	          		}
+	          		if(data>=50){
+	          			$("#perVal").removeClass('progress-bar-danger');
+	          			$("#perVal").addClass("progress-bar-success");
+	          		}
 
-   			 	$("#disVal").empty();
-   				$("#disVal").append(data+'%');
-    			 $("#selector2").removeAttr("style");
-     			 $("#selector2").css({ display: "block" });
-     			 $("#resumeMsgDiv").html("Resume deleted");
-    			 $("#popUpDivResume").removeClass("edit-details-active");
-    			 deleteResumePopUp();
-    			  			
-    			 candidateResumesList(candidateId);
-				  resumesMsgFadein();
+	   			 	$("#disVal").empty();
+	   				$("#disVal").append(data+'%');
+	    			$("#selector2").removeAttr("style");
+	     			$("#selector2").css({ display: "block" });
+	     			$("#resumeMsgDiv").html("Resume deleted");
+	    			$("#popUpDivResume").removeClass("edit-details-active");
+	    			deleteResumePopUp();
+	    			candidateResumesList(candidateId);
+					resumesMsgFadein();
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
 		    	}
 		    },
      });
@@ -441,24 +459,30 @@ function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-        			 $("#uploadResumeDiv").hide();
-        			 $("#resumeAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 $("#resumeNameDiv").show();
-        			 $("#resumeName").append(json.fileName);
-        			 $("#resumeUpdateButton").show();
-        			 
-        			 if(json.title != null && json.title != "undefined" && json.title != ""){
-        				 document.getElementById("title").value = json.title;
-        			 }
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
-        			 }
-        			 
-        			 
-        			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    success: function(response) {
+   		    	if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		 var json = response.object;
+	       			 $("#uploadResumeDiv").hide();
+	       			 $("#resumeAddButton").hide();
+	       			 $("#uploadFile").removeAttr("data-validation");
+	       			 $("#resumeNameDiv").show();
+	       			 $("#resumeName").append(json.fileName);
+	       			 $("#resumeUpdateButton").show();
+	       			 
+	       			 if(json.title != null && json.title != "undefined" && json.title != ""){
+	       				 document.getElementById("title").value = json.title;
+	       			 }
+	       			 if(json.description != null && json.description != "undefined" && json.description != ""){
+	       				 $("textarea#description").val(json.description);
+	       			 }
+	       			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }

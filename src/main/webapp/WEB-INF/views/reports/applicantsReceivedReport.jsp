@@ -44,6 +44,7 @@ function prepareReportDataDiv(data){
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
 	var json = JSON.parse(data);
+	
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
     	result = result + '<tr>';
@@ -91,6 +92,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+    $("#applicantsLoderDiv").empty();
+    $("#applicantsLoderDiv").removeAttr('style');
     requirementReportPagination();
 }
 
@@ -125,9 +128,121 @@ function requirementReportPagination(){
 }
 
 </script>
+ 
 <script>
-	$(function() {
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+function toDate(selector) {
+    var from = $(selector).val().split("-");
+    return new Date(from[2], from[1] - 1, from[0]);
+}
+</script>
+<section class="content-wraper">
+
+  <section class="content-header clearfix">
+    <div class="pull-left"><h2 class="pull-left">Applicant(s) Received</h2> </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) Received </div>
+  </section>
+  
+    <div class="vendor_wrap clearfix">
+          
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+		<a id="listView" class="btn btn-default rAct" title="Grid List"><i class="fa fa-list"></i></a>
+		<a id="gridView" class="btn btn-default" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>	
+	</div>
+	
+    	<ul class="clearfix pull-right">
+    		
+    		<li>
+       <div class="dropdown-select positionRelative repSelWrap clearfix">
+		<select class="form-control repSelFiled" id="reportTypeId" onChange="custDates();flushCustomDates();">
+			  <option value="Last_7_days">Last 7 days</option>
+			  <option value="Last_15_days">Last 15 days</option>
+			  <option value="1_month">Last 1 month</option>
+			  <option value="3_months">Last 3 months</option>
+			  <option value='YTD' >YTD</option>
+	          <option value='Last_Year'>Last Year</option>
+			  <option value="custom">Custom</option>
+		</select>          
+          
+		<div class="repSelBtn" id="RunApplicantDivId"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getDayWiseReports();">Run</button></div> 
+          
+            <!-- Custom Date -->
+				 <div class="clearfix customLeaves repCustomDate">
+					<div class="repCustomDateInn">
+					 	<input type="text" class="form-control calendar" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" readonly="readonly" placeholder="Start Date">
+					 	<p id="reportStartDate"></p>
+					 </div>
+					 
+					<div class="repCustomDateInn">
+						<input type="text"  class="form-control calendar" value="" id="ExportEndDate" name="EndDate" field-name="End Date" readonly="readonly" placeholder="End Date">
+						<p id="reportEndDate"></p>
+					</div>
+					
+					<div class="repCustomDateBtn"><button type="button" class="btn btn-primary btn-sm" onclick="getDayWiseReports();"><i class="fa fa-search"></i></button></div>
+				</div>                    
+          <!-- Custom Date --> 
+        </div>    		
+    		</li>
+    		<li class="dataTabPdf">&nbsp;</li> 
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='applicantDeclineReportsTableSearch'/><span class="repSearchIcon" onclick="getDayWiseReports();getDayWiseAppRecReports();"></span></li>
+    	</ul>
+    </div>       
+     
+   <div class="repTab1 clearfix" id="listshow" style="display: block;">   
+    
+	<div class="reportsCount">
+		<ul>
+			<li title="Applicants" id="applicantsli">
+				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
+			</li>
+			<li title="Shortlisted" id="shortlistedli" class="colorTwo">
+				<span><i class="fa fa-file-text"></i></span><b id="shortlistedCount">0</b>
+			</li>
+			<li title="Submit to Client" id="submittoclientli">
+				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
+			</li>
+			<li title="Interviews" id="interviewli" class="colorTwo">
+				<span><img src="/resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+			</li>
+			<li title="Offers" id="offermadeli">
+				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
+			</li>
+			<li title="Rejected" id="rejectedli" class="colorTwo">
+				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
+			</li>
+					<div class="clearfix"></div>
+		</ul>
+	</div>
+
+  	<div class="project_tabs_inn_table vendor_wrap_inn_table" >
+		<div id="requirementReportsDiv12" class="repDataSearch"></div>
+	</div>      
+       </div>
+	<div class="repTab2" id="gridshow" style="display: none;">
+	 <div id="applicantsLoderDiv"></div>
+	  	<div class="chatNew" id="container"></div>	 
+	  </div>       
+      
+
+ 
+</div>
+      
+</section>
+<!--   Error Message   -->
+<div class="vendor_wrap_mask"></div>
+<div class="vendor_error">
+  <p>Delete conformation message....</p>
+  <textarea placeholder="Enter message"></textarea>
+  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+
+
+<script>
+function custDates(){
+	var reportType = $("#reportTypeId").val();
+	if(reportType=="custom"){
+		document.getElementById("RunApplicantDivId").style.display="none";
+	    $(".customLeaves").show();
+	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
@@ -153,154 +268,31 @@ function requirementReportPagination(){
 				addValidClass();
 			}
 		});
-		
-	});
-</script>	
-<script>
-function toDate(selector) {
-    var from = $(selector).val().split("-");
-    return new Date(from[2], from[1] - 1, from[0]);
-}
-</script>
-<section class="content-wraper">
-  <section class="content-header clearfix">
-    <div class="pull-left">
-      <h2 class="pull-left">Applicants Received Reports</h2>
-		
-    </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
-  </section>
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-     
-      <div class="timesheet_head">
-
-<div class="pull-left reportBtns reportBtns_custom mt5">
-	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
-		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
-<!-- 		<option value="">-- Select --</option> -->
-		  <option value="today">Today</option>
-		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 Week</option>
-		  <option value="twoweeks">2 Weeks</option>
-		  <option value="month">1 Month</option>
-		  <option value="twomonths">2 Months</option>
-		   <option value="custom">Custom</option> 
-		</select>
-	 </div>	
-	<span class="repoBtns">
-			<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-			<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-			</span>	
-	<div class="col-md-7">
-		 <span class="dashboard-datepkr cusShow">
-		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportStartDate" class="ReError" style="display: none"></p>
-		 </span>
-		<span class="dashboard-datepkr cusShow">
-		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportEndDate" class="ReError" style="display: none"></p>
-		</span>
-		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
-		</div>
-		
-		
-	</div>
-                     
-        <!-- <ul style="padding: 2px 300px 2px 0px;">
-          <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
-            <div class="export_pop">
-              <ul>
-                <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                <li>Word<i class="fa fa-file-word-o"></i></li>
-              </ul>
-            </div>
-          </li>
-
-          <div class="clearfix"></div>
-        </ul> -->
-        <div class="clearfix"></div>
-      </div>
-     
-   <div class="repTab1  clearfix mt10">    
-	<div class="reportsCount">
-		<ul>
-		
-
-
-
-
-			<li title="Applicants" id="applicantsli">
-				<span><i class="fa fa-users"></i></span><b id="applicantCount">0</b>
-			</li>
-			<li title="Shortlisted" id="shortlistedli" class="colorTwo">
-				<span><i class="fa fa-file-text"></i></span><b id="shortlistedCount">0</b>
-			</li>
-			<li title="Submit to Client" id="submittoclientli">
-				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
-			</li>
-			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="/resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
-			</li>
-			<li title="Offers" id="offermadeli">
-				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
-			</li>
-			<li title="Rejected" id="rejectedli" class="colorTwo">
-				<span><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>
-			</li>
-					<div class="clearfix"></div>
-		</ul>
-	</div>
-
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12" class="repoPositi"></div>
-                </div>      
-      
- </div>
-</div>
-<div class="repTab2">
- <div id="applicantsLoderDiv"></div>
-  	<div class="chatNew" id="container"></div>	 
-  </div>                 
-      
- </div>
-  </div>
-</section>
-<!--   Error Message   -->
-<div class="vendor_wrap_mask"></div>
-<div class="vendor_error">
-  <p>Delete conformation message....</p>
-  <textarea placeholder="Enter message"></textarea>
-  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-
-
-<script>
-function custDates(){
-	var reportType = $("#reportTypeId").val();
-	if(reportType=="custom"){
-	    $(".cusShow").show();
 	}
 	if(reportType!="custom"){
-	    $(".cusShow").hide();
+		document.getElementById("RunApplicantDivId").style.display="block";
+	    $(".customLeaves").hide();
+	    $("#ExportStartDate").datepicker("destroy");
+		 $("#ExportEndDate").datepicker("destroy");
 	}
 }
 </script>
 
 <script>
 // Reports Active
-	$(".oneB").click(function(){
-		$(".oneA").removeClass("actRE");
-		$(".oneB").addClass("actRE");
-		$(".repTab1").hide();
-		$(".repTab2").show();
+	$("#gridView").click(function(){
+		$("#gridView").addClass("rAct");
+		$("#listView").removeClass("rAct");
+		$("#gridshow").show();
+		$("#listshow, .dataTabPdf").hide();
 	});
-	$(".oneA").click(function(){
-		$(".oneB").removeClass("actRE");
-		$(".oneA").addClass("actRE");
-		$(".repTab2").hide();
-		$(".repTab1").show();
-	});		
+	$("#listView").click(function(){
+		$("#gridView").removeClass("rAct");
+		$("#listView").addClass("rAct");
+		$("#gridshow").hide();
+		$("#listshow, .dataTabPdf").show();
+		
+	});	
 	</script>
 
 <script>
@@ -507,105 +499,54 @@ $(".reminder").click(function(){
 	}
 	</script>
 <script>
+
+$("#applicantDeclineReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getDayWiseReports();
+		   getDayWiseAppRecReports();
+	   }
+	});
+
 function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
-	document.getElementById("reportStartDate").style.display="none";
-	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	if(reportType!="custom"){
+	var searchValue = $("#applicantDeclineReportsTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	if(reportType == "custom" && (startDate == null || startDate == '' || startDate == 'undefined')){
+		document.getElementById("reportStartDate").style.display="block";
+		$("#reportStartDate").empty().append("Start Date is Required") ;
+		return;
+	}else{
+		document.getElementById("reportStartDate").style.display="none";	
+	}
+	if(reportType == "custom" && (endDate == null || endDate == '' || endDate == 'undefined')){
+		document.getElementById("reportEndDate").style.display="block";
+		$("#reportEndDate").empty().append("End Date is Required") ; 
+		return;
+	}else{
+		document.getElementById("reportEndDate").style.display="none";
+	}
 		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
          type : "POST",
-         url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
+         url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,     
           success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
-	        	 getAllCounts(json.length,reportType,startDate,endDate);
           		getDayWiseAppRecReports();
          },
-          
+	 
      });  
-	}
 	
 }
 
 </script>
 
 
-<script>
-function getAllCounts(applicantConts,reportType,startDate,endDate){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getReceivedApplicantsCountForReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, 
-       success :function(data) { 
-      	 var json = JSON.parse(data);
-      	 $("#applicantCount").html(applicantConts); 
-         $("#shortlistedCount").html(json.shortlistedSum); 
-  	     $("#submitToClientCount").html(0);
-  	     $("#offerCount").html(json.offeredSum); 
- 	     $("#interviewCount").html(json.interviewsSum);
-	     $("#rejectedCount").html(json.rejectedSum);
-       },
-	  });
-}
-</script>
-
-<!-- <script>
-function allReceivedApplicantsCount(applicantConts){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getReceivedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#applicantCount").html(applicantConts); 
-         $("#shortlistedCount").html(json.shortlisted); 
-   	     $("#submitToClientCount").html(0);
-   	     $("#offerCount").html(json.offeredCount); 
-  	     $("#interviewCount").html(json.interviewCount);
- 	     $("#rejectedCount").html(json.rejectedCount);
-        },
-	  });
-}
-</script> -->
-
-
-<script>
-function getCustomReports(){
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		document.getElementById("reportStartDate").style.display="block";
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		document.getElementById("reportEndDate").style.display="block";
-		$("#reportEndDate").empty().append("End Date is Required") ; 
-	}
-	else{
-		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$.ajax({
-	         type : "POST",
-	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
-	          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
-	          success :function(data) {
-	        	 prepareReportDataDiv(data);
-	        	 var json = JSON.parse(data);
-	        	 getAllCounts(json.length,reportType,startDate,endDate);
-	        	 getDayWiseAppRecReports();
-	         },
-	          
-	     }); 
-	}
-	 
-}
-</script>
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ExportStartDate").value;
@@ -620,66 +561,10 @@ function getCustomReports(){
 }
 </script>
 
-<!-- <script src="resources/reports/amcharts.js"></script> 
-<script src="resources/reports/serial.js"></script>
-<script src="resources/reports/light.js"></script>
-<script src="resources/reports/export.min.js"></script>
-<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />   
-<script>
-function applicantReceivedReportLineChart(result){
 
-var chart = AmCharts.makeChart("chartdiv", {
-	  "type": "serial",
-	  "theme": "light",
-	  "dataProvider": result,
-	  "valueAxes": [{
-	    "gridColor": "#FFFFFF",
-	    "gridAlpha": 0.2,
-	    "dashLength": 0
-	  }],
-	  "gridAboveGraphs": true,
-	  "startDuration": 1,
-	  "graphs": [{
-	    "title": "Week #20",
-	    "balloonText": "[[title]]: <b>[[value]]</b>",
-	    "bullet": "round",
-	    "bulletSize": 10,
-	    "bulletBorderColor": "#ffffff",
-	    "bulletBorderAlpha": 1,
-	    "bulletBorderThickness": 2,
-	    "valueField": "value1"
-	  }, {
-	    "title": "Week #22",
-	    "balloonText": "[[title]]: <b>[[value]]</b>",
-	    "bullet": "round",
-	    "bulletSize": 10,
-	    "bulletBorderColor": "#ffffff",
-	    "bulletBorderAlpha": 1,
-	    "bulletBorderThickness": 2,
-	    "valueField": "value2"
-	  }],
-	  "chartCursor": {
-	    "categoryBalloonEnabled": false,
-	    "cursorAlpha": 0,
-	    "zoomable": false
-	  },
-	  "categoryField": "category",
-	  "categoryAxis": {
-	    "gridPosition": "start",
-	    "gridAlpha": 0
-	  },
-	  "legend": {}
-	});
-}
-</script>  --> 
-
-
-
-<!-- <script src="resources/reports/highcharts.js"></script>
-<script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
-	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){
+	function applicantReceivedReportLineChart(applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData){
 		Highcharts.chart('container', {
     chart: {
         type: 'column'
@@ -688,7 +573,7 @@ var chart = AmCharts.makeChart("chartdiv", {
         text: 'Applicants Received'
     },
     xAxis: {
-        categories: chartData,
+        categories: "",
         crosshair: true
     },
     yAxis: {
@@ -714,10 +599,6 @@ var chart = AmCharts.makeChart("chartdiv", {
     series: [{
         name: 'Applicants',
         data: applicantData
-
-    }, {
-    	name: 'Request Sent',
-        data: requestSentData
 
     }, {
     	name: 'Shortlisted',
@@ -749,14 +630,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 
 <script>
 function getDefaultChart(){
-	$('#container').empty();
-	var reportType = $("#reportTypeId").val();
-	if(reportType=="custom"){
-		getCustomReports();
-	}
-	else{
-		getDayWiseReports();
-	}
+	getDayWiseAppRecReports();
 }
 </script>
 
@@ -774,48 +648,40 @@ function getDayWiseAppRecReports(){
           success :function(data) {
         	/*  prepareReportDataDiv(data); */
         	 var json = JSON.parse(data);
-        	 if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
-		        	if(json.length > 0)	
-		 	   		{
-		        		    var chartData = [];
+        	 if(json != null && json !='undefined' && json !=null){ 
+        		 $("#applicantCount").html(json.applicantsCount);  
+        		 $("#shortlistedCount").html(json.shortlisted); 
+		  	     $("#submitToClientCount").html(json.submitToClientCount);
+		  	     $("#offerCount").html(json.offeredCount); 
+		 	     $("#interviewCount").html(json.interviewCount);
+			     $("#rejectedCount").html(json.rejectedCount);
 		        		    var applicantData =[];
 		        		    var shortlistedData =[];
 		        		    var interviewData =[];
 		        		    var submitedtoClientData =[];
 		        		    var offeredData =[];
 		        		    var rejectedData  =[];
-		        		    var requestSentData  =[];
 		        		    
-							for(var i=0; i < json.length ; i++){
-		        			 
-		        			 var jobs = json[i];
-		        			    chartData.push( 
-		        			    	 jobs.orgName
-		        			     );
 		        			    applicantData.push( 
-		        			    	 jobs.applicantsCount
+		        			    		json.applicantsCount
 		        			    );
 		        			    shortlistedData.push( 
-			        			    	 jobs.shortlisted
+		        			    		json.shortlisted
 			        			    );
 		        			    submitedtoClientData.push( 
-			        			    	 jobs.submitToClientCount
+		        			    		json.submitToClientCount
 			        			    );
 		        			    interviewData.push( 
-			        			    	 jobs.interviewCount
+		        			    		json.interviewCount
 			        			    );
 		        			    offeredData.push( 
-			        			    	 jobs.offeredCount
+		        			    		json.offeredCount
 			        			    );
 		        			    rejectedData.push( 
-			        			    	 jobs.rejectedCount
-			        			    );
-		        			    requestSentData.push( 
-			        			    	 jobs.requestSentCount
-		        			    );
-		        			  }
-		        		 applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData);
-		 	   		}
+		        			    		json.rejectedCount
+			        			    ); 
+		        			     
+		        		 applicantReceivedReportLineChart(applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData);
 	        	 }
         	 else{
         		 var result ="";

@@ -3,21 +3,27 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.annotations.CleanHtml;
+import com.bis.sourcelead.annotations.Required;
 
 @SuppressWarnings("serial")
 public class SourceleadTicketDTO extends SearchDTO implements Serializable{
 
 	private String id;
 	
+	@Required(desc = "ticketTitle")
 	private String ticketTitle;
 	
+	@Required(desc = "titcketType")
 	private String titcketType;
 	
+	@Required(desc = "ticketTabs")
 	private String ticketTabs;
 
 	private String ticketUrl;
 	
+	@Required(desc = "description")
+	@CleanHtml(escape=true)
 	private String description;
 	
 	private List<FileInfo> fileInfo;

@@ -2,8 +2,8 @@
 
 function campaignRecipient(ele,listId, fromType) {
 		$.post(sourceleadUrl+"/campaignAddRecipient?listId="+listId+"", {}, function(data) {
-			$(".popMask").fadeIn(200);
-			$(".popUpReci").fadeIn(100);
+			$(".mask").show();
+			$("#campaignRecipient").fadeIn(100);
 			$("#campaignRecipient").html(data);
 			var campaignType = $("#typeOfCampaign").val();
 			if(campaignType == "1"){
@@ -21,23 +21,29 @@ function campaignRecipient(ele,listId, fromType) {
 							
 							if(data == 'success'){
 								 recipientClose();
-								 $("#selector1").removeAttr("style");
-					  			 $("#selector1").css({ display: "block" });
-					  			 $("#msgDiv").html("Successfully Created sender identity");
-					  			 $("#popUp").empty();
-					 			 $(".project_inn_mask").fadeOut(200);
-					             msgFadein();	
+								 
+								 if(listId != ''){
+									 $("#selector1").removeAttr("style");
+						  			 $("#selector1").css({ display: "block" });
+						  			 $("#msgDiv").html("Successfully Updated recipient");
+								}else{
+									 $("#selector1").removeAttr("style");
+						  			 $("#selector1").css({ display: "block" });
+						  			 $("#msgDiv").html("Successfully Created recipient");
+								}
+					  			
 					             if(fromType == "hotList" || fromType == "jobList"){
 					            	 if(fromType == "hotList"){
 					            		 location.replace(sourceleadUrl+ "/hotlistMail");
 					            	 }else if(fromType == "jobList"){
 					            		 location.replace(sourceleadUrl+ "/joblistMail");
 					            	 }
-					            	$(".popMask").fadeOut(200);
-				            		$(".popUpReci").fadeOut(100);
 					             }else{
 					            	 location.replace(sourceleadUrl+ "/recipientsList");
 					             }
+					             $("#popUp").empty();
+					 			 $(".mask").hide();
+					             msgFadein();
 					             
 							}else if(data == '400Body'){
 								$("#loadingRecipient").removeAttr("style");
@@ -84,27 +90,27 @@ function refreshPage()
 }
 function recipientClose() {
 	refreshPage();
-	$(".popMask").fadeOut(200);
-	$(".popUpReci").fadeOut(100);
+	$(".mask").hide();
+	$(".popupWrap").hide();
 };
 
 
 function maxAlertPopUp(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You have reached maximum number of recipient List</p>";
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelMaxAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMaxAlert();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").hide();
 }
 
 
 function cancelMaxAlert(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").hide();
 }
 
 

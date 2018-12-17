@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <style type="text/css">
 .pras.req-title p{
 bottom:-14px;
@@ -337,12 +338,12 @@ width: 100% !important;
 		 
 		 
 		 <!--  Radio Buttons -->
-					<div class="form-group" id="jobTypeDiv" style="display: none">
+					<%-- <div class="form-group" id="jobTypeDiv" style="display: none">
 							<label class="col-md-3">Employment Type</label>
 								<div class="col-md-9">
 									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
 								</div>
-					</div>
+					</div> --%>
 					
 					</div>
 	
@@ -502,10 +503,9 @@ width: 100% !important;
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 	       
            
-            //Adding Customized Educations to the list
+/*             //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
@@ -513,7 +513,7 @@ width: 100% !important;
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if ((newEducation != null  && newEducation != '' && newEducation != 'undefined') && tagItBykeyForSkills(e1))
 		        {
 		        	preventTabkey(e1);
 		        	var par = this.parent;
@@ -546,7 +546,7 @@ width: 100% !important;
 			    	var newSkill = this.value.replace(","," ");
 			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && tagItBykeyForSkills(e))
 			        {
 			        	preventTabkey(e); 
 			        	var par = this.parent;
@@ -558,7 +558,7 @@ width: 100% !important;
 				        		
 			        }
 		    	 }
-		    });
+		    }); */
 		    
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -569,6 +569,15 @@ width: 100% !important;
 			})
 			
 </script>
+
+
+ <script>
+	       $(function() { 
+	     	  tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+	     	  tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+	     	});
+ </script>
+
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <script>
@@ -598,24 +607,22 @@ function getJobType(jobType){
 		  document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  document.getElementById("projectDurationYearsDiv").style.display="none";
+		  document.getElementById("projectDurationMonthsDiv").style.display="none";
 	}else{
-		document.getElementById("jobTypeDiv").style.display="none";
+		  document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
 		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
-				
 				 document.getElementById("projectDurationYearsDiv").style.display="block";
 				 document.getElementById("projectDurationMonthsDiv").style.display="block";
-			  
 			}else{
 				document.getElementById("projectDurationYearsDiv").style.display="none";
 				document.getElementById("projectDurationMonthsDiv").style.display="none";
-				
 			}
-		 
 	}
 }
 </script>

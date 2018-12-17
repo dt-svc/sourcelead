@@ -64,8 +64,8 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 			qry = " order by epc."+ employerPayrollCostDTO.getSortColumn() +" "+employerPayrollCostDTO.getSortOrder();
 		}
 		
-		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId"+qry;
-		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId";
+		String query = "from EmployerPayrollCost epc  left join fetch epc.orgLocationId where epc.orgLocationId.id =:orgLocationId and (epc.status IS NULL or epc.status <> '0')";
+		String countQuery = "from EmployerPayrollCost epc  where epc.orgLocationId.id =:orgLocationId and (epc.status IS NULL or epc.status <> '0')";
 		
 		if(employerPayrollCostDTO.getSearchValue().contains("/") || employerPayrollCostDTO.getSearchValue().contains("-")){
 			String convertedDate=employerPayrollCostDTO.getSearchValue();
@@ -78,7 +78,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
             String newDate = parsedDate.format(f2);
             Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
             java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
+            String queryDate = "from EmployerPayrollCost epc where epc.orgLocationId.id =:orgLocationId and and (epc.status IS NULL or epc.status <> '0') and ( epc.fromDate =:sqlDate or epc.toDate =:sqlDate )";
             Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
             response.setData(queryObjDate.list());
 
@@ -100,7 +100,7 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 					.append("OR epc.adminFee like '%" + employerPayrollCostDTO.getSearchValue() + "%' ")
 					.append("OR epc.totalErCost like '%" + employerPayrollCostDTO.getSearchValue() + "%' ");
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (employerPayrollCostDTO != null && employerPayrollCostDTO.getLength() > 0) {
 			queryObj.setFirstResult(employerPayrollCostDTO.getStart());
 			queryObj.setMaxResults(employerPayrollCostDTO.getLength());
@@ -156,6 +156,16 @@ public class EmployerPayrollCostDaoImpl implements EmployerPayrollCostDao{
 				count = version.get(0);
 		}
 		return count;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmployerPayrollCost ep where ep.orgLocationId.id =:orgLocationId";
+		List<EmployerPayrollCost> list = session.createQuery(query).setLong("orgLocationId", locationId).list();
+		return list;
 	}
 
 }

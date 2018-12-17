@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "CANDIDATE_TIMELINE_ACTIVITY")
 public class CandidateTimelineActivity implements Serializable {
@@ -60,12 +62,16 @@ public class CandidateTimelineActivity implements Serializable {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	@Transient
+	@JsonProperty
 	private String actionDateStr;
 	@Transient
+	@JsonProperty
 	private String actionTimeStr;
 	@Transient
+	@JsonProperty
 	private String actionIconClass;
 	@Transient
+	@JsonProperty
 	private Long createdUserId;
 	
 	public Long getId()

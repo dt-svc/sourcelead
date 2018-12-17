@@ -8,7 +8,11 @@
         <div class="pull-left">
             <h2>Payment Success</h2>
         </div>
-        <div class="pull-right brud-crum">Home &raquo; Payment Success</div>
+        <div class="pull-right brud-crum">
+				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/payablesList'/>"> Bills List</a>
+				&raquo; Payment Success
+			</div>
     </section>
     <div class="scontent-new clearfix">
         <div class="clearfix">
@@ -16,11 +20,11 @@
 
                 <div class="paymentsuccess-header">
                     <h4 class="mb5"><i class="fa fa-check-circle fa-2x mr"></i><span>Payment Successful!</span></h4>
-                    <p><strong>Thank you ! Your payment of $${amount} has been received.</strong></p>
+                    <p><strong>Thank you ! Your payment of $${payment.customeAmount == '0.0' ? payment.totalAmount : payment.customeAmount} has been received.</strong></p>
                     <div class="clearfix">
                         <ul class="list-unstyled list-inline">
-                            <li class="mr5"><label class="text-muted paddingRight">Order ID :</label> <span>${orderId}</span></li><span class="text-muted">|</span>
-                            <li><label class="text-muted paddingRight">Transaction ID :</label><span>${transactionId}</span></li>
+                            <li class="mr5"><label class="text-muted paddingRight">Order ID :</label> <span>${invoice.invoiceUUID}</span></li><span class="text-muted">|</span>
+                            <li><label class="text-muted paddingRight">Transaction ID :</label><span>${payment.referenceNumber}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -33,12 +37,12 @@
                             <th>Type</th><th>Description</th><th>Amount</th>
                             </thead>
                             <tbody>
-                            <td class="text-left">Subscriptions</td><td class="text-left">Description Descriptions</td><td class="text-left">$${amount}</td>
+                            <td class="text-left">Invoice</td><td class="text-left">Online Payment</td><td class="text-left">$ ${payment.customeAmount == '0.0' ? payment.totalAmount : payment.customeAmount}</td>
                             </tbody>
                             <tfoot>
                             <td>&nbsp;</td>
                             <td class="text-left">Total Amount</td>
-                            <td class="text-left">$${amount}</td>
+                            <td class="text-left">$ ${payment.customeAmount == '0.0' ? payment.totalAmount : payment.customeAmount}</td>
                             </tfoot>
                         </table>
                     </div>
@@ -46,7 +50,8 @@
                     <p class="text-muted clearfix">Invoice sent to your Registered Email.</p>
                 </div>
                 <div class="clearfix text-center mt25">
-                    <a href="javascript:void(0)" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Back to Dashboard</a>
+                    <a href="<c:url value='${appPath}/dashboard'/>" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
+                    </span></a>
                 </div>
             </section>
             <!-- Content Area Ends--> 

@@ -14,39 +14,6 @@
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
- <script> 
-	$(document).ready(function(){
-		getNewProjectResourceReqestsListCount();
-		newResourceRequestList("Waiting For Approval");
-	});
-</script>
- 
- 
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
-      	    <h4>New Resource Requests</h4>
-      	    
-      	    <div class="project_side_wrap_inn_tabs">
-      	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
-			        <li class="current" id="newReqWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Waiting For Approval')">Waiting (<span id="newWaitingCount"></span>)</a></li>
-			        <li id="newRequestApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="newResourceRequestList('Approved')">Approved (<span id="newApprovedCount"></span>)</a></li>
-			        <li id="newRequestRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('Rejected')">Rejected (<span id="newRejectedCount"></span>)</a></li>
-			        <li id="newRequestOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="newResourceRequestList('On hold')">On hold (<span id="newOnholdCount"></span>)</a></li>
-			        <div class="clearfix"></div>
-			    </ul>
-			    <div id="newResourceRequestList"></div>
-			    <div class="vendor_wrap_mask"></div>
-   				<div id="requestedNewAssociatesDivLoading"></div>
-   				<div id="newRequestOnHoldReasonDiv"></div>
-   				<div id="resourceRejectedReasonDiv"></div>
-           </div>
-      	  </div>
-      </div>
-    
- </section>
- 
  <script>
  function getNewProjectResourceReqestsListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -69,10 +36,16 @@
  
  <script>
 function newResourceRequestList(requestType){
-	  
+	getNewProjectResourceReqestsListCount();
+	  $('#newResourceRequestTabDiv').show();
+	  $('#assocaiteRequestsTabDiv').hide();
+	  $("#budgetTabDiv").hide();
+	  $("#associateDiv").removeClass("active");
+	  $("#newResourceDiv").addClass("active");
+	  $("#budgetDiv").removeClass("active");
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
-	 	result = result +" <input type='text' placeholder='Search' id='newRequestAssociatesTableSearch'/>";
+	 	result = result +" <input type='text' class='repSearchBar' placeholder='New Resource search' id='newRequestAssociatesTableSearch'/>";
 	 	result = result +"</div>";
 	 	
 	    result = result +'<div class="clearfix popupFilter mt5">';
@@ -116,31 +89,31 @@ function newRequestAssociatesDataTableList(requestType){
 	 newResourceRequestPagination(url,requestType,sourceleadUrl);
 	 
 	   if(requestType == 'Waiting For Approval'){
-	    	 $("#newReqWaiting").addClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newReqWaiting").addClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	   
 	    else if(requestType == 'Approved'){
-	    	 $("#newRequestApproved").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newRequestApproved").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'Rejected'){
-	    	 $("#newRequestRejected").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestOnhold").removeClass("current");
+	    	 $("#newRequestRejected").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestOnhold").removeClass("activeIcon");
 	    }
 	    
 	    else if(requestType == 'On hold'){
-	    	 $("#newRequestOnhold").addClass("current");
-	    	 $("#newReqWaiting").removeClass("current");
-	    	 $("#newRequestApproved").removeClass("current");
-	    	 $("#newRequestRejected").removeClass("current");
+	    	 $("#newRequestOnhold").addClass("activeIcon");
+	    	 $("#newReqWaiting").removeClass("activeIcon");
+	    	 $("#newRequestApproved").removeClass("activeIcon");
+	    	 $("#newRequestRejected").removeClass("activeIcon");
 	    	
 	    }
 	    
@@ -232,6 +205,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    			
 			    			if(opt.resourceStatus == 'On hold'){
 			    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
+			    			  result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			result = result + '<a href="javascript:void(0)" onclick="acceptNewAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectNewAssociate(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
@@ -244,8 +218,10 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    			if(opt.resourceStatus == 'Rejected'){
 			    				result = result +"<i class='glyphicon glyphicon-comment colB edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}else{
-			    				result = result + '<b>'+opt.resourceStatus+'</b>';
+			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			
 			    		}

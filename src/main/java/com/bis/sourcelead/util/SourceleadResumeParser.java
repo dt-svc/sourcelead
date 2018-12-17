@@ -43,35 +43,39 @@ public class SourceleadResumeParser {
 	@Autowired
 	LookUpDataService lookUpDataService;
 
-	public String getCandidateDetailsFromResume(byte[] source, String country) throws Exception {
-
-		BodyContentHandler htmlHandler = new BodyContentHandler();
-		ByteArrayInputStream stream = new ByteArrayInputStream(source);
-		AutoDetectParser parser = new AutoDetectParser();
-		Metadata metadata = new Metadata();
-		parser.parse(stream, htmlHandler, metadata);
-		String parsedString = htmlHandler.toString();
-		// System.out.println(parsedString);
-		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
-		String name = nameFinderFromParsedTextFile(parsedString);
-		name = name.trim();
-		if (StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0) {
-			String firstName = name.substring(0, name.lastIndexOf(" "));
-			String lastName = name.substring(name.lastIndexOf(" ") + 1);
-			jsonUtil.setName(firstName + "." + lastName);
-		} else {
-			jsonUtil.setName(name);
+	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country) throws Exception {
+		try {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			ByteArrayInputStream stream = new ByteArrayInputStream(source);
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			// System.out.println(parsedString);
+			ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+			String name = nameFinderFromParsedTextFile(parsedString);
+			name = name.trim();
+			if (StringUtils.isNotEmpty(name) && name.lastIndexOf(" ") > 0) {
+				String firstName = name.substring(0, name.lastIndexOf(" "));
+				String lastName = name.substring(name.lastIndexOf(" ") + 1);
+				jsonUtil.setName(firstName + "." + lastName);
+			} else {
+				jsonUtil.setName(name);
+			}
+			jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
+			jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, country));
+	
+			HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString);
+			if (skillsList != null && !skillsList.isEmpty()) {
+				String skills = String.join(", ", skillsList);
+				skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
+				jsonUtil.setSkills(skills);
+			}
+			return jsonUtil;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		jsonUtil.setEmail(emailFinderFromParsedTextFile(parsedString));
-		jsonUtil.setPhoneNumbers(phoneNumberFinderFromParsedTextFile(parsedString, country));
-
-		HashSet<String> skillsList = skillFinderFromParsedTextFile(parsedString);
-		if (skillsList != null && !skillsList.isEmpty()) {
-			String skills = String.join(", ", skillsList);
-			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
-			jsonUtil.setSkills(skills);
-		}
-		return toJSON(jsonUtil);
+		return null;
 	}
 
 	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country) throws Exception {

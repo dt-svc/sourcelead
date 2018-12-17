@@ -18,16 +18,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.PaymentAccountType;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import java.util.Base64;
+import java.util.Objects;
+import org.hibernate.Query;
 import org.jgroups.util.UUID;
 
 /**
@@ -42,6 +50,9 @@ public class OrgDaoImpl implements OrgDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	CandidateDao candidateDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -368,7 +379,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.openSession();
 		List<UserDTO> userList = new ArrayList<>();
 		try{
-			String query = "SELECT U.ID, U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
+			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
 					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
 					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId AND R.ID NOT IN (95,96) "+ 
 					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID AND UR.USER_STATE !='INACTIVE' ORDER BY UR.REPORTING_MANAGER_ID;";
@@ -378,6 +389,7 @@ public class OrgDaoImpl implements OrgDao {
 				UserDTO user = new UserDTO();
 				int i = 0;
 				user.setId(Long.valueOf(record[i++].toString()));
+				user.setUserCode(record[i++].toString());
 				user.setName(record[i++].toString());
 				String lastName = record[i] == null ? "" : record[i].toString();
 				user.setName(user.getName()+(lastName.isEmpty() ? "" : " "+ lastName));
@@ -565,5 +577,265 @@ public class OrgDaoImpl implements OrgDao {
 			return  null;
 		}
 	}*/
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public long savePaymentAccount(PaymentAccountDTO account) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = new PaymentAccount();
+            boolean isNew = true;
+            if (account.getId() != 0) {
+                pay = session.get(PaymentAccount.class, account.getId());
+                isNew = false;
+                //updated
+            } else {
+                //created
+            }
+            String query = "from PaymentAccount p where p.org.id = :orgId";
+            query += " and p.orgLocation.id = :orgLocationId";
+            query += " and p.accountType = :accountType";
+            query += " and p.email = :email";
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("orgId", account.getOrgId());
+            queryObj.setString("accountType", account.getAccountType());
+            queryObj.setString("email", account.getEmail());
+            queryObj.setLong("orgLocationId", account.getOrgLocationId());
+            List<PaymentAccount> list = queryObj.list();
+            if (list != null && !list.isEmpty()
+                    && (isNew || (!isNew && list.get(0).getId() != account.getId()))) {
+                return -1;
+            }
+            
+            if(!isNew && PaymentAccountType.valueOf(account.getAccountType()) == PaymentAccountType.WEPAY) {
+                pay.setAccess(account.isAccess());
+            }
+            
+            pay.setAccess(account.isAccess());
+            pay.setAccessToken(account.getAccessToken());
+            pay.setAccountId(account.getAccountId());
+            pay.setUserId(account.getUserId());
+            pay.setAccountType(account.getAccountType());
+            pay.setOrg(session.get(Org.class, account.getOrgId()));
+            pay.setOrgLocation(session.get(OrgLocations.class, account.getOrgLocationId()));
+            pay.setFirstName(account.getFirstName());
+            pay.setLastName(account.getLastName());
+            pay.setEmail(account.getEmail());
+            pay.setBankName(account.getBankName());
+            pay.setBsrNumber(account.getBsrNumber());
+            pay.setMicrCode(account.getMicrCode());
+            pay.setAccountNumber(account.getAccountNumber());
+            pay.setRoutingNumber(account.getRoutingNumber());
+            if(account.getAssociateUserId() > 0) {
+            	Candidate candidate = candidateDao.getCandidateByConsultantUserId(account.getAssociateUserId(), account.getOrgLocationId());
+            	pay.setCandidateId(candidate);
+            }else {
+            	pay.setCandidateId(session.get(Candidate.class,account.getCandidateId()));
+            }
+            pay.setDefaultAccount(account.isDefaultAccount());
+            pay.setDisabled(account.isDisabled());
+            session.saveOrUpdate(pay);
+            return pay.getId();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId, boolean onlyEnabledAccounts) {
+        List<PaymentAccountDTO> resultList = new ArrayList<>();
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount p where p.org.id = :orgId";
+            if (orgLocactionId > 0) {
+                query += " and p.orgLocation.id = :orgLocationId";
+            }
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
+            }
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("orgId", orgId);
+            if (orgLocactionId > 0) {
+                queryObj.setLong("orgLocationId", orgLocactionId);
+            }
+            List<PaymentAccount> list = queryObj.list();
+            for (PaymentAccount p : list) {
+                PaymentAccountDTO pay = new PaymentAccountDTO();
+                applyEntityDataToDTO(p, pay);
+                resultList.add(pay);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public long changePaymentAccountToAccess(long id, long orgId) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            if (Objects.equals(pay.getOrg().getId(), orgId)) {
+                pay.setAccess(true);
+            } else {
+                return -1;
+            }
+            session.saveOrUpdate(pay);
+            return pay.getId();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional
+    public PaymentAccountDTO getPaymentAccount(long id, Long orgId) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            PaymentAccountDTO account = new PaymentAccountDTO();
+            if (orgId == null || Objects.equals(pay.getOrg().getId(), orgId)) {
+                applyEntityDataToDTO(pay, account);
+            } else {
+                return null;
+            }
+            session.saveOrUpdate(pay);
+            return account;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+    
+    @Override
+    @Transactional(rollbackFor = {Exception.class})
+    public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            if (Objects.equals(pay.getOrgLocation().getId(), orgLocationId)) {
+                pay.setDefaultAccount(defaultAccount);
+                if(defaultAccount) {
+                	pay.setDisabled(false);
+                    String query = "from PaymentAccount p where ";
+                    query += "  p.orgLocation.id = :orgLocationId and p.id != :pid";
+                    Query queryObj = session.createQuery(query);
+                    queryObj.setLong("pid", pay.getId());
+                    queryObj.setLong("orgLocationId", pay.getOrgLocation().getId());
+                    List<PaymentAccount> list = queryObj.list();
+                    for (PaymentAccount p : list) {
+                        p.setDefaultAccount(false);
+                        session.saveOrUpdate(p);
+                    }
+                }
+                session.saveOrUpdate(pay);
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    private void applyEntityDataToDTO(PaymentAccount p, PaymentAccountDTO pay) {
+        pay.setId(p.getId());
+        pay.setAccess(p.isAccess());
+        pay.setAccessToken(p.getAccessToken());
+        pay.setAccountId(p.getAccountId());
+        pay.setAccountType(p.getAccountType());
+        pay.setDefaultAccount(p.isDefaultAccount());
+        pay.setOrgLocationId(p.getOrgLocation().getId());
+        if(p.getCandidateId() != null) {
+            pay.setCandidateId(p.getCandidateId().getId());
+        }
+        pay.setFirstName(p.getFirstName());
+        pay.setBankName(p.getBankName());
+        pay.setLastName(p.getLastName());
+        pay.setBsrNumber(p.getBsrNumber());
+        pay.setMicrCode(p.getMicrCode());
+        pay.setAccountNumber(p.getAccountNumber());
+        pay.setRoutingNumber(p.getRoutingNumber());
+        pay.setEmail(p.getEmail());
+        pay.setDisabled(p.isDisabled());
+        pay.setOrgLocationName(p.getOrgLocation().getOrgLocationName());
+    }
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public int changePaymentAccountStatus(long id, long orgLocationId) {
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            PaymentAccount pay = session.get(PaymentAccount.class, id);
+            if (Objects.equals(pay.getOrgLocation().getId(), orgLocationId)) {
+            	pay.setDisabled(!pay.isDisabled());
+            	if(pay.isDisabled())
+            		pay.setDefaultAccount(false);
+                session.saveOrUpdate(pay);
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+	}
+
+	@Override
+	 @Transactional
+	public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId, boolean onlyEnabledAccounts) {
+		List<PaymentAccountDTO> resultList = new ArrayList<>();
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount p where p.associateUser.id = :userId";
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
+            }
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("userId", userId);
+            List<PaymentAccount> list = queryObj.list();
+            for (PaymentAccount p : list) {
+                PaymentAccountDTO pay = new PaymentAccountDTO();
+                applyEntityDataToDTO(p, pay);
+                resultList.add(pay);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId, boolean onlyEnabledAccounts) {
+
+		List<PaymentAccountDTO> resultList = new ArrayList<>();
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount p where p.candidateId.id = :candidateId";
+            if(onlyEnabledAccounts) {
+            	query += " and p.disabled = 0";
+            }
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("candidateId", candidateId);
+            List<PaymentAccount> list = queryObj.list();
+            for (PaymentAccount p : list) {
+                PaymentAccountDTO pay = new PaymentAccountDTO();
+                applyEntityDataToDTO(p, pay);
+                resultList.add(pay);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return resultList;
+	
+	}
+	 
 }
 

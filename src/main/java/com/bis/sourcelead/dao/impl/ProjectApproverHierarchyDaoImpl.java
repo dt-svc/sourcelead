@@ -4,8 +4,10 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -363,14 +365,28 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId)
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId,Long orgId,String isGlobalAccess)
 			throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug("In ProjectApproverHierarchy getProjectApproverByProjectIdAndLevel method");
-		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc left join fetch projectHirachy.approverUserId where projects.id = :projectId and pc.id = :projectClientId and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah where subpah.projectId.id = :projectId and subpah.projectClientsId.id = :projectClientId)";
-		Collection<ProjectApproverHierarchy> projectApproverHierarchies = session.createQuery(query.toString()).setLong("projectId", projectId).setLong("projectClientId", projectClientId).list();
-
+		
+		String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah where subpah.projectId.id = :projectId and subpah.projectClientsId.orgLocationsId.org.id = :orgId) ";
+	    }else {
+	    	globalUserQuery = "  and projectHirachy.level IN(select Max(subpah.level) from ProjectApproverHierarchy subpah where subpah.projectId.id = :projectId and subpah.projectClientsId.id = :projectClientId)";
+	    }
+	    
+		String query = "from ProjectApproverHierarchy projectHirachy left join fetch projectHirachy.projectId projects left join fetch projectHirachy.projectClientsId pc left join fetch projectHirachy.approverUserId where projects.id = :projectId and pc.id = :projectClientId " +globalUserQuery;
+		
+		Query queryObj = session.createQuery(query.toString()).setLong("projectId", projectId);
+		if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+			queryObj.setLong("orgId", orgId);
+		}
+		queryObj.setLong("projectClientId", projectClientId);
+		
+		Collection<ProjectApproverHierarchy> projectApproverHierarchies = queryObj.list();
 		ProjectApproverHierarchy ph = null;
 		if (projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
 			ph = (		ProjectApproverHierarchy) projectApproverHierarchies.iterator().next();
@@ -407,5 +423,19 @@ public class ProjectApproverHierarchyDaoImpl implements ProjectApproverHierarchy
 				+ "where hierarchy.projectClientsId.id = :projectClientId and hierarchy.status = '1' ";
 		 List<ProjectApproverHierarchy>  projectHirachyList =   session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
 	     return projectHirachyList;
+	}
+	
+	@Override
+	@Transactional
+	public String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug("In ProjectApproverHierarchy getApprovalMechanismTypeByProjectClientId method");
+		String query = "from ProjectApproverHierarchy projectHirachy where projectHirachy.projectClientsId.id = :projectClientId ";
+		List<ProjectApproverHierarchy>  projectHirachyList = session.createQuery(query.toString()).setLong("projectClientId", projectClientId).list();
+		ProjectApproverHierarchy ph = null;
+		if (projectHirachyList != null && projectHirachyList.size() > 0) {
+			ph = (ProjectApproverHierarchy) projectHirachyList.iterator().next();
+		}
+		return ph.getApprovalMechanismType();
 	}
 }

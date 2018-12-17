@@ -9,6 +9,9 @@
  
  <script type="text/javascript">
 		window.onload = function () {
+			 if('${AWKWARD}' == "true"){
+				window.location.href =  "/errorPage";
+			}else{ 
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
 				$('#maxRecCount').val('${2*expenses.expenseEntry.size()+1}');
@@ -18,9 +21,16 @@
 			}
 			calculateTotalamount();
 			getClientBasedOnSelectedProject();
+			 }
 		 };
 </script>
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">
@@ -50,7 +60,7 @@
                 <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-					<c:if test="${submissionStatus != 'SUBMITTED'}">
+					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" data-validation="required">
 
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
@@ -61,7 +71,7 @@
 							</c:forEach>
 						</select>
 					</c:if>
-					<c:if test ="${submissionStatus == 'SUBMITTED'}">
+					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
 							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
 								<option value="">Select Project</option>
@@ -115,14 +125,26 @@
 	            <div class="form-group">
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9" >
-						<div class="row">
-						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
-						  </div>
-						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">						 
-						  </div>					  
-						</div>
+						<c:if test ="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">						 
+							  </div>					  
+							</div>
+						</c:if>
+						<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">						 
+							  </div>					  
+							</div>
+						</c:if>
 	              </div>
 	            </div>
 		</div>
@@ -130,9 +152,9 @@
 </div>
 <div class="expensHead">
 <div class="form-group col-md-6 mt5 mb5 noPad">
-<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<span class="col-md-6 noPad">Amount :</span>
 <div class="col-md-6">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${entry.amountRoundOff}" class="ReadTextFli valid" readonly="readonly">
 </div>
 <div class="pull-left" id="exceedSpan"></div>
 </div>
@@ -147,9 +169,11 @@
 				<th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
-				<th>Amount</th>
+				<th>Submitted Amount</th>
+				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
+				<th>Billable Type</th>
 				<th>Paid By</th>
 				<th>Action</th>
 			</tr>
@@ -171,8 +195,12 @@
 			               <div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div>
 			          </td>
 			           <td>
-			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmount}"/>
-			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div>
+			               <input type='hidden' id="submittedAmountDivInput${(2*(entryCount.count))-1}" value="${entry.submittedamount}"/>
+			               <div id="submittedAmountDiv${(2*(entryCount.count))-1}">${entry.submittedamount}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.amountRoundOff}"/>
+			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.amountRoundOff}</div>
 			          </td>
 			          <td>
 			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
@@ -181,6 +209,10 @@
 			           <td>
 			               <input type='hidden' id="paymentModeDivInput${(2*(entryCount.count))-1}" value="${entry.paymentMode}"/>
 			               <div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="billableTypeDivInput${(2*(entryCount.count))-1}" value="${entry.billable == false ? 'Non-Billable' : 'Billable'}"/>
+			               <div id="billableTypeDiv${(2*(entryCount.count))-1}">${entry.billable == false ? 'Non-Billable' : 'Billable'}</div>
 			          </td>
 			           <td>
 			               <input type='hidden' id="paidByDivInput${(2*(entryCount.count))-1}" value="${entry.paidBy}"/>
@@ -193,7 +225,7 @@
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-			          <td colspan="8">
+			          <td colspan="10">
 				         <div class="expDetails">
 				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
@@ -203,9 +235,11 @@
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
+						<c:set var="isAttachmentRequired" value="Y"/>
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
 					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == \"Y\" ? 'Y' :'N'}"/>
 					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 					 	    	 </c:forEach>
 						  </c:if>
@@ -230,17 +264,25 @@
 								</select>
 							</div>	
 							
-		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
-			                   <label>Amount<span class='text-danger'>&nbsp;*</span></label>
+							
+							 <div id="submittedamountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
+			                   <label>Submitted Amount<span class='text-danger'>&nbsp;*</span></label>
 								  <div class='input-group positionRelative'>
 										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
-											 <select class='btn btn-info' id='expenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+											 <select class='btn btn-info' id='submittedexpenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
 												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
 									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
 									              </c:forEach>
-										  </select>
+										     </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' Readonly class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+									</div>
+		                 </div>
+							
+		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
+			                   <label>Approved Amount<span class='text-danger'>&nbsp;*</span></label>
+								  <div class='input-group positionRelative'>
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Approved Amount'  name='expenseEntry[${entryCount.index}].categoryApprovedAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.amount}' field-name='Approved Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
@@ -252,8 +294,15 @@
 							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
 							             </c:forEach>
 								</select>
-							</div>
-		                 
+						</div>
+						<div class="col-md-4 minHeight">
+								<label>Billable Type</label>
+								<select class="chosen-select form-control" id="billableType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].billable" class="form-control" field-name="Billable" >
+								          <option value="">Select BillableType</option>
+					                      <option  ${true == entry.billable ? 'selected' : ''} value="1">Billable</option>
+					                      <option  ${false == entry.billable ? 'selected' : ''} value="0">Non-Billable</option>
+								</select>
+						</div>
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
 							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required " onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
@@ -277,11 +326,11 @@
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
+			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' ><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
 			                       </tr>
 			                   </table>
 			                 </span>
@@ -307,7 +356,7 @@
 		
 		
 			<div class="pull-right">
-			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
+			<!--  <input type="button" value="Save" class="btn btn-sm btn-primary">  -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
 			<c:if test ="${!empty expenses.id}">
@@ -741,6 +790,7 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
      }	
   }
 }
+
 </script>
 
  <!-- <script>

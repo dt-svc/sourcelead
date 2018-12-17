@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 @Entity
 @Table(name = "SOURCELEAD_NOTES")
@@ -68,6 +70,14 @@ public class SourceleadNotes {
     @JoinColumn(name="ASSET_ID", nullable=false )     
 	private Asset assetId;
 	
+	@ManyToOne
+	@JoinColumn(name = "IMMIGRATION_ID")
+	private Immigration immigration;
+	
+	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_ID")
+	private Candidate candidate;
+	
 	@Transient
 	private Long commentAuthorUserId;
 	
@@ -99,33 +109,44 @@ public class SourceleadNotes {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String createdDateString;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
+	@JsonProperty
 	private String contactName;
 	
 	@Transient
+	@JsonProperty
 	private String contract;
 	
 	@Transient
+	@JsonProperty
 	private String invoiceId;
 	
 	@Transient
+	@JsonProperty
 	private Long userIdStr;
 	
 	@Transient
+	@JsonProperty
 	private String assetName;
 	
 	@Transient
+	@JsonProperty
 	private String updatedDateString;
 	
-
+	@Transient
+	private String immigrationId;
+	
 	public Long getId()
 	{
 		return id;
@@ -399,6 +420,31 @@ public class SourceleadNotes {
 	public void setAssetName(String assetName) {
 		this.assetName = assetName;
 	}
+
+	public Immigration getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(Immigration immigration) {
+		this.immigration = immigration;
+	}
+
+	public Candidate getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(Candidate candidate) {
+		this.candidate = candidate;
+	}
+
+	public String getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(String immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+	
 	
 	
 }

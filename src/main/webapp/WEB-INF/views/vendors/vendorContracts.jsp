@@ -91,6 +91,11 @@ function vendorContracts(orgRelationId){
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
+	    result = result + '<input type="checkbox" value="WAITING_TO_SEND" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting To Send <b class="badge" id="WTOSCount">0</b></label>';
+	    result = result + '</li>';
+	    
+	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_TO_BE_SIGNED" name="contractStatus" id="contractStatus" onclick="vendorContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting to be Signed <b class="badge" id="WTSCount">0</b></label>';
 	    result = result + '</li>';
@@ -283,18 +288,17 @@ function vendorContractsList(orgRelationId){
 		                	     	         }
 	                		     		  }
 	                		     		 
-		                		         
 		                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 	                		     		 if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
 	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
 	                			         }else if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "PENDING") && (null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId)){
 	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a></div>'; 
 	                			         }else if(report.typeOfContract == "Existing"){
-	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></small></a></div>';
+	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\',  \'application/pdf\')"></small></a></div>';
 	                			         }else if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || report.templateSubmissionStatus == "FINALIZED"){
 	                			        	 result = result + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a>';
 	                			         }else{
-	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></small></a></div>';
+	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a></div>';
 	                			         }
 	                		     		'</sec:authorize>';
 // 	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -312,7 +316,7 @@ function vendorContractsList(orgRelationId){
 	                	       			}
 	                	     	         
 	                	       			if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
-		                	   	        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+		                	   	        	 if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 		                	   		     			result = result +  '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 		                	   		     		}
 	                	   	         	}

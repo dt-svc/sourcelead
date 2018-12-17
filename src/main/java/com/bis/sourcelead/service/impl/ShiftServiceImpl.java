@@ -17,6 +17,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+import cucumber.deps.difflib.StringUtills;
 @Service
 public class ShiftServiceImpl implements ShiftService {
 	
@@ -37,7 +39,7 @@ public class ShiftServiceImpl implements ShiftService {
 		
 		Shift shift = null;
 		if(StringUtils.isNotBlank(shiftDTO.getShiftUUID())){
-			shift = shiftDao.getShiftById(shiftDTO.getShiftId());
+			shift = shiftDao.getShiftById(shiftDTO.getShiftUUID());
 		}else{
 			shift = new Shift();
 			shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -56,6 +58,92 @@ public class ShiftServiceImpl implements ShiftService {
 		}else{
 			shift.setTimeOut("");
 		} 
+		
+		if(StringUtils.isNotBlank(shiftDTO.getTotalHours())) {
+			shift.setTotalHours(shiftDTO.getTotalHours());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getMinimumHours())){
+			shift.setMinmumHours(shiftDTO.getMinimumHours());
+		}
+
+		if(StringUtils.isNotBlank(shiftDTO.getMondayInTime())){
+			shift.setMondayInTime(shiftDTO.getMondayInTime());
+		}else {
+			shift.setMondayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getMondayOutTime())) {
+			shift.setMondayOutTime(shiftDTO.getMondayOutTime());
+		}else {
+			shift.setMondayOutTime(shiftDTO.getTimeOut());
+		}
+				
+		if(StringUtils.isNotBlank(shiftDTO.getTuesdayInTime())) {
+			shift.setTuesdayInTime(shiftDTO.getTuesdayInTime());
+		}else {
+			shift.setTuesdayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getTuesdayOutTime())) {
+			shift.setTuesdayOutTime(shiftDTO.getTuesdayOutTime());
+		}else {
+			shift.setTuesdayOutTime(shiftDTO.getTimeOut());
+		}
+		
+		if(StringUtils.isNotBlank(shiftDTO.getWednesdayInTime())) {
+			shift.setWednesdayInTime(shiftDTO.getWednesdayInTime());
+		}else {
+			shift.setWednesdayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getWednesdayOutTime())) {
+			shift.setWednesdayOutTime(shiftDTO.getWednesdayOutTime());
+		}else {
+			shift.setWednesdayOutTime(shiftDTO.getTimeOut());
+		}
+		
+		
+		if(StringUtils.isNotBlank(shiftDTO.getThursdayInTime())) {
+			shift.setThursdayInTime(shiftDTO.getThursdayInTime());
+		}else {
+			shift.setThursdayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getThursdayOutTime())) {
+			shift.setThursdayOutTime(shiftDTO.getThursdayOutTime());
+		}else {
+			shift.setThursdayOutTime(shiftDTO.getTimeOut());
+		}
+		
+		if(StringUtils.isNotBlank(shiftDTO.getFridayInTime())) {
+			shift.setFridayInTime(shiftDTO.getFridayInTime());
+		}else {
+			shift.setFridayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getFridayOutTime())) {
+			shift.setFridayOutTime(shiftDTO.getFridayOutTime());
+		}else {
+			shift.setFridayOutTime(shiftDTO.getTimeOut());
+		}
+		
+		if(StringUtils.isNotBlank(shiftDTO.getSaturdayInTime())) {
+			shift.setSaturdayInTime(shiftDTO.getSaturdayInTime());
+		}else {
+			shift.setSaturdayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getSaturdayOutTime())) {
+			shift.setSaturdayOutTime(shiftDTO.getSaturdayOutTime());
+		}else {
+			shift.setSaturdayOutTime(shiftDTO.getTimeOut());
+		}
+		
+		if(StringUtils.isNotBlank(shiftDTO.getSundayInTime())) {
+			shift.setSundayInTime(shiftDTO.getSundayInTime());
+		}else {
+			shift.setSundayInTime(shiftDTO.getTimeIn());
+		}
+		if(StringUtils.isNotBlank(shiftDTO.getSundayOutTime())) {
+			shift.setSundayOutTime(shiftDTO.getSundayOutTime());
+		}else {
+			shift.setSundayOutTime(shiftDTO.getSundayOutTime());
+		}
+		
 		if(shiftDTO.getShiftDescription() != null && !"".equalsIgnoreCase(shiftDTO.getShiftDescription())){
 		    shift.setShiftDescription(shiftDTO.getShiftDescription());
 		}else{
@@ -80,6 +168,16 @@ public class ShiftServiceImpl implements ShiftService {
 	public Shift getShiftById(String shiftId)
 	{
 		return shiftDao.getShiftById(shiftId);
+	}
+
+	@Override
+	public Shift getShiftListByShiftNameAndOrglocationId(String ShiftName, Long orgLocationId) {
+		return shiftDao.getShiftListByShiftNameAndOrglocationId(ShiftName, orgLocationId);
+	}
+
+	@Override
+	public List<String> getAssociatesShiftListByOrgLocationId(Long orgLocationId) {
+		return shiftDao.getAssociatesShiftListByOrgLocationId(orgLocationId);
 	}
 	
 	

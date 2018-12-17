@@ -15,6 +15,8 @@ public class ApplicantRejectBackOutDTO implements Serializable{
 	private String rejectedCategoryOther;
 	
 	private String reasonForReject;
+	
+	private String joinDate;
 
 	public String getReasonForbackOut() {
 		return reasonForbackOut;
@@ -63,6 +65,13 @@ public class ApplicantRejectBackOutDTO implements Serializable{
 	public void setReasonForReject(String reasonForReject) {
 		this.reasonForReject = reasonForReject;
 	}
-	
+
+	public String getJoinDate() {
+		return joinDate;
+	}
+
+	public void setJoinDate(String joinDate) {
+		this.joinDate = joinDate;
+	}
 	
 }

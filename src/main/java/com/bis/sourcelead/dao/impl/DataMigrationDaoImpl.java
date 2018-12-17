@@ -27,8 +27,13 @@ public class DataMigrationDaoImpl implements DataMigrationDao{
 	{
 		logger.debug("In DataMigrationDaoImpl class getfieldsBySectionIdAndImportStatus method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String QUERY = "FROM SourceleadFormFields SFF WHERE SFF.sourceleadFormSections.id IN(SELECT SFS.id FROM SourceleadFormSections SFS WHERE SFS.sourceleadActions = :actionId) AND SFF.isImportField = '1' ";
-		List<SourceleadFormFields> formfieldsList = session.createQuery(QUERY).setLong("actionId", actionId).list();
+		List<SourceleadFormFields> formfieldsList = null;
+		try {
+			String QUERY = "FROM SourceleadFormFields SFF WHERE SFF.sourceleadFormSections.id IN(SELECT SFS.id FROM SourceleadFormSections SFS WHERE SFS.sourceleadActions = :actionId and SFS.status = '1' ) AND SFF.isImportField = '1' ";
+			 formfieldsList = session.createQuery(QUERY).setLong("actionId", actionId).list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return formfieldsList;
 	}
 

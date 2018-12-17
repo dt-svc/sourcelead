@@ -17,9 +17,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Received Invoices</h2>
+        <h2>Received Invoice(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Received Invoices</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo;  <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Received Invoice(s) </div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -56,10 +56,10 @@ $(document).ready(function(){
           <form:form id="rinvoice_custom_form" name="rinvoice_custom_form" method="post">
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none;  width: 346px;">
             <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="fromDateDiv">
                 <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" field-name = "From Date" data-validation="required">
               </div>
-              <div class="pull-left mr5" style="width: 140px">
+              <div class="pull-left mr5" style="width: 140px" id="toDateDiv">
                 <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" field-name = "From Date" data-validation="required">
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="getReceivedInvoiceCustomReport();"><i class="fa fa-search"></i></button>
@@ -70,9 +70,9 @@ $(document).ready(function(){
           
         </div>              
        <div class="col-md-2" id="getPaidBillreport">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getReceivedInvoicereport();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getReceivedInvoicereport();">Run</button>
 		</div>
-        <div class="col-md-1">
+       <!--  <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="glyphicon glyphicon-export"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -80,7 +80,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Best recruiters  -->
       <div class="content-dashboard clearfix"> 
@@ -304,6 +304,30 @@ function getPaidBillsCustomDates() {
 		 document.getElementById("customSearch").style.display="block";
 		 document.getElementById("getPaidBillreport").style.display="none";
 		 //$("#jobReportList_custome").attr("disabled", "disabled");
+		 $('#fromDate').datepicker({
+				dateFormat : "yy-mm-dd",
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					$("#toDate").datepicker("option", "minDate", dt);
+					removeErrMsg();
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : "yy-mm-dd",
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					$("#fromDate").datepicker("option", "maxDate", dt);
+					removeErrMsgTo();
+				}
+			});
+		  
 		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
@@ -311,48 +335,19 @@ function getPaidBillsCustomDates() {
 		 //$("#jobReportList_custome").removeAttr("disabled");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
-		 document.getElementById("fromDateDiv").style.display="none";
-		 document.getElementById("toDateDiv").style.display="none";
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 	 }
 }
 </script>  
 
 <script>
-  $( function() {
-		/*  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  } */
-    
-	  $('#fromDate').datepicker({
-			dateFormat : "yy-mm-dd",
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : "yy-mm-dd",
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-			}
-		});
-  } );
+function removeErrMsg(){
+	  $("#fromDateDiv").find("p.jquery_form_error_message").remove();
+}
+function removeErrMsgTo(){
+	  $("#toDateDiv").find("p.jquery_form_error_message").remove();
+}
   </script>
 
 

@@ -88,7 +88,6 @@ public class ClientVendorIndex implements Serializable {
 	
 	private String orgRelationUUID;
 	
-	
 	public String getSearchType() {
 		return searchType;
 	}
@@ -422,7 +421,5 @@ public class ClientVendorIndex implements Serializable {
 	public void setOrgRelationUUID(String orgRelationUUID) {
 		this.orgRelationUUID = orgRelationUUID;
 	}
-
-	
-
+ 
 }

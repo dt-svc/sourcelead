@@ -31,7 +31,7 @@
   			It is designed to simplify the frantic tasks<br>in recruitment management.
   		</p>
 	  </div>
-	  <div class="col-md-4 text-center">
+	  <div class="col-md-4 text-center smallwidget">
 	  <div class="iconimg">
   			<img src="/resources/static-web/images/ats-secure.png" alt="Simple" class="img-responsive animated bounceIn">
   		</div>
@@ -40,7 +40,7 @@
   			Equipped with robust security measures for<br>information security and data integrity.
   		</p>
 	  </div>
-	  <div class="col-md-4 text-center">
+	  <div class="col-md-4 text-center smallwidget">
 	  <div class="iconimg">
   			<img src="/resources/static-web/images/ats-scalable.png" alt="Simple" class="img-responsive animated bounceIn">
   		</div>
@@ -56,6 +56,7 @@
  
  <section class="container-fluid container-area-grey">
 <div class="clearfix container productfeatures">
+<h2 class="text-center colorlogo">Features</h2>
 	<div class="col-md-4">
 	<div class="featuresImages">
 		<img src="/resources/static-web/images/ims-billgeneration.png" alt="Image" class="animated bounceIn">

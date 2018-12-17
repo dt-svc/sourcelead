@@ -33,7 +33,9 @@ public interface CandidateDocumentsService {
 	
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception;
 	
-	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	public List<CandidateDocumentsDTO> getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 
 	void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId,Long orgLocationId) throws Exception;
+	
+	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
 }

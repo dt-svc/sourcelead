@@ -23,13 +23,31 @@
 			 getHolidaysList();
 			 getEmployeeLeavesList();
 			 getPieChartBasedOnUser();
+			 
+			 	getEmployeeTotalCounts();
+			 	getSelfTotalCounts();
+			
 			});
 </script>
+
+<script type="text/javascript">
+//script for upload file
+document.getElementById("uploadBtn").onchange = function () {
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
+</script>
+
+<style type="text/css">
+.timeBalance-scroll .col-md-2 {
+border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
+background-color: #fcfcfc;
+}
+</style>
 
 
 <input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
 <div id="popUp"></div>
-
+<div id="loading"></div>
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -38,13 +56,56 @@
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
-    <div class="timesheet_out">
+    
+    <div class="project_wrap">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
-             <div class="pull-right">
-                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+             <div class="pull-right tblminwidth-125 paddingTop mr">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
+              <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
+                 <div title="Import" class="positionRelartive pull-left zIndex mr">
+                 			<sec:authorize access="hasRole('ROLE_IMPORT_BALANCE_LEAVES')">
+					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
+					 		 </sec:authorize>      	
+						        	<div class="dowload_pop">
+					        			<div class="modal-content">
+						        			<div class=modal-header>
+							        			 <button type="button" class="close" data-dismiss="modal" onClick="closeImportFile();">&times;</button>
+						          				<h4 class="modal-title">Leave Import</h4>
+						        			</div>
+						        			<div class="modalBody">
+						        				<div class="row">
+						        					<div class="col-md-12 mb5 clearfix">
+						        					<a href="<c:url value='${appPath}/downloadLeaveTemplate'/>" class="text-primary">
+						        						Download Template :
+														<i class="ml fa fa-download"></i>
+														</a>
+						        					</div>
+						        					<div class="clearfix"></div>
+						        					
+						        					
+						        					<div class="col-md-12">
+						        					<div class="uploadTempalte" id="validation">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_xls_importFile" field-name="File">
+						        					</div>
+						        					</div>
+						        				</div>
+						        			</div>
+						        			<div class="clearfix modalFooter">
+						        				<div class="pull-right">
+						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
+						        						<button type="button" class="btn btn-default btn-sm mr" title="Reset" onclick="resetUpload();">Reset</button>
+						        				</div>
+						        			</div>
+					        			</div>
+						        	</div>
+						        </div>
+						        </form:form>
+			        <div class="pull-left">
+		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+		            </div>
              </div>
          </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
@@ -61,11 +122,82 @@
             <div id="tab-1" class="project_tabs_inn" style="display: block">
               <div class="clearfix">
                 <div class="row">
+                
+                
+                <!--  New Div for counts -->
+                <div class="clearfix">
+                	
+                	<div id="self" class="clearfix">
+              <div class="col-md-4">
+                        <label class="pull-left mr">Balance Leaves</label>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-left" id="selfBalancedCounts"></span></div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                  <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left hidden"> </div>
+                    <div class="clearfix"></div>
+              <div class="mt5 clearfix">
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="selfPendingCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="selfpend"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon  text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                   <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
+                   <p class="info-box-text text-muted mt5" id="selfapp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                  <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
+                  <p class="info-box-text text-muted mt5" id="selfrej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                  <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
+                  <p class="info-box-text text-muted mt5" id="selfcanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+            
+                <ul class="list-unstyled  clearfix hidden">
+                  
+                </ul>
+                    
+                </div>
+              </div>
+              
+              <div class="col-xs-12 col-sm-4 mb hidden">
+                <div id="selfApproved" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="leavetype-approvedcount.html" id="approved" title="Approved">20</a> </div>
+              </div>
+              <div class="col-xs-12 col-sm-4 mb hidden">
+                <div id="selfRejected" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="leavetype-rejectedcount.html" id="rejected" title="Rejected">10</a> </div>
+              </div>
+            </div>
+            </div>
+            <!--  New Div ends for counts -->
+            
                   <div class="clearfix"></div>
+                  
                   <div class="col-md-12">
-                    <h4 class="leaves-heading">My Time off balance</h4>
+                    <h4 class="leaves-heading">Leave Balance</h4>
                     <div class="time-balance">
-                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
+                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix row"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -89,22 +221,99 @@
                     </div>
                 </div>
               </div>
+              <div class="clearfix"></div>
+              
             </div>
             <div id="tab-2"  class="project_tabs_inn" style="display: none">
+            	<div class="mask_time"></div> 
                 <div class="row clearfix">
+                
+                <!--  New Div for counts -->
+                <div class="col-md-12 clearfix mb">
+                
+                <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                <div class="clearfix"></div>
+                <div class="mt5 clearfix row">
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empReq"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empApp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empRej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empCanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+                
+                
+                
+                  <!-- <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div> -->
+                  <div style="width: 40%; height: 105px;" class="countList pull-left hidden">
+                <ul class="list-unstyled list-group clearfix mb5">
+                    <li class="clearfix">
+                        <label class="pull-left">Requested Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Approved Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Rejected Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Cancelled Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                    </li>
+                </ul>
+                      
+                    </div>
+                </div>
+              </div> 
+                
+                
+                </div>
+                <div class="cleaarfix"></div>
+                
+                
                     <div class="clearfix mb5">
                         <div class="col-md-6">
                             <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span></h4>
-
                         </div>
                         <div class="clearfix col-md-6 pull-right">
                         
-							<ul class="col-md-5 empUlAli">
+							<ul class="col-md-5 empUlAli mb0 mt5">
 	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
 	                            <div class="statusFiler-1">
 	                            <ul>
 		                            <c:forEach var="report" items="${departmentList}">
-		                            	<li><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();"><label class="tbldata-dotdot_140" title="${report.departmentName}">${report.departmentName}</label></li>
+		                            	<li class="clearfix mb5"><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();" class="pull-left"><label class="tbldata-dotdot-vsm pull-left mt5" title="${report.departmentName}">${report.departmentName}</label></li>
 		                            </c:forEach>
 	                            </ul>
 	                            </div>
@@ -132,11 +341,9 @@
                                 <input type="text" name="Date" placeholder="To" id="empCustToDate" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-                                    </div>
                                 </div>
-                                
                                 </div>
-                                
+                                </div>
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
@@ -147,7 +354,7 @@
                       </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row">
+               <!--  <div class="row">
                   <div class="col-md-6">
                  
                  <div class="clearfix mt5">
@@ -198,9 +405,9 @@
   <div id="customDateDivId"></div>
   </div>
   
-<!-- Top Leave Takers Custom Date -->
+Top Leave Takers Custom Date
     
-<!-- Top Leave Takers Custom Date -->    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
@@ -246,7 +453,7 @@
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="showLeaveReport" onClick="showLeaveReport()">Custom</button>
   </div>
-<!-- Top Leave Takers Custom Date -->
+Top Leave Takers Custom Date
     <div class="clearfix pull-lefet col-md-6 paddingRight showLeaveReport" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
@@ -258,17 +465,16 @@
     <button type="button" class="btn btn-primary btn-sm" onclick="getLeaveTakersBarChat();"><i class="fa fa-search"></i></button>
     </div>
     </div>
-<!-- Top Leave Takers Custom Date -->    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
                       <div id="empLeavereport" class="amchartAnchor-Hide mt5" style="width: 100%; height: 250px;"></div>
                   <div id="empLeavereportEmptyDiv" class="dataTables_empty noRecBor" style="display:none"></div>
                     </div>
-                    </div>
+                    </div> -->
               
               </div>
-              
           </div>
         </div>
       </div>
@@ -336,7 +542,10 @@ function getHolidaysList(){
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(data) {
+	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+		if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -348,11 +557,11 @@ function getHolidaysList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				if(data !=null && data !=''){
+				if(response !=null && response !=''){
 					var j = 1;
-					 for (var i=0; i<data.length; i++)
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 if(opt.isFuture == 'Y'){
 			        			 result = result + ' <tr class="text-success">';
 			        		 }else{
@@ -377,6 +586,11 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTable();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
 		}); 
 }
 </script>
@@ -624,7 +838,11 @@ function totalLeaveByEmployeeBarChart(data){
 					}
 				],
 				"guides": [],
-				"valueAxes": [],
+				"valueAxes": [
+					{
+						"stackType": "regular"
+					}
+				],
 				"allLabels": [],
 				"balloon": {
 					"offsetY": 4,
@@ -657,16 +875,16 @@ function getPieChartBasedOnUser(){
       		 		 }
       		 		result = result +'  <div class="col-md-2 mb">';
       	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
-      	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+      	            //result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';
-      	            result = result +'       <label class="small text-muted">Remaining:</label>';
-      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            //result = result +'       <label class="small text-muted">Remaining:</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount.toFixed(2)+' / '+opt.noOfLeavesPerYear+'</label>';
       	            result = result +'     </h2>';
       	            result = result +'   </div>';
       	            result = result +' </div>';
       	            
-      	             AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+      	           /*   AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
       						"type": "pie",
       						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
       						"innerRadius": "60%",
@@ -705,9 +923,9 @@ function getPieChartBasedOnUser(){
       								"color": "#f0ad4e"
       							}
       						]
-      					}
+      					} 
       							 
-      					); 
+      					); */
       		   }
        		 }else{
        			result = result + '<div class="dataTables_empty center" ></div>';
@@ -1010,6 +1228,7 @@ function getPieChartBasedOnUser(){
 
 <script>	
 	function prepareTopLeaveTakersList(url) {
+		$("#leaveEmptyMessage").val(0);
 		$("#topLeaveTakersDiv").empty();
 		var result = "";
 		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
@@ -1220,7 +1439,7 @@ function leavePdfExport(){
 	var reportMonth = "";
 	var reportFromDate = "";
 	var reportEndDate = "";
-	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	var emptyExport = $("#leaveEmptyMessage").val();
 	
 	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
 		reportYear = $("#topLeaveTakersreportYear").val();
@@ -1235,7 +1454,7 @@ function leavePdfExport(){
 		 reportEndDate = $("#reportEndDate").val();	
 	}
 
-	if(leaveEmptyMessage > 0){
+	if(emptyExport > 0){
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
 	}else{
 		var result = "";
@@ -1264,7 +1483,7 @@ function leaveExcelExport(){
 	var reportMonth = "";
 	var reportFromDate = "";
 	var reportEndDate = "";
-	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	var emptyExport = $("#leaveEmptyMessage").val();
 	
 	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
 		reportYear = $("#topLeaveTakersreportYear").val();
@@ -1278,7 +1497,7 @@ function leaveExcelExport(){
 	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
 		 reportEndDate = $("#reportEndDate").val();	
 	}
-	if(leaveEmptyMessage > 0){
+	if(emptyExport > 0){
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
 	}else{
 		var result = "";
@@ -1295,5 +1514,178 @@ function leaveExcelExport(){
 }
 </script>
 
+<script>
+function leaveImport(){
+	resetUpload();
+	$(".dowload_pop").toggle();
+}
+function closeImportFile(){
+	$(".dowload_pop").hide();
+}
+function leaveImpPopClose(){
+	$(".side_mask").fadeOut(200);
+	$(".DocAccPopup").fadeOut(100);	
+}
+</script>
+
+
+<script type="text/javascript">
+function importLeaves(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+if ($('#upload_leave_excel_form').validate(false, validationSettings)){
+	var frm = $('#upload_leave_excel_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_leave_excel_form')[0];
+	var formData = new FormData(form); 
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
+ 		    success : function(json) {
+ 		    		$("#loading").removeAttr("style");
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
+ 		    	   resetUpload();
+		 		    },
+		 		   error: function(e){
+			        }
+			 });
+			 
+		}
+}
+</script>
+
+<script>
+function resetUpload(){
+	$("#leaveInputFileId").val("");
+	$("#validation").find('p.jquery_form_error_message').remove();
+}
+</script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
+
+
+<script>
+function getEmployeeTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
+	    		   if(report.employeeRequestedCounts == 0){
+	      				$('#empReq').html("Requested");
+	      			   }else{
+	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      			   }
+    			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
+    		   }
+    		   if(report.employeeApprovedCounts != null && report.employeeApprovedCounts != '' && report.employeeApprovedCounts != 'undefined'){
+    			   if(report.employeeApprovedCounts == 0){
+    	   				$('#empApp').html("Approved");
+    	   			   }else{
+    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   			   }
+    			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
+    		   }
+    		   if(report.employeeRejectedCounts != null && report.employeeRejectedCounts != '' && report.employeeRejectedCounts != 'undefined'){
+    			   if(report.employeeRejectedCounts == 0){
+    	   				$('#empRej').html("Rejected");
+    	   			   }else{
+    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   			   }
+    			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
+    		   }
+    		   if(report.employeeCancelledCounts != null && report.employeeCancelledCounts != '' && report.employeeCancelledCounts != 'undefined'){
+    			   if(report.employeeCancelledCounts == 0){
+    				    $('#empCanc').html("Cancelled");
+    	   			   }else{
+    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   			   }
+    			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
+    		   }
+    		   
+	       },
+		  });
+}
+ 
+</script>
+
+<script>
+function getSelfTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
+	   		if(report.selfPendingCounts == 0){
+   				$("#selfpend").html("Pending"); 
+   			   }else{
+   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   			   }
+   			   $("#selfPendingCounts").html(report.selfPendingCounts); 
+   		   }
+   		   if(report.selfApprovedCounts != null && report.selfApprovedCounts != '' && report.selfApprovedCounts != 'undefined'){
+   			if(report.selfApprovedCounts == 0){
+   				$("#selfapp").html("Approved"); 
+   			   }else{
+   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   			   }
+   			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
+   		   }
+   		   if(report.selfRejectedCounts != null && report.selfRejectedCounts != '' && report.selfRejectedCounts != 'undefined'){
+   			   if(report.selfRejectedCounts == 0){
+   				$("#selfrej").html("Rejected"); 
+   			   }else{
+   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   			   }
+   			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
+   		   }
+   		   if(report.selfCancelledCounts != null && report.selfCancelledCounts != '' && report.selfCancelledCounts != 'undefined'){
+   			   
+   			if(report.selfCancelledCounts == 0){
+   				$('#selfcanc').html("Cancelled");
+   			   }else{
+   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   			   }
+   			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
+   		   }
+   			if((report.totalBalLeaves != null && report.totalBalLeaves != '' && report.totalBalLeaves != 'undefined') || report.totalBalLeaves == '0'){
+   			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
+   		   }
+   		 
+	       },
+		  });
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

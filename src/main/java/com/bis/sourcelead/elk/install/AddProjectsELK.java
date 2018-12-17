@@ -35,6 +35,8 @@ public class AddProjectsELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddProjectsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	 private SourceleadELKTC<ProjectsIndex> client;
+	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -54,7 +56,7 @@ public class AddProjectsELK {
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<ProjectsIndex> projectsIndexsList = new ArrayList<ProjectsIndex>();
 		 try {
-				String sql = "SELECT * FROM sourcelead.PROJECTS projects";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".PROJECTS projects";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
@@ -88,14 +90,14 @@ public class AddProjectsELK {
 					
 					Long projectId = rs.getLong("ID");
 		    	    if(projectId != null && projectId != 0){
-		    	    		String sqlManager = "SELECT * FROM sourcelead.PROJECT_APPROVER_HIERARCHY projectsApprovers where projectsApprovers.PROJECT_ID = '"+ projectId+"' ";
+		    	    		String sqlManager = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_APPROVER_HIERARCHY projectsApprovers where projectsApprovers.PROJECT_ID = '"+ projectId+"' ";
 		    	    		Statement stmtManager = conn.createStatement();
 		    	    		ResultSet rsManager = stmtManager.executeQuery(sqlManager);
 							if(rsManager != null){
 								while(rsManager.next()){
 									if(rsManager.getInt("LEVEL") == 1){
 										Long rsManagerUserId = rsManager.getLong("APPROVER_USER_ID");
-										String sqlManagerUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsManagerUserId+"' ";
+										String sqlManagerUser = "SELECT * FROM "+dbconfig.getSchema()+".USER user where user.ID = '"+ rsManagerUserId+"' ";
 					    	    		Statement stmtManagerUser = conn.createStatement();
 					    	    		ResultSet rsManagerUser = stmtManagerUser.executeQuery(sqlManagerUser);
 					    	    		while (rsManagerUser.next()) {
@@ -108,7 +110,7 @@ public class AddProjectsELK {
 									}
 									if(rsManager.getInt("LEVEL") == 2){
 										Long rsManagerUserId = rsManager.getLong("APPROVER_USER_ID");
-										String sqlManagerUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsManagerUserId+"' ";
+										String sqlManagerUser = "SELECT * FROM "+dbconfig.getSchema()+".USER user where user.ID = '"+ rsManagerUserId+"' ";
 					    	    		Statement stmtManagerUser = conn.createStatement();
 					    	    		ResultSet rsManagerUser = stmtManagerUser.executeQuery(sqlManagerUser);
 					    	    		while (rsManagerUser.next()) {
@@ -122,7 +124,7 @@ public class AddProjectsELK {
 							    }
 		    	            }
 							
-							String sqlprojectMembers = "SELECT * FROM sourcelead.PROJECT_MEMBERS projectMembers where projectMembers.PROJECT_ID = '"+ projectId+"' ";
+							String sqlprojectMembers = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_MEMBERS projectMembers where projectMembers.PROJECT_ID = '"+ projectId+"' ";
 		    	    		Statement stmtprojectMembers = conn.createStatement();
 		    	    		ResultSet rsprojectMembers = stmtprojectMembers.executeQuery(sqlprojectMembers);
 							if(rsprojectMembers != null){
@@ -130,13 +132,13 @@ public class AddProjectsELK {
 								ArrayList<String> memberEmail = new ArrayList<>();
 								while(rsprojectMembers.next()){
 									Long rsMemberEmpId = rsprojectMembers.getLong("EMPLOYEE_ID");
-									String sqlMemberEmp = "SELECT * FROM sourcelead.EMPLOYEE emp where emp.ID = '"+ rsMemberEmpId+"' ";
+									String sqlMemberEmp = "SELECT * FROM "+dbconfig.getSchema()+".EMPLOYEE emp where emp.ID = '"+ rsMemberEmpId+"' ";
 				    	    		Statement stmtMemberEmp = conn.createStatement();
 				    	    		ResultSet rsMemberEmp = stmtMemberEmp.executeQuery(sqlMemberEmp);
 				    	    		
 				    	    		while(rsMemberEmp.next()){
 					    	    		Long rsMemberUserId = rsMemberEmp.getLong("USER_ID");
-										String sqlMemberUser = "SELECT * FROM sourcelead.USER user where user.ID = '"+ rsMemberUserId+"' ";
+										String sqlMemberUser = "SELECT * FROM "+dbconfig.getSchema()+".USER user where user.ID = '"+ rsMemberUserId+"' ";
 					    	    		Statement stmtMemberUser = conn.createStatement();
 					    	    		ResultSet rsMemberUser = stmtMemberUser.executeQuery(sqlMemberUser);
 					    	    		while(rsMemberUser.next()){
@@ -158,7 +160,7 @@ public class AddProjectsELK {
 		    	           }
 							
 							Long clientOrgRelationId = rs.getLong("ORG_RELATION_ID");
-							String sqlClient = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where orgRelations.ID = '"+ clientOrgRelationId+"' ";
+							String sqlClient = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS orgRelations where orgRelations.ID = '"+ clientOrgRelationId+"' ";
 		    	    		Statement stmtClient = conn.createStatement();
 		    	    		ResultSet rsClient = stmtClient.executeQuery(sqlClient);
 							if(rsClient != null){
@@ -171,14 +173,14 @@ public class AddProjectsELK {
 									}
 								}
 								
-								String sqlClientLocation = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+ rsClientLocationId+"' ";
+								String sqlClientLocation = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+ rsClientLocationId+"' ";
 			    	    		Statement stmtClientLocation = conn.createStatement();
 			    	    		ResultSet rsClientLocation = stmtClientLocation.executeQuery(sqlClientLocation);
 			    	    		
 			    	    		if(rsClientLocation != null){
 			    	    			while (rsClientLocation.next()) {
 				    	    			Long rsClientOrgId = rsClientLocation.getLong("ORG_ID");
-					    	    		String sqlClientOrg = "SELECT * FROM sourcelead.ORG org where org.ID = '"+ rsClientOrgId+"' ";
+					    	    		String sqlClientOrg = "SELECT * FROM "+dbconfig.getSchema()+".ORG org where org.ID = '"+ rsClientOrgId+"' ";
 					    	    		Statement stmtClientOrg = conn.createStatement();
 					    	    		ResultSet rsClientOrg = stmtClientOrg.executeQuery(sqlClientOrg);
 					    	    		if(rsClientOrg != null){
@@ -204,10 +206,6 @@ public class AddProjectsELK {
 	
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

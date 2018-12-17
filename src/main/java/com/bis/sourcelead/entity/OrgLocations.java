@@ -45,6 +45,7 @@ public class OrgLocations implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
+	@JsonProperty
     private Org org;
 	
 	
@@ -224,7 +225,37 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "RECOMMENDED_KEYWORDS_PERCENT")
 	private Integer recommendedKeywordsPercent;
+	
+	@Column(name = "REGISTRATION_STATUS")
+	private String registrationStatus;
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name = "WORKING_DAYS_PER_WEEK")
+	private Integer workingDaysPerWeek;
+	
+	@Column(name = "WEEK_OFF_DAYS")
+	private String weekOffDays;
+	
+	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
+    private String isTimesheetAvgHoursRequired;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
+	
+	@Column(name = "PROBATION_PERIOD")
+    private String probationPeriod;
+	
+	@Column(name = "PROBATION_NO_OF_DAYS")
+	private Integer noOfDays;
     
+	@Column(name = "SHOW_COMPANY_NAME_IN_MARKETPLACE")
+	private String showCompanyNameInMarkeplace;
+	
     @Transient
     private String orgName;
     
@@ -278,6 +309,10 @@ public class OrgLocations implements Serializable{
     @Transient
     @JsonProperty
     private Long vendorOnboardId;
+    
+    @Transient
+    @JsonProperty
+    private String registeredLocation;
    
    
 	public Timezone getTimezone() {
@@ -950,4 +985,112 @@ public class OrgLocations implements Serializable{
 	{
 		this.recommendedKeywordsPercent = recommendedKeywordsPercent;
 	}
+
+
+	public String getRegistrationStatus() {
+		return registrationStatus;
+	}
+
+	public void setRegistrationStatus(String registrationStatus) {
+		this.registrationStatus = registrationStatus;
+	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	
+	
+
+	public Integer getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(Integer workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getWeekOffDays() {
+		return weekOffDays;
+	}
+
+	public void setWeekOffDays(String weekOffDays) {
+		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
+	}
+
+	public String getRegisteredLocation() {
+		
+		if(StringUtils.isNotEmpty(registeredLocation))
+			return registeredLocation;
+		else{
+			if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = orgLocationName+"-"+country;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isEmpty(city)){
+				registeredLocation = orgLocationName+"-"+country +" "+state;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = orgLocationName+"-"+country +" "+city;
+			}else if(StringUtils.isNotEmpty(country) && StringUtils.isNotEmpty(state) && StringUtils.isNotEmpty(city)){
+				registeredLocation = orgLocationName+"-"+country+" "+state+" "+city;
+			}
+			return registeredLocation;
+		}
+		
+	}
+
+	public void setRegisteredLocation(String registeredLocation) {
+		this.registeredLocation = registeredLocation;
+	}
+
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public Integer getNoOfDays() {
+		return noOfDays;
+	}
+
+	public void setNoOfDays(Integer noOfDays) {
+		this.noOfDays = noOfDays;
+	}
+
+	public String getShowCompanyNameInMarkeplace() {
+		return showCompanyNameInMarkeplace;
+	}
+
+	public void setShowCompanyNameInMarkeplace(String showCompanyNameInMarkeplace) {
+		this.showCompanyNameInMarkeplace = showCompanyNameInMarkeplace;
+	}
+	
 }

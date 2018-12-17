@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `sourcelead`.`CANDIDATE_DOCUMENTS`;
-CREATE TABLE `sourcelead`.`CANDIDATE_DOCUMENTS` (
+DROP TABLE IF EXISTS `CANDIDATE_DOCUMENTS`;
+CREATE TABLE `CANDIDATE_DOCUMENTS` (
   ID BIGINT NOT NULL AUTO_INCREMENT,
   ORG_LOCATION_ID BIGINT,
   CANDIDATE_ID BIGINT,
@@ -16,25 +16,25 @@ CREATE TABLE `sourcelead`.`CANDIDATE_DOCUMENTS` (
   UPDATED_DATE DATETIME,
   UPDATED_BY VARCHAR(10),
   PRIMARY KEY (`ID`),
-  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID),
-  FOREIGN KEY(CANDIDATE_ID) REFERENCES `sourcelead`.`CANDIDATE`(ID)
+  FOREIGN KEY(ORG_LOCATION_ID) REFERENCES `ORG_LOCATIONS`(ID),
+  FOREIGN KEY(CANDIDATE_ID) REFERENCES `CANDIDATE`(ID)
 ) ;
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('923','Passport','Passport','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('924','Resident Card','Resident Card','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('925','Employment Authorization','Employment Authorization','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('926','SSC','SSC','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('927','12 th Standard','12 th Standard','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('928','Graduation','Graduation','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('929','Post graduation','Post graduation','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('930','I- 9','I- 9','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('931','W-4 Form','W-4 Form','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('932','Foreign passport [1-1551 Stamp]','Foreign passport [1-1551 Stamp]','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('933','Driving License','Driving License','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('934','Birth Certificate','Birth Certificate','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('935','Voter Id Card','Voter Id Card','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('936','Medical','Medical','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('937','SSN','SSN','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('938','Citizen ID Card','Citizen ID Card','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('939','Pan card','Pan card','Document Type');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('940','Other','Other','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('923','Passport','Passport','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('924','Resident Card','Resident Card','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('925','Employment Authorization','Employment Authorization','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('926','SSC','SSC','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('927','12 th Standard','12 th Standard','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('928','Graduation','Graduation','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('929','Post graduation','Post graduation','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('930','I- 9','I- 9','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('931','W-4 Form','W-4 Form','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('932','Foreign passport [1-1551 Stamp]','Foreign passport [1-1551 Stamp]','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('933','Driving License','Driving License','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('934','Birth Certificate','Birth Certificate','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('935','Voter Id Card','Voter Id Card','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('936','Medical','Medical','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('937','SSN','SSN','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('938','Citizen ID Card','Citizen ID Card','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('939','Pan card','Pan card','Document Type');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('940','Other','Other','Document Type');

@@ -4,7 +4,6 @@
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -54,7 +53,6 @@
 	}
 	</style>
 	
-	
 
 <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector"  style="display: block;">
@@ -83,14 +81,30 @@ function editCandidate(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null ){  
-              	 //var json = JSON.parse(data);
-            			 	var lastName = '';
+         success :function(result) {  
+      	   		if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var json = result.object;
+              		if(json != null ){  
+              			
+              			var loginUserRole  = '${SourceLeadWeb_loginUserRole}'
+            			 var readonly = '';	
+	              			if(loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+	              				readonly = 'readonly';
+	              			}
+              			
+              			var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
             			 	
+            			 	var middleName = '';
+            			 	if(json.middleName != null && json.middleName != '' && json.middleName != 'undefined'){
+            			 		middleName = json.middleName;            			 		
+            			 	}
             			 	
         			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
@@ -178,19 +192,101 @@ function editCandidate(candidateId){
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-6">';
+							result = result + '		          <div class="col-md-4">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_AlphaNumber required validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-6">';
+							result = result + '		          <div class="col-md-4">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		          </div>';
+							result = result + '		          <div class="col-md-4">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3">Gender</label>  ';
+							result = result+'		<div class="col-md-9">    ';
+							if(json.gender == "Male"){
+							result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+							}
+							else if(json.gender == "Female"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else if(json.gender == "Transgender"){
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+								}
+							else{
+								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+							}
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							result = result+'		</div>    ';
+							
+							result = result+'		<div class="col-md-6">';
+							result = result+'		<div class="row">';
+							result = result+'		<label class="col-md-3 paddingRight">Marital Status</label>  ';
+							result = result+'		<div class="col-md-9">';
+							if(json.maritalStatus == "Single"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+							else if(json.maritalStatus == "Married"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  checked value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Divorsed"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" checked name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else if(json.maritalStatus == "Separated"){
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  checked value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							else{
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+								}
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							result = result+'		</div> ';
+							
+							result = result + ' <div class="col-md-6 mb10">';
+							result = result + '<div class="input-group">';
+							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
+								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder="DateOfBirth" readonly="readonly" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}else{
+								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder="DateOfBirth" class="form-control calendar">';
+								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+							}
+							result = result + ' </div></div>';
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email validate_length length2-100" >';
+						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  readonly data-validation="validate_Space required validate_email validate_length length2-100" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
@@ -205,7 +301,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true" placeholder="Designation">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  '+readonly+' value="'+designation+'" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true" placeholder="Designation">';
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -444,9 +540,19 @@ function editCandidate(candidateId){
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
 								  })
+								  
+								  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+								  // written common method in slead-common.js for date formats start
+										var finalDateFormat = getJSDateFormat(locationDate); 
+									  $("#dateofbirth-candidate").datepicker({
+								      dateFormat: finalDateFormat,
+									      changeMonth: true,
+										  	  changeYear: true, 
+									      //minDate: 0  this line for to restrict selection of previous dates
+								  });
 							});
             		 
-                }else{
+                		}else{
          	    	         var result ="";
         		    	     result = result+"   <div class='row'>"; 
         					 result = result+"	<div class='col-lg-12'>"; 
@@ -461,10 +567,15 @@ function editCandidate(candidateId){
         					$("#profileEditPopup").empty();
         				    $("#profileEditPopup").append(result); 
                         }
-                 },
-                   
-              }); 
-		 }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+              },
+                
+           }); 
+	}
 }
 </script>
 
@@ -483,12 +594,16 @@ function professionalProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-         success :function(json) {  
-              if(json != null ){  
-              	//var json = JSON.parse(data);
+         success :function(result) { 
+      	   	 if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					 var json = result.object;
+              		if(json != null ){  
 							var result ="";
 							var checked = "";
-							
 							if(json.isProfilePublic == 'Y'){
     							checked = "checked"+" "+"value = 'Y'";
     						}else{
@@ -772,7 +887,7 @@ function professionalProfile(candidateId){
 							     });
 							     event.preventDefault();
 								   
-              }else{
+              		}else{
                      	 $("#candidateSideDiv").removeAttr("style");
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -788,6 +903,11 @@ function professionalProfile(candidateId){
       					$("#candidateSideDiv").empty();
       				    $("#candidateSideDiv").append(result); 
                       }
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
                },
                  
             }); 
@@ -795,6 +915,11 @@ function professionalProfile(candidateId){
 </script>
 
 <script>
+
+function cleardateofBirth(){
+	$("#dateofbirth-candidate").val("");
+	};
+	
 	function editSkill(candidateId){
 		$("#skillName").prop('disabled', false).trigger("chosen:updated");
 		$("#editSkillBtn").remove();
@@ -850,16 +975,24 @@ function professionalProfile(candidateId){
 			 Urlcheck = sourceleadUrl+"/saveOrUpdateOnlySkillBycandidateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 		 }
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		 $.ajax({  
-	          type : "POST",
-	          url: Urlcheck,        
-	          success :function(data) {
-	        	  getProfessionalInfo();
-	        	  $("#loading").removeAttr('style');
+		 $.ajax({
+			type : "POST",
+	        url: Urlcheck,        
+	        success :function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        		showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        		location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		getProfessionalInfo();
+	  	        	$("#loading").removeAttr('style');
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        		showError("Operation failed, please try again");
+	        	}
 	        },
-	          
 	     }); 
-	 
  }  
 </script>
  
@@ -956,17 +1089,26 @@ function removeSkillPopUp(candidateId){
 						processData: false,
 		    	        contentType:false,
 						url : sourceleadUrl+"/updateCandidate?${_csrf.parameterName}=${_csrf.token}",
-						success : function(result) {
-							if(result && result === "failed") {
-								$("#update_candidate").removeAttr("disabled");
-								showError("Invalid data");
-							}else{
-								//$("#profileEditPopup").hide();
-								$("#selector1").removeAttr("style");
-			         			 $("#selector1").css({ display: "block" });
-					        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
-					        	 candUpdateMsgFadeinFunction();
-								getProfessionalInfo();
+						success : function(response) {
+							if (response && response.response === "INVALID_DATA") {
+							    showError(response.responseMessage);
+							} else if (response.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (response.response === "SUCCESS") {
+								if(response.object === "success") {
+									$("#selector1").removeAttr("style");
+				         			 $("#selector1").css({ display: "block" });
+						        	 $("#candMsgDiv").html("Success!!  Candidate Updated");
+						        	 candUpdateMsgFadeinFunction();
+									getProfessionalInfo();
+								}else{
+									$("#update_candidate").removeAttr("disabled");
+									showError("Invalid data");
+								}
+							} else if (response.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
 							}
 						},
 					});
@@ -1089,59 +1231,66 @@ function removeSkillById(candidateId, skillId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId=" + candidateId,
-					success : function(json) {
-						if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-								$("#employeeSubmissionProfile").empty();
-								var result = "";
-								result = result +'        <div class="clearfix design-view">';
-								result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
-								result = result +'          <div class="row">';
-								result = result +'            <div class="col-md-12">';
-								result = result +'              <ul class="list-unstyled personal-info">';
-							//	var json = JSON.parse(data);
-								for (var i = 0; i < json.data.length; i++) {
-									var opt = json.data[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										startYear=   opt.startYear  +' To '+opt.endYear;
-									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-										startYear=   opt.startYear;
-									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-										startYear = opt.endYear;  
-									}else{
-										startYear = " ";
-									}
-									
-									result = result +'   <li>';
-									result = result +'   <div class="clearfix">';
-									result = result +' <h3>'+name+'</h3>';
-									result = result +' <p>'+designation+'</p>';
-									result = result +' <p>';
-								    result = result + startYear ; 
-									result = result +'  </p>';
-									result = result +'  </div>';
-									result = result +'</li>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#employeeSubmissionProfile").empty();
+							var result = "";
+							result = result +'        <div class="clearfix design-view">';
+							result = result +'          <h2 class="education"><i class="fa fa-black-tie"></i>&nbsp;&nbsp;Employers</h2>';
+							result = result +'          <div class="row">';
+							result = result +'            <div class="col-md-12">';
+							result = result +'              <ul class="list-unstyled personal-info">';
+						//	var json = JSON.parse(data);
+							for (var i = 0; i < response.data.length; i++) {
+								var opt = response.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
-								result = result +'              </ul>';
-								result = result +'            </div>';
-								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#employeeSubmissionProfile").empty();
-								$("#employeeSubmissionProfile").append(result);
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									startYear=   opt.startYear  +' To '+opt.endYear;
+								}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+									startYear=   opt.startYear;
+								}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									startYear = opt.endYear;  
+								}else{
+									startYear = " ";
+								}
+								
+								result = result +'   <li>';
+								result = result +'   <div class="clearfix">';
+								result = result +' <h3>'+name+'</h3>';
+								result = result +' <p>'+designation+'</p>';
+								result = result +' <p>';
+							    result = result + startYear ; 
+								result = result +'  </p>';
+								result = result +'  </div>';
+								result = result +'</li>';
+							}
+							result = result +'              </ul>';
+							result = result +'            </div>';
+							result = result +'          </div>';
+							result = result +'        </div>';
+							$("#employeeSubmissionProfile").empty();
+							$("#employeeSubmissionProfile").append(result);
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-					},
-
+					}
 				});
 	}
 </script>
@@ -1151,80 +1300,83 @@ function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-	                	 $("#educationSubmissionProfile").empty();
-	                	 var result = "";
-	                	 
-	                	 
-	                	     result = result +'        <div class="clearfix design-view">';
-							result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
-							result = result +'          <div class="row">';
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <ul class="list-unstyled personal-info">';
-							
-							
-						//	 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.data.length; i++) { 
-		                    	 var opt = json.data[i];  
-		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    		        EducationName = opt.name;
-		                    	    }else{
-		                    	    	EducationName = " ";
-		                    	    }
-			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-			                    	 specialization= '(' + opt.specialization +')';
-		                    	  }else{
-		                    		  specialization= " ";
-		                       	 }
-			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-			                    	 institute = opt.institute;
-		                    	 }else{
-		                    		 institute = " ";
-		                    	 }
-			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-			                    	 Educationgrade= opt.grade + ' , ';
-		                    	 }else{
-		                    		 Educationgrade = ""; 
-		                    	 }
-		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-		                    		 EducationgradeType  = opt.gradeType + ' - ';
-				                 }else{
-				                	 EducationgradeType = " "; 
-				                 }
-		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-		                    		 Educationaddress = ' , ' +opt.address;
-		                    	 }else{
-		                    		 Educationaddress = " ";
-		                    	 }
-		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
-		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.startDateStr;
-		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-		                    		 EducationstartDateStr = opt.endDateStr;
-		                    	 }else{
-		                    		 EducationstartDateStr ='';
-		                    	 }
-			                        result = result +'                <li>';
-									result = result +'                  <div class="clearfix">';
-		                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
-		                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
-									result = result +'                    <p>'+EducationstartDateStr+'</p>';
-									result = result +'                  </div>';
-									result = result +'                </li>';
-		                     }
-							
-							
-							result = result +'              </ul>';
-							result = result +'            </div>';
-							result = result +'          </div>';
-							result = result +'        </div>';
-						 $("#educationSubmissionProfile").empty();
-	                     $("#educationSubmissionProfile").append(result); 
-        	  }
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+	        			$("#educationSubmissionProfile").empty();
+	               	 	var result = "";
+	               	    result = result +'        <div class="clearfix design-view">';
+						result = result +'          <h2 class="education"><i class="fa fa-graduation-cap"></i>&nbsp;&nbsp;Education</h2>';
+						result = result +'          <div class="row">';
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <ul class="list-unstyled personal-info">';
+					//	 var json = JSON.parse(data);
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
+	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   		        EducationName = opt.name;
+	                    	    }else{
+	                    	    	EducationName = " ";
+	                    	    }
+		                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+		                    	 specialization= '(' + opt.specialization +')';
+	                    	  }else{
+	                    		  specialization= " ";
+	                       	 }
+		                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+		                    	 institute = opt.institute;
+	                    	 }else{
+	                    		 institute = " ";
+	                    	 }
+		                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+		                    	 Educationgrade= opt.grade + ' , ';
+	                    	 }else{
+	                    		 Educationgrade = ""; 
+	                    	 }
+	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+	                    		 EducationgradeType  = opt.gradeType + ' - ';
+			                 }else{
+			                	 EducationgradeType = " "; 
+			                 }
+	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+	                    		 Educationaddress = ' , ' +opt.address;
+	                    	 }else{
+	                    		 Educationaddress = " ";
+	                    	 }
+	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+	                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.startDateStr;
+	                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+	                    		 EducationstartDateStr = opt.endDateStr;
+	                    	 }else{
+	                    		 EducationstartDateStr ='';
+	                    	 }
+		                        result = result +'                <li>';
+								result = result +'                  <div class="clearfix">';
+	                    	    result = result +'                    <h3>'+EducationName+' <span class="small text-muted">&nbsp;'+specialization+'</span></h3>';
+	                    	    result = result +'                    <p>'+EducationgradeType + ' '+Educationgrade+' '+institute+' '+Educationaddress+'</p>';
+								result = result +'                    <p>'+EducationstartDateStr+'</p>';
+								result = result +'                  </div>';
+								result = result +'                </li>';
+	                     }
+						result = result +'              </ul>';
+						result = result +'            </div>';
+						result = result +'          </div>';
+						result = result +'        </div>';
+					 $("#educationSubmissionProfile").empty();
+                    $("#educationSubmissionProfile").append(result);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 
@@ -1234,19 +1386,24 @@ function certificationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(json) {
-        	  if (json != null && json != 'undefined' && json != "" && json != '[]' && json.data.length > 0) {
-	                	 $("#certificationSubmissionProfile").empty();
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			if(response.data.length > 0){
+        				$("#certificationSubmissionProfile").empty();
 	                	 var result = "";
-	                	 
 	                	 result = result +'        <div class="clearfix design-view">';
 							result = result +'          <h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
 							result = result +'          <div class="row">';
 							result = result +'            <div class="col-md-12">';
 							result = result +'              <ul class="list-unstyled personal-info">';
-// 							 var json = JSON.parse(data);
-							for (var i = 0; i < json.data.length; i++) { 
-		                    	var opt = json.data[i];  
+							for (var i = 0; i < response.data.length; i++) { 
+		                    	var opt = response.data[i];  
 		                    	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
 				            		score =' ( ' + opt.score;
 				            	}else{
@@ -1281,9 +1438,13 @@ function certificationSubmissionProfile(candidateId){
 							result = result +'        </div>';
 							$("#certificationSubmissionProfile").empty();
 							$("#certificationSubmissionProfile").append(result); 
-        	  }
+        			}
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -1431,13 +1592,21 @@ function makeAsPublicVisibility(){
 	 $.ajax({  
          type : "POST",
          url: Urlcheck,        
-         success :function(data) {
-        	  getProfessionalInfo();
-        	  $("#loading").removeAttr('style');
+         success :function(result) {
+        	 	if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+           			showError(result.responseMessage);
+           		} else if (result.response === "AWKWARD") {
+           	    	location.href = "/errorPage";
+           		} else if (result.response === "SUCCESS") {
+           			getProfessionalInfo();
+              	  $("#loading").removeAttr('style');
+           		} else if (result.indexOf('Sign In') !== -1) {
+              		location.replace(sourceleadUrl);
+              	} else {
+              	    showError("Operation failed, please try again");
+              	}
        },
-         
     }); 
-	 
  }  
 </script>
 

@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.bis.sourcelead.enums.SubmissionRateStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @Entity
@@ -76,49 +77,64 @@ public class RequirementRateSubmissionNegotiation {
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String createdDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String rateAndType;
 	
 	@Transient
+	@JsonProperty
 	private String proposeByName;
 	
 	@Transient
+	@JsonProperty
 	private String initiatorOrgLocationIdStr;
 	
 	@Transient
+	@JsonProperty
 	private String previouslyProposedBy;
 	
 	@Transient
+	@JsonProperty
 	private String requirementName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementRate;
 	
 	@Transient
+	@JsonProperty
 	private String submissionRateStatus;
 	
 	@Transient
+	@JsonProperty
 	private String isNeedApplicantPermit;
 	
 	@Transient
+	@JsonProperty
 	private String submissionStatus;
 	
 	@Transient
+	@JsonProperty
 	private String expectedRatePer;
 	
 	/*expectedRateRN, expectedRateTypeRN, expectedRatePerRN are temp variables to keep expected rate for rate negotiation*/
 	@Transient
+	@JsonProperty
 	private String expectedRateRN;
 	
 	@Transient
+	@JsonProperty
 	private String expectedRateTypeRN;
 	
 	@Transient
+	@JsonProperty
 	private String expectedRatePerRN;
 	
 	@Transient
+	@JsonProperty
 	private String isLastProposedUser;
 
 	public Long getId() {

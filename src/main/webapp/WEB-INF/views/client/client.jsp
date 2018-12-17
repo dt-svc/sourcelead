@@ -40,13 +40,17 @@ margin-top: -50px;
 		<div class="pull-left">
 			<h2>Create Client</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/clientDashboard'/>"> Clients List</a>
 			&raquo; Add Client</div>
 	</section>
 	
 	<div class="content-area content-new clearfix">
 	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
+	<input type = "hidden" id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N">
+	
+	<input type = "hidden" id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N">
+	
 	<input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
@@ -54,14 +58,14 @@ margin-top: -50px;
            <h3>Client Details</h3>
             <div class="form-group" ><label class="col-md-3" for="Project Id">Client Name<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9" id="clientNameDiv">
-					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();"  onblur=" getOrgDetails(); validateOrgName();" field-name="Client Name" data-validation="required validate_length length2-250" value="">
+					<input type="text" class="form-control" id="orgName" name="orgName" value="${orgName}" onclick="getOrgName();" onblur="getOrgDetails(); validateOrgName();" field-name="Client Name" data-validation="required validate_length length2-100" value="">
 					<input type="hidden" id="orgLocationId" />
 					<span class="hidden">Enter Client Name</span>
 				</div>
 			</div>
             
 			<div class="form-group " id="companyWebsiteDiv">
-				<label class="col-md-3">Website</label>
+				<label class="col-md-3">Web Url</label>
 				<div class="col-md-9">
 				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
@@ -191,7 +195,7 @@ margin-top: -50px;
               </div>
               
               <div class="clearfix width100Percnt">
-              <label class="col-md-3">Payment Term</label>
+              <label class="col-md-3">Payment Frequency /Tenure</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
@@ -219,6 +223,16 @@ margin-top: -50px;
 				</div>
 			</div>
 			
+			<div class="form-group ">
+				<label class="col-md-3">Generate Invoice </label>
+				<div class="col-md-9">
+				<select class="form-control selectpicker" id="generateInvoice" name="generateInvoice">
+                    <option value="Bulk">Bulk</option>
+                    <option value="Individual">Individual</option>
+                  </select>				
+                  </div>
+			</div>
+			
             <div class="clearfix mb"></div>
             <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
                <c:if test="${sectionOrder.index == 0}">
@@ -235,8 +249,13 @@ margin-top: -50px;
             <div class="form-group" id="EmailIdDiv">
 				<label class="col-md-3" for="Project Manager">Email<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-9">
+				<div class="input-group errorInptgroup">
 					<input type="text" class="form-control" id="email" name="email" value="${emailId}" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateEmail();getSpocUserDetails();">
-	                            <span class="hidden">Valid Email</span>
+                      <span class="hidden">Valid Email</span>
+                      <span id="emailStatusIconDiv" class="input-group-addon">
+                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+                   	</span>
+				</div>
 				</div>
 			</div>
             
@@ -304,8 +323,23 @@ margin-top: -50px;
             <div class="form-group">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox" value="Y"
-							name="isMailSent" checked="checked"> Send Invitation
+                 <label> <input type="checkbox" value="Y" name="isMailSent"> Send Invitation
+				</label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email
+				</label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email 
 				</label>
               </div>
             </div>
@@ -359,6 +393,26 @@ margin-top: -50px;
 
 
 <script>
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 
@@ -401,6 +455,15 @@ function getOrgName(){
                        return false;
                    },
                 select: function( event, ui ) {
+                	 $( "#orgName" ).val( ui.item.label );
+                     $( "#orgLocationId" ).val( ui.item.value );
+ 			         $("#save_client").attr("disabled", "disabled");
+                     $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+                     getOrgDetails(); 
+                     validateOrgName();
+                     $("input[name=address]").val('');
+                     $("#loading").removeAttr("style"); 
+                     $("#save_client").removeAttr("disabled");
                     return false;
                 }  
              })
@@ -497,8 +560,8 @@ $( "#orgLocationId" ).val( '' );
    	        }
    	    });
    	 
-   validateEmail(); 
-   getSpocUserDetails();
+   /* validateEmail(); 
+   getSpocUserDetails(); */
 	
 	}
 	
@@ -586,7 +649,7 @@ function getRolesList(){
 <script type="text/javascript">
 function validateEmail(){
 	var email = document.getElementById("email").value;
-	if(email != null){
+	if(email != null && email != ''){
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
@@ -602,11 +665,14 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-					
+					validateEmailForExistenceUniversally(email, "input#email");
 				}
 			},
 
 		});
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
@@ -616,6 +682,7 @@ function validateEmail(){
 function getSpocUserDetails(){
 	var email = document.getElementById("email").value;
 	var orgLocationId = document.getElementById("orgLocationId").value;
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	if(email){
 		$.ajax({
 	    	type: "POST",
@@ -625,6 +692,7 @@ function getSpocUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+	        		
 	        		
 	        		 if(json[0] != null && json[0] != ''){
 	        			$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -640,6 +708,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -647,6 +716,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 
@@ -677,7 +747,7 @@ function getSpocUserDetails(){
 		document.getElementById("userRoleDiv").style.display="none";
 	   
 	}
-	
+	 $("#loading").removeAttr("style"); 
 }
 </script>
  

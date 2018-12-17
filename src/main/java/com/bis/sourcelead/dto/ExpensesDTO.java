@@ -25,7 +25,7 @@ private static final long serialVersionUID = 1L;
 	
 	private String clientName;
 	
-	private float totalAmount;
+	private BigDecimal totalAmount;
 	
 	private String noOfExpenses;
 	
@@ -43,7 +43,7 @@ private static final long serialVersionUID = 1L;
 	
 	private boolean sahApproved;
 	
-	private String expenseLocationCode;
+//	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
 	
@@ -56,6 +56,18 @@ private static final long serialVersionUID = 1L;
 	private String orgRelationUUID;
 	
 	private String expensesRejectedReason;
+	
+	private String projectStatus;
+	
+	private BigDecimal totalsubmittedAmount;
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
 
 	public Long getId() {
 		return id;
@@ -123,13 +135,7 @@ private static final long serialVersionUID = 1L;
 		this.clientName = clientName;
 	}
 
-	public float getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(float totalAmount) {
-		this.totalAmount = totalAmount;
-	}
+	
 
 	public String getNoOfExpenses() {
 		return noOfExpenses;
@@ -137,6 +143,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setNoOfExpenses(String noOfExpenses) {
 		this.noOfExpenses = noOfExpenses;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 	public String getExpenseStatus() {
@@ -195,6 +209,8 @@ private static final long serialVersionUID = 1L;
 		this.sahApproved = sahApproved;
 	}
 
+
+
 	public BigDecimal getExpenseAmountDivId() {
 		return expenseAmountDivId;
 	}
@@ -211,14 +227,14 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberName = projectMemberName;
 	}
 
-	public String getExpenseLocationCode() {
+	/*public String getExpenseLocationCode() {
 		return expenseLocationCode;
 	}
 
 	public void setExpenseLocationCode(String expenseLocationCode) {
 		this.expenseLocationCode = expenseLocationCode;
 	}
-
+*/
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
@@ -266,6 +282,14 @@ private static final long serialVersionUID = 1L;
 	}
 	public void setExpensesRejectedReason(String expensesRejectedReason) {
 		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
 	}
 	
 	

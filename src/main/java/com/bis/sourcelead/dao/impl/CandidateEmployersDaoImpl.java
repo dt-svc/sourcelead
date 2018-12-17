@@ -1,8 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -99,11 +104,30 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY candidateEmployers.id DESC";  
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).list();
 		return candidateList;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1'";
+		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
+			query = query + " and (candidateEmployers.name like :searchVal or candidateEmployers.designation like :searchVal) ";
+		}
+		query = query + " ORDER BY (candidateEmployers.startYear) DESC, candidateEmployers.id DESC";  
+		Query candidateQuery = session.createQuery(query).setLong("candidateId", candidateId);
+		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
+			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
+		}
+		List<CandidateEmployers> candidateList = candidateQuery.list();
+		return candidateList;
+	}
+	
 	/**
 	 * This method is used for display the get Candidate Employer By candidateId and CandidateEmployerID 
 	 * 
@@ -172,6 +196,39 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		}
 		return canEMp;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateEmployerById(Long candidateEmployersId) throws Exception {
+		CandidateEmployers candidateEmployer= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			candidateEmployer = (CandidateEmployers)session.get(CandidateEmployers.class,candidateEmployersId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return candidateEmployer;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer employersCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(EMPL.ID) AS EMPL_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_EMPLOYERS EMPL "
+					+ " WHERE EMPL.CANDIDATE_ID = :candidateId AND EMPL.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		employersCount = filterCount.intValue();
+		return employersCount;
+}
 
 
 }

@@ -18,7 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "ORGLOCATION_FORM_SUB_FIELDS", catalog = "sourcelead")
+@Table(name = "ORGLOCATION_FORM_SUB_FIELDS")
 public class OrglocationFormSubFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

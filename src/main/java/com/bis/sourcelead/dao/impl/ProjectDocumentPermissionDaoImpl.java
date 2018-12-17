@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -93,7 +94,12 @@ public class ProjectDocumentPermissionDaoImpl implements ProjectDocumentPermissi
 			String query = "Select pdp.userRoleId.id from ProjectDocumentPermission pdp  where pdp.projectDocumentFolderId.id =:folderId and pdp.access =:accessStatus and pdp.projectDocumentId.id IS NULL"; 
 			projectDocumentPermissionList = session.createQuery(query).setLong("folderId", folderId).setString("accessStatus", accessStatus).list();
 		}
-		return projectDocumentPermissionList;
+		if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty() && projectDocumentPermissionList.get(0) != null) {
+			return projectDocumentPermissionList;
+		}else {
+			return new ArrayList<>();
+		}
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -144,14 +150,44 @@ public class ProjectDocumentPermissionDaoImpl implements ProjectDocumentPermissi
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ProjectDocumentPermission getDocumentPermissionByDocumentId(Long documentId) throws Exception {
+	public ProjectDocumentPermission getDocumentPermissionByDocumentId(Long documentId,Long projectMemberId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectDocumentPermission pdp  where pdp.projectDocumentId.id =:documentId";
-		List<ProjectDocumentPermission> ProjectDocumentPermissionList = session.createQuery(query).setLong("documentId", documentId).list();
+		String query = "from ProjectDocumentPermission pdp  where pdp.projectDocumentId.id =:documentId and pdp.projectMemberId.id =:projectMemberId";
+		List<ProjectDocumentPermission> ProjectDocumentPermissionList = session.createQuery(query).setLong("documentId", documentId).setLong("projectMemberId", projectMemberId).list();
 		ProjectDocumentPermission projectDocumentPermission = null;
 		if(ProjectDocumentPermissionList != null && !ProjectDocumentPermissionList.isEmpty()){
 			projectDocumentPermission = ProjectDocumentPermissionList.iterator().next();
 		}
 		return projectDocumentPermission;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentByFoderId(Long foderId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id =:foderId";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("foderId", foderId).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentByDocumentId(Long documentId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentId.id =:documentId";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("documentId", documentId).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	}
+	 
+	
 }

@@ -11,7 +11,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <script src="/resources/js/formvalidator.js"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
  <style type="text/css">
  .fa.pull-right {
@@ -19,37 +19,7 @@
 }
  </style>
  
- <script> 
-	$(document).ready(function(){
-		getBudgetRequestListCount();
-		getBudgetRequestList("Waiting For Approval");
-	});
-</script>
- 
- 
-    <section class="clearfix">
-      <div class="content-dashboard clearfix"> 
-      	  <div class="clearfix dashboard-widget mb col-md-12">
-      	    <h4>Budget Requests</h4>
-      	    
-      	    <div class="project_side_wrap_inn_tabs">
-      	    <div id="resourceRequestsDivLoading"></div>
-			    <ul class="project-tabs-menu">
-			        <li class="current" id="budgetWaiting"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Waiting For Approval')">Waiting (<span id="budgetWaitingCount"></span>)</a></li>
-			        <li id="budgetApproved"><a data-toggle="tab" href="javascript:void(0)"  onclick="getBudgetRequestList('Approved')">Approved (<span id="budgetApprovedCount"></span>)</a></li>
-			        <li id="budgetRejected"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('Rejected')">Rejected (<span id="budgetRejectedCount"></span>)</a></li>
-			        <li id="budgetOnhold"><a data-toggle="tab" href="javascript:void(0)" onclick="getBudgetRequestList('On Hold')">On hold (<span id="budgetOnholdCount"></span>)</a></li>
-			        <div class="clearfix"></div>
-			    </ul>
-			    <div id="budgetRequestListDiv"></div>
-			    <div class="vendor_wrap_mask"></div>
-   				<div id="budgetRejectedReasonDiv" ></div>
-   				<div id="budgetOnHoldReasonDiv"></div>
-           </div>
-      	  </div>
-      </div>
     <div id="editBudgetRequestPopUpid"></div>
- </section>
  
  <script>
  function getBudgetRequestListCount(){
@@ -72,6 +42,15 @@
  
  <script>
 function getBudgetRequestList(requestType){
+	  getBudgetRequestListCount();
+	
+	  $('#newResourceRequestTabDiv').hide();
+	  $('#assocaiteRequestsTabDiv').hide();
+	  $("#budgetTabDiv").show();
+	  $("#associateDiv").removeClass("active");
+	  $("#newResourceDiv").removeClass("active");
+ 	  $("#budgetDiv").addClass("active");
+	  
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var approverUserId = '${SourceLeadWeb_user.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -91,12 +70,14 @@ function getBudgetRequestList(requestType){
 	        url: sourceleadUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?${_csrf.parameterName}=${_csrf.token}&approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
 	        success: function(json) {
 	        	var result = "";
-	    		result = result + '		<div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter overflow_inherint mrgTp">';
+	        	
+	      		
+	    		result = result + '		<div class="project_tabs_inn_table datatable_filter overflow_inherint mrgTp dataSeaNew">';
 	    		result = result + '		<table id="budgetRequestsPaginationList" cellspacing="0" width="100%">';
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
-	    		result = result + '	             <th>Base Line</th>';
+	    		result = result + '	             <th>Description</th>';
 	    		result = result + '	             <th>Project</th>';
 	    		result = result + '	             <th>Est Hours</th>';
 	    		result = result + '	             <th>Est Budget</th>';
@@ -134,8 +115,8 @@ function getBudgetRequestList(requestType){
 	    			
 	    			result = result + '     <td><div class="tbldata-dotdot-sm" title="'+budgetDescription+'">'+budgetDescription+'</div></td>';
 	    			result = result + '     <td><div class="tbldata-dotdot-sm" title="'+report.projectName+'">'+report.projectName+'</div></td>';
+	    			result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 	    			result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					result = result + '     <td><div  class="tblminwidth-100">'+report.createdStr+'</div></td>';
 					
@@ -193,31 +174,31 @@ function getBudgetRequestList(requestType){
 	    	    budgetRequsetPagination();
 	    	    
 	    	    if(requestType == 'Waiting For Approval'){
-	    	    	 $("#budgetWaiting").addClass("current");
-	    	    	 $("#budgetApproved").removeClass("current");
-	    	    	 $("#rejected").removeClass("current");
-	    	    	 $("#budgetOnhold").removeClass("current");
+	    	    	 $("#budgetWaiting").addClass("activeIcon");
+	    	    	 $("#budgetApproved").removeClass("activeIcon");
+	    	    	 $("#rejected").removeClass("activeIcon");
+	    	    	 $("#budgetOnhold").removeClass("activeIcon");
 	    	    }
 	    	   
 	    	    else if(requestType == 'Approved'){
-	    	    	 $("#budgetApproved").addClass("current");
-	    	    	 $("#budgetWaiting").removeClass("current");
-	    	    	 $("#budgetRejected").removeClass("current");
-	    	    	 $("#budgetOnhold").removeClass("current");
+	    	    	 $("#budgetApproved").addClass("activeIcon");
+	    	    	 $("#budgetWaiting").removeClass("activeIcon");
+	    	    	 $("#budgetRejected").removeClass("activeIcon");
+	    	    	 $("#budgetOnhold").removeClass("activeIcon");
 	    	    }
 	    	    
 	    	    else if(requestType == 'Rejected'){
-	    	    	 $("#budgetRejected").addClass("current");
-	    	    	 $("#budgetWaiting").removeClass("current");
-	    	    	 $("#budgetApproved").removeClass("current");
-	    	    	 $("#budgetOnhold").removeClass("current");
+	    	    	 $("#budgetRejected").addClass("activeIcon");
+	    	    	 $("#budgetWaiting").removeClass("activeIcon");
+	    	    	 $("#budgetApproved").removeClass("activeIcon");
+	    	    	 $("#budgetOnhold").removeClass("activeIcon");
 	    	    }
 	    	    
 	    	    else if(requestType == 'On Hold'){
-	    	    	 $("#budgetOnhold").addClass("current");
-	    	    	 $("#budgetWaiting").removeClass("current");
-	    	    	 $("#budgetApproved").removeClass("current");
-	    	    	 $("#budgetRejected").removeClass("current");
+	    	    	 $("#budgetOnhold").addClass("activeIcon");
+	    	    	 $("#budgetWaiting").removeClass("activeIcon");
+	    	    	 $("#budgetApproved").removeClass("activeIcon");
+	    	    	 $("#budgetRejected").removeClass("activeIcon");
 	    	    	
 	    	    }
 	    	    
@@ -492,6 +473,7 @@ function budgetRequsetPagination(){
      	}
     });
     $('#budgetRequestsPaginationList').wrap("<div class='overflow_Auto'></div>");
+    $("#budgetRequestsPaginationList_filter input").attr("placeholder", "Budget search");
 }
 </script>
 <script>
@@ -522,6 +504,4 @@ var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
 	 });
 }
 </script>
-
-
  

@@ -1,5 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,14 +16,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,11 +39,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.LookupDataDTO;
 import com.bis.sourcelead.dto.ProjectAdditionalDetailsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersRateHistoryDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -40,19 +54,27 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectQuestionnaire;
+import com.bis.sourcelead.entity.ProjectTaskActivity;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReleaseNote;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
@@ -62,6 +84,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectQuestionnaireService;
+import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
@@ -144,7 +167,21 @@ public class ProjectsRestController {
 	
 	@Autowired
 	ProjectMembersRateHistoryService projectMembersRateHistoryService;
+	
+	@Autowired
+	private LeaveService leaveService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private TimesheetRestController timesheetRestController;
 
+	@Autowired
+	private LookUpDataService lookUpDataService;
+	
+	@Autowired
+	private ProjectTaskActivityService projectTaskActivityService;
 	/**
 	 * This method for save the project by json
 	 * 
@@ -155,61 +192,179 @@ public class ProjectsRestController {
 	 */
 
 	@RequestMapping(value = { "/storeProject", "/rest/storeProject" }, method = RequestMethod.POST)
-	public @ResponseBody ProjectsDTO storeProject(ProjectsDTO projectsDTO) throws Exception {
-		
+	public @ResponseBody Response<ProjectsDTO> storeProject(ProjectsDTO projectsDTO) throws Exception {
+		Response<ProjectsDTO> response =new  Response<>();
 		Projects projects = null;
+		try {
 		 if(Validator.validate(projectsDTO)) {
 			 projectsDTO.setStaticPath(staticPath);
 			 projects = projectsService.storeProject(projectsDTO);
-		 }
-		 
-		ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
-		stroredProjectsDTO.setId(projects.getId());
-		stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
-		stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
-		stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
-		return stroredProjectsDTO;
+			 
+		    ProjectsDTO stroredProjectsDTO = new ProjectsDTO();
+			stroredProjectsDTO.setId(projects.getId());
+			stroredProjectsDTO.setProjectUUID(projects.getProjectUUID());
+			stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
+			stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
+			if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				stroredProjectsDTO.setSavedSharedClientOrgLocId(projects.getSharedLocationId().getId().toString());
+			}
+			
+			response.setObject(stroredProjectsDTO);
+			
+			 response.setResponse(Result.SUCCESS.name());
+			 response.setResponseMessage(Result.SUCCESS.getValue());
+		 }else {
+    		 response.setResponse(Result.INVALID_DATA.name());
+			 response.setResponseMessage(Result.INVALID_DATA.getValue());
+    	 }
+		}catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 	
 	
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
-		public  String assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
-			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
+		public  Response<String> assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
+			   HttpServletRequest request) throws Exception {
+    	    projectAssignedMembersDTO.setProjectClientUUID(projectClientUUID);
+			Response<String> response = new Response<>();
+			 User user = userService.getUserById(userId);
+			 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
+			try {
+				if(user != null) {
+					outerLoop:{
+					    if(projectAssignedMembersDTO.getProjectMembers() != null && projectAssignedMembersDTO.getProjectMembers().size() > 0){
+				   			for(ProjectMembersDTO projectMembersDTO : projectAssignedMembersDTO.getProjectMembers()){
+				   				if(StringUtils.isEmpty(projectMembersDTO.getValidateRow()))
+									 continue;
+								if(!Validator.validate(projectMembersDTO)) {
+									response.setObject("DataMissing");
+									response.setResponse(Result.INVALID_DATA.name());
+									response.setResponseMessage(Result.INVALID_DATA.getValue());
+									break outerLoop;
+								}
+				   			}
+				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+				   		    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+				   		    if(StringUtils.isNotBlank(projects.getIsProjectShared()) && 
+			   		    		projects.getIsProjectShared().equalsIgnoreCase(Constants.YES) && !projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				   		    	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+				   		    	if(StringUtils.isNotBlank(projectClients.getIsProjectShared()) && projectClients.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+				   		    		projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    	}else {
+				   		    		OrgLocations clientOrgLocation = orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
+				   		    		if(StringUtils.isNotBlank(clientOrgLocation.getOrg().getOrgType()) && clientOrgLocation.getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+				   		    			projectMembersService.saveAssignedSharedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    		}
+				   		    	}
+				   		    }else {
+				   		        projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
+				   		    }
+						   
+						    response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+					     }else {
+					    	 response.setResponse(Result.SUCCESS.name());
+						     response.setResponseMessage(Result.SUCCESS.getValue());
+					     }
+				       }
+				}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
 		   
-		    return "success";
+		    return response;
 	    }
        
        
-       @RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
-		public  String storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
+	/*private void approvedLeaveForNewlyAddedEmployee(List<ProjectMembersDTO> projectMembers, OrgLocations orglocationId, User user) throws Exception {
+		if(projectMembers != null && !projectMembers.isEmpty()) {
+			for(ProjectMembersDTO members:projectMembers) {
+				if(members.getCandidateId()!= null) {
+					 Candidate candidate = candidateService.getCandidateByCandidateId(members.getCandidateId());
+					 if(candidate != null && candidate.getConsultantUser()!= null) {
+						 List<Leave> leaveList = leaveService.getLeaveByUserIdOrglocationIdandStatus(candidate.getConsultantUser(),orglocationId.getId(),Constants.APPROVED);
+						 if(leaveList!= null && !leaveList.isEmpty()) {
+							 for(Leave leave:leaveList) {
+							 //	timesheetRestController.linkLeaveTypeWithTimeSheet(user,orglocationId, leave.getLeaveType().getId(),leave,Constants.APPROVED);
+							 } 
+						 }
+					 }
+				}
+			}	
+		}
+	}*/
+
+
+
+	@RequestMapping(value = "/storeProjectAdditionalDetails", method = RequestMethod.POST)
+		public  Response<String> storeProjectAdditionalDetails(ProjectAdditionalDetailsDTO projectAdditionalDetailsDTO,@RequestParam(value="projectId", required=true) Long projectId,
 			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
-		    
-		    User user = userService.getUserById(userId);
-		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		    projectAdditionalDetailsDTO.setSaveType(saveType);
-		    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
-		    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "Success !!New project created");
-		    return "success";
+		       User user = userService.getUserById(userId);
+		       Response<String> response = new Response<>();
+				try {
+					if(user != null) {
+						if(Validator.validate(projectAdditionalDetailsDTO)) {
+							OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+						    projectAdditionalDetailsDTO.setSaveType(saveType);
+						    projectQuestionnaireService.saveProjectQuestionnaireDetails(projectAdditionalDetailsDTO, projectId, user, orgLocations);
+						    SourceLeadSessionManager.setSessionAttribute(request, "projectCreateMsg", "New project successfully created");
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						}else {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}
+					}else {
+			    		 response.setResponse(Result.INVALID_DATA.name());
+						 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			    	 }
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			   
+			    
+			    return response;
 	    }
        
        
        
        
 	   @RequestMapping(value = { "/storeClientProject", "/rest/storeClientProject" }, method = RequestMethod.POST)
-	   	public @ResponseBody ProjectsDTO storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
-	   		
-	   		Projects projects = null;
-	   		projects = projectsService.storeClientProject(clientProjectDTO);
-	   		ProjectsDTO projectsDTO = new ProjectsDTO();
-	   		projectsDTO.setProjectUUID(projects.getProjectUUID());
-	   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
-	   		return projectsDTO;
+	   	public @ResponseBody  Response<ProjectsDTO> storeClientProject(ClientProjectDTO clientProjectDTO) throws Exception {
+		   Response<ProjectsDTO> response = new Response<>();
+		   try {
+			   if(Validator.validate(clientProjectDTO)) {
+				   Projects projects = null;
+			   		projects = projectsService.storeClientProject(clientProjectDTO);
+			   		ProjectsDTO projectsDTO = new ProjectsDTO();
+			   		projectsDTO.setProjectUUID(projects.getProjectUUID());
+			   		projectsDTO.setProjectClientUUID(projects.getProjectClientUUID());
+			   		response.setObject(projectsDTO);
+			   		response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			   }else {
+				     response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+			     }
+		    }catch (Exception e) {
+		    	e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+	   		return response;
 	   	}
        
        
@@ -219,7 +374,8 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","");
+    	   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","",isGlobalAccess);
 		   return projectMembersList;
 	    }
        
@@ -522,6 +678,9 @@ public class ProjectsRestController {
 	    		  projectMebersDTO.setProjectEndDate(dateFormat.format(pmh.getProjectTerminationDate()));
 	    	  }
 	    	
+	    	  if(projectMebers.getProjects().getEndDate() != null) {
+		    	  projectMebersDTO.setMemberEndDate(dateFormat.format(projectMebers.getProjects().getEndDate()));
+	    	  }
 	    	  
 	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
 	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
@@ -572,22 +731,23 @@ public class ProjectsRestController {
 		    				pmrh.setPayRateStartDate(projectAssignedStartDate);
 		    				pmrh.setBillRateStartDate(projectAssignedStartDate);
 		    			}
-		    			
-		    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
-		    			Calendar cal = Calendar.getInstance();
-		    			cal.setTime(payRateEstimatedDate);
-		    			cal.add( Calendar.DAY_OF_YEAR, -1);
-		    			pmrh.setPayRateEndDate(cal.getTime());
-		    			
-		    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
-		    			Calendar cal1 = Calendar.getInstance();
-		    			cal1.setTime(billRateEstimatedDate);
-		    			cal1.add( Calendar.DAY_OF_YEAR, -1);
-		    			pmrh.setBillRateEndDate(cal1.getTime());
-		    			
-		    			pmrh.setStatus(0);
-		    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 		    		}
+		    		
+	    			
+	    			Date payRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getPayRateEstimatedDate());
+	    			Calendar cal = Calendar.getInstance();
+	    			cal.setTime(payRateEstimatedDate);
+	    			cal.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setPayRateEndDate(cal.getTime());
+	    			
+	    			Date billRateEstimatedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),projectMembersDTO.getBillRateEstimatedDate());
+	    			Calendar cal1 = Calendar.getInstance();
+	    			cal1.setTime(billRateEstimatedDate);
+	    			cal1.add( Calendar.DAY_OF_YEAR, -1);
+	    			pmrh.setBillRateEndDate(cal1.getTime());
+	    			
+	    			pmrh.setStatus(0);
+	    			pmrh = projectMembersRateHistoryService.saveProjectMembersRateHistory(pmrh);
 	    		}
 	    		
 	    		
@@ -739,35 +899,17 @@ public class ProjectsRestController {
 			 globalVarsMap.put("projectName", projects.getProjectName());
 			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
 			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 if(null != projects.getOrgLocationsId())
-			 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
 			 
 			//calling the sendNotification method of emailScenerioUtil
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationBody);
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getEmployee().getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 	    
 	    
@@ -856,4 +998,297 @@ public class ProjectsRestController {
 	protected static boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
+	
+	
+	@RequestMapping(value = "/getExportProjects")
+	public void getExportUsersData(ProjectsDTO projectsDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		
+		 Workbook createExcelworkbook =  new XSSFWorkbook();
+		 StringBuilder excelSB = new StringBuilder();
+ 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("projects ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+
+		 ResponseList<ProjectsDTO> projectsList = projectsService.getProjectsListByClientsAndStatus(projectsDTO,user.getId(), projectsDTO.getClients(), projectsDTO.getValues(),orgLocations.getId(),userRole,candidateId);
+			
+ 		File file = null;
+ 		if(!"pdf".equalsIgnoreCase(projectsDTO.getExportType())){
+ 			createExcelsheet = projectsService.getExcelFile(createExcelsheet,createExcelworkbook,projectsList,orgLocations);
+ 			 StringBuilder templateSB = new StringBuilder();
+	 		  file = File.createTempFile(templateSB.append("projects_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+	 		  file.setReadable(true);
+	 		  
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+ 		}else {
+ 			file = projectsService.getPdfFile(projectsList,orgLocations);
+ 			
+ 		}
+ 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+	}
+	
+	
+	
+	 @RequestMapping(value = "/getProjectPopDetails", method = RequestMethod.POST)
+		public  ProjectsDTO getProjectPopDetails(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		    ProjectsDTO projectDTO = null;
+	    	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+	    	if(projects != null) {
+	    		projectDTO = new ProjectsDTO();
+	    		projectDTO.setProjectName(projects.getProjectName());
+	    		projectDTO.setDateFormat(projects.getOrgLocationsId().getDateFormat());
+	    		projectDTO.setStartDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getStartDate()));
+	    		if(projects.getEndDate() != null) {
+	    			projectDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getEndDate()));
+	    		}
+	    		projectDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
+	    	}
+	    	
+	    	return projectDTO;
+	    	
+	    }
+	
+	
+	 //Project Attribute related code bellow written by Laxman Start
+	 
+	 /**
+	  * @author Laxman
+	  * @param lookupDataDTO
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	@RequestMapping(value = "/saveTaskLookupData", method = RequestMethod.POST)
+	public  String saveTaskLookupData(LookupDataDTO lookupDataDTO,HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    LookUpData lookupData = null;
+		    if(lookupDataDTO.getLookupId() != null) {
+		    	lookupData = lookUpDataService.getTasksById(lookupDataDTO.getLookupId());
+		    }else {
+		    	lookupData = new LookUpData();
+		    }
+	    	lookupData.setName(lookupDataDTO.getName());
+	    	lookupData.setDescription(lookupDataDTO.getDescription());
+	    	if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskType")) {
+	    		lookupData.setUniqueKey(lookupDataDTO.getName());
+		    	lookupData.setCategory(Constants.TASKTYPE);
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskStatus")){
+		    	lookupData.setCategory(Constants.TASKSTATUS);
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskPriority")){
+		    	lookupData.setCategory(Constants.TASKPRIORITY);
+		    	lookupData.setColorPic(lookupDataDTO.getColorPic());
+	    	}else if(lookupDataDTO.getTaskType().equalsIgnoreCase("TaskSeverity")){
+		    	lookupData.setCategory(Constants.TASKSEVERITY);
+		    	lookupData.setColorPic(lookupDataDTO.getColorPic());
+	    	}
+	    	lookupData.setOrgLocationId(orgLocations.getId());
+	    	lookupData.setReferId(lookupDataDTO.getReferId());
+	    	lookUpDataService.saveLookupData(lookupData);
+	    	return "success";
+	    	
+	    }
+	
+	 
+		/**
+		 * @author Laxman
+		 * @param lookupId
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getLookupDataByLookupId", method = RequestMethod.POST)
+		public  LookUpData getLookupDataByLookupId(@RequestParam(value="lookupId", required=true) Long lookupId) throws Exception {
+			    LookUpData lookupData = lookUpDataService.getTasksById(lookupId);
+		    	return lookupData;
+		    }
+		
+		/**
+		 * @author Laxman
+		 * @param lookupId
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/deleteLookupDataByLookupId", method = RequestMethod.POST)
+		public  void deleteLookupDataByLookupId(@RequestParam(value="lookupId", required=true) Long lookupId,
+				@RequestParam(value="taskType", required=true) String taskType) throws Exception {
+			    LookUpData lookupData = lookUpDataService.getTasksById(lookupId);
+			    LookUpData referLookupData = lookUpDataService.getTasksById(lookupData.getReferId());
+			   
+			   //update task list in referid 
+			   List<ProjectTasks> taskList = projectTasksService.getTasksListByLookupIdAndCategoryType(lookupId, taskType);
+			   if(taskList != null) {
+		    	   for(ProjectTasks pt:taskList) {
+				    	if(taskType.equalsIgnoreCase(Constants.TASKTYPE)) {
+				    		pt.setTaskType(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKSEVERITY)) {
+							pt.setSeverity(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+							pt.setPriority(referLookupData);
+						}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+							pt.setTaskStatus(referLookupData);
+						} 
+				    	projectTasksService.updateTasks(pt);
+				    }
+			    }
+			 //update task activity list in referid
+		      List<ProjectTaskActivity> activityList = projectTaskActivityService.getTasksActitivtyListByLookupIdAndCategoryType(lookupId, taskType);
+		       if(activityList != null && !activityList.isEmpty()) {
+			    	for(ProjectTaskActivity pta:activityList) {
+			    		if(taskType.equalsIgnoreCase(Constants.TASKPRIORITY)) {
+			    			pta.setPriority(referLookupData);
+			    		}else if(taskType.equalsIgnoreCase(Constants.TASKSTATUS)) {
+			    			pta.setTaskStatus(referLookupData);
+			    		}
+			    		projectTaskActivityService.saveProjectTaskActivity(pta);
+			    	}
+			    }
+		       //delete referId in lookupdata
+			    lookUpDataService.deleteLookupDateByLookupId(lookupData);
+		    }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		
+		@RequestMapping(value = "/getTaskTypeList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskTypeList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskTypeList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKTYPE, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskTypeList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskTypeList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskStatusList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskStatusList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskStatusList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSTATUS, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskStatusList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskStatusList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskPriorityList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskPriorityList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskPriorityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKPRIORITY, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskPriorityList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskPriorityList;
+		 }
+		
+		/**
+		 * @author Laxman
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getTaskSeverityList", method = RequestMethod.POST)
+		public  List<LookUpData> getTaskSeverityList(HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			List<LookUpData> taskSeverityList = lookUpDataService.getLookUpdataByCategoryAndOrgLocationId(Constants.TASKSEVERITY, loginOrgLocations.getId());
+	   	    for(LookUpData lpd:taskSeverityList) {
+	   	    	if(lpd.getReferId() != null) {
+	   	    		LookUpData data = lookUpDataService.getTasksById(lpd.getReferId());
+	   	   	    	lpd.setReferName(data.getName());
+	   	    	}
+	   	    }
+	   	    return taskSeverityList;
+		 }
+		
+		
+		
+	// to validate TaskType Name
+	 /**
+	  * @author Laxman
+	  * @param taskTypeName
+	  * @param lookupId
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateTaskTypeName", method = RequestMethod.POST)
+	 public @ResponseBody Boolean validateTaskTypeName(
+			 @RequestParam(value = "taskTyePe", required = false) String taskTyepr,
+	 		@RequestParam(value = "taskTypeName", required = false) String taskTypeName,@RequestParam(value = "lookupId", required = false) Long lookupId,HttpServletRequest request) throws Exception {
+		    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    LookUpData lookup = null;
+	 		if(lookupId != null) {
+	 			if(taskTyepr.equalsIgnoreCase("TaskType")) {
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKTYPE,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskStatus")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKSTATUS,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskPriority")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKPRIORITY,loginOrgLocations.getId());
+		    	}else if(taskTyepr.equalsIgnoreCase("TaskSeverity")){
+		 			lookup  = lookUpDataService.validateTaskTypeNameByTaskNameAndLookupId(taskTypeName,lookupId,Constants.TASKSEVERITY,loginOrgLocations.getId());
+		    	}
+	 		}
+	 		 Boolean flag = false;
+	 		 if(lookup == null) {
+	 			if(taskTyepr.equalsIgnoreCase("TaskType")) {
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKTYPE,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskStatus")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKSTATUS,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskPriority")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKPRIORITY,loginOrgLocations.getId());
+	 			}else if(taskTyepr.equalsIgnoreCase("TaskSeverity")){
+	 				flag = lookUpDataService.validateTaskTypeName(taskTypeName,Constants.TASKSEVERITY,loginOrgLocations.getId());
+	 			}
+	 			
+	 		 }
+	 		return flag;
+	 	}
+	 	
+		
+		
 }

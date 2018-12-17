@@ -151,7 +151,7 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception {
 		
 		  Session session = this.sessionFactory.getCurrentSession();
-	      String query = ("from OrgLocations orgLocations where  orgLocations.locationCode =:locationCode");
+	      String query = ("from OrgLocations orgLocations left join fetch orgLocations.org  where orgLocations.locationCode =:locationCode");
 		  
 	       List<OrgLocations> orgLocations = session.createQuery(query.toString()).setString("locationCode", locationCode).list();
 	     
@@ -386,6 +386,36 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 		String query = "from OrgLocations orgloc left join fetch orgloc.org  org where org.orgType = 'Company' and orgloc.id <> '1' ";
 		List<OrgLocations> locationList = session.createQuery(query).list();
 		return locationList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId, String country) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select orgLocations.id from OrgLocations orgLocations where orgLocations.org.id = :orgId and orgLocations.country = :country " ;
+	    List<Long> orgLocationIdsList = session.createQuery(query).setLong( "orgId", orgId).setString("country", country).list();
+        return orgLocationIdsList;
+        
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgLocations orgloc left join fetch orgloc.org  org where org.id = :orgId and orgloc.country = :country ";
+		List<OrgLocations> locationList = session.createQuery(query).setLong("orgId", orgId).setString("country", country).list();
+		return locationList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from OrgLocations orgLocations where orgLocations.org.id IN (select org.id from Org org where org.id = :orgId)";
+		
+		List orgList = session.createQuery(query).setLong("orgId", orgId).list();
+		return orgList;
 	}
 	 
 }

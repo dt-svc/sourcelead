@@ -288,37 +288,19 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
          StringBuilder linkBuild = new StringBuilder();
          globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
-                
-        
-         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-        
          //getting the current EmailScenario by EmailScenario unique name and entity type
-         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_EMAIL);
          EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
         
-         //covert subject,body and signature
-         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-         String url = sourceleadUrl;
-        
-         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
          notificationScenario.setBody(notificationbody);
-
         
         // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
-        
-         //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-         emailMessage.setSubject(subject);
-         emailMessage.setMessageBody(emailTemplate);
-        
          //calling the sendEmail method of emailScenerioUtil
-         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,new ArrayList<EmailAttachment>());
          String actionLink="";
-       emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 
 
     }
@@ -454,43 +436,31 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 }
 		 
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the Email 
 		 
 		 if(!isNullOrEmpty(task.getAlertType())){
 			 if(task.getAlertType().equalsIgnoreCase("Email")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
 			 if(task.getAlertType().equalsIgnoreCase("Email,Notification")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 		 }
 

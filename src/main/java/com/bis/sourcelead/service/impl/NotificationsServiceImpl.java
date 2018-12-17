@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.NotificationsDao;
+import com.bis.sourcelead.dto.NotificationDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
@@ -90,6 +93,25 @@ public class NotificationsServiceImpl implements NotificationsService{
 	@Override
 	public Notifications getNotificationBySpocUUID(String spocUUID) throws Exception {
 		return notificationDao.getNotificationBySpocUUID(spocUUID);
+	}
+
+	@Override
+	public Notifications getNotificationDetailsByUUID(String UUID) throws Exception {
+		return notificationDao.getNotificationDetailsByUUID(UUID);
+	}
+
+	@Override
+	public ResponseList<Notifications> getDynamicAllNotificationsListByUserId(NotificationDTO notificationDTO, Long userId, String orgCode, String locationCode, Timezone timezone) {
+		return notificationDao.getDynamicAllNotificationsListByUserId(notificationDTO, userId, orgCode, locationCode, timezone);
+	}
+
+	public List<Notifications> getTopTenNotificationsListByUserId(Long userId, String orgCode, String locationCode) {
+		return notificationDao.getTopTenNotificationsListByUserId(userId, orgCode, locationCode);
+	}
+
+	@Override
+	public String getNotificationUUIDByOrgSpocId(Long orgSpocId) throws Exception {
+		return notificationDao.getNotificationUUIDByOrgSpocId(orgSpocId);
 	}
 
 

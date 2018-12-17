@@ -3,15 +3,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
+<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+
 <div id="tableContent" class="timesheetRep-table timesheet_appr_table" style="overflow: auto;">
 <input type="hidden" id="tempVar" value="tempVar">
 <input type="hidden" value="${expenseStatus}" id="expenseStatusDivId">
 <div id="loadingId"></div>
 <table id='example'>                     
 	<thead>                                                                                
-		<tr>                                                                                   
-			<th>Employee</th>                                                                      
-			<th>EmploymentType</th>                                                                
+		<tr>        
+			<th>Employee</th>  
+			<th>Expense Id</th>                                                                    
+			<th>Emp Type</th>                                                                
 			<th>Project</th>                                                                       
 			<th>Purpose</th> 
             <th>Amount</th>                                                                        
@@ -48,14 +51,53 @@
 	</div>
 </div> 
 
-<script>
-$("#SearchExpensesData").keyup(function(event) {
-    if (event.keyCode === 13) {
-    	var searchData = $('#SearchExpensesData').val();
-    	getExpensesApprovalDataList();
-    	$('#SearchExpensesData').val(searchData);
-    }
+
+<!-- <script>
+$(document).ready(function(){
+	datatableBody();
 });
+</script> 
+<script>
+function datatableBody(){ 
+	 $('#example').DataTable( { 
+		    "sDom": "Rlfrtip",
+		    "bPaginate": false,
+		    "bInfo" : false,
+		    "ordering": false,
+		    "searchHighlight": true
+	    } );
+}
+</script> 
+<script>
+ function searchHighlight(searchData){
+	 if(searchData != null && searchData != 'undefined' && searchData != ''){
+		    var table = $('#example').DataTable();
+		    var body = $( table.table().body() );
+		    body.unhighlight();
+	        body.highlight(searchData);
+	 } 
+ }
+ </script> -->
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
+
+<script>
+function searchExpensesDataIcon(){
+	$('#SearchExpensesData').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#SearchExpensesData').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getExpensesApprovalDataList();
+	}else{
+		$("#SearchExpensesData").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#SearchExpensesData').val(searchData);
+}
 </script>
 
 <script>
@@ -108,7 +150,8 @@ $("#SearchExpensesData").keyup(function(event) {
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
 			  $('#SearchExpensesData').val('') ;
-			  $('#SearchExpensesData').val(searchData); 
+			  $('#SearchExpensesData').val(searchData);
+			  /* searchHighlight(searchData); */
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
 			  if(endingRecord > totalRows){

@@ -36,6 +36,9 @@ public class SourceleadRoles implements Serializable{
 	@Column(name = "DISPLAY_NAME")
 	private String DisplayName;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "ACTION_ID")
 	@Type(type="text")
 	private String actionId;
@@ -141,6 +144,14 @@ public class SourceleadRoles implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	

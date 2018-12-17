@@ -49,9 +49,9 @@ public interface SubmissionApproverHierarchyService {
 	public User updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(Long projectMemberId,
 			Date startDate, Date endDate, String reason, User loginUser, String type, String isSuperUser) throws Exception;
 	
-	public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, Float totalHours) throws Exception;
+	//public void sendReopenTimeSheetMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, Float totalHours) throws Exception;
 	
-	public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, String type, User reopenedUser) throws Exception;
+	//public void sendReopenTimeSheetAcceptOrRejectMail(Long projectMemberId,String reason, User loginUser, OrgLocations orgLoc, String timesheetFrequency, String type, User reopenedUser) throws Exception;
 	
 	public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long locationsId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
 	
@@ -75,7 +75,7 @@ public interface SubmissionApproverHierarchyService {
 
 	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String submissionStatus); 
 
-	public ResponseList<SubmissionApproverHierarchy>  getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(Long userId,Long orgLocationId, String submissionStatus,String userRole,String searchValue, int start, int length) throws Exception; 
+	public ResponseList<SubmissionApproverHierarchy>  getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(Long userId,Long orgLocationId, String submissionStatus,String userRole,String searchValue, int start, int length,String isGlobalUser) throws Exception; 
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 	
@@ -85,11 +85,11 @@ public interface SubmissionApproverHierarchyService {
 	
 	//public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
 
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception;
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate,String isGlobalUser) throws Exception;
 	
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId,Long approverUserId, Date startDate, Date endDate, String status,String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
-	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
+	public Boolean getCronRemainderForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long masterCandidateId,Long projectId);
 	
 	public Boolean getPendingForApprovalTimesheetReportByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 
@@ -97,11 +97,14 @@ public interface SubmissionApproverHierarchyService {
 	
 	public SubmissionApproverHierarchy isThereAnyApproverChangesStatusForProjectAndMasterCandidateId(Long projectId,Long masterCandidateId,Date frequencyStartDate,Date frequencyEndDate,String approvalStatus);
 
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long locationsId,Long projectMemberId, Date startDate, Date endDate) throws Exception;
-	
-	public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,Long locationsId, Date startDate, Date endDate) throws Exception;
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId,Long locationsId,Long projectMemberId, Date startDate, Date endDate,String isGlobalUser) throws Exception;
 
-	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId);
+
+	public Map<String,Float> getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(Long projectMemberId,Long locationsId, Date startDate, Date endDate,String isGlobalUser) throws Exception;
+
+	public Boolean isReopenButtonVisible(Date frequencyStartDate,Date frequencyEndDate,Long projectId,Long masterCandidateId,Long locationId,Long orgId,String isGlobalAccess);
 	
 	public List<SubmissionApproverHierarchy> getAllSubmissionApproverHierarchiesByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId,Long locationId) throws Exception;
+
+	public Boolean isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(Date frequencyStartDate,Date frequencyEndDate,Long masterCandidateId, Long projectId);
 }

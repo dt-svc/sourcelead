@@ -22,7 +22,8 @@ public class CandidateNameModification {
 	
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author LAxman
  * this method is using for update the RequirmentUUID	
@@ -36,7 +37,7 @@ public void addModules() throws IOException, SQLException {
 		
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.CANDIDATE candidate";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs = stmt1.executeQuery(sql);
 			 System.out.println("====Started=====");
@@ -46,7 +47,7 @@ public void addModules() throws IOException, SQLException {
 				 String lastName = rs.getString("LAST_NAME");
 				 String email = rs.getString("EMAIL");
 				
-				  	String query = "update sourcelead.CANDIDATE can set FIRST_NAME = ?, LAST_NAME = ?  where  can.ID = '"+canId+"' ";
+				  	String query = "update "+dbconfig.getSchema()+".CANDIDATE can set FIRST_NAME = ?, LAST_NAME = ?  where  can.ID = '"+canId+"' ";
 				  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
 				  	 if(StringUtils.isNotBlank(firstName)){
 				  	 String fName=	WordUtils.capitalizeFully(firstName);
@@ -88,10 +89,6 @@ public void addModules() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

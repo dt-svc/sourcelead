@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -20,31 +21,45 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
-public  class CalendarUtil {
 
-	public static void main(String[] args) throws ParseException {
+public  class CalendarUtil {	
+	
+	
+	public static double getCombinedHours(double hours1,double hours2){
+		double cthHours = hours1;
+		double cthHoursValue = (int) cthHours;
+		double cthMinutesValue = cthHours - cthHoursValue;
+		double totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		double wthHours = hours2;
+		double wthHoursValue = (int) wthHours;
+		double wthMinutesValue = wthHours - wthHoursValue;
+		double totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		double totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		double actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		double actualMinutes = (totalMinutes % 60)/100;
+
+		String actualTimeString = String.format("%.2f", (actualHours+actualMinutes));
 		
-		String minString = "11-03-2018";
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		Date min = dateFormat.parse(minString);
 		
-		String maxString = "15-03-2018";
-		Date max = dateFormat.parse(maxString);
-		
-		String inputString = "15-03-2018";
-		Date d = dateFormat.parse(inputString);
-		
-		System.out.println(getMonth16thDateByGivenDate(min,Constants.CURRENT_MONTH).get("STARTDATE"));
-		
-		
-		
+		return Double.parseDouble(actualTimeString);
 	}
+
+
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -299,21 +314,39 @@ public  class CalendarUtil {
 	    return converted_date;
 	}
 	
-	public static String getTimesheetHoursDisplayFormat(Float hours2){
-		float cthHours = 0;
-		float cthHoursValue = (int) cthHours;
-		float cthMinutesValue = cthHours - cthHoursValue;
-		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+	public static String getTimesheetHoursDisplayFormat(Float hours2,Float totalMinutes){
+		if(totalMinutes == null) {
+			float wthHours = hours2;
+			float wthHoursValue = (int) wthHours;
+			float wthMinutesValue = wthHours - wthHoursValue;
+		    totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+		}
+		float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (totalMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		return actualTimeString;
+	}
 
+	
+	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
 		float wthHours = hours2;
 		float wthHoursValue = (int) wthHours;
 		float wthMinutesValue = wthHours - wthHoursValue;
-		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+		float totalMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
-		float totalMinutes = totalCthMinutes+totalWthMinutes;
 
-		float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
-		float actualMinutes = (totalMinutes % 60)/100;
+		float halfDayMinutes = totalMinutes/2;
+		
+		float actualHours = (int) (halfDayMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (halfDayMinutes % 60)/100;
 		
 		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
 		String actualTimeString = null;
@@ -326,7 +359,7 @@ public  class CalendarUtil {
 		
 		return actualTimeString;
 	}
-
+	
 	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
@@ -346,7 +379,7 @@ public  class CalendarUtil {
   }
 	
 	
-	protected static int getDayOffset(String day_Of_Week){
+	private static int getDayOffset(String day_Of_Week){
 		int day_offset = 0;
 		switch (day_Of_Week) {
 		case "MON":  day_offset = Calendar.MONDAY;
@@ -362,6 +395,29 @@ public  class CalendarUtil {
 		case "SAT":  day_offset = Calendar.SATURDAY;
 		break;
 		case "SUN":  day_offset = Calendar.SATURDAY+1;
+		break;
+		default:   day_offset = Calendar.SUNDAY;
+		break;
+		}
+		return day_offset;
+	}
+	
+	public static int getDayOffsetByWeekName(String day_Of_Week){
+		int day_offset = 0;
+		switch (day_Of_Week) {
+		case "MON":  day_offset = Calendar.MONDAY;
+		break;
+		case "TUE":  day_offset = Calendar.TUESDAY;
+		break;
+		case "WED":  day_offset = Calendar.WEDNESDAY;
+		break;
+		case "THU":  day_offset = Calendar.THURSDAY;
+		break;
+		case "FRI":  day_offset = Calendar.FRIDAY;
+		break;
+		case "SAT":  day_offset = Calendar.SATURDAY;
+		break;
+		case "SUN":  day_offset = Calendar.SUNDAY;
 		break;
 		default:   day_offset = Calendar.SUNDAY;
 		break;
@@ -492,13 +548,21 @@ public  class CalendarUtil {
 			DateFormat  sdf = new SimpleDateFormat(dateFormart);
 			String nowStr = sdf.format(calendar.getTime());
 			Date nowDate = sdf.parse(nowStr);
+			SimpleDateFormat sf = new SimpleDateFormat("E");
+			
 			cal.setTime(nowDate);
-			if(day_offset == 8){
-				cal.add(Calendar.DATE, 7);
-				cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			}
-			else{
+			if(StringUtils.isNotEmpty(sf.format(nowDate)) && sf.format(nowDate).equalsIgnoreCase("SUN") && day_offset == 2) {
+				cal.add(Calendar.DATE, -7);
 				cal.set(Calendar.DAY_OF_WEEK, day_offset);
+			}
+			else {
+				if(day_offset == 8){
+					cal.add(Calendar.DATE, 7);
+					cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+				}
+				else{
+					cal.set(Calendar.DAY_OF_WEEK, day_offset);
+				}
 			}
 			return cal;
 		} catch (Exception e) {
@@ -665,8 +729,6 @@ public  class CalendarUtil {
 			date = parseFormat.parse(twentyHourFormatTime);
 			twelveHourFormatTime =displayFormat.format(date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return twelveHourFormatTime;
 	}
@@ -987,7 +1049,6 @@ public  class CalendarUtil {
 		  Q1EndDate.set(Calendar.DATE, Q1EndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 		  dateList.put("STARTDATE",Q1StartDate.getTime());
 		  dateList.put("ENDDATE", Q1EndDate.getTime());
-		  System.out.println(Constants.DF_MM.format(Q1EndDate.getTime()));
 	 	 return dateList;
 	
     }
@@ -1101,4 +1162,66 @@ public  class CalendarUtil {
 		return numberofDays;
 
 	}
+ public static String getMonthFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("MMMM");
+		return simpleDateFormat.format(date);
+	}
+ public static String getYearFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
+		return simpleDateFormat.format(date);
+	}
+ 
+ public static Date removeTime(Date date) {    
+     Calendar cal = Calendar.getInstance();  
+     cal.setTime(date);  
+     cal.set(Calendar.HOUR_OF_DAY, 0);  
+     cal.set(Calendar.MINUTE, 0);  
+     cal.set(Calendar.SECOND, 0);  
+     cal.set(Calendar.MILLISECOND, 0);  
+     return cal.getTime(); 
+ }
+  
+ 
+ public static int numberOfDayOccurancesBetweenTwoDates(Date d1,Date d2,String day_Of_Week) {
+	 Calendar c1 = Calendar.getInstance();
+	 c1.setTime(d1);
+	  
+	 Calendar c2 = Calendar.getInstance();
+	 c2.setTime(d2);
+	 int count = 0;
+	  
+	 while(c1.before(c2)|| c1.equals(c2)) {
+	     if(day_Of_Week.equalsIgnoreCase("Sun") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Mon") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.MONDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Tue") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.TUESDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Wed") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.WEDNESDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Thu") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.THURSDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Fri") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.FRIDAY)
+	    	    count++;
+	     else if(day_Of_Week.equalsIgnoreCase("Sat") && c1.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY)
+	    	    count++;
+	     c1.add(Calendar.DATE,1);
+	     
+	 }
+	 return count;
+ }
+	public static Date addDaysForGenerateInvoice(Date date, int days)
+	{
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			cal.add(Calendar.DATE, days);
+			return cal.getTime();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+ 
 }
+

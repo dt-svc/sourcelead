@@ -16,7 +16,7 @@ public interface ProjectApproverHierarchyDao {
 	
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
 	
-	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId) throws Exception;
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId,Long orgId,String isGlobalAccess) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
 
@@ -64,6 +64,8 @@ public interface ProjectApproverHierarchyDao {
 	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId,Long projectId,Long orgLocationId) throws Exception;
 	
 	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId) throws Exception;
+	
+	String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception;
 
 	
 }

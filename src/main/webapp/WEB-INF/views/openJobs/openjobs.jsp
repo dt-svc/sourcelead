@@ -1,3 +1,6 @@
+<%@ page language="java"
+    contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec"
@@ -41,12 +44,16 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link rel="stylesheet"3
+<link rel="stylesheet"
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
-
+<style type="text/css">
+.jobDesc b {
+display: inline-block;
+}
+</style>
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -78,7 +85,10 @@
 <script
 	src="/resources/js/jobs/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <!-- <script src="/resources/staic-web/js/customscripts.js" type="text/javascript"></script> -->
-
+<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
  <title>.:: Jobs ::.</title>
  <style>
  .navbar-default {
@@ -148,6 +158,9 @@ window.onload = function () {
 		getOrgsList('none','main');
 	}
  };
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})	
 </script>
 
 
@@ -161,7 +174,7 @@ $(document).scroll(function(e){
     var scrollAmount = $(window).scrollTop();
     var documentHeight = $(document).height();
     var searchType = $("#searchType").val();
-    offset = $("#orgOffset").val();
+//     offset = $("#orgOffset").val();
     // calculate the percentage the user has scrolled down the page
     if($(window).scrollTop() == $(document).height() - $(window).height()) {
     	var avilableCount = $("#openJobsOffset").val();
@@ -947,7 +960,7 @@ top: 21px;height: 32px; line-height: 18px;
     <div class="copyrightOut">
         <div class="copyright">
             <b>� 2018 SourceLead. All rights reserved.</b> <span> <a
-                href="/privacypolicy.html">Privacy Policy</a> <a href="/termsofuse.html">Terms
+                href="/privacy-policy.html">Privacy Policy</a> <a href="/terms-of-use.html">Terms
                     of Use</a>
             </span>
             <div class="clear"></div>
@@ -1001,18 +1014,14 @@ function clearFilters(){
 <script>
 	function getDropDownCount() {
 		var selectedExperience = '${openJobsExperience}';
-		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
-			selectedExperience = 0;
-		}
-		
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
 				+ '("<option selected value="">--Select Experience--</option>")';
-		for (var i = 1; i <= 25; i++) {
-			if(i == selectedExperience){
+		for (var i = 0; i <= 25; i++) {
+			if(selectedExperience != null && selectedExperience != '' && selectedExperience != 'undefined' && (parseInt(i) == parseInt(selectedExperience))){
 				result = result + '("<option selected value='+i+'>' + i + '</option>")';
 			}
 			else{
@@ -1206,7 +1215,7 @@ function getOpenJobsELKList(orgLocationId,type){
 // 		$("#openJobsOffset").val(offset)
 // 	}
 	
-	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&offset="+offset;
+	var url =sourceleadUrl + "/ws/getOpenJobsELK?${_csrf.parameterName}=${_csrf.token}&minOffset=0&offset="+offset;
 	if(openJobsRequirementTitle)
 		url+="&openJobsRequirementTitle="+openJobsRequirementTitle;
 	if(openJobsLocation)
@@ -1230,21 +1239,22 @@ function getOpenJobsELKList(orgLocationId,type){
 	  $.ajax({ 
 	   	type: "GET",
 	   	url: url,
-	    success: function(data) {
-	    	var json = JSON.parse(data);
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){
+	    success: function(json) {
+// 	    	var json = JSON.parse(data);
+			var data = json.data;
+	    	if(data != null && data !='undefined' && data !=null &&  data != [] && data.length >0){
 				var newOffset = parseInt(offset) + 10;
-				if(json.length< 10){
+				if(data.length< 10){
 					$('#loadMoreDiv').empty();
 					$('#loadMoreDiv').append('<div class="loadWrap"> No More Records..</div>');
-	 			}else if(json.length != null && json.length >= 10 && json.length > offset){
+	 			}else if(data.length != null && data.length >= 10 && data.length > offset){
 	 				$('#loadMoreDiv').empty();
 	 				$('#loadMoreDiv').append('<div class="loadWrap"><i class="fa fa-spinner fa-spin"></i> More Records..</div>');
 	 			}else{
 	 				$('#loadMoreDiv').empty();
 	 				$('#loadMoreDiv').append('<div class="loadWrap">No More Records..</div>');
 	 			}
-	    		prepareOpenJobsElkList(data,offset);
+	    		prepareOpenJobsElkList(json,offset);
 	    		$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    	}else{
 	    		
@@ -1261,17 +1271,17 @@ function getOpenJobsELKList(orgLocationId,type){
  }
 </script>
 <script>
-function prepareOpenJobsElkList(data,offset){
+function prepareOpenJobsElkList(response,offset){
 	$("#openJobsRequirementsList").show();
 	$("#openJobsRequirementsSummary").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
-    var json = JSON.parse(data);
+    var json = response.data;
   	 var experience ="";
   	 var location = "";
-    if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
+    if(response != null && response !='undefined' && response !=null && json.length >0){ 	
   	  if(json.length > 0)
   		{
   		var result = "";
@@ -1305,15 +1315,16 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 					rateType ="--";
 				}
-				
 				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
+				}else if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined'){
+					experience = requirements.minExperience+" Years";
 				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
-					experience = requirements.maxExperience+" Years";
+					experience = "0-"+requirements.maxExperience+" Years";
 				}else{
 					experience = 'No Data';
 				}
-				
+	
 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 					location = requirements.state+", "+requirements.country;
 				}else{
@@ -1487,7 +1498,7 @@ function getOrgsList(alphabet,type){
 	   	type: "POST",
 	   	url: sourceleadUrl + "/ws/getOrgsListforOpenJobs?${_csrf.parameterName}=${_csrf.token}&alphabet="+alphabet+"&country="+country+"&type="+type,
 	    success: function(data) {
-	    	var json = JSON.parse(data);
+	    	var json = data.data;
 	    	var result = "";
 	    	
 	    	if(type != 'main'){
@@ -1532,6 +1543,7 @@ function getOrgsList(alphabet,type){
 		    	}
 // 	    		if(json.length > 5){
 // 	    			var orgCount = json.length - 5 ;
+
 				if(opt.noOfDays != '' && opt.noOfDays != 'undfined' && opt.noOfDays != null){
 			    	result = result +'<a onclick="openPopup(); getOrgsList(\'none\',\'sub\');" class="popOpen">+'+opt.noOfDays+' More</a>';
 
@@ -1586,9 +1598,9 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		 type: "POST",
 		 url: sourceleadUrl + "/ws/openRequirementsSummary?${_csrf.parameterName}=${_csrf.token}&requirementsUUID="+requirementsUUID,
 		    success: function(data) {
-	    	if(data != null && data !='undefined' && data !=null &&  data != [] ){ 	
+	    	if(data != null && data !='undefined' && data !=null){ 	
 	    		
-	    	  var json = JSON.parse(data);
+	    	  var json = data.object;
 	    	 
 		      var result = "";
 
@@ -1633,6 +1645,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
 				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +' <div class="clearfix"></div>';
 				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{
@@ -2449,6 +2462,7 @@ function createAlert(requirementUUID){
         	  }
         	 result = "";
         	 result = result +' <form id="create_alert_form" name="create_alert_form" method="post">';
+        	 result = result+ '<input type = "hidden" name="tabType" value="openjobsForm"/>';
         	 result = result +'	 <div class="modal-dialog modal-lg">';
         	 result = result +'     <div class="modal-content">';
         	 result = result +'       <div class="modal-header">';
@@ -2645,7 +2659,7 @@ function createAlert(requirementUUID){
         	
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
-        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         	<div class="col-md-9 dropdown-select">';
         	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
         	 result = result +'         			<option selected value="">---Select Alert Frequency---</option>';
         	 result = result +'         			<option>Daily</option>';
@@ -2700,15 +2714,20 @@ function createAlert(requirementUUID){
         	    	$.ajax({
         		    	type: "POST",
         		        url: sourceleadUrl + "/ws/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-        		        success: function(data) {
-        		        	var primarySkill = data;
-        		        	      $("#primarySkill").val(primarySkill);
-        		        	
+        		        success: function(response) {
+        		        	if (response.response === "AWKWARD") {
+        		        	    location.href = "/errorPage";
+        		        	} else if (response.response === "SUCCESS") {
+        		        		var primarySkill = response.object;
+      		        	      	$("#primarySkill").val(primarySkill);
+        		        	} else if (response.indexOf('Sign In') !== -1) {
+        		        		location.replace(sourceleadUrl);
+        		        	} else {
+        		        	    showError("Operation failed, please try again");
+        		        	}
         		        },
         		    });
-        	    	
         	    });
-        	    
         	    
         	  if(json['skills'] != 'undefined' && json['skills'] != null && json['skills'] != ''){
         		  
@@ -2736,6 +2755,8 @@ function createAlert(requirementUUID){
         		    	   var skillsArray = this.value.split(",");
         			    	 if(skillsArray.length > 1){
         		        		 for (var i=0; i < skillsArray.length; i++) {
+        		        			 if(skillsArray[i] == '' || skillsArray[i] == 'undefined' || skillsArray[i] == null)
+        		        		     continue;
         		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
         		        			 select.append(option);
         		 		             select.find(option).prop('selected', true);
@@ -2776,7 +2797,6 @@ var validationSettings = {
    };  
 var sourceleadUrl ='${sourceleadUrl}';
          $('body').on('submit', '#create_alert_form', function(e){
-        	  
         	  if ($(this).validate(false, validationSettings)){
         		
         		e.preventDefault();
@@ -2789,7 +2809,23 @@ var sourceleadUrl ='${sourceleadUrl}';
 			  		        contentType:false, 
         					url : sourceleadUrl + "/ws/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
         					success : function(result) {
-        							location.replace("/jobs");
+        						if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        							showError(result.responseMessage);
+        							 $("#loadinggif").removeAttr('style');
+        	        	    		}
+        	                  		else if (result.response === "AWKWARD") {
+        	                  			location.href = "/errorPage";
+        	        	    		}
+        	                  		else if(result.response === "SUCCESS"){
+        	                  			 $("#loadinggif").removeAttr('style');
+        	                  			location.replace("/jobs"); 
+        				        	    }
+        	                  		else if (result.indexOf('Sign In') !== -1) {
+        	                  			location.replace(sourceleadUrl);
+        	        				} else {
+        	        					showError("Operation failed, please try again");
+        	        					 $("#loadinggif").removeAttr('style');
+        	        				}
         					},
         				});
                 

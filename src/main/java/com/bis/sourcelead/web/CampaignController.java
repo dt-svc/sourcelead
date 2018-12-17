@@ -187,7 +187,7 @@ public class CampaignController {
 	
 	
 	/**
-	 * Resturns campaignSender jsp popup
+	 * Returns campaignSender jsp popup
 	 * @return jsp
 	 * @throws Exception 
 	 * @throws NumberFormatException 

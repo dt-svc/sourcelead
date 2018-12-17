@@ -18,7 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddProjectIDAndMasterCandidateIDToTimesheetSubmissions {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Naresh Bolisetty
  * this method is using for update candidate id and master candidate id to project members
@@ -34,7 +35,7 @@ public void dumpMasterCandidateIdToTimesheetSubmission() throws IOException, SQL
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.TIMESHEET_SUBMISSIONS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".TIMESHEET_SUBMISSIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -43,7 +44,7 @@ public void dumpMasterCandidateIdToTimesheetSubmission() throws IOException, SQL
 				 Long  submissionId = rs1.getLong("ID");
 				 Long  projectMemberId = rs1.getLong("PROJECT_MEMBER_ID");
 				 
-				 String query = "SELECT * from sourcelead.PROJECT_MEMBERS where ID = '"+projectMemberId+"' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".PROJECT_MEMBERS where ID = '"+projectMemberId+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 			 	if (rs2.next()) {
@@ -51,7 +52,7 @@ public void dumpMasterCandidateIdToTimesheetSubmission() throws IOException, SQL
 			 		Long  projectId = rs2.getLong("PROJECT_ID");
 			    		if(projectId == 0 || masterCandidateId ==0)
 			    			continue;
-			    		String query2 = " update sourcelead.TIMESHEET_SUBMISSIONS set MASTER_CANDIDATE_ID = ?, PROJECT_ID = ? where ID = ? ";
+			    		String query2 = " update "+dbconfig.getSchema()+".TIMESHEET_SUBMISSIONS set MASTER_CANDIDATE_ID = ?, PROJECT_ID = ? where ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 			    		pstmt3.setLong(1, masterCandidateId);
 			    		pstmt3.setLong(2, projectId);
@@ -80,10 +81,6 @@ public void dumpMasterCandidateIdToTimesheetSubmission() throws IOException, SQL
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

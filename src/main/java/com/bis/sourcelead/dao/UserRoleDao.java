@@ -1,15 +1,22 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserIdView;
 import com.bis.sourcelead.entity.UserRole;
 
 public interface UserRoleDao {
@@ -45,6 +52,8 @@ public interface UserRoleDao {
 	public UserRole getUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 	
 	public UserRole getUserRoleById(Long userRoleId) throws Exception;
+	
+	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception;
 	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
@@ -94,9 +103,9 @@ public interface UserRoleDao {
 	 * @purpose : Email JobScheduler(For to intimate unfilled timesheets)
 	 * 
 	 */
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception;
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency,Long locationId) throws Exception;
 	
-	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception;
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId,Long userId) throws Exception;
 	
 	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(String invoiceFrequency,Long approverUserId,Long locationId) throws Exception;
 	
@@ -123,5 +132,35 @@ public interface UserRoleDao {
 	ResponseList<UserRole> getDynamicUsersListByRoleAndNameAndLocationId(UserDTO userDTO,UserRoleDTO userRoleDTO,Long locationId,Long userId,String loginUserRole,String userCode,List<Long> orgRelationsList,List<Long> managerUserIds,List<Long> teamsList,List<Long> departmentsList) throws Exception;
 	
 	List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception;
+
+	public ResponseList<UserRole> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orglocation)throws Exception;
+	
+	Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId);
+	
+	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
+
+	public Map<String, Integer> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations, Date[] freqDates) throws Exception;
+	
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception;
+
+	List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+	
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId);
+
+	 List<BigInteger> getAllUsersRoleList() throws Exception;
+	 
+	 List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception;
+	 
+	 Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception;
+
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId);
+
+	List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId, Long orgLocationId, List<UserIdView> userIdView);
+
+	public List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId);
+	
+	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId);
+	
+	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception;
 
 }

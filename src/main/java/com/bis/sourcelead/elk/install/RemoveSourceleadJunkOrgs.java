@@ -18,7 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class RemoveSourceleadJunkOrgs {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for deleting junk org locations
@@ -45,7 +46,7 @@ public void removeOrgs() throws IOException, SQLException {
 		for (String orgLocation : orgLocationsList) {
 			
 			 
-			 sqlQuery = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ORG_NAME = '"+orgLocation+"' ";
+			 sqlQuery = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ORG_NAME = '"+orgLocation+"' ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sqlQuery);
 			
@@ -59,7 +60,7 @@ public void removeOrgs() throws IOException, SQLException {
 				 
 				     System.out.println("Removing Submission Template Default Data....");
 				    
-				     sqlQuery = "SELECT * from sourcelead.SUBMISSION_TEMPLATE st where st.ORG_LOCATION_ID = '"+orgLocations+"' ";
+				     sqlQuery = "SELECT * from "+dbconfig.getSchema()+".SUBMISSION_TEMPLATE st where st.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt2 = conn.createStatement();
 					 ResultSet rs2 = stmt2.executeQuery(sqlQuery);
 					
@@ -67,14 +68,14 @@ public void removeOrgs() throws IOException, SQLException {
 						    
 						    String sumbissionTemplateId = rs2.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.SUBMISSION_TEMPLATE  where ID = '"+sumbissionTemplateId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".SUBMISSION_TEMPLATE  where ID = '"+sumbissionTemplateId+"' ";
 						    Statement stmt3 = conn.createStatement();
 						    stmt3.executeUpdate(sqlQuery);
 				     } 
 					 
 					 System.out.println("Removing Vendor Template Default Data....");
 					 
-					 sqlQuery = "SELECT * from sourcelead.VENDOR_ON_BOARDING_TEMPLATE  template where template.ORG_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE  template where template.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt4 = conn.createStatement();
 					 ResultSet rs3 = stmt4.executeQuery(sqlQuery);
 					 
@@ -82,55 +83,55 @@ public void removeOrgs() throws IOException, SQLException {
 						 
 						   String vendorTemplateId = rs3.getString("ID");
 						   
-						     sqlQuery = "SELECT * from sourcelead.VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS  docs where docs.VENDOR_ON_BOARDING_TEMPLATE_ID = '"+vendorTemplateId+"' ";
+						     sqlQuery = "SELECT * from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS  docs where docs.VENDOR_ON_BOARDING_TEMPLATE_ID = '"+vendorTemplateId+"' ";
 							 Statement docsStmt = conn.createStatement();
 							 ResultSet docsrs = docsStmt.executeQuery(sqlQuery);
 							 
 							 while(docsrs.next()) {
 								 String docId = docsrs.getString("ID");
 								 
-								    sqlQuery = "delete from sourcelead.VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS  where ID = '"+docId+"' ";
+								    sqlQuery = "delete from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS  where ID = '"+docId+"' ";
 								    Statement docstmt1 = conn.createStatement();
 								    docstmt1.executeUpdate(sqlQuery);
 								 
 							 }
 						 
-						    sqlQuery = "delete from sourcelead.VENDOR_ON_BOARDING_TEMPLATE  where ID = '"+vendorTemplateId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE  where ID = '"+vendorTemplateId+"' ";
 						    Statement stmt5 = conn.createStatement();
 						    stmt5.executeUpdate(sqlQuery);
 					 }
 					 
 					 System.out.println("Removing Contracts Template Default Data....");
 					 
-					 sqlQuery = "SELECT * from sourcelead.CONTRACTS_TEMPLATE  template where template.ORGLOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".CONTRACTS_TEMPLATE  template where template.ORGLOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt5 = conn.createStatement();
 					 ResultSet rs4 = stmt5.executeQuery(sqlQuery);
 					 
 					 while(rs4.next()) {
 						    String contractTemplateId = rs4.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.CONTRACTS_TEMPLATE  where ID = '"+contractTemplateId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".CONTRACTS_TEMPLATE  where ID = '"+contractTemplateId+"' ";
 						    Statement stmt6 = conn.createStatement();
 						    stmt6.executeUpdate(sqlQuery);
 					 }
 					 
 					 System.out.println("Removing Expense Category Default Data....");
 					 
-					 sqlQuery = "SELECT * from sourcelead.EXPENSE_CATEGORY  category where category.LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".EXPENSE_CATEGORY  category where category.LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt6 = conn.createStatement();
 					 ResultSet rs5 = stmt6.executeQuery(sqlQuery);
 					 
 					 while(rs5.next()) {
 						    String expenceCategoryId = rs5.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.EXPENSE_CATEGORY  where ID = '"+expenceCategoryId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".EXPENSE_CATEGORY  where ID = '"+expenceCategoryId+"' ";
 						    Statement stmt7 = conn.createStatement();
 						    stmt7.executeUpdate(sqlQuery);
 					 }
 					 
 					 
 					 System.out.println("Removing Default Project Data....");
-					 sqlQuery = "SELECT * from sourcelead.PROJECTS projects where projects.ORG_LOCATIONS_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".PROJECTS projects where projects.ORG_LOCATIONS_ID = '"+orgLocations+"' ";
 					 Statement stmt8 = conn.createStatement();
 					 ResultSet rs6 = stmt8.executeQuery(sqlQuery);
 					 
@@ -138,45 +139,45 @@ public void removeOrgs() throws IOException, SQLException {
 						 
 						 String projectId = rs6.getString("ID");
 						 
-						 sqlQuery = "SELECT * from sourcelead.PROJECT_APPROVER_HIERARCHY pah where pah.PROJECT_ID = '"+projectId+"' ";
+						 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".PROJECT_APPROVER_HIERARCHY pah where pah.PROJECT_ID = '"+projectId+"' ";
 						 Statement stmt9 = conn.createStatement();
 						 ResultSet rs7 = stmt9.executeQuery(sqlQuery);
 						 
 						 while(rs7.next()) {
 							   String pahId = rs7.getString("ID");
 							 
-							   sqlQuery = "delete from sourcelead.PROJECT_APPROVER_HIERARCHY  where ID = '"+pahId+"' ";
+							   sqlQuery = "delete from "+dbconfig.getSchema()+".PROJECT_APPROVER_HIERARCHY  where ID = '"+pahId+"' ";
 							    Statement stmt7 = conn.createStatement();
 							    stmt7.executeUpdate(sqlQuery);
 						 }
 						 
 						 
-						 sqlQuery = "SELECT * from sourcelead.PROJECT_CLIENTS pc where pc.PROJECT_ID = '"+projectId+"' ";
+						 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".PROJECT_CLIENTS pc where pc.PROJECT_ID = '"+projectId+"' ";
 						 Statement stmt10 = conn.createStatement();
 						 ResultSet rs8 = stmt10.executeQuery(sqlQuery);
 						 
 						 while(rs8.next()) {
 							    String pcId = rs8.getString("ID");
 							 
-							    sqlQuery = "delete from sourcelead.PROJECT_CLIENTS  where ID = '"+pcId+"' ";
+							    sqlQuery = "delete from "+dbconfig.getSchema()+".PROJECT_CLIENTS  where ID = '"+pcId+"' ";
 							    Statement stmt11 = conn.createStatement();
 							    stmt11.executeUpdate(sqlQuery);
 						 }
 						 
 						 
-						 sqlQuery = "SELECT * from sourcelead.PROJECT_TASKS tasks where tasks.PROJECT_ID = '"+projectId+"' ";
+						 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".PROJECT_TASKS tasks where tasks.PROJECT_ID = '"+projectId+"' ";
 						 Statement stmt11 = conn.createStatement();
 						 ResultSet rs9 = stmt11.executeQuery(sqlQuery);
 						 
 						 while(rs9.next()) {
 							    String taskId = rs9.getString("ID");
 							 
-							    sqlQuery = "delete from sourcelead.PROJECT_TASKS  where ID = '"+taskId+"' ";
+							    sqlQuery = "delete from "+dbconfig.getSchema()+".PROJECT_TASKS  where ID = '"+taskId+"' ";
 							    Statement stmt12 = conn.createStatement();
 							    stmt12.executeUpdate(sqlQuery);
 						 }
 						 
-						    sqlQuery = "delete from sourcelead.PROJECTS  where ID = '"+projectId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".PROJECTS  where ID = '"+projectId+"' ";
 						    Statement stmt13 = conn.createStatement();
 						    stmt13.executeUpdate(sqlQuery);
 						 
@@ -186,7 +187,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 System.out.println("Removing Roles Data....");
 					 
 					 
-					 sqlQuery = "SELECT * from sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '"+orgLocations+"' ";
 					 Statement stmt15 = conn.createStatement();
 					 ResultSet rs12 = stmt15.executeQuery(sqlQuery);
 					 
@@ -195,16 +196,16 @@ public void removeOrgs() throws IOException, SQLException {
 						    String userRoleId = rs12.getString("ID");
 						    String userId = rs12.getString("USER_ID");
 						 
-						    sqlQuery = "delete from sourcelead.USER_ROLE  where ID = '"+userRoleId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".USER_ROLE  where ID = '"+userRoleId+"' ";
 						    Statement stmt16 = conn.createStatement();
 						    stmt16.executeUpdate(sqlQuery);
 						    
-						    sqlQuery = "delete from sourcelead.EMPLOYEE  where USER_ID = '"+userId+"' and ORG_LOCATIONS_ID = '"+orgLocations+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".EMPLOYEE  where USER_ID = '"+userId+"' and ORG_LOCATIONS_ID = '"+orgLocations+"' ";
 						    Statement stmt17 = conn.createStatement();
 						    stmt17.executeUpdate(sqlQuery);
 					 }
 					 
-					 sqlQuery = "SELECT * from sourcelead.ROLES roles where roles.ORG_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".ROLES roles where roles.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt14 = conn.createStatement();
 					 ResultSet rs11 = stmt14.executeQuery(sqlQuery);
 					 
@@ -212,7 +213,7 @@ public void removeOrgs() throws IOException, SQLException {
 						 
 						    String roleId = rs11.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.ROLES  where ID = '"+roleId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".ROLES  where ID = '"+roleId+"' ";
 						    Statement rolesStmt = conn.createStatement();
 						    rolesStmt.executeUpdate(sqlQuery);
 					 }
@@ -220,7 +221,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 
 					 
-					 sqlQuery = "SELECT * from sourcelead.ROLE_HIERARCHY hierarchy where hierarchy.ORG_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".ROLE_HIERARCHY hierarchy where hierarchy.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt13 = conn.createStatement();
 					 ResultSet rs10 = stmt13.executeQuery(sqlQuery);
 					 
@@ -228,7 +229,7 @@ public void removeOrgs() throws IOException, SQLException {
 						 
 						    String hierarchyId = rs10.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.ROLE_HIERARCHY  where ID = '"+hierarchyId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".ROLE_HIERARCHY  where ID = '"+hierarchyId+"' ";
 						    Statement hierstmt = conn.createStatement();
 						    hierstmt.executeUpdate(sqlQuery);
 					 }
@@ -237,7 +238,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 System.out.println("Removing Requirement Data....");
 					 
-					 sqlQuery = "SELECT * from sourcelead.REQUIREMENT req where req.ORG_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".REQUIREMENT req where req.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt16 = conn.createStatement();
 					 ResultSet rs13 = stmt16.executeQuery(sqlQuery);
 					 
@@ -245,14 +246,14 @@ public void removeOrgs() throws IOException, SQLException {
 						 
 						    String reqId = rs13.getString("ID");
 						 
-						    sqlQuery = "delete from sourcelead.REQUIREMENT  where ID = '"+reqId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".REQUIREMENT  where ID = '"+reqId+"' ";
 						    Statement stmt17 = conn.createStatement();
 						    stmt17.executeUpdate(sqlQuery);
 					 }
 					 
 					 
 					 System.out.println("Removing Vendor Relation Data....");
-					 sqlQuery = "SELECT * from sourcelead.ORG_RELATIONS orl where (orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' or  orl.LOCATION_ID = '"+orgLocations+"') ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".ORG_RELATIONS orl where (orl.RESPONDER_LOCATION_ID = '"+orgLocations+"' or  orl.LOCATION_ID = '"+orgLocations+"') ";
 					 Statement stmt17 = conn.createStatement();
 					 ResultSet rs14 = stmt17.executeQuery(sqlQuery);
 					 
@@ -261,7 +262,7 @@ public void removeOrgs() throws IOException, SQLException {
 						    String orgRelationId = rs14.getString("ID");
 						    
 						    
-						    sqlQuery = "SELECT * from sourcelead.ORG_SPOC spoc where spoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
+						    sqlQuery = "SELECT * from "+dbconfig.getSchema()+".ORG_SPOC spoc where spoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
 							 Statement stmt18 = conn.createStatement();
 							 ResultSet rs15 = stmt18.executeQuery(sqlQuery);
 							 
@@ -269,13 +270,13 @@ public void removeOrgs() throws IOException, SQLException {
 								 
 								 String spocId = rs15.getString("ID");
 								 
-								    sqlQuery = "delete from sourcelead.ORG_SPOC  where ID = '"+spocId+"' ";
+								    sqlQuery = "delete from "+dbconfig.getSchema()+".ORG_SPOC  where ID = '"+spocId+"' ";
 								    Statement stmt19 = conn.createStatement();
 								    stmt19.executeUpdate(sqlQuery);
 							 }
 							 
 						 
-							sqlQuery = "delete from sourcelead.ORG_RELATIONS  where ID = '"+orgRelationId+"' ";
+							sqlQuery = "delete from "+dbconfig.getSchema()+".ORG_RELATIONS  where ID = '"+orgRelationId+"' ";
 						    Statement stmt20 = conn.createStatement();
 						    stmt20.executeUpdate(sqlQuery);
 					 }
@@ -283,22 +284,22 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 System.out.println("Removing Nofifications Data....");
 					 
-					 sqlQuery = "SELECT * from sourcelead.NOTIFICATIONS notifications where notifications.NOTIFICATION_TO = '"+primaryUserId+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".NOTIFICATIONS notifications where notifications.NOTIFICATION_TO = '"+primaryUserId+"' ";
 					 Statement tonotistmt = conn.createStatement();
 					 ResultSet tonotirs = tonotistmt.executeQuery(sqlQuery);
 					 while(tonotirs.next()) {
 						 String notificaytionId = tonotirs.getString("ID");
-						    sqlQuery = "delete from sourcelead.NOTIFICATIONS  where ID = '"+notificaytionId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".NOTIFICATIONS  where ID = '"+notificaytionId+"' ";
 						    Statement tonotistmt1 = conn.createStatement();
 						    tonotistmt1.executeUpdate(sqlQuery);
 					 }
 					 
-					 sqlQuery = "SELECT * from sourcelead.NOTIFICATIONS notifications where notifications.NOTIFICATION_FORM = '"+primaryUserId+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".NOTIFICATIONS notifications where notifications.NOTIFICATION_FORM = '"+primaryUserId+"' ";
 					 Statement fromnotistmt = conn.createStatement();
 					 ResultSet fromnotirs = fromnotistmt.executeQuery(sqlQuery);
 					 while(fromnotirs.next()) {
 						 String notificaytionId = fromnotirs.getString("ID");
-						    sqlQuery = "delete from sourcelead.NOTIFICATIONS  where ID = '"+notificaytionId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".NOTIFICATIONS  where ID = '"+notificaytionId+"' ";
 						    Statement fromnotirs1 = conn.createStatement();
 						    fromnotirs1.executeUpdate(sqlQuery);
 					 }
@@ -307,12 +308,12 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 
 					 System.out.println("Removing Candidate Data....");
-					 sqlQuery = "SELECT * from sourcelead.CANDIDATE candidate where candidate.ORG_LOCATION_ID = '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.ORG_LOCATION_ID = '"+orgLocations+"' ";
 					 Statement stmt21 = conn.createStatement();
 					 ResultSet rs15 = stmt21.executeQuery(sqlQuery);
 					 while(rs15.next()) {
 						 String candidateId = rs15.getString("ID");
-						    sqlQuery = "delete from sourcelead.CANDIDATE  where ID = '"+candidateId+"' ";
+						    sqlQuery = "delete from "+dbconfig.getSchema()+".CANDIDATE  where ID = '"+candidateId+"' ";
 						    Statement stmt22 = conn.createStatement();
 						    stmt22.executeUpdate(sqlQuery);
 					 }
@@ -321,21 +322,21 @@ public void removeOrgs() throws IOException, SQLException {
 					 
 					 System.out.println("Removing OrgLocations Data....");
 					 
-					 sqlQuery = "delete from sourcelead.ORG_LOCATIONS  where ID = '"+orgLocations+"' ";
+					 sqlQuery = "delete from "+dbconfig.getSchema()+".ORG_LOCATIONS  where ID = '"+orgLocations+"' ";
 					 Statement stmt23 = conn.createStatement();
 					 stmt23.executeUpdate(sqlQuery);
 					 
 					 
 					 System.out.println("Removing Org Data....");
 					 
-					 sqlQuery = "delete from sourcelead.ORG  where ID = '"+orgId+"' ";
+					 sqlQuery = "delete from "+dbconfig.getSchema()+".ORG  where ID = '"+orgId+"' ";
 					 Statement stmt24 = conn.createStatement();
 					 stmt24.executeUpdate(sqlQuery);
 					 
 					 System.out.println("Removing User Data....");
 					 
 					 
-					 sqlQuery = "SELECT * from sourcelead.USER_ROLE userRole where userRole.USER_ID = '"+primaryUserId+"' and userRole.ORG_LOCATIONS_ID != '"+orgLocations+"' ";
+					 sqlQuery = "SELECT * from "+dbconfig.getSchema()+".USER_ROLE userRole where userRole.USER_ID = '"+primaryUserId+"' and userRole.ORG_LOCATIONS_ID != '"+orgLocations+"' ";
 					 Statement stmt26 = conn.createStatement();
 					 ResultSet rs16 = stmt26.executeQuery(sqlQuery);
 					 Integer userRolesCount = 0;
@@ -345,7 +346,7 @@ public void removeOrgs() throws IOException, SQLException {
 					 }
 					 
 					 if(userRolesCount == 0) {
-						 sqlQuery = "delete from sourcelead.USER  where ID = '"+primaryUserId+"' ";
+						 sqlQuery = "delete from "+dbconfig.getSchema()+".USER  where ID = '"+primaryUserId+"' ";
 						 Statement stmt25 = conn.createStatement();
 						 stmt25.executeUpdate(sqlQuery);
 					 }
@@ -380,10 +381,6 @@ public void removeOrgs() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

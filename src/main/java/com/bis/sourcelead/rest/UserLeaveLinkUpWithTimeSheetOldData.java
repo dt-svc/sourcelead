@@ -58,7 +58,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 	 @Autowired
 	 private ProjectTasksDao projectTasksDao;
 	 
-	@RequestMapping(value ="/ws/userLeaveOldDateToTimesheet")
+	//@RequestMapping(value ="/ws/userLeaveOldDateToTimesheet")
 	public String userLeaveOldDateToTimesheet() throws Exception {
 		
 		List<Long> leaveType = new ArrayList<Long>();
@@ -100,7 +100,7 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 		System.out.println("added leave type to project task");
 		
 		
-		List<Leave> leaves = leaveService.getAllLeave();
+		/*List<Leave> leaves = leaveService.getAllLeave();
 		if(leaves != null && !leaves.isEmpty()) {
 			for(Leave leave:leaves) {
 				User leaveUserId = null; 
@@ -108,10 +108,10 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 					leaveUserId =  approverUser.getApproverUserId();
 				}
 				if(leaveUserId != null && leave != null) {
-					timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave);
+					//timesheetRestController.linkLeaveTypeWithTimeSheet(leaveUserId,leave.getOrgLocations(), leave.getLeaveType().getId(), leave,null);
 				}
 			}
-		}
+		}*/
 		System.out.println("added old leave type to timesheet");
 		
 		List<Holiday> holidayList = holidayService.getAllHoliday();
@@ -144,16 +144,16 @@ public class UserLeaveLinkUpWithTimeSheetOldData {
 		}
 	}
 		System.out.println("added holiday to projectTask");
-		if(holidayList != null && !holidayList.isEmpty()) {
+		/*if(holidayList != null && !holidayList.isEmpty()) {
 			for(Holiday holiday:holidayList) {
 				if(holiday != null) {
 					User user = userService.getUserByUserCode(holiday.getCreatedBy());
 					if(user!= null) {
-						timesheetRestController.linkHolidaysWithTimeSheet(user,holiday.getOrgLocations(),holiday);
+						//timesheetRestController.linkHolidaysWithTimeSheet(user,holiday.getOrgLocations(),holiday);
 					}
 				}
 			}
-		}
+		}*/
 		System.out.println("added old holiday data to timesheet");
 		
 		return "success";

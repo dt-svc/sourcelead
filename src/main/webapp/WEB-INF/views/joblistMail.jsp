@@ -81,7 +81,7 @@ display: none;
           <div class="col-md-9 positionRelative disable-choosen-dropdown">
             
 			<div class="input-group  col-md-12 noPad" onclick="manuallyEnterJoblistToEmail();">
-  				<select class="form-control"  field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" data-validation="required" name="Toemails"></select>
+  				<select class="form-control"  field-name="To List" multiple data-placeholder="Select Multiple Mails List" id="emailsList" data-validation="required" name="Toemails"></select>
             	
 <!--             	<span class="refreshicon-new input-group-addon cursorPointer bg-blue" onclick="getRecipients();"><i class="fa fa-refresh "></i></span>	 -->
             	
@@ -149,7 +149,7 @@ display: none;
             <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select jobs"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
@@ -175,7 +175,7 @@ display: none;
 					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Client</label></li>
 					  </ul>
 					</span> -->
-                    
+                    <div id="popupId"></div>
                     </div>
                   <!-- <div id="mailBoxJobsList" class="mailFil datatable_filter"></div> -->
                     <div class="clearfix">
@@ -360,8 +360,8 @@ function jobListChange(type){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
+     	result = result +' <button class="btn btn-default" type="button" onclick="removeMessage();">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
@@ -561,7 +561,13 @@ function jobsPagination(url,type){
 </script>
 
 <!-- for job selection script stars -->
+<script type="text/javascript">
+$(function() { 
+	tagIt("otherEmails", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 
+});
+</script> 
 
 <script>
 function toggleJobs(source) {
@@ -584,11 +590,19 @@ $('input[class="myJobsCheckbox"]').each(function(i) {
 <script>
 function getCheckedJobs(){
 	
+	$('#popupId').parent().find('p.jquery_form_error_message').remove();
 	var internalOutput = "";
 	 for(var e in allJobs) {
 		 var checkbox_value = allJobs[e].split(",");
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	  }
+	 
+	 if($("input[name='jobTitle[]']:checked").length == 0){
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Jobs</span>");
+	    }else{
+	    	$("#requirement").modal('hide');
+	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
+	    }
 	
 	    $("#selectedJobs").append(internalOutput);
 		$("#selectedJobs").trigger("chosen:updated");
@@ -620,7 +634,7 @@ function checkJob(ele) {
 			}
 			
 			  //Adding Customized Emails to the list
-	        var select, chosen;
+	        /* var select, chosen;
 		    select = $("#otherEmails");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
@@ -648,9 +662,9 @@ function checkJob(ele) {
 				        } 
 		    	 }
 		    	
-		    });
+		    }); */
 
-		    var selectone, chosenone;
+		    /* var selectone, chosenone;
 		    selectone = $("#emailsList");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
@@ -677,7 +691,7 @@ function checkJob(ele) {
 				        }
 		    	 }
 		    
-		    });
+		    }); */
 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -1543,6 +1557,13 @@ function checkUniqueSubject(){
 	            });
 		}
 }
+</script>
+
+<script>
+	function removeMessage() {
+		$('#popupId').parent().find('p.jquery_form_error_message').remove();
+		$("#requirement").modal('hide');
+	}
 </script>
 
 

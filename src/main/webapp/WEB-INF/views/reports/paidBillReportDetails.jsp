@@ -99,7 +99,7 @@ $(document).ready(function(){
         <!-- Assigned Requirements -->
         <div class="clearfix dashboard-widget col-md-12">
           <div class="clearfix minHeight40">
-          <h4 class="pull-left">Total : <span></span></h4>
+          <h4 class="pull-left">Total : <span id ="totalCalAmount">0.00</span></h4>
           	<div class="remove_search pull-right">
                   <input placeholder="Search" type="text">
                 </div>
@@ -162,7 +162,7 @@ var config = {
 <script>
 $(document).ready(function(){
 	$(".cliHead").click(function(){
-		$(".tableStyles").toggle();``
+		$(".tableStyles").toggle();
 	});
 });
 
@@ -176,9 +176,10 @@ function getPaidBillDetailReport(){
 	    var orgRelationId = '${orgRelationId}';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var billType ='${billType}';
+		$("#totalCalAmount").html("0.00"); // reset total value
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&billType="+billType;
+		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&billType="+billType+"&searchValue="+searchValue;
 		getPaidBillDetailReportList(url);
 }
 </script>
@@ -247,6 +248,8 @@ function paidBillDetailReportList(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 						 result = result + ' <td><div class="tblminwidth-75">'+opt.billDate+'</div></td>'; 
+						 if(opt.totalCalAmount >0 )
+				    	  		$("#totalCalAmount").html(opt.totalCalAmount.toFixed(2));
 	              return result;
               		
               }
@@ -288,13 +291,12 @@ function paidBillDetailReportList(url){
     } );
     $("#apagingPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#paidBillDetailPagination").keyup(function(e) {
+    $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getPaidBillDetailReport();
     	   }
     	});
     
-	
 }
 </script>
 

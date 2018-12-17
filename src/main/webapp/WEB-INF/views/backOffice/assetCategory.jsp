@@ -26,22 +26,20 @@ $(document).ready(function(){
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Category</div>
 </section>
+
+
 <div class="timesheet_out">
-  <div class="vendor_wrap">
-    <div class="timesheet_head">
-      <ul>
-        <li> <a href="javascript:void(0)" class="addcon-pop" onClick="addCategoryDoc();"><i class="fa fa-plus"></i>Add Categories</a> 
+
+<div class="positionRelative reportHead reportHeadDataTab clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+         <li> <a href="javascript:void(0)" class="newAdBtn addcon-pop" onClick="addCategoryDoc();">+ Categories</a> 
           <!-- Add Asset Popup -->
-           <div id="popUpDiv"> 
-           </div>
+           <div id="popUpDiv"> </div>
         </li>
-        <li>
-        </li>
-        <div class="clearfix"></div>
-      </ul>
-      <div class="clearfix"></div>
-    </div>
-    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint">
+        </ul>
+      </div>
+    
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint dataSeaTop">
     <div id="popUp"></div>
      <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
@@ -100,9 +98,13 @@ $(document).ready(function(){
 					   			result = result +'In-Active';
 					   		}
 					   		else{
-					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
+					   		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET_CATEGORY\')">' 
+					   			result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>&nbsp;&nbsp;';
+					   		 '</sec:authorize>';
 					   		}
-					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET_CATEGORY\')">' 
+					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'</sec:authorize>';
 					   	}else{
 					   		result = result +'---';
 					   	}
@@ -181,45 +183,42 @@ $(".addcon-pop").click(function(){
 
 <script type="text/javascript">
 	function addCategory(catLocationId,categoryId){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#addCategory_form').validate(false, validationSettings)){
-				var frm = $('#addCategory_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
-		        var jsonData = encodeURIComponent(con);
-				$("#save_button").attr("disabled", "disabled");
-				$( "#save_button" ).addClass('button').val('Processing..');
-				$("#addCategory_form").attr("disabled", "disabled");
-				//It will escape all the special characters
-				$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
-						success : function(result) {
-							 if(result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{ 
-		            			  document.getElementById("popUpDiv").style.display="none"; 
-		            			 getAssetCategoryList();
-		            		  } 
-						},
-					});
+				var validationSettings = {
+				        errorMessagePosition : 'element',
+				        borderColorOnError : '',
+						scrollToTopOnError : true,
+						dateFormat : 'yyyy/mm/dd' 
+			         }; 
+				 if ($('#addCategory_form').validate(false, validationSettings)){
+			        var formData = getFormData("addCategory_form");
+					$("#save_button").attr("disabled", "disabled");
+					$( "#save_button" ).addClass('button').val('Processing..');
+					$("#addCategory_form").attr("disabled", "disabled");
+					$.post(sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, formData, function(result) {
+						if (result && result.response === "INVALID_DATA") {
+							$("#blogLoading").hide();
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+						document.getElementById("popUpDiv").style.display="none"; 
+	           			 getAssetCategoryList();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+				
+			          }); 
+				
 					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#addCategory_form', function() {
-		$("#addCategory_form").showHelpOnFocus();
-		$("#addCategory_form").validateOnBlur(false, validationSettings);
+				 }else{ 
+						return false;
+				 } 
+		   }
+			$('body').on('blur', '#addCategory_form', function() {
+			$("#addCategory_form").showHelpOnFocus();
+			$("#addCategory_form").validateOnBlur(false, validationSettings);
 	});
 </script>
 <script>
@@ -367,10 +366,20 @@ function terminateCategory(categoryId){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
-			success : function(data) {
-				$("#popUp").empty();
-				$(".project_inn_mask").fadeOut(200);
-					document.getElementById("category"+categoryId).remove();
+			success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						$("#popUp").empty();
+						$(".project_inn_mask").fadeOut(200);
+							document.getElementById("category"+categoryId).remove();
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 				},
 		});
 	}

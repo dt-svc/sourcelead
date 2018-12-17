@@ -1,6 +1,11 @@
 package com.bis.sourcelead.reportsDTO;
 
-public class JobFilterDTO {
+import java.util.List;
+import java.util.Map;
+
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class JobFilterDTO extends SearchDTO {
 
 	private String jobIds;
 	
@@ -13,6 +18,26 @@ public class JobFilterDTO {
 	private String fromtype;
 
 	private String year;
+	
+	private String searchValue;
+	
+	private String jobCreatedDateRange;
+	
+	private String clientIds;
+	
+	private String startDateStr;
+	
+	private String endDateStr;
+	
+	private String sortColumn = "id";
+	
+	private String sortOrder = "desc";
+	
+	private String  jobType;
+	
+	private String exportType;
+	
+	private List<Map<String, String>> order;
 
 
 	public String getJobIds() {
@@ -62,5 +87,86 @@ public class JobFilterDTO {
 	public void setYear(String year) {
 		this.year = year;
 	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getJobCreatedDateRange() {
+		return jobCreatedDateRange;
+	}
+
+	public void setJobCreatedDateRange(String jobCreatedDateRange) {
+		this.jobCreatedDateRange = jobCreatedDateRange;
+	}
+
+	public String getClientIds() {
+		return clientIds;
+	}
+
+	public void setClientIds(String clientIds) {
+		this.clientIds = clientIds;
+	}
+
+	public String getStartDateStr() {
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
+	public String getJobType() {
+		return jobType;
+	}
+
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
+	}
+
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	
 	
 }

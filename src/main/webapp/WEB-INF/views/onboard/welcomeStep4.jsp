@@ -40,33 +40,7 @@
 		<section class="welcoInn">
 		  <div class="welcoHead">
 		  
-		  <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-			<div class="offOrg">
-	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-		              <div id="spockLinksList" style="display: none;">
-		              <ul class="list-unstyled">
-		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-			              <li>
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left mt5">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </li>
-		              </c:forEach>
-		              </ul>
-		            </div>
-		            </div>
-	          </c:if>
+		  <jsp:include page="../userManageAccounts.jsp" />
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
 					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
@@ -84,7 +58,9 @@
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span class="fill">2</span><b>Step two</b><i class="line"></i></li>
 				  <li class="actLi"><span class="fill">3</span><b>Step three</b><i class="line"></i></li>
-				  <li class="actLi"><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">4</span><b>Step four</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -179,51 +155,54 @@ $(".welPop input").click(function(){
 
 <script>
 function changeTaskStatus(taskId){
-	
 	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
-	 $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(onboardId) {
-	        	$("#task"+taskId).removeAttr("style");
-	        },
-	    });
-	
-	 
+	$.ajax({
+	   	type: "POST",
+	   	url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+       	success: function(response) {
+       		if (response.response === "AWKWARD") {
+       	    	location.href = "/errorPage";
+	       	} else if (response.response === "SUCCESS") {
+	       		$("#task"+taskId).removeAttr("style");
+	       	} else if (response.indexOf('Sign In') !== -1) {
+	       		location.replace(sourceleadUrl);
+	       	} else {
+	       	    showError("Operation failed, please try again");
+	       	}
+       },
+	});
 }
 </script>
 	
 	
 <script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
-
-
-<script>
 function goToDashboard(){
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
-	 $.ajax({
-	    	type: "POST",
-	    	 url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");  
-	        },
-	    });
+    $.ajax({
+    	type: "POST",
+    	url: sourceleadUrl+"/sendOnboardCandidateToDashboard?${_csrf.parameterName}=${_csrf.token}", 
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		location.replace(sourceleadUrl+"/dashboard/${SourceLeadWeb_orgLocationId}");
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+        },
+    });
 }
 </script>
 
 <script>
   function navtoggle(elementRef){
-	  
-	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6){
+	 if('${SourceLeadWeb_userSpocRolesListCount}' < 6) {
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area'
 	     document.getElementById("spockLinksList").style.display="block";
-	 }else{
+	 } else {
 		 document.getElementById("spockLinksList").removeAttribute("class")
 		 document.getElementById('spockLinksList').className = 'spoclinks-area spoclinksMore'
 		 document.getElementById("spockLinksList").style.display="block";
@@ -244,12 +223,4 @@ function goToDashboard(){
 	}
 </script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 

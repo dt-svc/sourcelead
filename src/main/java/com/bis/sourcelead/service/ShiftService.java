@@ -13,4 +13,7 @@ public interface ShiftService {
 
 	public Shift getShiftById(String shiftId);
 	
+	public Shift getShiftListByShiftNameAndOrglocationId(String ShiftName,Long orgLocationId);
+	
+	public List<String> getAssociatesShiftListByOrgLocationId(Long orgLocationId);
 }

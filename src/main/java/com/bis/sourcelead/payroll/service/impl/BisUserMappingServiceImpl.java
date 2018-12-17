@@ -40,6 +40,7 @@ import com.bis.sourcelead.payroll.entity.Checks;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class BisUserMappingServiceImpl implements BisUserMappingService {
@@ -210,7 +211,7 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 			version = getChecksVersionByLocationId(orgLocation.getId());
 			version += 1;
 			
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				
@@ -254,9 +255,9 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						}
 						if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
 							
-							Date date = getCellDate(row.getCell(5), fileName);
-							SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
-							String month_name = month_date.format(date);
+							String month_name = getCellValueAsString(row.getCell(5), fileName);
+//							SimpleDateFormat month_date = new SimpleDateFormat("MMM yyyy", Locale.ENGLISH);
+//							String month_name = month_date.format(date);
 							checks.setMonth(month_name);
 						}
 						if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
@@ -291,12 +292,12 @@ public class BisUserMappingServiceImpl implements BisUserMappingService {
 						if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
 							amount = Double.parseDouble(getCellValueAsString(row.getCell(14), fileName));
 							checks.setAmount(Math.round(amount * 100D) / 100D);
-							;
 						}
 						if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
 							String checkNumber = getCellValueAsString(row.getCell(15), fileName);
 							checks.setCheckNo(checkNumber.split("\\.")[0]);
 						}
+						checks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 						checks.setCreatedBy(user.getUserCode());
 						checks.setCreatedDate(new Date());
 						checks.setUpdatedBy(user.getUserCode());

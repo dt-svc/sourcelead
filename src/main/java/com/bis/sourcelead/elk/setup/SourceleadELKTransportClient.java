@@ -44,7 +44,7 @@ public class SourceleadELKTransportClient {
 	         		  .put("path.home", dbconfig.getPath())
 	                  .build();
 			client = new PreBuiltTransportClient(settings)
-					.addTransportAddress(new TransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
+					.addTransportAddress(new TransportAddress(InetAddress.getByName(dbconfig.getHost()),  new Integer(dbconfig.getTcport())));
 	     } catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}

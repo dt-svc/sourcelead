@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 
 public class VendorContractsDTO {
@@ -26,7 +27,10 @@ public class VendorContractsDTO {
 	private String contractStatus;
 	private String docId;
 	private String envelopId;
+	
+	@CleanHtml(escape=false)
 	private String description;
+	
 	private String billingAmount;
 	private String billingRateType;
 	private String billingRatePer;
@@ -93,7 +97,9 @@ public class VendorContractsDTO {
 	private String spocUUID;
 	private String templateFileURL;
 	private String billingCycle;
-	
+	private String isOwner;
+	private List<Long> ownerUserIds;
+	private String revisedReason;
 	
 	public String getTemplateId()
 	{
@@ -958,6 +964,36 @@ public class VendorContractsDTO {
 
 	public void setBillingCycle(String billingCycle) {
 		this.billingCycle = billingCycle;
+	}
+
+	public String getIsOwner()
+	{
+		return isOwner;
+	}
+
+	public void setIsOwner(String isOwner)
+	{
+		this.isOwner = isOwner;
+	}
+
+	public List<Long> getOwnerUserIds()
+	{
+		return ownerUserIds;
+	}
+
+	public void setOwnerUserIds(List<Long> ownerUserIds)
+	{
+		this.ownerUserIds = ownerUserIds;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
 	}
 	
 }

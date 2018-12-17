@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +46,7 @@ public class SourceleadTicketsController {
 		return (str == null || "".equals(str.trim()));
 	 }
 
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/sourceleadTicketList")
    	 public ModelAndView sourceleadTicketList( HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
@@ -58,6 +60,7 @@ public class SourceleadTicketsController {
    		return model;
        }
 	 
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/addSourceleadTicket")
    	 public ModelAndView addSourceleadTicket(@RequestParam(value = "ticketUUID", required = false) String ticketUUID, HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();
@@ -78,7 +81,8 @@ public class SourceleadTicketsController {
    		model.addObject("sourceleadUrl", sourceleadUrl);
    		return model;
        }
-     
+    
+//	 @PreAuthorize("hasRole('ROLE_SUPPORT')")
 	 @RequestMapping(value = "/sourceleadTicketView")
    	 public ModelAndView sourceleadTicketView(@RequestParam(value = "ticketUUID", required = false) String ticketUUID,HttpServletRequest request) throws Exception {
    	    ModelAndView model = new ModelAndView();

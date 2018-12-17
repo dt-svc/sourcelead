@@ -2,12 +2,10 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -19,9 +17,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Invoice Lists</h2>
+        <h2>Missing Invoice(s)</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing Invoice Lists</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo;  Missing Invoice(s)</div>
     </section>
     <!-- hiring Process  -->
    
@@ -72,9 +70,9 @@ $(document).ready(function(){
 
         </div>
         <div class="col-md-2">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Run</button>
 		</div>
-		<div class="col-md-1">
+		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -82,7 +80,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>    
      
@@ -116,6 +114,7 @@ $(document).ready(function(){
   
   <script>
 function missingInvoiceReportData(){
+	  $("#total").html("0.00"); // reset the total value when applied filters.
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
@@ -143,11 +142,12 @@ function prepareMissingInvoiceData(url){
         result = result +"<thead>"; 
         result = result + '<tr>';
         result = result + '<th>Refer Id</th>';
+        result = result + '<th>Candidate Name</th>';
 		result = result + '<th>Client Name</th>';
 		result = result + '<th>Project Name</th>';
+		result = result + '<th>Project Frequency</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
-		result = result + '<th>Action</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
@@ -162,7 +162,7 @@ function prepareMissingInvoiceData(url){
 function missingInvoice(url){
 	var colIndex = 0;
 	var apagingTotal = 0;
-	/* var total = 0; */
+	
     $('#missingInvoicePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -174,11 +174,12 @@ function missingInvoice(url){
         }),       
         "columns": [
         	{ "data": "referId" },
+        	{ "data": "candidateName"},
             { "data": "orgName" },
             { "data": "projectName"},
+            { "data": "frequencyDate"},
             { "data": "date"},
-            { "data": "totalAmount" },
-            { "data": "action"}
+            { "data": "totalAmount"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -191,9 +192,21 @@ function missingInvoice(url){
 	    	  		}else{
 	    	  			 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
 	    	  		}
+	    	  		if(opt.totalCalAmount >0 )
+		    	  		$("#total").html(opt.totalCalAmount.toFixed(2));
 		             return result;
 	    	  	}
 	      },{
+	    	  "targets": colIndex++,
+              "data": "candidateName",
+          	  "sortable": false, 
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.candidateName+'</div></td>'; 
+	              return result;
+              		
+              }
+	          },{
 	    	  "targets": colIndex++,
               "data": "orgName",
           	  "sortable": false, 
@@ -214,6 +227,20 @@ function missingInvoice(url){
             }
           }, {
               "targets": colIndex++,
+              "data": "frequencyDate",
+          	  "sortable": false,
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.frequencyDate !=null && opt.frequencyDate != '' && opt.frequencyDate != 'undefined'){
+            		  result = result + ' <td><div class="tblminwidth-75">'+opt.frequencyDate+'</div></td>'; 
+            	  }else{
+            		  result = result + ' <td><div class="tblminwidth-75">--</div></td>'; 
+            	  }
+					
+                 return result;
+              }
+            },{
+              "targets": colIndex++,
               "data": "date",
           	  "sortable": false,
               "render": function ( data, type, opt, meta ) {
@@ -232,26 +259,16 @@ function missingInvoice(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		if(opt.totalAmount !=null && opt.totalAmount !='' && opt.totalAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.totalAmount+'</div></td>';	
-                			/*  total = parseFloat(total)+parseFloat(opt.totalAmount);
-                			  $("#total").html(total.toFixed(2)); */
+                		var total = 0; 
+                		if(opt.invoiceAmount !=null && opt.invoiceAmount !='' && opt.invoiceAmount != 'undefined'){
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.invoiceAmount.toFixed(2)+'</div></td>';	
                 		}else{
                 			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
                 		}
 						
     	              return result;
                 }
-          },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "action",
-	    		"sortable": false,
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-					 result = result + '<td><div class="tblminwidth-50">Action</div></td>';
-  	              return result;
-	    	  	}
-	    	  } ],
+          }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],

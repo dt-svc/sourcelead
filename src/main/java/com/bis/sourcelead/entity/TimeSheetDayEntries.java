@@ -13,9 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "TIMESHEET_DAY_ENTRIES")
@@ -45,6 +49,12 @@ public class TimeSheetDayEntries implements Serializable{
 	
 	@Column(name = "BILLABLE_HOURS")
 	private String billableHours;
+	
+	@Column(name = "HOURLY_TYPE")
+	private String hourlyType;
+	
+	@Column(name = "TICKET_NUMBER")
+	private String ticketNumber;
 	
 	 
 	@Column(name = "NONBILLABLE_HOURS")
@@ -80,6 +90,11 @@ public class TimeSheetDayEntries implements Serializable{
 		
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private Long timesheetActivityId;
 
 	public Long getId() {
 		return Id;
@@ -204,5 +219,32 @@ public class TimeSheetDayEntries implements Serializable{
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+
+	public Long getTimesheetActivityId() {
+		return timesheetActivityId;
+	}
+
+	public void setTimesheetActivityId(Long timesheetActivityId) {
+		this.timesheetActivityId = timesheetActivityId;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
+	}
+
+	public String getHourlyType() {
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType) {
+		this.hourlyType = hourlyType;
+	}
+
+
 	
 }

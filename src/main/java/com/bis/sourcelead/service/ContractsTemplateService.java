@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractEditHistory;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -72,14 +73,27 @@ public interface ContractsTemplateService {
 
 	Boolean getVendorMsaCreatedOrNot(Long vendorLocationId, Long loginLocatonId);
 
-	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate) throws Exception;
+	void sendMSAEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, Date previousEndDate, User user) throws Exception;
 
-	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation) throws Exception;
+	void sendSOWEndDateModifiedMail(Contracts contracts, OrgLocations orgLocation, User user) throws Exception;
 
 	List<Contracts> getContractByLocationId(Long orgLocationId);
 
 	List<User> getSigningAuthoritiesForContract(Long locationId, Long tabId) throws Exception;
 
+	boolean sendContractFromOwnertoReceiver(ContractsDTO contractsDTO, User loginUser, OrgLocations loginOrgLocation, String roleName) throws Exception;
 
+	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+
+	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws Exception;
 	
+	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
+
+	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
+	
+	Contracts getMaxNoOfContract(Long locationId);
+
+	Contracts updateContractSigner(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws NumberFormatException, Exception;
+	
+	Integer deleteContractOwnerHierarchyListByContractId(Long Id);
 }

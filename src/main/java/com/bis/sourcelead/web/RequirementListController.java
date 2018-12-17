@@ -1,7 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,16 +23,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.JobBoardConfigurationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -48,6 +60,12 @@ public class RequirementListController {
 	OrgRelationsService orgRelationsService;
 	
 	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	private ProjectClientService projectClientService;
+	
+	@Autowired
 	RequirementService requirementService;
 	
 	@Autowired
@@ -62,9 +80,15 @@ public class RequirementListController {
 	@Autowired
 	StatesService statesService;
 	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
+        
+    @Autowired
+    private JobBoardConfigurationService jobBoardConfigurationService;
+	
 	@RequestMapping(value = "/jobs")
 	public ModelAndView requirementList(HttpServletRequest request,@RequestParam(value="searchResult", required=false)String  searchResult
-			,@RequestParam(value="searchValue", required=false)String searchValue) throws Exception {
+			,@RequestParam(value="searchValue", required=false)String searchValue,@RequestParam(defaultValue = "") String viewTab) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -86,8 +110,17 @@ public class RequirementListController {
 		model.addObject("skillList", skillList);
 
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		
 		model.addObject("educationsList", educationsList);
 		
+		List<RequirementLocations> requirementLocations=requirementLocationsService.getAllRequirementByOrgLocationId(orgLocations.getId());
+		
+		Map<String, List<RequirementLocations>> cityList = requirementLocations.stream().collect(Collectors.groupingBy(rl -> rl.getCity() == null ? "" : rl.getCity()));
+		
+		Set<String> uniquecityList=cityList.keySet();
+		TreeSet<String> seen = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+		uniquecityList.removeIf(s -> !seen.add(s));
+		model.addObject("cityList", uniquecityList);
 		Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
 		if(null != orgClientList && orgClientList.size() > 0){
 			for(OrgRelations ocl :orgClientList){
@@ -97,6 +130,22 @@ public class RequirementListController {
 		    model.addObject("add_clientList", orgClientList);
 		}
 	    model.addObject("loginOrgLocId", orgLocations.getId());
+	    
+	    List<ProjectClients> projectList = projectClientService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+		for(ProjectClients projectClients : projectList){
+			if(projectClients.getOrgRelationId() != null){
+			if(projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				projectClients.setClientName(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			}else if(projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+				projectClients.setClientName(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+			}
+		}
+		}
+		model.addObject("projectList", projectList);
+	    
+	    /*List<Projects> projectList=projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+	    
+	    model.addObject("projectList", projectList);*/
 	    
 	    List<String> visaList = lookUpDataService.getAllVisaByCategory();
 	    model.addObject("visaList", visaList);
@@ -110,11 +159,13 @@ public class RequirementListController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
-	    
+	}
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("viewTab",viewTab);
 		model.setViewName("requirement/requirementList");
 		
 	    	/*
@@ -157,7 +208,7 @@ public class RequirementListController {
 	public ModelAndView releaseRequirementToClientOrVendors(String requirementUUID,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+                User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
 		
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
@@ -166,6 +217,8 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
+			model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/releaseRequirement");
 			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
@@ -180,9 +233,9 @@ public class RequirementListController {
 	public ModelAndView jobReleaseManagement(String requirementUUID,HttpServletRequest request) throws Exception {
 		
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ModelAndView model = new ModelAndView();
-		
+	
 		Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLoc.getId())){
 			model.addObject("jobRecommendations", "jobRecommendations");
@@ -190,8 +243,10 @@ public class RequirementListController {
 			model.addObject("sourceleadShareUrl", sourceleadShareUrl);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("requirement", requirement);
+                        model.addObject("jobBoardList", jobBoardConfigurationService.getOrgJobBoardList(orgLoc.getOrg().getId(), true));
+			model.addObject("jobBoardAccountList", jobBoardConfigurationService.getOrgJobBoardAccountList(orgLoc.getOrg().getId(), 0, null, user.getId(), orgLoc.getId()));
 			model.setViewName("requirement/requirementRelease");
-			getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
+                        getReleaseManagementDetails(model, requirement, requirementUUID, orgLoc, request);
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

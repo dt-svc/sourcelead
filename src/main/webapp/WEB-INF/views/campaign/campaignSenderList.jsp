@@ -6,12 +6,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
     getSendersList();
-    /* if('${msg}' == "success"){
-    	$("#selector1").removeAttr("style");
-		$("#selector1").css({ display: "block" });
-	    $("#msgDiv").html("Successfully Created sender identity");
-	    msgFadein();
-    } */
 });
 </script>
 
@@ -27,38 +21,24 @@ $(document).ready(function(){
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Senders list </div>
     </section>
-    <div class="timesheet_out">
-      <div class="vendor_wrap">
-        <div class="timesheet_head candidateHead pull-right">
-          <ul class="pull-right">
-            <li class="hidden"><i class="glyphicon glyphicon-export"></i><span>Export</span><i class="glyphicon glyphicon-play" id="export-pop"></i>
-              <div class="export_pop">
-                <ul>
-                  <li>PDF<i class="fa fa-file-pdf-o"></i></li>
-                  <li>Excel<i class="fa fa-file-excel-o"></i></li>
-                  <li>Word<i class="fa fa-file-word-o"></i></li>
-                </ul>
-              </div>
-            </li>
-            <li><a href="javascript:void(0)" title="" id="addSen" onclick="campaignSender(this,'');"><i class="fa fa-plus"></i>Add Sender</a></li>
-            <div class="clearfix"></div>
-          </ul>
-          <div class="clearfix"></div>
-         <!--  <div class="remove_search">
-            <input type="text" placeholder="search"/>
-          </div> -->
-        </div>
-
-<div id="loading"></div>
-<div class="project_wrap_table campaignWrap datatable_filter">
-    <div id="sendersListDiv"></div>
+    <div class="project_wrap">
+    
+ 	<div class="reportHead reportHeadDataTab  clearfix">
+      	<ul class="pull-right list-unstyled list-inline">
+			<li>
+				<a href="javascript:void(0)" class="newAdBtn" title="" id="addSen" onclick="campaignSender(this,'');">+ Sender</a>
+			</li>
+        </ul>
+	</div>    
+	<div id="loading"></div>
+	<div class="project_wrap_table campaignWrap datatable_filter dataSeaTop">
+   		<div id="sendersListDiv"></div>
 	</div>        
-      </div>
+</div>
       
       <!-- Project --> 
-    </div>
   </section>
-  <div id="popUp"></div>
+  <div id="deleteSenderId"></div>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
@@ -123,9 +103,9 @@ function getSendersList(type){
 			        	 result += '  <td><div><i class="glyphicon glyphicon-ok"></i></div></td>';
 			         } */
 			         result = result +'  <td>';                                                                                                                  
-			           result = result +'    <div class="tblminwidth-50 text-center">';
-			           result = result +'          <div title="Edit" class="paddingRight pull-left ml"><i class="fa fa-pencil text-primary cursorPointer" onclick="campaignSender(this,'+report.id+');"></i></div>';       
-			           result = result +'          <div title="Delete" class="paddingLeft pull-left"><i onclick= "deleteIdentity(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></div>';  
+			           result = result +'    <div class="tblicons">';
+			           result = result +'          <a title="Edit" class="mr10" href="javascript:void(0)"><i class="fa fa-pencil text-primary cursorPointer" onclick="campaignSender(this,'+report.id+');"></i></a>';       
+			           result = result +'          <a title="Delete" href="javascript:void(0)"><i onclick= "deleteIdentity(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></a>';  
 			           result = result +'    </div>';                                                                                                              
 			           result = result +'  </td>';
 			           result = result +'</tr>';                                                                                                                                                                                                                                        
@@ -137,12 +117,6 @@ function getSendersList(type){
       		 result += '</table> ';
       		 $("#sendersListDiv").empty();
       		 $("#sendersListDiv").append(result);
-      		if(type == "success"){
-		    	$("#campainSenderAlertMsg").removeAttr("style");
-				$("#campainSenderAlertMsg").css({ display: "block" });
-			    $("#campainSenderAlertMsgDiv").html("Successfully Created sender identity");
-			    campainSenderAlertMsgFadein();
-			}
       		 $("#loading").removeAttr('style');
       		 senderListPagination();
     });
@@ -169,25 +143,26 @@ function getSendersList(type){
  
  <script>
  function campainSenderAlertMsgFadein() {
-	$("#campainSenderAlertMsg").fadeIn(200);
-    $('#campainSenderAlertMsg').delay(2000).fadeOut('slow');
+	$("#campainSenderAlertMsg").fadeIn(300);
+    $('#campainSenderAlertMsg').delay(3000).fadeOut('slow');
 }
 </script>
 
 <script>
 function deleteIdentity(senderId){
-	$(".project_inn_mask").remove();
+	$("#deleteSenderId").show();
+	$(".mask").remove();
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='mask'></div>";
 	result = result +"	<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"	<p>Are you sure want to delete ?</p>";
 	//result = result +"		<textarea id='reason' class='form-control' field-name='Delete Identity'  readonly data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Are you sure you want to delete ?' rows='2'></textarea>";
 	result = result + ' <div id="deleteIdentityDiv"/>';
 	result = result + "<b href='javascript:void(0)'><input id='confirm-id1' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
     result = result +"	</div>";
- 	$("#popUp").append(result);
+ 	$("#deleteSenderId").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 </script>
  
@@ -200,8 +175,8 @@ function deleteIdentity(senderId){
 				 $("#campainSenderAlertMsg").removeAttr("style");
 	  			 $("#campainSenderAlertMsg").css({ display: "block" });
 	  			 $("#campainSenderAlertMsgDiv").html("Successfully deleted sender identity");
-	  			 $("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
+	  			 $("#deleteSenderId").hide();
+	 			 $(".mask").hide();
 	             campainSenderAlertMsgFadein();	
 	             location.replace(sourceleadUrl+ "/campaignSendersList");
 			}
@@ -213,8 +188,8 @@ function deleteIdentity(senderId){
  
  <script>
 function cancelDeleteIdentity(){
-	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	$("#deleteSenderId").hide();
+	 $(".mask").fadeOut(200);
 }
 
 </script>

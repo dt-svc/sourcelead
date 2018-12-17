@@ -12,16 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionDao;
+import com.bis.sourcelead.dao.OrgLicenseSubscriptionPriceDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionPrice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -37,6 +42,12 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	OrgLicenseSubscriptionDao orgLicenseSubscriptionDao;
+	
+	 @Autowired
+	 OrgLicenseSubscriptionPriceDao orgLicenseSubscriptionPriceDao;
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -102,6 +113,12 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
+        if(StringUtils.isNotBlank(orgSettings.getIsTimesheetAvgHoursRequired()) && orgSettings.getIsTimesheetAvgHoursRequired().equalsIgnoreCase(Constants.YES)) {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.YES);
+        }else {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.NO);
+        }
+        
         
         if(StringUtils.isNotBlank(orgSettings.getBusinessType()) && !orgSettings.getBusinessType().equalsIgnoreCase("Other")){
           LookUpData businessTypeLookUpData = new LookUpData();
@@ -120,6 +137,17 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         
         if(StringUtils.isNotBlank(orgSettings.getGeneratedUserId())){
         	orgLocations.setGeneratedUserId(orgSettings.getGeneratedUserId().toUpperCase());
+        }
+        
+        if(StringUtils.isNotBlank(orgSettings.getWeekOffDays())) {
+        	orgLocations.setWeekOffDays(orgSettings.getWeekOffDays());
+            String [] weekOffDays = orgSettings.getWeekOffDays().split(",");
+            Integer workingDaysPerWeek = 7-weekOffDays.length;
+            orgLocations.setWeekOffDays(orgSettings.getWeekOffDays());
+            orgLocations.setWorkingDaysPerWeek(workingDaysPerWeek);
+        }else {
+        	 orgLocations.setWeekOffDays(null);
+        	 orgLocations.setWorkingDaysPerWeek(7);
         }
         
         if(StringUtils.isNotBlank(orgSettings.getPoEmail())){
@@ -385,5 +413,60 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	@Override
 	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception {
 		return orgLocationsDao.getAllOrgLocationsByOrgTypeCompany();
+	}
+
+	@Override
+	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception {
+		OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(id);
+		orgLocationDTO.setId(orgLocations.getId());
+		orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+		orgLocationDTO.setWebsite(orgLocations.getWebsite());
+		orgLocationDTO.setOrgLocationAddress(orgLocations.getOrgLocationAddress());
+		orgLocationDTO.setLocation(orgLocations.getLocation());
+		orgLocationDTO.setCountry(orgLocations.getCountry());
+		orgLocationDTO.setState(orgLocations.getState());
+		orgLocationDTO.setCity(orgLocations.getCity());
+		orgLocationDTO.setZipCode(orgLocations.getZipCode());
+		orgLocationDTO.setEmail(orgLocations.getUser().getEmail());
+		orgLocationDTO.setFirstName(orgLocations.getUser().getFirstName());
+		orgLocationDTO.setLastName(orgLocations.getUser().getLastName());
+		orgLocationDTO.setPhoneNumber(orgLocations.getUser().getMobilePhone());
+		orgLocationDTO.setTimeZone(orgLocations.getTimezone().getId());
+		orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
+		
+		OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+		orgLocationDTO.setSubscriptionType(orgLicenseSubscription.getSubscriptionType().getId());
+		orgLocationDTO.setUserSubscriptionType(orgLicenseSubscription.getUserSubscriptionType().getId());
+		orgLocationDTO.setStorageSubscriptionType(orgLicenseSubscription.getStorageSubscriptionType().getId());
+		
+		String fromDateStr =  CalendarUtil.getDateStrForGivenTimeZone(orgLocations.getTimezone().getTimeZoneId(), orgLicenseSubscription.getFromDate(), "dd-MM-yyyy");
+		
+		orgLocationDTO.setSubscriptionDate(fromDateStr);
+		
+		OrgLicenseSubscriptionPrice orgLicenseSubscriptionPrice = orgLicenseSubscriptionPriceDao.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(orgLicenseSubscription.getSubscriptionType().getId(), orgLicenseSubscription.getUserSubscriptionType().getId());
+		 if(orgLicenseSubscriptionPrice != null) {
+			 orgLocationDTO.setSubscriptionRate(orgLicenseSubscriptionPrice.getSubscriptionRate());
+		   }else {
+			   orgLocationDTO.setSubscriptionRate(0d);
+		   }
+		
+		
+		return orgLocationDTO;
+	}
+
+	@Override
+	public List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId, String country) throws Exception {
+		return orgLocationsDao.getOrgLocationsIdsListByOrgIdAndCountry(orgId, country);
+	}
+
+	@Override
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception {
+		return orgLocationsDao.getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(orgId,country);
+	}
+
+	@Override
+	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception {
+		return orgLocationsDao.getAllRegisteredWorkLocationsByOrgId(orgId);
 	}
 }

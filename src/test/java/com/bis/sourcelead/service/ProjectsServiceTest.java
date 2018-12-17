@@ -255,7 +255,7 @@ public class ProjectsServiceTest {
 	 */
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,1l);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
@@ -284,7 +284,7 @@ public class ProjectsServiceTest {
 				            	 flag = false;
 				             }*/
 							
-						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId()) && (flag)){
 						    	finalTFMap.put(key, value);
 							}
 						}
@@ -302,7 +302,7 @@ public class ProjectsServiceTest {
 	
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatusToLevel2() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,1l);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
@@ -522,7 +522,7 @@ public class ProjectsServiceTest {
 									count++;
 						   }
 					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY,1l);
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {

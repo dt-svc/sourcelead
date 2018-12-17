@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementApproverHierarchyDao;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
+import com.bis.sourcelead.entity.Team;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -226,6 +229,26 @@ public class RequirementApproverHierarchyDaoImpl implements RequirementApproverH
 		return requirementApproverHierarchy;
 		 
 		}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean getisRequirementApprover(Long userId,Long requirementId) {
+		// TODO Auto-generated method stub
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<RequirementApproverHierarchy> rahList = new ArrayList<>();
+		rahList = session.createQuery("from RequirementApproverHierarchy rah where rah.requirementId.id = :requirementId and rah.approverUserId.id = :userId")
+						   .setLong("userId", userId)
+						   .setLong("requirementId", requirementId)
+						   .list();
+		
+		Boolean flag = false;
+		if (rahList.size() > 0) {
+			flag = true;
+		} 
+		return flag;
+		
+	}
 	
     
   }

@@ -330,6 +330,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 				        			   
 				        			   
@@ -342,6 +343,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   vendorSubmissionHistory.setCreatedDate(new Date());
 				        			   vendorSubmissionHistory.setUpdatedDate(new Date());
 				        			   vendorSubmissionHistory.setCreatedUser(userName.toString());
+				        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 				        			   
 				        			   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
@@ -357,6 +359,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					        	   }
 					        	  
@@ -371,6 +374,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   requirementSubmissionHistory.setCreatedDate(new Date());
 				        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 				        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+				        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					           }
 					           
@@ -392,6 +396,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   requirementSubmissionHistory.setCreatedDate(new Date());
 					        			   requirementSubmissionHistory.setUpdatedDate(new Date());
 					        			   requirementSubmissionHistory.setCreatedUser(userName.toString());
+					        			   requirementSubmissionHistory.setMasterUserCode(submission.getCreatedBy());
 					        			   requirementSubmissionHistoryService.addRequirementHistory(requirementSubmissionHistory);
 					        			   
 					        			   
@@ -404,6 +409,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   vendorSubmissionHistory.setCreatedDate(new Date());
 					        			   vendorSubmissionHistory.setUpdatedDate(new Date());
 					        			   vendorSubmissionHistory.setCreatedUser(userName.toString());
+					        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 					        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 		                                	
 					        			    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
@@ -478,7 +484,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
             StringBuilder nameBuilder=new StringBuilder();
-            emailMessage.setFromName(nameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+            emailMessage.setFromName(nameBuilder.append(loginUser.getFullName()).toString());
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             // setting the class filed values
             Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -500,8 +506,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                     globalVarsMap.put("requirementName", "--");
             }
             
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getUserName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
@@ -513,24 +519,31 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             StringBuilder linkSB=new StringBuilder();
             globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-
             // setting the Recipient information
             InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
             // getting the current EmailScenario by EmailScenario unique name and
             // entity type
-            EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_EMAIL);
+            EmailScenario  emailScenario = null;
+			 if(loginOrgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFER_MAIL_TO_VENDORS,Constants.ENTITY_TYPE_EMAIL, loginOrgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS,Constants.ENTITY_TYPE_EMAIL);
+			   }
             EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
-            // covert subject,body and signature
-            String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-            String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-            String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = sourceleadUrl;
+            //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
             
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-            notificationScenario.setBody(notificationbody);
+			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+		        notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
@@ -546,7 +559,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
                 StringBuilder actionLinkBuilder = new StringBuilder();
                 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
-				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario);
+				emailScenerioUtil.sendNotification(actionLink, loginUser, clientrequirement.getSpocId().getVendorUser(), vendorLocation, notificationScenario,new HashMap<String,String>());
         		}catch (MessagingException e) {
         			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
         		} catch (UnsupportedEncodingException e) {
@@ -565,15 +578,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             emailMessage.setToEmail(requirementSubmissionTemplateFields.getEmailId());
             emailMessage.setFromEmail(loginUser.getEmail());
             emailMessage.setCreatedBy(loginUser.getUserCode());
-            StringBuilder attachmentBuilder=new StringBuilder();
-            if(loginUser.getLastName()!=null  && loginUser.getLastName()!= "" && loginUser.getLastName()!="undefined")
-            {
-            emailMessage.setFromName(attachmentBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	         }
-	       else
-	        {
-	    	   emailMessage.setFromName(loginUser.getFirstName());
-	        }
+	    	emailMessage.setFromName(loginUser.getFullName());
             
             emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
             //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
@@ -614,18 +619,14 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             }
             
             
-            
-            
             if ( requirementSubmissionTemplateFields.getDesignation() != null && !"".equalsIgnoreCase( requirementSubmissionTemplateFields.getDesignation())) {
                     globalVarsMap.put("designation", requirementSubmissionTemplateFields.getDesignation());
             } else {
                     globalVarsMap.put("designation", "--");
             }
             
-    
-            
-            if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
-                    globalVarsMap.put("loginUser", loginUser.getFirstName());
+            if (loginUser != null && !"".equalsIgnoreCase(loginUser.getFullName())) {
+                    globalVarsMap.put("loginUser", loginUser.getFullName());
             } else {
                     globalVarsMap.put("loginUser", "--");
             }
@@ -657,47 +658,54 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
         }*/
+        // setting the Recipient information
+        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
-            // setting the Recipient information
-            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-            // getting the current EmailScenario by EmailScenario unique name and
-            // entity type
-            EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_EMAIL);
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-
-
-            // covert subject,body and signature
-            String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-            String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-            String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-            String url = sourceleadUrl;
-            
-            String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(), globalVarsMap);
-            notificationScenario.setBody(notificationbody);
+        // getting the current EmailScenario by EmailScenario unique name and
+        // entity type
+        EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ADD_OFFER_MAIL,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+		   }
+        EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
 
-            // construct HTML template using required data
-            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(),orgLocations);
-            emailMessage.setSubject(subject);
-            emailMessage.setMessageBody(emailTemplate);
+        //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = null;
+		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+		 }
+		 String url = sourceleadUrl;
+        
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+        notificationScenario.setBody(notificationbody);
 
 
-    		try {
-    			
-            emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-    		}catch (MessagingException e) {
-    			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
-    		} catch (UnsupportedEncodingException e) {
-    			logger.error(ExceptionUtils.getFullStackTrace(e));
-    		}
-    		StringBuilder actionLinkBuilder = new StringBuilder();                          
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
-            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario);
-            
-            
-    }
+        // construct HTML template using required data
+        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(),orgLocations);
+        emailMessage.setSubject(subject);
+        emailMessage.setMessageBody(emailTemplate);
+
+
+		try {
+			
+        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		}catch (MessagingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+		} catch (UnsupportedEncodingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		StringBuilder actionLinkBuilder = new StringBuilder();                          
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
+        User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
+        
+        
+}
 	
 	
 	
@@ -761,28 +769,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			}
 			StringBuilder vendorContactBuilder=new StringBuilder();
 			globalVarsMap.put("VendorContact",vendorContactBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		
-		
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFERACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFERACCEPT_EMAIL,new ArrayList<EmailAttachment>());
+
 	}
 	
 	@Override
@@ -852,8 +841,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService .getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-
+		EmailScenario emailScenario = null;
+		 if(loginOrgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFERREJECT_EMAIL,Constants.ENTITY_TYPE_EMAIL, loginOrgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
@@ -1033,9 +1026,6 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	
 	    	
 	    	
-	    	
-	    	
-	    	
 	    	requirementOffers.setRejectedReason(reason);
 	    		if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() != orgLocations.getId().longValue()){
 	    			 if(requirementOffers.getSubmissionId().getSourceSubmission() != null) {
@@ -1187,96 +1177,97 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		return contractsDTO;
 	}
 
-
-	private void sendOfferAcceptedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception {
+	private void sendOfferAcceptedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception
+	{
 		User vendorContactUser = null;
-		 StringBuilder sb = new StringBuilder();
-		 EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(loginUser.getFirstName());
-		 emailMessage.setLastName(loginUser.getLastName());
-		 emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
-		 emailMessage.setFromEmail(loginUser.getEmail());
-		 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 
-		 globalVarsMap.put("clientContactName",requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getFirstName());
-		 StringBuilder vendorName = new StringBuilder();
-		 if(null != emailMessage.getLastName()){
-			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).toString());
-		 }
-		 
-		 globalVarsMap.put("offeredJoinDate",conversionUtil.getDateAsString(requirementOffers.getDateOfJoining()));
-		 
-		 StringBuilder applicant = new StringBuilder();
-		 if(null != requirementOffers.getSubmissionId().getCandidate().getLastName()){
-			 globalVarsMap.put("offeredApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(requirementOffers.getSubmissionId().getCandidate().getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("offeredApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).toString());
-		 }
-		 
-		 if (requirementOffers.getSubmissionId().getRequirement().getJobId() != null && !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobId())) {
-				StringBuilder sbv = new StringBuilder();
-				globalVarsMap.put("offeredRequirementName", sbv.append(requirementOffers.getSubmissionId().getRequirement().getJobId()).append("-").append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
-			} else {
-				globalVarsMap.put("offeredRequirementName", requirementOffers.getSubmissionId().getRequirement().getJobTitle());
+		StringBuilder sb = new StringBuilder();
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("ClientContactName", requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getFirstName());
+		StringBuilder vendorName = new StringBuilder();
+		if (null != emailMessage.getLastName()) {
+			globalVarsMap.put("VendorContactName", vendorName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("VendorContactName", vendorName.append(emailMessage.getFirstName()).toString());
+		}
+		globalVarsMap.put("OfferedJoinDate", conversionUtil.getDateAsString(requirementOffers.getDateOfJoining()));
+		StringBuilder applicant = new StringBuilder();
+		if (null != requirementOffers.getSubmissionId().getCandidate().getLastName()) {
+			globalVarsMap.put("OfferedApplicantName", applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(requirementOffers.getSubmissionId().getCandidate().getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("OfferedApplicantName", applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).toString());
+		}
+		if (requirementOffers.getSubmissionId().getRequirement().getJobId() != null
+				&& !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobId())) {
+			StringBuilder sbv = new StringBuilder();
+			globalVarsMap.put("OfferedRequirementName", sbv.append(requirementOffers.getSubmissionId().getRequirement().getJobId()).append("-").append(requirementOffers.getSubmissionId().getRequirement().getJobTitle()).toString());
+		}
+		else {
+			globalVarsMap.put("OfferedRequirementName", requirementOffers.getSubmissionId().getRequirement().getJobTitle());
+		}
+		if (requirementOffers.getSubmissionId().getRequirement().getDescription() != null
+				&& !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getDescription())) {
+			globalVarsMap.put("requirementDescription", requirementOffers.getSubmissionId().getRequirement().getDescription());
+		}
+		else {
+			globalVarsMap.put("requirementDescription", "--");
+		}
+		// globalVarsMap.put("offeredRequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
+		globalVarsMap.put("OfferedRate", requirementOffers.getAmount());
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario emailScenario = null;
+		if (orgLocations != null)
+			emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFER_ACCEPTED, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		if (emailScenario == null) {
+			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_ACCEPTED, Constants.ENTITY_TYPE_EMAIL);
+		}
+		// covert subject,body and signature
+		String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(), globalVarsMap, emailScenario);
+		String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(), globalVarsMap, emailScenario);
+		String signature = null;
+		if (StringUtils.isNotBlank(emailScenario.getSignature())) {
+			signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(), globalVarsMap, emailScenario);
+		}
+		String url = sourceleadUrl;
+		// construct HTML template using required data
+		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
+		emailMessage.setSubject(subject);
+		emailMessage.setMessageBody(emailTemplate);
+		// getting the current EmailScenario by EmailScenario unique name and
+		// entity type
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_ACCEPTED_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, emailScenario);
+		notificationScenario.setBody(notificationbody);
+		// construct HTML template using required data
+		// String emailTemplate =
+		// emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage,
+		// subject, body,signature, url, orgLocations.getOrg(),orgLocations);
+		if (null != requirementOffers.getSubmissionId()) {
+			if (null != requirementOffers.getSubmissionId().getSourceSubmission()) {
+				vendorContactUser = userService.getUserById(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getId());
+				if (null != requirementOffers.getSubmissionId().getSourceSubmission()) {
+					OrgLocations vendorOrgLoc = requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientLocationId();
+					requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser();
+					// calling the sendEmail method of emailScenerioUtil
+					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+					StringBuilder actionLinkBuilder = new StringBuilder();
+					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="
+							+ requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();
+					emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario, new HashMap<String, String>());
+				}
 			}
-		 
-		 
-		 if (requirementOffers.getSubmissionId().getRequirement().getDescription() != null && !"".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getDescription())) {
-             globalVarsMap.put("requirementDescription",requirementOffers.getSubmissionId().getRequirement().getDescription());
-	        } else {
-	                globalVarsMap.put("requirementDescription","--");
-	        }
-		 
-		 //globalVarsMap.put("offeredRequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
-		 globalVarsMap.put("offeredRate",requirementOffers.getAmount());
-	
-		 
-		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_ACCEPTED,Constants.ENTITY_TYPE_EMAIL);
-		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
-		 notificationScenario.setBody(notificationbody);
-
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 if(null != requirementOffers.getSubmissionId()){
-			 if(null != requirementOffers.getSubmissionId().getSourceSubmission()){
-		 vendorContactUser = userService.getUserById(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getId());
-		 if(null !=requirementOffers.getSubmissionId().getSourceSubmission()){
-		 OrgLocations vendorOrgLoc = requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientLocationId();
-				 
-		 requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser();
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 StringBuilder actionLinkBuilder = new StringBuilder();                          
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
-		   }
-		  }
-		 }
+		}
 		// TODO Auto-generated method stub
-		
 	}
 	
 	private void sendOfferRejectedMail(RequirementOffers requirementOffers, User loginUser, OrgLocations orgLocations) throws Exception {
@@ -1294,48 +1285,56 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 
-		 globalVarsMap.put("clientContactName",requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getFirstName());
+		 globalVarsMap.put("ClientContactName",requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getFirstName());
 		 StringBuilder vendorName = new StringBuilder();
 		 if(null != emailMessage.getLastName()){
-			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
+			 globalVarsMap.put("VendorContactName",vendorName.append(emailMessage.getFirstName()).append(" ").append(emailMessage.getLastName()).toString());
 		 }else{
-			 globalVarsMap.put("vendorContactName",vendorName.append(emailMessage.getFirstName()).toString());
+			 globalVarsMap.put("VendorContactName",vendorName.append(emailMessage.getFirstName()).toString());
 		 }
 		 globalVarsMap.put("JoinDate",requirementOffers.getDateOfJoining().toString());
 		 
 		 StringBuilder applicant = new StringBuilder();
 		 if(null != requirementOffers.getSubmissionId().getCandidate().getLastName()){
-			 globalVarsMap.put("offerRejectedApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(requirementOffers.getSubmissionId().getCandidate().getLastName()).toString());
+			 globalVarsMap.put("OfferRejectedApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).append(" ").append(requirementOffers.getSubmissionId().getCandidate().getLastName()).toString());
 		 }else{
-			 globalVarsMap.put("offerRejectedApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).toString());
+			 globalVarsMap.put("OfferRejectedApplicantName",applicant.append(requirementOffers.getSubmissionId().getCandidate().getFirstName()).toString());
 		 }
 		 globalVarsMap.put("RequirementName",requirementOffers.getSubmissionId().getRequirement().getJobTitle());
 		 globalVarsMap.put("Rate",requirementOffers.getAmount());
 		 globalVarsMap.put("RejectReason",requirementOffers.getRejectedReason());
 		 
-		
-		 //setting the Recipient information
+		//setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
+		//getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFER_REJECTED,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_REJECTED,Constants.ENTITY_TYPE_EMAIL);
+		   }
+		  
+		  //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLocations.getOrg(),orgLocations);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_REJECTED,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
+
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,emailScenario);
 		 notificationScenario.setBody(notificationbody);
 
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 if(null != requirementOffers.getSubmissionId()){
 			 if(null != requirementOffers.getSubmissionId().getSourceSubmission()){
 		 vendorContactUser = userService.getUserById(requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser().getId());
@@ -1344,10 +1343,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				 
 		 requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getSpocId().getClientUser();
 		 //calling the sendEmail method of emailScenerioUtil
+
+//		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFER_REJECTED,new ArrayList<EmailAttachment>());
+		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getSourceSubmission().getRequirement().getRequirementUUID()).toString();	 
-		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario);
+		 emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
 		
 		// TODO Auto-generated method stub
 			 }
@@ -1495,15 +1497,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
-    			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+    		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+        			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+    			
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+    			if(StringUtils.isBlank(candidate.getDesignationType())) {
+    				if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+            			candidate.setDesignationType(requirementOffers.getPositionType());
+            		}else {
+            			candidate.setDesignationType("C2C");
+            		}
+    			}
+    			
+    		}else {
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+        		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+        			candidate.setDesignationType(requirementOffers.getPositionType());
+        		}else {
+        			candidate.setDesignationType("C2C");
+        		}
     		}
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
-    			candidate.setDesignationType(requirementOffers.getPositionType());
-    		}else {
-    			candidate.setDesignationType("C2C");
-    		}
+    		
     		
     		candidate.setStatus(Constants.RECORD_ACTIVE);
     		candidate.setCurrentRate(requirementOffers.getAmount());
@@ -1533,6 +1554,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
     				candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
     				candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    				if(candidate.getParentCandidateId() == null && clientSubmission.getCandidate() != null) {
+    					candidate.setParentCandidateId(clientSubmission.getCandidate());
+    				}
 				}else{
     				candidate.setOrgLocationId(orgLocations);
 				}
@@ -1562,7 +1586,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
     			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
     			vendorCandidate.setStatus(1);
-    			candidateService.saveOrUpdateCandidate(vendorCandidate);
+    			vendorCandidate = candidateService.saveOrUpdateCandidate(vendorCandidate);
     			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
     		 }
     		}
@@ -1679,34 +1703,21 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			globalVarsMap.put("joinDate", "---");
 			}
 		
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_ACCEPT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_ACCEPT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgloc.getOrg(),orgloc);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgloc.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgloc.getOrg(),orgloc,Constants.APPLICANT_OFFER_ACCEPT_EMAIL,new ArrayList<EmailAttachment>());
 		
-       String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+       String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
        notificationScenario.setBody(notificationbody);
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -1765,34 +1776,21 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				globalVarsMap.put("reason", "---");
 			}
 		
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_REJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_OFFER_REJECT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
 
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgloc.getOrg(),orgloc);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage,orgloc.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgloc.getOrg(),orgloc,Constants.APPLICANT_OFFER_REJECT_EMAIL,new ArrayList<EmailAttachment>());
 		
-       String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+       String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
        notificationScenario.setBody(notificationbody);
        
        StringBuilder actionLinkBuilder = new StringBuilder();
        String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTS&requirementUUID="+requirementOffers.getSubmissionId().getRequirement().getRequirementUUID()+"&candidateUUID="+requirementOffers.getSubmissionId().getCandidate().getCandidateUUID()+"&submissionId="+requirementOffers.getSubmissionId().getId()).toString();	 
-       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, touser, touser , orgloc, notificationScenario,new HashMap<String,String>());
 		
 	}
 

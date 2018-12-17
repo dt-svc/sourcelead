@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 /**
  * DTO foe client and Vendor
  * Date :16-08-1989
@@ -24,6 +26,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String longitude;
 	private String level;
 	private String address;
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	//private String PaymentTerm;
 	private String paymentTerms;
@@ -88,6 +91,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String recipientsEmails;
 	
 	private String orgRelationIds;
+	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
+	private String generateBill;
+	
+	private String generateInvoice;
 	
 	public String getOrgRelationIds() {
 		return orgRelationIds;
@@ -643,6 +654,38 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 
 	public void setFilterSearchValue(String filterSearchValue) {
 		this.filterSearchValue = filterSearchValue;
+	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
 	}
 
 	

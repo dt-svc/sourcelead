@@ -118,7 +118,13 @@ function getVendorDetails(){
 		        	   $("input[name=orgName]").val(json.orgName);
 		        	   $("input[name=orgName]").attr("readonly","readonly");
 	        		   $('#orgName').removeAttr('onblur');
-		        	   
+		        	   var isLawFirm = json.isLawFirm;
+		        	   var isAccountingFirm = json.isAccountingFirm;
+	        		   $("#isLawFirm").attr('checked', isLawFirm);
+				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
+				        $("#isLawFirm").val(isLawFirm?'Y':'N');
+				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
+	        		   
 	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
@@ -223,6 +229,7 @@ function getVendorDetails(){
 	        
 	        document.getElementById("update_vendor").style.display="";
 	    	document.getElementById("save_vendor").style.display="none";
+	    	allowIsLawFirm();
      } 
 }
 </script>
@@ -285,7 +292,7 @@ function getVendorDetails(){
 									name="orgName" value="${orgName}" onclick="getOrgName();"
 									onblur="getOrgDetails(); validateOrgName();"
 									field-name="Vendor Name"
-									data-validation="required validate_length length2-250"
+									data-validation="required validate_length length2-100"
 									value=""> <input type="hidden" id="orgLocationId" /> <span
 									class="hidden">Enter Vendor Name</span>
 							</div>
@@ -474,6 +481,16 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
+						
+					<div class="form-group ">
+					<label class="col-md-3">Generate Bill </label>
+					<div class="col-md-9">
+					<select class="form-control selectpicker" id="generateBill" name="generateBill">
+	                    <option value="Bulk">Bulk</option>
+	                    <option value="Individual">Individual</option>
+	                  </select>				
+	                  </div>
+				</div>
 					
 					<div class="clearfix mb"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
@@ -490,18 +507,23 @@ function getVendorDetails(){
 							<label class="col-md-3" for="Project Manager">Email<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
+							<div class="input-group errorInptgroup">
 								<input type="text" class="form-control" id="email" name="email"
 									value="${emailId}" field-name="Email"
 									data-validation="required validate_Space validate_length length1-100 validate_email"
 									onblur="validateEmail();getSpocUserDetails();"> <span
 									class="hidden">Valid Email</span>
+									<span id="emailStatusIconDiv" class="input-group-addon">
+			                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+			                  	</span>
+								</div>	
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-md-3">First Name<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+							<div class="col-md-9" id="nameIdDiv">
 								<input type="text" class="form-control" id="firstName"
 									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
@@ -567,7 +589,44 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
-						
+						<div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                   <input id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N" onclick = "allowIsLawFirm();">
+		                   <!--  <input type="checkbox" value="N" name="isLawFirm"> -->
+		                  Law firm</label>
+		                </div>
+		                 </div>
+		                 </div>
+		                 
+		                 <div class="form-group">
+		                 <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                 <input id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N" onclick = "allowIsAccountFirm();">
+		                  
+		                   Accounting Firm</label>
+		                </div>
+		                 </div>
+               		</div>
+               		
+               		<div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Billing Email </label>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
+              </div>
+            </div>
+               		
 						<div class="clearfix"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		               <c:if test="${sectionOrder.index == 1}">
@@ -578,14 +637,14 @@ function getVendorDetails(){
 					</div>
 					<div class="clearfix mb"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-						<!-- <div class="form-group">
+						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9 checkBox">
 								<label> <input type="checkbox" value="Y"
-									name="isMailSent" checked="checked"> Send Invitation
+									name="isMailSent"> Send Invitation
 								</label>
 							</div>
-						</div> -->
+						</div> 
 
 						
 
@@ -607,7 +666,7 @@ function getVendorDetails(){
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save & Continue" id="save_vendor"
-							onclick="saveVendor(); flushSaveClient()" class="btn btn-primary">
+							onclick="saveVendor(); saveVendorContact();flushSaveClient();" class="btn btn-primary">
 						
 						<input type="button" value="Save & Continue" id="update_vendor" style="display: none"
 							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
@@ -638,6 +697,25 @@ function getVendorDetails(){
 
 
 <script>
+
+function allowIsLawFirm(){
+	var checked = document.getElementById("isLawFirm").checked
+	if(checked == true){
+		$("#isLawFirm").val("Y");
+	}else{
+		$("#isLawFirm").val("N");
+	}
+}
+
+function allowIsAccountFirm(){
+	var checked = document.getElementById("isAccountingFirm").checked
+	if(checked == true){
+		$("#isAccountingFirm").val("Y");
+	}else{
+		$("#isAccountingFirm").val("N");
+	}
+}
+
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 
@@ -648,6 +726,27 @@ function getCustomDependentField(sectionId){
 				 }
 		  });
 }
+
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 </script>
 
 
@@ -679,6 +778,15 @@ function getOrgName(){
                        return false;
                    },
                 select: function( event, ui ) {
+                	$( "#orgName" ).val( ui.item.label );
+                    $( "#orgLocationId" ).val( ui.item.value );
+			        $("#save_vendor").attr("disabled", "disabled");
+                    $("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+                	getOrgDetails(); 
+                	validateOrgName();
+                	$("input[name=address]").val('');
+                	$("#vendorDetailsLoading").removeAttr("style");
+                	$("#save_vendor").removeAttr("disabled");
                     return false;
                 }  
              })
@@ -775,8 +883,8 @@ $( "#orgLocationId" ).val( '' );
    	        }
    	    });
    	 
-   	validateEmail();
-	getSpocUserDetails();
+   /* 	validateEmail();
+	getSpocUserDetails(); */
 	
 	}
 	
@@ -788,7 +896,7 @@ $( "#orgLocationId" ).val( '' );
 <script type="text/javascript">
 function validateEmail(){
 	var email = document.getElementById("email").value;
-	if(email != null){
+	if(email != null && email != ''){
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
@@ -804,10 +912,14 @@ function validateEmail(){
 					$('input#email').removeAttr("class record-exist record-exist-errormsg");
 					$('input#email').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					 validateEmailForExistenceUniversally(email, "input#email");
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
@@ -875,7 +987,7 @@ function getRolesList(){
 		if ($('#client_form').validate(false, validationSettings)) {
 			var orgLocationId = document.getElementById("orgLocationId").value;
 		  	var formData = $($('#client_form')[0]).serialize();
-			$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:195%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 					$.post(sourceleadUrl+"/saveVendor?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&responderType=Vendor", formData, function(data) {
 						$("#vendorOrgLocationId").val(data.id); 
 						$("#orgRelationId").val(data.vendorOrgRelationId);
@@ -910,7 +1022,7 @@ function updateVendor(){
 	if ($('#client_form').validate(false, validationSettings)) {
 		var orgRelationId = document.getElementById("orgRelationId").value;
 	  	var formData = $($('#client_form')[0]).serialize();
-		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#vendorDetailsLoading").attr('style','position:absolute; width:100%; height:185%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.post(sourceleadUrl+"/updateVendor?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, formData, function(data) {
 					 $("#vendorDetailsLoading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
@@ -953,9 +1065,10 @@ function getSpocUserDetails(){
 	        		 if(json[0] != null && json[0] != ''){
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
+	        		    $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
-	        			 //$("#firstName").val('');
+	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
@@ -963,7 +1076,7 @@ function getSpocUserDetails(){
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
 	        			    $("#lastName").attr("disabled", false);
-	        			    //$("#lastName").val('');
+	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
@@ -971,7 +1084,7 @@ function getSpocUserDetails(){
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
 	        			    $("#phoneNumber").attr("disabled", false);
-	        			    //$("#phoneNumber").val('');
+	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
 	        		 

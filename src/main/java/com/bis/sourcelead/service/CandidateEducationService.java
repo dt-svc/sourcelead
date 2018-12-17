@@ -31,6 +31,7 @@ public interface CandidateEducationService {
 	/**
 	 * @param candidateId
 	 * @param orgLocationId
+	 * @param searchVal 
 	 * @return List<CandidateEducation>
 	 * @throws Exception
 	 */
@@ -74,5 +75,15 @@ public interface CandidateEducationService {
 	public void saveOrUpdateCandidateElkDocumentWithEducationDetails(Candidate candidate,Long locationId) throws Exception;
 	
 	public List<String> getCandidateEducationNamesByCandidateId(Long candidateId) throws Exception;
+
+
+	List<CandidateEducation> getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId,
+			Long orgLocationId, String searchVal) throws Exception;
+	
+	String removeCandidateEucationrDocById(Long candidateEduId) throws Exception;
+	
+	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
+	
+	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
 
 }

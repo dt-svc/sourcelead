@@ -19,5 +19,6 @@ public interface ProjectTaskActivityService {
 	
 	void savePriorityProjectTaskActivitiesByLookupData(String activity, String activityDescription, ProjectTasks projectTasks, User user,LookUpData  data)throws Exception;
 	
-	
+    List<ProjectTaskActivity> getTasksActitivtyListByLookupIdAndCategoryType(Long lookupId, String taskType) throws Exception;
+
 }

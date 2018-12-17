@@ -29,6 +29,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -48,6 +49,7 @@ public class Org implements Serializable{
 	private Long id;
 	
 	@Column(name = "ORG_NAME")
+	@JsonProperty
 	private String orgName;
 	
 	@Column(name = "WEBSITE")
@@ -124,10 +126,10 @@ public class Org implements Serializable{
 	@Type(type="text")
 	private String modulesId;
 	
-    @Column(name = "CLIENT_ADDRESS")
+    @Column(name = "CLIENT_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientAddress;
     
-    @Column(name = "CLIENT_BILLING_ADDRESS")
+    @Column(name = "CLIENT_BILLING_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientBillingAddress;
     
     @Column(name = "PAYMENT_TERM")
@@ -161,6 +163,7 @@ public class Org implements Serializable{
 	private Long primaryOrgLocationId;
 	
 	@Transient
+	@JsonProperty
 	private int noOfDays;
 	
 	public Long getId() {

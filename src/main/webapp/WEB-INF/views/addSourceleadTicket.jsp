@@ -7,21 +7,13 @@
 	<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 <script>
 $(function() { 
-	
-  setTimeout(function () {
-    var description = '${sourceleadTicket.description}';
-	 $("textarea[name=description]").val(description);
-   	     $(".Editor-editor").html(description);
-	
-	}, 1000); 
-	
     $("#txtEditor").Editor();
 	$("#txtEditor").find(".Editor-editor").data-validation('required');
 });
 </script>
-
   <script type="text/javascript">
 		window.onload = function () {
+			getTicketDescription('${sourceleadTicket.ticketUUID}');
 			getUserModules();
 			var ticketUUID = '${ticketUUID}';
 			if(ticketUUID != '' && ticketUUID != 'undefined' && ticketUUID != null){
@@ -123,11 +115,11 @@ $(function() {
 			         </div>
 		         </div>
 		         </c:if>
-		          <div class="timesheet_week_comm slticket" >
+		          <div class="timesheet_week_comm slticket width100percnt" >
 		          <div id="0ticketdocFileuploadFileGroup"> 
 		          <span>
 		          <input type="file"  id="0ticketdocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);">
-		          <i class="fa fa-refresh faRefresh" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
+		          <i class="fa fa-refresh faRefresh mt5" mouseOver="Refresh" title="Clear" onClick="refershDocument()"></i>
 		          <i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addTicketAttachment()"></i>
 		          </span> </div>
 		          </div>
@@ -143,7 +135,7 @@ $(function() {
 			<div class="form-group row">
 				<label class="col-md-12">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-12 txtEditor_p">
-                        <textarea id="txtEditor" name="description"  value="${sourceleadTicket.description}" class="form-control newContrtextarea" field-name="Description" data-validation="required">${sourceleadTicket.description}</textarea>
+                        <textarea id="txtEditor" name="description"   class="form-control newContrtextarea" field-name="Description" data-validation="required"></textarea>
 				</div>
 			</div>  
 		</div>
@@ -163,7 +155,7 @@ $(function() {
 
 
   <div id="divTicketAttachmentTd1" style="display: none; float: left;">
-	<div class="timesheet_week_comm slticket">
+	<div class="timesheet_week_comm slticket width100percnt">
 		<div class="" id="REPLACEROWIDticketdocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDticketdocFile'
 				id='REPLACEROWIDticketdocFile'
@@ -192,10 +184,13 @@ $(function() {
 	}
 	function refershDocument(){
 		$("#0ticketdocFile").val('');
+		$("#sourceleadTicket_form input[data-id*=0ticketdocFile]").remove();
+
 	}
 </script>
 <script type="text/javascript">
 	function removeTicketAttachmentRow(rowId) {
+		$("#sourceleadTicket_form input[data-id*="+rowId+"ticketdocFile]").remove();
 		 document.getElementById("divAttachmentTicketRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentTicketRow"+rowId).value= '';
 		 var  rId = "divAttachmentTicketRow"+rowId;
@@ -229,10 +224,20 @@ $(function() {
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateTicketAtteachment?${_csrf.parameterName}=${_csrf.token}&attachmentId="+documentId, 	   
-			    success: function(data) {
-			    	$("#ticketDocument"+documentId).remove();
-			    	$("#ticketDeletePopUp").empty();
-				 	$(".project_inn_mask").fadeOut(200);
+			    success: function(result) {
+			    	if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			$("#ticketDocument"+documentId).remove();
+				    	$("#ticketDeletePopUp").empty();
+					 	$(".project_inn_mask").fadeOut(200);			 			
+		    		} else if (result.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 			    },
 	     });
  }
@@ -255,9 +260,20 @@ function saveTickt(){
 			 data: formData,
 	         processData: false,
 	         contentType:false, 
-			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+ "/storeSourceleadTicket?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
-				location.replace(sourceleadUrl+"/sourceleadTicketList");
+				if (result && result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			location.replace(sourceleadUrl+"/sourceleadTicketList");			 			
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				
 			},
 		});
 		return true;
@@ -327,5 +343,17 @@ function getUserModules(){
 	
 }
 </script>
-
+<script>
+function getTicketDescription(ticketUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getTicketDescription?${_csrf.parameterName}=${_csrf.token}&ticketUUID="+ticketUUID, 	   
+			    success: function(result) {
+			    	$('#txtEditor').html(result.description);
+			    	$('.Editor-editor').html(result.description);
+			    }
+			    	 
+	     });
+}
+</script>
  <jsp:include page="masterFooter.jsp" />	

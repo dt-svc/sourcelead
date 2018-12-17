@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.ActionNames;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -25,7 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesCategoryDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionHistoryDaoImpl.class);
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -106,6 +109,12 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 					if(actionName.getActionName().contains(type)){
 						actionHistory.setActionName(actionName.getActionName());
 						actionHistory.setActionPerformed("You have performed "+ actionName.getActionName()+" Action ");
+						actionHistory.setOrgLocations(loginOrgLocation);
+						actionHistory.setUserId(userLoginLogoutSession.getUserId().getId());
+						actionHistory.setUserLoginLogoutSessionId(userLoginLogoutSession);
+						Date date = new Date();
+						actionHistory.setActionTime(commonUtil.orgLocationCommonDate(date, loginOrgLocation));
+
 					}
 				}
 			}else
@@ -171,6 +180,60 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		List<ActionNames> actionNames = session.createQuery(query).setString("methodName", methodName).list();
 		logger.debug("getActionNameUsingMethodName end");
 			return actionNames;
+	}
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public UserDTO getAllActionHistoryByUserId(Long userId)throws Exception
+	{
+		UserDTO countMap = new UserDTO();
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = "select count(*) from ActionHistory  actHistory  where actHistory.userId =:userId ";
+		Query actionHistory = session.createQuery(query).setLong("userId", userId);
+		Long count = (Long) actionHistory.uniqueResult();
+		countMap.setNoOfActivities(count.toString());
+		/*List<Long> countlist = actionHistory.list();
+		
+		String query1 = "from ActionHistory act where act.userId = :userId order by act.id desc";
+		List<ActionHistory> actionHistorylist = session.createQuery(query1).setLong("userId", userId).list();
+		Date lastActivity = null ;
+		if(actionHistorylist != null && actionHistorylist.size() > 0 && actionHistorylist.get(0) != null){
+			lastActivity = actionHistorylist.get(0).getActionTime();
+			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+			countMap.setLastActivity(df.format(lastActivity));
+		}*/
+		
+		return countMap;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId)throws Exception
+	{
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserLoginLogoutSession  userLoginLogoutSession  where userLoginLogoutSession.userId.id =:userId group by userLoginLogoutSession.ipaddress";
+		List<ActionHistory> action = session.createQuery(query).setLong("userId", userId).list();
+		return action;
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllUserIdsByFrequencyBasedOnActivity(Date[] freqDates)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ActionHistory actHis where actHis.actionTime >= :startDate and actHis.actionTime <= :endDate group by actHis.userId";
+		List<ActionHistory> actHisList = session.createQuery(query).setParameter("startDate", freqDates[0]).setParameter("endDate", freqDates[1]).list();
+		List<Long> userIds = new ArrayList<>();
+		for(ActionHistory actHis : actHisList){
+			userIds.add(actHis.getUserId());
+		}
+		return userIds;
 	}
 
 

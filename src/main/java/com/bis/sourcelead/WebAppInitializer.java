@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import net.sf.ehcache.constructs.web.filter.GzipFilter;
 /**
  * This class is used to configure the web application without web.xml
  * 
@@ -41,7 +43,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	
 	@Override
 	protected Filter[] getServletFilters() {
-	  return new Filter[] { new HiddenHttpMethodFilter() };
+	  return new Filter[] { new HiddenHttpMethodFilter()/*, new GzipFilter()*/ };
 	}
 	
 	

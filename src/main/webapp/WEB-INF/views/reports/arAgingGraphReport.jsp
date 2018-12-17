@@ -3,11 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css">
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -22,7 +21,8 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>A/R Aging</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; A/R Aging</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports
+</a>&raquo; A/R Aging</div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">
@@ -75,7 +75,7 @@ $(document).ready(function(){
         <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="arAgingInvoiceGraph();">Customize</button>
 		</div>
-		<div class="col-md-1">
+		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-retweet"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -83,7 +83,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -176,7 +176,8 @@ function prepareAragingGraph(data){
 		"enabled": true
 	},
 	"export": {
-		"enabled": true
+		"enabled": true,
+		"fileName":"A/R Aging"
 	},
 	"categoryAxis": {
 		"autoRotateAngle": 30,

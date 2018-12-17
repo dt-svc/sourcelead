@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 
 public interface ApplicantDeclineDao {
 
-	Map<String,Integer> getDeclineApplicantSkillCount(List<Long> jobIds,Date[] searchDates,OrgLocations orgLocation)throws Exception;
+	List<ApplicantDeclineDTO> getDeclineApplicantSkillCount(List<Long> jobIds,Date[] searchDates,OrgLocations orgLocation,int offset)throws Exception;
 }

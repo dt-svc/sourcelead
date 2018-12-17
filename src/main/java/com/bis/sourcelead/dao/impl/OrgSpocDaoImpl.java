@@ -355,9 +355,9 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			
 			
 			if(null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)){
-				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
+				   query = "from OrgSpoc spoc left join fetch spoc.orgRelations left join fetch spoc.orgRelations.locationId left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.clientUser.id = :userId and spoc.clientLocationId.id = :orgLocationId";
 			   }else{
-				   query = "from OrgSpoc spoc left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
+				   query = "from OrgSpoc spoc left join fetch spoc.orgRelations left join fetch spoc.orgRelations.locationId left join fetch spoc.ownerUser left join fetch spoc.vendorUser left join fetch spoc.clientUser where spoc.vendorUser.id = :userId and spoc.vendorLocationId.id = :orgLocationId ";
 			   }
 			
 			    spocsList = session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId)
@@ -669,7 +669,7 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 			Session session = this.sessionFactory.getCurrentSession();
 		   	 String query = ("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch spoc.clientUser left join fetch spoc.vendorUser where spoc.UUID = :UUID ");
 		      List<OrgSpoc> orgSpocs = session.createQuery(query.toString()).setString("UUID", UUID).list();
-		      OrgSpoc orgSpoc = null;
+		      OrgSpoc orgSpoc=null;
 				if(orgSpocs != null && !orgSpocs.isEmpty())
 				{
 					orgSpoc = orgSpocs.iterator().next();
@@ -746,6 +746,26 @@ public class OrgSpocDaoImpl  implements OrgSpocDao{
 				}
 				return orgSpoc;
 		
+		}
+
+		@Override
+		@Transactional
+		public OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId, Long vendorUserId) throws Exception
+		{
+
+	        logger.debug("In OrgSpocDaoImpl getSpocListByVendorUserIdAndOrgRelationId method");
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<OrgSpoc> spocsList;
+			 
+			Query query= session.createQuery("from OrgSpoc spoc  left join fetch spoc.orgRelations orgrelation where orgrelation.id = :orgRelationId and spoc.vendorUser.id = :vendorUserId and spoc.status = '1' "); 
+			spocsList = query.setLong("orgRelationId", orgRelationId).setLong("vendorUserId", vendorUserId).list();
+		     OrgSpoc orgSpoc = null;
+						if(spocsList != null && !spocsList.isEmpty())
+						{
+							orgSpoc = spocsList.iterator().next();
+						}
+						return orgSpoc;
 		}
 	 
 }

@@ -1,13 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
-
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/serial.js"></script>
+<script src="/resources/amcharts/pie.js"></script>
 
 <script>
 $(document).ready(function() {

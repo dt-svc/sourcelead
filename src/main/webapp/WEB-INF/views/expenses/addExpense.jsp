@@ -1,4 +1,4 @@
-<jsp:include page="../masterHeader.jsp" />
+ <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -6,9 +6,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <jsp:include page="addExpenseEntries.jsp"></jsp:include>
+  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
  
- <style type="text/css">
+  <style type="text/css">
 .ReadTextFli {
 	 text-align: -webkit-left;
 }
@@ -27,12 +27,19 @@
 			}
 		 };
 </script>
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">
    <jsp:include page="viewExpenses.jsp"></jsp:include>
  </c:if>
 <!-- View Content Area Ends-->
-  <!-- Content Area -->
+   <!-- Content Area -->
   <c:if test = "${type != 'view'}">
   <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
@@ -44,11 +51,11 @@
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
 	        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
-	    <c:otherwise>
+	     <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
-    
+
     </section>
     <form:form id="add_expenses_form" name="add_expenses_form">
 	<div class="content-area content-new clearfix">
@@ -59,7 +66,7 @@
 	             <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-	                   <c:if test="${submissionStatus != 'SUBMITTED'}">
+	                   <c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED' and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -69,7 +76,7 @@
 							</c:forEach>
 						</select>
 						</c:if>
-						<c:if test="${submissionStatus == 'SUBMITTED'}">
+						<c:if test="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED' or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -107,12 +114,19 @@
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Expenditure particulars should be added between the specified duration only'></i></label>
 	              <div class="col-md-9" >
 						<div class="row">
+						  
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
+						    <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+						
+						  </div>
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div> 		  
+						  </div> 
+						  </div>
+						  		  
 						</div>
 	              </div>
 	            </div>
@@ -145,6 +159,7 @@
 				<th>Payment Mode</th>
 				<th>Paid By</th>
 				<th>Action</th>
+				
 			</tr>
 		</thead>	
 			<tbody>
@@ -165,7 +180,7 @@
 			          </td>
 			           <td>
 			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmount}"/>
-			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div>
+			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.submittedamount}</div>
 			          </td>
 			          <td>
 			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
@@ -194,7 +209,7 @@
 							
 															
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
+						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});getExpenseAttachmentStatus(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 						   <c:if test="${pm.projectId == expenses.projectId}">
@@ -233,7 +248,7 @@
 									              </c:forEach>
 										  </select>
 									</div>
-								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.categoryAmount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
 		                 
@@ -270,7 +285,7 @@
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
@@ -298,7 +313,14 @@
 <div class="form-footer clearfix mt">
 		   <div class="col-lg-12">
 			<div class="pull-right">
-			<input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			<c:choose>
+			<c:when test="${submissionStatus == 'REOPENED'}">
+			 <!-- <input type="button" hidden="hidden" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');"> -->
+			</c:when>
+			<c:otherwise>
+			 <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			</c:otherwise>
+			</c:choose>
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
 			<c:if test ="${!empty expenses.expenseAutoId}">
 			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
@@ -317,7 +339,13 @@
   </section>
 </c:if>
 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <script type="text/javascript">
 function removeWhiteSpacesMyExp(rowCount){
 	 var el = $("#entryDes"+rowCount).val();
@@ -514,14 +542,21 @@ function withdrawMyExpense(id){
 
 <script>
 function getAmountValue(rowId){
+	
 	var categoryAmount = document.getElementById("categoryType"+rowId).value;
 	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
 		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$( window.location.href="#addExpenseCategoryButton" + rowId).attr("disabled","disabled");
+		$("#draftForApprovalExpensesId").attr("disabled","disabled");
+		$("#submitForApprovalExpensesId").attr("disabled","disabled");
 	}else{
-		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		 $("#amountDiv"+rowId).find('p.jquery_form_error_message').remove(); 
+		$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+		$("#draftForApprovalExpensesId").prop("disabled", false);
+		$("#submitForApprovalExpensesId").prop("disabled", false);
 	}
    }
 }
@@ -534,13 +569,24 @@ function getAmountValueCategory(rowId){
 	var categoryAmount = document.getElementById("categoryType"+rowId).value;
 	var expenseAmount = document.getElementById("expenseAmount"+rowId).value;
 	$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+	$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+	$("#draftForApprovalExpensesId").prop("disabled", false);
+	$("#submitForApprovalExpensesId").prop("disabled", false);
+	
 if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
 	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
 		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		$( window.location.href="#addExpenseCategoryButton" + rowId).attr("disabled","disabled");
+		$("#draftForApprovalExpensesId").attr("disabled","disabled");
+		$("#submitForApprovalExpensesId").attr("disabled","disabled");
 	}else{
 		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		$("#addExpenseCategoryButton"+rowId).prop("disabled", false);
+		$("#draftForApprovalExpensesId").prop("disabled", false);
+		$("#submitForApprovalExpensesId").prop("disabled", false);
+		
 	}
    }	
   }
@@ -610,4 +656,5 @@ function clearProjectEndDate(){
 		};	
 </script>
  -->
+
 <jsp:include page="../masterFooter.jsp" />

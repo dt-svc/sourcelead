@@ -258,7 +258,7 @@ function getRequestedAssociatesList(){
 				    		}
 				    		result = result +'</div>';
 						}else{
-			    			result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'</strong></div>';
+			    			result = result +'<div class="tbldata-dotdot_80 text-success" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
 						result = result +'</td>';
 					 result = result +'</tr>';

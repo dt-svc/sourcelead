@@ -169,6 +169,7 @@ function filterStatus() {
 	 var postedOrgLocationId = '${postedOrgLocationId}';
 	 var loginOrgLocationId = '${SourceLeadWeb_orgLocations.id}'
 	 var projectClientUUID = '${projectClientUUID}';
+	 var postedSharedProjectOrgLocationId = '${postedSharedProjectOrgLocationId}';
 	 	 
 	 $("#employeesLoadingImg").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
 	 var result = "";
@@ -178,6 +179,12 @@ function filterStatus() {
 	 result = result + '</ul>';
 	 
 	 result = result + '<div class="project_tabs mb">';
+	 result = result + '<input type="hidden" id="projectId" value="'+projectId+'">';
+	 result = result + '<input type="hidden" id="startDateStr" value="'+startDateStr+'">';
+	 result = result + '<input type="hidden" id="endDateStr" value="'+endDateStr+'">';
+	 result = result + '<input type="hidden" id="status" value="'+status+'">';
+	 result = result + '<input type="hidden" id="projectName" value="'+projectName+'">';
+	 
 	 
 	//Resources Tab
 	 result = result + '<div id="tab-a" class="newPrTabs_inn" style="display: block;">';
@@ -187,12 +194,12 @@ function filterStatus() {
 			result = result +'<li>';
 	 		'<sec:authorize access="hasAnyRole(\'ROLE_ASSIGN_EMPLOYEE_TO_PROJECT\')">';
 	 		 
-	 		if(postedOrgLocationId == loginOrgLocationId){
+	 	/* 	if(postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){
 	 			  result = result + '<a href="javascript:void(0)" onclick="getAssociates();" id="addDiv">';
 		 		  result = result + '<i class="fa fa-exchange paddingRight"></i>&nbsp;Transfer Emp</a>&nbsp;&nbsp;&nbsp;&nbsp;'; 
-	 		 }
+	 		 } */
 	 		
-	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId){   
+	 	     if('${isClientOrgActive}' == "N" || postedOrgLocationId == loginOrgLocationId || postedSharedProjectOrgLocationId == loginOrgLocationId){   
 	 			 result = result + '<a href="'+sourceleadUrl+'/addNewProjectMembers?projectUUID='+projectUUID+'&projectClientUUID='+projectClientUUID+'">';
 	 		     result = result + '<i class="glyphicon glyphicon-plus"></i>Assign Emp</a></li>';
 	 		}  
@@ -204,34 +211,6 @@ function filterStatus() {
 			} 
 			
 			
-			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-			result = result +'<div id="orgLocationTeams"></div>';  				  
-		    result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
-			
-			result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Roles</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-					<c:forEach var="roles" items="${rolesList}">  
-					result = result + '	<li><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>';
-				  </c:forEach>
-				  
-		    result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
-			
-		    result = result + '	<li><a onClick="filterStatus()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
-		    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu dropdownPadding">';
-			result = result + '       	<ul>';
-			result = result + '				<li><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c6">Active</label></li>';
-			result = result + '				<li><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');"><label for="c7">In-Active</label></li> ';
-			result = result + '           </ul>';
-			result = result + '       </div>'; 
-			result = result + '   </li>';
-	 
 				'<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_EMPLOYEE\')">';
 					result = result +'<li class="dropdown">';
 					if(status != 'COMPLETED' &&  status != '' &&  status != 'undefined' ){
@@ -252,8 +231,18 @@ function filterStatus() {
 				'</sec:authorize>';
 			
 			result = result +'</ul>';
+			
+			result = result	+ '<div class="pull-left cand-advsrch advsrch_chosen">';
+			result = result	+ '     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetPorjectTeamFilter();" title="Refresh">';
+			result = result	+ '	    <span class="fa fa-refresh"></span>';
+			result = result	+ '	</button>';
+			result = result	+ '	<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openFilterTeamPop();"><i class="fa fa-filter faFilter padding_right"></i>';
+			result = result	+ '	</a>';
+			result = result	+ ' </div>';
+			
+			
 			result = result + '</div>';
-			getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName);
+			getFilterEmployeeDetails();
 			result = result +'<div id="employeeDetailsDiv" class="datatable_filter"> </div>';
 			result = result +'</div>';
 		
@@ -301,46 +290,18 @@ function filterStatus() {
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
 	    });	
-	    
-	    getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName);
-		
  }
  </script>
  
  
  <script>
- function getOrgLocationTeams(projectId,startDateStr,endDateStr,status,projectName){
-		var orgLocations = '${SourceLeadWeb_orgLocations.id}';
-		 var sourceleadUrl ='${sourceleadUrl}';
-		 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
-		 $.ajax({
-		    	type: "GET",
-		        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
-		        success: function(json) {
-		        	
-		        	var output = "";
-		        	if(json.length > 0){
-		        		for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getFilterEmployeeDetails('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\')" ><label>'+opt.name+'</label></li>';
-						}
-		        	}else{
-		        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
-		        	}
-		        	
-		        	$("#orgLocationTeams").empty();
-			        $("#orgLocationTeams").append(output);
-		        }
-		        
-		 });
-	}
- </script>
- 
- 
- 
- <script>
- function getFilterEmployeeDetails(projectId,startDateStr,endDateStr,status,projectName){
+ function getFilterEmployeeDetails(){
+	 var projectId = $("#projectId").val();
+	 var startDateStr = $("#startDateStr").val();
+	 var endDateStr = $("#endDateStr").val();
+	 var status = $("#status");
+	 var projectName = $("#projectName").val();
+	 
 	 var values = [];
 	 var chekbox = $('input:checkbox[name=employeeStatus]:checked').val();
 	 if(chekbox != 'undefined' && chekbox != '' && chekbox != null){
@@ -375,7 +336,7 @@ function filterStatus() {
 	  }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
-	    	type: "POST",
+	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
 	        success: function(json) {
 	        	
@@ -388,13 +349,13 @@ function filterStatus() {
 	    	    result = result + '	<table id="projectEmployeePagination" class="display" cellspacing="0" width="100%">';
 	    		result = result + '	<thead>';
 	    		result = result + '		<tr>';
-	    		  if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+	    		  if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 	    			  result = result + ' <th><input type="checkbox" onclick="selectAllMembers();"  id="selectAllMembers" ></th>';
 	    		  }
 	    		
 	            result = result + '	 	<th>Emp Name</th>';
-	        /*     result = result + '	 	<th>Emp Email</th>';*/
-	            result = result + '	 	<th>Emp Role</th>'; 
+	        /*     result = result + '	 	<th>Emp Email</th>';
+	            result = result + '	 	<th>Emp Role</th>'; */
 	            result = result + '	     <th>Start Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>End Date<br>(<small class="custom-small">'+projectempListDate+'</small>)</th>';
 	            result = result + '	     <th>Bill Rate</th>';
@@ -429,6 +390,13 @@ function filterStatus() {
 		        			projectEndDateStr = "-----";
 		        		}
 		        		
+		        		var projectStartDateStr = "";
+		        		if(opt.projectAssignedDateStr != null && opt.projectAssignedDateStr != ''){
+		        			projectStartDateStr = opt.projectAssignedDateStr;
+		        		}else{
+		        			projectStartDateStr = "-----";
+		        		}
+		        		
 		        		
 		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined'){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
@@ -455,7 +423,7 @@ function filterStatus() {
 		        		}
 		        		
 		        		result = result + '	 <tr>';
-		        		 if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
+		        		 if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 		        			 if(opt.status == 1){
 		        				 result = result + '<td><input type="checkbox" onclick="selectedMember();"  class="projectMembersChecks" value='+opt.id+' name="projectMembers[]" ></td>';
 		        			 }else{
@@ -464,9 +432,9 @@ function filterStatus() {
 		        		 }
 		        		
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
-		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; */
-		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
+		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; 
+		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';*/
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectStartDateStr+'">'+projectStartDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 		                }else{
@@ -479,7 +447,7 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
 		                
-		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N"){
+		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
 		                	 if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
 				                	result = result + '	<td><div class="tbldata-dotdot_80">';
@@ -488,7 +456,7 @@ function filterStatus() {
 				                		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\')">'; 
 				                		   
 				                		 if(opt.rateHistroyList == 'Y'){
-				                			 result = result + '<span title="Edit Employee"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
+				                			 result = result + '<span title="Payrate History"><i class="glyphicon fa fa-money" onClick="getRateTable('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		  }  
 				                		     result = result + '<span title="Edit Employee"><i class="glyphicon glyphicon-edit" onClick="editProjectAssignedMember('+opt.id+'\,\''+opt.candidateName+'\')";></i></span>&nbsp;&nbsp;';
 				                		 '</sec:authorize>';
@@ -539,12 +507,14 @@ function filterStatus() {
 			                     }
 		                	
 		                }else{
-		                	result = result + '<td><div class="tblminwidth-50">---</div></td>';
+		                	 result = result + '<td><div class="tblminwidth-50">';
+			                	if(opt.status != null && opt.status != '' && opt.status !='undefined' && opt.status != 0){
+			                		 result = result + '<font color="green">&nbsp;Active</font>';	 
+			                	 }else{
+			                		 result = result + '<font color="red">&nbsp;In-Active</font>';	
+			                	 }
+		                	 result = result +'</div></td>';
 		                }
-		                
-		               
-	                    	 
-		                
 		                
 		                
 		                result = result + '	 </tr>';
@@ -1029,7 +999,6 @@ function loadProjectMembersDetails(data,candidateName){
 				changeMonth: true,
 				changeYear: true, 
 				minDate:projectStartDate,
-				 
 		        onClose : function(selected) {
 		        	var dt = $(this).datepicker('getDate', '+1d');
 					$("#projectStartDate").datepicker("option", "minDate", dt);
@@ -1039,18 +1008,38 @@ function loadProjectMembersDetails(data,candidateName){
 			});
 	  }
 	  
-		$("#projectEndDate").datepicker({
-			dateFormat : finalDateFormatAssignEmpUpdate,
-			changeMonth: true,
-			changeYear: true, 
-			minDate: projectStartDate,
-	        onClose : function(selected) {
-	        	 var dt = $(this).datepicker('getDate', '-1d');
-					$("#projectEndDate").datepicker("option", "maxDate", dt);
-					removeEndDateValidation();
-					getEstimatedHours();
-			}
-		});
+	  if(data.memberEndDate != null && data.memberEndDate != "" && data.memberEndDate != "undefined"){
+		  $("#projectEndDate").datepicker({
+				dateFormat : finalDateFormatAssignEmpUpdate,
+				changeMonth: true,
+				changeYear: true, 
+				maxDate:data.memberEndDate,
+				minDate: projectStartDate,
+		        onClose : function(selected) {
+// 		        	 var dt = $(this).datepicker('getDate', '-1d');
+// 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+						removeEndDateValidation();
+						getEstimatedHours();
+				}
+			});
+	  }else{
+			  $("#projectEndDate").datepicker({
+					dateFormat : finalDateFormatAssignEmpUpdate,
+					changeMonth: true,
+					changeYear: true, 
+					minDate: projectStartDate,
+			        onClose : function(selected) {
+//	 		        	if(projectEndDate != null && projectEndDate != "" && projectEndDate != "undefined"){
+//	 		        		var dt = $(this).datepicker('getDate', '-1d');
+//	 	 						$("#projectEndDate").datepicker("option", "maxDate", dt);
+//	 		        	}
+						removeEndDateValidation();
+						getEstimatedHours();
+					}
+				});
+		
+	  } 
+		
 		
 		$("#billRateEstimatedDate").datepicker({
 			dateFormat : finalDateFormatAssignEmpUpdate,
@@ -1590,3 +1579,119 @@ function toDate(selector) {
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script>  
+
+
+<!-- ----------------------------Filter Script By Laxman -------------------------------------- -->
+<script>
+function closeFilterTeamPop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openFilterTeamPop(){
+	 $("#teamFilterPopup").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+</script>
+
+
+<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="teamFilterPopup">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="col-md-3">
+						<div class="row">
+						   <div class="col-md-12 mb">
+							  <label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="StatusFilter">
+										 <li class="checkBox positionRelative"><input id="c6" type="checkbox"   name="employeeStatus" value ="Active" ><label for="c6">Active</label></li>     
+										 <li class="checkBox positionRelative"><input id="c7" name="employeeStatus" type="checkbox" value ="In-Active" ><label for="c7">In-Active</label></li>
+			                        </ul>
+								 </div>
+							 </div>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-4 positionRelative">
+								<div class="clearfix dynamic_search filterDynamicsearch">
+									<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+									<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+								</div>
+								 <div class="clearfix filterSearch-ul">
+									<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">  
+										<li class="checkBox positionRelative"><input  id="roleName${report.id}" name="roleName" value ="${roles.id}"   type="checkbox"><label for="roleName${roles.id}">${roles.displayName}</label></li>
+									  </c:forEach>
+									</ul>
+								 </div> 
+							</div>
+							
+							<div class="col-md-4 mb positionRelative">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myTeamInput" onkeyup="myTeamFunction()" placeholder="Team" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamUL">
+										<c:forEach var="team" items="${teamList}"> 
+										<li class="checkBox positionRelative clearfix"><input value="${team.id}" name="teams"  type="checkbox" ><label>${team.name}</label></li>
+										</c:forEach>
+										</ul>
+									 </div> 
+							 </div>
+							 
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTeamPop();getFilterEmployeeDetails();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetPorjectTeamFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+	  </div>
+	   
+<script>
+function resetPorjectTeamFilter(){
+	$("ul#StatusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
+	
+	getFilterEmployeeDetails();
+}
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myTeamFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myTeamUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+</script>

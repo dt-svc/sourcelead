@@ -12,11 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "ORGLOCATION_FORM_FIELDS", catalog = "sourcelead")
+@Table(name = "ORGLOCATION_FORM_FIELDS")
 public class OrglocationFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 
@@ -111,6 +113,14 @@ public class OrglocationFormFields implements Serializable{
     @JoinColumn(name="UPDATED_BY", nullable=false )
 	private User updatedBy;
 
+	@Column(name="DATA_VALIDATION_TYPE",columnDefinition = "TEXT default NULL")
+	private String dataValidationType;
+	
+	
+	@Transient
+	@JsonProperty
+	private String dataValidationRange;
+	
 	public Long getId() {
 		return id;
 	}
@@ -301,6 +311,22 @@ public class OrglocationFormFields implements Serializable{
 
 	public void setPlaceHolder(String placeHolder) {
 		this.placeHolder = placeHolder;
+	}
+
+	public String getDataValidationType() {
+		return dataValidationType;
+	}
+
+	public void setDataValidationType(String dataValidationType) {
+		this.dataValidationType = dataValidationType;
+	}
+
+	public String getDataValidationRange() {
+		return dataValidationRange;
+	}
+
+	public void setDataValidationRange(String dataValidationRange) {
+		this.dataValidationRange = dataValidationRange;
 	}
 	
 	

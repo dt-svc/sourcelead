@@ -1,7 +1,7 @@
 package com.bis.sourcelead.web;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,225 +9,272 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
 public class StaticWebController {
-	
+
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
+	public ModelAndView setMetaProperties(String viewPage) throws MissingResourceException {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
+		try {
+			ResourceBundle bundle = ResourceBundle.getBundle("seo");
+			if (bundle != null && bundle.getString(viewPage + ".title") != null) {
+					model.addObject("title", bundle.getString(viewPage + ".title"));
+				model.addObject("keywords", bundle.getString(viewPage + ".keywords"));
+				model.addObject("description", bundle.getString(viewPage + ".description"));
+			} else {
+				model.addObject("title", ".::Welcome to SourceLead Website::.");
+				model.addObject("keywords",
+						"Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software");
+				model.addObject("description",
+						"Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.");
+			}
+		} catch (java.util.MissingResourceException e) {
+			e.printStackTrace();
+		}
+		if (viewPage.equalsIgnoreCase("search-jobs"))
+			model.setViewName("openJobs/" + viewPage);
+		else
+			model.setViewName("static-web/" + viewPage);
+		
+		return model;
+	}
+
 	@RequestMapping("/about-us.html")
-	public String aboutUs() {
-		return "static-web/about-us";
+	public ModelAndView aboutUs() {
+		return setMetaProperties("about-us");
 	}
-	
-	@RequestMapping("/termsofuse.html")
-	public String termsofuse() {
-		return "static-web/termsofuse";
+
+	@RequestMapping("/terms-of-use.html")
+	public ModelAndView termsofuse() {
+		return setMetaProperties("terms-of-use");
 	}
-	
-	@RequestMapping("/privacypolicy.html")
-	public String privacypolicy() {
-		return "static-web/privacypolicy";
+
+	@RequestMapping("/privacy-policy.html")
+	public ModelAndView privacypolicy() {
+		return setMetaProperties("privacy-policy");
 	}
-	
+
 	@RequestMapping("/crms.html")
-	public String crms() {
-		return "static-web/crms";
+	public ModelAndView crms() {
+		return setMetaProperties("crms");
 	}
-	
+
 	@RequestMapping("/disclaimer.html")
-	public String disclaimer() {
-		return "static-web/disclaimer";
+	public ModelAndView disclaimer() {
+		return setMetaProperties("disclaimer");
 	}
-	
-	@RequestMapping("/helpManuals.html")
-	public String helpManuals() {
-		return "static-web/helpManuals";
+
+	@RequestMapping("/help-manuals.html")
+	public ModelAndView helpManuals() {
+		return setMetaProperties("help-manuals");
 	}
-	
+
 	@RequestMapping("/hrms.html")
-	public String hrms() {
-		return "static-web/hrms";
+	public ModelAndView hrms() {
+		return setMetaProperties("hrms");
 	}
-	
+
 	@RequestMapping("/ims.html")
-	public String ims() {
-		return "static-web/ims";
+	public ModelAndView ims() {
+		return setMetaProperties("ims");
 	}
-	
-	@RequestMapping("/marketplace.html")
-	public String marketplace() {
-		return "static-web/marketplace";
+
+	@RequestMapping("/market-place.html")
+	public ModelAndView marketplace() {
+		return setMetaProperties("market-place");
 	}
-	
+
 	@RequestMapping("/pms.html")
-	public String pms() {
-		return "static-web/pms";
+	public ModelAndView pms() {
+		return setMetaProperties("pms");
 	}
-	
-	@RequestMapping("/searchprofile.html")
-	public String searchprofile() {
-		return "static-web/searchprofile";
+
+	@RequestMapping("/search-profile.html")
+	public ModelAndView searchprofile() {
+		return setMetaProperties("search-profile");
 	}
-	
-	@RequestMapping("/termsnconditions.html")
-	public String termsnconditions() {
-		return "static-web/termsnconditions";
+
+	@RequestMapping("/terms-and-conditions.html")
+	public ModelAndView termsnconditions() {
+		return setMetaProperties("terms-and-conditions");
 	}
-	
+
 	@RequestMapping("/ats.html")
-	public String ats() {
-		return "static-web/ats";
+	public ModelAndView ats() {
+		return setMetaProperties("ats");
 	}
-	
+
+	@RequestMapping("/immigration.html")
+	public ModelAndView immigration() {
+		return setMetaProperties("immigration");
+	}
+
+	@RequestMapping("/mergers-acquisition.html")
+	public ModelAndView mergersAcquisition() {
+		return setMetaProperties("mergers-acquisition");
+	}
+
 	@RequestMapping("/blog.html")
-	public String blog() {
-		return "static-web/blog";
+	public ModelAndView blog() {
+		return setMetaProperties("blog");
 	}
-	
+
 	@RequestMapping("/blog1.html")
-	public String blog1() {
-		return "static-web/blog1";
+	public ModelAndView blog1() {
+		return setMetaProperties("blog1");
 	}
-	
+
 	@RequestMapping("/blog2.html")
-	public String blog2() {
-		return "static-web/blog2";
+	public ModelAndView blog2() {
+		return setMetaProperties("blog2");
 	}
-	
+
 	@RequestMapping("/blog3.html")
-	public String blog3() {
-		return "static-web/blog3";
+	public ModelAndView blog3() {
+		return setMetaProperties("blog3");
 	}
-	
+
 	@RequestMapping("/blog4.html")
-	public String blog4() {
-		return "static-web/blog4";
+	public ModelAndView blog4() {
+		return setMetaProperties("blog4");
 	}
-	
+
 	@RequestMapping("/blog5.html")
-	public String blog5() {
-		return "static-web/blog5";
+	public ModelAndView blog5() {
+		return setMetaProperties("blog5");
 	}
-	
-	@RequestMapping("/careers.html")
-	public String careers() {
-		return "static-web/careers";
-	}
-	
+
+	/*@RequestMapping("/careers.html")
+	public ModelAndView careers() {
+		return setMetaProperties("careers");
+	}*/
+
 	@RequestMapping("/careers-details.html")
-	public String careersDetails() {
-		return "static-web/careers-details";
+	public ModelAndView careersDetails() {
+		return setMetaProperties("careers-details");
 	}
-	
+
 	@RequestMapping("/contact.html")
-	public String contact() {
-		return "static-web/contact";
+	public ModelAndView contact() {
+		return setMetaProperties("contact");
 	}
-	
+
 	@RequestMapping("/crowdsourcing.html")
-	public String crowdsourcing() {
-		return "static-web/crowdsourcing";
+	public ModelAndView crowdsourcing() {
+		return setMetaProperties("crowdsourcing");
 	}
-	
-	
+
 	@RequestMapping("/demo.html")
-	public String demo() {
-		return "static-web/demo";
+	public ModelAndView demo() {
+		return setMetaProperties("demo");
 	}
-	
+
 	@RequestMapping("/email-verification.html")
-	public String emailVerification() {
-		return "static-web/email-verification";
+	public ModelAndView emailVerification() {
+		return setMetaProperties("email-verification");
 	}
-	
+
 	@RequestMapping("/faqs.html")
-	public String faqs() {
-		return "static-web/faqs";
+	public ModelAndView faqs() {
+		return setMetaProperties("faqs");
 	}
-	
+
 	@RequestMapping("/features.html")
-	public String features() {
-		return "static-web/features";
+	public ModelAndView features() {
+		return setMetaProperties("features");
 	}
-	
+
 	@RequestMapping("/help-empdata.html")
-	public String helpEmpdata() {
-		return "static-web/help-empdata";
+	public ModelAndView helpEmpdata() {
+		return setMetaProperties("help-empdata");
 	}
-	
+
 	@RequestMapping("/help-main.html")
-	public String helpMain() {
-		return "static-web/help-main";
+	public ModelAndView helpMain() {
+		return setMetaProperties("help-next");
 	}
-	
+
 	@RequestMapping("/help-next.html")
-	public String helpNext() {
-		return "static-web/help-next";
+	public ModelAndView helpNext() {
+		return setMetaProperties("terms-of-use");
 	}
-	
+
 	@RequestMapping("/home.html")
-	public String home() {
-		return "static-web/home";
+	public ModelAndView home() {
+		return setMetaProperties("home");
 	}
-	
-	@RequestMapping("/sourceleadJobPage.html")
-	public String sourceleadJobPage() {
-		return "openJobs/sourceleadJobPage";
+
+	@RequestMapping("/search-jobs.html")
+	public ModelAndView sourceleadJobPage() {
+		return setMetaProperties("search-jobs");
 	}
-	
-	@RequestMapping(value={ "/","/index.html"})
-	public String index(HttpServletRequest request) {
+
+	@RequestMapping(value = { "/", "/index.html" })
+	public ModelAndView index(HttpServletRequest request) {
 		SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
-		return "static-web/index";
+		return setMetaProperties("index");
 	}
-	
+
 	@RequestMapping("/job-details.html")
-	public String jobDetails() {
-		return "static-web/job-details";
+	public ModelAndView jobDetails() {
+		return setMetaProperties("job-details");
 	}
-	
+
 	@RequestMapping("/jobs.html")
-	public String jobs() {
-		return "static-web/jobs";
+	public ModelAndView jobs() {
+		return setMetaProperties("jobs");
 	}
-	
+
 	@RequestMapping("/privacy.html")
-	public String privacy() {
-		return "static-web/privacy";
+	public ModelAndView privacy() {
+		return setMetaProperties("privacy");
 	}
-	
+
 	@RequestMapping("/register.html")
-	public String register() {
-		return "static-web/register";
+	public ModelAndView register() {
+		return setMetaProperties("register");
 	}
-	
+
 	@RequestMapping("/team.html")
-	public String team() {
-		return "static-web/team";
+	public ModelAndView team() {
+		return setMetaProperties("team");
 	}
-	
+
 	@RequestMapping("/terms.html")
-	public String terms() {
-		return "static-web/terms";
+	public ModelAndView terms() {
+		return setMetaProperties("terms");
 	}
-	
+
 	@RequestMapping("/testimonial.html")
-	public String testimonial() {
-		return "static-web/testimonial";
+	public ModelAndView testimonial() {
+		return setMetaProperties("testimonial");
 	}
 
 	@RequestMapping("/timesheet.html")
-	public String timesheet() {
-		return "static-web/timesheet";
+	public ModelAndView timesheet() {
+		return setMetaProperties("timesheet");
 	}
-	
+
 	@RequestMapping("/vms.html")
-	public String vms() {
-		return "static-web/vms";
+	public ModelAndView vms() {
+		return setMetaProperties("vms");
 	}
+
+	@RequestMapping("/help.html")
+	public ModelAndView sourceleadHelp() {
+		return setMetaProperties("help");
+	}
+
 }

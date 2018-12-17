@@ -14,13 +14,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class RemoveDuplicateDataInConnections{
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat
  * this method is using for update the UUID for Connections
@@ -33,7 +33,7 @@ public void removeDuplicateRequestSent(String status) throws IOException, SQLExc
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT c.TO_UID as CTO_UID, u.ID as UID FROM sourcelead.CONNECTIONS c, sourcelead.USER u where c.FROM_UID = u.ID and c.CONNECTION_STATUS = ?";
+			 String sql = "SELECT c.TO_UID as CTO_UID, u.ID as UID FROM "+dbconfig.getSchema()+".CONNECTIONS c, "+dbconfig.getSchema()+".USER u where c.FROM_UID = u.ID and c.CONNECTION_STATUS = ?";
 			 stmt1 = conn.prepareStatement(sql);
 			 stmt1.setString(1, status);
 			 ResultSet rs = stmt1.executeQuery();
@@ -76,10 +76,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

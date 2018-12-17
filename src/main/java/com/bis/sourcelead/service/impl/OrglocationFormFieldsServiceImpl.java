@@ -65,6 +65,35 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setPlaceHolder(StringUtils.capitalize(orgLocFormFieldsDTO.getPlaceHolder()));
 		orgLocFormFields.setIsFieldRequired(orgLocFormFieldsDTO.getIsRequired());
 		orgLocFormFields.setStatus(orgLocFormFieldsDTO.getStatus());
+		
+		if(orgLocFormFieldsDTO.getValidationType()!= null && orgLocFormFieldsDTO.getValidationRange()!= null) {
+			StringBuilder validationBuilder = new StringBuilder();
+				switch (orgLocFormFieldsDTO.getValidationRange()) {
+				case "Length2-250":
+					validationBuilder.append("validate_length length2-250 ");
+					break;
+				case "Length2-500":
+					validationBuilder.append("validate_length length2-500 ");
+					break;
+				case "Length 500 Above":
+					validationBuilder.append("Length 500 and Above ");
+					break;
+				}
+				
+				switch (orgLocFormFieldsDTO.getValidationType()) {
+				case "Alphabets":
+					validationBuilder.append("validate_Alphabet ");
+					break;
+				case "Aplhanumeric":
+					validationBuilder.append("validate_AlphaNumaric ");
+					break;
+				case "Numbers":
+					validationBuilder.append("validate_int ");
+					break;
+				}
+				
+			orgLocFormFields.setDataValidationType(validationBuilder.toString());
+		}
 		if(orgLocFormFieldsDTO.getSlDependedntField() != null && StringUtils.isNotEmpty(orgLocFormFieldsDTO.getSlDependedntField().toString())) {
 			SourceleadFormFields sourceLeadDependantField = new SourceleadFormFields();
 			sourceLeadDependantField.setId(orgLocFormFieldsDTO.getSlDependedntField());
@@ -87,13 +116,13 @@ public class OrglocationFormFieldsServiceImpl implements OrglocationFormFieldsSe
 		orgLocFormFields.setUpdatedBy(loginUser);
 		orgLocFormFields.setUpdatedDate(new Date());
 		
-		  orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
+		OrglocationFormFields orgLocFormFieldSavedData = orglocationFormFieldsDao.saveOrglocationFormField(orgLocFormFields);
 		if(orgLocFormFieldsDTO.getOptionData() != null && !orgLocFormFieldsDTO.getOptionData().isEmpty()) {
 			for(OrglocationFormSubFieldsDTO optionData:orgLocFormFieldsDTO.getOptionData()) {
 				if(optionData != null && StringUtils.isNotBlank(optionData.getOption())) {
 				OrglocationFormSubFields subFields = new OrglocationFormSubFields();
 				subFields.setId(optionData.getId());
-				subFields.setFormField(orgLocFormFields);
+				subFields.setFormField(orgLocFormFieldSavedData);
 				subFields.setLabelName(optionData.getOption());
 				subFields.setStatus(1);
 				orglocationFormSubFieldsDao.saveOrglocationFormSubField(subFields);

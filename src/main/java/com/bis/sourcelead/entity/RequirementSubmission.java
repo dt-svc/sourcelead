@@ -50,33 +50,38 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY) 
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -180,9 +185,16 @@ public class RequirementSubmission implements Serializable{
 	private String updatedUser;
     
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
+    
+    @Column(name = "JOINED_DATE")
+    private Date joinedDate;
+    
+    @Column(name = "INVOICE_GENERATED")
+    private String invoiceGenerated;
 	
     @Transient
     @JsonProperty
@@ -215,6 +227,10 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
    	private String upDatedStr;
+    
+    @Transient
+    @JsonProperty
+   	private String joinedDateStr;
     
     @Transient
     @JsonProperty
@@ -575,6 +591,10 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private List<String> locationsList;
     
+    @Transient
+	@JsonProperty
+	private String invoiceGenerateDate;
+
     
 	public int getProfilePercentage()
 	{
@@ -1150,6 +1170,14 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getJoinedDateStr() {
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr) {
+		this.joinedDateStr = joinedDateStr;
+	}
+
 	public String getCreatedTimeStr() {
 		return createdTimeStr;
 	}
@@ -1349,6 +1377,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
+	}
+
+	public Date getJoinedDate() {
+		return joinedDate;
+	}
+
+	public void setJoinedDate(Date joinedDate) {
+		this.joinedDate = joinedDate;
 	}
 
 	public String getLoginOrgLOcationName() {
@@ -1702,4 +1738,22 @@ public class RequirementSubmission implements Serializable{
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
+
+	public String getInvoiceGenerated() {
+		return invoiceGenerated;
+	}
+
+	public void setInvoiceGenerated(String invoiceGenerated) {
+		this.invoiceGenerated = invoiceGenerated;
+	}
+
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+	
+	
 }

@@ -13,6 +13,8 @@ public enum ApplicantSubmissionDisplayStatus {
 	/*OFFER("offer"),*/
 	REQUEST_SENT("Request Sent"),
 	REJECTED("Rejected"),
+	ONHOLD("On Hold"),
+	NORESPONSE("NoResponse"),
 	BACKOUT("Backout"),
     SUBMIT_TO_CLIENT("Submit To Client"),
     OFFERMADE("Offer Made"),
@@ -20,6 +22,8 @@ public enum ApplicantSubmissionDisplayStatus {
     OFFERREJECTED("Offer Rejected"),
     OFFERHIRED("Hired"),
     NEW("New"),
+    JOINED("Joined"),
+    SELECTED_ON_INTERVIEW("Selected on Interview"),
     
     CLIENT_OFFERMADE("Client Offer Made"),
     CLIENT_OFFERACCEPTED("Client Offer Accepted"),

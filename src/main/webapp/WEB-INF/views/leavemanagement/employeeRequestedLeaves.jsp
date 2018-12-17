@@ -89,8 +89,8 @@ function redirectlocation(location){
 		var userId = '${SourceLeadWeb_userId}';
 		var searchValue = $("#requestedEmployeesTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING";
-	    prepareRequestedEmployeesList(url);
+		var url = sourceleadUrl+"/getEmployeeRequestedLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveStatus=PENDING&searchValue="+searchValue;
+		prepareRequestedEmployeesList(url);
 }
 </script> 
   
@@ -109,7 +109,7 @@ function prepareRequestedEmployeesList(url){
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
 // 		result = result + '<th>No Of Extra Days</th>';
-		result = result + '<th>Leaves Taken</th>';
+		/* result = result + '<th>Leaves Taken</th>'; */
 		result = result + '<th>This Month</th>';
 		result = result + '<th>Balance leaves</th>';
 		result = result + '<th>Action</th>';
@@ -138,7 +138,7 @@ function requestedEmployeesPagination(url){
             { "data": "leaveType"},
             { "data": "duration"},
             { "data": "noOfDays" },
-            { "data": "leavesTaken"},
+            /* { "data": "leavesTaken"}, */
             { "data": "thisMonthLeaves" },
             { "data": "balanceleaves" },
             { "data": "action"},
@@ -147,15 +147,16 @@ function requestedEmployeesPagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "empName",
+// 	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		    var result = "";
+	    	  		 var result = "";
 		    	  		if(opt.empType !=null && opt.empType != '' && opt.empType !='undefined'){
 		    	  			result = result + '     <div class="proj_show divmax-width">';
-		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>';
+		    	  			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+','+opt.totalBalLeaves+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+','+opt.totalBalLeaves+');"></i>';
 		    	  			result = result + '     </div>';
 		        		}else{
 		        			result = result + '     <div class="proj_show divmax-width">';
-		        			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'<i class="fa fa-binoculars pull-right"></i></div>';
+		        			result = result + '     <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+','+opt.totalBalLeaves+');">'+opt.empName+'<i class="fa fa-binoculars pull-right"></i></div>';
 		        			result = result + '     </div>';
 		        		}
 		              return result; 
@@ -163,6 +164,7 @@ function requestedEmployeesPagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "leaveType",
+//               "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	  result = result + '   <div title="'+opt.leaveType+'" class="tblminwidth-75">'+opt.leaveType+'</div>';
@@ -172,6 +174,7 @@ function requestedEmployeesPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "duration",
+            "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
             	result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
@@ -180,6 +183,7 @@ function requestedEmployeesPagination(url){
           }, {
               "targets": colIndex++,
               "data": "noOfDays",
+              "sortable":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
             	      result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+' day(s)</div>';	 
@@ -193,7 +197,7 @@ function requestedEmployeesPagination(url){
               	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+' day(s)</div>';	 
               	    return result; 
                 }
-              }, */{
+              }, *//* {
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
@@ -201,9 +205,10 @@ function requestedEmployeesPagination(url){
                 		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
-          },{
+          }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "thisMonthLeaves",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + '     <div class="tblminwidth-75">'+opt.thisMonthLeavesTaken+'</div>';
@@ -212,6 +217,7 @@ function requestedEmployeesPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "balanceleaves",
+	    	  	"sortable":false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		result = result + ' <div class="tblminwidth-75">'+opt.totalBalLeaves+'</div>';
@@ -220,6 +226,7 @@ function requestedEmployeesPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "action",
+                  "sortable":false,
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	  if(opt.status == 'APPROVED'){
@@ -294,8 +301,12 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 	 if((reason != null && reason != '' && reason != 'undefined') || (approveStatus == 'APPROVED')) {
 			 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
 			 $("#appRejLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(data) {
-					if(data == true){
+			 $.get(sourceleadUrl+"/approveRequestedLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&leaveTypeId="+leaveTypeId+"&approveStatus="+approveStatus+"&userId="+userId+"&numberOfDays="+numberOfDays+"&reason="+reason, function(response) {
+				 if (response && response.response === "INVALID_DATA") {
+		    		    showError(response.responseMessage);
+		    		} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
 						$("#popUp").empty();
 						$("#appRejLoading").removeAttr("style");
 			 			$("#remove_user_pop, .side_mask").fadeOut();
@@ -311,7 +322,11 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 			    	 	$(".side_mask").fadeOut(200);
 			    	 	$("body").css('overflow-y', 'auto');
 						getRequestedEmployeesList();
-					}
+					} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				 } else {
+				    showError("Operation failed, please try again");
+				 }
 				});
  }else{
 	 $("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
@@ -321,12 +336,14 @@ function approveLeave(leaveUUID,leaveTypeId,approveStatus,numberOfDays){
 </script>
 
 <script>
-function getRequestedAproveSummary(leaveUUID,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
-		if(data != null){
+function getRequestedAproveSummary(leaveUUID,orgLocationId,totalBalLeaves){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+		   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +'<span class="btn btn-primary btn-sm mr10" title="APPROVE" onclick="approveLeavePopup(\''+data.leaveUUID+'\',\''+data.leaveTypeId+'\',\'APPROVED\',\''+data.noOfDays+'\');">APPROVE</span>';
@@ -393,6 +410,16 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 			 result = result +'</div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
+			 result = result +'<label class="col-md-2 control-label"><b>Type:</b></label>';
+			 result = result +'<div class="col-md-8">';
+			 if(data.type != null && data.type !='' && data.type !='undefined'){
+				 result = result +'<span>'+data.type+'</span>';
+			 }else{
+	            	result = result +' <span>--</span>';
+	            }
+			 result = result +'</div>';
+			 result = result +'</div>';
+			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Duration:</b></label>';
 			 result = result +'<div class="col-md-8">';
 			 if(data.duration != null && data.duration !='' && data.duration !='undefined'){
@@ -412,7 +439,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+         /*     result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
         	 if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -421,14 +448,14 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>' */;
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
              if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
 				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
 			 }else{
-	            	result = result +' <span>--</span>';
+	            	result = result +' <span>0</span>';
 	            }
              result = result +'</div>';
              result = result +'</div>';
@@ -438,7 +465,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
 				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
-	            	result = result +' <span>--</span>';
+	            	result = result +' <span>0</span>';
 	            }
              result = result +'</div>';
              result = result +'</div>';
@@ -479,6 +506,19 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
              $("#leaveSummaryId").append(result);
             
 		}	
+		   
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+ 		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}	   
+		 
 		 
 	});  
 }

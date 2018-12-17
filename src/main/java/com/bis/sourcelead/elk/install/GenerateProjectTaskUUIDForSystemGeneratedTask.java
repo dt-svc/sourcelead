@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 	/**
 	 * @author shivayogi
@@ -42,7 +43,7 @@ public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 			conn = dataSource.getConnection();
 			for(String task:taskName) {
 				String taskNameArray[]  = task.split(",");
-				 String sql = "SELECT distinct PROJECT_ID FROM sourcelead.PROJECT_TASKS";
+				 String sql = "SELECT distinct PROJECT_ID FROM "+dbconfig.getSchema()+".PROJECT_TASKS";
 				 stmt1 = conn.prepareStatement(sql);
 				 ResultSet rs = stmt1.executeQuery();
 				 while(rs.next()){
@@ -50,7 +51,7 @@ public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 					 
 					 if(projectId != null && projectId > 0) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = " INSERT INTO sourcelead.PROJECT_TASKS(`PROJECT_TASKS_UUID`,`TASK_NAME`, `DESCRIPTION`, `BILLABLE_TYPE`,`PROJECT_ID`,`TASK_TYPE`,`TASK_STATUS`,`STATUS`) VALUES (?,?,?,?,?,?,?,?)";
+					 String query = " INSERT INTO "+dbconfig.getSchema()+".PROJECT_TASKS(`PROJECT_TASKS_UUID`,`TASK_NAME`, `DESCRIPTION`, `BILLABLE_TYPE`,`PROJECT_ID`,`TASK_TYPE`,`TASK_STATUS`,`STATUS`) VALUES (?,?,?,?,?,?,?,?)";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setString(2, taskNameArray[0]);
@@ -83,10 +84,6 @@ public class GenerateProjectTaskUUIDForSystemGeneratedTask {
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

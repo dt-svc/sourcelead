@@ -14,9 +14,9 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Paid Bills</h2>
+        <h2>Paid Bill(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Paid Bills</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Paid Bill(s) </div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -52,11 +52,11 @@ $(document).ready(function(){
           <form:form id="paidbill_custom_form" name="paidbill_custom_form" method="post">
           <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
             <div class="pull-left">
-              <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="From Date">
+              <div class="pull-left mr5" style="width: 140px" id="fromDateDiv">
+                <input value="" name="Date" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="From Date" readonly>
               </div>
-              <div class="pull-left mr5" style="width: 140px">
-                <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="ToDate Name">
+              <div class="pull-left mr5" style="width: 140px" id="toDateDiv">
+                <input value="" name="Date" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="ToDate Name" readonly>
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="getPaidBillCustomReport();"><i class="fa fa-search"></i></button>
             </div>
@@ -66,7 +66,7 @@ $(document).ready(function(){
           
         </div>              
          <div class="col-md-2" id="getPaidBillreport">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillreport();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillreport();">Run</button>
 		</div>
         <!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
@@ -301,55 +301,48 @@ function getPaidBillsCustomDates() {
 		 document.getElementById("getPaidBillreport").style.display="none";
 		 //$("#jobReportList_custome").attr("disabled", "disabled");
 		 
+		  $('#fromDate').datepicker({
+				dateFormat : "yy-mm-dd",
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate());
+					$("#toDate").datepicker("option", "minDate", dt);
+					removeErrMsg();
+				}
+			});
+		  
+		  $('#toDate').datepicker({
+				dateFormat : "yy-mm-dd",
+				changeMonth: true,
+				changeYear: true, 
+				onSelect : function(selected) {
+					var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate());
+					$("#fromDate").datepicker("option", "maxDate", dt);
+					removeErrMsgTo();
+				}
+			});
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 document.getElementById("getPaidBillreport").style.display="block";
 		 //$("#jobReportList_custome").removeAttr("disabled");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
-		 document.getElementById("fromDateDiv").style.display="none";
-		 document.getElementById("toDateDiv").style.display="none";
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 	 }
 }
 </script>  
-
+ 
 <script>
-  $( function() {
-		/*  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  } */
-    
-	  $('#fromDate').datepicker({
-			dateFormat : "yy-mm-dd",
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : "yy-mm-dd",
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-			}
-		});
-  } );
-  </script>
-
+function removeErrMsg(){
+	  $("#fromDateDiv").find("p.jquery_form_error_message").remove();
+}
+function removeErrMsgTo(){
+	  $("#toDateDiv").find("p.jquery_form_error_message").remove();
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

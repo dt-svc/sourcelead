@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.User;
 
 public class OrgSpocDTO extends SearchDTO implements Serializable{
@@ -103,6 +104,7 @@ public class OrgSpocDTO extends SearchDTO implements Serializable{
 	
 	private String ownerUserName;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	
 	private String stringDate;

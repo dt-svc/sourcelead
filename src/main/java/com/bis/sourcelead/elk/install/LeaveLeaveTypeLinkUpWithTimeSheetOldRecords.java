@@ -21,6 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class LeaveLeaveTypeLinkUpWithTimeSheetOldRecords {
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 public void LeaveLeaveTypeLinkUpWithTimeSheet() throws IOException, SQLException {
 	Connection conn = null ;
@@ -32,13 +34,13 @@ public void LeaveLeaveTypeLinkUpWithTimeSheet() throws IOException, SQLException
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.LEAVE_TYPE;";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".LEAVE_TYPE;";
 			 stmt1 = conn.createStatement();
 			 stmt2 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 while(rs1.next()){
 				 Long  orgLocationId = rs1.getLong("ORGLOCATION_ID");
-				 String projects ="SELECT * FROM sourcelead.PROJECTS ps WHERE ps.id IN (select pc.PROJECT_ID from  sourcelead.PROJECT_CLIENTS pc where pc.ORG_LOCATIONS_ID = "+orgLocationId+");";
+				 String projects ="SELECT * FROM "+dbconfig.getSchema()+".PROJECTS ps WHERE ps.id IN (select pc.PROJECT_ID from  sourcelead.PROJECT_CLIENTS pc where pc.ORG_LOCATIONS_ID = "+orgLocationId+");";
 				 ResultSet rs2 = stmt2.executeQuery(projects);
 				 while(rs2.next()){
 					 	String projectTasksUUID = SourceLeadRandomCodeHelper.generateRandomUUID();
@@ -61,7 +63,7 @@ public void LeaveLeaveTypeLinkUpWithTimeSheet() throws IOException, SQLException
 						String UpdatedBy = "SLADMIN";
 						Date updatedDate = new Date(new java.util.Date().getTime());
 						
-						String projectTasks = "INSERT INTO `sourcelead`.`PROJECT_TASKS` (PROJECT_TASKS_UUID, TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_ID, TASK_TYPE, LEAVE_TYPE_ID,TASK_STATUS,STATUS, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+						String projectTasks = "INSERT INTO `"+dbconfig.getSchema()+"`.`PROJECT_TASKS` (PROJECT_TASKS_UUID, TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_ID, TASK_TYPE, LEAVE_TYPE_ID,TASK_STATUS,STATUS, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 						try {
 			    			 PreparedStatement pstmt2 = conn.prepareStatement(projectTasks);
 				    		 pstmt2.setString(1, projectTasksUUID);
@@ -109,10 +111,6 @@ public void LeaveLeaveTypeLinkUpWithTimeSheet() throws IOException, SQLException
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

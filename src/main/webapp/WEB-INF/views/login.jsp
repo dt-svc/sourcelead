@@ -14,19 +14,30 @@
     <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
     <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-     <script src="/resources/js/jquery-2.1.4.min.js"></script> 
+     <script src="/resources/js/jquery-2.1.4.min.js"></script>
+     
+     <script src="/resources/js/sourcelead.common.js"></script> 
 
  
    <%
-    if (request.getRequestURL().toString().indexOf("www.") == -1 
+   
+   
+    if (request.getRequestURL().toString().indexOf("www.") == -1
             && request.getRequestURL().toString().indexOf("localhost") == -1
+                 
             && request.getRequestURL().toString().indexOf("qa.") == -1
             && request.getRequestURL().toString().indexOf("staging.") == -1
             && request.getRequestURL().toString().indexOf("demo.") == -1) {
         response.sendRedirect("https://www.sourcelead.com/login");
     } %>
  
- 
+ <script>
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
+});
+</script>
 <script>
 window.onload = function() {
 	var userName = '${username}';
@@ -38,6 +49,14 @@ window.onload = function() {
 	}
 }
 </script>
+
+<script>
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
+});
+</script>
 <script>
 $(document).ready(function(){
 	var location = window.location.origin;
@@ -46,6 +65,7 @@ $(document).ready(function(){
         success: function(data) {
         	if(data !== ""){
         		$("#maintenanceStatus").append(data.mainMessage);
+        		 $(".marQ").css({ display: "block" });
         	}
         }
 	}); 
@@ -55,7 +75,7 @@ $(document).ready(function(){
  
  <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
  <div class="marQ">
-        <marquee behavior="scroll" direction="left" id="">
+        <marquee behavior="scroll" direction="left">
         <p id="maintenanceStatus"></p>
         </marquee>
     </div>

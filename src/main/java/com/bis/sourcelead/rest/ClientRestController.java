@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -99,6 +102,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -138,6 +142,8 @@ public class ClientRestController {
 
 	@Autowired
 	HttpServletRequest request;
+	
+	@Autowired
 	ProjectApproverHierarchyService projectApproverHierarchyService;
 
 	@Autowired
@@ -200,6 +206,9 @@ public class ClientRestController {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	ReferContactsDao referContactsDao;
 	
 	/**
 	 * Handles to get Orgs
@@ -454,7 +463,7 @@ public class ClientRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT','ROLE_CREATE_REQUIREMENT','ROLE_VIEW_CLIENT','ROLE_VIEW_VENDOR')")
 	@RequestMapping(value = {"/getOrgSpocsList","/rest/getOrgSpocsList"}, method = RequestMethod.POST)
 	@ResponseBody ResponseList<OrgSpocDTO> getOrgSpocsList(@RequestParam(value = "orgRelationId", required = false) String orgRelationId,
 			                             @RequestParam(value = "type", required = false) String type) throws Exception {
@@ -462,7 +471,7 @@ public class ClientRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 ResponseList<OrgSpocDTO> vendConList = new ResponseList<>();
 		 List<OrgSpocDTO> vconList = new ArrayList<>();
-		 if(orgRelationId != "" && orgRelationId != null) {
+		 if(orgRelationId != null && orgRelationId != "") {
 			 List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(Long.valueOf(orgRelationId), loginUser.getId(),orgLocations.getId(),type);
 				for(OrgSpoc orgspoc:orgSpocsList){
 					OrgSpocDTO orgSpocDTO = new OrgSpocDTO();
@@ -593,6 +602,7 @@ public class ClientRestController {
 	@PreAuthorize("hasAnyRole('ROLE_DELETE_CLIENT_CONTACT','ROLE_DELETE_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/terminateSpoc", method = RequestMethod.POST)
 	 public @ResponseBody String terminateSpoc(@RequestParam(value = "spocId", required = false) Long spocId,
+			 @RequestParam(value = "spocEmail", required = false) String spocEmail,
 			 @RequestParam(value="reason", required=false) String reason,
 			 @RequestParam(value="userId", required=false) String userId,
 			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
@@ -603,6 +613,19 @@ public class ClientRestController {
 					orgSpoc.setTerminateReason(reason);
 					orgSpocService.addOrgSpoc(orgSpoc);
 					logger.debug("Spoc was terminated");
+					
+				ReferContacts referContacts=referContactsDao.getReferContactsByEmails(Long.parseLong(userId), spocEmail);
+				
+				if(referContacts !=null){
+					referContacts.setUpdatedDate(new Date());
+					if(responderType.equalsIgnoreCase("client")){
+						referContacts.setClientType(0);
+					}else{
+						referContacts.setVendorType(0);
+					}
+					referContactsDao.addReferContacts(referContacts);
+				}
+				
 					List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgSpoc.getOrgRelations().getId(), Long.parseLong(userId), Long.parseLong(orgLocationId), responderType);
 					ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
 					clientVendorIndex.setNoContacts((long)orgSpocsList.size());
@@ -676,6 +699,26 @@ public class ClientRestController {
 						 notificationsService.saveNotification(notifications);
 	        		}
 	        		
+	        		
+					 if(loginUser != orgSpoc.getVendorUser()){
+						 
+						 ReferContacts referContact=referContactsDao.getReferContactsByEmails(loginUser.getId(), orgSpoc.getVendorUser().getEmail());
+						 if(referContact ==null){
+							 ReferContacts referContacts=new ReferContacts();
+							 referContacts.setReferFromUser(orgSpoc.getClientUser());
+							 referContacts.setFirstName(orgSpoc.getVendorUser().getFirstName());
+							 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
+							 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
+							 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+							 referContacts.setContactUser(orgSpoc.getVendorUser());
+							 referContacts.setVendorType(1);
+							 referContacts.setCreatedDate(new Date());
+							 referContacts.setCreatedBy(loginUser.getUserCode());
+							 referContactsDao.addReferContacts(referContacts);
+						 }
+						
+					 }
+	        		
 	        		SourceLeadSessionManager.setSessionAttribute(request, "acceptContact","Success !! Accepted the invitation.");
 	        	}else if(invitationStaus != null && "Rejected".equals(invitationStaus)){
 	        		orgSpoc.setInvitationStatus(Constants.MAIL_REJECTED);
@@ -702,11 +745,12 @@ public class ClientRestController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_CLIENT_CONTACT','ROLE_VIEW_EDIT_CLIENT_CONTACT','ROLE_VIEW_VENDOR_CONTACT','ROLE_VIEW_EDIT_VENDOR_CONTACT')")
 	 @RequestMapping(value = "/getSpocAndOwnerDetailsById", method = RequestMethod.POST)
-	 @ResponseBody String getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId 
-			                                        ,@RequestParam(value = "type", required = false) String type) throws Exception{
+	 @ResponseBody OrgSpoc getSpocAndOwnerDetailsById(@RequestParam(value = "spocId", required = false) Long spocId,@RequestParam(value = "ownerId", required = false) Long ownerId,@RequestParam(value = "spocUserId", required = false) Long spocUserId,@RequestParam(value = "tempOwnerId", required = false) Long tempOwnerId 
+			                                        ,@RequestParam(value = "type", required = false) String type,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
+			                                        @RequestParam(value = "spocLocationId", required = false) Long spocLocationId) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 
+
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
 		     List<User>  userList = null;
@@ -720,13 +764,54 @@ public class ClientRestController {
 		     	if(null != userList && !userList.isEmpty()){
 		    	  orgSpoc.setUserList(userList);
 		     }
+				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(spocLocationId,orgRelationId,orgLoc.getId());
+		     	SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+				
+				if(action != null && action.getId()!= null){
+				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLoc.getId());
+				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+				 if(sections != null && !sections.isEmpty()) {
+					 for(SourceleadSectionDTO sec:sections) {
+						 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+							 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+							 custom.setCustomFormFieldId(customFields.getId());
+							 formFieldId.add(custom);
+						 }
+					 }
+					 if(formFieldId != null && !formFieldId.isEmpty() && orgLoc != null) {
+						
+						Map<Long, String[]> clientData = null;
+						if(orgRelation.getResponderLocationId().getId().longValue() != orgLoc.getId().longValue()) {
+				 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+				 			}else if(orgRelation.getLocationId().getId().longValue() != orgLoc.getId().longValue()) {
+				 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+				 			}
+					 Map<String,String> dataMap = new HashMap<>();
+					 if(clientData!= null && !clientData.isEmpty()) {
+						 for(Entry<Long, String[]> userCustomData:clientData.entrySet()) {
+							String labelName = userCustomData.getValue()[0];
+							 String labelData = userCustomData.getValue()[1];
+							 String labelId = userCustomData.getValue()[2];
+							 Long id = userCustomData.getKey();
+							 StringBuilder keyValue =  new StringBuilder();
+							 keyValue.append(labelName).append("$").append(labelData);
+							 dataMap.put(id.toString(), keyValue.toString());
+							 orgSpoc.setClientCustomFieldlabelNameAndValue(dataMap);
+						 	}
+					 	}
+					 
+					 
+					 }
+				 }
+				}
+				
 		     String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editSpocMsg");
 		     if(msg != null && msg != ""){
 		    	 orgSpoc.setMsg(msg);
 		    	 SourceLeadSessionManager.removeSessionAttribute(request, "editSpocMsg");
 		     }
 		     
-		 return commonUtil.toJSON(orgSpoc);
+		 return orgSpoc;
 		}
 
 	/**
@@ -918,6 +1003,13 @@ public class ClientRestController {
 			clientVendorDTO.setPaymentTerms(orgRelation.getPaymentTerms());
 		}
 		
+		if(orgRelation.getGenerateInvoice() !=null){
+			clientVendorDTO.setGenerateInvoice(orgRelation.getGenerateInvoice());
+		}
+		if(orgRelation.getGenerateBill() != null){
+			clientVendorDTO.setGenerateBill(orgRelation.getGenerateBill());
+		}
+		
 		if(orgRelation.getCreatedBy() != null){
 			User user = userService.getUserByUserCode(orgRelation.getCreatedBy());
 			clientVendorDTO.setVendorCreateduserName(user.getFullName());
@@ -990,8 +1082,12 @@ public class ClientRestController {
 			}
 		}
 		
-		
-		
+		if(StringUtils.isNotBlank(orgRelation.getIsLawFirm())){
+			clientVendorDTO.setIsLawFirm(orgRelation.getIsLawFirm());
+		}
+		if(StringUtils.isNotBlank(orgRelation.getIsAccountingFirm())){
+			clientVendorDTO.setIsAccountingFirm(orgRelation.getIsAccountingFirm());
+		}
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
 		SourceleadActions action = null;
@@ -1314,6 +1410,7 @@ public class ClientRestController {
 				   submissionTemplate = submissionTemplateService.getSubmissionTemplateById(Long.parseLong(templateId));
 				}else{
 					submissionTemplate = new SubmissionTemplate();
+					submissionTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				}
 			   
 			   submissionTemplate.setTemplateName(jsonObj.getString("templateName").trim());
@@ -1969,7 +2066,7 @@ public class ClientRestController {
 			/*
 			 * This array is used to enable the sorting feature in data tables. And, these names should match the ELK Candidate index field names.
 			 */
-		 
+		 logger.info("List from Elk Starts>>>>>"+Calendar.getInstance().getTime());
 		    String[] tableColumns1 = null;
 			if(Constants.JOB_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType()) || 
 					Constants.HOT_LIST_CAMPAIGN_VENDOR.equalsIgnoreCase(clientVendorDTO.getResponderType())){
@@ -2224,6 +2321,24 @@ public class ClientRestController {
 							}
 							boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 						}
+						
+						
+						String spocStatus = null;
+						//Spoc Status
+						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatus();
+						}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
+						}
+						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
+							BoolQueryBuilder statusBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : statusAdvancedArray){
+								statusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+								spocStatus = keywd;
+							}
+							boolQueryBuilder.must(statusBoolQueryBuilder);
+						}
 			  // --end
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
@@ -2233,27 +2348,14 @@ public class ClientRestController {
 
 				SearchHit searchHits[] = searchResponse.getHits().getHits();
 				
+				
+				logger.info("List from Elk Ends>>>>>"+Calendar.getInstance().getTime());
+				
 				List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
-				
-				String spocStatus = null;
-				//Spoc Status
-				List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
-				if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
-					statusAdvancedArray = clientVendorDTO.getStatus();
-				}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
-					statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
-				}
-				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
-					for(String keywd : statusAdvancedArray){
-						spocStatus = keywd;
-					}
-				}
-				
-				
-				
+				logger.info("List Of contacts Starts>>>>>"+Calendar.getInstance().getTime());
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
@@ -2333,32 +2435,58 @@ public class ClientRestController {
 									 clientVendorContactsIndex.setOwnerUserId(clientVendorContactsIndex.getVendorUserId());
 								}
 								
-								VendorOnboarding onboard = vendorOnboardService.getVendorOnboardingByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
-								if(onboard != null) {
-									clientVendorContactsIndex.setOnboardUUID(onboard.getOnboardUUID());
-								}
-								
-								
-								OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
-								if(orgSpoc != null) {
-									Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
-									if(notifications != null) {
-										clientVendorContactsIndex.setNotificationUUID(notifications.getUUID());
+								if((clientVendorContactsIndex.getSpocUserId() != null && clientVendorContactsIndex.getSpocUserId().longValue() == loginUser.getId().longValue())  &&  StringUtils.isNotBlank(clientVendorContactsIndex.getInvitationStatus()) && clientVendorContactsIndex.getInvitationStatus().equalsIgnoreCase("Sent")) {
+									String onboardUUID = vendorOnboardService.getVendorOnboardingUUIDByOrgRelationId(clientVendorContactsIndex.getOrgRelationId());
+									if(onboardUUID != null) {
+										clientVendorContactsIndex.setOnboardUUID(onboardUUID);
 									}
 									
+									
+								/*	OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(clientVendorContactsIndex.getId());
+									if(orgSpoc != null) {
+										Notifications notifications = notificationsService.getNotificationBySpocUUID(orgSpoc.getUUID());
+										if(notifications != null) {
+											clientVendorContactsIndex.setNotificationUUID(notifications.getUuId());
+										}
+										
+									}*/
+									
+									String notificationUUID = notificationsService.getNotificationUUIDByOrgSpocId(39L);
+									if(notificationUUID != null) {
+										clientVendorContactsIndex.setNotificationUUID(notificationUUID);
+									}
 								}
+								
 								
 								
 						 }
 					}	
 					
 				}
-				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
-				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
-								0, 10, "invitationStatus.keyword", SortOrder.DESC, boolQueryBuilderForCount);
+				logger.info("List Of contacts Ends>>>>>"+Calendar.getInstance().getTime());
+				if(spocStatus != null){
+					response.setRecordsFiltered(clientVendorContactsList.size());
+				}else{
+					response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+				}
+			
+				Long totalRecorCount = 0l;
+				if(spocStatus != null){
+					totalRecorCount = Long.valueOf(clientVendorContactsList.size());
+				}else{
+					SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+							.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
+									0, 10, "invitationStatus.keyword", SortOrder.DESC, boolQueryBuilderForCount);
+					if(searchResponseForCount !=null){
+						totalRecorCount = searchResponseForCount.getHits().getTotalHits();
+					}else{
+						totalRecorCount = 0l;
+					}
+					
+				}
 				
-			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+				
+			response.setRecordsTotal(totalRecorCount == 0 ? response.getRecordsFiltered() : totalRecorCount.intValue());
 			response.setData(clientVendorContactsList);
 			 return response;
 		}

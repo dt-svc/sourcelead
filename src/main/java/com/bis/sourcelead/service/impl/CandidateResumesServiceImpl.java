@@ -17,6 +17,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -108,7 +109,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileURL(fileInfo.getFileURL());
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
-				FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				try {
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				} catch (Exception e) {
+				}
 			}
 			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
 				candidateResume.setTitle(candidateResumeDTO.getTitle());
@@ -145,8 +149,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileInfo.getFileURL());
-				candidateResume.setFileName(fileInfo.getFileName());
+				if(StringUtils.isNotBlank(fileInfo.getFileURL())) {
+					candidateResume.setFileURL(fileInfo.getFileURL());
+				}
+				if(StringUtils.isNotBlank(fileInfo.getFileName())) {
+					candidateResume.setFileName(fileInfo.getFileName());
+				}
 				
 				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
 					candidateResume.setTitle(fileInfo.getFileName());
@@ -368,5 +376,17 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception
 	{
 		return candidateResumesDao.getCandidateResumeByCandidateId(candidateId);
+	}
+
+
+	@Override
+	public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateActiveResumeCountByCandidateId(candidateId);
+	}
+
+
+	@Override
+	public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateLatesResumeDetails(candidateId);
 	}
 }

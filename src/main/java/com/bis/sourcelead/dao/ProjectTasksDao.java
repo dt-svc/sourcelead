@@ -53,7 +53,15 @@ public interface ProjectTasksDao {
     
     public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
     
-	ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+	ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
 
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
     
+	List<ProjectTasks> getTasksListByLookupIdAndCategoryType(Long lookupId,String taskType)throws Exception;
+	
+	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO, Date[] searchDates)throws Exception;
+
+
 }

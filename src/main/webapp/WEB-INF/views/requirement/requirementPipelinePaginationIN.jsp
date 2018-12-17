@@ -5,7 +5,11 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+	
+<div class="comMask" style="display: none;"></div>
+<div class="modal-POP">
+	<div id="showDetailsOfInterviews"></div>
+</div>
 
 <script>
 	function requirementPipelinePaginationIN(url, requirementId, submissionType) {
@@ -21,7 +25,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -142,9 +146,13 @@
 													&& opt.totalNoOfInterviews != ''
 													&& opt.totalNoOfInterviews != 'undefined') {
 												result = result
-														+ '<td><div><span>'
+														+ '<td><a href="javascript:void(0)" onclick="fetchInterviewsListForSubmission('
+														+ opt.id
+														+ ','
+														+ opt.candidateId
+														+ ');"><span>'
 														+ opt.totalNoOfInterviews
-														+ '</span></div></td>';
+														+ '</span></a></td>';
 											} else {
 												result = result
 														+ '<td><div><span>--</span></div></td>';
@@ -265,12 +273,19 @@
 															+ ',\''
 															+ submissionType
 															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionStatus
-															+ "</option><option value='Reject'>Reject</option>";
-													if (opt.submissionStatus == 'OFFERACCEPTED'
-															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													/* if (opt.submissionStatus == 'INTERVIEW'){
+														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
+													} */
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='On Hold'>On Hold</option>";
+														}
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}
+													result = result + "<option value='Reject'>Reject</option>";
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
+														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
 																+ '<option value="backout">BackOut</option>';
 													}
@@ -298,6 +313,9 @@
 							"bLengthChange" : true,
 							"bDestroy" : true,
 							"ordering" : true,
+							"createdRow": function ( row, data, index ) {
+					    		row.setAttribute('id',"job_"+data.id);
+				    	    },
 							"oLanguage" : {
 								"sSearch" : "",
 								"sZeroRecords" : "",
@@ -314,4 +332,22 @@
 			}
 		});
 	}
+</script>
+
+
+<script type="text/javascript">
+function fetchInterviewsListForSubmission(submissionId, candidateId){
+		  $('#showDetailsOfInterviews').empty();
+      	  $("#showDetailsOfInterviews").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+          	$.ajax({
+    			type: "POST",
+    		    url: sourceleadUrl+"/getInterviewsListBySubmission?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId, 
+    		    success: function(data) {
+    		    	$('#showDetailsOfInterviews').removeAttr("style");
+    		    	$('#showDetailsOfInterviews').append(data);
+    		    },
+    		});
+          	$('#loading').removeAttr("style");
+          	$(".comMask, .modal-POP").fadeIn();
+}
 </script>

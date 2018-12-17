@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
+import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
+import com.bis.sourcelead.payroll.service.AssociateBankDataService;
+import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
+import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OnBoardingTemplateDocumentsService;
 import com.bis.sourcelead.service.OnBoardingTemplateService;
 import com.bis.sourcelead.service.OnboardTasksService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -72,6 +83,23 @@ public class CandidateOnBoardController {
 	@Autowired
 	CandidateOffBoardingService candidateOffBoardingService;
 	
+	@Autowired
+	AssociateBankDataService associateBankDataService;
+	
+	@Autowired
+	AssociateTaxService associateTaxService;
+	
+	@Autowired
+	AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
+	 private OrgService orgService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -87,12 +115,73 @@ public class CandidateOnBoardController {
  	}
 	
 	@RequestMapping(value = "/onboardingCandidateStep2")
-	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) {
+	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		if(candidateOnBoarding != null){
+			model.addObject("candidateOnBoarding",candidateOnBoarding);
+		}
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
 	}
+	
+	@RequestMapping(value = "/onboardingCandidateBankingDetails")
+	public ModelAndView onboardingCandidateBankingDetails(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("userId", user.getId());
+		 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		 model.addObject("candidateId", candidate.getId());
+		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
+		 model.addObject("paymentList", paymentList);
+		 model.addObject("paymentListSize", paymentList.size());
+		 model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
+		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+			 model.setViewName("onboard/onboardingCandidateBankingDetails");
+		}else {
+			 model.setViewName("onboard/onboardingCandidateUSABankingDetails");
+		}
+		 model.addObject("orgLocationId", orgLocations.getId());
+		return model;
+	}
+	
+	@RequestMapping(value = "/onboardingCandidateTaxDetails")
+	public ModelAndView onboardingCandidateTaxDetails(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+			 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 AssociatePfEsiDetails aped = associatePfEsiService.findAssociatePfEsiByCandidateId(candidate.getId(), orgLocations);
+			 if(aped != null) {
+				 if(aped.getEnroleDate() != null) {
+					 model.addObject("enrolledDate",commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aped.getEnroleDate()));
+				 }
+				 model.addObject("associatePfEsi",aped);
+			 }
+			 model.setViewName("onboard/onboardingCandidatePfAndEsiDetails");
+		 }else {
+			 Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 AssociateTaxDTO taxDeatails = associateTaxService.findAssociateTaxSummaryByCandidateId(candidate.getId(), orgLocations);
+				if(taxDeatails != null) {
+					model.addObject("taxDeatails",taxDeatails);
+				}
+				model.setViewName("onboard/onboardingCandidateTaxDetails");
+		 }
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
+		model.addObject("userId", user.getId());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		return model;
+	}
+	
+	
 	
 	@RequestMapping(value = "/onboardingCandidateStep3")
 	public ModelAndView onboardingCandidateStep3(HttpServletRequest request) throws Exception {

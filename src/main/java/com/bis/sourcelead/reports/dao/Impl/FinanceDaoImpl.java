@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -57,6 +60,9 @@ public class FinanceDaoImpl implements FinanceDao{
 	@Autowired
 	ReportsUtil reportsUtil;
 	
+	@Autowired
+    OrgLocationService orgLocationService;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
@@ -73,9 +79,9 @@ public class FinanceDaoImpl implements FinanceDao{
 				for (String relationId : ids) {
 					idsList.add(Long.parseLong(relationId));
 				}
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.orgRelationID.id IN (:orgIds)";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' and invoice.orgRelationID.id IN (:orgIds)";
 			} else {
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' ";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' ";
 			}
 
 			Session session = this.sessionFactory.getCurrentSession();
@@ -267,8 +273,8 @@ public class FinanceDaoImpl implements FinanceDao{
 					startDate = new java.sql.Date(dates[0].getTime());
 					endDate = new java.sql.Date(dates[1].getTime());
 				}
-				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate";
-				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.dueDate >= :startDate and invoice.dueDate <= :endDate ";
+				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and (invoice.dueDate >= :startDate and invoice.dueDate <= :endDate)";
+				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and (invoice.dueDate >= :startDate and invoice.dueDate <= :endDate) ";
 			}else {
 				 query = "from Invoice invoice left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
 				 countQuery = "from Invoice invoice where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked'";
@@ -416,8 +422,29 @@ public class FinanceDaoImpl implements FinanceDao{
 				
 				StringBuilder searchQuery = new StringBuilder();
 				if(StringUtils.isNotEmpty(missingInvoiceDto.getSearchValue()) && missingInvoiceDto.getSearchValue() != null) {
-					searchQuery.append(" and (sah.hierarchyId.projectId.projectName like '%" + missingInvoiceDto.getSearchValue() + "%' )");
-					}
+					
+					Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+					   Matcher matcher = pattern.matcher(missingInvoiceDto.getSearchValue());
+					   java.sql.Date sqlDate = null;
+					    if(matcher.matches() == true) {
+									if(missingInvoiceDto.getSearchValue().contains("/")||(missingInvoiceDto.getSearchValue().contains("-"))) {
+										String replacedValue = missingInvoiceDto.getSearchValue().replaceAll("/", "-");
+										    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
+											SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+									        java.util.Date utilDate = format.parse(replacedValue);
+									        sqlDate = new java.sql.Date(utilDate.getTime());
+									}
+					    }
+					
+					
+					searchQuery.append(" and ( (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%" + missingInvoiceDto.getSearchValue() + "%' OR  sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName like '%" + missingInvoiceDto.getSearchValue() + "%')")
+					           .append(" OR (concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName.firstName,sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName) like '%" + missingInvoiceDto.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+					           .append(" OR sah.hierarchyId.projectId.projectName  like '%" + missingInvoiceDto.getSearchValue() + "%' )");
+					if(sqlDate != null) {
+						searchQuery.append("OR sah.frequencyStartDate like '%" + sqlDate + "%' OR sah.frequencyEndDate like '%" + sqlDate + "%' ");
+						searchQuery.append("OR sah.updatedDate like '%" + sqlDate + "%' ");
+					 }
+				}
 				
 				String qry = "from  SubmissionApproverHierarchy sah left join fetch sah.invoiceId invoice left join fetch sah.billId billinvoice left join fetch sah.submissionId subId left join fetch subId.projectMembers pmember left join fetch pmember.projectMemberCandidteId can left join fetch can.orgRelationId left join fetch subId.projects prjcts left join fetch sah.hierarchyId hierarchy left join fetch sah.invoiceId invoice left join fetch sah.billId bill left join fetch hierarchy.projectId proj left join fetch hierarchy.projectClientsId pclient  left join fetch pclient.orgRelationId orgRelation "
 						+ " where  pclient.orgLocationsId.id = :orgLocationId and  sah.submissionApprovalStatus = 'APPROVED' and sah.submissionId.status = '1' and "+subQuery;//OR (sah.invoiceStatus IS NOT NULL and sah.invoiceSatus = 'DRAFT')) ";
@@ -439,7 +466,7 @@ public class FinanceDaoImpl implements FinanceDao{
 			
 				Query query1 = session.createQuery(query+" "+searchQuery+" "+groupQuery);
 				List<SubmissionApproverHierarchy> tslist = null;
-				if(StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
+				if(orgIds.size() == 0 && (StringUtils.isNotBlank(missingInvoiceDto.getFilterType()) && !"undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType()))) {
 					 tslist =query1.setLong("orgLocationId",orgLocations.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(missingInvoiceDto.getStart()).setMaxResults(missingInvoiceDto.getLength()).list(); 
 					response.setData(tslist);
 				}if(orgIds.size() > 0 && StringUtils.isBlank(missingInvoiceDto.getFilterType()) || "undefined".equalsIgnoreCase(missingInvoiceDto.getFilterType())){
@@ -670,12 +697,24 @@ public class FinanceDaoImpl implements FinanceDao{
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
 		String countQuery = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
-		StringBuilder query1 = new StringBuilder("");
-		Query queryObj = session.createQuery(query + query1.toString());
+
+
+		StringBuilder searchQuery = new StringBuilder("");
+		 if(paidBillDTO.getSearchValue() !=null && !"".equalsIgnoreCase(paidBillDTO.getSearchValue())) {
+						searchQuery.append(" and (invoice.projectID.projectName like '%" + paidBillDTO.getSearchValue() + "%' )");
+//						.append("OR invoice.orgLocation.orgLocationName like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.total like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.invoiceId like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.dueAmount like '%" + paidBillDTO.getSearchValue() + "%' )");
+//					}
+			}
+		
+		Query queryObj = session.createQuery(query + searchQuery.toString());
 		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
 			queryObj.setFirstResult(paidBillDTO.getStart());
 			queryObj.setMaxResults(paidBillDTO.getLength());
 		}
+		
 		invoiceList = queryObj.setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 		int count = 0;
 		int filteredCount = 0;
@@ -685,7 +724,7 @@ public class FinanceDaoImpl implements FinanceDao{
 		}
 		response.setRecordsTotal(count);
 		if (paidBillDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+ query1.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+ searchQuery.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}

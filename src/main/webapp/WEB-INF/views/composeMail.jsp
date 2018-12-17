@@ -20,7 +20,7 @@ display: none;
 .mt40{
  margin-top: 50px !important;
 }
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
     height: 35px;
     line-height: 35px;
     width: 500px !important;
@@ -83,7 +83,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-          <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation="required" data-validation="validate_email"  field-name="Toemails" >
+           <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
             </select>
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -128,7 +128,7 @@ display: none;
           </div>
         </div>
         <div class="clearfix">
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-3 saluation field-border">
               <select id="saluation" name="saluation">
@@ -137,7 +137,7 @@ display: none;
               </select>
             </div>
           </div>
-        </div>
+        </div> -->
         
         <!-- Text Area -->
         <div class="col-md-12 clearfix mb10 mt10">
@@ -192,9 +192,9 @@ display: none;
   
   <script src="/resources/js/nicEdit.js"></script> 
   
-<script type="text/javascript">
+		<script type="text/javascript">
 $(function() { 
-	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','skills');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 });
 </script> 
   
@@ -267,7 +267,7 @@ $(function() {
 		  		 var toEmails =  $('#emailsList').val();
 		  		 
 		  		if(toEmails == null){
-		   	    	alertMailerMsg("Provide at least one To mail");
+		   	    	alertMailerMsg("Provide atleast one email id");
 		   	    }
 		  		else{
 		  			
@@ -893,9 +893,19 @@ document.getElementById("attachfileBtn").onchange = function () {
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script> -->
+<script type="text/javascript">
+bkLib.onDomLoaded(function() {
+    nicEditors.editors.push(
+        new nicEditor().panelInstance(
+            document.getElementById('bodytext')
+        )
+    );
+});
 </script>
+
 
 <script>
 	$(".clearUpload").click(function(){

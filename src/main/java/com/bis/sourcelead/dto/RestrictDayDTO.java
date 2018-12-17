@@ -2,12 +2,21 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class RestrictDayDTO extends SearchDTO {
 
 	private long restrictDayId;
+	
+	@Required(desc = "Restrict Name")
 	private String restrictName;
+	
+	@Required(desc = "Start date")
 	private String startDate;
+	
+	@Required(desc = "End Date")
 	private String endDate;
+	
 	private String reason;
 	private String status;
 	private String orgLocationId;
@@ -16,6 +25,9 @@ public class RestrictDayDTO extends SearchDTO {
 	private String restrictUUID;
 	private List<String> rolesList;
 	
+	private String validateType;
+	
+	private String erroMsg;
 	
 	public long getRestrictDayId() {
 		return restrictDayId;
@@ -84,6 +96,22 @@ public class RestrictDayDTO extends SearchDTO {
 	public void setRestrictUUID(String restrictUUID)
 	{
 		this.restrictUUID = restrictUUID;
+	}
+	public String getValidateType()
+	{
+		return validateType;
+	}
+	public String getErroMsg()
+	{
+		return erroMsg;
+	}
+	public void setValidateType(String validateType)
+	{
+		this.validateType = validateType;
+	}
+	public void setErroMsg(String erroMsg)
+	{
+		this.erroMsg = erroMsg;
 	}
 	
 }

@@ -155,11 +155,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId) throws Exception {
-		return expensesDao.getExpenseByExpenseUniqueId(expenseId,orgLocationId);
+	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId,String isGlobalUser) throws Exception {
+		return expensesDao.getExpenseByExpenseUniqueId(expenseId,orgLocationId,isGlobalUser);
 	}
 	@Override
-	public File exportMyExpensesToPdf(Expenses expenses, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+	public File exportMyExpensesToPdf(Expenses expenses, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
 		
 		SimpleDateFormat dateFormatter=orgLoc.getLocFullFormDateFormatter();
 		String[] myExpensesHeaders = null;
@@ -201,7 +201,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
 		        if(approverType.equalsIgnoreCase("APPROVER")){
-		        	table.setWidths(new int[]{5,3,5,3,3,3,7,5});
+		        	table.setWidths(new int[]{5,3,5,3,3,3,7,5,5});
 		        }
 		        if(approverType.equalsIgnoreCase("USER")){
 	            table.setWidths(new int[]{5,3,5,3,3,3,7});
@@ -220,7 +220,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        List<String[]> expensespdfArrayList = new ArrayList<>();
 			        List<ExpensesEntries> expenseEntries = getExpensesEntries(expenses.getId().toString());
 			        for(ExpensesEntries expEntries :expenseEntries){
-			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser,approverType));
+			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser,approverType,isGlobalUser));
 			        }
 			        	
 			        for (String[] expensesArray: expensespdfArrayList) {
@@ -245,7 +245,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
 		            StringBuilder statusStringBuilder = new StringBuilder();
-		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
+		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(pm.getProjects().getProjectName()).toString()));
@@ -272,10 +272,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
 			      
-			        if(expenses.getTotalAmount() != 0){
+			        if(expenses.getTotalAmount().doubleValue() > 0){
 			        	StringBuilder str = new StringBuilder();
-			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-			        	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+			        	BigDecimal bd = new BigDecimal((expenses.getTotalAmount()));
+			        	//bd = bd.setScale(2,BigDecimal.ROUND_UP);
 			        	orderedList.add(new ListItem(str.append("TotalAmount :").append(bd).toString()));
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
@@ -300,7 +300,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            StringBuilder totalStringBuilder =new StringBuilder();
 			            orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			            if(expenses.getProjects() != null && expenses.getMasterCandidateId() != null){
-			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
+			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 			            	
 			            	if(pm.getProjectMemberCandidteId()!= null){
 			            			if(pm.getProjectMemberCandidteId().getLastName()!= null){
@@ -365,10 +365,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 				        	}else{
 				        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));
 				        	}
-				        if( expenses.getTotalAmount() != 0){
+				        if( expenses.getTotalAmount().doubleValue() > 0){
 				        	StringBuilder str = new StringBuilder();
-				    		BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-				    		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
+				    		BigDecimal bd = new BigDecimal((expenses.getTotalAmount()));
+				    		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
 				        	orderedList.add(new ListItem(str.append("TotalAmount :").append(bd).toString()));
 				        	}else{
 				        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));
@@ -392,8 +392,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 			return file;
 	}
 
-	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
-		String userArray[] = new String[myExpensesHeaders.length];
+	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
+		String userArray[] = new String[myExpensesHeaders.length+2];
 		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				if(null != expEntries.getExpensesCategoryId()){
 					if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
@@ -454,23 +454,35 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 
 			 if(approverType.equalsIgnoreCase("APPROVER")){
 				 if(expEntries.getExpensesId() != null){	
-					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId());
+					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId(),isGlobalUser);
 					   userArray[7] = eah.getExpenseStatus().getValue().toUpperCase();
 				   }else{
 					   userArray[7] = "--";
 				 } 
+				 if(expEntries.getBillable() != null){	
+					 if(expEntries.getBillable().equals(true)){
+						 userArray[8] = "YES";
+					 }
+					 else{
+						   userArray[8] = "NO";
+	 
+					 }
+				   }else{
+					   userArray[8] = "--";
+				 }
 			 }
+			
 	return userArray;
 	}
 
 	@Override
-	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType,orgLoc);
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType,orgLoc,isGlobalUser);
 		int column = 0;
 		
 		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
@@ -481,7 +493,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			}else if(approverType.equalsIgnoreCase("USER")){
 				writeRow = createExcelsheet.createRow(column + 9);
 			}
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType,orgLoc);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType,orgLoc,isGlobalUser);
 			column++;
 		}
 
@@ -499,7 +511,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType,OrgLocations orgLocations) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType,OrgLocations orgLocations,String isGlobalUser) {
 		if(null != expEntries.getExpensesCategoryId()){
 			if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 				writeRow.createCell(0).setCellValue(expEntries.getExpensesCategoryId().getExpensesName());
@@ -552,28 +564,39 @@ public class ExpensesServiceImpl implements ExpensesService{
 		 createExcelsheet.autoSizeColumn(6);
 	   }
 	 if(approverType.equalsIgnoreCase("APPROVER")){
-	 if(expEntries.getExpensesId().getExpenseStatus()!= null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().getValue())){	
-		 writeRow.createCell(7).setCellValue( expEntries.getExpensesId().getExpenseStatus().getValue());
-		 createExcelsheet.autoSizeColumn(7);
-	   }
+		 if(expEntries.getExpensesId().getExpenseStatus()!= null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().getValue())){	
+			 writeRow.createCell(7).setCellValue( expEntries.getExpensesId().getExpenseStatus().getValue());
+			 createExcelsheet.autoSizeColumn(7);
+		   }
+		 if(expEntries.getBillable() != null){	
+			 if(expEntries.getBillable().equals(true)){
+				 writeRow.createCell(8).setCellValue("YES");
+				 createExcelsheet.autoSizeColumn(8);
+			 }
+			 else{
+				   writeRow.createCell(8).setCellValue("NO");
+					 createExcelsheet.autoSizeColumn(8);
+			 }
+		   }
 	 }
+	
 		return createExcelsheet;
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType,OrgLocations orgLocations) throws Exception {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType,OrgLocations orgLocations,String isGlobalUser) throws Exception {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		writeRow = createExcelsheet.createRow(0);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 			if(approverType.equalsIgnoreCase("APPROVER")){
-			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style,orgLocations);
+			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style,orgLocations,isGlobalUser);
 			}else if(approverType.equalsIgnoreCase("USER")){
 			
 		 StringBuilder projectName = new StringBuilder();	
 		 StringBuilder clientName = new StringBuilder();
 		 if(exp.getProjects() != null && exp.getMasterCandidateId() != null){
-	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId());
+	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
 	      	  if(pm.getProjects().getProjectName()!= null){    
 	      		  projectName.append(pm.getProjects().getProjectName());
 	      	  }else{
@@ -673,8 +696,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 
 		Cell cell14 = writeRow.createCell(1);
 		StringBuilder str = new StringBuilder();
-    	BigDecimal bd = new BigDecimal(Double.toString(exp.getTotalAmount()));
-    	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+    	BigDecimal bd = new BigDecimal((exp.getTotalAmount()));
+    	//bd = bd.setScale(2,BigDecimal.ROUND_UP);
 		cell14.setCellValue(str.append(bd).toString());
 		cell14.setCellStyle(style);
 		}
@@ -693,7 +716,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return createExcelsheet;
 	}
 	
-	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style,OrgLocations orgLocations) throws Exception {
+	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style,OrgLocations orgLocations,String isGlobalUser) throws Exception {
 		StringBuilder employeeId=new StringBuilder();
 		StringBuilder nameBuilder=new StringBuilder();
 	   	StringBuilder emailBuilder=new StringBuilder();
@@ -710,7 +733,7 @@ public class ExpensesServiceImpl implements ExpensesService{
         employeeId.append(expenseDetails.getExpenseId());
         }
         if(expenseDetails.getProjects() != null && expenseDetails.getMasterCandidateId() != null){
-        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId());
+        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
         	if(pm.getProjectMemberCandidteId()!= null){
         			if(pm.getProjectMemberCandidteId().getLastName()!= null){
         				nameBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).
@@ -781,10 +804,10 @@ public class ExpensesServiceImpl implements ExpensesService{
         	}else{
         		purposeStringBuilder.append("--").toString();
         	}
-        if(expenseDetails.getTotalAmount() != 0){
+        if(expenseDetails.getTotalAmount().doubleValue() > 0){
         	StringBuilder str = new StringBuilder();
-    		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
-    		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
+    		BigDecimal bd = new BigDecimal((expenseDetails.getTotalAmount()));
+    		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );	
         
         	str.append(bd).toString();
         	}else{
@@ -928,8 +951,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell23.setCellStyle(style);
 
 		Cell cell24 = writeRow.createCell(1);
-		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
-		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+		BigDecimal bd = new BigDecimal((expenseDetails.getTotalAmount()));
+		//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 		cell24.setCellValue(bd.toString());
 		
 		cell24.setCellStyle(style);
@@ -949,7 +972,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	
 	@Override
-	public File exportAllMyExpensesToPdf(List<Expenses> expenseList, OrgLocations orgLoc, User loginUser) throws Exception {
+	public File exportAllMyExpensesToPdf(List<Expenses> expenseList, OrgLocations orgLoc, User loginUser,String isGlobalUser) throws Exception {
 		String[] headers = Constants.ALL_MY_EXPENSES_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -1070,9 +1093,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}
 							
 
-							if(expenseId.getTotalAmount() != 0){
+							if(expenseId.getTotalAmount().doubleValue() > 0){
 								StringBuilder str = new StringBuilder();
-								BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
+								BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
 								bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 								expenseArray[7] = str.append(bd).toString();
 								
@@ -1093,7 +1116,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public File exportAllMyExpensesToExcel(List<Expenses> expenseList,OrgLocations orgLoc) throws IOException {
+	public File exportAllMyExpensesToExcel(List<Expenses> expenseList,OrgLocations orgLoc,String isGlobalUser) throws IOException {
 		
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
@@ -1174,10 +1197,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 							writeRow.createCell(6).setCellValue(expenseId.getNoOfExpenses());
 							createExcelsheet.autoSizeColumn(6);
 						}
-						if(expenseId.getTotalAmount() != 0){
+						if(expenseId.getTotalAmount().doubleValue() > 0){
 			                StringBuilder str = new StringBuilder();
-			                BigDecimal bd = new BigDecimal(Double.toString(expenseId.getTotalAmount()));
-							bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+			                BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
+							//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 			                writeRow.createCell(7).setCellValue(str.append(bd).toString());
 			                createExcelsheet.autoSizeColumn(7);
 						}
@@ -1190,7 +1213,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 }
 
 	@Override
-	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId, Long orgLocationId, String expenseStatus) throws Exception
+	public List<ExpensesApproverHierarchy> getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId, Long orgLocationId, String expenseStatus,String isGlobalAccess) throws Exception
 	{
 		String submissionStatus = null;
 		if ("submitted".equalsIgnoreCase(expenseStatus)) {
@@ -1206,7 +1229,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			submissionStatus = "REOPENED";
 		}
 		
-		return expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, submissionStatus);
+		return expensesApproverHierarchyDao.getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(userId, orgLocationId, submissionStatus,isGlobalAccess);
 	}
 
 	@Override

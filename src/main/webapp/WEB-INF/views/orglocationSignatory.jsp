@@ -5,116 +5,108 @@
 
 
 <div id="orglocationSignatory" class="tab-pane fade form-horizontal">
-  <div class="accountsettings-tab">
-	<div class="tab-content panel-body">
-		<div class="clearfix">
-			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
+  <div class="accountsettings-tab noMar">
+	<div class="tab-content panel-body noPad noBor">
+	
+		 <div class="positionRelative reportHead clearfix">
+		<ul class="pull-right list-unstyled list-inline">
+			<li><a class="action newAdBtn mr5" href="javascript:void(0)" onclick="addOrgLocationSignatoryDiv()">+ Signatory</a></li>
+		</ul>
 		</div>
 		
 		<!--  Table starts -->
-		<div class="require_wrap_table mt clearfix signatory_table datatable_filter">
+		<div class="require_wrap_table datatable_filter">
 		<div id="orgLocationSignatoriesListDiv"></div>
         </div>
 		<div class="clearfix"></div>
 		<!--  Table starts ends -->
 	
 		
-		<div class="sideMask"></div>
-		<div id="signatoryFormDiv" class="signatoryFormDiv">
+		<div id="signatoryFormDiv" class="popupWrap popupWrapFixed">
 		<form:form class="login-form clearfix"  id="signatory_form"  name="signatory_form" method="post" > 
-			  	 <!-- <div class="comLogContent"> -->
-			  	 <div class="clearfix">
-			  	 <a href="javascript:void(0)" class="close text-danger" onClick="signatoryFormDiv();">&times;</a>
+			  <div class="popupHead">Legal Signer Details <i class="closePop pull-right popClose" onclick="signatoryFormDiv();"></i></div>
 			  	 <div id="loading"></div> 
-			  	 <div class="side_mask"></div>
 			  	 <div id="popUp"></div> 
+			  	 
+			  	 <div class="popupContent"> 
 				     <div class="compSignatoryHelpMes">
 						Person who can sign legal binding documents on behalf of your organisation.
 					</div>
 				    
 				      <c:if test="${!empty signatory}">
-				      <div class="clearfix"> 
-					      <h4>Legal Signer Details</h4>
-					      <div class="col-md-6">
+				      
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
 						         <c:if test="${!empty signatory.userId.lastName}">
-						         <label class="col-md-3 noPad">User Name : </label> ${signatory.userId.firstName} ${signatory.userId.lastName}
+						         <label class="noPad">User Name : </label> ${signatory.userId.firstName} ${signatory.userId.lastName}
 						         </c:if>
 						         
 						         <c:if test="${empty signatory.userId.lastName}">
-						         <label class="col-md-3 noPad">User Name : </label> ${signatory.userId.firstName} 
+						         <label class="noPad">User Name : </label> ${signatory.userId.firstName} 
 						         </c:if>
 						      </div>
 					      </div>
 					      
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Email : </label> ${signatory.userId.email}
+						         <label class="noPad">Email : </label> ${signatory.userId.email}
 						      </div>
 					      </div>
 					      
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Role : </label> ${role}
+						         <label class="noPad">Role : </label> ${role}
 						      </div>
 					      </div>
 					      
 					      <c:if test="${!empty signatory.userId.mobilePhone}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Phone Number : </label> ${signatory.userId.mobilePhone}
+						         <label class="noPad">Phone Number : </label> ${signatory.userId.mobilePhone}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.userId.ssn}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">SSN : </label> ${signatory.userId.ssn}
+						         <label class="noPad">SSN : </label> ${signatory.userId.ssn}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.designationOtherType}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Designation : </label> ${signatory.designationOtherType}
+						         <label class="noPad">Designation : </label> ${signatory.designationOtherType}
 						      </div>
 					      </div>
 					      </c:if>
 					      
 					      <c:if test="${!empty signatory.designation && empty signatory.designationOtherType}">
-					      <div class="col-md-6">
+					      <div class="clearfix mb">
 						      <div class="form-group clearfix">
-						         <label class="col-md-3 noPad">Designation : </label> ${signatory.designation}
+						         <label class="noPad">Designation : </label> ${signatory.designation}
 						      </div>
 					      </div>
 					      </c:if>
 					      
-				      </div>
-				       <div class="clearfix mt10"></div> 
+				      
+				      
 				     </c:if> 
 
-<!-- 				      <div class="clearfix">  -->
-<!-- 					     		<div class="form-group clearfix"> -->
-<!-- 									<div class="col-md-8 padding_right mb"> -->
-<!-- 				                <input id="legalSigner" name="legalSigner"  class="checkbox-custom"  value="Y" onclick="validateLegalSigner();"  type="checkbox"> -->
-<!-- 		              			<label for="legalSigner" class="checkbox-custom-label">&nbsp;Make me as legal signer</label> -->
-<!-- 								</div> -->
-<!-- 					     </div> -->
-<!-- 				     </div> -->
 					     <div id="legalUserFormDiv"></div>
-						<div class="clearfix">
-							<div class="pull-right">
-							<input type="button" value="Save" id="save_signatory_button" onclick="saveSignatory();" class="btn btn-primary mr">
-							</div>
+					     </div>
+						<div class="popupFoot text-right">
+							<input type="button" value="Save" id="save_signatory_button" onclick="saveSignatory();" class="slBtn md colorBtn">
+							<button type="button" class="slBtn md popClose" onClick="signatoryFormDiv();">Cancel</button>
 						</div>
+				</form:form>
 				     </div>
-	  </form:form>
+	 
 		</div>
 	</div>
   </div>
-</div>
 
 
 <script type="text/javascript">
@@ -224,25 +216,31 @@
 function loadLeagelSignerForm(){
 	$("#legalUserFormDiv").empty();
 	var result = "";
-	result = result +"<div class='clearfix row'>";
-	result = result +"<h4 class='col-md-8'>Create New Signer</h4>";
+	result = result +"<div class='popHeadTwo'>Create New Signer</div>";
 	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix' id='associateDiv'>";
-	result = result +"<label class='col-md-4'>Associate<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8'>";
-	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' data-validation='required'>";
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='associateDiv'>";
+	result = result +"<label class='noPad'>Associate<span class='text-danger'>&nbsp;*</span></label>";
+	
+	result = result +"<div class='clearfix' id='editSignerDiv' style='display:block'>";
+	result = result +"<select class='chosen-select form-control' type='text' name='associateId' id='signatoryAssociate' field-name='Associate' onchange='validateAssociate();' data-validation='required'>";
 	result = result +"</select>";
 	result = result +"<input type='hidden' name='uuid' id='signatoryUUID' value=''>";
 	result = result +"<input type='hidden' name='signatoryFromType' id='signatoryFromType' value='orgSettings'>";
 	result = result +"</div>";
+	
+	result = result +"<div class='clearfix' id='showSignerDiv' style='display:none'>";
+	result = result +"<input class='form-control' type='text' id='showAssociateName' readonly>";
+	result = result +"<input type='hidden'  id='showAssociateId' value=''>";
+	result = result +"</div>";
+	
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix' id='authorizedTypeDiv'>";
-	result = result +"<label class='col-md-4'>Authorized Type<span class='text-danger'>&nbsp;*</span></label>";
-	result = result +"<div class='col-md-8'>";
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='authorizedTypeDiv'>";
+	result = result +"<label class='noPad'>Authorized Type<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='clearfix'>";
 	result = result +"<select multiple class='chosen-select form-control' type='text' name='authorizedType' placeholder='sdsd' id='authorizedType' field-name='Authorised Type' data-validation='required'>";
 	result = result +'<option value="OfferLetters">Offer Letters</option>';
 	result = result +'<option value="Contracts">Contracts</option>';
@@ -252,16 +250,15 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	result = result +"<div class='col-md-6'>";
-	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
-	result = result +"<label class='col-md-4'>Authorised Amount</label>";
-	result = result +"<div class='col-md-8'>";
-	result = result +"<input class='form-control' type='text' name='authorizedAmount' id='signatoryAuthorisedAmount' field-name='Authorised Amount'  maxlength='10' data-validation-optional='true' data-validation='validate_Space validate_int validate_length length1-10'>";
+	result = result +"<div class='clearfix mb'>";
+	result = result +"<div class='clearfix' id='firstNameDiv'>";
+	result = result +"<label class='noPad'>Authorised Amount</label>";
+	result = result +"<div class='clearfix'>";
+	result = result +"<input class='form-control' type='text' name='authorizedAmount' id='signatoryAuthorisedAmount' field-name='Authorised Amount'  maxlength='10' data-validation-optional='true' data-validation=' validate_int validate_length length1-10'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	result = result +"</div>";
 	
 	$("#legalUserFormDiv").append(result);
 	getAssociatesForSignatory();
@@ -285,7 +282,7 @@ function loadLeagelSignerForm(){
 function getAssociatesForSignatory(){
 	$.get( sourceleadUrl+ "/getAssociatesForSignatory?${_csrf.parameterName}=${_csrf.token}", function(data) {
         var output = "";
-		output = output + "<option value=''>-- Select Associate --</option>";
+		output = output + "<option  value=''>-- Select Associate --</option>";
      	   for(var i=0; i<data.length;i++){
      		  var opt = data[i];
      		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
@@ -297,9 +294,46 @@ function getAssociatesForSignatory(){
      	   }
      	   $("#signatoryAssociate").empty();
      	  $("#signatoryAssociate").append(output);
-     	 $("#signatoryAssociate").trigger("chosen:updated");
+     	  $("#signatoryAssociate").trigger("chosen:updated");
+     	
      }); 
 }
+
+function validateAssociate()
+{
+	
+	 var userId = document.getElementById("signatoryAssociate").value; 
+	 var id = document.getElementById("signatoryUUID").value; 
+	
+	 
+	 var sourceleadUrl ='${sourceleadUrl}';
+		
+		 if(userId != null &&  userId != "" &&  userId != 'undefined'){
+			 $("#save_signatory_button").attr("disabled", "disabled");
+			 
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateAssociate?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&id="+id,
+			        success: function(data) {
+			        
+			        	if(data == true){
+			        		  $('#associateDiv').find('p.jquery_form_error_message').remove();
+							  $("#signatoryAssociate_chosen").after("<p class='jquery_form_error_message'>User with this name is already Existed</span>");
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist','yes');
+							 // document.getElementById("signatoryAssociate").setAttribute('record-exist-errorMsg','User with this name is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('#signatoryAssociate_chosen').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#associateDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#save_signatory_button" ).addClass('us-btn').val('Save');
+	                         $("#save_signatory_button").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	
+	
+ }
 
 </script>
 
@@ -324,19 +358,41 @@ function getDesignationType(){
 
 <script type="text/javascript">
 function saveSignatory(){
+	var associate = $("#showAssociateId").val();
+	if(associate !=null && associate!="" && associate!='undefined')
+		{
+		var associateId=associate;
+		}else{
+			var associateId=$("#signatoryAssociate").val();
+		}
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-         }; 
+         }
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
-  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue, formData, function(data) {
-		if(data == "success"){
+  	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,formData, function(result) {
+  		if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  		    showError(result.responseMessage);
+  		    $("#loading").removeAttr('style');
+  		}
+    	else if(result.response === "AWKWARD"){
+    		 location.href = "/errorPage";
+    	}
+    	else if(result.response === "SUCCESS"){
+    		$("#loading").removeAttr('style');
+    		getAllSignatory();
 			signatoryFormDiv();
-			getAllSignatory();
 		}
+    	else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			    $("#loading").removeAttr('style');
+			}
+  		
 	}); 
     	  //saveOrgLocationSignatory(formData);
     
@@ -473,14 +529,14 @@ function saveSignatory(){
   
   <script>
   //addSignatoryDiv
-  function addSignatoryDiv(){
-	  $(".signatoryFormDiv").fadeIn();
-	  $(".sideMask").fadeIn();
+  function addOrgLocationSignatoryDiv(){
+	  $("#signatoryFormDiv").fadeIn(100);
+	  $(".mask").show();
 	  loadLeagelSignerForm();
   }
   function signatoryFormDiv(){
-	  $(".signatoryFormDiv").fadeOut();
-	  $(".sideMask").fadeOut();  
+	  $("#signatoryFormDiv").fadeOut(100);
+	  $(".mask").hide();  
 	  $('#signatory_form')[0].reset();
 	  $(".chosen-select").trigger("chosen:updated");
 	  $('signatory_form').validate().resetForm();
@@ -489,7 +545,7 @@ function saveSignatory(){
   
   <script>
   function editSignatory(signatoryUUID){
-	  addSignatoryDiv();
+	  addOrgLocationSignatoryDiv();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.get( sourceleadUrl+ "/getSignatoriesByUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+signatoryUUID, function(data) {
 		  if(data != null){
@@ -499,6 +555,11 @@ function saveSignatory(){
 			  $("#authorizedType").val(data.authorizedType);
 			  $("#authorizedType").trigger("chosen:updated");
 			  $("#signatoryAuthorisedAmount").val(data.authorizedAmount);
+			  document.getElementById("editSignerDiv").style.display="none";
+			  document.getElementById("showSignerDiv").style.display="block";
+			  $("#showAssociateName").val(data.firstName);
+			  $("#showAssociateId").val(data.associateId);
+			  
 		  }
 	  });
   }

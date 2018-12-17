@@ -1,12 +1,16 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -19,26 +23,44 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailDomains;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadRoles;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailDomainsService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadRolesService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -102,6 +124,28 @@ public class RegistrationController {
 	 @Autowired
 	 EmailDomainsService emailDomainsService;
 	 
+	 @Autowired
+	 private EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	 
+	 @Autowired
+	 ReferContactsDao referContactsDao;
+	 
+	 @Autowired
+	 LookUpDataService lookUpDataService;
+	 
+	 @Autowired
+	 OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	 
+	 @Autowired
+	 SourceleadRolesService sourceleadRolesService;
+	 
+	 @Autowired
+	 TabsService tabService;
+	 
+	 @Autowired
+	 OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
+
+	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
 		public ModelAndView enrolledOrgsList(HttpServletRequest request) {
@@ -154,28 +198,40 @@ public class RegistrationController {
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrollOrg")
-		public ModelAndView registration(HttpServletRequest request) {
+		public ModelAndView enrollOrg(HttpServletRequest request,
+				@RequestParam(value = "locationCode", required = false) String locationCode) {
+		 
+		 	commonUtil.highLightMenu(Constants.OrgSettings, request);
+		 
 			ModelAndView model = new ModelAndView();
-			List<Modules> modulesList = null;
-			List<Modules> requirementSubModulesList = null;
 			try {
-				 modulesList = modulesService.getSourceLeadModules();
-				 model.addObject("modulesList", modulesList);
+				List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.SUBSCRIPTION_TYPE);
+				model.addObject("subscriptionTypeList", subscriptionTypeList);
 				 
-				 /*List<Timezone> timezoneList= timeZoneService.getAllTimeZones();
-				 model.addObject("timezoneList", timezoneList);*/
-				 
-				 requirementSubModulesList = modulesService.getRequirementSubModules();
-				 model.addObject("requirementSubModulesList", requirementSubModulesList);
+				List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.USER_SUBSCRIPTION);
+				model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
+				
+				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
+				model.addObject("dataStorageTypeList", dataStorageTypeList);
+				
+				if(StringUtils.isNotBlank(locationCode)) {
+					OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+					model.addObject("orgLocationId", orgLocations.getId());
+					model.addObject("locationCode", locationCode);
+					model.addObject("registeredOrgId", orgLocations.getOrg().getId());
+					OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+					model.addObject("orgLicenseSubscriptionId", orgLicenseSubscription.getId());
+					
+				}
 				 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			commonUtil.highLightMenu(Constants.OrgSettings, request);
+		
 			
 			model.setViewName("registration/enrollOrg");
-
+		
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.addObject("sourceLeadBlockedSocialDomains", sourceLeadBlockedSocialDomains);
 			
@@ -219,41 +275,27 @@ public class RegistrationController {
 						 moduleIds.add(Integer.parseInt(s));
 					 }
 					 
-			    	/*if("ATS".equalsIgnoreCase(respondingOrgType)){
-			    		flag = moduleIds.contains(Constants.MODULE_ATS);
-			    		moduleId = (long) Constants.MODULE_ATS;
-			    		if(flag == false){
-			    			modules = modules+","+Constants.MODULE_ATS;
-			    			saveUserRoleActions(moduleId,orgLocations);
-			    		}
-			    		
-			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
-			    		if(tsflag == false) {
-		    				modules = modules+","+Constants.MODULE_TIMESHEET;
-		    				saveUserRoleActions(tsModuleId,orgLocations);
-		    			}
-			    		
-			    	}else*/ 
+			    	
 					 
 					 if("VMS".equalsIgnoreCase(respondingOrgType)){
 			    		flag = moduleIds.contains(Constants.MODULE_VMS);
 			    		moduleId = (long) Constants.MODULE_VMS;
 			    		if(flag == false){
 			    			modules = modules+","+Constants.MODULE_VMS;
-			    			saveUserRoleActions(moduleId,orgLocations);
 			    		}
 			    		
 			    		boolean tsflag = moduleIds.contains(Constants.MODULE_TIMESHEET);
 			    		if(tsflag == false) {
 		    				modules = modules+","+Constants.MODULE_TIMESHEET;
-		    				saveUserRoleActions(tsModuleId,orgLocations);
 		    			}
 			    	}
 			    	
+					 saveUserRoleActions(orgLocations);
+					 
 			    	org.setStatus(Status.ACTIVE);
 					orgService.updateOrg(org);
 					
-					orgLocations.setModulesId(modules);
+					//orgLocations.setModulesId(modules);
 					if(!isNullOrEmpty(spocUUID)){
 						OrgSpoc orgSpoc = orgSpocService.getSpocBySpocUUID(spocUUID);
 						if(null != orgSpoc){
@@ -261,10 +303,19 @@ public class RegistrationController {
 							org.setUser(orgSpoc.getClientUser());
 						}
 					}
+					
+					
 					orgService.addOrganization(org);
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
+					if(orgLocations != null) {
+						EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
+						if(empTemp != null) {
+							empTemp.setSignatory(orgLocations.getUser());
+							employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
+						}
+					}
 		    	}
 				 
 				
@@ -290,6 +341,32 @@ public class RegistrationController {
 						 orgSpoc.setInvitationStatus(Constants.MAIL_ACCEPTED);
 						 orgSpocService.addOrgSpoc(orgSpoc);
 					 }
+					 
+					 ReferContacts referContact=referContactsDao.getReferContactsByEmails(orgSpoc.getVendorUser().getId(), orgSpoc.getVendorUser().getEmail());
+					 if(referContact ==null){
+						 ReferContacts referContacts=new ReferContacts();
+						 referContacts.setReferFromUser(orgSpoc.getClientUser());
+						 referContacts.setFirstName(orgSpoc.getVendorUser().getFirstName());
+						 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
+						 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
+						 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+						 referContacts.setContactUser(orgSpoc.getVendorUser());
+						 
+						 if(orgSpoc.getOrgRelations().getInitiatorType().equalsIgnoreCase("Vendor")){
+							 String compName=orgSpoc.getOrgRelations().getLocationId().getOrgLocationName(); 
+								//OrgLocations OrgLocations =orgLocationsDao.getOrgLocations(id);
+								referContacts.setCompanyName(compName);
+						 }
+						 if(orgSpoc.getOrgRelations().getResponderType().equalsIgnoreCase("Vendor")){
+							 String compName=orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName(); 
+								referContacts.setCompanyName(compName);
+							 }
+						 referContacts.setVendorType(1);
+						 referContacts.setCreatedDate(new Date());
+						 referContacts.setCreatedBy(orgSpoc.getClientUser().getUserCode());
+						 referContactsDao.addReferContacts(referContacts); 
+					 }
+					 
 					 
 					 clientService.sendAcceptEmailToClientOrVendor(orgSpoc,orgSpoc.getClientUser(),orgLocations);
 				 }else if("rejectNotification".equalsIgnoreCase(actionLink)){
@@ -318,50 +395,17 @@ public class RegistrationController {
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgSummary")
 		public ModelAndView enrolledOrgSummary(HttpServletRequest request,
-				@RequestParam(value = "orgId", required = false) Long orgId) throws Exception {
+				@RequestParam(value = "orgCode", required = false) String orgCode) throws Exception {
 			    ModelAndView model = new ModelAndView();
-			
-				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
-
-				List<Modules> modulesList = null;
-				List<Modules> requirementSubModulesList = null;
-				
-				if(null != orgLocations.getModulesId()){
-					ArrayList<Modules> registeredModulesList = new ArrayList<Modules>();
-					ArrayList<Modules> registeredSubModulesList = new ArrayList<Modules>();
-					modulesList = modulesService.getSourceLeadModules();
-					requirementSubModulesList = modulesService.getRequirementSubModules();
-					
-					List<Long> orgModulesList = new ArrayList<Long>();
-					 for (String s : orgLocations.getModulesId().split(",")){
-						 orgModulesList.add(Long.parseLong(s));
-					 }
-					 
-					 for(Modules modules : modulesList){
-						 if((orgModulesList.contains(modules.getId()))){
-							 modules.setIsModuleConfigured(Constants.YES);
-						 }else{
-							 modules.setIsModuleConfigured(Constants.NO);
-						 }
-						 registeredModulesList.add(modules);
-					 }
-					 
-					 for(Modules modules : requirementSubModulesList){
-						 if(orgModulesList.contains(modules.getId())){
-							 modules.setIsModuleConfigured(Constants.YES);
-						 }else{
-							 modules.setIsModuleConfigured(Constants.NO);
-						 }
-						 registeredSubModulesList.add(modules);
-					 }
-					 
-					 model.addObject("registeredModulesList", registeredModulesList);
-					 model.addObject("registeredSubModulesList", registeredSubModulesList);
-				}
+			    commonUtil.highLightMenu(Constants.OrgSettings, request);
+			    Org org = orgService.getOrgByOrgCode(orgCode);
+				OrgLocations orgLocations = orgLocationService.getPrimaryOrgLocationByOrgId(org.getId());
 				
 				model.addObject("orgloc",orgLocations);
 				model.addObject("registeredOrgLocationId",orgLocations.getId());
-				model.addObject("orgId",orgId);
+				model.addObject("registeredCountry",orgLocations.getCountry());
+				model.addObject("orgId",org.getId());
+				model.addObject("orgCode",orgCode);
 				model.setViewName("registration/enrolledOrgSummary");
 				
 				if(null != orgLocations.getUser()){
@@ -369,6 +413,18 @@ public class RegistrationController {
 					if(userRole != null)
 					model.addObject("userState",userRole.getUserState());
 				}
+				
+				List<OrgLicenseSubscriptionTypes> subscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.SUBSCRIPTION_TYPE);
+				model.addObject("subscriptionTypeList", subscriptionTypeList);
+				 
+				List<OrgLicenseSubscriptionTypes> userSubscriptionTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.USER_SUBSCRIPTION);
+				model.addObject("userSubscriptionTypeList", userSubscriptionTypeList);
+				
+				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
+				model.addObject("dataStorageTypeList", dataStorageTypeList);
+				
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(org.getId());
+				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
 			
@@ -379,40 +435,73 @@ public class RegistrationController {
 	 
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 		@RequestMapping(value = "/app/getOrgRegisteredUsers")
-		public @ResponseBody String getOrgRegisteredUsers(@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
+		public @ResponseBody ResponseList<UserDTO> getOrgRegisteredUsers(UserDTO userDTO,@RequestParam(value = "registeredOrgLocationId", required = false) Long registeredOrgLocationId,
 				HttpServletRequest request) throws Exception {
 
 		    String resultJson;
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
-
-			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
-			List<User> orgUsersList = new ArrayList<User>(); 
-			if(null != usersList){
-				for(User user : usersList){
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
-					user.setUserState(userRole.getUserState());
-					user.setRole(userRole.getRoles().getDisplayName());
-					
-					if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
-						user.setIsPrimaryAdmin("Y");
-					}
-					
-					orgUsersList.add(user);
-				}
+		    
+		    String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName", "status", "primaryAdmin", "superAdmin"};
+		    int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default descending order
+			if(userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = userDTO.getOrder().get(0).get("dir");
 			}
-		    resultJson = commonUtil.toJSON(orgUsersList);
-			return resultJson;
+			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			userDTO.setSortOrder(sortColumnOrder);
+		    
+
+			ResponseList<UserDTO> usersDTOList = userService.getUsersDTOListByOrglocationId(orgLocations.getId(),userDTO);
+			return usersDTOList;
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getOrgSubscribedCountries", method = RequestMethod.GET)
+		public @ResponseBody List<String> getOrgSubscribedCountries(
+				@RequestParam(value = "orgId", required = true) Long orgId,HttpServletRequest request) throws Exception {
+			List<String> countriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(orgId);
+			return countriesList;
 		}
 		
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.POST)
-		public @ResponseBody String getReportingManager(
+		@RequestMapping(value = "/app/getLocationEnrolledCompanies", method = RequestMethod.GET)
+		public @ResponseBody List<OrgLocationDTO> getLocationEnrolledCompanies(
+				@RequestParam(value = "orgId", required = true) Long orgId,@RequestParam(value = "country", required = true) String country,HttpServletRequest request) throws Exception {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(orgId, country);
+			List<OrgLocationDTO> orgLocationsDTOList = new ArrayList<>();
+			if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+				for(OrgLocations orgLocations : orgLocationsList) {
+					OrgLocationDTO orgLocationDTO = new OrgLocationDTO();
+					orgLocationDTO.setId(orgLocations.getId());
+					orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
+					orgLocationsDTOList.add(orgLocationDTO);
+				}
+			
+			}
+			return orgLocationsDTOList;
+		}
+		
+		
+		
+		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+		@RequestMapping(value = "/app/getRegisteredOrgRoles", method = RequestMethod.GET)
+		public @ResponseBody List<RoleDTO> getRegisteredOrgRoles(
 				@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception {
-			String resultJson = null;
 			List<Roles> rolesList = roleService.getRoles(orgLocationId);
-			resultJson = commonUtil.toJSON(rolesList);
-			return resultJson;
+			List<RoleDTO> rolesDTOList = new ArrayList<>();
+			if(rolesList != null && !rolesList.isEmpty()) {
+				for(Roles roles : rolesList) {
+					RoleDTO rolesDTO = new RoleDTO();
+					rolesDTO.setId(roles.getId());
+					rolesDTO.setDisplayName(roles.getDisplayName());
+					rolesDTOList.add(rolesDTO);
+				}
+			}
+			return rolesDTOList;
 		}
 		
 		@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
@@ -455,9 +544,15 @@ public class RegistrationController {
 		   
 		
 	
-	 public void saveUserRoleActions(Long moduleId,OrgLocations orgLocations) throws Exception{
+	 public void saveUserRoleActions(OrgLocations orgLocations) throws Exception{
 		 
-			List<Long> actionsList = sourceleadActionsService.getSourceLeadActionsByModuleId(moduleId);
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
 			
 			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
 			 List<Long> adminRoleActonList = new ArrayList<Long>();
@@ -465,12 +560,12 @@ public class RegistrationController {
 				 adminRoleActonList.add(Long.parseLong(s));
 			 }
 			 
-			 adminRoleActonList.retainAll(actionsList);
-			 actionsList.removeAll(adminRoleActonList);
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
 			
 			
 	    	StringBuilder strbul  = new StringBuilder();
-		     Iterator<Long> iter = actionsList.iterator();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
 		     while(iter.hasNext())
 		     {
 		         strbul.append(iter.next());
@@ -489,6 +584,94 @@ public class RegistrationController {
 			String managerids = managerrole.getActionId()+","+strbul;
 		    managerrole.setActionId(managerids);
 			rolesService.storeRoles(managerrole);
+			
+			
+			updateOrgSubscriptionRegsiteredTabs(orgLocations,adminids);
+			
+			
+	 }
+	 
+	 
+	 
+	 public void saveVendorUserRoleActions(OrgLocations orgLocations) throws Exception{
+		 
+		   SourceleadRoles soruceLeadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			List<Long> soureleadActionIdList = new ArrayList<>();
+			String[] actionsIds = null;
+			actionsIds = soruceLeadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+			
+			Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+			 List<Long> adminRoleActonList = new ArrayList<Long>();
+			 for (String s : adminrole.getActionId().split(",")){
+				 adminRoleActonList.add(Long.parseLong(s));
+			 }
+			 
+			 adminRoleActonList.retainAll(soureleadActionIdList);
+			 soureleadActionIdList.removeAll(adminRoleActonList);
+			
+			
+	    	StringBuilder strbul  = new StringBuilder();
+		     Iterator<Long> iter = soureleadActionIdList.iterator();
+		     while(iter.hasNext())
+		     {
+		         strbul.append(iter.next());
+		        if(iter.hasNext()){
+		         strbul.append(",");
+		        }
+		     }
+		     strbul.toString();
+			
+			
+	        String adminids = adminrole.getActionId()+","+strbul;
+			adminrole.setActionId(adminids);
+			rolesService.storeRoles(adminrole);
+			
+			Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+			String managerids = managerrole.getActionId()+","+strbul;
+		    managerrole.setActionId(managerids);
+			rolesService.storeRoles(managerrole);
+			
+			updateOrgSubscriptionRegsiteredTabs(orgLocations,adminids);
+	 }
+	 
+	 
+	 public void updateOrgSubscriptionRegsiteredTabs(OrgLocations orglocations,String actionIds) throws Exception {
+		 
+		 String[] sourceleadActionIds = actionIds.split(",");
+		 List<Long> actionIdsList = new ArrayList<>();
+		 for(int i=0; i<sourceleadActionIds.length;i++) {
+			 actionIdsList.add(Long.parseLong(sourceleadActionIds[i]));
+		 }
+		 
+		 List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsByIdsList(actionIdsList);
+		 Set<Long> tabIds = new HashSet<>();
+		 if(actionsList != null && !actionsList.isEmpty()) {
+			 for(SourceleadActions action : actionsList) {
+				 Tabs tabs = tabService.getTabListByTabId(action.getTabs().getId());
+				 if(tabs.getTabs() != null){
+					 if(tabs.getId() == 14L) {
+						 tabIds.add(tabs.getId());
+					 }else {
+						 tabIds.add(tabs.getTabs().getId());
+					 }
+				 }else {
+					 tabIds.add(tabs.getId());
+				 }
+			 }
+		 }
+		 
+		 StringBuilder tabsBuilder = new StringBuilder();
+		 for (Long tabId : tabIds) {
+			 tabsBuilder.append(tabId).append(",");
+		 }
+		 String tabsBuilderString = tabsBuilder.substring(0, tabsBuilder.length()-1);
+		 
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orglocations.getOrg().getId(), orglocations.getCountry());
+		 orgLicenseSubscription.setSubscriptionTabs(tabsBuilderString);
+		 orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
 	 }
 	 
 	 

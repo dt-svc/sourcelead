@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 /**
  * @author Laxman
  *
@@ -10,10 +12,15 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class OffboardTasksDTO implements Serializable {
 	
+	  @Required(desc = "taskName")
 	  private String taskName;
 	  
 	  private String templateId;
 	  
+	  @Required(desc="assignedToType")
+	  private String assignedToType;
+	  
+	  @Required(desc = "onboardAssignedTo", dependsOn = "assignedToType", parentValue = "Associate")
 	  private String onboardAssignedTo;
 	  
 	  private String taskPriority;
@@ -200,4 +207,14 @@ public class OffboardTasksDTO implements Serializable {
 	public void setOffboardTaskType(String offboardTaskType) {
 		this.offboardTaskType = offboardTaskType;
 	}
+
+	public String getAssignedToType() {
+		return assignedToType;
+	}
+
+	public void setAssignedToType(String assignedToType) {
+		this.assignedToType = assignedToType;
+	}
+	
+	
 }

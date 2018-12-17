@@ -22,7 +22,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class BillableAndNonBillableHoursUpdator {
 		private ComboPooledDataSource comboPooledDataSource;
-		
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	private static final Logger logger = LoggerFactory.getLogger(BillableAndNonBillableHoursUpdator.class);
 	/**
 	 * @author Naresh Bolisetty
@@ -37,7 +38,7 @@ public class BillableAndNonBillableHoursUpdator {
 			conn = dataSource.getConnection();
 			int count =0;
 				
-				 String sql1 = "SELECT * FROM sourcelead.TIMESHEET_SUBMISSIONS ts where ts.STATUS = '1' ";
+				 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".TIMESHEET_SUBMISSIONS ts where ts.STATUS = '1' ";
 				 stmt1 =  conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
 				 ResultSet rs1 = stmt1.executeQuery(sql1);
 				 int totalFaults = 0;
@@ -52,13 +53,13 @@ public class BillableAndNonBillableHoursUpdator {
 				  	 Float weekNonBillableTotalHours = 0f;
 						
 					 Long  submissionId = rs1.getLong("ID");
-					 String sql2 = "SELECT * FROM sourcelead.TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = "+submissionId+"  and (te.STATUS = '0' or te.STATUS = '' or te.STATUS IS NULL) ";
+					 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = "+submissionId+"  and (te.STATUS = '0' or te.STATUS = '' or te.STATUS IS NULL) ";
 					 Connection	 conn1 = dataSource.getConnection();
 					 Statement stmt2 = conn1.createStatement();
 					 ResultSet rs2 = stmt2.executeQuery(sql2);
 					 while(rs2.next()){
 						 Long  projectTaskId = rs2.getLong("PROJECT_TASK");
-						 String sql3 = "SELECT * FROM sourcelead.PROJECT_TASKS pt where pt.ID = "+projectTaskId+" ";
+						 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_TASKS pt where pt.ID = "+projectTaskId+" ";
 						 Connection	 conn3 = dataSource.getConnection();
 						 Statement stmt3 = conn3.createStatement();
 						 ResultSet rs3 = stmt3.executeQuery(sql3);
@@ -208,10 +209,6 @@ public class BillableAndNonBillableHoursUpdator {
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

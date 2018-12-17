@@ -57,6 +57,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -346,7 +347,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception {
+	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObject) throws Exception {
 
 
 		String fileName = multipartFile.getOriginalFilename();
@@ -371,7 +372,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			version = getWageTaxSummaryVersionByLocationId(orgLocation.getId());
 			version += 1;
 			
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String employeeId = null;
@@ -473,6 +474,23 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									wageTaxSummary.setNet(net);
 								}
 								
+								if (jsonObject.has("fromDate")) {
+									if (jsonObject.getString("fromDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("fromDate"))) {
+										wageTaxSummary.setFromDate(
+												conversionUtil.getDateFromString(jsonObject.getString("fromDate")));
+									}
+
+								}
+								if (jsonObject.has("toDate")) {
+									if (jsonObject.getString("toDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("toDate"))) {
+										wageTaxSummary
+												.setToDate(conversionUtil.getDateFromString(jsonObject.getString("toDate")));
+									}
+								}
+								
+								wageTaxSummary.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 								wageTaxSummary.setEmployeeName(employeeName);
 								wageTaxSummary.setEmployeeId(employeeId);
 								wageTaxSummary.setSsnNumber(ssn);
@@ -671,5 +689,11 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			}
 		}
 		return empId;
+	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxByEmpId(orgLocation, wagesTaxSummaryDTO);
 	}
 }

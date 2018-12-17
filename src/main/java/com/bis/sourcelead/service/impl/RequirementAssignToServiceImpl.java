@@ -249,7 +249,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 				}
 				else {
 					existedUser = requirementAssignTo.getAssignUserId().getId().toString()
-							+ ",undefined";
+							+ ",null";
 				}
 				if(assignedIdValList.contains(existedUser)) {
 					assignedIdValList.remove(existedUser);
@@ -267,7 +267,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 					RequirementAssignTo requirementAssignTo = new RequirementAssignTo();
 					User assignedUser = new User();
 					assignedUser.setId(Long.parseLong(userId));
-					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined")) {
+					if (StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined") && !teamId.equalsIgnoreCase("null")) {
 						Team assignedTeam = new Team();
 						assignedTeam.setId(Long.parseLong(teamId));
 						requirementAssignTo.setTeamId(assignedTeam);
@@ -303,7 +303,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 						String userId = Joiner.on(",").join(iterable).split(",")[0];
 						teamAssignUserId.add(userId);
 						String teamId = Joiner.on(",").join(iterable).split(",")[1];
-						if(null != requirementId && "" != requirementId && !teamId.equalsIgnoreCase("undefined")){
+						if(null != requirementId && "" != requirementId && StringUtils.isNotEmpty(teamId) && !teamId.equalsIgnoreCase("undefined") && !teamId.equalsIgnoreCase("null")){
 							Team team = teamService.getTeamByTeamId(Long.parseLong(teamId));
 							if(team.getOwnerUserId() != null && team.getOwnerUserId().getId() != null)
 							teamOwnerUserId.add(team.getOwnerUserId().getId().toString());

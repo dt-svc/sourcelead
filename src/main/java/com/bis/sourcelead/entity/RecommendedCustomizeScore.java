@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "RECOMMENDED_CUSTOMIZE_SCORE")
 	public class RecommendedCustomizeScore implements Serializable{
@@ -111,12 +113,15 @@ import javax.persistence.Transient;
 	private String updatedBy;
 
 	@Transient
+	@JsonProperty
 	private String dbSkills;
 	
 	@Transient
+	@JsonProperty
 	private String dbVisaType;
 	
 	@Transient
+	@JsonProperty
 	private String dbEducation;
 	
 	public Long getId() {

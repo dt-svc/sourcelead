@@ -88,7 +88,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	
 	@Override
 	public RecommendedCustomizeScore saveCustomizeScore(Requirement requirement) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		RecommendedCustomizeScore res;
@@ -111,24 +111,32 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		if(null != requirement.getSkills()){
 			res.setCustomizeSkills(requirement.getSkills());	
 		}
-		if("".equalsIgnoreCase(requirement.getRate()) && null != requirement.getRate()){
+		if(null != requirement.getRate()){
 			res.setCustomizeRate(requirement.getRate());
 		}
-		if("".equalsIgnoreCase(requirement.getMinExp()) && null != requirement.getMinExp()){
+		if(null != requirement.getMinExp()){
 			res.setCustomizeMinExperience(requirement.getMinExp());	
+		}else {
+			res.setCustomizeMinExperience(null);	
 		}
-		if("".equalsIgnoreCase(requirement.getRateType()) && null != requirement.getRateType()){
+		if(null != requirement.getRateType()){
 			res.setCustomizeRatetype(requirement.getRateType());	
 		}
-		if("".equalsIgnoreCase(requirement.getNoticePeriod()) && null != requirement.getNoticePeriod()){
+		if(null != requirement.getNoticePeriod()){
 			res.setCustomizeNoticeperiod(requirement.getNoticePeriod());	
+		}else {
+			res.setCustomizeNoticeperiod(null);	
 		}
 		
 		if(null != requirement.getVisaType()){
 			res.setCustomizeVisatype(requirement.getVisaType());
+		}else {
+			res.setCustomizeVisatype(null);
 		}
 		if(null != requirement.getEducation()){
 			res.setCustomizeEducation(requirement.getEducation());
+		}else {
+			res.setCustomizeEducation(null);
 		}
 		
 		if(orgLocations.getRecommendedSkillPercent() != null) {
@@ -180,8 +188,10 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		}
 		
 		
-		if("" != requirement.getMaxExp() && null != requirement.getMaxExp()){
+		if(null != requirement.getMaxExp() && !requirement.getMaxExp().isEmpty()){
 			res.setCustomizeMaxExperience(requirement.getMaxExp());	
+		}else {
+			res.setCustomizeMaxExperience(null);	
 		}
 		/*if("" != requirement.getCountry() && null != requirement.getCountry()){
 			res.setCustomizeCountry(requirement.getCountry());	

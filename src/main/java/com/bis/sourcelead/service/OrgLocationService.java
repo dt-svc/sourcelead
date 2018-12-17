@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -64,6 +65,14 @@ public interface OrgLocationService {
 	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception;
 	
 	Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception;
+	
+	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception;
+	
+	List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId,String country) throws Exception;
+	
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception;
+	
+	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception;
 
 
 }

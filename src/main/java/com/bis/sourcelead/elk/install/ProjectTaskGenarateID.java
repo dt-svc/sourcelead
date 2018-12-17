@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -16,14 +15,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class ProjectTaskGenarateID {
 	
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Laxman
  * this method is using for update the RequirmentUUID	
@@ -37,13 +36,13 @@ public List<Long> projectShortCode() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.PROJECT_TASKS";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_TASKS";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 while(rs.next()){
 				 Long projectId = rs.getLong("PROJECT_ID");
 				 if(projectId != null && projectId != 0) {
-					 String sql1 = "SELECT * FROM sourcelead.PROJECTS ps where ps.ID = "+rs.getLong("PROJECT_ID")+" ";
+					 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".PROJECTS ps where ps.ID = "+rs.getLong("PROJECT_ID")+" ";
 					 stmt2 = conn.prepareStatement(sql1);
 					 ResultSet rs1 = stmt2.executeQuery();
 					 while(rs1.next()){
@@ -75,10 +74,6 @@ return null;
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
@@ -102,7 +97,7 @@ private  String generatedIdForTasks(String projrctNameShortCode, Long projectId,
 	String generatedTaskName = null;
 try {
 		int count = 1;
-		 String sql = "SELECT * FROM sourcelead.PROJECT_TASKS pt where pt.PROJECT_ID = "+projectId+"";
+		 String sql = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_TASKS pt where pt.PROJECT_ID = "+projectId+"";
 		 stmt1 = conn.prepareStatement(sql);
 		 ResultSet rs = stmt1.executeQuery();
 		 while(rs.next()){
@@ -110,7 +105,7 @@ try {
 			 Long Id = rs.getLong("ID");
 			 if(generatedId == null) {
 				 generatedTaskName = projrctNameShortCode+count;
-				 String sql2 = "update sourcelead.PROJECT_TASKS pt , sourcelead.PROJECTS pr set pt.GENERATED_ID = ? where pt.PROJECT_ID= ? and pt.PROJECT_ID = pr.ID and pr.ORG_LOCATIONS_ID = ? and pt.ID=?";
+				 String sql2 = "update "+dbconfig.getSchema()+".PROJECT_TASKS pt , "+dbconfig.getSchema()+".PROJECTS pr set pt.GENERATED_ID = ? where pt.PROJECT_ID= ? and pt.PROJECT_ID = pr.ID and pr.ORG_LOCATIONS_ID = ? and pt.ID=?";
 				 stmt2 = conn.prepareStatement(sql2);
 				 stmt2.setString(1, generatedTaskName);
 				 stmt2.setLong(2, projectId);

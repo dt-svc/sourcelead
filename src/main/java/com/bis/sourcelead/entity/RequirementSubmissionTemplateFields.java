@@ -137,6 +137,19 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Transient
     @JsonProperty
     private Integer candidateWorkExperienceMonths;
+    
+    @Transient
+    @JsonProperty
+    private String submissionJsonStringValue;
+    
+    @Transient
+    @JsonProperty
+    private String submissionJsonString;
+    
+    @Transient
+    @JsonProperty
+    private String externalInterviewerUUID;;
+
 
 
     
@@ -418,5 +431,29 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 
 	public void setCandidateWorkExperienceMonths(Integer candidateWorkExperienceMonths) {
 		this.candidateWorkExperienceMonths = candidateWorkExperienceMonths;
+	}
+
+	public String getSubmissionJsonStringValue() {
+		return submissionJsonStringValue;
+	}
+
+	public void setSubmissionJsonStringValue(String submissionJsonStringValue) {
+		this.submissionJsonStringValue = submissionJsonStringValue;
+	}
+
+	public String getSubmissionJsonString() {
+		return submissionJsonString;
+	}
+
+	public void setSubmissionJsonString(String submissionJsonString) {
+		this.submissionJsonString = submissionJsonString;
+	}
+
+	public String getExternalInterviewerUUID() {
+		return externalInterviewerUUID;
+	}
+
+	public void setExternalInterviewerUUID(String externalInterviewerUUID) {
+		this.externalInterviewerUUID = externalInterviewerUUID;
 	}
 }

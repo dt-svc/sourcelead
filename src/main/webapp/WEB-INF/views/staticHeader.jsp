@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>.::Welcome to SourceLead Website::.</title>
-  <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<title>${title}</title>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <meta name="google-site-verification" content="lRRPwOWi0M3yAREOGoDPAjQ4cj4otBXHl_uTWJd93rI" />
 <meta name="msvalidate.01" content="D6B1571D75BB0A86C42A01713002F6FF" />
+<meta name="p:domain_verify" content="e1f8f19c0866ae573868239c1f7893bc"/>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-<meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
-<meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
+<meta property='og:title' content="sourcelead.com"/> 
+<meta property='og:url' content="https://www.sourcelead.com/"/> 
+<meta property='og:description' content='Bridging talent through technology'/> 
+<meta property="og:type" content="article" /> 
+<meta property="og:image" content="https://www.sourcelead.com/resources/images/fav.png"/> 
+<meta name="description" content="${description}">
+<meta name="keywords" content="${keywords}">
+<meta name="robots" content="index, follow">
 	
 	<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
 	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
@@ -52,9 +59,7 @@ gtag('config', 'UA-115098165-1');
 	  <div class="container-fluid">
 		
 	    <div class="navbar-header">
-		  <a class="navbar-brand" href="/">
-			<img src="/resources/static-web/images/logo-sourceld.png">
-		  </a>
+		  <a class="navbar-brand" href="/"><img src="/resources/images/SourceLead-logo.png"></a>
 		</div>
 
 		<!-- Mobile Nav -->
@@ -82,16 +87,31 @@ gtag('config', 'UA-115098165-1');
 				<li><a href="/pms.html" id="pmsID">PMS</a></li>
 				<li><a href="/hrms.html" id="hrmsID">HRMS/Contracts</a></li>
 				<li><a href="/ims.html" id="imsID">IMS</a></li>
+				<li><a href="/immigration.html" id="immigrationID">Immigration</a></li>
+				<li><a href="/mergers-acquisition.html" id="maId">Mergers &amp; Acquisition</a></li>
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html" id="searchjobID">Search Job</a></li>
-	<li><a href="/marketplace.html" id="marketplaceID">Marketplace</a></li>
+	<li><a href="/search-jobs.html" id="searchjobID">Search Job</a></li>
+	<li><a href="/market-place.html" id="marketplaceID">Marketplace</a></li>
 	<li><a href="/about-us.html" id="aboutusID">About Us</a></li>
 	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="/blog.html" id="blogID">Blog</a></li>
+
+	<!-- <li><a href="/blog/all.html" id="blogID">Blog</a></li> -->
+
+	<li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+				<li><a class="helpbtn" href="/help.html">Help Manuals</a></li>
+				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
+			</ul>
+	</li>
+
 	<li><a href="/contact.html" id="contactID">Contact</a></li>
-	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
 	<!-- <li><a href="/register" title="Login">Sign Up</a></li> -->
+		 <li><a class="loginbtn" href="/login" title="Login">Login</a></li>
+	
 	</ul>
 		</div>
 		

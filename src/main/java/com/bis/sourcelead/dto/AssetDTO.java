@@ -1,13 +1,21 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
+import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 
-public class AssetDTO extends CommonDTO {
+public class AssetDTO extends SearchDTO implements Serializable {
 
+	    @Required(desc="sno")
 		private String sno;
-		
+	    
+	    private String assetId;
+	    
 		private String make;
 		
 		private String model;
@@ -22,13 +30,13 @@ public class AssetDTO extends CommonDTO {
 		
 		private String monitor;
 		
+		private Long catagoryHiddenId;
+		
+		@Required(desc="category")
 		private String category;
 		
+		@Required(desc="working status")
 		private String workingStatus;
-		
-		private String shiftAEmp;
-		
-		private String shiftBEmp;
 		
 		private String description;
 		
@@ -36,43 +44,63 @@ public class AssetDTO extends CommonDTO {
 		
 		private List<FileInfo> attachmentUpload;
 		
-		private List<FileInfo> uploadBtndskAUpload;
-		
-		private List<FileInfo> uploadBtndskBUpload;
-		
 		private String fileName;
 		
 		private String fileUrl;
 		
 		private String fileContentType;
 		
-		private String shiftAFileContentType;
-		
-		private String shiftAFileUrl;
-		
-		private String shiftAFileName;
-		
-		private String shiftBFileContentType;
-		
-		private String shiftBFileUrl;
-		
-		private String shiftBFileName;
-		
 		private List<Employees> employeesList;
-		
-		private String shiftAEmpName;
-		
-		private String shiftBEmpName;
 		
 		private String categoryName;
 		
 		private String categoryId;
 		
-		private String shiftAEmployee;
-		
-		private String shiftBEmployee;
-		
 		private String issueDate;
+		
+		private List<CustomFormFieldDTO> customFormData;
+		
+		private Map<Long,String> assetCustomFieldlabelNameAndValue;
+		
+		private String macAddress;
+		
+		private String categoryIds;
+		
+		private String shiftIds;
+		
+		private List<AssetAssignDTO> assignAsset;
+		
+		private List<AssetAssign> assetAssignList;
+		
+		private String tags;
+		
+		private String purchaseDate;
+		
+		private String depreciationDate;
+		
+		private String operatingSystem;
+		
+		private String osKey;
+		
+		private String antiVirus;
+		
+		private BigDecimal cost;
+		
+		private BigDecimal depreciationAmount;
+		
+		private String cpuSerialNumber;
+		
+		private String vendorDetails;
+		
+		private String exportType;
+		
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
+		}
 
 		public String getSno() {
 			return sno;
@@ -154,22 +182,6 @@ public class AssetDTO extends CommonDTO {
 			this.workingStatus = workingStatus;
 		}
 
-		public String getShiftAEmp() {
-			return shiftAEmp;
-		}
-
-		public void setShiftAEmp(String shiftAEmp) {
-			this.shiftAEmp = shiftAEmp;
-		}
-
-		public String getShiftBEmp() {
-			return shiftBEmp;
-		}
-
-		public void setShiftBEmp(String shiftBEmp) {
-			this.shiftBEmp = shiftBEmp;
-		}
-
 		public String getDescription() {
 			return description;
 		}
@@ -194,21 +206,6 @@ public class AssetDTO extends CommonDTO {
 			this.attachmentUpload = attachmentUpload;
 		}
 
-		public List<FileInfo> getUploadBtndskAUpload() {
-			return uploadBtndskAUpload;
-		}
-
-		public void setUploadBtndskAUpload(List<FileInfo> uploadBtndskAUpload) {
-			this.uploadBtndskAUpload = uploadBtndskAUpload;
-		}
-
-		public List<FileInfo> getUploadBtndskBUpload() {
-			return uploadBtndskBUpload;
-		}
-
-		public void setUploadBtndskBUpload(List<FileInfo> uploadBtndskBUpload) {
-			this.uploadBtndskBUpload = uploadBtndskBUpload;
-		}
 
 		public String getFileName() {
 			return fileName;
@@ -234,54 +231,6 @@ public class AssetDTO extends CommonDTO {
 			this.fileContentType = fileContentType;
 		}
 
-		public String getShiftAFileContentType() {
-			return shiftAFileContentType;
-		}
-
-		public void setShiftAFileContentType(String shiftAFileContentType) {
-			this.shiftAFileContentType = shiftAFileContentType;
-		}
-
-		public String getShiftAFileUrl() {
-			return shiftAFileUrl;
-		}
-
-		public void setShiftAFileUrl(String shiftAFileUrl) {
-			this.shiftAFileUrl = shiftAFileUrl;
-		}
-
-		public String getShiftAFileName() {
-			return shiftAFileName;
-		}
-
-		public void setShiftAFileName(String shiftAFileName) {
-			this.shiftAFileName = shiftAFileName;
-		}
-
-		public String getShiftBFileContentType() {
-			return shiftBFileContentType;
-		}
-
-		public void setShiftBFileContentType(String shiftBFileContentType) {
-			this.shiftBFileContentType = shiftBFileContentType;
-		}
-
-		public String getShiftBFileUrl() {
-			return shiftBFileUrl;
-		}
-
-		public void setShiftBFileUrl(String shiftBFileUrl) {
-			this.shiftBFileUrl = shiftBFileUrl;
-		}
-
-		public String getShiftBFileName() {
-			return shiftBFileName;
-		}
-
-		public void setShiftBFileName(String shiftBFileName) {
-			this.shiftBFileName = shiftBFileName;
-		}
-
 		public List<Employees> getEmployeesList() {
 			return employeesList;
 		}
@@ -290,21 +239,6 @@ public class AssetDTO extends CommonDTO {
 			this.employeesList = employeesList;
 		}
 
-		public String getShiftAEmpName() {
-			return shiftAEmpName;
-		}
-
-		public void setShiftAEmpName(String shiftAEmpName) {
-			this.shiftAEmpName = shiftAEmpName;
-		}
-
-		public String getShiftBEmpName() {
-			return shiftBEmpName;
-		}
-
-		public void setShiftBEmpName(String shiftBEmpName) {
-			this.shiftBEmpName = shiftBEmpName;
-		}
 
 		public String getCategoryName() {
 			return categoryName;
@@ -322,21 +256,6 @@ public class AssetDTO extends CommonDTO {
 			this.categoryId = categoryId;
 		}
 
-		public String getShiftAEmployee() {
-			return shiftAEmployee;
-		}
-
-		public void setShiftAEmployee(String shiftAEmployee) {
-			this.shiftAEmployee = shiftAEmployee;
-		}
-
-		public String getShiftBEmployee() {
-			return shiftBEmployee;
-		}
-
-		public void setShiftBEmployee(String shiftBEmployee) {
-			this.shiftBEmployee = shiftBEmployee;
-		}
 
 		public String getIssueDate() {
 			return issueDate;
@@ -346,5 +265,155 @@ public class AssetDTO extends CommonDTO {
 			this.issueDate = issueDate;
 		}
 
-		
+		public Map<Long, String> getAssetCustomFieldlabelNameAndValue() {
+			return assetCustomFieldlabelNameAndValue;
+		}
+
+		public void setAssetCustomFieldlabelNameAndValue(Map<Long, String> assetCustomFieldlabelNameAndValue) {
+			this.assetCustomFieldlabelNameAndValue = assetCustomFieldlabelNameAndValue;
+		}
+
+		public String getMacAddress() {
+			return macAddress;
+		}
+
+		public void setMacAddress(String macAddress) {
+			this.macAddress = macAddress;
+		}
+
+		public String getCategoryIds() {
+			return categoryIds;
+		}
+
+		public void setCategoryIds(String categoryIds) {
+			this.categoryIds = categoryIds;
+		}
+
+		public Long getCatagoryHiddenId() {
+			return catagoryHiddenId;
+		}
+
+		public void setCatagoryHiddenId(Long catagoryHiddenId) {
+			this.catagoryHiddenId = catagoryHiddenId;
+		}
+
+		public List<AssetAssignDTO> getAssignAsset() {
+			return assignAsset;
+		}
+
+		public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
+			this.assignAsset = assignAsset;
+		}
+
+		public String getAssetId() {
+			return assetId;
+		}
+
+		public void setAssetId(String assetId) {
+			this.assetId = assetId;
+		}
+
+		public List<AssetAssign> getAssetAssignList() {
+			return assetAssignList;
+		}
+
+		public void setAssetAssignList(List<AssetAssign> assetAssignList) {
+			this.assetAssignList = assetAssignList;
+		}
+
+		public String getShiftIds() {
+			return shiftIds;
+		}
+
+		public void setShiftIds(String shiftIds) {
+			this.shiftIds = shiftIds;
+		}
+
+		public String getTags() {
+			return tags;
+		}
+
+		public void setTags(String tags) {
+			this.tags = tags;
+		}
+
+		public String getPurchaseDate() {
+			return purchaseDate;
+		}
+
+		public String getDepreciationDate() {
+			return depreciationDate;
+		}
+
+		public String getOperatingSystem() {
+			return operatingSystem;
+		}
+
+		public String getOsKey() {
+			return osKey;
+		}
+
+		public String getAntiVirus() {
+			return antiVirus;
+		}
+
+		public BigDecimal getCost() {
+			return cost;
+		}
+
+		public BigDecimal getDepreciationAmount() {
+			return depreciationAmount;
+		}
+
+		public void setPurchaseDate(String purchaseDate) {
+			this.purchaseDate = purchaseDate;
+		}
+
+		public void setDepreciationDate(String depreciationDate) {
+			this.depreciationDate = depreciationDate;
+		}
+
+		public void setOperatingSystem(String operatingSystem) {
+			this.operatingSystem = operatingSystem;
+		}
+
+		public void setOsKey(String osKey) {
+			this.osKey = osKey;
+		}
+
+		public void setAntiVirus(String antiVirus) {
+			this.antiVirus = antiVirus;
+		}
+
+		public void setCost(BigDecimal cost) {
+			this.cost = cost;
+		}
+
+		public void setDepreciationAmount(BigDecimal depreciationAmount) {
+			this.depreciationAmount = depreciationAmount;
+		}
+
+		public String getCpuSerialNumber() {
+			return cpuSerialNumber;
+		}
+
+		public void setCpuSerialNumber(String cpuSerialNumber) {
+			this.cpuSerialNumber = cpuSerialNumber;
+		}
+
+		public String getVendorDetails() {
+			return vendorDetails;
+		}
+
+		public void setVendorDetails(String vendorDetails) {
+			this.vendorDetails = vendorDetails;
+		}
+
+		public String getExportType() {
+			return exportType;
+		}
+
+		public void setExportType(String exportType) {
+			this.exportType = exportType;
+		}
 }

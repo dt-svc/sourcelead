@@ -79,7 +79,10 @@ function loadOffers(flag) {
             searchPageNo = searchPageNo + 1;
             loadOffers(true);
         });
-        $("#resultTitle").html("Showing "+(searchPageNo*searchPageSize+1)+" - "+(((searchPageNo+1)*searchPageSize) > data.recordsTotal ? data.recordsTotal : ((searchPageNo+1)*searchPageSize))+" of "+data.recordsTotal + " results");
+        if(data.recordsTotal>0)
+        	$("#resultTitle").html("Showing "+(searchPageNo*searchPageSize+1)+" - "+(((searchPageNo+1)*searchPageSize) > data.recordsTotal ? data.recordsTotal : ((searchPageNo+1)*searchPageSize))+" of "+data.recordsTotal + " results");
+        	else
+        	$("#resultTitle").html("No Jobs Found");
 
     });
 }

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,14 +27,15 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.ibm.icu.util.Calendar;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
-
+ 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -126,6 +128,40 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return timesheetEntriesList;
 	}
 	
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId, Date timesheetDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetDate = null;
+		if(timesheetDate != null){
+			sqlTimesheetDate = new java.sql.Date(timesheetDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and tde.timesheetDate=:timesheetDate and proMember.id=:projectMemberId and tde.status = '1' ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("timesheetDate", sqlTimesheetDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId, Date startDate,Date endDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetStartDate = null;
+		java.sql.Date sqlTimesheetEndDate = null;
+		if(startDate != null){
+			sqlTimesheetStartDate = new java.sql.Date(startDate.getTime());
+		}
+		if(endDate != null){
+			sqlTimesheetEndDate = new java.sql.Date(endDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and proMember.id=:projectMemberId and tde.status = '1' and tde.timesheetDate between :sqlTimesheetStartDate AND :sqlTimesheetEndDate ORDER BY tde.timesheetDate";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("sqlTimesheetStartDate", sqlTimesheetStartDate).setParameter("sqlTimesheetEndDate", sqlTimesheetEndDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
 	private TimeSheetDayEntriesHistory  getHistoryRecordFromTimeSheetDayEntries(TimeSheetDayEntries timeSheetDayEntries){
 		TimeSheetDayEntriesHistory timeSheetDayEntriesHistory = null;
 		if(timeSheetDayEntries != null){
@@ -143,6 +179,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			timeSheetDayEntriesHistory.setCreatedDate(timeSheetDayEntries.getCreatedDate());
 			timeSheetDayEntriesHistory.setUpdatedBy(timeSheetDayEntries.getUpdatedBy());
 			timeSheetDayEntriesHistory.setUpdatedDate(timeSheetDayEntries.getUpdatedDate());
+			timeSheetDayEntriesHistory.setTimesheetActivityId(timeSheetDayEntries.getTimesheetActivityId());
 		}
 		return timeSheetDayEntriesHistory;
 	}
@@ -240,7 +277,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   )" ;
 		
 		String orderQuery = "order by tde.timesheetDate ASC"; 
@@ -258,7 +295,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 				    /*
 					 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 					 */
-				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :locationId)) "
+				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationId)) "
 				+ "   ) " ;
 		
 		Query query1 = session.createQuery(query+" "+searchQuery.toString()+" "+orderQuery).setLong("userId", userId).setLong("locationId",locationId).setString("taskUUID", taskUUID);
@@ -324,9 +361,118 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		}else {
 			return null;
 		}
-		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(Long submissionId,Date entryDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlEntryDate = null;
+		if(entryDate != null){
+			sqlEntryDate = new java.sql.Date(entryDate.getTime());
+		}
+		String query = "Select tde.Id from TimeSheetDayEntries tde  where tde.timesheetDate = :entryDate and tde.timesheetSubmissions.Id =:submissionId and tde.status = '1'";
+		List<Long> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("entryDate", sqlEntryDate).list();	
+		return timesheetEntriesList;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		long weekOffCount = 0;
+		if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+			 String[] strArray = orgLocations.getWeekOffDays().split(",");
+		     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+		     if(weekOffs != null && !weekOffs.isEmpty()) {
+		    	 for(String day_Of_Week : weekOffs) {
+		    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+		    	 }
+		     }
+		    
+		}
+		 long noOfDays =  CalendarUtil.getNumberOfDaysCount(startDate, endDate);
+		 long workingDays = noOfDays-weekOffCount;
+		 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+         if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				avgWorkingHoursPerDay = 8; 
+		 }
+         double estimatedHours = avgWorkingHoursPerDay*workingDays;
+ 		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
+ 		double overTimeHours = 0;
+ 		if (tdeList != null && !tdeList.isEmpty()) {
+ 			float weekTotalHours = 0f;
+			for (TimeSheetDayEntries tde : tdeList) {
+				float totalHours = 0f;
+				if (StringUtils.isNotEmpty(tde.getTotalHours())) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				}
+				weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, totalHours);
+			}
+			overTimeHours = weekTotalHours-estimatedHours;
+		}
+ 		if(overTimeHours <0) {
+ 			overTimeHours = 0;
+ 		}
+ 		return overTimeHours;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+		long weekOffCount = 0;
+		if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+			 String[] strArray = orgLocations.getWeekOffDays().split(",");
+		     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+		     if(weekOffs != null && !weekOffs.isEmpty()) {
+		    	 for(String day_Of_Week : weekOffs) {
+		    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+		    	 }
+		     }
+		    
+		}else {
+			 ArrayList<String> weekOffs = new ArrayList<String>();
+			 weekOffs.add("Sat");
+			 weekOffs.add("Sun");
+	    	 for(String day_Of_Week : weekOffs) {
+	    		 weekOffCount = weekOffCount+CalendarUtil.numberOfDayOccurancesBetweenTwoDates(startDate, endDate, day_Of_Week);
+	    	 }
+		}
+		 long noOfDays =  CalendarUtil.getNumberOfDaysCount(startDate, endDate);
+		 long workingDays = noOfDays-weekOffCount;
+		 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+         if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				avgWorkingHoursPerDay = 8; 
+		 }
+         double estimatedHours = avgWorkingHoursPerDay*workingDays;
+         String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt  left join fetch tde.timesheetSubmissions ts left join fetch ts.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc where pm.masterCandidateId.id =:masterCandidateId and loc.id =:locationId and tde.timesheetDate between :startDate and :endDate and tde.status = '1' ";
+ 		List<TimeSheetDayEntries> tdeList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("locationId", orgLocations.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();	
+ 		boolean flag = true;
+ 		if (tdeList != null && !tdeList.isEmpty()) {
+ 			float weekTotalHours = 0f;
+			for (TimeSheetDayEntries tde : tdeList) {
+				float totalHours = 0f;
+				if (StringUtils.isNotEmpty(tde.getTotalHours())) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(tde.getTotalHours().replaceAll(":", ".")), totalHours);
+				}
+				weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, totalHours);
+			}
+			if(weekTotalHours >= estimatedHours) {
+				flag = false;
+			}
+		}
+ 		return flag;
+	}
 	
 
 }

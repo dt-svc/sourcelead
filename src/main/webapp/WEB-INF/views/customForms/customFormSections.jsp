@@ -5,14 +5,18 @@
  
 
  <c:forEach var="section" items="${SourceleadForm_Sections}" varStatus="sectionStatus">
-     <div class="cusFielInn" >
-        <div class="cusFielInnHead clearfix">
+     <div class="project_wrap mb">
+     
+     
+     
+        <div class="cusFielInnHead reportHead clearfix">
 	  				<h2>${section.sectionName}</h2>
 	  				<c:if test="${sectionStatus.index == 0}">
-		          	    <a href="javascript:void(0)" id="addField" onclick="editFileDetails('','addNewCustomField');" ><i class="glyphicon glyphicon-plus"></i> Add Field</a> 
+		          	    <a href="javascript:void(0)" id="addField" class="newAdBtn mr5" onclick="editFileDetails('','addNewCustomField');" >+ Field</a> 
 		          	</c:if>
 		</div>
-	  	<div class="cusFielTable" >
+		
+	  	<div class="project_wrap_table" >
 			<table>
 			<tbody id="cusFielTable${section.id}">
 			  <tr>
@@ -22,8 +26,8 @@
 				<th class="tblminwidth-100">Required ?</th>
 				<th class="tblminwidth-150">PlaceHolder</th>
 				<th class="tblminwidth-75">Status</th>
-				<th>Description</th>
-				<th class="tblminwidth-150">Tool Tip</th>
+				<!-- <th>Description</th>
+				<th class="tblminwidth-150">Tool Tip</th> -->
 				
 				
 			  </tr>
@@ -31,7 +35,7 @@
 					  <tr>
 						<td class="cusFielAction">
 						   <div>
-							<i class="fa fa-eye"></i>
+							<i class="fa fa-eye" onclick="viewSectionFileDetails(${section.id},${fieldValue.id},'SourceleadSummary');"></i>
 				            </div>
 				        </td>
 						<td><div class="tblminwidth-150">${fieldValue.labelName}</div></td>
@@ -39,13 +43,15 @@
 						<td><div class="tblminwidth-30">${fieldValue.isFieldRequired == '0'? 'No':'Yes'}</div></td>
 						<td><div class="tblminwidth-150">${fieldValue.placeHolder}</div></td>
 						<td><div class="tblminwidth-75">${fieldValue.fieldstatus == '0'? 'InActive':'Active'}</div></td>
-						<c:if test="${!empty fieldValue.fieldDesc}">
+						
+						
+						<%-- <c:if test="${!empty fieldValue.fieldDesc}">
 							<td><div class="showmore tblminwidth-150">${fieldValue.fieldDesc}</div></td>
 						</c:if>
 						<c:if test="${empty fieldValue.fieldDesc}">
 							<td><div class="showmore tblminwidth-150 text-center">--</div></td>
 						</c:if>
-						<td><div class="showmore tblminwidth-150">${fieldValue.labelInfo}</div></td>
+						<td><div class="showmore tblminwidth-150">${fieldValue.labelInfo}</div></td> --%>
 						
 					  </tr>
 			    </c:forEach>
@@ -60,18 +66,33 @@
  </c:forEach>
 
 <div class="popMaskCustom popMask-zindex"></div>
-<div class="cusFielPopup cusFiel-popup " id="popUpDataCustom">
+<div id="popUpDataCustom">
   <jsp:include page="addCustomPopUp.jsp"></jsp:include>
 </div> 
  
- 
+<script>
+function viewSectionFileDetails(sectionId,sourceleadFormId,type){
+	$.ajax({
+		 type : "POST",
+		 url : sourceleadUrl+"/getSourceleadSectionDetailsById?&SectionId="+sectionId+"&sourceleadFormId="+sourceleadFormId+"&type="+type,
+		 	 	success : function(data) {
+		 	 		$("#popUpDataCustom").empty();
+			        $("#popUpDataCustom").append(data);
+			        addFieldPopUp(sectionId);			        
+		},
+	});
+}
+</script> 
+
  <script>
   function addOption(){
 	  var optionCounter = $("#optionCounter").val();
-	  var divText = '<div id="optionDiv'+optionCounter+'" class="col-sm-12 noPad mt clearfix">'+
-	                 '<div class="col-md-3 noPad labHeight">&nbsp;</div>'+
-	                   '<div class="col-md-6"><input id = "selectOptionId" placeholder="" name="optionData['+optionCounter+'].option" class="field-label form-control input-sm" type="text"> </div>'+
-	                   '<div class="col-md-3 lblHeight"><span class="OpRemove"><i onclick = "removeOption('+optionCounter+')" class="fa fa-close"></i></span>'+
+	  if(optionCounter == 0){
+		  optionCounter = +optionCounter + 1;
+	  }
+	  var divText = '<div id="optionDiv'+optionCounter+'" class="clearfix mb5">'+
+	                   '<div class="col-md-11 noPad"><input id = "selectOptionId" placeholder="" name="optionData['+optionCounter+'].option" class="field-label form-control input-sm" type="text"> </div>'+
+	                   '<div class="col-md-1 lblHeight"><span class="OpRemove"><i onclick = "removeOption('+optionCounter+')" class="fa fa-close"></i></span>'+
 		             '</div>'+
 		             '</div>';
 	  
@@ -172,19 +193,35 @@ function getSelectedFieldDetails(){
 		$("#optionDiv"+i).remove();
 	}
 	 var field = $('#fieldsDropDown').val();
-	 if(field == 'selectfield' || field == 'checkBox' || field == 'radioButton'){
+	 if(field == 'TextBox'){
+		 $('#validateRangeDiv').show();
+		 $('#validateLengthDiv').show();
+	 }else{
+		 $('#validateRangeDiv').hide();
+		 $('#validateLengthDiv').hide();
+		 
+		 $('#validationRange').removeAttr("data-validation","required");
+		 $('#validationRange').attr('data-validation-optional');
+		 
+		 $('#validationType').removeAttr("data-validation","required");
+		 $('#validationType').attr('data-validation-optional');
+		 
+	 }
+	 if(field == 'selectBox' || field == 'CheckBox' || field == 'radioButton'){
 		 $('#selectFieldDiv').show();
 		 $('#textBoxDiv').hide();
-		 if(field == 'selectfield'){
-			 $("#selectFieldDiv p:contains('Choices')").html("Options");
+		 if(field == 'selectBox'){
+			 $("#selectFieldDiv p:contains('Choices')").html("Options").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Choice')").html("Add Option");
-			
-		 }else if(field == 'checkBox' || field == 'radioButton'){
-			 $("#selectFieldDiv p:contains('Options')").html("Choices");
+			 $('#placeHolderDiv').show();
+		 }else if(field == 'CheckBox' || field == 'radioButton'){
+			 $("#selectFieldDiv p:contains('Options')").html("Choices").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
+			 $('#placeHolderDiv').hide();
 		 }
 		 $('#selectOptionId').removeAttr('data-validation-optional');
-		 $('#selectOptionId').attr("data-validation","required"); 
+		 $('#selectOptionId').attr("data-validation","required");
+		 
 	 }else{
 		 $('#selectFieldDiv').hide();
 		 $('#textBoxDiv').show();
@@ -193,10 +230,10 @@ function getSelectedFieldDetails(){
 		 $('#selectOptionId').attr("data-validation-optional","true");
 	 }
 	 
-	 if(field == 'datefield'){
+	 if(field == 'Date'){
 		 $('#selectFieldDiv').hide();
 		 $('#dateFieldDiv').show();
-		 $( "#datepicker" ).datepicker();
+		 $('#placeHolderDiv').show();
 	 }else{
 		 $('#dateFieldDiv').hide();
 		 $('#dateFieldDiv').find('p.jquery_form_error_message').remove(); 
@@ -305,21 +342,27 @@ var validationSettings = {
 
  <script>
  function activateOrDeactivateCustomField(customRowId,status){
-	 $.ajax({
+	 $.ajax({ 
 		 type : "POST",
 		 url : sourceleadUrl+"/deleteCustomField?&customID="+customRowId+"&status="+status,
 		 	 	success : function(data) {
 		 	 		$("#deletFildRow"+customRowId).removeAttr("class");
 		 	 		if(status == 'activate'){
+
 		 	 			$("#deletFildRow"+customRowId).prop('title', 'De-Activate');
-		 	 			$("#deletFildRow"+customRowId).attr("class","fa fa-trash");
+		 	 			$("#deletFildRow"+customRowId).attr("class","fa  fa-trash");
+
 		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
 		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'deactivate')");
+		 	 			$("#customFieldStatus"+customRowId).empty();
+		 	 			$("#customFieldStatus"+customRowId).html('Active');
 		 	 		}if(status == 'deactivate'){
 		 	 			$("#deletFildRow"+customRowId).prop('title', 'Activate');
-		 	 			$("#deletFildRow"+customRowId).attr("class","fa fa-check");
+		 	 			$("#deletFildRow"+customRowId).attr("class","fa  fa-check");
 		 	 			$("#deletFildRow"+customRowId).removeAttr("onclick");
 		 	 			$("#deletFildRow"+customRowId).attr("onclick","activateOrDeactivateCustomField('"+customRowId+"', 'activate')");
+		 	 			$("#customFieldStatus"+customRowId).empty();
+		 	 			$("#customFieldStatus"+customRowId).html('InActive');
 		 	 		}
 		},
 	});

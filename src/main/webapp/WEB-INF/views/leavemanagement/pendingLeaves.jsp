@@ -37,6 +37,7 @@ $(document).ready(function(){
                 <div class="pull-left select-fild">
                         <select onchange="redirectlocation(this.value);">
                         <option value="/pendingLeaves" selected>Pending Leaves</option>
+                        <option value="/withdrawLeaves">Withdraw Leaves</option>
                         <option  value="/approvedLeaves">Approved Leaves</option>
                         <option value="/rejectedLeaves">Rejected Leaves</option>
                         <option value="/cancelLeaves">Cancelled Leaves</option>
@@ -71,7 +72,8 @@ function getPendingLeavesList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_user.id}';
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(json) {
+	$.get(sourceleadUrl+"/getLeavesListByLocationIdAndStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&status=PENDING&userId="+userId, function(response) {
+		if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="pendingListTable" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -85,11 +87,11 @@ function getPendingLeavesList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				var data = json.data;
-				if(data !=null && data !=''){
-					 for (var i=0; i<data.length; i++)
+				//var data = result.data;
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
@@ -150,17 +152,28 @@ function getPendingLeavesList(){
 				    $('.addcandidate-popup').fadeOut(200);
 				}); 
 				
-		}); 
+		}else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+	    } else if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+	     }
+		else {
+		    showError("Operation failed, please try again");
+		}
+	
+		  }); 
  }
 </script>
 
 <script>
 function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(data) {
-		   if(data != null){
+    $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+		   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-warning btn-sm mr10" title="'+status+'">'+status+'</span>';
@@ -178,8 +191,8 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 			 result = result +'<div class="col-md-8">';
-			 if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
-				 result = result +'<span>'+data.leaveType+'</span>';
+			 if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
+				 result = result +'<span>'+data.leaveName+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -205,7 +218,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 	            }
              result = result +' </div>';
              result = result +' </div>';
-             result = result +'<div class="col-md-12 mb">';
+             /* result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">'; 
              if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
@@ -214,7 +227,7 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
 	            	result = result +' <span>--</span>';
 	            }
              result = result +'</div>';
-             result = result +'</div>';
+             result = result +'</div>'; */
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Applied on:</b></label>';
              result = result +'<div class="col-md-8">';
@@ -263,6 +276,17 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId,status){
              $("#leaveSummaryId").append(result);
             
 		}	
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+   		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}
 		 
 	});  
 }
@@ -332,8 +356,12 @@ function withdraw(leaveUUID,orgLocationId){
 	  	 $("#withdrawReasonDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
 	 }else{
 		 $("#withdrawReasonDiv").find('p.jquery_form_error_message').remove();
-		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(data) {
-				if(data == true){
+		  $.get(sourceleadUrl+"/withdrawLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId, function(response) {
+			  if (response && response.response === "INVALID_DATA") {
+	    		    showError(response.responseMessage);
+	    		} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
 					$("#popUp").empty();
 		 			$("#remove_user_pop, .sideMask").fadeOut();
 		 			$("#selector1").removeAttr("style");
@@ -341,7 +369,12 @@ function withdraw(leaveUUID,orgLocationId){
 		    	     $("#msgDiv").html("Leave Withdrawn Successfully..");
 		    	     msgFadein();
 		    	     getPendingLeavesList();
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
 				}
+			  
 			});
 	 }
 }

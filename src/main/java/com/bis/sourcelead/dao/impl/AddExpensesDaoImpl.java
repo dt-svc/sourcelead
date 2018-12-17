@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -92,7 +96,8 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long checkExpensIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'";
+		//String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'"; /*OLD CODE*/
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".EXPENSES WHERE EXPENSES_LOCATION_ID = '"+ orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -109,6 +114,28 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		ExpensesEntryDocuments expensesEntryDocuments = this.sessionFactory.getCurrentSession().get(ExpensesEntryDocuments.class, documentId);
 		expensesEntryDocuments.setStatus(0);
 		session.saveOrUpdate(expensesEntryDocuments);
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long changeStatusToBillable(long expenseEntriesId,String billableStatus) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			ExpensesEntries expensesentries = session.get(ExpensesEntries.class, expenseEntriesId);
+			if (expensesentries != null) {
+				if(StringUtils.isNotEmpty(billableStatus) && billableStatus.equalsIgnoreCase("billable")) {
+					expensesentries.setBillable(true);
+				}else {
+					expensesentries.setBillable(false);
+				}
+				
+				return expensesentries.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	

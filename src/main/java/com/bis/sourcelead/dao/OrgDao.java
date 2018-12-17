@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
@@ -61,4 +62,21 @@ public interface OrgDao {
     public String generateCareerPageKey(Long id, String orgName) throws Exception;
 
     public int changeCareerPageKeyStatus(Long id) throws Exception;	
+
+    public long savePaymentAccount(PaymentAccountDTO account);
+    
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId,boolean onlyEnabledAccounts);
+
+    public long changePaymentAccountToAccess(long id, long orgId);
+
+    public PaymentAccountDTO getPaymentAccount(long id, Long orgId);
+
+    public int changeDefaultPaymentAccount(long id, long orgLocationId, boolean defaultAccount);
+    
+    public int changePaymentAccountStatus(long id, long orgLocationId);
+
+    public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId,boolean onlyEnabledAccounts);
+    
+    public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId,boolean onlyEnabledAccounts);
+
 }

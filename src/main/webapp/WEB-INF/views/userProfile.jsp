@@ -49,6 +49,7 @@ function resetPassword(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
     $("#save_button").removeAttr("disabled");
     
 }
@@ -58,6 +59,7 @@ function resetProfile(){
     $('#updatepassword').show();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -77,6 +79,10 @@ function getConfiguredList(){
     $('#updatepassword').hide();
     $('#configure').show();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
 
 function getUnsubscribeList(){
@@ -84,7 +90,64 @@ function getUnsubscribeList(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').show();
+    $('#mylinkaccounts').hide();
+    $('#myBankDetails').hide();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
 }
+
+function getLinkAccounts(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#myBankDetails').hide();
+    $('#mylinkaccounts').show();
+    $('#associateBankData').hide();
+    $("#taxDate").hide();
+}
+
+function getBankDetails(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $("#taxDate").hide();
+//     $('#myBankDetails').show();
+    $('.tabsMenu_tabs_inn').show();
+      associateBankData();
+}
+
+ function getTax(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
+    $('#associateBankData').hide();
+    $('#myBankDetails').hide();
+//     $("#myTax").show();
+    $('.tabsMenu_tabs_inn').show();
+     associateTaxSummary();
+     getResidenceLocation();
+} 
+ 
+ function getDocuments(){
+	 $('#profile').hide();
+	    $('#updatepassword').hide();
+	    $('#configure').hide();
+	    $('#unsubscribe').hide();
+	    $('#myBankDetails').hide();
+	    $('#mylinkaccounts').hide();
+	    $('#associateBankData').hide();
+	    $("#taxDate").hide();
+	    $("#myTax").hide();
+	    $('#myBankDetails').hide();
+// 	    $("#myDocuments").show();
+// 	    $(".welCo1").show();
+	    candidateDocuments();
+ }
 </script>
 
 
@@ -111,24 +174,24 @@ function getUnsubscribeList(){
       </c:if>
     
     </section>
-    <div class="content-area clearfix">
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div id="loading"></div> 
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		    <!-- Tab for Profile setting-area -->
-		  <div class="accountsettings-tab">
-		  <ul class="nav nav-tabs">
+    
+    <div class="project_wrap clearfix">
+      <div class="clearfix form-area form-horizontal customedTabStyles">
+        	<div id="loading"></div> 
+		  <ul class="nav nav-tabs newTabs">
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
-		  </ul>
+			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
+			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
+			<li onclick="getTax();"><a data-toggle="tab" href="#myTax">Tax</a></li>
+			<li onclick="getDocuments();"><a data-toggle="tab" href="#myDocuments">Documents</a></li>
+		  </ul>        
+<div class="accountsettings-tab noMar">
 
-		  <div class="tab-content panel-body">
-			<div id="profile" class="tab-pane fade in active">
-		
-			  
+		  <div class="tab-content noBor">
+			<div id="profile" class="tab-pane panel-body fade in active">
 			  <div class="col-xs-12 col-sm-3 col-md-3">
 			  
 			  <form:form class="login-form clearfix"  id="profileImage_form"  name="profileImage_form" method="post" >
@@ -151,31 +214,38 @@ function getUnsubscribeList(){
 				 </div> 
 				 
 				 </form:form>	
-			  
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
+			  		<div class="clearfix"></div>
+			  		<div class="clearfix text-center mt">
+						 <a href="javascript:void(0)" onclick="generateJson()" class="btn btn-primary" title="Download">
+						 	Download Profile<i class="fa fa-download ml"></i>
+						 </a>
+					</div>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
 		   <div class="col-xs-12 col-sm-9 col-md-9">
+		   <div id="editor"></div>
+<!-- 		   <button id="cmd">generate PDF</button> -->
 		   <form:form class="login-form clearfix"  id="profileSettings_form"  name="profileSettings_form" method="post" >
-			   <div class="row mt">
+			   <div class="row">
 				<div class="col-md-6">
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
+					  <input type="text" name="firstName" id="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" id="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
 					<label class="col-md-4">Email<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					<input type="text" readonly="readonly" value="${SourceLeadWeb_user.email}" class="form-control">
+					<input type="text" readonly="readonly" id="email" value="${SourceLeadWeb_user.email}" class="form-control">
 					</div>
 				  </div>
 		
@@ -185,13 +255,13 @@ function getUnsubscribeList(){
 						  <div class="form-group" id="designationDiv">
 							<label class="col-md-4">Designation</label>
 							<div class="col-md-8">
-							  <input type="text" name="designation" field-name="Designation" value="${SourceLeadWeb_designation}" class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
+							  <input type="text" name="designation" id="designation" field-name="Designation" value="${SourceLeadWeb_designation}" ${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' ? 'readonly' : ''} class="form-control" data-validation-optional="true" data-validation="validate_length length2-100" />
 							</div>
 						  </div>
 						  <div class="form-group" id="phoneDiv">
 							<label class="col-md-4">Phone</label>
 							<div class="col-md-8">
-							  <input type="text" name="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
+							  <input type="text" name="mobilePhone" id="mobilePhone" field-name="Mobile Phone" value="${SourceLeadWeb_user.mobilePhone}" class="form-control" data-validation-optional="true" data-validation="validate_Space validate_length length9-20 validate_phone" />
 							</div>
 						  </div>
 						  <div class="form-group" id="loactionDiv">
@@ -214,13 +284,13 @@ function getUnsubscribeList(){
 					<div class="form-group" id="linkedInDiv">
 					<label class="col-md-4">LinkedIn</label>
 					<div class="col-md-8">
-					  <input type="text" name="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="linkedIn" id="linkedIn" value="${SourceLeadWeb_user.linkedIn}" field-name="Linked In" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="fbDiv">
 					<label class="col-md-4">Facebook</label>
 					<div class="col-md-8">
-					  <input type="text" name="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="facebook" id="facebook" value="${SourceLeadWeb_user.facebook}" field-name="Facebook" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 				</div>
@@ -229,17 +299,18 @@ function getUnsubscribeList(){
 					<div class="form-group">
 					<label class="col-md-4">Twitter</label>
 					<div class="col-md-8">
-					  <input type="text" name="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
+					  <input type="text" name="twitter" id="twitter" value="${SourceLeadWeb_user.twitter}" field-name="Twiter" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true" >
 					</div>
 					</div>
 				   <div class="form-group" id="gplusDiv">
 					<label class="col-md-4">Google+</label>
 					<div class="col-md-8">
-					  <input type="text" name="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
+					  <input type="text" name="googlePlus"  id="googlePlus" value="${SourceLeadWeb_user.googlePlus}" field-name="Google+" class="form-control" data-validation="validate_url validate_Space" data-validation-optional="true">
 					</div>
 				   </div>
 		
 				</div>
+				 
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
@@ -250,20 +321,17 @@ function getUnsubscribeList(){
 			 </div>
 			 </form:form>	
 			</div>
-			
-	
-	
-	
 			</div>
-			<div id="updatepassword" class="tab-pane fade">
-			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
-				  <div class="password-icon mt mb text-center">
+			
+			
+			<div id="updatepassword" class="tab-pane panel-body fade">
+			  <div class="col-xs-12 col-sm-3 col-md-3">
+				  <div class="password-icon mb text-center well">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
 				  </div>
 			  </div>
 			<div class="col-xs-12 col-sm-9 col-md-9">
-				  <div class="row mt">
-					
+				  <div class="row">
 					<form:form class="login-form clearfix"  id="passwordSettings_form"  name="passwordSettings_form" method="post" >
 					<div class="col-md-8">
 					 <div id=passwordDiv>	
@@ -277,7 +345,7 @@ function getUnsubscribeList(){
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
 						
 						<div class="col-md-6 posiRela positionRelative">
-						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length6-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
 	             	    <div id="np_message" class="passHintNew">
 				  			<p  id="np_letter" class="invalid">At least one lowercase letter</p>
 				  			<p  id="np_capital" class="invalid">At least one uppercase letter</p>
@@ -310,45 +378,32 @@ function getUnsubscribeList(){
 			</div>
 			</div>
 			
-			
-			<div id="configure" class="tab-pane fade">
-			  <div class="tab-content panel-body">
-                  <div class="clearfix mb">
-                      <div class="pull-left">
-                          <h4>Login Security</h4>
-                      </div>
-                  </div>
-			<div class="col-xs-12 col-sm-9 col-md-9">
-				<div class="form-group">
-					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
-					<div class="col-md-7 toggle-button">
-						<label class="switch">
-						<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
-						<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>
-						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
-						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>	
-						<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
-						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
-						</c:if>	
-							<div class="slider round"></div>
-						</label>
+			<div id="configure" class="tab-pane panel-body fade">
+				<div class="col-xs-12 col-sm-9 col-md-12">
+					<div class="popHeadTwo mb10">Login Security</div>
+					<div class="form-group">
+						<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
+						<div class="col-md-7 toggle-button">
+							<label class="switch">
+							<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+							<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>
+							<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>	
+							<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+							<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+							</c:if>	
+								<div class="slider round"></div>
+							</label>
+						</div>
 					</div>
-					
-			</div>
-			</div>
-			</div>
+				</div>
 		   </div>
 		   
-		   <div id="unsubscribe" class="tab-pane fade">
-			  <div class="tab-content panel-body">
-                  <div class="clearfix mb">
-                      <div class="pull-left">
-                          <h4>Unsubscribe</h4>
-                      </div>
-                  </div>
-					<div class="col-xs-12 col-sm-9 col-md-9">
+		   <div id="unsubscribe" class="tab-pane panel-body fade">
+					<div class="col-xs-12 col-sm-9 col-md-12">
+					<div class="popHeadTwo mb10">Unsubscribe</div>
 						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
 							<c:if test="${userTabs.tabName == 'Jobs' || userTabs.tabName == 'Projects' || userTabs.tabName == 'Contracts' || userTabs.tabName == 'Campaigns'}">
 								<div class="form-group">
@@ -439,14 +494,19 @@ function getUnsubscribeList(){
 								</label>
 							</div>
 						</div>
-					</div>
 				</div>
 		   </div>
 		   
+		  <jsp:include page="userAccounts.jsp" />
+		  <jsp:include page="userBankDetails.jsp" />
+		  <jsp:include page="userTax.jsp" />
+		  <jsp:include page="userDocuments.jsp" />
+		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
-		  </div>
-		  </div>
+		  </div>        
+        
+        
 		  </div>
 		  </div>
   </section>
@@ -749,8 +809,29 @@ var validationSettings = {
                 	      type: "POST",
                       	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}",
                       	  data: formData,
-                        	success: function(result) {
-    			        	 if(result == 'success'){
+                        	success: function(data) {
+    			        	 
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/dashboard"); 
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        		
+                        		
+                        		
+                        /* 		if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -760,7 +841,7 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
                  				 $("#loading").removeAttr("style");
-    			        	} 
+    			        	}  */
     			        },  
                     });
                 
@@ -797,10 +878,25 @@ var validationSettings = {
                 	      type: "POST",
                 	      data: formData,
                       	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
-                        	success: function(result) {
-    			        	 if(result != null){
-    			        		location.replace(sourceleadUrl+"/userProfile");  
-    			        	}
+                        	success: function(data) {
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/userProfile");  
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        	
     			        },  
                     });
                 
@@ -852,6 +948,91 @@ function getLoginUserProfile(){
 		    }
 	   });
 }
+</script>
+<script>
+function generateJson() {
+	$.ajax({
+	   	type: "GET",
+	   	url: sourceleadUrl+"/downloadLoginUserProfile?"+tokenParamName+"="+tokenValue,	    	   
+	    success: function(data) {
+	    	
+	    	 
+	var search = {}
+				search["FirstName"] = data.firstName;
+				if (data.lastName != null) {
+					search["LastName"] = data.lastName;
+				} else {
+					search["LastName"] = "";
+				}
+				if (data.email != null) {
+					search["Email"] = data.email;
+				} else {
+					search["Email"] = "";
+				}
+				if (data.designation != null) {
+					search["Designation"] = data.designation;
+				} else {
+					search["Designation"] = " ";
+				}
+				if (data.mobileNumber != null) {
+					search["MobilePhone"] = data.mobileNumber;
+				} else {
+					search["MobilePhone"] = "";
+				}
+				if (data.location != null) {
+					search["Location"] = data.location;
+
+				} else {
+					search["Location"] = "";
+
+				}
+				if (data.linkedinURL != null) {
+					search["LinkedIn"] = data.linkedinURL;
+				} else {
+					search["LinkedIn"] = " ";
+				}
+
+				if (data.facebookURL != null) {
+					search["Facebook"] = data.facebookURL;
+
+				} else {
+					search["Facebook"] = "";
+
+				}
+				if (data.twitterURL != null) {
+					search["Twitter"] = data.twitterURL;
+
+				} else {
+					search["Twitter"] = " ";
+
+				}
+				if (data.googlePlusURL != null) {
+					search["GooglePlus"] = data.googlePlusURL;
+
+				} else {
+					search["GooglePlus"] = " ";
+
+				}
+				if (data.ipaddresses != null) {
+					search["Ipaddresses"] = data.ipaddresses;
+				} else {
+					search["Ipaddresses"] = " ";
+				}
+				var dataStr = JSON.stringify(search);
+				var dataUri = 'data:application/json;charset=utf-8,'
+						+ encodeURIComponent(dataStr);
+				var exportFileDefaultName = 'Profile.json';
+				var linkElement = document.createElement('a');
+				linkElement.setAttribute('href', dataUri);
+				linkElement.setAttribute('download', exportFileDefaultName);
+			    document.body.appendChild(linkElement);
+			    linkElement.click();
+			    linkElement.remove();
+
+			}
+		});
+
+	}
 </script>
 
 <script>
@@ -910,6 +1091,22 @@ function passwordValidation_pf(idValue,np_letter,np_capital,np_number,np_special
 
 </script>
 
+<script type="text/javascript">
 
+var doc = new jsPDF();
+var specialElementHandlers = {
+    '#editor': function (element, renderer) {
+        return true;
+    }
+};
+
+$('#cmd').click(function () {
+	doc.fromHTML($('#content').html(), 15, 15, {
+        'width': 170,
+            'elementHandlers': specialElementHandlers
+    });
+    doc.save('sample-file.pdf');
+});
+</script>
 
 </html>

@@ -183,7 +183,6 @@ function generateForm(sourceleadUrl,templateId) {
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
@@ -195,6 +194,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                  $.each( data, function( k, v ) {
 
                      var fieldType = v['type'];
+                     var required =  v['req'];
+                     var labelTitle = v['label'];
 
                      //Add the field
                      $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],sourceleadUrl));
@@ -215,26 +216,32 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                     	 
                     	 var label = v['label'];
                          var uniqueID = Math.floor(Math.random()*999999)+1;
-
+                         var flag = 0;
                          $.each( v['choices'], function( k, v ) {
-
+                        	
                              if (fieldType == 'select') {
-                                 var selected = v['sel'] ? ' selected' : '';
-                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
+                                 var choiceHTML = '<option>' + v['label'] + '</option>';
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'radio') {
-                                 var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="radio" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 if(required == 1 && flag == 0){
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                 }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'checkbox') {
                                  var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 var choiceHTML = '<label><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</label>';
+                                 if(required == 1 && flag == 0){
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                 }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
+                             
+                             flag = flag+1;
 
                          });
                      }
@@ -246,14 +253,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                          else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").addClass('required-choice') }
                          else if (fieldType == 'textarea') { $currentField.find("textarea").addClass('required-choice') }
                          else if (fieldType == 'select') { $currentField.find("select").addClass('required-choice') }
-                         else if (fieldType == 'radio') { $currentField.find("input").addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
 
                  });
              }
-        	 
-        	 
         	 
         	  //HTML templates for rendering frontend form fields
              function addFieldHTML(fieldType,required,label,sourceleadUrl) {
@@ -521,11 +525,11 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              init();
 //             changeRateLabels();
              var d = new Date();
-             var year = d.getFullYear() - 18;
+             var year = d.getFullYear() - 10;
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 yearRange: "-70Y:-18Y" ,
+            	 yearRange: "-70Y:-10Y" ,
             	 defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
@@ -546,4 +550,21 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
     
 }
 
+function getRadioValue(id,name){
+	   $('#'+name+"radio").val(id.value); 
+} 
+
+function getCheckBoxValue(id,name){
+	 var checkList = [];
+		 $("input[name='"+name+"']:checked").each( function (i) {
+			 checkList[i] = $(this).val();
+		});
+		 
+		 
+	if (checkList.length > 0) { 
+	  $('#'+name+"checkbox").val(id.value); 
+	}else{
+	   $('#'+name+"checkbox").val(''); 
+	}
+}
 

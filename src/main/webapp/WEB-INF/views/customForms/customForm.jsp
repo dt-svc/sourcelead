@@ -14,16 +14,14 @@
       <div class="pull-left positionRelative"><h2>Custom Fields</h2>
 		  <select class="form-control selectpicker"id="actionId"  onChange="getFormFieldSections();">
 			  <c:forEach var="entity" items="${Sourcelead_Entities}">
-			  	  <c:if test="${entity.actionName eq 'Add Job' or entity.actionName eq 'Add Candidate' or entity.actionName eq 'Add User' or entity.actionName eq'Add Client' or entity.actionName eq'Add Vendor'or entity.actionName eq'Add Project'}"> 
-			  		<option value="${entity.id}">${entity.actionName}</option>
+			  	  <c:if test="${entity.actionName eq 'Add Job' or entity.actionName eq 'Add Candidate' or entity.actionName eq 'Add Associate' or entity.actionName eq'Add Client' or entity.actionName eq'Add Vendor'or entity.actionName eq'Add Project'or entity.actionName eq'Add Project Tasks'or entity.actionName eq'Add Asset'}"> 
+			  			<option value="${entity.id}">${entity.actionName}</option>
 			  	  </c:if> 
 			  </c:forEach>
 		  </select>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Custom Fields</div>
-      
-      
-	<div class="clearfix"></div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Custom Fields</div>
+	<div class="clearfix"></div> 
 </section>
    
    
@@ -61,13 +59,13 @@ $(document).ready(function() {
   
   <script>
   function addFieldPopUp(sectionId){
-			$(".popMaskCustom").fadeIn(200);
-			$(".cusFielPopup").fadeIn(100);
+			$(".mask").fadeIn(200);
+			$(".popupWrap").fadeIn(100);
 			$('#minDate').datepicker({changeMonth : true,changeYear : true}); 
 			$('#maxDate').datepicker({changeMonth : true,changeYear : true}); 
-		$(".popCan").click(function(){
-			$(".popMaskCustom").fadeOut(200);
-			$(".cusFielPopup").fadeOut(100);
+		$(".popClose").click(function(){
+			$(".mask").fadeOut(200);
+			$(".popupWrap").fadeOut(100);
 			flushPopupData();
 		});
   }

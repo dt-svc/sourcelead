@@ -43,6 +43,9 @@ public class OpenJobsController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
@@ -55,7 +58,7 @@ public class OpenJobsController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("openJobs/sourceleadJobPage");
+		model.setViewName("openJobs/search-jobs");
 		return model;
 	}
 	
@@ -88,6 +91,7 @@ public class OpenJobsController {
 		model.addObject("currencyCode", req.getCurrencyCode());
 		model.addObject("noticePeriod", req.getNoticePeriod());
 		model.addObject("visaTypes", req.getVisaType());
+		model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
@@ -98,7 +102,7 @@ public class OpenJobsController {
 	
 	@RequestMapping(value = { "/jobs/{title}/{location}/{experience}",
 			"/app/jobs/{title}/{location}/{experience}" })
-	public String openRequirementsRedirect(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, HttpServletRequest request) throws Exception
+	public String openRequirementsRedirectMain(ModelMap modelMap, @PathVariable String title, @PathVariable String location, @PathVariable String experience, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, @RequestParam(value = "postedOrgName", defaultValue = "", required = false) String postedOrgName,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, HttpServletRequest request) throws Exception
 	{
 		List<Countries> countriesList = countriesService.getAllCountries();
 		modelMap.addAttribute("countryList", countriesList);
@@ -108,13 +112,12 @@ public class OpenJobsController {
 		List<String> industryListWithoutId = lookUpDataService.getAllSkillsByIndustryCategory();
 		modelMap.addAttribute("industryList", industryListWithoutId);
 		modelMap.addAttribute("sourceleadUrl", sourceleadUrl);
-		title = title == null ? "test" : title;
-		modelMap.addAttribute("openJobsTitle", title != null && !title.equalsIgnoreCase("null")
-				? title : "");
-		modelMap.addAttribute("openJobsLocation", location != null
-				&& !location.equalsIgnoreCase("null") ? location : "");
-		modelMap.addAttribute("openJobsExperience", experience != null
-				&& !experience.equalsIgnoreCase("null") ? experience : "");
+		title = (title != null && !title.isEmpty() && !title.equalsIgnoreCase("null")) ? title : "all";
+		location = (location != null && !location.isEmpty() && !location.equalsIgnoreCase("null")) ? location : "all";
+		experience = (experience != null && !experience.isEmpty() && !experience.equalsIgnoreCase("null")) ? experience : "all";
+		modelMap.addAttribute("openJobsTitle", title);
+		modelMap.addAttribute("openJobsLocation", location);
+		modelMap.addAttribute("openJobsExperience", experience);
 		modelMap.addAttribute("postedOn", postedOn);
 		modelMap.addAttribute("locationType", locationType);
 		modelMap.addAttribute("employementType", employementType);
@@ -182,19 +185,24 @@ public class OpenJobsController {
 	@RequestMapping(value = "/jobs")
 	public String openRequirementsRedirect(ModelMap modelMap,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
-		return "forward:/jobs/null/null/null";
+		/*return "redirect:/jobs/null/null/null";*/
+		return openRequirementsRedirectMain(modelMap, null, null, null, postedOn, locationType, employementType, companies, "", offset, request);
 	}
-	
+		
 	@RequestMapping(value = "/jobs/{title}")
 	public String openRequirementsRedirect(ModelMap modelMap,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, @PathVariable String title, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
-		return "forward:/jobs/" + title + "/null/null";
+//		return "forward:/jobs/" + title + "/null/null";
+		return openRequirementsRedirectMain(modelMap, title, null, null, postedOn, locationType, employementType, companies, "", offset, request);
+
 	}
 	
 	@RequestMapping(value = "/jobs/{title}/{location}")
 	public String openRequirementsRedirect(ModelMap modelMap,@RequestParam(value = "offset", defaultValue = "", required = false) String offset, @PathVariable String title, @PathVariable String location, @RequestParam(value = "postedOn", defaultValue = "", required = false) String postedOn, @RequestParam(value = "locationType", defaultValue = "", required = false) String locationType, @RequestParam(value = "employementType", defaultValue = "", required = false) String employementType, @RequestParam(value = "companies", defaultValue = "", required = false) String companies, HttpServletRequest request) throws Exception
 	{
-		return "forward:/jobs/" + title + "/" + location + "/null";
+//		return "forward:/jobs/" + title + "/" + location + "/null";
+		return openRequirementsRedirectMain(modelMap, title, location, null, postedOn, locationType, employementType, companies, "", offset, request);
+
 	}
 	
 	@RequestMapping(value = "/requirementsSummary.html")

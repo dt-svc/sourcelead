@@ -3,6 +3,12 @@
 <script type="text/javascript">
 function wagesAndTaxList(){
 	    $("#addPayrollDiv").hide();
+	    $("#employeeCostSearch").hide();
+		$("#wageTaxSearch").show();
+		$("#accountDedSearch").hide();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
 		var sourceleadUrl ='${sourceleadUrl}';
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -30,14 +36,16 @@ function prepareWagesAndTaxList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='wageTaxPagination' class='display' cellspacing='0' width='100%' >"; 
-      result = result +"<thead>"; 
-      result = result + '<tr>';
+ 	 
+ 		/*  result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='dataTableSearch'/><span class='repSearchIcon' onClick='dataTableSearch()'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>";    */		
+ 		
+ 	  	result = result +"<table id='wageTaxPagination' class='display' cellspacing='0' width='100%' >"; 
+      	result = result +"<thead>"; 
+      	result = result + '<tr>';
 		result = result + '<th>From Date</th>';
 		result = result + '<th>To Date</th>';
 		result = result + '<th>Employee Id</th>';
@@ -55,6 +63,7 @@ function prepareWagesAndTaxList(url){
 		result = result + '<th>DEDS</th>';
 		result = result + '<th>NET</th>';
 		result = result + '<th>Batch Number</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
       result = result +"</thead>";
       result = result +"<tbody>"; 
@@ -95,7 +104,8 @@ function wagesTaxpagination(url){
             { "data": "local"},
             { "data": "deds"},
             { "data": "net"},
-            { "data": "batchNumber" }
+            { "data": "batchNumber" },
+            { "data": "action" }
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -127,6 +137,7 @@ function wagesTaxpagination(url){
 	          },{
             "targets": colIndex++,
             "data": "employeeId",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	return  '<td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
             }
@@ -152,10 +163,11 @@ function wagesTaxpagination(url){
           },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "checkDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.checkDateStr !=null && opt.checkDateStr !='' && opt.checkDateStr !='undefined'){
-						result = result + '<td><div class="tblminwidth-50">'+opt.checkDateStr+'</div></td>';
+						result = result + '<td><div class="tblminwidth-75">'+opt.checkDateStr+'</div></td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}
@@ -243,6 +255,7 @@ function wagesTaxpagination(url){
                                 }, {
                   "targets": colIndex++,
                   "data": "batchNumber",
+                  "sortable": false,
                   "className": "tblminwidth-75",
                   "render": function ( data, type, opt, meta ) {
                   		var result = "";
@@ -253,7 +266,17 @@ function wagesTaxpagination(url){
 							}
       	              return result;
                   }
-                } ],
+                } ,
+				{
+					"targets" : colIndex++,
+					"data" : "action",
+					"sortable": false,
+					"render" : function(data, type, opt, meta) {
+						var result = "";
+						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'WageTaxSummary\')"></i></div></td>';
+						return result;
+					}
+				}],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[3,'desc']],
@@ -268,16 +291,19 @@ function wagesTaxpagination(url){
     } );
     $("#wageTaxPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   wagesAndTaxList();
-    	   }
-    	});
+}
+$("#dataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   wagesAndTaxList();
+	   }
+	});
+function dataTableSearch(){
+	wagesAndTaxList();
 }
 </script>
 
 <script>
-function wagesAndTaxListRajashekar(){
+function wagesAndTaxListTEST(){
 	$("#addPayrollDiv").hide();
 	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';

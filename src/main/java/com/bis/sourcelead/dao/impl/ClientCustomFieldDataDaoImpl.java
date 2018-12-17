@@ -39,7 +39,7 @@ public class ClientCustomFieldDataDaoImpl implements ClientCustomFieldDataDao {
 	
 	@Override
 	@Transactional
-	public ClientCustomFieldData saveUserCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception {
+	public ClientCustomFieldData saveClientCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception {
 		Session session = sessionFactory.getCurrentSession();
 		try {
 		if(clientCustomFields != null) {

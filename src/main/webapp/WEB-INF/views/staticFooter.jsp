@@ -5,11 +5,12 @@
   	<h4>Site Map</h4>
 	 <ul class="list-unstyled">
 		  <li><a href="/">Home</a></li>
-		  <li><a href="/sourceleadJobPage.html">Search Job</a></li>
-		  <li><a href="/marketplace.html">Marketplace</a></li>
+		  <li><a href="/search-jobs.html">Search Job</a></li>
+		  <li><a href="/market-place.html">Marketplace</a></li>
 		  <li><a href="/about-us.html">About Us</a></li>
-		  <li><a href="/helpManuals.html">Help</a></li>
-		  <li><a href="/blog.html">Blog</a></li>
+		  <li><a href="/help.html">Help</a></li>
+		  <li><a href="/blog/all.html" id="blogID">Blog</a></li>
+		  <li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
 		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
   	</div>
@@ -22,17 +23,19 @@
 			<li><a href="/pms.html">PMS</a></li>
 			<li><a href="/hrms.html">HRMS/Contracts</a></li>
 			<li><a href="/ims.html">IMS</a></li>
+			<li><a href="/immigration.html">Immigration</a></li>
+			<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
 		</ul>
   	</div>
   	<div class="col-md-3 col-sm-6">
   		<h4>Reach Us &#64;</h4>
   		<div class="reachus">
   			<h5>INDIA</h5>
-			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>  91. 40-6700-7676</p>
+			<p>Hyderabad, Telangana.<br><i class="fa fa-phone"></i>91. 40-6700-7676</p>
   		</div>
   		<div class="reachus mt clearfix">
   			<h5>USA</h5>
-  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>  (214) 295-5535</p>
+  			<p>3535 Victory Group Way, Frisco,<br>TX 75034, USA<br><i class="fa fa-phone"></i>+1 972 999 2656</p>
   		</div>
   	</div>
   	<div class="col-md-5 col-sm-6">
@@ -62,8 +65,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
     </div>
     <div class="col-xs-12 col-sm-6 text-center footer-Qlinks">
       <ul class="list-unstyled list-inline">
-        <li><a href="/termsofuse.html">Terms of Use</a></li>
-        <li><a href="/privacypolicy.html">Privacy Policy</a></li>
+        <li><a href="/terms-of-use.html">Terms of Use</a></li>
+        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
         <li><a href="/contact.html">Contact Us</a></li>
       </ul>
     </div>
@@ -88,13 +91,23 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				<li><a href="/pms.html">PMS</a></li>
 				<li><a href="/hrms.html">HRMS/Contracts</a></li>
 				<li><a href="/ims.html">IMS</a></li>
+				 <li><a href="/immigration.html">Immigration</a></li>
+				<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
+				
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
-	<li><a href="/marketplace.html">Marketplace</a></li>
+	<li><a href="/search-jobs.html">Search Job</a></li>
+	<li><a href="/market-place.html">Marketplace</a></li>
 	<li><a href="/about-us.html">About Us</a></li>
-	<!--<li><a href="helpManuals.html">Help</a></li>-->
-	<li><a href="/blog.html">Blog</a></li>
+	<li class="dropdown dropdown-featureshome">
+	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
+			  <span class="fa fa-angle-down"></span></a>
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+				<li><a class="helpbtn" href="/help.html">Help</a></li>
+				<li><a href="/all.html" id="blogID">Blog</a></li>
+			</ul>
+	</li>
+
 	<li><a href="/contact.html">Contact</a></li>
 	<li><a class="loginbtn" href="/login" title="Login">Login</a></li>
 	<li><a href="/register" title="Login">Sign Up</a></li>
@@ -168,10 +181,10 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				             <div class="clearfix mb">
 				             <div class="col-md-6">
 				             <div class="row">
-				             <div class="col-md-7 pdRight" id="errMsgDate">
+				             <div class="col-md-6" id="errMsgDate">
 				             	<input type="text" class="form-control calendar" placeholder="Date *" id="demoDate" name="demoDate" field-name="Date" readonly data-validation="required" >
 				             </div>
-				             <div class="col-md-5 pdLeft">
+				             <div class="col-md-6">
 				             	<input type="text" class="form-control timeicon" placeholder="Time" id="demoTime" name="demoTime">
 				             </div>
 				             </div>
@@ -245,7 +258,7 @@ $(document).ready(function(){
 </script>
 
 	<script src="/resources/js/jquery-ui.js"></script>
-    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+    <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 	<script src="/resources/js/formvalidator.js"></script>
 	<script src="/resources/js/jquery.timepicker.js"></script>
 <script>

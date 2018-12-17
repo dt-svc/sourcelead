@@ -64,6 +64,9 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "CREATED_USER")
 	private String createdUser;
 	
+	@Column(name = "MASTER_USER_CODE")
+	private String masterUserCode;
+	
 	@JsonProperty
     @Transient
     private String fileName;
@@ -77,60 +80,80 @@ public class RequirementSubmissionHistory implements Serializable{
     private String contentType;
 	 
     @Transient
+    @JsonProperty
     private String resumeid;
     
     @Transient
+    @JsonProperty
     private String createdDateStr;
     
     @Transient
+    @JsonProperty
     private String orgLocationId;
     
     @Transient
+    @JsonProperty
     private Long offerResumeid;
     
     @Transient
+    @JsonProperty
     @Lob
     private  byte[] docFile;
+    
     @Transient
+    @JsonProperty
     private String fileContentType;
     
     @Transient
+    @JsonProperty
     private String loginUserName;
     
     @Transient
+    @JsonProperty
     private String userName;
     
     @Transient
+    @JsonProperty
     private String submissionStage;
     
     @Transient
+    @JsonProperty
     private String requirementReson;
     
     @Transient
+    @JsonProperty
     private String interviewStartTime;
     
     @Transient
+    @JsonProperty
     private String interviewEndTime;
     
     @Transient
+    @JsonProperty
     private String interviewDateStr;
     
     @Transient
+    @JsonProperty
     private String interviewType;
     
     @Transient
+    @JsonProperty
     private String interviewerName;
     
     @Transient
+    @JsonProperty
     private String intervieweSourceType;
     
     @Transient
+    @JsonProperty
     private String clientName;
     
     @Transient
+    @JsonProperty
     private Boolean isInCoolingOffPeriod;
     
     @Transient
+    @JsonProperty
     private String coolingOffPeriodEndDateStr;
     
     
@@ -183,6 +206,13 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Transient
 	@JsonProperty
 	private String candidateUUID;
+	
+   @Transient
+   @JsonProperty
+   private String payOutPeriod;
+   @Transient
+   @JsonProperty
+   private String generateInvoice;
 	
 	public Long getId() {
 		return id;
@@ -575,6 +605,33 @@ public class RequirementSubmissionHistory implements Serializable{
 		this.candidateUUID = candidateUUID;
 	}
 
+	public String getPayOutPeriod()
+	{
+		return payOutPeriod;
+	}
 
+	public void setPayOutPeriod(String payOutPeriod)
+	{
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public String getGenerateInvoice()
+	{
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice)
+	{
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getMasterUserCode() {
+		return masterUserCode;
+	}
+
+	public void setMasterUserCode(String masterUserCode) {
+		this.masterUserCode = masterUserCode;
+	}
 	
+
 }

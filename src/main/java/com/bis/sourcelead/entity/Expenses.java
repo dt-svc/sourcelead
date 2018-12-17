@@ -1,13 +1,13 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,18 +23,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CacheModeType;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ibm.icu.math.BigDecimal;
 
 @Entity
 @Table(name = "EXPENSES")
@@ -52,6 +44,8 @@ private static final long serialVersionUID = 1L;
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
+	@Column(name = "EXPENSES_LOCATION_ID") 
+    private Long expensesLocationId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
@@ -65,7 +59,10 @@ private static final long serialVersionUID = 1L;
 	private String purpose;
 	
 	@Column(name = "TOTAL_AMOUNT")
-	private float totalAmount;
+	private BigDecimal totalAmount;
+	
+	@Column(name = "Total_Submitted_Amount")
+	private BigDecimal totalsubmittedAmount;
 	
 	@Column(name = "CLIENT_NAME")
 	private String clientName;
@@ -133,7 +130,7 @@ private static final long serialVersionUID = 1L;
 	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
-    private Set<ExpensesApproverHierarchy> approverHierarchyList;
+    private List<ExpensesApproverHierarchy> approverHierarchyList;
 
 	@Transient
 	@JsonProperty
@@ -151,6 +148,9 @@ private static final long serialVersionUID = 1L;
   
 	@Transient
 	private String employementType;
+	
+	@Transient
+	private String expenseAutoId;
 	
 	@Transient
 	private String userName;
@@ -235,11 +235,13 @@ private static final long serialVersionUID = 1L;
 		this.purpose = purpose;
 	}
 
-	public float getTotalAmount() {
+
+	
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(float totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -324,11 +326,11 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
-	public Set<ExpensesApproverHierarchy> getApproverHierarchyList() {
+	public List<ExpensesApproverHierarchy> getApproverHierarchyList() {
 		return approverHierarchyList;
 	}
 
-	public void setApproverHierarchyList(Set<ExpensesApproverHierarchy> approverHierarchyList) {
+	public void setApproverHierarchyList(List<ExpensesApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
 	}
 
@@ -518,6 +520,31 @@ private static final long serialVersionUID = 1L;
 		this.expensesRejectedReason = expensesRejectedReason;
 	}
 
+	public Long getExpensesLocationId() {
+		return expensesLocationId;
+	}
+
+	public void setExpensesLocationId(Long expensesLocationId) {
+		this.expensesLocationId = expensesLocationId;
+	}
+
+	public String getExpenseAutoId() {
+		return expenseAutoId;
+	}
+
+	public void setExpenseAutoId(String expenseAutoId) {
+		this.expenseAutoId = expenseAutoId;
+	}
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
+
+	
 	
 	
 

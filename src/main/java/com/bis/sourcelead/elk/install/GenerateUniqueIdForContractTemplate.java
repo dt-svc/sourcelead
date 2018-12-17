@@ -19,10 +19,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateUniqueIdForContractTemplate {
 
-
-	
-
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 /**
  * @author Rakshith
@@ -36,7 +35,7 @@ public void connectionsUUID() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.CONTRACTS_TEMPLATE";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".CONTRACTS_TEMPLATE";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding unique UUID to contract template  starts-----");
@@ -45,7 +44,7 @@ try {
 				 Long id = rs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.CONTRACTS_TEMPLATE set TEMPLATE_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".CONTRACTS_TEMPLATE set TEMPLATE_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -73,9 +72,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

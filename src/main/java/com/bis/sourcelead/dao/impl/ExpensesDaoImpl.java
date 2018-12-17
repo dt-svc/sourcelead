@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.impl.nio.reactor.ExceptionEvent;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -61,7 +63,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		String subQuery2 = "";
 		if (Arrays.asList(expStatus).contains("ALL") || StringUtils.isEmpty(expenseStatus)) {
 			subQuery2 = subQuery2
-					+ "  expenses.expenseStatus = 'APPROVED' or expenses.expenseStatus = 'SUBMITTED' or expenses.expenseStatus = 'DRAFT' or expenses.expenseStatus = 'REJECTED' ";
+					+ "  expenses.expenseStatus = 'APPROVED' or expenses.expenseStatus = 'SUBMITTED' or expenses.expenseStatus = 'DRAFT' or expenses.expenseStatus = 'REJECTED' or expenses.expenseStatus = 'REOPENED' ";
 		}
 		else{
 			if (Arrays.asList(expStatus).contains("APPROVED")) {
@@ -79,6 +81,15 @@ public class ExpensesDaoImpl implements ExpensesDao {
 				}
 				subQuery2 = subQuery2 + " expenses.expenseStatus = 'DRAFT' ";
 			}
+			
+			if (Arrays.asList(expStatus).contains("REOPENED")) {
+				if(StringUtils.isNotEmpty(subQuery2)){
+					subQuery2 = subQuery2 + " OR ";
+				}
+				subQuery2 = subQuery2 + " expenses.expenseStatus = 'REOPENED' ";
+			}
+			
+			
 			if (Arrays.asList(expStatus).contains("REJECTED")) {
 				if(StringUtils.isNotEmpty(subQuery2)){
 					subQuery2 = subQuery2 + " OR ";
@@ -134,16 +145,18 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
+//		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId and pm.projectClientsId.orgLocationsId.id = :locationId) and  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 		String from = "from Expenses expenses left join fetch expenses.orgLocationId left join fetch expenses.projectMembers pm left join fetch pm.projects projects left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc  where projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId) and  mc.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 		params.put("masterCandidateId",masterCandidateId);
-		  params.put("locationId", orgloc.getId());
+		/*params.put("locationId", orgloc.getId());*/
 		
 		
 		String countFrom = "";
 		if(length>0) {
+//			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId  and pm.projectClientsId.orgLocationsId.id = :locationId) and  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
 			countFrom = "Select count(*) from Expenses expenses   where  expenses.projectMembers.projects.id IN( Select pm.projects.id from ProjectMembers pm where pm.masterCandidateId.id = :masterCandidateId) and  expenses.projectMembers.masterCandidateId.id = :masterCandidateId and ( " + subQuery2 +" ) "+startDateSubQuery+" "+endDateSubQuery+" "+query1+" and expenses.status = '1'";
-		   params.put("masterCandidateId",masterCandidateId);
-		   params.put("locationId", orgloc.getId());
+			params.put("masterCandidateId",masterCandidateId);
+//			params.put("locationId", orgloc.getId());
 		}
 		
 		Query query = session.createQuery(from);
@@ -250,11 +263,22 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	
 	@Override
 	@Transactional
-	public Expenses getExpenseByExpenseUniqueId(String expenseId,Long OrgLocationID) throws Exception
+	public Expenses getExpenseByExpenseUniqueId(String expenseId,Long OrgLocationID,String isGlobalUser) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Expenses  expense =  null;
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user where expenses.expenseId =:expenseId and orglocId.id =:OrgLocationID").setString("expenseId", expenseId).setLong("OrgLocationID", OrgLocationID).list();
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " expenses.orgLocationId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    }else {
+		    	globalUserQuery = " expenses.orgLocationId.id = :orgLocationId";
+		    }
+
+		 
+		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projectMembers pm "
+				+ " left join fetch pm.projectMemberCandidteId can left join fetch pm.employee emp left join fetch emp.user user "
+				+ " where expenses.expenseId = :expenseId and "+globalUserQuery+" ").setString("expenseId", expenseId).setLong("orgLocationId", OrgLocationID).list();
 		if(null != expensesList && expensesList.size() >0){
 			expense = expensesList.get(0);
 		}
@@ -322,5 +346,26 @@ public class ExpensesDaoImpl implements ExpensesDao {
 		List<Expenses>  expensesList = session.createQuery(query).setLong("orglocationId", orglocationId).setLong("projectId", projectId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		return expensesList;
 	}
+	
+	
+	@Transactional(rollbackFor = { Exception.class })
+    public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate) {
+        Session session = this.sessionFactory.getCurrentSession();
+        BigDecimal expenseAmount = BigDecimal.ZERO;
+        try {
+                java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+                java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+                String query = "from ExpensesEntries entry left join fetch entry.expensesId expenses  left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch proMembers.projectMemberCandidteId candidate  where expenses.expenseStatus = 'APPROVED' and expenses.status = '1'  and entry.paidBy = 'Self' and entry.billable = 1 and candidate.id = :candidateId and  (:startDate<= date(expenses.updatedDate) AND date(expenses.updatedDate)<= :endDate)";
+                List<ExpensesEntries> expenseCategories = session.createQuery(query).setLong("candidateId", candidateId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
+               if(expenseCategories != null && expenseCategories.size() >0) {
+            	   for(ExpensesEntries entry : expenseCategories) {
+                   	expenseAmount = expenseAmount.add(entry.getAmount());
+                   }   
+               }
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        return expenseAmount;
+    }
 
 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -253,10 +255,12 @@ public class EmployeesDaoImpl implements EmployeesDao{
         
         for(Roles roles : rolesList){
        	 List<Long> roleActionsList = new ArrayList<Long>();
-       	 for (String s : roles.getActionId().split(",")){
+       	 /*for (String s : roles.getActionId().split(",")){
        		 roleActionsList.add(Long.parseLong(s));
-       	 }
-       	 
+       	 }*/
+       	for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+			 roleActionsList.add(Long.parseLong(s));
+       	}
        	 roleActionsList.retainAll(tabActionsIds);
        	 if(roleActionsList.size() > 0){
        		 ownerRolesList.add(roles.getId());
@@ -307,9 +311,12 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	        
 	        for(Roles roles : rolesList){
 	       	 List<Long> roleActionsList = new ArrayList<Long>();
-	       	 for (String s : roles.getActionId().split(",")){
+	       	 /*for (String s : roles.getActionId().split(",")){
 	       		 roleActionsList.add(Long.parseLong(s));
-	       	 }
+	       	 }*/
+	       	for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	       		roleActionsList.add(Long.parseLong(s));
+	       	}
 	       	 
 	       	 roleActionsList.retainAll(tabActionsIds);
 	       	 if(roleActionsList.size() > 0){
@@ -330,7 +337,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId) {
 		logger.debug("In EmployeesDaoImpl class getEmployeeByUserIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Employees emp left join fetch emp.user where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
+		String query = "from Employees emp left join fetch emp.user left join fetch emp.departmentId where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
 		List<Employees> employeesList =  session.createQuery(query).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
 		Employees employee = null;
 		if(employeesList != null && !employeesList.isEmpty())
@@ -361,6 +368,49 @@ public class EmployeesDaoImpl implements EmployeesDao{
 			employee = employeesList.get(0);
 		}
 		return employee;
+	}
+
+	@Override
+	@Transactional
+	public Employees getEmployeeByUserAndOrgLocationId(Long userId, Long orgLocationId)
+	{
+		Employees employee = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query employeesListQuery= session.createQuery("from Employees emp where emp.user.id = :userId and  emp.orgLocations.id= :orgLocationId");
+			employee = (Employees) employeesListQuery.setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return employee;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<Employees> getEmployeesBasedOnDepartment(String departmentId, OrgLocations orgLocation) {
+		
+		Long[] data = null;
+		if(departmentId != null && !"null".equalsIgnoreCase(departmentId)) {
+			String[] idsValues = departmentId.split(",");
+			// convert string array to long array
+			 data = new Long[idsValues.length];
+			for (int i = 0; i < idsValues.length; i++) {
+			  data[i] = Long.valueOf(idsValues[i]);
+			}
+		}
+		
+		List<Employees> employeesList = new ArrayList<>();
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query employeesListQuery= session.createQuery("from Employees emp where emp.orgLocations.id = :orgLocationId and  emp.departmentId.id IN ( :ids )");
+		if(data != null) {
+			 employeesList = employeesListQuery.setLong("orgLocationId", orgLocation.getId()).setParameterList("ids", data).list();
+		}else {
+			return employeesList;
+		}
+		
+		return employeesList;
 	}
 
 }

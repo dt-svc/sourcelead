@@ -1,10 +1,7 @@
 package com.bis.sourcelead.reports.service.Impl;
 
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +17,15 @@ public class ApplicantDeclineServiceImpl implements ApplicantDeclineService {
 	@Autowired
 	ApplicantDeclineDao applicantDeclineDao;
 
-	@Override
-	public ApplicantDeclineDTO getDeclineApplicantSkillCount(List<Long> jobIds, Date[] searchDates,OrgLocations orgLocation)throws Exception {
+/*	public ApplicantDeclineDTO getDeclineApplicantSkillCount(List<Long> jobIds, Date[] searchDates,OrgLocations orgLocation,int offset)throws Exception {
 		Integer count= 0;
-		Map<String,Integer> typeCount = new LinkedHashMap<>();
 		ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
 		
-		typeCount=applicantDeclineDao.getDeclineApplicantSkillCount(jobIds, searchDates,orgLocation);
+		List<ApplicantDeclineDTO>typeCount=applicantDeclineDao.getDeclineApplicantSkillCount(jobIds, searchDates,orgLocation, count);
 		Iterator rejectedCount = typeCount.entrySet().iterator();
 	    while (rejectedCount.hasNext()) {
 	        Map.Entry rejectValue = (Map.Entry)rejectedCount.next();
-	     /*   System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());*/
+	        System.out.println(rejectValue.getKey() + " = " + rejectValue.getValue());
 	        if(rejectValue.getKey().equals("Wrong Skill Sets")){
 	        	applicantDeclineDTO.setSkillsCount((int)rejectValue.getValue());
 	        }
@@ -51,9 +46,21 @@ public class ApplicantDeclineServiceImpl implements ApplicantDeclineService {
 	        }
 	       }
            applicantDeclineDTO.setTotalCount(applicantDeclineDTO.getSkillsCount() + applicantDeclineDTO.getBadfitCount() + applicantDeclineDTO.getUnsuitableCount() + applicantDeclineDTO.getInterviewCount() + applicantDeclineDTO.getSalaryCount() + applicantDeclineDTO.getOtherCount());
-	    return applicantDeclineDTO;
+	    return typeCount.get(0);
 
-}
+}*/
+
+	@Override
+	public ApplicantDeclineDTO getDeclineApplicantSkillCount(List<Long> jobIds, Date[] searchDates,	OrgLocations orgLocation) throws Exception {
+		// TODO Auto-generated method stub
+		
+		Integer count= 0;
+		ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
+		
+		List<ApplicantDeclineDTO>typeCount=applicantDeclineDao.getDeclineApplicantSkillCount(jobIds, searchDates,orgLocation, count);
+		
+	    return typeCount.get(0);
+	}
 	
 }	
 	

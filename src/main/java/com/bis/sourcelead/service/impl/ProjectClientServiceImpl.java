@@ -50,9 +50,9 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	}
 
 	@Override
-	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId)
+	public List<ProjectClients> getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(Long userId, Long locationsId,String isGlobalUser,String purpose)
 			throws Exception {
-		return projectClientDao.getAllProjectClientsByApproverUserAndOrgLocationId(userId, locationsId);
+		return projectClientDao.getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(userId, locationsId,isGlobalUser,purpose);
 	}
 
 	@Override
@@ -65,6 +65,16 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception
 	{
 		return projectClientDao.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted((orgLocationsId));
+	}
+
+	@Override
+	public ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId, Long orgId) throws Exception {
+		return projectClientDao.getProjectClientsByProjectIdAndOrgId(projectId, orgId);
+	}
+
+	@Override
+	public List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception {
+		return projectClientDao.getProjectClientsByRelationId(orgRelationId);
 	}
 	
 }

@@ -45,13 +45,13 @@ public class Employees implements Serializable{
 	@Column(name ="DOB")
 	private Date dob;
 	
-	@Column(name="COUNTRY")
+	@Column(name="COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name="STATE")
+	@Column(name="STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name="CITY")
+	@Column(name="CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name="EMPLOYEE_STATE")
@@ -113,6 +113,15 @@ public class Employees implements Serializable{
 	@Column(name = "CURRENT_CURRENCY")
 	private String currentCurrency;
 	
+	@Column(name ="CONFIRMATION_DATE")
+	private Date confirmationDate;	
+	
+	@Column(name ="PROBATION_PERIOD")
+	private String probationPeriod;	
+	
+	@Column(name ="PROBATION_STATUS")
+	private String probationStatus;	
+	
 	@Transient
     private String hireDateStr;
 	
@@ -129,7 +138,6 @@ public class Employees implements Serializable{
     private String userType;
 	
 	
-
 	public Long getId() {
 		return id;
 	}
@@ -383,5 +391,28 @@ public class Employees implements Serializable{
 		this.departmentId = departmentId;
 	}
 
-			
+	public Date getConfirmationDate() {
+		return confirmationDate;
+	}
+
+	public void setConfirmationDate(Date confirmationDate) {
+		this.confirmationDate = confirmationDate;
+	}
+
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public String getProbationStatus() {
+		return probationStatus;
+	}
+
+	public void setProbationStatus(String probationStatus) {
+		this.probationStatus = probationStatus;
+	}
+
 }

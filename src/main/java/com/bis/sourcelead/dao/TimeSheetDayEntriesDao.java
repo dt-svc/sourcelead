@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimeSheetDayEntriesDao {
 
@@ -29,5 +29,14 @@ public interface TimeSheetDayEntriesDao {
 
 	 public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate, Long projectTaskId);
 
+	 public List<Long> getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(Long submissionId, Date timesheetDate) throws Exception;
+
+	 List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId, Date timesheetDate, Long projectMemberId)throws Exception;
+
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId,Date startDate, Date endDate, Long projectMembers) throws Exception;
+
+	 public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception;
+	 
+	 public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception;
 
 }

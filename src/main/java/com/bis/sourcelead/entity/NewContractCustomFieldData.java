@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
-@Table(name = "NEWCONTRACT_CUSTOM_FIELD_DATA", catalog = "sourcelead")
+@Table(name = "NEWCONTRACT_CUSTOM_FIELD_DATA")
 public class NewContractCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

@@ -5,6 +5,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+
 <style type="text/css">
 .chosen-container {
     width: 100% !important;
@@ -24,7 +26,8 @@
 <script>
  window.onload = function() {
 // 	 getContractTemplates();
-	 changeSaveButton();
+
+// 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
@@ -35,7 +38,7 @@
 
 	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
 	 	 $("#billingDiv").hide();
-	 	 $('#billingRateType').removeAttr('data-validation');
+	 	    $('#billingRateType').removeAttr('data-validation');
 	 		$('#billingRateType').attr('data-validation-optional',"true");
 	 		
 	 		$('#flatReward').removeAttr('data-validation');
@@ -55,12 +58,19 @@
 
 	 }
 	 
+	 if('${contract.ownersType}' == "Sequential"){
+		 getSequentialApprovers();
+	 }else{
+		 getParallelApprovers();
+	 }
+	 
 	 if(contractType != null && contractType != 'undefined' && contractType !=''){
 // 	 	 getContractTemplates();
 	 	 contractTypeLabels()
 	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
+		 getClientContacts(spocUserCode);
 	 }
 };
 </script>
@@ -87,46 +97,51 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-              	<c:choose>
-				    <c:when test="${!empty contract.contractType}">
-				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
-		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
-		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
-		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
-		                 </select>
-				    </c:when>
-				    <c:otherwise>
-				    <c:if test = "${!empty contractType}">
-				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option>Client MSA</option>
-		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option>Client SOW</option>
-		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option>NDA</option>
-		                    <option>NSA</option>
-		                    <option>Full time offer</option>
-		                 </select>
-				    </c:if>
-				    <c:if test = "${empty contractType}">
-				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option>Client MSA</option>
-		                    <option>Vendor MSA</option>
-		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
-		                    <option>NDA</option>
-		                    <option>NSA</option>
-		                    <option>Full time offer</option>
-		                 </select>
-				    </c:if>
-				    </c:otherwise>
-				 </c:choose>
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+              			<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+              		</c:if>
+              		<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+		              		<c:choose>
+						    <c:when test="${!empty contract.contractType}">
+						    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" readonly data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+				                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+				                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+				                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+				                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
+				                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
+				                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+				                 </select>
+						    </c:when>
+						    <c:otherwise>
+						    <c:if test = "${!empty contractType}">
+						    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option>Client MSA</option>
+				                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+				                    <option>Client SOW</option>
+				                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+				                    <option>NDA</option>
+				                    <option>NSA</option>
+				                    <option>Full time offer</option>
+				                 </select>
+						    </c:if>
+						    <c:if test = "${empty contractType}">
+						    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option>Client MSA</option>
+				                    <option>Vendor MSA</option>
+				                    <option>Client SOW</option>
+				                    <option>Vendor SOW</option>
+				                    <option>NDA</option>
+				                    <option>NSA</option>
+				                    <option>Full time offer</option>
+				                 </select>
+						    </c:if>
+						    </c:otherwise>
+						 </c:choose>
+              		</c:if>
             </div>
             </div>				
 			
@@ -245,23 +260,8 @@
               	</div>
             </div>
                      
-             
-          <div class="form-group">
-              <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                  <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
-                  <option value=''>Select Signing Authority</option>
-                  <c:forEach var="user" items="${userList}">
-	                  <c:if test = "${!empty contract.ownerUserId.id}">
-	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
-	                  </c:if>
-	                  <c:if test = "${empty contract.ownerUserId.id}">
-	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
-	                  </c:if>
-                  </c:forEach>
-                  </select>
-              </div>
-          </div>             
+           
+                      
             
              <div class="form-group" id="dateDiv" style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
@@ -269,42 +269,59 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
+						 <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
-						<div id="endDateDiv">
-						<div class="input-group errorInptgroup">
-						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						<div id="endDateDiv" class="input-group errorInptgroup">
+						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="End Date" placeholder="End date" readonly="readonly">
 						   <span class="input-group-addon" onClick="clearEndDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 						  </div>
-						</div>
 					  </div>
 					</div>
               </div>
             </div>
           
+       		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+       			<c:if test="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="orgRelationId"/>
+       			</c:if>
+       			<c:if test="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       			</c:if>
+           	</c:if>
+          
          <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
-                <div class="input-group col-md-10 pull-left errorInptgroup">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
-                   <option value=''>Select Vendor</option>
-	                   <c:forEach var="orgrelations" items="${orgRelationsList}">
-	                   	<c:if test = "${!empty orgRelationId}">
-	                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
-	                   	</c:if>
-	                   	<c:if test = "${empty orgRelationId}">
-	                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-	                   	</c:if>
-	                   </c:forEach>
-                  </select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
-              </div>
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-                 </sec:authorize>
-          </div> 
+              
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+                		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
+                	</c:if>
+                	<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+                		<div class="input-group col-md-10 pull-left errorInptgroup">
+			                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
+			                   <option value=''>Select Vendor</option>
+				                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+				                   	<c:if test = "${!empty orgRelationId}">
+				                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
+				                   	</c:if>
+				                   	<c:if test = "${empty orgRelationId}">
+				                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+				                   	</c:if>
+				                   </c:forEach>
+			                  </select>
+			                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			              </div>
+	              		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+	               			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	                 	</sec:authorize>
+                	</c:if>
+                
+          		</div> 
            </div>                     
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
@@ -343,19 +360,26 @@
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClient">
-               <div class="input-group col-md-10 pull-left errorInptgroup">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
-                    <option value=''>Select Client</option>
-                   <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-                  </c:forEach>
-                  </select>
-                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
-              </div>
-               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-             </sec:authorize>
-          </div>                      
+              
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+                		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
+                	</c:if>
+              		<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+              			<div class="input-group col-md-10 pull-left errorInptgroup">
+		                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
+		                    	<option value=''>Select Client</option>
+			                   <c:forEach var="orgrelations" items="${clientList}">
+			                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+			                   </c:forEach>
+		                  </select>
+		                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
+		              	</div>
+		                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+		               		<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	             	    </sec:authorize>
+              		</c:if>
+               
+          		</div>                      
               </div>               
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
@@ -366,10 +390,10 @@
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation=" ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Contact">
 							    <c:forEach var="element" items="${orgSpocList}" >
 							    	<c:if test = "${element.spocUserId == contract.contactUser.id}">
-								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
+								         <option selected value="${element.spocUserId}">${element.ownerName} (${element.ownerUserName})</option>
 								    </c:if>
 								    <c:if test = "${element.spocUserId != contract.contactUser.id}">
-								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUser.firstName})</option>
+								         <option value="${element.spocUserId}">${element.ownerName} (${element.ownerUserName})</option>
 								    </c:if>
 								</c:forEach>
 							</select>
@@ -393,7 +417,7 @@
           <div class="form-group">
               <label class="col-md-4">Approver</label>
               <div class="col-md-8">
-                  <select class="chosen-select form-control" id="approver" name="approver" onchange="changeSaveButton();">
+                  <select class="chosen-select form-control" id="approver" name="approver">
                   <option value=''>Select Approver</option>
                   <c:forEach var="user" items="${userList}">
                    <%-- to Enable login user as approver ${user.id  == SourceLeadWeb_userId ? 'selected' : ''} --%>
@@ -479,6 +503,105 @@
 	               </c:if>
 	            </c:forEach>
 	   		</c:if>
+	   		
+	   		 <!-- Radio buttons for Sequential or Parallel function -->
+	   		 <div  class="clearfix"></div>
+                <div  class="ml pull-left apprverReq" >
+                	<c:if test="${!empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'Parallel'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'Sequential'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                	<c:if test="${empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                
+                 
+                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
+                </div>
+                <!-- Radio buttons for Sequential or Parallel function -->
+           
+             <div  class="clearfix"></div>
+          <div class="form-group row" id="parallelAppDiv" style="display:block">
+              <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
+                  <%-- <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.parallelOwnerId}">
+	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.ownerUserId.id}">
+	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach> --%>
+                  
+                  
+                  <c:forEach var="user" items="${userList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="ownerId" items="${contract.parallelOwnerId}">
+					    <c:if test="${ownerId eq user.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${user.id}">${user.firstName} ${user.lastName}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${user.id}">${user.firstName} ${user.lastName}</option>
+					</c:if>
+                </c:forEach>
+                  
+                  
+                  
+                  </select>
+              </div>
+          </div> 
+          
+           <div id="sequentialAppDiv" style="display:none">
+          <div class="form-group row">
+              <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="sequentialOwner1">
+                  <option value=''>Select Signing Authority1</option>
+                  <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.sequentialOwner1}">
+	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.sequentialOwner1}">
+	                  	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div> 
+          
+          <div class="form-group row">
+              <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="sequentialOwner2">
+                  <option value=''>Select Signing Authority2</option>
+                  <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.sequentialOwner2}">
+	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.sequentialOwner2}">
+	                  	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div>
+          </div> 
             
         </div>
       </div>
@@ -690,14 +813,14 @@
 		 <%--  </c:if> --%>
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}">
-    						<td><div class="tbldata-dotdot-me">${doc.fileName}</div></td>
+    						<td><div class="tbldata-dotdot-me" title="${doc.fileName}">${doc.fileName}</div></td>
 						<c:if test="${empty doc.docType}">
     						<td><div class="tbldata-dotdot-me">--</div></td>
 						</c:if>
 						<c:if test="${not empty doc.docType}">
     						<td><div class="tbldata-dotdot-me">${doc.docType}</div></td>
 						</c:if>
-	                     <td><div class="tbldata-dotdot-big">${doc.description}</div></td>
+	                     <td><div class="tbldata-dotdot-big" title="${doc.description}">${doc.description}</div></td>
 	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
 	                     </tr>
                 </c:forEach>
@@ -719,10 +842,11 @@
         <div class="col-lg-12">
           <div class="pull-right mt">
           <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
-            <input type="button" value="Draft" id="draft_template" onmouseover="validateContractTitle();" onclick="saveNewContract('DRAFT'); " class="btn btn-primary ml10 pull-left">
-            <input type="button" value="Send" id="save_template" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
+<!--           <input type="hidden" name="saveType" id="saveTypeId" value=""/> -->
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT'); validateContractTitle();" class="btn btn-primary ml10 pull-left">
+            <input type="button" value="Send" id="save_template" onclick="validateContractTitle();saveNewContract('PENDING'); " class="btn btn-success ml10 pull-left">
 
-            <input type="button" value="Send For Approve" id="save_approver_template" onclick=" validateContractTitle(); saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
+<%--             <input type="button" value="Send For Approve" id="save_approver_template" onclick=" validateContractTitle(); saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}"> --%>
             <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
@@ -733,7 +857,31 @@
     </form:form>
   </section>
 
+<div class="comMask"></div>
+<div class="modal validatePreexistingContact" id="validatePreexistingContact" style="display: none">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h4 class="strong pull-left mb0 margin-top0">Generated Contracts</h4>
+				<a href="javascript:void(0)" class="close" onClick="closeVpec();">&times;</a>
+			</div>
+			<div class="modal-body">
+				 <div id="preExistContractMsg"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary pull-right" onClick="closeVpec();">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
 
+
+<script>
+function closeVpec(){
+	$(".validatePreexistingContact").fadeOut();
+	$(".comMask").fadeOut();
+}
+</script>
 
 <script>
 function getCustomDependentField(sectionId){
@@ -747,6 +895,48 @@ function getCustomDependentField(sectionId){
 		        	$('#customDiv'+sectionId).append(data);
 				 }
 		  });
+}
+</script>
+
+<script>
+function getParallelApprovers(){
+	$("#parallel i").addClass("apprverReq-active");
+	$("#sequential i").removeClass("apprverReq-active");
+	$("#parallelAppDiv").show();
+	$("#sequentialAppDiv").hide();
+	$("#sequentialOwner1").val('');
+	$("#sequentialOwner2").val('');
+// 	$("#parallelOwner").val('');
+	$('#sequentialOwner1').trigger("chosen:updated");
+	$('#sequentialOwner2').trigger("chosen:updated");
+// 	$('#parallelOwner').trigger("chosen:updated");
+	
+	$('#parallelOwner').removeAttr('data-validation-optional');
+	$('#parallelOwner').attr('data-validation',"required");
+	$('#sequentialOwner2').removeAttr('data-validation');
+	$('#sequentialOwner2').attr('data-validation-optional',"true");
+	$('#sequentialOwner1').removeAttr('data-validation');
+	$('#sequentialOwner1').attr('data-validation-optional',"true");
+}
+
+function getSequentialApprovers(){
+		$("#parallel i").removeClass("apprverReq-active");
+		$("#sequential i").addClass("apprverReq-active");
+		$("#sequentialAppDiv").show();
+		$("#parallelAppDiv").hide();
+//	 	$("#sequentialOwner1").val('');
+//	 	$("#sequentialOwner2").val('');
+		$("#parallelOwner").val('');
+		
+//	 	$('#sequentialOwner1').trigger("chosen:updated");
+//	 	$('#sequentialOwner2').trigger("chosen:updated");
+		$('#parallelOwner').trigger("chosen:updated");
+		$('#sequentialOwner1').removeAttr('data-validation-optional');
+		$('#sequentialOwner1').attr('data-validation',"required");
+		$('#sequentialOwner2').removeAttr('data-validation-optional');
+		$('#sequentialOwner2').attr('data-validation',"required");
+		$('#parallelOwner').removeAttr('data-validation');
+		$('#parallelOwner').attr('data-validation-optional',"true");
 }
 </script>
 
@@ -765,6 +955,9 @@ function getCustomDependentField(sectionId){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
+				$("#parallelOwner_chosen").on('change', function (e) {
+					changeSaveButton();
+		       });
 				$(document).ready(function(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
@@ -810,6 +1003,8 @@ function getCustomDependentField(sectionId){
             	  var dt = $(this).datepicker('getDate', '-1d');
                   dt.setDate(dt.getDate() - 1);
                   $("#startDate").datepicker("option", "maxDate", dt);
+                  removeValid();
+                  validateAlreadyGeneratedContract();
               }
         });
         $('#joinDate').datepicker({
@@ -923,8 +1118,10 @@ function toDate(selector) {
 <script>
 function removeValid(){
 $('#startDateDiv').find('p.jquery_form_error_message').remove();
+$('#endDateDiv').find('p.jquery_form_error_message').remove();
 }
 </script>
+
 <!-- <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("startDate").value;
@@ -979,7 +1176,7 @@ function getVendorContacts(spocUserCode){
 	}
 }
 
-function getClientContacts(){
+function getClientContacts(spocUserCode){
 	$('#errorClient').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#clientOrgRelationId").val();
 	if("" != orgRelationId){
@@ -996,7 +1193,14 @@ function getClientContacts(){
 				var opt = json[i];
 				// need to use in edit
 				//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+				
+				if(spocUserCode != null && opt.spocUserCode == spocUserCode){
+       				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+       			}else{
+       				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
+       			}
+				
+// 				output = output + "<option value='" +opt.spocUserId+ "'>"+opt.ownerName+" ("+opt.ownerUserName+")</option>";
 				}
 				$("#clientContact").empty();
 				$("#clientContact").append(output);
@@ -1764,28 +1968,22 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			  var formData = getFormData("newcontract_form");
+			var formData = getFormData1("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$("#contractLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
-                       if(data == true){
-                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
-                       }
-                    });
+			$.ajax({
+				type : "POST",
+				data: formData,
+  		        processData: false,
+  		        contentType:false, 
+				url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
+				success : function(data) {
+					  if(data == true){
+                   	   location.replace(sourceleadUrl+"/contractListbyStatus");
+                      }
+				  }
+              });
             
-			/* 	$.ajax({
-	 			 type: "POST",
-		    	 data: formData,
-			     contentType : 'application/json; charset=utf-8',
-			     enctype: 'multipart/form-data',
-		         processData: false,
-		         contentType:false,
-			     dataType : 'json',
-						url : sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&saveType="+saveType,
-						success : function(result) {
-							location.replace(sourceleadUrl+"/contractListbyStatus");
-						},
-					}); */ 
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();
@@ -2163,8 +2361,13 @@ function getTaxPercentageValue(){
 </script>
 <script>
 function changeSaveButton(){
+	
+	var seqOwner1 = $("#sequentialOwner1").val();
+	var seqOwner2 = $("#sequentialOwner2").val();
+	var parallelOwner = $("#parallelOwner").val();
 	var userId = '${SourceLeadWeb_userId}';
-	 var approverId = $("#approver").val();
+	var approverId = $("#approver").val();
+	
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
 			document.getElementById("save_approver_template").value="Save";
@@ -2237,6 +2440,7 @@ function validateContractTitle(){
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
 						 $("#save_template").attr("disabled", "disabled");
+						 $("#draft_template").attr("disabled", "disabled");
 						 // $("#draft_template").attr("disabled", "disabled");
 		
 				}
@@ -2245,6 +2449,7 @@ function validateContractTitle(){
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
                          $("#save_template").removeAttr("disabled");
+                         $("#draft_template").removeAttr("disabled");
                         //$("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
@@ -2285,12 +2490,7 @@ function removePaymentvalidation(){
 	$('#errPayment').find('p.jquery_form_error_message').remove();
 }
 </script>
-<script>
-function removeValid(){
-$('#startDateDiv').find('p.jquery_form_error_message').remove();
 
-}
-</script>
 <script>
 function refreshVendorList(){
 		 var sourceleadUrl ='${sourceleadUrl}';
@@ -2355,6 +2555,22 @@ function refreshClientList(autoPopClientId){
 		 
 
 </script>
+
+<script>
+function refreshSigningAuthority2(){
+	var sequentialOwner1 = $("#sequentialOwner1").val();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		if(sequentialOwner1 != "${user.id}"){
+			result = result +  '<option value="${user.id}"> ${user.firstName} ${user.lastName}</option>';
+		}
+	</c:forEach>
+	$("#sequentialOwner2").empty();
+	$("#sequentialOwner2").append(result);
+	$('#sequentialOwner2').trigger("chosen:updated");
+}
+</script>
+
 <script>
 function addCustomEmptyVendorContact(){
 	$("#vendorContact").empty();
@@ -2362,9 +2578,9 @@ function addCustomEmptyVendorContact(){
    $('#vendorContact').trigger("chosen:updated");
 }
 
-/* function clearStartDt(){
+ function clearStartDt(){
 	$("#startDate").val("");
-}; */
+}; 
 function clearEndDt(){
 	$("#endDate").val("");
 	};
@@ -2394,5 +2610,3 @@ function addCustomEmptyClientContact(){
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
-
-

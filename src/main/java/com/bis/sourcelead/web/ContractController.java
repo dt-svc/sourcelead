@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.rest.ContractRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -127,6 +130,8 @@ public class ContractController {
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	
+	@Autowired
+	private SourceleadTagsService sourceleadTagsService;
 	/**
 	 * display contract template list page
 	 * @return model
@@ -184,7 +189,14 @@ public class ContractController {
 		if (!isNullOrEmpty(contractType)) {
 			model.addObject("contractType", contractType);
 		}
-
+		List<String> contractTagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.PROJECTS.toString(), orgLocation.getId());
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "userCreateMsg");
+		if(null != msg && !"".equals(msg)){
+			model.addObject("msg", msg);
+			SourceLeadSessionManager.removeSessionAttribute(request, "userCreateMsg");
+		}
+		model.addObject("contractTagsList", contractTagsList);
+        
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("staticPath", staticPath);
 		model.addObject("contractsCount", contractsCount);
@@ -221,6 +233,23 @@ public class ContractController {
     		}else{
     			contractRequestDocumentsList = contractRequestDocumentsService.getAllDocByContractId(contract.getId());
     		} 
+    		
+    		if(contract != null){
+    			List<Long> parallelOwnerIds = new ArrayList<>();
+    			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
+    				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
+    				}else{
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					if(coh.getLevel() == 1)
+    						contract.setSequentialOwner1(coh.getOwnerUserId().getId());
+    					else if(coh.getLevel() == 2)
+    						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
+    				}
+    			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
+    		}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
@@ -313,6 +342,15 @@ public class ContractController {
 		            }*/
 					if(null != orgSpoc.getOwnerUser()){
 						orgSpoc.setOwnerUserName(orgSpoc.getOwnerUser().getFirstName());
+					}else{
+						User user = userService.getUserByUserCode(orgSpoc.getCreatedBy());
+						StringBuilder sb1 = new StringBuilder();
+						if(null != user.getFirstName() && null != user.getLastName()){
+						sb1.append(user.getFirstName()).append(" ").append(user.getLastName());
+						}else{
+						sb1.append(user.getFirstName());
+						}
+						orgSpoc.setOwnerUserName(sb1.toString());
 					}
 				}
 				model.addObject("orgSpocList", orgSpocList);
@@ -333,7 +371,8 @@ public class ContractController {
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+//		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
@@ -400,7 +439,7 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
@@ -458,7 +497,7 @@ public class ContractController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_ADD_NEW_CONTRACT')")
 	@RequestMapping(value = "/addCustomContract")
-	public ModelAndView addCustomContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID, HttpServletResponse response) throws Exception {
+	public ModelAndView addCustomContract(HttpServletRequest request, @RequestParam(value="contractUUID", required=false)String contractUUID,@RequestParam(value="contractFromType", required=false)String contractFromType, HttpServletResponse response) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
@@ -492,7 +531,26 @@ public class ContractController {
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
+			
 			if(null != contract){
+				
+				// To get Signing Authority Owners  
+				List<Long> parallelOwnerIds = new ArrayList<>();
+    			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
+    				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
+    				}else{
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					if(coh.getLevel() == 1)
+    						contract.setSequentialOwner1(coh.getOwnerUserId().getId());
+    					else if(coh.getLevel() == 2)
+    						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
+    				}
+    			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
+    			
+				
 				List<ContractsTemplate> contractsTemplateList = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(),contract.getContractType());
 				model.addObject("contractsTemplateList", contractsTemplateList);
 				
@@ -565,7 +623,8 @@ public class ContractController {
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+//		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
@@ -612,6 +671,7 @@ public class ContractController {
 		model.addObject("documentsList", documentsList);
 		model.addObject("orgLocation", orgLocation);
 		model.addObject("contract", contract);
+		model.addObject("contractFromType", contractFromType);
 		model.addObject("userList", userList);
 		model.addObject("clientList", clientList);
 		model.addObject("orgRelationsList", orgRelationsList);
@@ -622,7 +682,7 @@ public class ContractController {
 	
 	
 	@RequestMapping(value = "/viewContract")
-	public ModelAndView viewContract(HttpServletRequest request) throws Exception
+	public ModelAndView viewContract(HttpServletRequest request,@RequestParam(value="contractUUID", required=false)String contractUUID) throws Exception
 	{
 		logger.debug("display contract view page");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -631,9 +691,12 @@ public class ContractController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Contract);
-		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		model.addObject("userList", userList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("contractUUID", contractUUID);
 		model.setViewName("contracts/viewContract");
 		return model;
 	}
@@ -697,14 +760,17 @@ public class ContractController {
 		}
 		
 		model.addObject("contract", contract);
-		if(StringUtils.isNotBlank(contract.getContactUser().getLastName())) {
-			StringBuilder sb = new StringBuilder();
-			StringBuilder sbn = new StringBuilder();
-			model.addObject("signatory",sb.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()));
-			model.addObject("initial",sbn.append(contract.getContactUser().getFirstName().charAt(0)).append(contract.getContactUser().getLastName().charAt(0)));
-		}else {
-			model.addObject("signatory",contract.getContactUser().getFirstName());
-			model.addObject("initial",contract.getContactUser().getFirstName().charAt(0));
+		
+		if(contract.getOwnerUserId() != null){
+			if(StringUtils.isNotBlank(contract.getOwnerUserId().getLastName())) {
+				StringBuilder sb = new StringBuilder();
+				StringBuilder sbn = new StringBuilder();
+				model.addObject("signatory",sb.append(contract.getOwnerUserId().getFirstName()).append(" ").append(contract.getOwnerUserId().getLastName()));
+				model.addObject("initial",sbn.append(contract.getOwnerUserId().getFirstName().charAt(0)).append(contract.getOwnerUserId().getLastName().charAt(0)));
+			}else {
+				model.addObject("signatory",contract.getOwnerUserId().getFirstName());
+				model.addObject("initial",contract.getOwnerUserId().getFirstName().charAt(0));
+			}
 		}
 
 		model.addObject("sourceleadUrl", sourceleadUrl);

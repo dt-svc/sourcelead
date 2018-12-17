@@ -36,6 +36,8 @@ public class AddElkRequirement {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	private SourceleadELKTC<RequirementIndex> client;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkRequirement() throws IOException, SQLException {
 		ArrayList<RequirementIndex> requirementList = getElkRequirements();
 		if(null != requirementList && !requirementList.isEmpty()){
@@ -56,7 +58,9 @@ public class AddElkRequirement {
 		Connection conn = null ;
 		Statement stmt = null;
 		try {
-			String sql = "SELECT * FROM sourcelead.REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
 			 stmt = conn.createStatement();
@@ -80,7 +84,7 @@ public class AddElkRequirement {
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
 				if(null != rs.getString("PROJECT_CLIENT_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_CLIENT_ID"))){
-				requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
+					requirementIndex.setProjectClientID(rs.getString("PROJECT_CLIENT_ID"));
 				}
 				if(null != rs.getString("DESCRIPTION") && !"".equalsIgnoreCase(rs.getString("DESCRIPTION"))){
 					requirementIndex.setDescription(rs.getString("DESCRIPTION"));
@@ -94,10 +98,10 @@ public class AddElkRequirement {
 				}
 				requirementIndex.setRateType(rs.getString("RATE_TYPE"));
 				if(null != rs.getString("MIN_EXP") && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
-					requirementIndex.setMinExperience(rs.getString("MIN_EXP"));
+					requirementIndex.setMinExperience(Float.parseFloat(rs.getString("MIN_EXP")));
 				}
 				if(null != rs.getString("MAX_EXP") && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
-					requirementIndex.setMaxExperience(rs.getString("MAX_EXP"));
+					requirementIndex.setMaxExperience(Float.parseFloat(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
 				requirementIndex.setUrl(rs.getString("URL"));
@@ -115,6 +119,7 @@ public class AddElkRequirement {
 				requirementIndex.setUpdatedDate(dateFormat.format(rs.getDate("UPDATED_DATE")));
 				requirementIndex.setIsTemplate(rs.getString("IS_Template"));
 				requirementIndex.setManagerUserId(rs.getString("MANAGER_USER_ID"));
+				requirementIndex.setPrimaryRecruiterUserId(rs.getString("PRIMARY_RECRUITER_USER_ID"));
 				requirementIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 				requirementIndex.setReleasedBy(rs.getString("RELEASED_BY"));
 				if(null != rs.getString("MEDICAL_CLEARENCE") && !"".equalsIgnoreCase(rs.getString("MEDICAL_CLEARENCE"))){
@@ -198,7 +203,9 @@ public class AddElkRequirement {
 				if(null != education && !"".equalsIgnoreCase(education)){
 					requirementIndex.setEducation(education.split(","));
 				}
+				requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 				if(rs.getString("ORG_RELATION_ID") !=null && !"".equalsIgnoreCase(rs.getString("ORG_RELATION_ID"))){
+					requirementIndex.setIsClientJob(rs.getString("IS_CLIENT_JOB"));
 					ResultSet rs1 = getClientContactDetails(rs.getString("ORG_RELATION_ID"),conn);
 					String clientName =null;
 					String clientContactName = null;
@@ -237,7 +244,7 @@ public class AddElkRequirement {
 					while(rs1.next()){
 						String type = rs1.getString("INITIATOR_TYPE");
 						if("Client".equalsIgnoreCase(type)){
-							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM sourcelead.ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
+							String clientContactSql = "SELECT user.FIRST_NAME,user.EMAIL FROM "+dbconfig.getSchema()+".ORG_SPOC spoc INNER JOIN USER user on spoc.OWNER_USER_ID=user.ID where spoc.INITIATOR_LOCATION_ID = ?;";
 							ResultSet clientNameRs = getClientContactName(rs.getString("LOCATION_ID"),clientContactSql,conn);
 							clientContactName = clientNameRs.getString("FIRST_NAME");
 							clientContactEmail = clientNameRs.getString("EMAIL");
@@ -338,6 +345,10 @@ public class AddElkRequirement {
 						}
 					}
 				}
+				if(null != rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")){
+					requirementIndex.setRequirementSubmissionPreviousStatus(rs.getString("REQUIREMENT_SUBMISSION_PREVIOUS_STATUS"));
+				}
+				
 				reqIndexList.add(requirementIndex);
 				
 			}
@@ -362,7 +373,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		Long requirementId = Long.parseLong(reqId);
 		try{
-				String sql = "SELECT * FROM sourcelead.TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.STATUS = 1 and req.REQUIREMENT_ID = ?";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".TEAM team inner join REQUIREMENT_ASSIGN_TO req on team.ID = req.TEAM_ID where req.STATUS = 1 and req.REQUIREMENT_ID = ?";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -379,7 +390,7 @@ public class AddElkRequirement {
 		ResultSet rs=null;
 		Long requirementId = Long.parseLong(reqId);
 		 try{
-				String sql = "SELECT * FROM sourcelead.REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = ?;";
 //				 conn = dataSource.getConnection();
 				 ps = conn.prepareStatement(sql);
 				 ps.setLong(1, requirementId);
@@ -499,7 +510,7 @@ public class AddElkRequirement {
 		
 //		DataSource dataSource = comboPooledDataSource();
         String orgName = null;
-		String sql = "SELECT org.ORG_NAME FROM sourcelead.ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
+		String sql = "SELECT org.ORG_NAME FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgloc INNER JOIN ORG org on orgloc.ORG_ID=org.ID where orgloc.ID = ?;";
 		PreparedStatement ps = null;
 		try {
 //			conn = dataSource.getConnection();
@@ -549,10 +560,6 @@ public class AddElkRequirement {
 	  * @return DataSource
 	  */ 
 	 private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

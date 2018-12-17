@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -9,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -24,74 +21,49 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.form.TimesheetEntriesForm;
-import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.rest.TimesheetEmailUtil;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetEntriesService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @Service
 public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Autowired
-	TimesheetEntriesDao timesheetEntriesDao;
+	private TimesheetEntriesDao timesheetEntriesDao;
 	
 	@Autowired
-	TimesheetSubmissionsService timesheetSubmissionsService;
+	private TimesheetSubmissionsService timesheetSubmissionsService;
 	
 	@Autowired
-	TimesheetSubmissionsDocumentsService  timesheetSubmissionsDocumentsService;
+	private TimesheetSubmissionsDocumentsService  timesheetSubmissionsDocumentsService;
 	
 	@Autowired
-	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
-	ProjectTasksService projectTasksService;
+	private ProjectTasksService projectTasksService;
 	
 	@Autowired
-	ProjectMembersHistoryService projectMembersHistoryService;
-	
-	@Autowired
-	ProjectApproverHierarchyService projectApproverHierarchyService;
-	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	EmailScenarioService emailScenarioService;
-	
-	@Autowired
-	EmailScenerioUtil emailScenerioUtil;
-	
-	@Autowired
-	EmployeesService employeesService;
+	private ProjectMembersHistoryService projectMembersHistoryService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -101,6 +73,9 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
+	
+	@Autowired
+	private TimesheetEmailUtil timesheetEmailUtil;
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
@@ -148,7 +123,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	    */
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
 		cal.setLenient(false);
-		cal.setTime(commonUtil.currentDate());
+		cal.setTime(CommonUtil.currentDate());
 		Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
 		Calendar endSunday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "SUN",orgLocations.getDateFormat());
 		
@@ -1423,21 +1398,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	@Override
 	public String saveTimesheet(TimesheetEntriesForm timesheetEntriesForm, String json,
 			MultipartHttpServletRequest request, String status,String savingType) throws Exception {
-		// TODO Auto-generated method stub
-		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		
 		json = "{"+json+"}";
 		JSONObject jsonObj = new JSONObject(json);
-    	Gson gson =  new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-    	/*TimesheetEntriesForm tForm = gson.fromJson(json, TimesheetEntriesForm.class);*/
     	
-		String result = "";
-		String resultJson = null;
-		
-		
 		 String localsubmissionId = null;
 	   	  try{
 	   		   JSONArray jsonArray = jsonObj.getJSONArray("submissionId");
@@ -1477,13 +1444,12 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 						    	
 						    	String attcahmentMaxRowNumber = jsonObj.getString("attcahmentMaxRowNumber");
 								int attcahmentMaxRowNumberCount = Integer.parseInt(attcahmentMaxRowNumber);
-								int attachmentRowNum = 0;
 								
 						    	for (int a = 0; a < attcahmentMaxRowNumberCount; a++) {
 									   
 									   TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 									   final MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request; 
-		                   		       final Map files = multiRequest.getFileMap();
+		                   		       final Map<String, MultipartFile> files = multiRequest.getFileMap();
 		                   		       
 		                   		       tsd.setTimesheetSubmissions(timesheetSubmissions);
 		                               MultipartFile  multiFile = (MultipartFile)files.get(a+"docFile");
@@ -1497,12 +1463,13 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		                               }
 		                               
 		                               tsd.setStatus(Constants.CANDIDATE_ACTIVE);
-		                               tsd.setCreatedDate(commonUtil.currentDate());
+		                               tsd.setCreatedDate(CommonUtil.currentDate());
 		                               tsd.setCreatedBy(loginUser.getUserCode());
-		                               tsd.setUpdatedDate(commonUtil.currentDate());
+		                               tsd.setUpdatedDate(CommonUtil.currentDate());
 		                               tsd.setUpdatedBy(loginUser.getUserCode());
 		                               
 									   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+									   saveTimesheetDocumentHistory(tsd);
 						    	}
 								
 							   /*Iterator<String> itrator = request.getFileNames();
@@ -1521,6 +1488,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 					    	
 								String maxAdminTimeTypeRowNum = jsonObj.getString("maxRowNumber"+submissionId);
 								int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
+								@SuppressWarnings("unused")
 								int rowNum = 0;
 								
 								
@@ -1545,10 +1513,10 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 										
 										  
 										timesheetEntries.setTimesheetSubmissions(timesheetSubmissions);
-										timesheetEntries.setStartDate(commonUtil.currentDate());
-										timesheetEntries.setEndDate(commonUtil.currentDate());
-										timesheetEntries.setCreatedDate(commonUtil.currentDate());
-										timesheetEntries.setUpdatedDate(commonUtil.currentDate());
+										timesheetEntries.setStartDate(CommonUtil.currentDate());
+										timesheetEntries.setEndDate(CommonUtil.currentDate());
+										timesheetEntries.setCreatedDate(CommonUtil.currentDate());
+										timesheetEntries.setUpdatedDate(CommonUtil.currentDate());
 										
 										ProjectTasks projectTasks = new ProjectTasks();
 
@@ -1699,7 +1667,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 									//send mail to assigned manager at time sheet submission
 									if(!actualTimeString.equalsIgnoreCase("0.0")){
 										if(!"Draft".equalsIgnoreCase(status)){
-											sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
+											timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissions(timesheetSubmissions,loginUser,loginOrgLocation,loginOrgCode);
 										}
 									}
 								}
@@ -1716,6 +1684,21 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		return startDateStr;
 		
 	}
+	
+	
+	private void saveTimesheetDocumentHistory(TimesheetSubmissionsDocuments tsd) throws Exception {
+		TimesheetSubmissionsDocumentsHistory tsdHistory = new TimesheetSubmissionsDocumentsHistory();
+		tsdHistory.setTimesheetSubmissions(tsd.getTimesheetSubmissions());
+		tsdHistory.setFileUrl(tsd.getFileUrl());
+		tsdHistory.setFileName(tsd.getFileName());
+		tsdHistory.setFileContentType(tsd.getFileContentType());
+		tsdHistory.setCreatedDate(CommonUtil.currentDate());
+		tsdHistory.setCreatedBy(tsd.getCreatedBy());
+		tsdHistory.setUpdatedDate(CommonUtil.currentDate());
+		tsdHistory.setUpdatedBy(tsd.getUpdatedBy());
+		timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocumentsHistory(tsdHistory);
+	}
+
 	
 	 /**
 	 * @author naresh bolisetty and sarath kumar
@@ -1751,7 +1734,7 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public TimesheetEntries updateTimesheetEntries(TimesheetEntries timesheetEntries) throws Exception {
-		timesheetEntries.setUpdatedDate(commonUtil.currentDate());
+		timesheetEntries.setUpdatedDate(CommonUtil.currentDate());
 		return timesheetEntriesDao.updateTimesheetEntries(timesheetEntries);
 	}
 	
@@ -1771,7 +1754,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	
 	@Override
 	public TimesheetEntries getTimesheetEntries(String id) throws Exception {
-		// TODO Auto-generated method stub
 		return timesheetEntriesDao.getTimesheetEntries(id);
 	}
 	
@@ -1794,7 +1776,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	public Boolean deleteTimesheetEntries(String id) throws Exception {
 		Boolean status = timesheetEntriesDao.deleteTimesheetEntries(id);
 		return status;
-		// TODO Auto-generated method stub
 	}
 
 	 /**
@@ -1830,8 +1811,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 	 */
 	@Override
 	public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
-		// TODO Auto-generated method stub
-		 
 		Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
 		return list;
 		
@@ -1848,96 +1827,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 				total = total + finalmin;
 				return total;
 			
-	}
-	
-	
-
-	 /**
-	 * @author  venkata kesav
-	 * @since  aug 19 2016
-	 * @version 0.0.1
-	 * 
-	 * This method is used to send email to project managers .
-	 * this method is called at saveTimesheet() method.
-	 * 
-	 * @param timesheetSubmissions This is the first paramter to sendEmailToManagerAtTimesheetSubmissions method
-	 * @param loginUser This is the second paramter to sendEmailToManagerAtTimesheetSubmissions method
-	 * @param loginOrgLocation This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
-	 * @param loginOrgCode This is the third paramter to sendEmailToManagerAtTimesheetSubmissions method
-	 *  
-	 * @return void 
-	 * 
-	 * @throws NullPointer
-	 */
-	
-	private void sendEmailToManagerAtTimesheetSubmissions(TimesheetSubmissions timesheetSubmissions, User loginUser, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
-		List<ProjectApproverHierarchy> approverHierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(timesheetSubmissions.getProjectMembers().getProjects().getId());
-		
-		
-		
-		for(ProjectApproverHierarchy approver : approverHierarchyList){
-				
-			if(!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode()) && (approver.getLevel() == Constants.LEVEL1 || approver.getLevel() == Constants.LEVEL2)  ){
-				
-			 User projectManager = userService.getUserById(approver.getApproverUserId().getId());
-			 //Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
-				
-		     EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(projectManager.getFirstName());
-			 emailMessage.setLastName(projectManager.getLastName());
-			 emailMessage.setToEmail(projectManager.getEmail());
-			 emailMessage.setFromEmail(loginUser.getEmail());
-			 emailMessage.setCreatedBy(loginUser.getUserCode());
-			 emailMessage.setFromName(loginUser.getFirstName()+" "+loginUser.getLastName());
-			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			 //String pattern = "dd-MM-yyyy";
-	         //DateFormat format = LoginSessionController.DATEFORMAT;
-	         String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),timesheetSubmissions.getStartDate());
-	         String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),timesheetSubmissions.getEndDate());
-
-			 //setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
-			 globalVarsMap.put("managerLastName",projectManager.getLastName());
-			 //globalVarsMap.put("projectName", project.getProjectName());
-			 globalVarsMap.put("orgName",loginOrgLocation.getOrgLocationName());
-			 globalVarsMap.put("timeFrequency",startDateStr+" to "+endDateStr);
-			 globalVarsMap.put("loginURL","<a href='"+sourceleadLoginUrl+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
-			 
-			//calling the sendNotification method of emailScenerioUtil
-			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_PROJECT_MANAGER_TIMESHEET,Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-			notificationScenario.setBody(notificationBody);
-			notificationScenario.setOrgCode(loginOrgCode);
-			//String url = null;
-			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
-			
-		}
-	}
 	}
 	
 	public static boolean isNullOrEmpty(String str) {

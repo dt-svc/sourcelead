@@ -158,9 +158,13 @@ public class VendorController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
+
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
-		}
+		    }
+			
+		}	
 		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
@@ -317,6 +321,12 @@ public class VendorController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
+			
+			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			 
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
 			

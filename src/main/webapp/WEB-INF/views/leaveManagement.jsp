@@ -5,8 +5,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script> 
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
+<!-- <script src="/resources/amcharts/amcharts.js"></script> -->
+<!-- <script src="/resources/amcharts/pie.js"></script> -->
+
 <%-- <section class="content-wraper"> --%>
   <!-- <section class="content-header clearfix">
     <div class="pull-left">
@@ -18,93 +19,68 @@
   
 <script type="text/javascript">
 $(document).ready(function(){
-	getEmployeeTotalCounts();
 	getSelfTotalCounts();
 });
 </script>
   
-  <div class="clearfix mb">
-    <div class="col-md-6">
-      <div class="dashboard-widget">
-          <h4 class="pull-left"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
+    <div class="col-md-6 mb10">
+      
+        <div class="dashboardWidget-new dashNewWrap mb">
+            
+        	<div class="dashNewWrapHead clearfix">
+				<a class="pull-left" href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a>
+              	<div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves"></span></div>				
+	            <ul class="nav nav-tabs pull-right">
+		            <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
+		            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
+		            	<li><a data-toggle="tab" href="#employee" onclick="getEmployeeTotalCounts();">Employees</a></li>
+		            </sec:authorize>
+	            </ul>
+        	</div>       
+        
         <div class="clearfix">
-          <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
-            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
-            	<li><a data-toggle="tab" href="#employee">Employees</a></li>
-            </sec:authorize>
-          </ul>
+          
           <div class="tab-content clearfix">
             <div id="self" class="tab-pane fade in active">
-              <div class="col-md-4 padding_left" style="position:absolute; top:16px; left:140px;">
-                        <label class="pull-left mr">Balance Leaves</label>
-                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-left" id="selfBalancedCounts"></span></div>
-              </div>
-              <div class="db-widget-sm clearfix row">
+
                 <div class="width100percnt clearfix">
                   <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left hidden"> </div>
-                    <div class="clearfix"></div>
-              <div class="mt5 clearfix">
+                    
+                    
+              <div class=" clearfix">
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                    <p class="info-box-number"><span id="selfPendingCounts"></span></p>
-                    <p class="info-box-text" id="selfpend"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="selfpend"></p>
+                    <p class="NewCount suColor"><span id="selfPendingCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                   <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
-                   <p class="info-box-text" id="selfapp"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="selfapp"></p>
+                   	<p class="NewCount apColor"><span id="selfApprovedCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                  <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
-                  <p class="info-box-text" id="selfrej"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="selfrej"></p>
+                  	<p class="NewCount reColor"><span id="selfRejectedCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                  <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
-                  <p class="info-box-text" id="selfcanc"></p>
-                  </div>
+                <div class="dashNewCount">
+                  <p id="selfcanc"></p>
+                  <p class="NewCount caColor"><span id="selfCancelledCounts"></span></p>
                 </div>
               </div>
               
               </div>
             
-                <ul class="list-unstyled  clearfix hidden">
-                    <%-- <li class="clearfix">
-                        <label class="pull-left">Pending Leaves</label>
-                        <a href="<c:url value='${appPath}/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='${appPath}/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='${appPath}/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='${appPath}/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
-                    </li> --%>
-                      <!-- <li class="clearfix">
-                        <label class="pull-left">Balance Leaves</label>
-                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
-                    </li> -->
-                </ul>
-                    
                 </div>
-              </div>
+              
               <div class="col-xs-12 col-sm-4 mb hidden">
                 <div id="selfApproved" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
                 <div class="leavescount text-center"> <a href="leavetype-approvedcount.html" id="approved" title="Approved">20</a> </div>
@@ -119,38 +95,33 @@ $(document).ready(function(){
                 
             <div class="db-widget-sm clearfix">
                 <div class="width100percnt clearfix">
-                <div class="clearfix"></div>
-                <div class="mt5 clearfix row">
+                <div class="clearfix">
+                
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-blue"> <i class="fa fa-clock-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                    <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
-                    <p class="info-box-text" id="empReq"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="empReq"></p>
+                    <p class="NewCount suColor"><span id="employeeRequestedCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-green"> <i class="fa fa-check-circle-o" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                    <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
-                    <p class="info-box-text" id="empApp"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="empApp"></p>
+                    <p class="NewCount apColor"><span id="employeeApprovedCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-orange"> <i class="fa fa-times" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                    <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
-                    <p class="info-box-text" id="empRej"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="empRej"></p>
+                    <p class="NewCount reColor"><span id="employeeRejectedCounts"></span></p>
                 </div>
               </div>
+              
               <div class="col-xs-12 col-sm-3">
-                <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-ban" aria-hidden="true"></i> </span>
-                  <div class="info-box-content text-center">
-                    <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
-                    <p class="info-box-text" id="empCanc"></p>
-                  </div>
+                <div class="dashNewCount">
+                	<p id="empCanc"></p>
+                    <p class="NewCount caColor"><span id="employeeCancelledCounts"></span></p>
                 </div>
               </div>
               
@@ -158,7 +129,6 @@ $(document).ready(function(){
                 
                 
                 
-                  <!-- <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div> -->
                   <div style="width: 40%; height: 105px;" class="countList pull-left hidden">
                 <ul class="list-unstyled list-group clearfix mb5">
                     <li class="clearfix">
@@ -205,8 +175,7 @@ $(document).ready(function(){
       </div>
     </div>
     <!-- Requirement ends --> 
-  </div>
-  <!-- Tasks and Timesheets columns ends --> 
+    
 <%-- </section> --%>
 
 		
@@ -256,7 +225,7 @@ function getEmployeeTotalCounts(){
     		   }
     		   
     		   //pie chart count
-    		   AmCharts.makeChart("employeeLeaves",
+    		/*    AmCharts.makeChart("employeeLeaves",
     					{
     						"type": "pie",
     						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
@@ -304,8 +273,8 @@ function getEmployeeTotalCounts(){
     								"column-1": report.employeeCancelledCounts
     							} 
     						]
-    					}
-    				);
+    					} 
+    				);*/
     		   
 	       },
 		  });
@@ -362,7 +331,7 @@ function getSelfTotalCounts(){
    			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
    		   }
    		   
-   		 AmCharts.makeChart("empselfLeaves",
+   		/*  AmCharts.makeChart("empselfLeaves",
  				{
  					"type": "pie",
  					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
@@ -416,7 +385,7 @@ function getSelfTotalCounts(){
  						} 
  					]
  				}
- 			); 
+ 			); */ 
    		 
 	       },
 		  });

@@ -25,17 +25,20 @@
           </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Recipient list</div>
     </section>
-    <div class="timesheet_out">
-      <div class="vendor_wrap">
-        <div class="timesheet_head minHeight">
-        <ul>
-        <li><a href="javascript:void(0)" title="" id="addRep" onclick="campaignRecipient(this,'');"><i class="fa fa-plus"></i>Add Recipients</a></li>
-        </ul>
-        </div>
-        <div class= "project_tabs_inn_table vendor_wrap_inn_table datatable_filter">
-        <div id= "recipientListDev"></div> 
-          <div class="clearfix"></div>
-        </div>
+    
+      <div class="project_wrap">
+      
+    <div class="reportHead reportHeadDataTab clearfix">
+    	<ul class="pull-right list-unstyled list-inline">
+    		<li>
+    			<a href="javascript:void(0)" class="newAdBtn" title="" id="addRep" onclick="campaignRecipient(this,'');">+ Recipients</a>
+    		</li>
+    	</ul>
+    </div>      
+
+    <div class= "project_tabs_inn_table datatable_filter dataSeaTop">
+        <div id="recipientListDev"></div> 
+    </div>
         
 <div class="project_wrap_table">
 
@@ -92,30 +95,20 @@ function populategRecipientList(json){
 }
 </script>
 
-<div class="ReciViewPop">
+<div class="popupWrapMid" id="recipientPop">
 		<div class="popupHead">
-			<h2>View recipient list</h2><a onclick="viewListClose();" href="javascript:void(0)" class="fa fa-close popCan clossIconPosi"></a>
+			<span>View recipient list</span><a onclick="viewListClose();" href="javascript:void(0)" class="closePop pull-right popClose"></a>
 		</div>
 		<div id="loading"></div>
-		
-		<div class="popupMid popupMidPad clearfix">
-		
-          <div class="clients_wrap_table">
-          <div id= "viewListDev" class="datatable_filter"></div>
-			</div>	
-	
-		</div>
-		
-		<div class="popupFoot">
-            <input value="Close" class="btn btn-default ml popCan" onclick="viewListClose();" type="button">
-          </div>		
-		
+         <div class="clients_wrap_table popupWrapTabHead">
+          		<div id= "viewListDev" class="datatable_filter dataSeaTop"></div>
+		</div>	
 </div>	
 
 <script>
 function listViewPop(viewListId){
-	$(".popMask").show();
-	$(".ReciViewPop").show();	
+	$(".mask").show();
+	$("#recipientPop").show();	
 	
 	$.ajax({
 	       type : "GET",
@@ -171,8 +164,8 @@ for (var i=0; i<json.length; i++){
 }
 
 function viewListClose(){
-	$(".popMask").hide();
-	$(".ReciViewPop").hide();	
+	$(".mask").hide();
+	$("#recipientPop").hide();	
 }
 </script>
 
@@ -212,9 +205,6 @@ function recipientListPagination(){
 </script>
 	</div>        
         
-      </div>
-      
-      <!-- Project --> 
     </div>
   </section>
   
@@ -222,9 +212,9 @@ function recipientListPagination(){
   
   <script>
 function deleteCampaignList(id){
-	$(".project_inn_mask").remove();
+	$(".mask").remove();
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure want to delete ?</p>";
 	//result = result +"		<textarea id='reason' class='form-control' field-name='Delete Identity'  readonly data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Are you sure you want to delete ?' rows='2'></textarea>";
@@ -233,7 +223,7 @@ function deleteCampaignList(id){
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".mask").show();
 }
 </script>
   
@@ -248,7 +238,7 @@ function deleteCampaignContactList(id){
   			 $("#selector11").css({ display: "block" });
   			 $("#msgeDiv").html("Record deleted Successfully");
   			 $("#popUp").empty();
- 			 $(".project_inn_mask").fadeOut(200);
+ 			 $(".mask").hide();
              msgFadein();
              location.replace(sourceleadUrl+ "/recipientsList");
     	   
@@ -263,13 +253,13 @@ function deleteCampaignContactList(id){
 <script>
 function cancelDeleteCampaignList(){
 	$("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
+	 $(".mask").hide();
 }
 </script>
 
 <script>
  function msgFadein() {
-	$("#selector11").fadeIn(200);
+	$("#selector11").fadeIn(300);
     $('#selector11').delay(2000).fadeOut('slow');
 }
 </script>

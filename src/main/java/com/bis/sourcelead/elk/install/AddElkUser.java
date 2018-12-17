@@ -30,7 +30,8 @@ public class AddElkUser {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkUser.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	private SourceleadELKTC<UserIndex> client;
-
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkUser() throws IOException, SQLException {
 		ArrayList<UserIndex> elkUserList = getElkUsers();
 		if (null != elkUserList && !elkUserList.isEmpty()) {
@@ -48,7 +49,7 @@ public class AddElkUser {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
-			String sql = "SELECT * FROM sourcelead.USER_ROLE userRole";
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".USER_ROLE userRole";
 			conn = dataSource.getConnection();
 		    stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -92,7 +93,7 @@ public class AddElkUser {
 				if (null != userId && userId != 0) {
 					Statement stmt1 = conn.createStatement();
 					try {
-						String sql1 = "SELECT * FROM sourcelead.USER user where user.ID = '" + userId + "'  and  '" + userId + "' IN (SELECT userRole.USER_ID FROM sourcelead.USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '" + orgLocationId + "') ";
+						String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".USER user where user.ID = '" + userId + "'  and  '" + userId + "' IN (SELECT userRole.USER_ID FROM "+dbconfig.getSchema()+".USER_ROLE userRole where userRole.ORG_LOCATIONS_ID = '" + orgLocationId + "') ";
 
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if (rs1 != null) {
@@ -103,6 +104,13 @@ public class AddElkUser {
 								userIndex.setMobilePhone(rs1.getString("MOBILE_PHONE"));
 								userIndex.setIsMailSent(rs1.getString("IS_MAIL_SENT"));
 								userIndex.setUserCode(rs1.getString("USER_CODE"));
+								userIndex.setGender(rs1.getString("GENDER"));
+								userIndex.setMiddleName(rs1.getString("MIDDLE_NAME"));
+								Timestamp dateofbirthstr = rs1.getTimestamp("DATE_OF_BIRTH");
+								if (null != dateofbirthstr) {
+									String updatedDateofBirth = StringDate.format(new java.util.Date(dateofbirthstr.getTime()));
+									userIndex.setDateofBirth(updatedDateofBirth);
+								}
 							}
 
 						}
@@ -114,7 +122,7 @@ public class AddElkUser {
 
 					Statement stmt2 = conn.createStatement();
 					try {
-						String sql2 = "SELECT * FROM sourcelead.EMPLOYEE employee where employee.USER_ID = '" + userId
+						String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".EMPLOYEE employee where employee.USER_ID = '" + userId
 								+ "' and employee.ORG_LOCATIONS_ID = '" + orgLocationId + "' ";
 
 						ResultSet rs2 = stmt2.executeQuery(sql2);
@@ -145,7 +153,7 @@ public class AddElkUser {
 
 					Statement stmt3 = conn.createStatement();
 					try {
-						String sql3 = "SELECT * FROM sourcelead.ROLES roles where roles.ORG_LOCATION_ID='"
+						String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ROLES roles where roles.ORG_LOCATION_ID='"
 								+ orgLocationId + "' and roles.ID = '" + userRoleId + "'";
 
 						ResultSet rs3 = stmt3.executeQuery(sql3);
@@ -177,10 +185,6 @@ public class AddElkUser {
 	
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

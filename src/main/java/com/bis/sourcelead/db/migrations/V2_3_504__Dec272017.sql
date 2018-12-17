@@ -1,3 +1,3 @@
 
-ALTER TABLE `sourcelead`.`LEAVE` 
-RENAME TO  `sourcelead`.`USER_LEAVE`;
+ALTER TABLE `LEAVE` 
+RENAME TO  `USER_LEAVE`;

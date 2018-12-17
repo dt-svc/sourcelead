@@ -25,4 +25,6 @@ public interface DataMigrationService {
 	String validateImportedFormData(DataMigrationDTO dataMigrationDTO, HttpServletRequest request) throws Exception;
 	
 	List<SourceleadFormFields> getfieldsByActionIdAndImportStatus(Long actionId, int importStatus) throws Exception;
+	
+	List<SourceleadFormFields> getSubmissionTemplateFormFields(Long requirementId) throws Exception;
 }

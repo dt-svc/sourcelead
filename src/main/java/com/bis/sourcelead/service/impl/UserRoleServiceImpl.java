@@ -1,11 +1,17 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -26,23 +32,32 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.ActionHistory;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserIdView;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
-@Service
+@Service 
 public class UserRoleServiceImpl implements UserRoleService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRoleServiceImpl.class);
@@ -79,6 +94,19 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	OrgDocumentsDao orgDocumentsDao;
+	
+	@Autowired
+	ActionHistoryService actionHistoryService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
+	UserGroupService userGroupService;
+	
+	@Autowired
+	UserGroupDao userGroupDao;
+	
 
 	@Override
 	public UserRole addUserRole(UserRole userRole) throws Exception {
@@ -368,8 +396,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency) throws Exception {
-		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency);
+	public HashSet<ProjectMembers> getAllUserPrevoiusWeekTimeSheetSubmissionStatus(String invoiceFrequency,Long locationId) throws Exception {
+		return userRoleDao.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(invoiceFrequency,locationId);
 	}
 	
 	@Override
@@ -633,12 +661,87 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId)
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId,Long userId)
 			throws Exception {
-		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
+		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId,userId);
 	}
 
 	@Override
+	public ResponseList<UsersUsageReportDTO> getUserRoleListByLocationIdAndUserType(UsersUsageReportDTO usersUsageReportDTO,OrgLocations orgLocation) throws Exception
+	{
+		Date[] freqDates = new Date[2];
+		if("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())){
+			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+		}else{
+			freqDates = reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(),orgLocation);
+		}
+		if(!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
+		List<Long> userIds = actionHistoryService.getAllUserIdsByFrequencyBasedOnActivity(freqDates);
+		usersUsageReportDTO.setUserIds(userIds);
+		}
+		ResponseList<UserRole> userlist = userRoleDao.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocation);
+		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
+		List<UsersUsageReportDTO> userUsageDtoList = new ArrayList<>();
+		if(userlist.getData() != null){
+			for(UserRole userRole : userlist.getData()){
+				
+				User user = userRole.getUser();
+				Employees employee = employeesService.getEmployeeByUserId(user.getId());
+				StringBuilder sb = new StringBuilder();
+				if(employee != null){
+					if(StringUtils.isNotBlank(employee.getEmployeeId())){
+						sb.append(employee.getEmployeeId());
+					}
+				}
+				
+				UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
+				usageDto.setUserRoleId(userRole.getId());
+				usageDto.setLocationId(userRole.getOrgLocations().getId());
+				usageDto.setUserId(userRole.getUser().getId());
+				if(StringUtils.isNotBlank(user.getLastName())){
+					usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+				}else{
+					usageDto.setUserName(sb.append(user.getFirstName()).toString());
+				}
+				
+				usageDto.setUserEmail(user.getEmail());
+				usageDto.setUserType(user.getUserType());
+				
+				List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
+				for(UserRole ur:userRoleList){
+					ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
+				}
+				usageDto.setEnrolledOrgs(userRoleList);
+				usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
+				
+//				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+//				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
+				
+//				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+					usageDto.setLastActivity("---");
+//				}
+				
+				List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
+				usageDto.setMultipleIps(actionHis.size());
+				
+				
+				userUsageDtoList.add(usageDto);
+			}
+			responseList.setRecordsFiltered(userlist.getRecordsFiltered());
+			responseList.setRecordsTotal(userlist.getRecordsTotal());
+		}
+		
+		responseList.setData(userUsageDtoList);
+		return responseList;
+	}
+
+	@Override
+	public Map<String, Integer> getUserCountListByOrgLocationId(Long orgLocationId,List<Long> orgId)
+	{
+		return userRoleDao.getUserCountListByOrgLocationId(orgLocationId, orgId);
+	}
+
 	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationId(orgLocationId);
 	}
@@ -653,5 +756,128 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public List<User> getAllReportingManagersAssignedToAssociates(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllReportingManagersAssignedToAssociates(orgLocationId);
 	}
+
+	@Override
+	public List<UsersUsageReportDTO> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations) throws Exception
+	{
+		int Year = 0;
+		int diffMonth = 11;
+		Date[] freqDates = new Date[2];
+		int month = 0;
+		List<UsersUsageReportDTO> user = new ArrayList<>();
+		if ("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())) {
+			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+			Calendar startCalendar = new GregorianCalendar();
+			startCalendar.setTime(freqDates[0]);
+			month = startCalendar.get(Calendar.MONTH);
+			Year = startCalendar.get(Calendar.YEAR);
+			Calendar endCalendar = new GregorianCalendar();
+			endCalendar.setTime(freqDates[1]);
+			// int endMonth = endCalendar.get(Calendar.MONTH);
+			int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+			diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH)- startCalendar.get(Calendar.MONTH);
+		}else{
+			
+			if (usersUsageReportDTO.getCustomDates().equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+				Year = Calendar.getInstance().get(Calendar.YEAR);
+			}else if (usersUsageReportDTO.getCustomDates().equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
+				reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(), orgLocations);
+				Calendar prevYear = Calendar.getInstance();
+				prevYear.add(Calendar.YEAR, -1);
+				Year = prevYear.get(Calendar.YEAR);
+			}
+		}
+		
+		
+		for (int i = 0; i <= diffMonth; i++) {
+			UsersUsageReportDTO userDto = new UsersUsageReportDTO();
+			freqDates = commonUtil.getMonthStartDateEndDateByYearAndMonth(Year, month);
+			Map<String, Integer> map = userRoleDao.getUsageReportUserCountListByOrgLocationId(orgLocationId, usersUsageReportDTO, orgLocations, freqDates);
+			userDto.setActiveCount(map.get("ACTIVE"));
+			userDto.setInactiveCount(map.get("INACTIVE"));
+			userDto.setNotLoggedinCount(map.get("NOT_LOGGEDIN"));
+			StringBuilder sb = new StringBuilder();
+			userDto.setDates(sb.append(Year).append("-").append(month+1).toString());
+			user.add(userDto);
+			month += 1;
+		}
+		
+		
+		return user;
+	}
+	
+    @Override
+	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
+
+	}
+
+	@Override
+	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocationId);
+	}
+
+	@Override
+	public List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId,Long orgLocationId)
+	{
+		List<UserIdView> userIdView = userGroupDao.getCommaSeperatedUserId(orgLocationId);
+		List<AssociateDepartmentView> associateDepartmentViewList = userRoleDao.getUserRolesByDepartmentId(departmentId,orgLocationId,userIdView);
+		return associateDepartmentViewList;
+	}
+
+	@Override
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception {
+		return userRoleDao.getUserAccountsListByUserId(userId);
+	}
+
+	
+	@Override
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<BigInteger> getAllUsersRoleList() throws Exception {
+		return userRoleDao.getAllUsersRoleList();
+	}
+
+	@Override
+	public List<UserDTO> getAllReportingManagersListAssignedToAssociates(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllReportingManagersListAssignedToAssociates(orgLocationId);
+	}
+
+	@Override
+	public UserRole getGlobalUserReportingManagerByUserIdAndOrgId(Long userId, Long orgId)
+	{
+		return userRoleDao.getGlobalUserReportingManagerByUserIdAndOrgId(userId,orgId);
+	}
+	
+	@Override
+	public Boolean getIsGlobalManager(Long orgId,Long userId) throws Exception {
+		return userRoleDao.getIsGlobalManager(orgId,userId);
+	} 
+    
+	@Override
+	public List<UserRole> getUserListByUserIdList(List<Long> userIdList,Long orgLocationId)
+	{
+		return userRoleDao.getUserListByUserIdList(userIdList,orgLocationId);
+	}
+
+	@Override
+	public Boolean isUserWithMultipleOrgsAccounts(Long orgId,Long userId) {
+		return userRoleDao.isUserWithMultipleOrgsAccounts(orgId,userId);
+	}
+
+	@Override
+	public List<UserRole> getLoginUserAccountsList(Long userId) throws Exception {
+		return userRoleDao.getLoginUserAccountsList(userId);
+	}
+
 
 }

@@ -44,6 +44,8 @@ public class AddClientVendorContactsELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorContactsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	 private SourceleadELKTC<ClientVendorContactsIndex> client;
+	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -68,7 +70,7 @@ public class AddClientVendorContactsELK {
 		Connection conn = dataSource.getConnection(); 
 		try {
 				
-				String sql = "SELECT * FROM sourcelead.ORG_SPOC orgSpock";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpock";
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
@@ -99,14 +101,14 @@ public class AddClientVendorContactsELK {
 				    	
 						
 						// saving responderLocationId and  Org Name
-						String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
+						String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 						
 						Statement stmt1 = conn.createStatement();
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if(rs1 != null){
 							 while(rs1.next()){
 								   Long responderorgId = rs1.getLong("ORG_ID");
-								   String sql2 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+responderorgId+"' ";
+								   String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+responderorgId+"' ";
 									Statement stmt2 = conn.createStatement();
 									ResultSet rs2 = stmt2.executeQuery(sql2);
 									if(rs2 != null){
@@ -122,13 +124,13 @@ public class AddClientVendorContactsELK {
 	    	           }
 						
 						// saving  the Initiator Location id and Org Name
-						String sql5 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
+						String sql5 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
 						Statement stmt5 = conn.createStatement();
 						ResultSet rs5 = stmt5.executeQuery(sql5);
 						if(rs5 != null){
 							 while(rs5.next()){
 								   Long initiatororgId = rs5.getLong("ORG_ID");
-								   String sql6 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+initiatororgId+"' ";
+								   String sql6 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+initiatororgId+"' ";
 									Statement stmt6 = conn.createStatement();
 									ResultSet rs6 = stmt6.executeQuery(sql6);
 									if(rs6 != null){
@@ -143,7 +145,7 @@ public class AddClientVendorContactsELK {
 			           }
 						
 					//  Storing the value of OrgRelations InitiatorType and ResponderType
-						String sql7= "SELECT * FROM sourcelead.ORG_RELATIONS relation where relation.ID = '"+orgRelationId+"' ";
+						String sql7= "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS relation where relation.ID = '"+orgRelationId+"' ";
 						Statement stmt7 = conn.createStatement();
 						ResultSet rs7 = stmt7.executeQuery(sql7);
 						if(rs7 != null){
@@ -159,7 +161,7 @@ public class AddClientVendorContactsELK {
 						
 						
 						// Saving  the OwnerUserId in ELk Search
-  						String sql3 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+ownerUserId+"' ";
+  						String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+ownerUserId+"' ";
   						Statement stmt3 = conn.createStatement();
 						ResultSet rs3 = stmt3.executeQuery(sql3);
 						if(rs3 != null){
@@ -186,7 +188,7 @@ public class AddClientVendorContactsELK {
 						
 						
 						// Saving  the spockUserId in ELk Search
-  						String sql4 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+spockUserId+"' ";
+  						String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+spockUserId+"' ";
   						Statement stmt4 = conn.createStatement();
 						ResultSet rs4 = stmt4.executeQuery(sql4);
 							 while(rs4.next()){
@@ -259,10 +261,6 @@ public class AddClientVendorContactsELK {
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

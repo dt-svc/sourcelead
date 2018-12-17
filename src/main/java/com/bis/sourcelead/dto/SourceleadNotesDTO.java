@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.CleanHtml;
+import com.bis.sourcelead.annotations.Required;
+
 public class SourceleadNotesDTO {
 	
 	private String noteType;
@@ -12,6 +15,8 @@ public class SourceleadNotesDTO {
 	
 	private String categoryType;
 	
+	@Required(desc = "noteDescription")
+	@CleanHtml(escape=false)
 	private String noteDescription;
 	
 	private String invoiceUUID;
@@ -23,6 +28,18 @@ public class SourceleadNotesDTO {
 	private String allowAll;
 	
 	private String vendorcontact;
+	
+	private String immigrationId;
+	
+	private String candidateId;
+
+	public String getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(String immigrationId) {
+		this.immigrationId = immigrationId;
+	}
 
 	public String getNoteType() {
 		return noteType;
@@ -110,6 +127,14 @@ public class SourceleadNotesDTO {
 
 	public void setAssetId(String assetId) {
 		this.assetId = assetId;
+	}
+
+	public String getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
 	}
 	
 	

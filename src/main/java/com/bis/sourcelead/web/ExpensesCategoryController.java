@@ -63,10 +63,12 @@ public class ExpensesCategoryController {
 	@RequestMapping(value = "/expenseCategory")
  	public ModelAndView expenseCategory(HttpServletRequest request) throws Exception {
 		
+
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    
 		    ModelAndView model = new ModelAndView();
+		    try {
 		    commonUtil.highLightMenu(Constants.OrgSettings, request);
 		    
 		    List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
@@ -94,6 +96,10 @@ public class ExpensesCategoryController {
 		    
 		    model.setViewName("expenses/expenseCategory");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expenseCategory");
+		}
  			
  			return model;
  	}

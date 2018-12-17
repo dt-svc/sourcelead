@@ -213,7 +213,11 @@ function requestOrgsListPagination(url,sourceleadUrl){
 	              "data": "modules",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result + '<td><div class="tblminwidth-75">'+opt.requestedModules+'</div></td>';
+	            	    if(opt.requestedModules != null && opt.requestedModules != "" && opt.requestedModules != "undefined"){
+		            	    result = result + '<td><div class="tblminwidth-75">'+opt.requestedModules+'</div></td>';
+	            	    }else{
+		            	    result = result + '<td><div class="tblminwidth-75">--</div></td>';
+	            	    }
 	            		return result;
 	              }
 		     } ], 

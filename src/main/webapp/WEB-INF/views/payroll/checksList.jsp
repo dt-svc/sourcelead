@@ -1,6 +1,12 @@
 <script>
 function bisChecksList(){
 	$("#addPayrollDiv").hide();
+	$("#employeeCostSearch").hide();
+	$("#wageTaxSearch").hide();
+	$("#accountDedSearch").hide();
+	$("#hrDedSearch").hide();
+	$("#checksSearch").show();
+	$("#invoiceDataSearch").hide();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = $("#checksDataTableSearch").val();
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -28,12 +34,15 @@ function prepareBisChecksList(url){
  	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
 	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='clearfix col-md-12 mb10'>";
- 	result = result +'<a href="/app/addChecks" class="btn btn-primary btn-sm pull-left" id="generateReportId" title="Generate Report">Add Payment</a>';
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='checksDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
+ 	 
+		result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><a href='/app/addChecks' class='newAdBtn' id='generateReportId' title='Generate Report'>+ Payment</a></li>";		
+		/* result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='checksDataTableSearch'/><span class='repSearchIcon' onClick='checksDataTableSearch();'></span></li>"; */
+		result = result + "</ul>";
+		result = result + "</div>";  	
+ 	
+ 	
  	result = result + '<table id="checksListTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '<thead>';
 	result = result + '<tr>';
@@ -53,6 +62,7 @@ function prepareBisChecksList(url){
 	result = result + '<th>Payroll Chks</th>';
 	result = result + '<th>Amount</th>';
 	result = result + '<th>Check No</th>';
+	result = result + '<th>Action</th>';
 	result = result + '</tr>';
 	result = result + '</thead>	';
     result = result +"</table>";
@@ -92,11 +102,13 @@ function checksPagination(url){
             { "data": "immigration"},
             { "data": "payrollChecks"},
             { "data": "amount"},
-            { "data": "checkNo"}
+            { "data": "checkNo"},
+            { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "empId",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		  if(opt.empId !=null && opt.empId !='' && opt.empId !='undefined'){
@@ -122,6 +134,7 @@ function checksPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "date",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	if(opt.dateStr !=null && opt.dateStr !='' && opt.dateStr !='undefined'){
@@ -158,6 +171,7 @@ function checksPagination(url){
           },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "month",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.month !=null && opt.month !='' && opt.month !='undefined'){
@@ -170,6 +184,7 @@ function checksPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "legalFees",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.legalFees !=null && opt.legalFees !='' && opt.legalFees !='undefined'){
@@ -182,6 +197,7 @@ function checksPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "advance",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  var result = "";
                 	  if(opt.advanceStr !=null && opt.advanceStr !='' && opt.advanceStr !='undefined'){
@@ -194,6 +210,7 @@ function checksPagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "generalExpenses",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
                     	if(opt.generalExpensesStr !=null && opt.generalExpensesStr !='' && opt.generalExpensesStr !='undefined'){
@@ -206,6 +223,7 @@ function checksPagination(url){
                   },{
                       "targets": colIndex++,
                       "data": "vendorPayments",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
                     	  if(opt.vendorPaymentsStr !=null && opt.vendorPaymentsStr !='' && opt.vendorPaymentsStr !='undefined'){
@@ -218,6 +236,7 @@ function checksPagination(url){
                     },{
                         "targets": colIndex++,
                         "data": "electronicWithdrawals",
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                         	var result = "";
                         	if(opt.electronicWithdrawals !=null && opt.electronicWithdrawals !='' && opt.electronicWithdrawals !='undefined'){
@@ -230,6 +249,7 @@ function checksPagination(url){
                       },{
                           "targets": colIndex++,
                           "data": "healthInsurance",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                           	var result = "";
                           	if(opt.healthInsurance !=null && opt.healthInsurance !='' && opt.healthInsurance !='undefined'){
@@ -242,6 +262,7 @@ function checksPagination(url){
                         },{
                           "targets": colIndex++,
                           "data": "immigration",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                           	var result = "";
                           	if(opt.immigration !=null && opt.immigration !='' && opt.immigration !='undefined'){
@@ -254,6 +275,7 @@ function checksPagination(url){
                         },{
                           "targets": colIndex++,
                           "data": "payrollChecks",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                         	  var result = "";
                         	  if(opt.payrollChecksStr !=null && opt.payrollChecksStr !='' && opt.payrollChecksStr !='undefined'){
@@ -266,6 +288,7 @@ function checksPagination(url){
                         },{
                             "targets": colIndex++,
                             "data": "amount",
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                             	var result = "";
                             	if(opt.amountStr !=null && opt.amountStr !='' && opt.amountStr !='undefined'){
@@ -278,6 +301,7 @@ function checksPagination(url){
                           },{
                               "targets": colIndex++,
                               "data": "checkNo",
+                              "sortable": false,
                               "render": function ( data, type, opt, meta ) {
                             	  var result = "";
                             	  if(opt.checkNo !=null && opt.checkNo !='' && opt.checkNo !='undefined'){
@@ -287,7 +311,17 @@ function checksPagination(url){
 								}
                             	  return result;
                               }
-                } ],
+                } ,
+				{
+					"targets" : colIndex++,
+					"data" : "action",
+					"sortable": false,
+					"render" : function(data, type, opt, meta) {
+						var result = "";
+						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'Checks\')"></i></div></td>';
+						return result;
+					}
+				}],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -302,13 +336,15 @@ function checksPagination(url){
     } );
     $("#checksListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#checksDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   bisChecksList();
-    	   }
-    	});
 }
-
+$("#checksDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   bisChecksList();
+	   }
+	});
+function checksDataTableSearch(){
+	bisChecksList();
+}
 </script>
 
 <!-- TODO do not delete @Rajashekar -->

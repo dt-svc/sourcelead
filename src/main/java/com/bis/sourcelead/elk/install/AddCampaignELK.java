@@ -2,21 +2,15 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -27,18 +21,15 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CampaignIndex;
-import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddCampaignELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddCampaignELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	 private SourceleadELKTC<CampaignIndex> client;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -58,7 +49,7 @@ public class AddCampaignELK {
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<CampaignIndex> campaignIndexsList = new ArrayList<CampaignIndex>();
 		 try {
-				String sql = "SELECT * FROM sourcelead.USER_MAIL_BOX mailbox";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".USER_MAIL_BOX mailbox";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
@@ -148,9 +139,7 @@ public class AddCampaignELK {
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+		
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

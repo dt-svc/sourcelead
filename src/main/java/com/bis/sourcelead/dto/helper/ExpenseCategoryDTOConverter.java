@@ -12,6 +12,7 @@ public class ExpenseCategoryDTOConverter {
 		ecDTO.setAllowedAmount(expensesCategory.getAllowedAmount());
 		ecDTO.setAmountType(expensesCategory.getAmountType());
 		ecDTO.setDescription(expensesCategory.getDescription());
+		ecDTO.setIsAttachemtRequired(expensesCategory.getIsAttachemtRequired());
 		return ecDTO;
 	}
 }

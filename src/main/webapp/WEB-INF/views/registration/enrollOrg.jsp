@@ -3,11 +3,51 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<style>
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+	pointer-events: none;
+}
+</style>
+
+
 <script>
 	$(document).ready(function() {
+		
+		var locationCode = '${locationCode}';
+		if(locationCode == null || locationCode == '' || locationCode == 'undefined'){
+			var assignedMembers = document.getElementById("orgModules");
+			if(orgModules){
+				orgModules.href = "#";
+				orgModules.className = "disabledLink";
+			} 
+		}else{
+			
+        	$("#orgLocationId").val('${orgLocationId}');
+       		$("#orgLinceseSubscriptionId").val('${orgLicenseSubscriptionId}');
+       		$("#registeredOrgId").val('${registeredOrgId}');
+       		
+            getCompanyDetails();
+		}
+	 	
+		
 		initLocationAuto('orgLocation','orgCountry','orgState','orgCity','orgZipCode','orgLatitude','orgLongitude','invite','address');
 		document.getElementById("createOrg_form").reset();
 		getTimezonesList();
+		$("#tab-a").show()
+	    $(".newPrTabsMenu a").click(function(event) {
+	        event.preventDefault();
+	        $(this).parent().addClass("current");
+	        $(this).parent().siblings().removeClass("current");
+	        var tab = $(this).attr("href");
+	        $(".newPrTabs_inn").not(tab).css("display", "none");
+	        $(tab).fadeIn();
+	    });
+		
+		
+		
 	});
 </script>
 <script>
@@ -24,14 +64,30 @@ function changeCountry(){
     </div>
     <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/enrolledOrgsList">Orgs List</a> &raquo; Org Registration </div>
   </section>
+  
+  
+  
   <div class="content-area clearfix">
-  <div id="loading"></div>
+   <div id="loading"></div>
    <div id="enrollOrgLoading"></div>
-    <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
+	   <div class="newPrDetails newPrDetailsPMO"> 
+		   <div class="newPrTabs">
+		      <ul class="newPrTabsMenu">
+				<li class="current"><a href="#tab-a" data-toggle="tab" onclick="getCompanyDetails();">Company Details</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="orgModules" onclick="getOrgModules();">Modules</a></li>
+				<div class="clearfix mb"></div>
+			  </ul>
+			  <div class="clearfix"></div>
+			  
+			  <div class="project_tabs">
+			  <div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
+			  	<form:form class="login-form clearfix"  id="createOrg_form"  name="createOrg_form" method="post" > 
       <div class="row">
           <div class="mb col-xs-12 col-sm-12 col-md-6 col-lg-6">
-             
+           <input type="hidden" name="orgLocationId" id="orgLocationId" value=""/>
+           <input type="hidden" name="orgLinceseSubscriptionId" id="orgLinceseSubscriptionId" value=""/>
+           <input type="hidden" name="registeredOrgId" id="registeredOrgId" value=""/>
+           
             <div class="form-group">
 	            <label class="col-md-3">Company Name<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9">
@@ -79,35 +135,52 @@ function changeCountry(){
 	             <span class="hidden">Phone Number</span>
 	            </div>
             </div>
-             
-             <div class="form-group">
-            <label class="col-md-3">Modules<span class="text-danger">&nbsp;*</label>
-            <div class="col-md-9 checkBox">
-            <div class="clearfix reMar">
-	            <c:forEach var="module" items="${modulesList}">
-	            <ul class="list-unstyled pull-left">
-	                <li>
-	                 <label class="mr pull-left">
-						<input type="checkbox" id="isRecruiting" value="${module.id}" onclick="getRecruitmentTypes(this)" name="modulesList[]" onblur="moduleCheckValidation(this)">${module.moduleName}
-					  </label>
-					   <ul class="list-unstyled pull-left tree-checkbox" id="recrutmentTypes" style="display: none;">
-                    	<li>
-                    	 <c:forEach var="submodules" items="${requirementSubModulesList}">
-                    	  <label>
-                    		 <input type="checkbox" class="allsubmodules" id="submodules" value="${submodules.id}" name="submodulesList[]" >
-                              ${submodules.moduleName}
-                         </label><br/>
-                    	 </c:forEach>
-		                </li>
-                    </ul> 
-					 </li>
-				</ul>
-			    </c:forEach>
-			    </div>
-            <p id="subModule" style="display: none;"><font color="red">Sub Modules Required</font></p>
-            <input type="hidden"  id="moduleValue" name="module" value="${module}" field-name="Module" data-validation="required"/> 			    
-            </div>
-          </div> 
+          
+           <div class="form-group">
+	          <label class="col-md-3">Org Enrollment<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="orgEnrollment" id="orgEnrollment" field-name="Org Enrollment" data-validation="required" >
+	                    <option value="">Select Enrollment Type</option>
+	                    <c:forEach var="subscription" items="${subscriptionTypeList}">
+							<option value="${subscription.id}">${subscription.name}</option>
+			  			</c:forEach>
+		          </select>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">No.Of Users<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="userSubscription" id="userSubscription" field-name="No.Of Users" data-validation="required" >
+	                    <option value="">Select Users</option>
+	                    <c:forEach var="userSubscription" items="${userSubscriptionTypeList}">
+							<option value="${userSubscription.id}">${userSubscription.name}</option>
+			  			</c:forEach>
+		          </select>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+	          <label class="col-md-3">Data Storage<span class="text-danger">&nbsp;*</span></label>
+	          <div class="col-md-9">
+	               <select class="form-control" name="dataStorage" id="dataStorage" field-name="Data Storage" data-validation="required" >
+	                    <option value="">Select Data Storage</option>
+	                    <c:forEach var="dataStorage" items="${dataStorageTypeList}">
+							<option value="${dataStorage.id}">${dataStorage.name}</option>
+			  			</c:forEach>
+		          </select>
+	          </div>
+	        </div>
+	        
+	        <div class="form-group">
+                      <label class="col-md-3">Subscription Date<span class="text-danger">&nbsp;*</span></label>
+                         <div class="col-md-9">
+                           <div class="input-group" id="subscriptionDateDiv">
+                              <input type="text" name="subscriptionDate" class="form-control calendar" id="subscriptionDate" data-validation="required" field-name="Subscription Date" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
              
           </div>
           
@@ -154,7 +227,6 @@ function changeCountry(){
 	        <div class="form-group" id="errCountryMsg">
 	          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
 	          <div class="col-md-9">
-<%-- 	          <input class="form-control" id="orgCountry" name="country" placeholder="Country" field-name="Country" value ="${country}" type="text" data-validation="required" readonly></input> --%>
 	               <select class="form-control" name="country" id="orgCountry" field-name="Country" data-validation="required" onchange="changeCountry(); getTimezonesList();" >
 		                    <option value="">Select Country</option>
 		                    <option value="Australia">Australia</option>
@@ -180,9 +252,9 @@ function changeCountry(){
 				</div>
 				
 				<div class="form-group">
-	            <label class="col-md-3">Date Format</label>
+	            <label class="col-md-3">Date Format<span class="text-danger">&nbsp;*</span></label>
 	            <div class="col-md-9 dropdown-select">
-					<select  id="dateFormat" name="dateFormat">
+					<select  id="dateFormat" name="dateFormat" data-validation="required" field-name="Date Format">
 						<option value=''>--Select Date Format--</option>
 						<option value='dd-MM-yyyy'>dd-MM-yyyy</option>
 						<option value='MM-dd-yyyy'>MM-dd-yyyy</option>
@@ -197,53 +269,83 @@ function changeCountry(){
       <div class="form-footer clearfix row">
       <div class="col-lg-12">
         <div class="pull-right">
-          <input type="submit" value="Register" class="btn btn-primary" id="register_button" onclick="createOrg();">
+          <input type="submit" value="Save & Continue" class="btn btn-primary" id="register_button" onclick="createOrg();">
           <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/enrolledOrgsList'/>'"  class="btn btn-default ml">
         </div>
       </div>
     </div>
     </form:form>
-    </div>
-    
-    <!-- Content Area Ends--> 
+			  </div>
+			  <jsp:include page="orgModules.jsp" />
+			  </div>
+			  
+		   </div>
+	   </div>
   </div>
+  
 </section>
       <!-- Content Area Ends--> 
 
 <jsp:include page="../masterFooter.jsp" />
 
-
-  <script type="text/javascript">
-	function moduleCheckValidation(id){
+<script>
+function getCompanyDetails(){
+	var orgLocationId = document.getElementById("orgLocationId").value;
+	if(orgLocationId){
+		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var sourceleadUrl ='${sourceleadUrl}';
 		
-		 var modulesList = [];
- 		 $("input[name='modulesList[]']:checked").each( function (i) {
- 			modulesList[i] = $(this).val();
- 		});
- 		 
-		if (modulesList.length > 0) { 
-		document.getElementById("moduleValue").value = id.value;
-		}else{
-			$('#moduleValue').val(''); 
-		}
-	} 
+		  $.ajax({
+		    	type: "POST",
+		    	 url: sourceleadUrl+"/getcompanyRegisteredDetails?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, 
+		        success: function(json) {
+		        	
+		        	 $("input[name=companyName]").val(json.orgName);
+		        	 $("input[name=website]").val(json.website);
+		        	 $("input[name=firstName]").val(json.firstName);
+		        	 if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
+		        		 $("input[name=lastName]").val(json.lastName);
+		        	 }
+		        	 
+		        	 $("input[name=email]").val(json.email);
+		        	 
+		        	 if(json.phoneNumber != null && json.phoneNumber != '' && json.phoneNumber != 'undefined'){
+		        		 $("input[name=mobilePhone]").val(json.phoneNumber);
+		        	 }
+		        	 
+		        	 $("input[name=location]").val(json.location);
+		        	 
+		        	 if(json.orgLocationAddress != null && json.orgLocationAddress != '' && json.orgLocationAddress != 'undefined'){
+		        		 $("input[name=address]").val(json.orgLocationAddress);
+		        	 }
+		        	
+		        	 $("input[name=city]").val(json.city);
+		        	 $("input[name=state]").val(json.state);
+	      			   
+		        	 if(json.zipCode != null && json.zipCode != '' && json.zipCode != 'undefined'){
+		        		 $("input[name=zipCode]").val(json.zipCode);
+		        	 }
+	      			 
+		        	 $("#enrollOrgLoading").removeAttr("style");
+		        	 $("select[name=country]").val(json.country);
+		        	 getTimezonesList();
+		        	 $("select[name=timeZone]").val(json.timeZone);
+		        	 if(json.dateFormat != null && json.dateFormat != '' && json.dateFormat != 'undefined'){
+		        		 $("select[name=dateFormat]").val(json.dateFormat);
+		        	 }
+		        	 
+		        	 $("select[name=orgEnrollment]").val(json.subscriptionType);
+		        	 $("select[name=userSubscription]").val(json.userSubscriptionType);
+		        	 $("select[name=dataStorage]").val(json.storageSubscriptionType);
+		        	 $("input[name=subscriptionDate]").val(json.subscriptionDate);
+		        	 $("#subscriptionRate").html(json.subscriptionRate);
+		        	 $("#invoiceAmount").val(json.subscriptionRate);
+		        	
+		        },
+		    }); 
+	}
+}
 </script>
-
-
-
- <script type="text/javascript">
-function getRecruitmentTypes(id){
-		if (document.getElementById('isRecruiting').checked) {
-		 document.getElementById("recrutmentTypes").style.display="";
-		}else{
-			document.getElementById("recrutmentTypes").style.display="none";
-			 $('.allsubmodules').each(function() {
-	                this.checked = false;      
-	            }); 
-		}
-	} 
-</script>
-
     
 
 <script type="text/javascript">
@@ -258,36 +360,31 @@ var validationSettings = {
         		e.preventDefault();
         		var formData = getFormData("createOrg_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		 var modulesList = [];
-         		 $("input[name='modulesList[]']:checked").each( function (i) {
-         			modulesList[i] = $(this).val();
-         		});
-         		 
-         		
-         		 var submodulesList = [];
-         		 $("input[name='submodulesList[]']:checked").each( function (i) {
-         			submodulesList[i] = $(this).val();
-         		});
          		
          		$("#enrollOrgLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
           		$.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/companyRegistration?&${_csrf.parameterName}=${_csrf.token}&modulesList="+modulesList+"&submodulesList="+submodulesList,
-                			  
-                			  
-                  	success: function(result) {
-			        	if((result == 'orgList')){
-			        		location.replace(sourceleadUrl+"/enrolledOrgsList");  
+                	  url: sourceleadUrl+"/companyRegistration?${_csrf.parameterName}=${_csrf.token}",
+                  	success: function(orglocations) {
+			         	if(orglocations.registrationStatusStr == 'orgList'){
+			        		$("#orgLocationId").val(orglocations.id);
+			        		$("#orgLinceseSubscriptionId").val(orglocations.orgLinceseSubscriptionId);
+			        		$("#registeredOrgId").val(orglocations.orgId);
+			        		$("#subscriptionRate").html(orglocations.subscriptionRate);
+			        		 $("#invoiceAmount").val(orglocations.subscriptionRate);
+			        		
+			        		 var orgModules = document.getElementById("orgModules");
+							 document.getElementById("orgModules").removeAttribute("class");
+							 orgModules.href="#tab-b"; 
+							 $("#orgModules").click();
+							 $("#enrollOrgLoading").removeAttr('style');
 			        	}
-			        	else if((result == 'Invalid Sub Modules')){
-			        		$("#enrollOrgLoading").removeAttr("style");
-			        		document.getElementById("subModule").style.display="";
-			        	}else if((result == 'DataMissing')){
+			        	else if(orglocations.registrationStatusStr == 'DataMissing'){
 			        		showError("Invalid data");
 			        		$("#enrollOrgLoading").removeAttr('style');
-			        	}
+			        	} 
 			        	
 			        },  
                });   
@@ -298,7 +395,6 @@ var validationSettings = {
             	return false;	
                }
             });
-         //$('#createOrg_form').showHelpOnFocus();
             
          $('body').on('blur', '#createOrg_form', function() {
      		$("#createOrg_form").showHelpOnFocus();
@@ -315,11 +411,12 @@ function validateCompanyName(){
 	var company = document.getElementById("companyName").value;
 	var companyName = encodeURIComponent(con);
 	var sourceleadUrl ='${sourceleadUrl}';
+	var orgLocationId = document.getElementById("orgLocationId").value;
 	 if(companyName != null && companyName != ''){
 		 $("#register_button").attr("disabled", "disabled");
 			 $.ajax({
 				    type: "GET",
-       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName,
+       	            url: sourceleadUrl+"/validateCompanyName?companyName="+companyName+"&orgLocationId="+orgLocationId,
 			        success: function(data) {
 			        	 var result = data;
 			        		if(result == "Company Duplicated") {
@@ -596,5 +693,29 @@ $(function(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 		  })
+		  
+		  
+		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 	  var finalDateFormat = getJSDateFormat(locationDate);
+	 	  $('#subscriptionDate').datepicker({
+	 	      dateFormat: finalDateFormat,
+	 	      changeMonth: true,
+	 	  	  changeYear: true, 
+	 	  	  minDate : 0,
+	 	  	 onClose : function(selected) {
+                removeValidation();
+			}
+	 	  });
 });
 </script>
+
+<script>
+function removeValidation(){
+	$('#subscriptionDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+function clearDate(){
+	$("#subscriptionDate").val("");
+	};
+</script>
+

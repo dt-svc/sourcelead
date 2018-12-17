@@ -105,18 +105,19 @@ public class FinanceServiceImpl implements FinanceService{
 
 	@Override
 	public ResponseList<MissingInvoiceDTO> getMissingInvoiceData(MissingInvoiceDTO missingInvoiceDto,OrgLocations orgLocation, String contractType) {
-		ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
 		ResponseList<MissingInvoiceDTO> response = new ResponseList<>();
-		List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
 		try {
+			ResponseList<SubmissionApproverHierarchy> sahList = financeDao.getMissingInvoiceData(missingInvoiceDto,orgLocation);
+			List<MissingInvoiceDTO> missingInvoiceDTOList = new ArrayList<>();
 			if (sahList != null) {
 				int count = 0;
+				double totalAmount = 0;
 				if(!"invoice".equalsIgnoreCase(missingInvoiceDto.getInvoiceType())) {
 					for (SubmissionApproverHierarchy sah : sahList.getData()) {
 						MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-							if(candidate.getOrgRelationId() != null) {
+							if(candidate != null && candidate.getOrgRelationId() != null) {
 								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 								StringBuilder name = new StringBuilder();
 								if(StringUtils.isNotBlank(candidate.getLastName())) {
@@ -140,8 +141,8 @@ public class FinanceServiceImpl implements FinanceService{
 								
 								if (sah.getBillId() != null) {
 									missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-									missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
+									missingInvoice.setTotalAmount(sah.getBillId().getTotal());
+									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillId().getInvoiceDate()));
 								}
 								if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 									StringBuilder sb = new StringBuilder();
@@ -158,6 +159,7 @@ public class FinanceServiceImpl implements FinanceService{
 								missingInvoice.setBillAmount(amount);
 								missingInvoiceDTOList.add(missingInvoice);
 								count++;
+								totalAmount = totalAmount+amount;
 							}
 						}
 						
@@ -174,7 +176,7 @@ public class FinanceServiceImpl implements FinanceService{
 							}else {
 								name.append(candidate.getFirstName());
 							}
-							
+							missingInvoice.setCandidateName(name.toString());
 							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 							}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
@@ -197,8 +199,8 @@ public class FinanceServiceImpl implements FinanceService{
 							}
 							if (sah.getBillId() != null) {
 								missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-								missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
+								missingInvoice.setTotalAmount(sah.getBillId().getTotal());
+								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillId().getInvoiceDate()));
 							}
 							if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 								StringBuilder sb = new StringBuilder();
@@ -216,6 +218,7 @@ public class FinanceServiceImpl implements FinanceService{
 							missingInvoice.setInvoiceAmount(amount);
 							missingInvoiceDTOList.add(missingInvoice);
 							count++;
+							totalAmount = totalAmount+amount;
 						}
 					}
 
@@ -226,12 +229,16 @@ public class FinanceServiceImpl implements FinanceService{
 				response.setRecordsTotal(count);
 				response.setStatusCode("200");
 				
-				
+				missingInvoiceDTOList = response.getData();
+				if(missingInvoiceDTOList.size()>0){
+					MissingInvoiceDTO  firstDto = missingInvoiceDTOList.get(0);	
+					firstDto.setTotalCalAmount(totalAmount);
+				}
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	
 		return response;
 	}
 	
@@ -270,7 +277,7 @@ public class FinanceServiceImpl implements FinanceService{
 							MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 							if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 								Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-								if(candidate.getOrgRelationId() != null) {
+								if(candidate != null && candidate.getOrgRelationId() != null) {
 									OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 									String date = "";
 									if(!"last_years".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
@@ -289,7 +296,7 @@ public class FinanceServiceImpl implements FinanceService{
 									}
 									double amount = 0;
 									if (sah.getBillId() != null) {
-										amount = Double.parseDouble(sah.getInvoiceId().getTotal());
+										amount = Double.parseDouble(sah.getBillId().getTotal());
 									}else {
 										List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
 										
@@ -599,44 +606,75 @@ public class FinanceServiceImpl implements FinanceService{
 			List<PaidBillDTO> paidBillList = new ArrayList<>();
 			double totalAmount = 0;
 			for (Invoice invoice : invoiceList.getData()) {
-				PaidBillDTO paidBill = new PaidBillDTO();
-				if (invoice.getProjectID() != null) {
-					paidBill.setProjectName(invoice.getProjectID().getProjectName());
-				}
-				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
-				Date paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
-				if (paymentDate != null) {
-					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
+				
+				List<InvoicePayment> listAmt = new ArrayList<>();
+				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
+					
+					if(invoice.getParentInvoiceId() != null)
+						listAmt = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						listAmt = getPaidAmountByInvoiceId(invoice.getId());
+				}else {
+					if(invoice.getParentInvoiceId() != null)
+						listAmt = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+					else
+						listAmt = getPaidAmountByInvoiceId(invoice.getId());
 				}
 				
-				double total = 0;
-				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
-					 total = getPaidAmountByInvoiceId(invoice.getId());
-				}else {
-					 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+				for (InvoicePayment invoicePayment : listAmt) {
+					
+					PaidBillDTO paidBill = new PaidBillDTO();
+					if (invoice.getProjectID() != null) {
+						paidBill.setProjectName(invoice.getProjectID().getProjectName());
+					}
+					paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
+					Date paymentDate = null;
+					if(invoice.getParentInvoiceId() != null){
+						paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getParentInvoiceId().getId());
+					}else{
+						paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+					}
+					
+					if (paymentDate != null) {
+						paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
+					}
+					
+					
+					paidBill.setAmount(Double.valueOf(invoicePayment.getPaymentAmount()));
+					totalAmount = totalAmount + Double.valueOf(invoicePayment.getPaymentAmount());
+					paidBill.setTotalAmount(totalAmount);
+					if(Double.valueOf(invoicePayment.getPaymentAmount()) != 0)
+					paidBillList.add(paidBill);
 				}
-				paidBill.setAmount(total);
-				totalAmount = totalAmount + total;
-				paidBill.setTotalAmount(totalAmount);
-				paidBillList.add(paidBill);
 			}
 			res.setData(paidBillList);
-			res.setRecordsFiltered(invoiceList.getRecordsFiltered());
-			res.setRecordsTotal(invoiceList.getRecordsTotal());
+			res.setRecordsFiltered(paidBillList.size());
+			res.setRecordsTotal(paidBillList.size());
+			paidBillList = res.getData();
+			if(paidBillList.size()>0){
+				PaidBillDTO  paidBill = paidBillList.get(0);	
+				paidBill.setTotalCalAmount(totalAmount);
+			}
 		}
 		return res;
 	}
 
 	
-	private double getPaidAmountByInvoiceId(Long invoiceId) {
+	private List<InvoicePayment> getPaidAmountByInvoiceId(Long invoiceId) {
 		double amount = 0;
 			List<Long> invoiceIds = new ArrayList();
+//			List<Double> listAmt = new ArrayList<>();
 			invoiceIds.add(invoiceId);
 			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
-			if (paymentList != null && paymentList.size() > 0) {
-				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
-			}
-		return amount;
+//			for(InvoicePayment invPay : paymentList) {
+//				amount = Double.valueOf(invPay.getPaymentAmount());
+//				listAmt.add(amount);
+//			}
+			
+//			if (paymentList != null && paymentList.size() > 0) {
+//				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+//			}
+		return paymentList;
 	}
 
 	@Override
@@ -650,7 +688,7 @@ public class FinanceServiceImpl implements FinanceService{
 			if(paidList.getData() != null) {
 				double otherAmount = 0;
 				for(PaidBillDTO paidBill : paidList.getData()) {
-					if(i <= 10) {
+					if(i < 10) {
 						list.add(paidBill);
 					}else {
 						otherAmount = otherAmount + paidBill.getTotalAmount();

@@ -3,11 +3,14 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTicketDTO;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTickets;
 import com.bis.sourcelead.entity.SourceleadTicketsComments;
@@ -27,6 +35,7 @@ import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadTicketService;
@@ -52,6 +61,7 @@ public class SourceleadTicketsRestController {
 	@Value("${static.path}")
     private String staticPath;
 	
+	
 	@Autowired
 	CommonUtil commonUtil;
 	
@@ -75,13 +85,38 @@ public class SourceleadTicketsRestController {
 	
 
 	
-	 @RequestMapping(value = "storeDepartment" , method = RequestMethod.POST)
-	 public  String storeDepartment(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 sourceleadTicketDTO.setStaticPath(staticPath);
-		 sourceleadTicketService.saveSourceleadTickets(sourceleadTicketDTO,user,orgLocation);
-		 return "success";
+	 @RequestMapping(value = "storeSourceleadTicket" , method = RequestMethod.POST)
+	 public  Response<String> storeDepartment(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
+		 
+		 Response<String> response = new Response<>();
+		 try{
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 if(user != null && Validator.validate(sourceleadTicketDTO)){
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 sourceleadTicketDTO.setStaticPath(staticPath);
+				String value= sourceleadTicketService.saveSourceleadTickets(sourceleadTicketDTO,user,orgLocation);
+				if(value.equalsIgnoreCase("success")){
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				 
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			
+		 } catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		 return response;
 	   }
 	 
 	 @RequestMapping(value = "getSourceleadTicketList" , method = RequestMethod.POST)
@@ -132,9 +167,37 @@ public class SourceleadTicketsRestController {
 	 
 	 
 	 @RequestMapping(value = "terminateTicketAtteachment" , method = RequestMethod.POST)
-	 public  String terminateTicketAtteachment(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
-		 sourceleadTicketService.deleteSourceleadTicketAttachmentByTicketId(Long.valueOf(sourceleadTicketDTO.getAttachmentId()));
-		 return "success";
+	 public  Response<String> terminateTicketAtteachment(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
+
+		 Response<String> response = new Response<>();
+		 try{
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 if(user != null){
+				 boolean value= sourceleadTicketService.deleteSourceleadTicketAttachmentByTicketId(Long.valueOf(sourceleadTicketDTO.getAttachmentId()));
+				if(value){
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				 
+			 }
+			 else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			
+		 } catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		 return response;
+		 
 	   }
 	 
 	 @RequestMapping(value = "saveSourceleadTicketComment" , method = RequestMethod.POST)
@@ -145,17 +208,49 @@ public class SourceleadTicketsRestController {
 	   }
 	 
 	 @RequestMapping(value = "changeTicketStatus" , method = RequestMethod.POST)
-	 public  String changeTicketStatus(@RequestParam(value = "ticketStatus", required = false) String ticketStatus,
+	 public   Response<String> changeTicketStatus(@RequestParam(value = "ticketStatus", required = false) String ticketStatus,
 			 @RequestParam(value = "ticketUUID", required = false) String ticketUUID,HttpServletRequest request) throws Exception {
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 SourceleadTickets sourceleadTicket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
-		 if(ticketStatus != null && ticketStatus != "" && ticketStatus != "undefined") {
-			 sourceleadTicket.setTicketStatus(ticketStatus);
-			 sourceleadTicket.setUpdatedBy(user);
-			 sourceleadTicket.setUpdatedDate(new Date());
-		 }
-		 sourceleadTicketService.saveSourceleadTickets(sourceleadTicket);
-		 return "success";
+		 Response<String> response = new Response<>();
+		 try{
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//			 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgloc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 if(user != null){
+				 SourceleadTickets sourceleadTicket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
+				 String existingticketStatus = sourceleadTicket.getTicketStatus();
+				 if(ticketStatus != null && ticketStatus != "" && ticketStatus != "undefined") {
+					 sourceleadTicket.setTicketStatus(ticketStatus);
+					 sourceleadTicket.setUpdatedBy(user);
+					 sourceleadTicket.setUpdatedDate(new Date());
+				 }
+				 SourceleadTickets tickets= sourceleadTicketService.saveSourceleadTickets(sourceleadTicket);
+				 
+				 if(!existingticketStatus.equals(ticketStatus))
+					 sourceleadTicketService.pmsTicketStatusUpdatedEmail(user, orgloc.getOrg(), orgloc, sourceleadTicket, existingticketStatus, ticketStatus);
+				 
+				if(tickets != null){
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+				 
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			
+		 } catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		 return response;
 	   }
 	 
 	 
@@ -218,9 +313,8 @@ public class SourceleadTicketsRestController {
 		 }else{
 			 if(orgLocationId != null && userId != null) {
 				 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-				 List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
 				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
-				 tabsList = tabsService.getTabsListByOrgLocationId(modulesId, orgUserRole.getRoles().getId(), orgLocations.getId());
+				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
 				
 			 }
 		 }
@@ -233,5 +327,11 @@ public class SourceleadTicketsRestController {
 		 return modulesList;
 		
 	   } 
+	 
+	 @RequestMapping(value = "getTicketDescription" , method = RequestMethod.POST)
+	 public  SourceleadTickets getTicketDescription(@RequestParam(value = "ticketUUID", required = false) String ticketUUID) throws Exception {
+		 SourceleadTickets ticket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
+		 return ticket;
+	   }
 	 
 }

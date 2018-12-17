@@ -129,8 +129,8 @@ margin:10px 220px 0;
  -->			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox hidden">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+            <div class="panel-body checkBox">
+				  <label><input type="checkbox" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -149,7 +149,7 @@ margin:10px 220px 0;
             </div>
 		  </div>
         </div>
-        <div class="require_wrap_table filter-position mt25">
+        <div class="require_wrap_table datatable_filter filter-position mt25">
         
         	<div id="excelimportData"></div>
         	
@@ -419,9 +419,10 @@ function terminateRecord(recordId){
 <script>
 function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
+	var templateId = $("#templateId").val();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+       url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor&templateId="+templateId,       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -510,8 +511,8 @@ function mergeclose(){
 function excelimportDataPagination(){
 	$('#excelimportDataTable').DataTable({ 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -650,7 +651,6 @@ $(function(){
   <!-- Footer Area -->
   <footer class="footer-area clearfix">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
   <!-- Footer Area -->
 

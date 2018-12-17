@@ -80,73 +80,17 @@ $(function(){
 		<section class="comLogInn">
 			<div class="comLogHead">
 			
-			<c:if test="${!empty SourceLeadWeb_userSpocRolesList && SourceLeadWeb_prodSupportLoginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
-		<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-		              <li>
-		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
-				                <div class="clearfix">
-				                   <div class="pull-left image-parent positionRelative">
-				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                   <c:if test="${!empty links.orgLocations.org.fileContentType}">
-				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-				                   </c:if>
-				                   <c:if test="${empty links.orgLocations.org.fileContentType}">
-				                     <img src="/resources/images/office-image.jpg">
-				                   </c:if>
-				                     
-				                     </div>
-				                   </div>
-				                   <div class="pull-left mt5">
-				                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-				                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-				                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-				                   </div>
-				                </div>
-			                </a>
-		              </li>
-	              </c:forEach>
-	              </ul>
-	            </div>
-	            </div>
-          </c:if>
-          
-          
-          <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-          	<div class="offOrg offOrgCompanyOnboard ">
-             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
-		              <li>
-		              <a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_prodSupportOrgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink">
-						                   <img src="/resources/images/office-image.jpg">
-						                     </div>
-						                   </div>
-					                       <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${SourceLeadWeb_prodSupportLoginOrgName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${SourceLeadWeb_prodSupportLoginUserDisplayName}</p>
-						                   </div>
-					                </div>
-				                </a>
-		              </li>
-	              </ul>
-	            </div>
-	            </div>		
-		              			
-              </c:if>
+			<jsp:include page="../userManageAccounts.jsp" />
           
 				 <div class="comLogLogoText">${SourceLeadWeb_orgName}</div>
 				  <div class="welSiO onboard-logoutbtn" onclick="logoutFormSubmit();" title="Sign Out"><i class="fa fa-sign-out mt5"></i></div>
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
+						  </c:if>
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						   <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>
@@ -336,7 +280,11 @@ $(function(){
 		</section>
 	</section>
 </div>
-
+					<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
 	
@@ -381,7 +329,10 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 		  	$('#orglocw9Document').val($(this).val().replace(/C:\\fakepath\\/i, ''));
 	  };
   }
-	  
+
+  $(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+	})  
  </script>
  
  
@@ -425,12 +376,22 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
 								success : function(result) {
-									
-									if(result == 'success'){
-						        		location.replace(sourceleadUrl+"/companyOnboardSignatory"); 
-						        	}else{
-						        		$("#loading").removeAttr("style"); 
-						        	}
+									if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+				      	    		    showError(result.responseMessage);
+				      	    		    $("#loading").removeAttr('style');
+				      	    		}
+						        	else if (result.response === "AWKWARD") {
+				      	    		    location.href = "/errorPage";
+				      	    		}
+				                	else if(result.response === "SUCCESS"){
+				                		 $("#loading").removeAttr('style');
+				                		location.replace(sourceleadUrl+"/companyOnboardSignatory"); 
+				                	}else if (result.indexOf('Sign In') !== -1) {
+				      					location.replace(sourceleadUrl);
+				      				}else {
+				      				    showError("Operation failed, please try again");
+				      				    $("#loading").removeAttr('style');
+				      				}
 						
 						},
 					}); 
@@ -499,15 +460,3 @@ function cancelPopUp(){
   });
 </script>
 
-
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
-
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>

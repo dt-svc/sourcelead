@@ -25,6 +25,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -72,6 +73,15 @@ public class Invoice {
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
+	private PaymentAccount paymentAccount;
+	
+	@Column(name="IS_JOB_CLOSURE")     
+	private String isJobClosure;
+	
 	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
@@ -189,6 +199,12 @@ public class Invoice {
 	@Column(name = "EXPENSES_INVOICES")
 	private String expensesInvoices;
 	
+	@Column(name = "OWNER_USERS")
+	private String ownerUsers;
+	
+	@Column(name = "CONTACT_USERS")
+	private String contactUsers;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="EXPENSES_ID", nullable=true) 
@@ -222,6 +238,7 @@ public class Invoice {
 	private String clientContactName;
 	
 	@Transient
+	@JsonProperty
 	private String clientContactEmail;
 	
 	@Transient
@@ -230,24 +247,34 @@ public class Invoice {
 	
 	@Transient
 	@JsonProperty
+	private long paymentAccountId;
+
+	@Transient
+	@JsonProperty
 	private String dueDateStr;
 
 	@Transient
+	@JsonProperty
 	private Long vendorOrgRelationId;
 	
 	@Transient
+	@JsonProperty
 	private Long vendorContactId;
 	
 	@Transient
+	@JsonProperty
 	private String orgName;
 	
+	@JsonProperty
 	@Transient
 	List<InvoiceLineItems> invoiceLineItemsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceDocument> invoiceDocumentsList;
 	
 	@Transient
+	@JsonProperty
 	List<InvoiceTax> invoiceTaxList;
 
 	@Transient
@@ -292,26 +319,33 @@ public class Invoice {
 	private Integer dueBeforeInvoiceCount;
 	
 	@Transient
+	@JsonProperty
 	private Long invoiceParentId;
 	
 	@Transient
+	@JsonProperty
 	private List<String> submissionApproverHierarchyIds;
 	
 //	  
 	
 	@Transient
+	@JsonProperty
 	private float netIncome;
 	
 	@Transient
+	@JsonProperty
 	private float recievableAmount;
 	
 	@Transient
+	@JsonProperty
 	private float payableAmount;
 	
 	@Transient
+	@JsonProperty
 	private String vendorCurrency;
 	
 	@Transient
+	@JsonProperty
 	private String clientCurrency;
 	
 	@Transient
@@ -334,6 +368,34 @@ public class Invoice {
 	@JsonProperty
 	private String orgRelationUUID;
 	
+	@Transient
+	@JsonProperty
+	private PaymentAccountDTO paymentAccountDTO;
+	
+	@Transient
+	@JsonProperty
+	private String timelineHistoryReminder;
+	
+	@Transient
+    @JsonProperty
+    private String invoiceTags;
+	
+	@Transient
+    @JsonProperty
+    private String billsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
+	@Transient
+	@JsonProperty
+	private String generateInvoice;
+	
+	@Transient
+	@JsonProperty
+	private String generateBill;
+
 	
 	public Long getId()
 	{
@@ -1091,5 +1153,102 @@ public class Invoice {
 	{
 		this.orgRelationUUID = orgRelationUUID;
 	}
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public long getPaymentAccountId() {
+		return paymentAccountId;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public void setPaymentAccountId(long paymentAccountId) {
+		this.paymentAccountId = paymentAccountId;
+	}
+
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
+
+	public String getTimelineHistoryReminder() {
+		return timelineHistoryReminder;
+	}
+
+	public void setTimelineHistoryReminder(String timelineHistoryReminder) {
+		this.timelineHistoryReminder = timelineHistoryReminder;
+	}
+	
+	public String getInvoiceTags() {
+		return invoiceTags;
+	}
+
+	public String getBillsTags() {
+		return billsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setInvoiceTags(String invoiceTags) {
+		this.invoiceTags = invoiceTags;
+	}
+
+	public void setBillsTags(String billsTags) {
+		this.billsTags = billsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public String getOwnerUsers() {
+		return ownerUsers;
+	}
+
+	public void setOwnerUsers(String ownerUsers) {
+		this.ownerUsers = ownerUsers;
+	}
+
+	public String getContactUsers() {
+		return contactUsers;
+	}
+
+	public void setContactUsers(String contactUsers) {
+		this.contactUsers = contactUsers;
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+
+	public String getIsJobClosure() {
+		return isJobClosure;
+	}
+
+	public void setIsJobClosure(String isJobClosure) {
+		this.isJobClosure = isJobClosure;
+	}
+
 	
 }

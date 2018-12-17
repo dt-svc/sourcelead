@@ -3,16 +3,22 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.ProjectAssignTask;
+
 @SuppressWarnings("serial")
 public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private Long id;
 	
+	@Required(desc="taskName")
 	private String taskName;
 	
+	@Required(desc="taskBillableType")
 	private String taskBillableType;
 
 	private String epic;
 	
+	@Required(desc="taskstype")
 	private String taskstype;
 	
 	private String userStory;
@@ -29,6 +35,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private String estimatedTime;
 	
+	@Required(desc="taskStatus")
 	private Long taskStatus;
 	
 	private String taskDescription;
@@ -39,7 +46,7 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	
 	private Long taskOwner;
 	
-	private List<Long> assignTaskId;
+	private String assignTaskId;
 	
 	private String staticPath;
 	
@@ -62,6 +69,58 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	private String teams;
 	
 	private String projectClientUUID;
+
+	private List<CustomFormFieldDTO> customFormData;
+
+	private String exportType;
+	
+	private String projectUUID;
+	
+	private String loginUserId;
+	
+	private String tags;
+	
+	private String priorityFilter;
+	
+	private String severityFilter;
+	
+	private String createdByFilter;
+	
+	private String tasksFilter;
+	
+	private String userCode;
+	
+	private Long candidateId;
+	
+	private Long orgLocationId;
+	
+	
+	//Overdue task report
+	private String projectName;
+	
+	private String taskTitle;
+	
+	private String assignTo;
+	
+	private String dueDate;
+	
+	private Integer completion;
+	
+	private String taskType;
+	
+	private String taskPriority;
+	
+	private String actionTimeStr;
+	
+	private String projectFilter;
+	
+	private String taskTypeFilter;
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private List<ProjectAssignTask> assignedTaskUsers;
 	
 	public Long getId() {
 		return id;
@@ -166,10 +225,10 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	public void setTaskOwner(Long taskOwner) {
 		this.taskOwner = taskOwner;
 	}
-	public List<Long> getAssignTaskId() {
+	public String getAssignTaskId() {
 		return assignTaskId;
 	}
-	public void setAssignTaskId(List<Long> assignTaskId) {
+	public void setAssignTaskId(String assignTaskId) {
 		this.assignTaskId = assignTaskId;
 	}
 	public String getStaticPath() {
@@ -241,6 +300,158 @@ public class ProjectTasksDTO extends SearchDTO implements Serializable{
 	{
 		this.projectClientUUID = projectClientUUID;
 	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
 	
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
 	
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+	public String getLoginUserId() {
+		return loginUserId;
+	}
+	public void setLoginUserId(String loginUserId) {
+		this.loginUserId = loginUserId;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	public String getPriorityFilter() {
+		return priorityFilter;
+	}
+	public String getSeverityFilter() {
+		return severityFilter;
+	}
+	public String getCreatedByFilter() {
+		return createdByFilter;
+	}
+	public String getTasksFilter() {
+		return tasksFilter;
+	}
+	public void setPriorityFilter(String priorityFilter) {
+		this.priorityFilter = priorityFilter;
+	}
+	public void setSeverityFilter(String severityFilter) {
+		this.severityFilter = severityFilter;
+	}
+	public void setCreatedByFilter(String createdByFilter) {
+		this.createdByFilter = createdByFilter;
+	}
+	public void setTasksFilter(String tasksFilter) {
+		this.tasksFilter = tasksFilter;
+	}
+	public String getUserCode() {
+		return userCode;
+	}
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+	public Long getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+	public String getProjectName() {
+		return projectName;
+	}
+	public String getTaskTitle() {
+		return taskTitle;
+	}
+	public String getAssignTo() {
+		return assignTo;
+	}
+	public String getDueDate() {
+		return dueDate;
+	}
+	public Integer getCompletion() {
+		return completion;
+	}
+	public String getTaskType() {
+		return taskType;
+	}
+	public String getTaskPriority() {
+		return taskPriority;
+	}
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+	public void setTaskTitle(String taskTitle) {
+		this.taskTitle = taskTitle;
+	}
+	public void setAssignTo(String assignTo) {
+		this.assignTo = assignTo;
+	}
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+	public void setCompletion(Integer completion) {
+		this.completion = completion;
+	}
+	public void setTaskType(String taskType) {
+		this.taskType = taskType;
+	}
+	public void setTaskPriority(String taskPriority) {
+		this.taskPriority = taskPriority;
+	}
+	public String getActionTimeStr() {
+		return actionTimeStr;
+	}
+	public void setActionTimeStr(String actionTimeStr) {
+		this.actionTimeStr = actionTimeStr;
+	}
+	public List<ProjectAssignTask> getAssignedTaskUsers() {
+		return assignedTaskUsers;
+	}
+	public void setAssignedTaskUsers(List<ProjectAssignTask> assignedTaskUsers) {
+		this.assignedTaskUsers = assignedTaskUsers;
+	}
+	public String getProjectFilter() {
+		return projectFilter;
+	}
+	public String getTaskTypeFilter() {
+		return taskTypeFilter;
+	}
+	public String getFromDate() {
+		return fromDate;
+	}
+	public String getToDate() {
+		return toDate;
+	}
+	public void setProjectFilter(String projectFilter) {
+		this.projectFilter = projectFilter;
+	}
+	public void setTaskTypeFilter(String taskTypeFilter) {
+		this.taskTypeFilter = taskTypeFilter;
+	}
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
 }
+

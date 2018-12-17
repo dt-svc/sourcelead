@@ -229,6 +229,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningNewR
   				requestDTO.setRequestUUID(resourceRequest.getRequestUUID());
   				requestDTO.setRejectedReason(resourceRequest.getRejectedReason());
   				requestDTO.setProjectPlanningRequestUUID(resourceRequest.getProjectPlanningRequestId().getRequestUUID());
+  				requestDTO.setApprovedUser(resourceRequest.getUpdatedBy().getFullName());
   				
   				ProjectClients pc = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(resourceRequest.getProjectPlanningRequestId().getProjectId().getId(), orgLocationId);
   				if(pc != null) {

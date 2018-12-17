@@ -46,7 +46,17 @@
 		<div class="conneWrapInn clearfix" id="findConnectionListId"></div>
 	<div id="loadMoreDiv"></div> 
 	</div>
-
+<!--  PopUp  -->
+<div class="popMask" id="popupMaskShade"></div>
+<div class="conePop" id="popupMaskLight">
+    <div class="conePopHead">
+        <h2>Mutual Connections</h2>
+        <a href="javascript:void(0)" class="popClo"><i class="fa fa-times"></i></a>
+    </div>
+    <div class="conePopInn" id="mutualConnDynamic">
+    </div>
+</div>
+<!--  PopUp  -->
 
 </section>
 <jsp:include page="../masterFooter.jsp" />
@@ -58,7 +68,8 @@ $(document).scroll(function(e){
     offset = $("#orgOffset").val();
     var UsersCount = $("#totalUsersCount").val(); 
     // calculate the percentage the user has scrolled down the page
-    if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    //if($(window).scrollTop() == $(document).height() - $(window).height()) {
+    if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
     	var avilableCount = $("#orgOffset").val();
     	
     	avilableCount = parseInt(avilableCount) + parseInt(18); 
@@ -131,9 +142,9 @@ function eduMsgFadeinFunction(message) {
 	 				var user = json[i];
 	 				var mutCountStatus = null;
 		 			if(user.count != 0){
-		 				mutCountStatus = user.count + " Mutual Connections";
+		 				mutCountStatus ="<a href='javascript:void(0)' onclick='getMututalConnections("+user.id+");' class='conUnder'><p>"+user.count + " Mutual Connections</p></a>";
 		 			}else{
-		 				mutCountStatus = "No Mutual Connections";
+		 				mutCountStatus = "<p>No Mutual Connections</p>";
 		 			}
 		 			var orgNameValue = null;
 	 				if(user.orgName == ""){
@@ -149,8 +160,8 @@ function eduMsgFadeinFunction(message) {
 	 				result = result + "<span><img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' src='"+fileUrl+"' class='m-t-xs'   alt='image'>";
 	 				result = result + "</span><a href='javascript:void(0)'><h2>"+user.userName+"</h2>";
 	 				result = result + "<p>"+user.userType+" <b> "+orgNameValue+" </b></p></a>";
-	 				result = result + "<a href='javascript:void(0)' class='conUnder'><p>"+mutCountStatus+"</p></a>";
-	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><a href="javascript:void(0)" onclick="getDisconnectConnection(\''+user.userCode+'\', \''+user.userName+'\', \''+user.connectionUUID+'\')" id="connection'+user.userCode+'" class="connlink red">Disconnect</a></div></div></div>';
+	 				result = result + mutCountStatus;
+	 				result = result + '</div><div class="connCtaBtn" id="connectionState'+user.userCode+'"><u>Connected</u></div></div></div>';
 	   		    }
 	 			$('#findConnectionListId').append(result);
         		if(json.length < 18){
@@ -178,9 +189,50 @@ function eduMsgFadeinFunction(message) {
 	}
 });
 }
+	
+	function getMututalConnections(userId){
+		$.post("check-session", {}, function(data) {
+			if(data === "YES") {
+		 $.ajax({ 
+			type : "GET",
+			url : sourceleadUrl+"/getMututalConnections?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+	        success: function(json) {
+	        	if(json !=null && json.length > 0){
+	        		$("#popupMaskShade").show();
+		            $("#popupMaskLight").show();
+		            var mutualPopVal = "<ul>";
+		        	for(var i=0; i<json.length; i++){
+		 				var user = json[i];
+		 				var orgNameValue = null;
+		 				if(user.orgName == ""){
+		 					orgNameValue = "";
+		 				}else{
+		 					orgNameValue = "at " + user.orgName;
+		 				}
+		 				var fileUrl = "";
+		 				if(user.fileUrl != null){
+		 					fileUrl = user.fileUrl;
+		 				}
+		 				mutualPopVal = mutualPopVal + '<li class="clearfix"><div class="UsImg"><img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="'+fileUrl+'" alt="" title="'+user.userName+'"/></div>';
+		 				mutualPopVal = mutualPopVal + '<div class="UsText"><h2>'+user.userName+'</h2><p>'+user.userType+' '+orgNameValue+'</p></div></li>';
+		        	}
+		        	mutualPopVal = mutualPopVal + '</ul>';
+		        	$("#mutualConnDynamic").empty().append(mutualPopVal);
+	        	}
+	        }
+		});
+	}else {
+		location.href='/login';
+	}
+	});
+	}
+	$(".popClo").click(function(){
+    	$("#popupMaskShade").hide();
+        $("#popupMaskLight").hide();
+    });
 </script>
 <script>
-function getDisconnectConnection(userCode,userName,connectionUUID){
+/* function getDisconnectConnection(userCode,userName,connectionUUID){
 	$.post("check-session", {}, function(data) {
 		if(data === "YES") {
 			$("#loadingConnConnedtedDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -208,7 +260,7 @@ function getDisconnectConnection(userCode,userName,connectionUUID){
 		location.href='/login';
 	}
 });
-}
+} */
 
 </script>
 <script>

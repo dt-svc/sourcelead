@@ -56,12 +56,12 @@
                   ${sourceleadTicket.ticketURL}
                 </div>
                 
-                 <div class="require_wrap_details_cta width100percnt">
+                 <div class="width100percnt clearfix">
 				  <label><strong>Descripton:</strong></label>
                    <div class="clearfix">
-                   <p class="lineHeight small">
+                   <div class="lineHeight small">
 							${sourceleadTicket.description}
-                   </p>
+                   </div>
                    </div>
                 </div>
                 
@@ -76,7 +76,7 @@
 					         <span class="pull-left">
 						         <c:forEach var="attachmentList" items="${sourceleadTicketsAttachmentsList}">
 							         <strong id='ticketDocument${attachmentList.id}'>
-					    		     <i class=''><a class='glyphicon glyphicon-save' href="${attachmentList.fileURL}" title='download'></a></i>
+					    		     <i class=''><a   class='glyphicon glyphicon-save' href="${attachmentList.fileURL}" title='download' download></a></i>
 									 <input type='button' title="${attachmentList.fileName}"   value='${attachmentList.fileName}' style="cursor:initial !important">
 									  <a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile('${attachmentList.fileURL}','${attachmentList.fileName}','${attachmentList.fileType}')"></a>
 									  </strong>

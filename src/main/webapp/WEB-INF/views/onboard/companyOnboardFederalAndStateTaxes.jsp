@@ -90,7 +90,7 @@ $(function(){
 	              <ul class="list-unstyled">
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
+		              <a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
@@ -229,6 +229,70 @@ $(function(){
 					<div id="stateTaxesList"></div>
 					
 		         	</div>
+		         	
+		         	
+		         	<h3 class=".margin-top0">Tax Deposit</h3>
+		         	
+		         	<h3 class=".margin-top0">FederaL Taxes</h3>
+		         	
+		         			<div class="col-md-6">
+		         			
+		         			<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Filler Type</label>
+								<div class="col-md-8 padding_right">
+					              
+					              <c:if test="${empty SourceLeadWeb_orglocationDepositTaxes.fillerType}">
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="940"  >
+					                <strong class="paddingLeft">940</strong></label>
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="941"  >
+					                <strong class="paddingLeft">941</strong></label>
+					              </c:if>
+					              
+					              <c:if test="${!empty SourceLeadWeb_orglocationDepositTaxes.fillerType}">
+					               <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="940" ${SourceLeadWeb_orglocationDepositTaxes.fillerType  == '940' ? 'checked' : ''} >
+					                <strong class="paddingLeft">940</strong></label>
+					                <label class="col-md-5 noPad">
+					                <input name="fillerType" type="radio" value="941" ${SourceLeadWeb_orglocationDepositTaxes.fillerType  == '941' ? 'checked' : ''} >
+					                <strong class="paddingLeft">941</strong></label> 
+					              </c:if>
+					            
+					            </div>
+							</div>
+					   		
+							
+							<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Federal Deposit</label>
+								<div class="col-md-8 padding_right">
+								<select  class="chosen-select form-control" name="federalDeposit" id="federalDeposit"  field-name="Federal Deposit">
+											<option value="">--Select Federal Deposit--</option>
+											<option value="Semi weekly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi weekly' ? 'selected' : ''}>Semi weekly</option>
+											<option value="Semi Monthly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Semi Monthly' ? 'selected' : ''}>Semi Monthly</option>
+											<option value="Quarterly" ${SourceLeadWeb_orglocationDepositTaxes.federalDeposit  == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+					                 </select>
+								</div>
+							</div>
+							
+							
+							<h3 class=".margin-top0">State Taxes</h3>
+							
+							<div class="form-group clearfix">
+								<label class="col-md-4 noPad">Deposit Schedule</label>
+								<div class="col-md-8 padding_right">
+								<select  class="chosen-select form-control" name="taxDepositSchedule" id="depositSchedule" field-name="Deposit Schedule">
+									<option value="">--Select Deposit Schedule--</option>
+									<option value="Monthly"  ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+									<option value="Quarterly"  ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
+									<option value="Semi Annually" ${SourceLeadWeb_orglocationDepositTaxes.taxDepositSchedule  == 'Semi Annually' ? 'selected' : ''}>Semi Annually</option>
+								  </select>
+								</div>
+							</div>
+							
+			     </div>	
+		         	
+		         	
 		       </div>
 			       
 			         
@@ -276,7 +340,10 @@ $(function(){
       </div>
 	</div> 
 					
-
+ <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
 
  <script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js?staticTime=${staticTime}"></script>
  <script type="text/javascript" src="/resources/js/jquery.liquidcarousel.pack.js?staticTime=${staticTime}"></script>	
@@ -320,6 +387,9 @@ $(function(){
 		    } 
 		 
 	}
+	$(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+	})
 </script>
  
  
@@ -478,13 +548,13 @@ function getStateTaxes(){
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="State Unemployment Tax" data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="State Unemployment Tax" name="stateTaxesList[0].stateUnemploymentTax" id="0stateUnemploymentTax">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
 	     		result = result +'<td width="500px">';
 	     		result = result +'<div class="">';
-	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number" data-validation-optional="true" data-validation="validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
+	     		result = result +'<input type="text" class="form-control input-sm" placeholder="Sate Tax Account Number"  data-validation="required validate_space validate_length length9-9" maxlength="9" field-name="Sate Tax Account Number" name="stateTaxesList[0].stateTaxAccountNumber" id="0stateTaxAccountNumber">';
 	     		result = result +'</div>';
 	     		result = result +'</td>';
 	     		
@@ -553,12 +623,22 @@ $('body').on('submit', '#fedralAndTax_form', function(e){
 		    	data : formData,
 		    	  url: sourceleadUrl+"/saveOrgLocationsFederalAndStatesTax?${_csrf.parameterName}=${_csrf.token}",		
 		        success: function(result) {
-		        	
-		        	if(result == 'success'){
-		        		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-		        	}else{
-		        		$("#loading").removeAttr("style"); 
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if(result.response === "AWKWARD"){
+		        		 location.href = "/errorPage";
 		        	}
+		        	else if(result.response === "SUCCESS"){
+		        		$("#loading").removeAttr('style');
+		        		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				} else {
+      				    showError("Operation failed, please try again");
+      				    $("#loading").removeAttr('style');
+      				}
 		        },
 		    });   
       return true; 
@@ -630,6 +710,63 @@ function cancelPopUp(){
 	});
   });
 </script>
+
+<script type="text/javascript">
+ var hasLocationAccess = "";
+ function checkAuth(locationId,roleId,orgSecurity,userId){
+	 checkLocationAccess(locationId,roleId,orgSecurity,userId);
+	 
+ }
+ function otpClose(){
+	 $(".authenticationMask").fadeOut(); 
+ }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+ })
+
+ function getUserDetailsbyroleId(roleId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		 type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
+	    		   $("#gobackBtn").hide();
+	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },						     
+	}); 
+ }
+ 
+ function checkLocationAccess(locationId,roleId,orgSecurity,userId){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
 
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">

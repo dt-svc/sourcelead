@@ -57,5 +57,18 @@ public class OptionsDaoImpl implements OptionsDao{
 		return option;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Option getOptionsByOptionId(String id) throws Exception {
+		Option option = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Option option where option.id= :id";
+		List<Option> optionList = session.createQuery(query).setString("id", id).list();
+		if (optionList != null && optionList.size() > 0) {
+			option = optionList.get(0);
+		}
+		return option;
+	}
+	
 	
 }

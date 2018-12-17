@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -164,6 +165,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query queryObj = null;
 		String query = null;
+		String subQuery="";
 		Integer filterCount = 0;
 		StringBuilder query1 = new StringBuilder("");
 		ResponseList<ReferContactsDTO> response = new ResponseList<>();
@@ -177,6 +179,7 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 					.append("OR contacts.lastName like '%" + contactsDTO.getSearchValue() + "%' ")
 					.append("OR contacts.contactUserPhone like '%" + contactsDTO.getSearchValue() + "%' ")
 					.append("OR (concat( contacts.firstName, contacts.lastName) like '%" + contactsDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR contacts.companyName like '%" + contactsDTO.getSearchValue() + "%' ")
 					.append("OR contacts.contactSource like '%" + contactsDTO.getSearchValue() + "%' ");
 						
 			}
@@ -193,10 +196,31 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 			query = "from  ReferContacts contacts  where contacts.referFromUser.id =:userId ";
 		}
 		
+		//for filtering
 		
-		if(query1.toString() != null && !query1.toString().isEmpty()){
+		if(contactsDTO.getContactType() != null && !contactsDTO.getContactType().isEmpty()) {
+			String[] contactType = contactsDTO.getContactType().split(",");
+			if (Arrays.asList(contactType).contains("Candidate")) {
+				subQuery =  "contacts.candidateType = '1' or ";
+			}
+			if (Arrays.asList(contactType).contains("Client")) {
+				subQuery = subQuery + "contacts.clientType = '1' or ";
+			}
+			if (Arrays.asList(contactType).contains("Vendor")) {
+				subQuery = subQuery + "contacts.vendorType = '1' or ";
+			}
+			if (Arrays.asList(contactType).contains("Other")) {
+				subQuery = subQuery + "contacts.otherType = '1' or ";
+			}
+		}
+		
+		if(subQuery !=null && subQuery !=""){
+			subQuery = "and (" + subQuery.substring(0, subQuery.length() - 4) + ")";
+		query=query+subQuery;
+		}
+		if(query1.toString() != null && !query1.toString().isEmpty() ){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
-		}else{
+		}else {
 			 queryObj = session.createQuery(query + query1.toString());
 		}
 		
@@ -237,9 +261,14 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
   				ReferContactsDTO referContactsDTO = new ReferContactsDTO();
   				referContactsDTO.setFullName(contacts.getFullName());
   				referContactsDTO.setEmail(contacts.getContactUserEmail());
-  				referContactsDTO.setSource(contacts.getContactSource().toString());
+  				referContactsDTO.setCompanyName(contacts.getCompanyName());
+  				if(contacts.getContactSource() != null){
+  					referContactsDTO.setSource(contacts.getContactSource().toString());
+  				}
+  				
   				referContactsDTO.setId(contacts.getId());
   				referContactsDTO.setPhone(contacts.getContactUserPhone());
+  				referContactsDTO.setContactType(contacts.getContactType());
   				List<ContactsGroup> groupList = contacts.getGroupList();
   				
   				if(groupList != null && groupList.size() > 0 ){
@@ -341,6 +370,23 @@ public class ReferContactsDaoImpl implements ReferContactsDao {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public ReferContacts deleteContactById(ReferContacts referContacts) throws Exception {
+		logger.debug("Delete ReferContacts");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (referContacts != null) {
+				session.delete(referContacts);
+			}
+			logger.debug("addReferContacts deleted Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "REFER_CONTACTS"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+		}
+		return referContacts;
 	}
 
 }

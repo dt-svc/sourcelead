@@ -11,8 +11,8 @@ public interface TimesheetReportService {
 
 	public String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations) throws Exception;
 
-	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO, User user, OrgLocations orgLocations) throws IOException, Exception;
+	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO, User user, OrgLocations orgLocations,String globalUser) throws IOException, Exception;
 
-	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO,User user,OrgLocations orgLocations)throws IOException, Exception;
+	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO,User user,OrgLocations orgLocations,String globalUser)throws IOException, Exception;
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +23,12 @@ import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -63,6 +66,8 @@ public class NotificationRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private OrgSpocService orgSpocService;
 	/**
 	 * when user click on the notifications, we are updating those notifications mode as read 
 	 * @param userId
@@ -134,7 +139,7 @@ public class NotificationRestController {
 		User loginUser = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
+		List<Notifications> notificationList = notificationsService.getTopTenNotificationsListByUserId(loginUser.getId(),orgCode,locationCode);
 		List<NotificationDTO> notificationDTOList = new ArrayList<>();
 		for (Notifications notifications : notificationList) {
 			StringBuilder sb = new StringBuilder();
@@ -173,6 +178,22 @@ public class NotificationRestController {
 			notificationDTO.setFileUrl(notifications.getNotificationFrom().getFileUrl());
 			notificationDTO.setBody(notifications.getBody());
 			notificationDTO.setCalDays(notifications.getCalDays());
+			notificationDTO.setActionLink(notifications.getActionLink());
+			notificationDTO.setUuId(notifications.getUuId());
+			notificationDTO.setMode(notifications.getMode());
+			if(StringUtils.isNotBlank(notifications.getSpocUUID())){
+				notificationDTO.setSpocUUID(notifications.getSpocUUID());
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(notifications.getSpocUUID());
+				notificationDTO.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
+				notificationDTO.setOrgRelationUUID(orgSpoc.getOrgRelations().getUUID());
+				String responderType = "";
+				if(userId.longValue() == orgSpoc.getClientUser().getId().longValue())
+					responderType = "vendor";
+				else
+					responderType = "client";
+				notificationDTO.setResponderType(responderType);
+			}
+			
 			notificationDTOList.add(notificationDTO);
 				}
 		responseList.setData(notificationDTOList);
@@ -180,6 +201,13 @@ public class NotificationRestController {
 		
 	}
 	
+	@RequestMapping(value = "/notificationStatusRead", method = RequestMethod.POST)
+	public @ResponseBody String notificationStatusRead(@RequestParam(value = "uuId", required = false) String uuId,HttpServletRequest request) throws Exception {
+		Notifications notification = notificationsService.getNotificationDetailsByUUID(uuId);
+			notification.setMode(Constants.NOTIFICATION_READ);
+			notificationsService.saveNotification(notification);
+		return "success";
+	}
 	
 	
 }

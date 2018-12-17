@@ -15,12 +15,50 @@ function getJobsReportCustomDates(){
 	 if(dateSelection == 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatProjectSave = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  }
+   
+	  $('#fromDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '+1d');
+				dt.setDate(dt.getDate());
+				$("#toDate").datepicker("option", "minDate", dt);
+				removeErrsgFrom();
+				
+			}
+		});
+	  
+	  $('#toDate').datepicker({
+			dateFormat : finalDateFormatProjectSave,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				var dt = $(this).datepicker('getDate', '-1d');
+				dt.setDate(dt.getDate());
+				$("#fromDate").datepicker("option", "maxDate", dt);
+				removeErrTo();
+			}
+		});
 		 
 	 }else{
 		 document.getElementById("customSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
 		 $("#fromDate").val('');
 		 $("#toDate").val('');
+		 $("#fromDate").datepicker("destroy");
+		 $("#toDate").datepicker("destroy");
 		 document.getElementById("fromDateDiv").style.display="none";
 		 document.getElementById("toDateDiv").style.display="none";
 	 }
@@ -32,14 +70,15 @@ function reloadFcuntion(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing Timesheets</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard</a> &raquo; Missing Timesheets</div>
+        <h2>Missing Timesheet(s)</h2>
+      </div> 
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
+</a> &raquo; Missing Timesheet(s)</div>
     </section>
 
     <div class="ReqRepHead clearfix">
-		<div class="col-md-3"></div>
-	<div class="col-md-4">
+    <div class="col-md-8 clearfix pull-right">
+	<div class="col-md-6 noPad">
 	      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectIds" id="projectIds">
             <c:forEach var="option" items="${projectList}">
 				<option value="${option.id}">${option.projectName}</option>
@@ -47,7 +86,7 @@ function reloadFcuntion(){
           </select>
 	</div>
 	
-   <div class="col-md-2 dropdown-select">
+   <div class="col-md-5 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
             <option value='Last_7_days' >Last 7 days</option>
@@ -76,21 +115,16 @@ function reloadFcuntion(){
       </div>
 
         </div>
-     <div class="col-md-2">
+     <div class="pull-left">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getMissingTimesheetReports();">Run</button>
 		</div>
-      <div class="col-md-1 noPad">
-        <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
-          <button type="button" class="btn btn-primary" title="Reload" onclick="reloadFcuntion();"><i class="fa fa-retweet"></i></button>
-          
-        </div>
+      <div class="clearfix"></div>
       </div>
-      
     </div>
      
-  <div class="vendor_wrap mt">
+  <div class="vendor_wrap mt10">
 	<div class="tableStyles">
-      <div class="clearfix datatable_filter positionRelative dataFilterNew mt10 exportButton_custom">
+      <div class="clearfix datatable_filter positionRelative dataFilterNew mt10 exportButton_custom ">
          <div id="dynamcicMissingTimesheetDiv"></div>
       </div>
 
@@ -209,7 +243,7 @@ function getMissingTimesheetReports(){
 function dynamicMissingTimesheetReportPagination(){  
     $('#dynamcicMissingTimesheet').DataTable( { 
     	dom: 'Bfrtip',
-    	buttons: [ 'pageLength', 'excel', 'pdf'	], 
+    	buttons: [ 'excel', 'pdf'	], 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
@@ -227,45 +261,6 @@ function dynamicMissingTimesheetReportPagination(){
 
 
  <script>
-  $( function() {
-		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatProjectSave = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatProjectSave = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatProjectSave = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatProjectSave = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatProjectSave = 'yy-dd-mm'; 
-		  }
-    
-	  $('#fromDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate());
-				$("#toDate").datepicker("option", "minDate", dt);
-				removeErrsgFrom();
-				
-			}
-		});
-	  
-	  $('#toDate').datepicker({
-			dateFormat : finalDateFormatProjectSave,
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate());
-				$("#fromDate").datepicker("option", "maxDate", dt);
-				removeErrTo();
-			}
-		});
-  } );
-  
   function removeErrsgFrom (){
 	  document.getElementById("fromDateDiv").style.display="none";
 	  

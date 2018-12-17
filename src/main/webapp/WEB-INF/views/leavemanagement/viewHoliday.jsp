@@ -29,6 +29,18 @@
           <li>
               <a href="<c:url value='${appPath}/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
+          
+	      <li id="filterShiftTypePop"><i class="fa fa-filter"></i><span>Shift</span><i class="glyphicon glyphicon-play"></i>
+		           	<div class="statusFiler-1 approved_pop">
+						<ul class="list-unstyled">
+							<c:forEach var="shift" items="${shiftList}">
+									<li><input  type="checkbox" name="shift" value ="${shift.id}" onclick="getHolidaysList()"><label>${shift.shiftName}</label></li>
+							</c:forEach>
+						</ul>
+					</div>	                	
+				</li>
+				
+          
         <div class="clearfix"></div>
       </ul>
     </div>
@@ -47,26 +59,34 @@
 <script>
 
 function getHolidaysList(){
+	var shiftIds = [];
+	$('input:checkbox[name=shift]:checked').each(function() 
+		    {
+		shiftIds.push($(this).val());
+     });
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(data) {
-		var result = "";	
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftIds="+shiftIds, function(response) {
+		 if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
 		$("#viewHolidaysDiv").empty();
+		var result = "";
 				result = result + '<table id="viewHolidaysTableId" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
 				result = result +'<th>Holiday Name</th>';
 				result = result +'<th>From Date</th>';
-				result = result +'<th>To Date</th>';
+				result = result +'<th>To Date</th>';	
 				result = result + '<th>Description</th>';
 				result = result + '<th>Action</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				if(data !=null && data !=''){
-					 for (var i=0; i<data.length; i++)
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
@@ -106,6 +126,11 @@ function getHolidaysList(){
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
 				viewHolidaysTablePagination();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
 		}); 
  }
 </script> 
@@ -132,6 +157,16 @@ function viewHolidaysTablePagination(){
     });
     $("#viewHolidaysTableId").wrap("<div class='overflow_Auto width100percnt'></div>")
 }
+</script>
+<script>
+	$("#filterShiftTypePop").click(function(){
+		$(".statusFiler-1").toggle();
+	});
+	 
+    $("#filterShiftTypePop").click(function(e) {
+        e.stopPropagation();
+    });	
+
 </script>
 	
 <jsp:include page="../masterFooter.jsp" />

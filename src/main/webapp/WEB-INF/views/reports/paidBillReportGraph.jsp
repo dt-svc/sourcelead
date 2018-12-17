@@ -16,9 +16,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Paid Bills</h2>
+        <h2>Paid Bill(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Paid Bills</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Paid Bill(s)</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -68,9 +68,9 @@ $(document).ready(function(){
           
         </div>              
          <div class="col-md-2" id="paidBillreportGraph">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillGraphReport();">Customize</button>
+        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPaidBillGraphReport();">Run</button>
 		</div>
-        <div class="col-md-1">
+       <!--  <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="glyphicon glyphicon-export"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -78,7 +78,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Decline Reasons -->
       <div class="row">

@@ -534,7 +534,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
-	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
+	    		 	    		  $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'&nbsp;('+spoc.ownerName+')</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
 	    		 	    	  }
@@ -549,7 +549,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var j=0; j<json.ownersList.length; j++){
     		            	  owner = json.ownersList[j];
 	    		 	    	  if(json.ownerUser != null && json.ownerUser != "" && json.ownerUser != 'undefined' && json.ownerId == owner.id){
-	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    		  $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
 	    		 	    	  }
 	    		 	    	  else if((json.ownerUser == null || json.ownerUser == "" || json.ownerUser == 'undefined') && (owner.id == sourceLeadUserId)){
 	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
@@ -666,9 +666,17 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
 	if ($('#docu_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
+		 var formData = new FormData();
+	     formData.append("tokenParamName", tokenValue);
+	     formData.append("docId", docId);
+	     formData.append("terminateReason", terminateReason);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateOrgDocumnet",
+// 		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);

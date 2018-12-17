@@ -130,7 +130,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setLastName(row.getCell(1).toString());
 							}
+							
 							candidateImport.setEmailId(row.getCell(2).toString().trim());
+							
 							if (row.getCell(3) != null) {
 								String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 								candidateImport.setMobileNumber(mobileNumber);
@@ -446,7 +448,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			writeRow.createCell(15).setCellValue("");
 		}
 		
-		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(164).toString())) {
+		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
 			String education = getCellValueAsString(row.getCell(16), fileName);
 			writeRow.createCell(16).setCellValue(education);
 		}
@@ -491,13 +493,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				candidateImport.setReason("Invalid Email");
 				return false;
 			}
-			/*else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
+			else if (row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 				Candidate candidate = candidateService.findByCandidateEmail(row.getCell(2).toString(), orgLocations.getId());
 				if (candidate != null) {
 					candidateImport.setReason("Candidate already exist.!");
 					return false;
 				}
-			}*/
+			}
 			if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 				String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 				if (mobileNumber != null && !"".equalsIgnoreCase(mobileNumber)) {
@@ -556,7 +558,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					}
 				}
 				
-			}/*else {
+			}
+			
+			/*else {
 				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
 					candidateImport.setReason("vendor is mandatory if you have entered contact");
 					return false;
