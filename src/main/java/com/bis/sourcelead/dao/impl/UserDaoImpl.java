@@ -2623,7 +2623,7 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
 				 }
 		
        
