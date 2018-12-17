@@ -622,7 +622,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			autoGenId.append("-NSA");
 		if(contracts.getContractType().contains("SOW"))
 			autoGenId.append("-SOW");
-		autoGenId.append("-").append(contracts.getContractOrgLocationId().getGeneratedUserId().substring(0, 3));
+		if(StringUtils.isNotBlank(contracts.getContractOrgLocationId().getGeneratedUserId())) {
+			autoGenId.append("-").append(contracts.getContractOrgLocationId().getGeneratedUserId().substring(0, 3));
+		}
 		
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTime(contracts.getStartDate());
