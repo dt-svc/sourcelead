@@ -2331,6 +2331,8 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
 						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
 						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
+						userDTO.setUserOnHoldApplicantsCount(userDTO.getUserOnHoldApplicantsCount().add(recuiterReportView.getUserOnHoldApplicantsCount()));
+						userDTO.setUserNoResponseApplicantsCount(userDTO.getUserNoResponseApplicantsCount().add(recuiterReportView.getUserNoResponseApplicantsCount()));
 					}
 					
 				}
@@ -2623,7 +2625,7 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
 				 }
 		
        

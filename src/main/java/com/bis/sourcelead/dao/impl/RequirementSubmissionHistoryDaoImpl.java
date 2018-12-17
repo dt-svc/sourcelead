@@ -254,7 +254,12 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			stageQuery = " rsh.toStage = 'JOINED'";
 		}else if(stage.equalsIgnoreCase("BACKOUT")) {
 			stageQuery = " rsh.toStage = 'BACKOUT'";
+		}else if(stage.equalsIgnoreCase("ONHOLD")) {
+			stageQuery = " rsh.toStage = 'ONHOLD'";
+		}else if(stage.equalsIgnoreCase("NORESPONSE")) {
+			stageQuery = " rsh.toStage = 'NORESPONSE'";
 		}
+		
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(sumissionHistoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(sumissionHistoryDTO.getSearchValue())) {
