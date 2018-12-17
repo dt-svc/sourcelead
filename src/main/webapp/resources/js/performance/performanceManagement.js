@@ -446,7 +446,7 @@ function PerformanceManagement(){
 						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
 						text += "<div class='multiJobTitle clearfix'>";
 						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
-						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+")' id='percent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
 						text += "</div>";
 						text += "<div class='row mxrateerror' id='percentageDiv"+$(this).val()+"'>";
 						text += "<input type='hidden' name='percent"+$(this).val()+"' id='percentageValidation"+$(this).val()+"'>";
@@ -485,10 +485,10 @@ function PerformanceManagement(){
 		  
 		   var templates = [];
 			$(".multiTemplates").each(function() {				
-				var percentage = "";
+			/*	var percentage = "";
 				$(this).find(".templatePercentage").each(function() {
 					percentage = $("#percent"+$(this).data("template_id")).val();
-				});
+				});*/
 				templates.push({
 					templateId : $(this).data("template_id") ? $(this).data("template_id") : 0,
 					percentage : $("#percent"+$(this).data("template_id")).val()
@@ -557,6 +557,27 @@ function PerformanceManagement(){
 			 $('input#percentageValidation'+id).removeAttr( "class record-exist record-exist-errormsg");
 			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove();
 		 }
+  }
+  
+  this.validatePercentageTotalSumValue = function(){
+	  var percentage = 0;
+	  $(".multiTemplates").each(function() {	
+		  percentage = Number(percentage)+Number($("#percent"+$(this).data("template_id")).val());
+	  });
+	  
+	  if(percentage > 100){
+		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+		    $('#percentTotalSum').attr('class','error signin_fild');
+		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should not more than 100</p>");
+		    $('#percentTotalSum').attr('record-exist','yes');
+		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should not more than 100'); 
+		    $("#savePerformanceBudget").attr("disabled", "disabled");
+	  }else{
+		     $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+			 $('input#percentTotalSum').removeAttr( "class record-exist record-exist-errormsg");
+			 $('#percentSumDiv').find('p.jquery_form_error_message').remove();
+			 $("#savePerformanceBudget").removeAttr("disabled");
+	  }
   }
 	
 }

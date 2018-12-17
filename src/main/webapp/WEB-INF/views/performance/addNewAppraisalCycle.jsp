@@ -164,6 +164,10 @@
 			<div class="clearfix" id="selectedTemplatesDiv">
 			</div>
 			</div>
+			<div class="row mxrateerror" id="percentSumDiv">
+										<input type="hidden" name="percentTotalSum"
+											id="percentTotalSum">
+									</div>
 		</div> 
 		  <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
