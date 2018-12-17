@@ -88,6 +88,9 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	@JsonProperty
 	private String createdDatestr;
 
+	@Column(name = "CART_STATUS")
+	private String cartStatus;
+	
 	public Long getId() {
 		return id;
 	}
@@ -271,6 +274,14 @@ public class CandidateMarketPlaceCartView implements Serializable {
 
 	public void setCreatedDatestr(String createdDatestr) {
 		this.createdDatestr = createdDatestr;
+	}
+
+	public String getCartStatus() {
+		return cartStatus;
+	}
+
+	public void setCartStatus(String cartStatus) {
+		this.cartStatus = cartStatus;
 	}
 
 	
