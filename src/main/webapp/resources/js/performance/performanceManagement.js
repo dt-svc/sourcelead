@@ -278,7 +278,7 @@ function PerformanceManagement(){
   }
 
   this.appraisalStartDateAndEndDatePickers = function(){
-	  var locationDateFormat = 'MM-dd-yyyy'; 
+	  var locationDateFormat = 'dd-MM-yyyy'; 
 	  var finalDateFormat = getJSDateFormat(locationDateFormat);
 	   $(function() {
 			  $('#appraisalStartDate').datepicker({
@@ -291,6 +291,7 @@ function PerformanceManagement(){
 					dt.setDate(dt.getDate() + 1);
 					$("#appraisalEndDate").datepicker("option", "minDate", dt);
 					performanceManagement.validAppraisalDates();
+					$("#appraisalEndDate").removeAttr("disabled");
 			 	  }
 			  });
 		  });
@@ -325,6 +326,7 @@ function PerformanceManagement(){
 					dt.setDate(dt.getDate() + 1);
 					$("#selfAppraisalEndDate").datepicker("option", "minDate", dt);
 					performanceManagement.validAppraisalDates();
+					$("#selfAppraisalEndDate").removeAttr("disabled");
 			 	  }
 			  });
 		  });
@@ -359,6 +361,7 @@ function PerformanceManagement(){
 					dt.setDate(dt.getDate() + 1);
 					$("#appraisalApprovingEndDate").datepicker("option", "minDate", dt);
 					performanceManagement.validAppraisalDates();
+					$("#appraisalApprovingEndDate").removeAttr("disabled");
 			 	  }
 			  });
 		  });
@@ -575,6 +578,7 @@ function PerformanceManagement(){
   
   this.clearAppraisalStartDate = function(){
 	  $("#appraisalStartDate").val("");
+	  $("#appraisalEndDate").val("");
   }
   
   this.clearAppraisalEndDate = function(){
@@ -583,6 +587,7 @@ function PerformanceManagement(){
   
   this.clearSelfAppraisalStartDate = function(){
 	  $("#selfAppraisalStartDate").val("");
+	  $("#selfAppraisalEndDate").val("");
   }
   
   this.clearSelfAppraisalEndDate = function(){
@@ -591,6 +596,7 @@ function PerformanceManagement(){
   
   this.clearAppraisalApprovingStartDate = function(){
 	  $("#appraisalApprovingStartDate").val("");
+	  $("#appraisalApprovingEndDate").val("");
   }
   
   this.clearAppraisalApprovingEndDate = function(){

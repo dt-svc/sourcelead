@@ -25,7 +25,7 @@
 			        <div class="form-group" id="appraisalStartDateDiv">
 			          <label class="col-md-3">Start Date<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			         <div class="col-md-9">
-			         <div class="input-group">
+			         <div class="input-group errorInptgroup">
 			         <input type="text" class="form-control calendar" value="" id="appraisalStartDate" name="appraisalStartDate" field-name="Appraisal Start Date" data-validation="required" readonly="readonly" >
 			         <span class="input-group-addon" onClick="performanceManagement.clearAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 			         </div>
@@ -35,8 +35,8 @@
 			        <div class="form-group" id="appraisalEndDateDiv">
 			          <label class="col-md-3">End Date<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			         <div class="col-md-9">
-			          <div class="input-group">
-			           <input type="text" class="form-control calendar" value="" id="appraisalEndDate" name="appraisalEndDate" field-name="Appraisal End Date" data-validation="required" readonly="readonly" >
+			          <div class="input-group errorInptgroup">
+			           <input type="text" class="form-control calendar" disabled value="" id="appraisalEndDate" name="appraisalEndDate" field-name="Appraisal End Date" data-validation="required" readonly="readonly" >
 			           <span class="input-group-addon" onClick="performanceManagement.clearAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 			          </div>
 			         </div>
@@ -91,12 +91,12 @@
 							  <div class="col-md-6" id="selfAppraisalStartDateDiv">
 								  <div class="input-group">
 									  <input type="text" class="form-control calendar" value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
-									  <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									  <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							  </div>
 							  <div class="col-md-6" id="selfAppraisalEndDateDiv">
 								   <div class="input-group">
-								     <input type="text" class="form-control calendar" value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
+								     <input type="text" class="form-control calendar" disabled value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								   </div>
 							  </div>
@@ -117,7 +117,7 @@
 							 </div>
 							  <div class="col-md-6" id="appraisalApprovingEndDateDiv">
 							  <div class="input-group">
-							  	<input type="text" class="form-control calendar" value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
+							  	<input type="text" class="form-control calendar" disabled value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
 							    <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 							  </div>
 							  </div>
