@@ -2331,6 +2331,8 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
 						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
 						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
+						userDTO.setUserOnHoldApplicantsCount(userDTO.getUserOnHoldApplicantsCount().add(recuiterReportView.getUserOnHoldApplicantsCount()));
+						userDTO.setUserNoResponseApplicantsCount(userDTO.getUserNoResponseApplicantsCount().add(recuiterReportView.getUserNoResponseApplicantsCount()));
 					}
 					
 				}
