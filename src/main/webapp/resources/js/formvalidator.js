@@ -1182,6 +1182,14 @@ jQueryFormUtils.validateName = function(val) {
                 return validationErrorMsg || language.badLength + jQueryFormUtils.attrInt(validationRules, 'length') + language.tooLongEnd;
             }
         }
+        
+        // Between values
+        if (validationRules.indexOf('validate_between') > -1) {
+        	var range = jQueryFormUtils.attrInt(validationRules, 'between').split('-');
+            if (parseInt(value,10) < parseInt(range[0],10) || parseInt(value,10) > parseInt(range[1],10)) {
+                return validationErrorMsg || language.badLimitStart + jQueryFormUtils.attrInt(validationRules, 'between') + language.badLimitEnd;
+            }
+        }
 
         // Email
         if (validationRules.indexOf('validate_email') > -1 && !jQueryFormUtils.validateEmail(value)) {
@@ -1461,6 +1469,8 @@ jQueryFormUtils.LANG =  {
     tooShortStart : 'You have given an answer shorter than ',
     tooShortEnd : ' characters',
     badLength : 'The values should be between ',
+    badLimitStart : 'The value should be ',
+    badLimitEnd : ' range only',
     notConfirmed : 'Values could not be confirmed',
     badDomain : 'Incorrect domain value',
 	badspace : 'Must not Start With Space',
