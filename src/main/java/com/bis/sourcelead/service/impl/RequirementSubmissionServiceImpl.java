@@ -5676,20 +5676,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 				payTerm=payTerm.replaceAll("\\D", "");
+				if(!payTerm.isEmpty()){
 				 writeRow.createCell(12).setCellValue(payTerm);
+				}
+				else{
+					writeRow.createCell(12).setCellValue("--");
+				}
 			}
 			else{
 				writeRow.createCell(12).setCellValue("--");
 			}
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
-				payTerm=payTerm.replaceAll("\\D", "");
-				int result = Integer.parseInt(payTerm);
-				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
-				DateTime dtOrg = new DateTime(generatedInvoiceDate);
-				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
-
+				 Integer result = 0;
+                 try {
+                     payTerm=payTerm.replaceAll("\\D", "");
+                     result = Integer.parseInt(payTerm);
+                 } catch (Exception e) {
+                     result = 0;
+                 }
+                 if(result != 0){
+     				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
+    				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+    				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+    				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+	 
+                 }
 			}
 			else{
 				writeRow.createCell(13).setCellValue("--");
