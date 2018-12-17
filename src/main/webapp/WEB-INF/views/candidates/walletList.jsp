@@ -72,7 +72,102 @@
   </section>
 
 <!-- ends -->
-
+<div class="mask"></div>
+<div class="popupWrap" id="modalWallet">
+      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose"></i></div>
+        <form id="#" name="" action="" method="post">
+        <div class="popupContent">
+			<div class="addInner">
+      <div class="row">
+        <div class="col-md-6 mb positionRelative">
+        <div class="clearfix dynamic_search filterDynamicsearch">
+        	<h5>Transaction Type</h5>
+		</div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="1883" type="checkbox">
+                <label>Credit</label>
+              </li>
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="" type="checkbox">
+                <label>Debit </label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6 positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch">
+            <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="">
+			<li class="checkBox positionRelative">
+                <input name="userRole" value="2366" type="radio">
+                <label>Today</label>
+            </li>
+			<li class="checkBox positionRelative">
+                <input name="userRole" value="2366" type="radio">
+                <label>Week Ago</label>
+            </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>This Month</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>3 months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>6 Months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>1 Year ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio" id="custmdateChkbx">
+				<label>Custom Dates</label>
+			  </li>
+			  </ul>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+		  <div class="clearfix" id="customDates" style="display: none;">
+		<div class="col-md-12 positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch" >
+          <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
+		  </div>
+          <div class="clearfix">
+            <ul class="list-unstyled positionRelative filterSearch mb0">
+              <li class="positionRelative">
+                <div class="row">
+                <div class="col-md-6" id="custFromDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date" id="frmDate">
+                </div>
+                <div class="col-md-6" id="custToDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date" id="toDate">
+				</div>
+             </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+	</div>
+      </div>
+    </div>			
+		</div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Save</button>
+          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+        </div>
+        
+        <div>
+</div></form>
+  </div>
  <script>
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
@@ -218,6 +313,121 @@
 	      
   }
   </script>
-  
-  
+  <script type="text/javascript">
+	var config = {
+	  '.chosen-select'           : {},
+	  '.chosen-select-deselect'  : {allow_single_deselect:true},
+	  '.chosen-select-no-single' : {disable_search_threshold:10},
+	  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	  '.chosen-select-width'     : {width:"95%"}
+	}
+	for (var selector in config) {
+	  $(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+	});
+</script>
+<script>
+    function showCustomFields(){
+    var frequency = $("#dateFrequency").val();
+    if(frequency == "Custom"){
+        $("#customDates").show();
+         $('#frmDate').attr('data-validation',"required");
+         $('#toDate').attr('data-validation',"required");
+    }else{
+        $("#customDates").hide();
+        $('#frmDate').removeAttr('data-validation');
+        $('#toDate').removeAttr('data-validation');
+    }
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+      var finalDateFormatEndDate = '';
+      if(locationDate.match("yyyy-MM-dd")){
+          finalDateFormatEndDate = 'yy-mm-dd';
+      }if(locationDate.match("dd-MM-yyyy")){
+          finalDateFormatEndDate = 'dd-mm-yy'; 
+      }if(locationDate.match("MM-dd-yyyy")){
+          finalDateFormatEndDate = 'mm-dd-yy'; 
+      }if(locationDate.match("yyyy-dd-MM")){
+          finalDateFormatEndDate = 'yy-dd-mm'; 
+      }
+      
+      $('#frmDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#toDate").datepicker("option", "minDate", dt);
+	        }
+	  });
+      
+      $('#toDate').datepicker({
+	      dateFormat: finalDateFormatEndDate,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() + 1);
+	            $("#frmDate").datepicker("option", "maxDate", dt);
+	        }
+	  });
+  }
+
+	function removeStartValid(){
+	    $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+	}
+	function removeEndValid(){
+	    $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+	}
+
+  /*  function validateCustDates(){
+    var frequency = $("#dateFrequency").val();
+    var fromDate = $("#frmDate").val();
+    var toDate = $("#toDate").val();
+   
+    if(frequency == "Custom"){
+        if(fromDate == ''){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#frmDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+            $("input#frmDate").empty();
+        }
+        if(toDate == ''){
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#toDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+            $("input#toDate").val('');
+        }
+        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            refreshWithNewFreq();
+        }
+    }else{
+        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+        refreshWithNewFreq();    
+    } 
+} */
+</script>
+<script>
+	function openPop(){
+		$("#modalWallet, .mask").fadeIn();
+	}
+	$(".popClose").click(function() {
+		$("#modalWallet, .mask").fadeOut();
+	});
+	//Custom Dates
+	$("#custmdateChkbx").click(function() {
+	if($(this).is(":checked")){
+		$("#customDates").show();
+	}else {
+		$("#customDates").hide();
+	}
+	});
+</script>
   <jsp:include page="../masterFooter.jsp" /> 
