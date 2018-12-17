@@ -102,6 +102,7 @@ public class ClientContractsDTO {
 	private String billingCycle;
 	private String isOwner;
 	private String revisedReason;
+	private String autoGenId;
 	
 	public Long getId()
 	{
@@ -987,5 +988,16 @@ public class ClientContractsDTO {
 	{
 		this.revisedReason = revisedReason;
 	}
+
+	public String getAutoGenId()
+	{
+		return autoGenId;
+	}
+
+	public void setAutoGenId(String autoGenId)
+	{
+		this.autoGenId = autoGenId;
+	}
+	
 	
 }
