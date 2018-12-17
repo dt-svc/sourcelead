@@ -58,6 +58,18 @@ public class MarketplaceSalesOrder implements Serializable {
 	@Column(name = "PAYMENT_METHOD")
 	private String paymentMethod;
 	
+	@Column(name = "FIRST_NAME")
+	private String firstName;
+
+	@Column(name = "LAST_NAME")
+	private String lastName;
+
+	@Column(name = "EMAIL")
+	private String email;
+	
+	@Column(name = "COUNTRY_CODE")
+	private String countryCode;
+	
 	public Date getOrderDate() {
 		return orderDate;
 	}
@@ -171,6 +183,39 @@ public class MarketplaceSalesOrder implements Serializable {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+	
 }
 
 	
