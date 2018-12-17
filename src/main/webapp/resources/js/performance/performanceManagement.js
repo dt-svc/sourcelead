@@ -285,7 +285,7 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  maxDate:0,
+			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -302,7 +302,7 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  maxDate:0,
+			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -319,7 +319,7 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  maxDate:0,
+			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -336,7 +336,7 @@ function PerformanceManagement(){
 					      dateFormat: finalDateFormat,
 					      changeMonth: true,
 					  	  changeYear: true, 
-					  	  maxDate:0,
+					  	  minDate:0,
 					  	  onSelect : function(selected) {
 					  		var dt = $(this).datepicker('getDate', '-1d');
 							dt.setDate(dt.getDate() - 1);
@@ -353,7 +353,7 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  maxDate:0,
+			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -370,7 +370,7 @@ function PerformanceManagement(){
 					      dateFormat: finalDateFormat,
 					      changeMonth: true,
 					  	  changeYear: true, 
-					  	  maxDate:0,
+					  	  minDate:0,
 					  	  onSelect : function(selected) {
 					  		var dt = $(this).datepicker('getDate', '-1d');
 							dt.setDate(dt.getDate() - 1);
@@ -471,8 +471,6 @@ function PerformanceManagement(){
   
   this.saveAppraisalCycleDetails = function(){
 	  
-	  
-	  
 	  var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -485,42 +483,36 @@ function PerformanceManagement(){
 		  
 		   var templates = [];
 			$(".multiTemplates").each(function() {				
-			/*	var percentage = "";
-				$(this).find(".templatePercentage").each(function() {
-					percentage = $("#percent"+$(this).data("template_id")).val();
-				});*/
 				templates.push({
 					templateId : $(this).data("template_id") ? $(this).data("template_id") : 0,
 					percentage : $("#percent"+$(this).data("template_id")).val()
 				});
 			});
-			  var con = JSON.stringify(templates);
-			alert(con);
-			
-	        var formData = getFormData("createAppraisal_form");
-	      /*  $("#badgeDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	         $.ajax({
+			var con = JSON.stringify(templates);
+			$("#jsonTemplateString").val(con);
+	        var appraisalFormData = getFormData("createAppraisal_form");
+	        $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:200%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        alert("hi");
+	        $.ajax({
 		    	type: "POST",
-		    	data: formData,
-		    	 url: sourceleadUrl+"/savePerformanceBudgetDetails?",
+		    	data: appraisalFormData,
+		    	 url: sourceleadUrl+"/saveAppraisalCycleTemplate",
 		        success: function(response) {
-		        	$("#badgeDetailsLoading").removeAttr('style');
+		        	$("#appraisalDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
    	    		    showError(response.responseMessage);
    	    		}
 		        	else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		performanceManagement.closeBadgePopup();
-		        		performanceManagement.getBadgesList();
-		        		$(".mask, #modalTasktype").fadeOut();
+		        		performanceManagement.viewAppraisalCycle();
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
 		        },
-		    }); */ 
+		    }); 
 	        return true;
 	  } else {
 		return false;
@@ -578,6 +570,31 @@ function PerformanceManagement(){
 			 $('#percentSumDiv').find('p.jquery_form_error_message').remove();
 			 $("#savePerformanceBudget").removeAttr("disabled");
 	  }
+  }
+  
+  
+  this.clearAppraisalStartDate = function(){
+	  $("#appraisalStartDate").val("");
+  }
+  
+  this.clearAppraisalEndDate = function(){
+	  $("#appraisalEndDate").val("");
+  }
+  
+  this.clearSelfAppraisalStartDate = function(){
+	  $("#selfAppraisalStartDate").val("");
+  }
+  
+  this.clearSelfAppraisalEndDate = function(){
+	  $("#selfAppraisalEndDate").val("");
+  }
+  
+  this.clearAppraisalApprovingStartDate = function(){
+	  $("#appraisalApprovingStartDate").val("");
+  }
+  
+  this.clearAppraisalApprovingEndDate = function(){
+	  $("#appraisalApprovingEndDate").val("");
   }
 	
 }

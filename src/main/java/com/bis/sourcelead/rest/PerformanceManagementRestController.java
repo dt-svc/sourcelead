@@ -21,12 +21,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -50,6 +52,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceFeedbackTemplateService performanceFeedbackTemplateService;
+	
+	@Autowired
+	PerformanceAppraisalTemplateService performanceAppraisalTemplateService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -188,6 +193,31 @@ public class PerformanceManagementRestController {
  			resObj = Result.AWKWARD.name();
  		}
  		 return resObj;
+   }
+   
+   
+
+   @RequestMapping(value = "/saveAppraisalCycleTemplate", method = RequestMethod.POST)
+	public Response<PerformanceAppraisalTemplateDTO> saveAppraisalCycleTemplate(HttpServletRequest request, 
+			PerformanceAppraisalTemplateDTO templateDTO){
+		 Response<PerformanceAppraisalTemplateDTO> resObj = new Response<>();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 try {
+			 if(Validator.validate(templateDTO)){
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		    }
+			 else {
+				 resObj.setResponse(Result.INVALID_DATA.name());
+				 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+				
+	    	 }
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
    }
 
 }

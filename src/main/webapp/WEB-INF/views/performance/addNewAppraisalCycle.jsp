@@ -11,6 +11,7 @@
     </section>
     
  <div class="project_wrap">
+  <div id="appraisalDetailsLoading"></div>
 	  <div class="clearfix newAddWidth">
 		    <div class="form-horizontal mt myForm">
 		    <form:form id="createAppraisal_form"  name="createAppraisal_form" method="post">
@@ -18,17 +19,27 @@
 		        
 			        <div class="form-group" id="appraisalNameDiv">
 			          <label class="col-md-3">Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			          <div class="col-md-9"><input type="text" class="form-control" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
+			          <div class="col-md-9"><input type="text" class="form-control" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
 			        </div>
 			        
 			        <div class="form-group" id="appraisalStartDateDiv">
 			          <label class="col-md-3">Start Date<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			         <div class="col-md-9"><input type="text" class="form-control calendar" value="" id="appraisalStartDate" name="appraisalStartDate" field-name="Appraisal Start Date" data-validation="required" readonly="readonly" ></div>
+			         <div class="col-md-9">
+			         <div class="input-group">
+			         <input type="text" class="form-control calendar" value="" id="appraisalStartDate" name="appraisalStartDate" field-name="Appraisal Start Date" data-validation="required" readonly="readonly" >
+			         <span class="input-group-addon" onClick="performanceManagement.clearAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+			         </div>
+			         </div>
 			        </div>
 			        
 			        <div class="form-group" id="appraisalEndDateDiv">
 			          <label class="col-md-3">End Date<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			         <div class="col-md-9"><input type="text" class="form-control calendar" value="" id="appraisalEndDate" name="appraisalEndDate" field-name="Appraisal End Date" data-validation="required" readonly="readonly" ></div>
+			         <div class="col-md-9">
+			          <div class="input-group">
+			           <input type="text" class="form-control calendar" value="" id="appraisalEndDate" name="appraisalEndDate" field-name="Appraisal End Date" data-validation="required" readonly="readonly" >
+			           <span class="input-group-addon" onClick="performanceManagement.clearAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+			          </div>
+			         </div>
 			        </div>
 		        
 		        </div>
@@ -77,8 +88,18 @@
 			          <label class="col-md-3">Self Appraisal</label>
 			          <div class="col-md-9">
 						  			  <div class="row">
-							  <div class="col-md-6" id="selfAppraisalStartDateDiv"><input type="text" class="form-control calendar" value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation="required" readonly="readonly" ></div>
-							  <div class="col-md-6" id="selfAppraisalEndDateDiv"><input type="text" class="form-control calendar" value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation="required" readonly="readonly" ></div>
+							  <div class="col-md-6" id="selfAppraisalStartDateDiv">
+								  <div class="input-group">
+									  <input type="text" class="form-control calendar" value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
+									  <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+								  </div>
+							  </div>
+							  <div class="col-md-6" id="selfAppraisalEndDateDiv">
+								   <div class="input-group">
+								     <input type="text" class="form-control calendar" value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
+								     <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+								   </div>
+							  </div>
 						  </div>
 			
 					  </div>
@@ -88,8 +109,18 @@
 			          <label class="col-md-3">Approving From</label>
 			          <div class="col-md-9">
 						  <div class="row">
-							 <div class="col-md-6" id="appraisalApprovingStartDateDiv"><input type="text" class="form-control calendar" value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Self Appraisal Start Date" data-validation="required" readonly="readonly" ></div>
-							  <div class="col-md-6" id="appraisalApprovingEndDateDiv"><input type="text" class="form-control calendar" value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Self Appraisal End Date" data-validation="required" readonly="readonly" ></div>
+							 <div class="col-md-6" id="appraisalApprovingStartDateDiv">
+								  <div class="input-group">
+									 <input type="text" class="form-control calendar" value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
+								     <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+								  </div>
+							 </div>
+							  <div class="col-md-6" id="appraisalApprovingEndDateDiv">
+							  <div class="input-group">
+							  	<input type="text" class="form-control calendar" value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
+							    <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							  </div>
+							  </div>
 						  </div>
 					  </div>
 			        </div>
@@ -111,14 +142,14 @@
                <div class="row">
 				   <div class="col-md-4" id="experienceYearsDiv">
 				   	 <div class="clearfix dropdown-select">
-					  <select name="experienceYears" id="experienceYears" data-validation-optional="true" field-name="Years">
+					  <select name="experienceYears" id="experienceYears" name="experienceYears" data-validation-optional="true" field-name="Years">
 				   	  <option selected value=''>Select Years</option>
 				   	  </select>
 				     </div> 
 				   </div>  	
 				   <div class="col-md-4" id="experienceMonthsDiv">
 				   	 <div class="clearfix dropdown-select">
-					  <select name="experienceMonths" id="experienceMonths" data-validation-optional="true" field-name="Months">
+					  <select name="experienceMonths" id="experienceMonths" name="experienceMonths" data-validation-optional="true" field-name="Months">
 				   	  <option selected value=''>Select Months</option>
 				   	  </select>
 				     </div> 
@@ -133,13 +164,13 @@
 				<div class="clearfix">
 						<label class="col-md-12"><span class="pull-left mr">Description</span>
 						  	<div class="checkbox-new pull-left">
-								<input id="paymentStub" class="checkbox-custom" name="paymentStub" type="checkbox" onclick="paymentStub();">
+								<input id="paymentStub" class="checkbox-custom" name="discriptionDisplay" type="checkbox" onclick="paymentStub();">
 								<label for="paymentStub" class="checkbox-custom-label"></label>
 								<span class="ml10 text-muted">Display to Employees </span>
 							</div>						
 						</label>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
-							<textarea id="txtEditor" name="projectDescription"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
+							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
 						</div>
 				</div>
 			</div>
@@ -157,6 +188,7 @@
 							  </c:forEach>
 						</select>
 				  </div>
+				  <input type="hidden" name="jsonTemplateString" id="jsonTemplateString"/>
 				</div> 
 				
 			<div class="clearfix"></div>
@@ -166,7 +198,7 @@
 			</div>
 			<div class="row mxrateerror" id="percentSumDiv">
 										<input type="hidden" name="percentTotalSum"
-											id="percentTotalSum">
+											id="percentTotalSum"/>
 									</div>
 		</div> 
 		  <div class="clearfix"></div>       

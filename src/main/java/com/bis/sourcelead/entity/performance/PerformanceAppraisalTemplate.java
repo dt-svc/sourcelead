@@ -1,5 +1,6 @@
 package com.bis.sourcelead.entity.performance;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,9 +18,9 @@ import com.bis.sourcelead.entity.User;
 
 @Entity
 @Table(name = "PERFORMANCE_APPRAISAL_TEMPLATE")
-public class PerformanceAppraisalTemplate {
+public class PerformanceAppraisalTemplate implements Serializable{
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
