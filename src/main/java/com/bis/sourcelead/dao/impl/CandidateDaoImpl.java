@@ -2597,7 +2597,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				checkBoxQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
 						+ customStartdate + "' and '" + customEnddate + "'");
 			}
-			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
+			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
@@ -2968,15 +2968,19 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplaceSalesOrder> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, Long orgLocationId, String orderNo, String searchValue) {
+	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String salesUuid, String searchValue) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
-			if(orderNo != null && !"".equalsIgnoreCase(orderNo)){
-				queryBuilder1.append(" and (salesOrder.orderNo like '%"+orderNo+"%')");
+			StringBuilder queryBuilder2 = new StringBuilder();
+			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
+			MarketplacePurchaseSalesDTO salesOrderDto = null;
+			String formattedDate =  null;
+			if(salesUuid != null && !"".equalsIgnoreCase(salesUuid)){
+				queryBuilder1.append(" and (salesOrder.salesUuid like '%"+salesUuid+"%')");
 			}
 			
-			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			/*Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 			Matcher matcher = pattern.matcher(searchValue);
 			   java.sql.Date sqlDate = null;
 			    if(matcher.matches() == true) {
@@ -2987,17 +2991,12 @@ public class CandidateDaoImpl implements CandidateDao {
 							        java.util.Date utilDate = format.parse(replacedValue);
 							        sqlDate = new java.sql.Date(utilDate.getTime());
 							}
-			    }
-			StringBuilder query1 = new StringBuilder("");
+			    }*/
+			
 			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-				 query1.append("and (salesOrder.orderNo like '%" + searchValue + "%' ")
-			       .append("OR salesOrder.companyName like '%" + searchValue + "%' ")
-			       .append("OR salesOrder.paymentStatus like '%" + searchValue + "%' )");
-				 if(sqlDate != null) {
-				    	query1.append("OR salesOrder.orderDate like '%" + sqlDate + "%' ");
-				  }
+				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
+				queryBuilder1.append(" or (salesOrder.orderNo like '%"+searchValue+"%')) ");
 			}
-			StringBuilder queryBuilder2 = new StringBuilder("");
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
@@ -3008,13 +3007,95 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 			}
 			}
-			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId "+query1+" ";
-			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setParameter("orgLocationId", orgLocationId).list();
-			return salesOrderList;
+
+			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			if(salesOrderList != null){
+			for(MarketplaceSalesOrder sales : salesOrderList){
+				salesOrderDto = new MarketplacePurchaseSalesDTO();
+				BeanUtils.copyProperties(sales, salesOrderDto);
+				formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sales.getOrderDate());
+				salesOrderDto.setOrderDate(formattedDate);
+				salesOrderDto.setTotalresume(sales.getNoOfResumes());
+				salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
+				salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
+				salesOrderDtoList.add(salesOrderDto);
+				}
+			}
+			return salesOrderDtoList;
+
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
+			String searchValue) {
+		Session session = this.sessionFactory.getCurrentSession();
+		logger.debug(" inside getWalletList searchValue is: " + searchValue);
+		List<Long> countlist = null;
+		Integer filterCount = 0;
 
+		List<MarketplaceSalesOrder> marketplaceSalesOrderList = null;
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+		try {
+
+			StringBuilder query1 = new StringBuilder("");
+			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+				
+				query1.append(" or (saleOrder.totalResumePrice like '%" + searchValue + "%' )");
+				query1.append(" or (saleOrder.orderNo like '%" + searchValue + "%' )) ");
+			}
+			StringBuilder query2 = new StringBuilder("");
+			String sortingQry = "";
+			if (StringUtils.isNotBlank(saleOrdersListDTO.getSortColumn())) {
+				String sortColumnName = saleOrdersListDTO.getSortColumn();
+				if(sortColumnName.equalsIgnoreCase("marketPrice")){
+					sortingQry = " order by saleOrder." + sortColumnName + " " + saleOrdersListDTO.getSortOrder();
+				}
+			}
+			String  listQuery = "from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			String 	listQueryCount = "select count(*) from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
+			Query hqlQuery = session.createQuery(listQuery);
+			marketplaceSalesOrderList = hqlQuery.setFirstResult(saleOrdersListDTO.getStart()).setMaxResults(saleOrdersListDTO.getLength()).setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			Query hqlQuery1 = session.createQuery(listQueryCount);
+			countlist = hqlQuery1.setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			int totalCount = 0;
+			if (saleOrdersListDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query1.toString() != null && !query1.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			List<MarketplacePurchaseSalesDTO> globalMarketCandDTOList = new ArrayList<MarketplacePurchaseSalesDTO>();
+			Double totalSum =0d;
+			for (MarketplaceSalesOrder source : marketplaceSalesOrderList) {
+				MarketplacePurchaseSalesDTO target = new MarketplacePurchaseSalesDTO();
+				
+				target.setOrderDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getOrderDate()));
+				target.setTotalPrice(source.getTotalResumePrice());
+				target.setOrderNo(source.getOrderNo());
+				//Total Sum Amount calculation for View Purpose(Above The Table In walletList.Jsp)
+				totalSum = totalSum + source.getTotalResumePrice();
+				target.setSumOfOrdersAmount(totalSum);
+				
+				globalMarketCandDTOList.add(target);
+			}
+			logger.debug(" After executing query result  list size is :::>>" + marketplaceSalesOrderList.size());
+			responseList.setData(globalMarketCandDTOList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+	
 }

@@ -24,6 +24,7 @@ $(document).ready(function(){
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             <li id="" class="current"><a href="javascript:void(0)">Sales Orderlist</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
      
      </ul>
 </div>
@@ -41,8 +42,10 @@ $(document).ready(function(){
                 <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="salesOrderDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getSalesOrderList();"></span>
+
+                <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
+                <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
+
 			</li>
             </ul>
           </div>
@@ -70,20 +73,16 @@ $(document).ready(function(){
       </div>
     </div> 
   </section>
-  
-  <script>
+   <script>
   
    function getSalesOrderList(){
-	   var sourceleadUrl = '${sourceleadUrl}';	
-		var searchValue = $("#salesOrderDataTableSearch").val();
-		searchValue = searchValue ? searchValue : "";
-	   	var url = sourceleadUrl+"/getDynamicSalesOrderList?searchValue="+searchValue;
-	   	getDynamicSalesOrderList(url);
+	   	getDynamicSalesOrderList();
+	   	
   }
   </script>
   
   <script>
-  function getDynamicSalesOrderList(url){
+  function getDynamicSalesOrderList(){
 	  	var result = "";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
@@ -97,8 +96,9 @@ $(document).ready(function(){
 	  	result = result +"</tr>";
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
-	  	$("#dynamicSalesOrderList").empty();
-	  	$("#dynamicSalesOrderList").append(result);
+	  	$("#dynamicSalesOrderList").html(result);
+	  	var searchValue = $("#searchByValue").val();
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?searchValue="+searchValue;  
   		dynamicSalesOrderList(url);
   	}
   
@@ -129,7 +129,7 @@ $(document).ready(function(){
 	            "render": function ( data, type, report, meta ) {
 	            	var result = "";
 	            	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100"><a onclick="goToSalesOrder('+report.orderNo+')">'+report.orderNo+'</a></div>';
+	           		  result = result +'<div class="tblminwidth-100"><a onclick="goToSalesOrder(\''+report.salesUuid+'\')">'+report.orderNo+'</a></div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 
@@ -219,15 +219,15 @@ $(document).ready(function(){
 	    } );
 	    $("#salesOrderListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#salesOrderDataTableSearch").keyup(function(e) {
+	    $("#searchByValue").keyup(function(e) {
 	    	   if(e.which === 13) {
 	    		   getSalesOrderList();
 	    	   }
 	    	});
 	}
   
-  function goToSalesOrder(orderNo){
-	  location.href = "${appPath}/SalesOrder?orderNo="+orderNo;
+  function goToSalesOrder(salesUuid){
+	  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
   }
   
   </script>
@@ -250,9 +250,11 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-  	
+	function goToWalletList(){
+	    location.href = "${appPath}/walletList";
+	}
 	function refreshPage(){
-		$("#salesOrderDataTableSearch").val('');
+		$("#searchByValue").val('');
 		getSalesOrderList();
 	}
 	
