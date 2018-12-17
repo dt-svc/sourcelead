@@ -3191,12 +3191,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 		return null;
 	}}
-	
+
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
 			String searchValue) {
 		return candidateDao.getWalletList(saleOrdersListDTO, searchValue);
 	}
-
-	
 }
