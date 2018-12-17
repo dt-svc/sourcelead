@@ -20,7 +20,7 @@
 	      
 	      	<div class="select-fild col-md-2 mt10">
                     <select id="araginglistSel">
-                        <option value="associateJoined" >Associate Joine Reports</option>
+                        <option value="associateJoined" >Associate Joined Reports</option>
                         <option value="associateTerminated" sel>Associate Terminated Report</option>
                     </select>
                 </div>
@@ -122,6 +122,12 @@
 				<span class="checkbox-new clearfix">
 					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="joinedShift">
 					<label for="j" class="checkbox-custom-label">Shift</label>
+										</span>
+			</li>
+																											<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox" checked="" data-name="probationStatus">
+					<label for="k" class="checkbox-custom-label">Probation Status</label>
 										</span>
 			</li>
 		</ul>
@@ -238,6 +244,12 @@
 				</span>
 			</li>
 
+				<span class="checkbox-new clearfix">
+					<input id="w" class="checkbox-custom toggle-vis" name="paidComponent" data-column="12" type="checkbox" checked="" data-name="probationStatus">
+					<label for="w" class="checkbox-custom-label">Probation Status</label>
+										</span>
+			</li>
+			
 			</ul>
 		</div>
 	</div>
@@ -483,6 +495,7 @@ function associateTerminatedReportList(url){
 		result = result + '<th>Shift</th>';
 		result = result + '<th>Department</th>';
 		result = result + '<th>Rate</th>';
+		result = result + '<th>Probation Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
 		result = result + '</table>';
@@ -521,6 +534,7 @@ function daywiseLeaveReportsListPagination(url){
             { "data": "shift"},
             { "data": "Department"},
             { "data": "Rate"},
+            { "data": "probationStatus"},
             
         ],
         "columnDefs": [ {
@@ -698,7 +712,21 @@ function daywiseLeaveReportsListPagination(url){
 	    	  		   }
 	    	  		return result;
             }
-          }],
+          }	,
+          {
+              "targets": colIndex++,
+              "data": "probationStatus",
+              "visible": $("input[data-name='probationStatus']").is(":checked"),
+              "render": function ( data, type, opt, meta ) {
+              		var result = "";
+              		if(opt.probationStatus !=null && opt.probationStatus !='' && opt.probationStatus !='undefined'){
+    							result = result + ' <td><div><span>'+opt.probationStatus+'</span></div></td>';
+    						}else{
+    							result = result + ' <td><div><span>---</span></div></td>';
+    						}
+    	              return result;
+              }
+        }],
 		    "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -800,6 +828,8 @@ function prepareOfferList(url){
 		result = result + '<th>Date Of Join</th>';
 		result = result + '<th>Manager</th>';
 		result = result + '<th>Shift</th>';
+		result = result + '<th>Probation Status</th>';
+		
 		result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>'; 
@@ -836,6 +866,7 @@ function offerpagination(url){
             { "data": "joinedFromDate"},
             { "data": "joinedReportingManager"},
             { "data": "joinedShift"},
+            { "data": "probationStatus"},
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -982,7 +1013,21 @@ function offerpagination(url){
 						}
 	              return result;
             }
-      }],
+      },
+      {
+          "targets": colIndex++,
+          "data": "ProbationStatus",
+          "visible": $("input[data-name='probationStatus']").is(":checked"),
+          "render": function ( data, type, opt, meta ) {
+          		var result = "";
+          		if(opt.probationStatus !=null && opt.probationStatus !='' && opt.probationStatus !='undefined'){
+							result = result + ' <td><div><span>'+opt.probationStatus+'</span></div></td>';
+						}else{
+							result = result + ' <td><div><span>---</span></div></td>';
+						}
+	              return result;
+          }
+    }],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 // 	    	"aaSorting": [[3,'desc']],

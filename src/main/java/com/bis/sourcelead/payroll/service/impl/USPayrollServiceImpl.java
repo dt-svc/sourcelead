@@ -199,12 +199,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			PaysheetFrequency pf = uSPaysheetService.getPayFrequencyByUUID(payrollApproverDTO.getPayrollFrequencyUUID());
 			paySum.setPfUUID(pf.getPaySheetFrequencyUUID());
 			
-			Set<EmployeePayroll> empPayroll = null;
-			if(!"All".equalsIgnoreCase(payrollApproverDTO.getPayType())) {
+			Set<EmployeePayroll> empPayroll = pf.getEmployeepayroll();
+			/*if(!"All".equalsIgnoreCase(payrollApproverDTO.getPayType())) {
 				 empPayroll = pf.getEmployeepayroll().stream().filter(p->payrollApproverDTO.getPayType().equalsIgnoreCase(p.getPayType())).collect(Collectors.toSet());	
 			}else {
 				 empPayroll = pf.getEmployeepayroll();
-			}
+			}*/
 			
 			List<EmployeePayroll> payrollListt = null;
 			if(Constants.DRAFT.equalsIgnoreCase(payrollApproverDTO.getConfirmType())) {
@@ -458,7 +458,8 @@ public class USPayrollServiceImpl  implements USPayrollService{
 			globalVarsMap.put("frequency", dateFormat.format(savedPF.getFrequencyStartDate()).toString());	
 		}
 		
-		double amount = savedPF.getEmployeepayroll().stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
+		Set<EmployeePayroll> filteredEmpPayroll = savedPF.getEmployeepayroll().stream().filter(p->!"MISSED".equalsIgnoreCase(p.getSubmitForAproverStatus())).collect(Collectors.toSet());
+		double amount = filteredEmpPayroll.stream().mapToDouble(p->p.getNetPay().doubleValue()).sum();
 		globalVarsMap.put("amount", String.valueOf(amount));
 		
 		StringBuilder stringBuilderLoginname = new StringBuilder();

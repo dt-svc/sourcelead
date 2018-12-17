@@ -1,10 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +54,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import edu.emory.mathcs.backport.java.util.LinkedList;
 
 /**
  * This class is used for...
@@ -447,5 +451,20 @@ public class HomeController {
         String time = df.format(dateWithTime);
     	return time;
     }
+    
+	@RequestMapping(value="/getAvailableFonts")
+	@ResponseBody
+	public List<String> getAvailableSystemFonts(HttpServletRequest request) {
+		List<String> fontsList = new LinkedList();
+		try {
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			for(String font : g.getAvailableFontFamilyNames()) {
+				fontsList.add(font);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fontsList;
+	}
 
 }

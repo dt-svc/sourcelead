@@ -3968,7 +3968,7 @@ function changeMarketplaceCompanyNameConfig(ele) {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
         		$('#successMsgDiv').html("Display company name on marketplace updated successfully");
-        		 $("#profilePercentageSelector").fadeIn(200);
+        		 $("#profilePercentageSelector").fadeIn(200).css({"width":"485px"});
         		  $('#profilePercentageSelector').delay(2000).fadeOut('slow');
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);

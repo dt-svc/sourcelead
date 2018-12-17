@@ -52,6 +52,7 @@
                  <input type="hidden" id="totalloanAdvanceLength" name="totalloanAdvanceLength" value="">
                  <input type="hidden" id="assSalType" name="assSalType" value="">
                  <input type="hidden" id="assSalary" name="assSalary" value="">
+                 <input type="hidden" id="preAssSalaryAmount" name="preAssSalaryAmount" value="">
               
             </div>
           </div>
@@ -119,7 +120,10 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <th>Pay Salary</th><td><i class="fa fa-dollar mr5"></i><input type="text" id="assSalaryAmount" name="assSalaryAmount" readOnly></td>
+                          <th>Pay Salary</th>
+                          <td><i class="fa fa-dollar mr5"></i>
+                          	<input type="text" id="assSalaryAmount" name="assSalaryAmount" readonly>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -242,6 +246,7 @@
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
 		            	$("#assSalaryAmount").val(json.grossPay);
+		            	$("#preAssSalaryAmount").val(json.grossPay);
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
@@ -664,6 +669,7 @@ function editUspayslip(event){
 // 	var maxLoanAdvanceCount = $("#totalloanAdvanceLength").val();
 	var text = document.getElementById("editUspaysliptext");
 	if(text.innerHTML === "Edit") {
+		$("#assSalaryAmount").attr("readonly", false);
 		text.innerHTML = "Save";
 			for(var i = 0; i < maxPreCount; i++){
 				$("#preDeductionAmount"+i+"").attr("onblur","calculatePreTaxDedAmount();");
@@ -682,6 +688,7 @@ function editUspayslip(event){
 			$("#loanAmount"+i+"").attr("onblur","calculateTotalLoanAmount();");
 		} */
 	}else {
+		$("#assSalaryAmount").attr("readonly", true);
 		text.innerHTML = "Edit";
 		for(var i = 0; i < maxPreCount; i++){
 			$("#preDeductionAmount"+i+"").removeAttr("onblur");

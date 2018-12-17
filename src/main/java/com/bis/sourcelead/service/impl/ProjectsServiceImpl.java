@@ -3923,7 +3923,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				createExcelsheet.autoSizeColumn(2);
 			}
 
-			if (null != reportList.getProjectManagers()) {
+			if (null != reportList.getProjectManagerNames()) {
 				 writeRow.createCell(3).setCellValue(reportList.getProjectManagerNames());
 				createExcelsheet.autoSizeColumn(3);
 			} else {

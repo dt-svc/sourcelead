@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -1586,7 +1587,7 @@ public class DashboardRestController {
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
-		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
+	ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
 		try {
 				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
@@ -1637,17 +1638,34 @@ public class DashboardRestController {
 					if(rsh.getSubmissionId().getRequirement().getGeneratedId() != null) {
 						rshDTO.setJobGeneratedId(rsh.getSubmissionId().getRequirement().getGeneratedId());
 					}
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-						rshDTO.setPayOutPeriod(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
+					if(rsh.getSubmissionId().getRequirement().getClientId() != null){
+                        if(StringUtils.isNotBlank(rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm())){
+                        String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+                        Integer result = 0;
+                        try {
+                            payTerm=payTerm.replaceAll("\\D", "");
+                            result = Integer.parseInt(payTerm);
+                        } catch (Exception e) {
+                            result = 0;
+                        }
+                        rshDTO.setPayTerm(result);
+                        }
+
+                    }
+					if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
 					}
 					
 					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-						int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-						Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
-						DateTime dtOrg = new DateTime(generatedInvoiceDate);
-//						DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-						rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),dtOrg.toDate()));
-					}
+//						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
+						if(rshDTO.getPayTerm() != 0){
+							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
+							DateTime dtOrg = new DateTime(generatedInvoiceDate);
+							DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+							rshDTO.setGenerateInvoice(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+							
+						}
+}
 					
 					if(rsh.getSubmissionId().getRequirement().getParentRequirement() != null){
 						rshDTO.setOrgLocationName(rsh.getSubmissionId().getRequirement().getParentRequirement().getOrgLocationId().getOrgLocationName());
@@ -2120,6 +2138,10 @@ public class DashboardRestController {
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
 					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
+					
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());
@@ -2240,7 +2262,9 @@ public class DashboardRestController {
 					if(rsh.getShiftName() !=null){
 						rshDTO.setShiftName(rsh.getShiftName());
 					}
-					
+					if(rsh.getProbationStatus() !=null){
+						rshDTO.setProbationStatus(rsh.getProbationStatus());
+					}
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setRecordsFiltered(toDayReqApplicantscount.getRecordsFiltered());

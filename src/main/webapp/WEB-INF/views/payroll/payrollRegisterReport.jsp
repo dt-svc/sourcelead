@@ -39,7 +39,7 @@ $(document).ready(function(){
               <div class="col-md-12">
                 <select class="form-control sel" id="payRollType" name="payRollType">
 					    <option>Select Type</option>
-						<option>Regular</option>
+						<option selected>Regular</option>
 						<option>Additional</option>
 					</select>
               </div>
@@ -62,7 +62,7 @@ $(document).ready(function(){
              <div class="form-group">
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
-                <select class="form-control chosen-select" id="payrollDepartment" name="department">
+                <select class="form-control chosen-select" multiple id="payrollDepartment" name="department">
 					    <!-- <option>Select Department</option>
 						<option>Department-1</option>
 						<option>Department-2</option>
@@ -164,9 +164,9 @@ function resetForm(){
 	 $("#payrollRegister").hide();
 	 $("#payGroup").val('');
 // 	 $("#payGroup").trigger("chosen:updated"); 
-	 $("#payPeriod").val('');
+	 $("#payPeriod").empty();
 // 	 $("#payPeriod").trigger("chosen:updated"); 
-	 $("#payRollType").val('');
+// 	 $("#payRollType").val('');
 	 $("#payrollDepartment").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
@@ -229,7 +229,7 @@ function preparePayRollRegisterList(url){
 		result = result + '<th>Employee ID</th>';
         result = result + '<th>Employee Name</th>';
         result = result + '<th>Department</th>';
-        result = result + '<th>Regular Hours</th>';
+        result = result + '<th>Current Hours</th>';
         result = result + '<th>Gross Pay</th>';
         result = result + '<th>Taxes</th>';
         result = result + '<th>YTD Taxes</th>';

@@ -2248,7 +2248,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
-					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
+					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
 						jobIds.add(reportDTO.getRequirementId());
 						/*BigDecimal bd = new BigDecimal(jobIds.size());
 						if(userDTO.getUserRequirementsCount() != null) {
@@ -2258,7 +2258,7 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
-					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId()) && (reportDTO.getAssignedUserStatus() ==null || reportDTO.getAssignedUserStatus().equalsIgnoreCase("0"))){
+					if(userDTO != null && !primaryUserjobIds.contains(reportDTO.getRequirementId())){
 							primaryUserjobIds.add(reportDTO.getRequirementId());
 							/*BigDecimal bd = new BigDecimal(primaryUserjobIds.size());
 							if(userDTO.getUserRequirementsCount() != null) {
@@ -2278,13 +2278,29 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-						
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId() !=reportDTO.getAssignedUserId() && reportDTO.getManagerUserId() !=reportDTO.getAssignedUserId()) {
+					
+					//for reference
+					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
+							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
 								System.out.println("assign");
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}*/
+					
+					if(reportDTO.getAssignedUserId() != null){
+						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+								&& (reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) 
+								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
+							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
+							if(userDTO != null){
+									jobIds.add(reportDTO.getRequirementId());
+									System.out.println("assign");
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+							}
 						}
 					}
 					

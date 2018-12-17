@@ -349,8 +349,8 @@
 											         <c:if test="${!empty entry.key}">
 											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 											                     <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
-											                     <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1]}" />
-											                      <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2]}" />
+											                     <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1] == 'NA' ? '' :fn:split(entry.key, '##')[1]}" />
+											                      <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2] == 'NA' ? '' : fn:split(entry.key, '##')[2]}" />
 															       <c:if test="${pt.id == taskId}">
 															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 																	       <c:forEach var="ted" items="${entry.value}">
@@ -390,7 +390,7 @@
 									        </div>
 									      </td>
 									       <td>
-									        <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2]}" />
+									        <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2] == 'NA' ? 'Regular' : fn:split(entry.key, '##')[2]}" />
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 						                           <span>${!empty hourlyType ? hourlyType : '--'}</span>
 									          </c:if>
@@ -404,6 +404,7 @@
 									         </c:if>
 									      </td>	
 									      <td>
+									       <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1] == 'NA' ? '' : fn:split(entry.key, '##')[1]}" />
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 									               <span>${!empty ticketNumber ? ticketNumber : '--'}</span>
 									          </c:if>
@@ -1194,7 +1195,7 @@ function addTimeSheetRow(projectId,leaveIndex) {
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"task1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"task1Id").attr('data-live-search','true');
-			$("#"+maxRowNum+"task1Id").attr('title','--select tasfk--');
+			$("#"+maxRowNum+"task1Id").attr('title','--select task--');
 			$("#"+maxRowNum+"task1Id").attr('data-size',8);
 			
 			var cell1 = row.insertCell(1);
@@ -2340,7 +2341,18 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
           } 
 	}
  }
+ 
+ function setHourlyType(entryIndex,hourlyTypeId){
+ 	if($("#" + hourlyTypeId).val() != null && $("#" + hourlyTypeId).val() !="undefined"){
+ 		   var end = parseInt(entryIndex)+7;
+       	  for (i = entryIndex; i < end; i++) {
+       		   $("[name='timesheetSubmission.timesheetEntries["+i+"].hourlyType']").val($("#"+hourlyTypeId).val());
+           } 
+ 	}
+ }
 </script>
+
+
 <script type="text/javascript">
 $(".content-wraper").click(function() {
 	bodyClick();
