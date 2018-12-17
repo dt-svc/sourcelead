@@ -55,6 +55,9 @@ public class MarketplaceSalesOrder implements Serializable {
 	@Column(name = "ORDER_DATE ")
 	private Date orderDate;
 	
+	@Column(name = "PAYMENT_METHOD")
+	private String paymentMethod;
+	
 	public Date getOrderDate() {
 		return orderDate;
 	}
@@ -160,7 +163,14 @@ public class MarketplaceSalesOrder implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
 }
 
 	
