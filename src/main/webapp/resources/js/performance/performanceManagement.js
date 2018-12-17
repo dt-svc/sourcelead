@@ -442,13 +442,14 @@ function PerformanceManagement(){
 						$("#selectedTemplatesDiv").find("div[data-template_id=" + $(this).val() + "]").remove();
 						return;
 					} else {
-						var text="<div class='multiJob positionRelative' data-template_id=" + $(this).val() + ">";
+						var text="<div class='multiTemplates positionRelative' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
 						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
 						text += "<div class='multiJobTitle clearfix'>";
 						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
-						text += "<span class='pull-right mr'><input type='text' class='form-control' field-name='percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+")' id='percent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
 						text += "</div>";
-						text += "<div class='multiJobDate clearfix' data-id=" + $(this).val() + " data-name='" + $(this).text() + "'>";
+						text += "<div class='row mxrateerror' id='percentageDiv"+$(this).val()+"'>";
+						text += "<input type='hidden' name='percent"+$(this).val()+"' id='percentageValidation"+$(this).val()+"'>";
 						text += "</div>";
 						text += "</div>";
 						$("#selectedTemplatesDiv").append(text);
@@ -465,5 +466,97 @@ function PerformanceManagement(){
 		var id = $(ele).parent().data("template_id");
 		$('#appraisalCategories').find("option[value='" + id + "']").prop("selected",false).end().trigger('chosen:updated');
 	}
+  
+  
+  
+  this.saveAppraisalCycleDetails = function(){
+	  
+	  
+	  
+	  var validationSettings = {
+		        errorMessagePosition : 'element',
+		       borderColorOnError : '',
+				scrollToTopOnError : true,
+				dateFormat : 'yyyy/mm/dd' 
+	         }; 
+	  
+	  
+	  if ($('#createAppraisal_form').validate(false, validationSettings)){ 
+		  
+		   var templates = [];
+			$(".multiTemplates").each(function() {				
+				var percentage = "";
+				$(this).find(".templatePercentage").each(function() {
+					percentage = $("#percent"+$(this).data("template_id")).val();
+				});
+				templates.push({
+					templateId : $(this).data("template_id") ? $(this).data("template_id") : 0,
+					percentage : $("#percent"+$(this).data("template_id")).val()
+				});
+			});
+			  var con = JSON.stringify(templates);
+			alert(con);
+			
+	        var formData = getFormData("createAppraisal_form");
+	      /*  $("#badgeDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	         $.ajax({
+		    	type: "POST",
+		    	data: formData,
+		    	 url: sourceleadUrl+"/savePerformanceBudgetDetails?",
+		        success: function(response) {
+		        	$("#badgeDetailsLoading").removeAttr('style');
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+   	    		    showError(response.responseMessage);
+   	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		performanceManagement.closeBadgePopup();
+		        		performanceManagement.getBadgesList();
+		        		$(".mask, #modalTasktype").fadeOut();
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		        },
+		    }); */ 
+	        return true;
+	  } else {
+		return false;
+	  }
+  }
+  
+  $('body').on('blur', '#createAppraisal_form', function() {
+		$("#createAppraisal_form").showHelpOnFocus();
+		$("#createAppraisal_form").validateOnBlur(false, validationSettings);  
+	});
+  
+  
+  
+  this.validatePercentage = function(id){
+	  var profilePercentage = $('#percent'+id).val();
+		
+		 if(profilePercentage > 100 || profilePercentage < 0){
+			 if(profilePercentage < 0){
+				    $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
+					$('input#percentageValidation'+id).attr('class','error signin_fild');
+					$("input#percentageValidation"+id).after("<p class='jquery_form_error_message'>Percentage should not in negitive</p>");
+					$('input#percentageValidation'+id).attr('record-exist','yes');
+					$('input#percentageValidation'+id).attr('record-exist-errorMsg','Profile Percentage should not in negitive'); 
+			 }else{
+				    $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
+				    $('input#percentageValidation'+id).attr('class','error signin_fild');
+				    $('input#percentageValidation'+id).after("<p class='jquery_form_error_message'>Percentage should not more than 100</p>");
+				    $('input#percentageValidation'+id).attr('record-exist','yes');
+				    $('input#percentageValidation'+id).attr('record-exist-errorMsg','Percentage should not more than 100'); 
+			 }
+		 }else{
+			 
+			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
+			 $('input#percentageValidation'+id).removeAttr( "class record-exist record-exist-errormsg");
+			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove();
+		 }
+  }
 	
 }
