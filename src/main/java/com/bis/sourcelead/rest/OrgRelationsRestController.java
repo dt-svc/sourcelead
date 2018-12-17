@@ -89,5 +89,9 @@ public class OrgRelationsRestController {
 		 return resultJson;
 	}*/
 	
-	
+	@RequestMapping(value="/updatePaymentTermsInOrgrelations")
+	public String updatePaymentTermsInOrgrelations() {
+		int count = orgRelationsService.updatePaymentTermsInOrgrelations();
+		return count + " Records updated";
+	}
 }

@@ -224,7 +224,7 @@
 							<label class="col-md-5">Table Border</label>
 							<div class="col-md-1">
 								<div class="checkbox-new pull-left mt5">
-									<input id="tableBorderCB" class="checkbox-custom" name="bgColorhdr" type="checkbox" onclick="applyTableSettings(false)">
+									<input id="tableBorderCB" class="checkbox-custom" name="bgColorhdr" type="checkbox" onclick="applyTableSettings(false)" checked="checked">
 									<label for="tableBorderCB" class="checkbox-custom-label">
 										<span class="ml10"></span>
 									</label>
@@ -331,19 +331,21 @@
 		</div>
 	</div>
 	<div class="invoicePreview invoicePreviewInn clearfix">
-		<input type="hidden" value="${invoiceTemplate != null ? invoiceTemplate.id : 0}" id="templateId">
-		<div class="col-md-12 mb">
-			<label class="clearfix text-muted">Name<span class="text-danger">&nbsp;*</span></label>
-			<div class="clearfix"></div>
-			<div class="input-group">
-				<input id="templateName" value="${invoiceTemplate.name}" class="form-control" placeholder="Template Name" type="text" title="Template Name">
+		<form id="invoiceTemplateForm">
+			<input type="hidden" value="${invoiceTemplate != null ? invoiceTemplate.id : 0}" id="templateId">
+			<div class="col-md-12 mb">
+				<label class="clearfix text-muted">Name<span class="text-danger">&nbsp;*</span></label>
+				<div class="clearfix"></div>
+				<div class="input-group">
+					<input id="templateName" value="${invoiceTemplate.name}" class="form-control" placeholder="Template Name" type="text" title="Template Name" field-name="Name" data-validation="required validate_length length1-100">
+				</div>
 			</div>
-		</div>
-		<div class="col-md-12 mb">
-			<label class="clearfix text-muted">Description</label>
-			<div class="clearfix"></div>
-			<textarea id="templateDescription" class="form-control" placeholder="Template Description" title="Template Description">${invoiceTemplate.description}</textarea>
-		</div>
+			<div class="col-md-12 mb">
+				<label class="clearfix text-muted">Description</label>
+				<div class="clearfix"></div>
+				<textarea id="templateDescription" class="form-control" placeholder="Template Description" title="Template Description" field-name="Description" data-validation="validate_length length0-1000">${invoiceTemplate.description}</textarea>
+			</div>
+		</form>
 	</div>
 	<div class="invoicePreview">
 		<div class="invoicePreviewInn clearfix">
@@ -358,7 +360,8 @@
 				</c:choose>
 			</ul>
 			<div class="invBtn">
-				<input class="slBtn md" value="Preview" id="update_user" onclick="showTemplatePreview();" type="button">
+				<input class="slBtn md" value="Preview" id="update_user" onclick="showTemplatePreview(true);" type="button">
+				<input class="slBtn md colorBtn" value="${invoiceTemplate != null ? 'Update' : 'Save'}" onclick="saveTemplate(false);" type="button">
 				<%-- <input class="slBtn md colorBtn" value="${invoiceTemplate != null ? 'Update' : 'Save'}" onclick="saveTemplate();" type="button"> --%>
 			</div>
 			<jsp:include page="../masterFooter.jsp" />
@@ -374,7 +377,7 @@
 		<div class="popupContent clearfix" id="previewItems"></div>
 		<div class="popupFoot text-right">
           <button type="button" class="slBtn md" onclick="closePreviewPopup()"> Cancel</button>
-          <input class="slBtn md colorBtn" value="${invoiceTemplate != null ? 'Update' : 'Save'}" onclick="saveTemplate();" type="button">
+          <input class="slBtn md colorBtn" value="${invoiceTemplate != null ? 'Update' : 'Save'}" onclick="saveTemplate(true);" type="button">
         </div>	
 	</div>
 </div>

@@ -79,6 +79,8 @@ public interface OrgRelationsDao {
 	List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception;
 	
 	List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	int updatePaymentTermsInOrgrelations();
 
 
 }
