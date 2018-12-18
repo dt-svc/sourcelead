@@ -152,6 +152,10 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			   templateDTO.setAppraisalCategories(template.getCategories());
 		   }
 		   
+		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {
+			   templateDTO.setJsonCategoriesString(template.getCategoriesJsonString());
+		   }
+		   
 		   return templateDTO;
 	}
 

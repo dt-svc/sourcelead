@@ -662,7 +662,21 @@ function PerformanceManagement(){
 			        		 performanceManagement.departmentsList(response.object.appraisalDepartment);
 			        		 performanceManagement.rolesList(response.object.appraisalRoles);
 			        		 performanceManagement.employeeTypeList(response.object.appraisalEmpType);
-			        		 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories);
+			        		 var percengateMap = new Map();
+			        		 if(response.object.jsonCategoriesString != null 
+			        				 && response.object.jsonCategoriesString != '' 
+			        					 && response.object.jsonCategoriesString != 'undefined'){
+			        			var data = eval(response.object.jsonCategoriesString);
+				        		 if (data) {
+				        			  $.each( data, function( k, v ) {
+				        				  percengateMap.set(v['templateId'],v['percentage'])
+				        			  });
+				        		 }
+			        		}
+			        		 
+			        		 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percengateMap);
+			        		 
+			        		 
 			        		 $("#appraisalDetailsLoading").removeAttr('style');
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
@@ -763,7 +777,8 @@ function PerformanceManagement(){
   }
   
   
-  this.feedbackCategoriesList = function(categoriesIds){
+  this.feedbackCategoriesList = function(categoriesIds,percengateMap){
+	  
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
@@ -775,6 +790,7 @@ function PerformanceManagement(){
 		        		if(categoriesIds != null && categoriesIds != '' && categoriesIds != 'undefined'){
 		        			var categIds = categoriesIds.split(",");
 		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
+		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percengateMap.get(opt.templateId));
 		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
 		        			}else{
 		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
@@ -790,6 +806,22 @@ function PerformanceManagement(){
 		        $('#appraisalCategories').trigger("chosen:updated");
 	        },
 	    });
+  }
+  
+  
+  this.editSelectedTemplateRows = function(id,templateName,percentage){
+	    var text="<div class='multiTemplates positionRelative' id="+id+" data-template_id=" + id + ">";
+		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
+		text += "<div class='multiJobTitle clearfix'>";
+		text += "<h2 class='pull-left'>" + templateName + "</h2>";
+		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+		text += "</div>";
+		text += "<div class='row mxrateerror' id='percentageDiv"+id+"'>";
+		text += "<input type='hidden' name='percent"+id+"' id='percentageValidation"+id+"'>";
+		text += "</div>";
+		text += "</div>";
+		$("#selectedTemplatesDiv").append(text);
+		return;
   }
   
 }
