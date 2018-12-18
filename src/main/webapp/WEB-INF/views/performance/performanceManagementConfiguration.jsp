@@ -13,6 +13,10 @@
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
 <script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
+<script>
+var locationDateFormat = '${SourceLeadWeb_orgLocations.dateFormat}'; 
+</script>
+
 <section class="content-wraper contentWraper" id="performanceManagementDiv">
     <section class="content-header clearfix">
 	    <div class="pull-left">

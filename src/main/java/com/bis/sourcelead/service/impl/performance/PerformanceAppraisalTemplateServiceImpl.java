@@ -1,7 +1,9 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -26,6 +29,9 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private DepartmentService departmentService;
 	
 	@Override
 	public PerformanceAppraisalTemplate savePerformanceAppraisalTemplate(
@@ -122,6 +128,24 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	@Override
 	public List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception {
 		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateList(orgLocationId);
+	}
+
+	@Override
+	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateById(Long id) throws Exception {
+		   PerformanceAppraisalTemplateDTO templateDTO = new PerformanceAppraisalTemplateDTO();
+		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
+		   templateDTO.setAppraisalTemplateId(template.getId());
+		   templateDTO.setName(template.getName());
+		   templateDTO.setAppraisalStartDate(template.getAppraisalStartDateStr());
+		   templateDTO.setAppraisalEndDate(template.getAppraisalEndDateStr());
+		   
+		   if(StringUtils.isNotBlank(template.getDepartment())) {
+			   templateDTO.setAppraisalDepartment(template.getDepartment());
+			   List<Long> departmentIds = Arrays.asList(template.getDepartment().split(",")).stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+			   List<DepartmentDTO> departmentDTOList = departmentService.getDepartmentsListByIds(departmentIds);
+			   templateDTO.setDepartmentList(departmentDTOList);
+		   }
+		   return templateDTO;
 	}
 
 }

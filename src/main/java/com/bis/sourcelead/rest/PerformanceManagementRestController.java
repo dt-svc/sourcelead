@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,16 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
@@ -55,6 +57,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceAppraisalTemplateService performanceAppraisalTemplateService;
+	
+	@Autowired
+	DepartmentService departmentService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -219,6 +224,39 @@ public class PerformanceManagementRestController {
 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		 return resObj;
+   }
+   
+   
+   
+   @RequestMapping(value = "/getAppraisalCycleDetailsById" , method = RequestMethod.GET)
+   public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleDetailsById(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+	   Response<PerformanceAppraisalTemplateDTO> resObj = new Response<>();
+	   try {
+		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(templateId);
+		   resObj.setObject(templateDTO);
+		   resObj.setResponse(Result.SUCCESS.name());
+		   resObj.setResponseMessage(Result.SUCCESS.getValue());
+	   }catch (Exception e) {
+		     e.printStackTrace();
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+	  
+	   return resObj;
+   }
+   
+   
+   
+   @RequestMapping(value = "/getDepartmentsListForPerformanceAppraisal" , method = RequestMethod.GET)
+   public List<DepartmentDTO> getDepartmentsListForPerformanceAppraisal(HttpServletRequest request) throws Exception {
+	   OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   List<DepartmentDTO> departmentList = null;
+	   try {
+		   departmentList = departmentService.getDepartmentsListByOrgLocationId(orgLocation.getId());
+	   }catch (Exception e) {
+		     e.printStackTrace();
+		}
+	   return departmentList;
    }
 
 }

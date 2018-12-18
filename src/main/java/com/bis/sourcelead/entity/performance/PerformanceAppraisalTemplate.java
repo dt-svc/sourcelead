@@ -113,6 +113,22 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@JsonProperty
     private String appraisalEndDateStr;
 	
+	@Transient
+	@JsonProperty
+	private String selfAppraisalStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String selfAppraisalEndDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String approvingFromStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String approvingFromEndDateStr;
+	
 	
 
 	public Long getId() {
@@ -339,6 +355,57 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setAppraisalEndDateStr(String appraisalEndDateStr) {
 		this.appraisalEndDateStr = appraisalEndDateStr;
+	}
+
+	public String getSelfAppraisalStartDateStr() {
+		
+		if(selfAppraisalStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			selfAppraisalStartDateStr = dateFormat.format(selfAppraisalStartDate);	
+		}
+		
+		return selfAppraisalStartDateStr;
+	}
+
+	public void setSelfAppraisalStartDateStr(String selfAppraisalStartDateStr) {
+		this.selfAppraisalStartDateStr = selfAppraisalStartDateStr;
+	}
+
+	public String getSelfAppraisalEndDateStr() {
+		
+		if(selfAppraisalEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			selfAppraisalEndDateStr = dateFormat.format(selfAppraisalEndDate);	
+		}
+		return selfAppraisalEndDateStr;
+	}
+
+	public void setSelfAppraisalEndDateStr(String selfAppraisalEndDateStr) {
+		this.selfAppraisalEndDateStr = selfAppraisalEndDateStr;
+	}
+
+	public String getApprovingFromStartDateStr() {
+		if(approvingFromStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			approvingFromStartDateStr = dateFormat.format(approvingFromStartDate);	
+		}
+		return approvingFromStartDateStr;
+	}
+
+	public void setApprovingFromStartDateStr(String approvingFromStartDateStr) {
+		this.approvingFromStartDateStr = approvingFromStartDateStr;
+	}
+
+	public String getApprovingFromEndDateStr() {
+		if(approvingFromEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			approvingFromEndDateStr = dateFormat.format(approvingFromEndDate);	
+		}
+		return approvingFromEndDateStr;
+	}
+
+	public void setApprovingFromEndDateStr(String approvingFromEndDateStr) {
+		this.approvingFromEndDateStr = approvingFromEndDateStr;
 	}
 	
 	

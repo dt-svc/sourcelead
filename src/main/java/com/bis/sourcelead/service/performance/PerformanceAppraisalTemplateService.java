@@ -12,4 +12,6 @@ public interface PerformanceAppraisalTemplateService {
 	PerformanceAppraisalTemplate storePerformanceAppraisalTemplate(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long orgLocationId, Long userId, String dateFormat) throws Exception;
 	
 	List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception;
+	
+	PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateById(Long id) throws Exception;
 }

@@ -2,12 +2,16 @@ package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.dto.DepartmentDTO;
 
 public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	private Long appraisalTemplateId;
 	
 	@Required(desc="name")
 	private String name;
@@ -50,6 +54,17 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	@Required(desc="jsonTemplateString")
 	private String jsonCategoriesString ;
 	
+	private List<DepartmentDTO> departmentList;
+	
+	
+	public Long getAppraisalTemplateId() {
+		return appraisalTemplateId;
+	}
+
+	public void setAppraisalTemplateId(Long appraisalTemplateId) {
+		this.appraisalTemplateId = appraisalTemplateId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -185,6 +200,14 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setJsonCategoriesString(String jsonCategoriesString) {
 		this.jsonCategoriesString = jsonCategoriesString;
+	}
+
+	public List<DepartmentDTO> getDepartmentList() {
+		return departmentList;
+	}
+
+	public void setDepartmentList(List<DepartmentDTO> departmentList) {
+		this.departmentList = departmentList;
 	}
 
 	

@@ -1,13 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.AssetDao;
 import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.entity.Asset;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.entity.Department;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -158,6 +155,38 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		}
 		return department;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception {
+		List<DepartmentDTO> departmentDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT DEPT.ID AS deptId, "
+				+ " DEPT.DEPARTMENT_NAME AS departmentName "
+				+ " FROM DEPARTMENT DEPT " + " WHERE " + " DEPT.ID IN (:id) ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setParameterList("id", id);
+		queryObj.setResultTransformer(Transformers.aliasToBean(DepartmentDTO.class));
+		departmentDTOList = queryObj.list();
+		return departmentDTOList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception {
+		List<DepartmentDTO> departmentDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT DEPT.ID AS deptId, "
+				+ " DEPT.DEPARTMENT_NAME AS departmentName "
+				+ " FROM DEPARTMENT DEPT WHERE DEPT.ORG_LOCATION_ID = :orgLocationId AND DEPT.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(DepartmentDTO.class));
+		departmentDTOList = queryObj.list();
+		return departmentDTOList;
 	}
 
 }

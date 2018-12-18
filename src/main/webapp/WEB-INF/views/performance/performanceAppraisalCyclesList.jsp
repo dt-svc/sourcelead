@@ -52,8 +52,8 @@
 		                  <td>
 							  <div class="tblminwidth-50">
 								  <ul class="list-unstyled list-inline">
-									  <li><i class="fa fa-pencil"></i></li>
-									  <li><i class="fa fa-trash"></i></li>
+									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							  	      <li><a onclick="#" title="Delete"><i class="fa fa-trash"></i></a></li>
 								  </ul>
 							  </div>
 						  </td>
@@ -61,19 +61,9 @@
 		            
 		            </c:forEach>
 	            </c:if>
-	            
-	            <%-- <c:if test="${appraisalTemplatesListSize == 0}">
-	            <div class='row'> 
-					 <div class='col-lg-12'> 
-						 <div class='dataTables_empty'>
-						 </div>
-					 </div>
-				 </div>
-	            </c:if> --%>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
        

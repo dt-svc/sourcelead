@@ -4,7 +4,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Add Appraisal Cycle</h2></div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.viewAppraisalCycle();">Appraisal Cycle List</a> &raquo; Add Appraisal Cycle</div>
@@ -16,10 +15,10 @@
 		    <div class="form-horizontal mt myForm">
 		    <form:form id="createAppraisal_form"  name="createAppraisal_form" method="post">
 		        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
-		        
+		        <input type="hidden" name="appraisalTemplateId" id="appraisalTemplateId"/>
 			        <div class="form-group" id="appraisalNameDiv">
 			          <label class="col-md-3">Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			          <div class="col-md-9"><input type="text" class="form-control" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
+			          <div class="col-md-9"><input type="text" class="form-control" name="name" id="appraisalName" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
 			        </div>
 			        
 			        <div class="form-group" id="appraisalStartDateDiv">
@@ -53,9 +52,9 @@
 							<select multiple class="chosen-select form-control"
 											name="appraisalDepartment" id="appraisalDepartment" data-placeholder="Select Department"
 											data-validation-optional="true">
-											<c:forEach var="dept" items="${departmentList}">
+											<%-- <c:forEach var="dept" items="${departmentList}">
 													<option value="${dept.id}">${dept.departmentName}</option>
-											</c:forEach>
+											</c:forEach> --%>
 							</select>
 							          	
 					  </div>

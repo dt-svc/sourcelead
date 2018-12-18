@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -66,4 +67,18 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 		String query = "from PerformanceAppraisalTemplate template where template.orgLocationId.id =:orgLocationId and template.status ='1' ";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
+
+	@Override
+	public PerformanceAppraisalTemplate getPerformanceAppraisalTemplateById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalTemplate> performanceAppraisalTemplate = new ArrayList<PerformanceAppraisalTemplate>();
+		logger.debug("getPerformanceAppraisalTemplateById  start");
+		performanceAppraisalTemplate = session.createQuery("from PerformanceAppraisalTemplate template where template.id = :id " ).setLong( "id", id).list();
+		logger.debug("getPerformanceAppraisalTemplateById  end");
+		if (performanceAppraisalTemplate.size() > 0) {
+			return performanceAppraisalTemplate.get(0);
+		} else {
+			return null;
+		}
+	 }
 }
