@@ -1917,4 +1917,18 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		User toUser = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
 		userService.sendEmployemntConfirmationMailToAssocaite(fromUser,toUser,orgLocations,confirmationDate,designation);
 	}
+	
+
+	@RequestMapping(value = "/validateSSNDuplicate", method = RequestMethod.POST)
+	public boolean validateSSNDuplicate(@RequestParam(value = "ssnNumber", required = false) String ssnNumber,@RequestParam(value = "userId",required = false) String userId, HttpServletRequest request) throws Exception
+	{
+		boolean isFound = false;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = userService.validateSSNDuplicate(ssnNumber,orgLocations.getId(),userId);
+		if(user != null) {
+			isFound = true;
+		}
+		return isFound;
+		
+	}
 }

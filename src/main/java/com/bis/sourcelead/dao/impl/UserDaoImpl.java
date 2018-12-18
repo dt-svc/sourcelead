@@ -2763,6 +2763,30 @@ String sortingQry ="";
 	
 	}
 
+	@Override
+	@Transactional
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String subQry = " and user.id <> :userId";
+		if(StringUtils.isNotBlank(userId)) {
+			String query = "from User user where user.ssn = :ssnNumber "+subQry;
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).setLong("userId", Long.parseLong(userId)).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}else {
+			String query = "from User user where user.ssn = :ssnNumber ";
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}
+		
+		return user;
+	}
+
 	
 
 
