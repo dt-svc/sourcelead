@@ -46,7 +46,7 @@ $(document).ready(function(){
                 <div class="newActPop" style=""> 
                 <span>
                 <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
-                <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+                <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
                  </span> 
                  </div>
               </li>
@@ -300,6 +300,61 @@ function purchasePagination(url){
     	});
 }
 
+</script>
+<script>
+script type="text/javascript">
+function candidateCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<script>
+function exportToPdf(){
+	
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=pdf";	
+	   }
+	 /*   else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Candidates List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  } */
+</script>
+<script>
+function exportToExcel(){
+	
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=xls";	
+	  }
+	/*   else{
+		  var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Candidates List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidateCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }  */
 </script>
 
   

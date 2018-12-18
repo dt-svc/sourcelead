@@ -47,6 +47,7 @@ import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.dao.EmployeesDao;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dao.UserDao;
@@ -151,6 +152,9 @@ public class CandidateServiceImpl implements CandidateService {
 	@Autowired
 	UserDao userDao;
 
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -3200,4 +3204,106 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			String searchValue) {
 		return candidateDao.getWalletList(saleOrdersListDTO, searchValue);
 	}
+
+	@Override
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception{
+		return candidateDao.getPurchaseCandidateListByOrglocation( id);
+	}
+
+	@Override
+	public File getPurchaseCandidatePdf(List<MarketplacePurchaseOrder> purchaseCandidatesList, Long orgLocationId)
+			throws Exception {
+		return pdfUtil.createCandidatePdfTable(purchaseCandidatesList,orgLocationId);
+	}
+
+	@Override
+	public File getPurchaseCandidateExcelFile(List<MarketplacePurchaseOrder> purchaseCandidatesList, Long orgLocationId)throws Exception {
+		
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+        
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		 StringBuilder excelSheet = new StringBuilder();
+		 Sheet createExcelsheet;		
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(dateFormat.format(new Date())).toString());	 
+		
+		 
+    	Row writeRow = null;
+		String headers [] = Constants.PURCHASE_CANDIDATE_HEADERS;
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+		 int column=0;
+	        for(MarketplacePurchaseOrder candidate : purchaseCandidatesList){
+	       	 writeRow = createExcelsheet.createRow(column+1);
+	       	 createExcelsheet = createXlsSheet(createExcelsheet,candidate,writeRow,purchaseCandidatesList,orgLocation);
+	       	 column++;
+	        }
+	        StringBuilder orgNameSB = new StringBuilder();
+	        File file;        
+	        	 file = File.createTempFile(orgNameSB.append("").append("Purchased Candidates").append(dateFormat.format(new Date())).toString(),".xls");		     
+	        
+	        file.setReadable(true);
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				 createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	 	
+		return file;
+	}
+
+	private Sheet createXlsSheet(Sheet createExcelsheet, MarketplacePurchaseOrder candidate, Row writeRow,
+			List<MarketplacePurchaseOrder> purchaseCandidatesList,OrgLocations orgLocation ) {
+			if(candidate.getOrderNo() !=null && !"".equalsIgnoreCase(candidate.getOrderNo())){
+				 writeRow.createCell(0).setCellValue(candidate.getOrderNo());}
+			else {
+				writeRow.createCell(0).setCellValue("--");
+			}
+			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
+				
+				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
+			else {
+				writeRow.createCell(1).setCellValue("--");
+			}
+			if(candidate.getCompanyName() !=null && !"".equalsIgnoreCase(candidate.getCompanyName())){
+				writeRow.createCell(2).setCellValue(candidate.getCompanyName());}
+				else {
+					writeRow.createCell(2).setCellValue("--");
+			}
+			if(candidate.getTotalresume() !=null && !"".equalsIgnoreCase(candidate.getTotalresume())){
+				writeRow.createCell(3).setCellValue(candidate.getTotalresume());}
+				else {
+					writeRow.createCell(3).setCellValue("--");
+			}
+			if(candidate.getTotalPrice() !=null && !"".equalsIgnoreCase(candidate.getTotalPrice().toString())){
+				writeRow.createCell(4).setCellValue(candidate.getTotalPrice());}
+				else {
+					writeRow.createCell(4).setCellValue("--");
+			}
+			if(candidate.getServiceFee() !=null && !"".equalsIgnoreCase(candidate.getServiceFee())){
+				writeRow.createCell(5).setCellValue(candidate.getServiceFee());}
+				else {
+					writeRow.createCell(5).setCellValue("--");
+			}
+			if(candidate.getDiscount() !=null && !"".equalsIgnoreCase(candidate.getDiscount())){
+				writeRow.createCell(6).setCellValue(candidate.getDiscount());}
+				else {
+					writeRow.createCell(6).setCellValue("--");
+			}
+			if(candidate.getGrandTotal() !=null && !"".equalsIgnoreCase(candidate.getGrandTotal().toString())){
+				writeRow.createCell(7).setCellValue(candidate.getGrandTotal());}
+				else {
+					writeRow.createCell(7).setCellValue("--");
+			}
+			if(candidate.getPaymentStatus() !=null && !"".equalsIgnoreCase(candidate.getPaymentStatus())){
+				writeRow.createCell(8).setCellValue(candidate.getPaymentStatus());}
+				else {
+					writeRow.createCell(8).setCellValue("--");
+			}
+			
+			return createExcelsheet;
+	}
+	
 }
+
