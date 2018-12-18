@@ -2254,7 +2254,6 @@ public class UserDaoImpl implements UserDao {
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
 						}*/
-						System.out.println("manager");
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
@@ -2264,7 +2263,6 @@ public class UserDaoImpl implements UserDao {
 							if(userDTO.getUserRequirementsCount() != null) {
 								bd = bd.add(userDTO.getUserRequirementsCount());
 							}*/
-							System.out.println("primary");
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
@@ -2298,7 +2296,6 @@ public class UserDaoImpl implements UserDao {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 							if(userDTO != null){
 									jobIds.add(reportDTO.getRequirementId());
-									System.out.println("assign");
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
 						}
@@ -2766,6 +2763,30 @@ String sortingQry ="";
 		
 	return usersList;
 	
+	}
+
+	@Override
+	@Transactional
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String subQry = " and user.id <> :userId";
+		if(StringUtils.isNotBlank(userId)) {
+			String query = "from User user where user.ssn = :ssnNumber "+subQry;
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).setLong("userId", Long.parseLong(userId)).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}else {
+			String query = "from User user where user.ssn = :ssnNumber ";
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}
+		
+		return user;
 	}
 
 	

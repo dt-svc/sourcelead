@@ -637,6 +637,7 @@ function validateSSNNumber(){
 	}else{
 		calculateSSNLength(length,ssnNumber);
 	}
+	
 }
 function calculateSSNLength(length,ssnNumber){
 	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
@@ -663,8 +664,39 @@ function calculateSSNLength(length,ssnNumber){
 		}else{
 			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		}
+		
 	}
+	validateSSNDuplicate($("#ssnNumber").val());
 }
+ </script>
+ 
+ <script>
+ function validateSSNDuplicate(ssnNumber){
+	 var associateId = $("#associateId").val();
+	 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	 if(ssnNumber != null && ssnNumber != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+						  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  document.getElementById("ssnNumber").setAttribute('record-exist','yes');
+						  document.getElementById("ssnNumber").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }	 
+ }
  </script>
 
 <script>

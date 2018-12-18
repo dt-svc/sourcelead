@@ -177,24 +177,24 @@
 	<span class="">Invoice Table</span>
 	<div class="project_tabs_inn_table">
 		<table onclick="showTableSettingsTab(this)" id="invoiceTable" data-id="invoiceTable">
-			<thead>
+			<thead data-style="font-size: 12px;">
 				<tr>
-					<th>Column 1</th>
-					<th>Column 2</th>
-					<th>Column 3</th>
-					<th>...</th>
-					<th>...</th>
-					<th>Column n</th>
+					<th style="font-size: 12px;">Column 1</th>
+					<th style="font-size: 12px;">Column 2</th>
+					<th style="font-size: 12px;">Column 3</th>
+					<th style="font-size: 12px;">...</th>
+					<th style="font-size: 12px;">...</th>
+					<th style="font-size: 12px;">Column n</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody data-style="font-size: 10px;">
 				<tr>
-					<td>Value 1</td>
-					<td>Value 2</td>
-					<td>Value 3</td>
-					<td>...</td>
-					<td>...</td>
-					<td>Value n</td>
+					<td style="font-size: 10px;">Value 1</td>
+					<td style="font-size: 10px;">Value 2</td>
+					<td style="font-size: 10px;">Value 3</td>
+					<td style="font-size: 10px;">...</td>
+					<td style="font-size: 10px;">...</td>
+					<td style="font-size: 10px;">Value n</td>
 				</tr>
 			</tbody>
 		</table>
