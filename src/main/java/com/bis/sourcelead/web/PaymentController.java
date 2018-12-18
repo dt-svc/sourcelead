@@ -810,7 +810,7 @@ public class PaymentController {
                 		//Getting the candidate details from the candidate market place table. It will be a single records.
                 		CandidateMarketPlace candidateDetails = candidateService.getCandidateDetailsByCandidateId(candidateId);
                 		           cb.append("-"+candidateDetails.getMarketPrice()+"<br>");
-                		           amount += Integer.parseInt(candidateDetails.getMarketPrice());
+                		           amount += Double.parseDouble(candidateDetails.getMarketPrice());
                 		}
                 		
                 		globalVarsMap1.put("numberOfResumes", numberOfResumes);
