@@ -2590,7 +2590,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				checkBoxQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
 						+ customStartdate + "' and '" + customEnddate + "'");
 			}
-			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
+			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
@@ -3047,5 +3047,5 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return responseList;
 	}
-
+	
 }
