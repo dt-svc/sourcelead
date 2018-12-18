@@ -283,6 +283,7 @@ function goToOrgMarketPlaceList(){
 
 
 function getCandidateDetailsFromMarketcart(){
+	var candidateLength = 0;
 	var checkedDate = $('.dateCheckBox:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
@@ -294,9 +295,10 @@ function getCandidateDetailsFromMarketcart(){
 	}else{
 		checkedDate = "";
 	}
-	var candidateLength = $.ajax({
+	$.ajax({
 		type : "POST",
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		async : false,
 		success : function(object) {
 			if(object != null){
 			var result ="";
@@ -352,11 +354,11 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "</div></div></div></div></div>";
          		}
 			$("#gridView").empty().append(result);
-			}if(object.length == 0){
-				window.location.replace("${appPath}/globalMarketplacePage");
+			candidateLength =  object.length;
 			}
 		}
 		});
+	return candidateLength;
 	}
 
 function updateInvoiceDetails(){
@@ -393,6 +395,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	}
 
 function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
+	var cLength;
 	$.ajax({
 	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
@@ -400,14 +403,19 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	getCandidateDetailsFromMarketcart();
+            	cLength = getCandidateDetailsFromMarketcart();
+            	if(cLength === 0){
+    				window.location.replace("${appPath}/globalMarketplacePage");
+    			}
             	updateInvoiceDetails();
 				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
     			$(".project_inn_mask").fadeOut(200);
             }else{
            	 	showError("Operation failed, please try again");
-            }}
+            }
+			
+		}
 	});
 	}
 
