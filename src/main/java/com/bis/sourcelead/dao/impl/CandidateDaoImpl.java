@@ -3079,4 +3079,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		return responseList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from MarketplacePurchaseOrder mpo where mpo.orgLocationId.id=:rajat";
+		List<MarketplacePurchaseOrder> list = session.createQuery(query).setLong("rajat", id).list();
+		return list;
+	}
+
 }
