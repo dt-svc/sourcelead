@@ -657,18 +657,6 @@ function PerformanceManagement(){
 			        		 $("#appraisalStartDate").val(response.object.appraisalStartDate);
 			        		 $("#appraisalEndDate").val(response.object.appraisalEndDate);
 			        		 performanceManagement.departmentsList(response.object.appraisalDepartment);
-			        		 
-	     		        		/*if(response.object.departmentList.length > 0){
-	     		        			 var deptOutput = "";
-	     		        			for(var i = 0, size = response.object.departmentList.length; i < size ; i++){
-	 	     		        		   var dept = response.object.departmentList[i];
-	 	     		        		 deptOutput = deptOutput+"<option value='"+dept.deptId+"' selected>"+dept.departmentName+"</option>";
-	 	     		        		}
-	     		        			$("#appraisalDepartment").append(deptOutput);
-	 	     		        		$("#appraisalDepartment").trigger("chosen:updated");
-	     		        		}*/
-	     		        		
-	     		        		
 			        		 $("#appraisalDetailsLoading").removeAttr('style');
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
@@ -692,7 +680,7 @@ function PerformanceManagement(){
 		        		var opt = json[i];
 		        		if(departmentIds != null && departmentIds != '' && departmentIds != 'undefined'){
 		        			var deptIds = departmentIds.split(",");
-		        			if (deptIds.indexOf(opt.id) > -1) {
+		        			if (deptIds.indexOf(opt.deptId.toString()) > -1) {
 		        				output = output + "<option value='" +opt.deptId+ "' selected>"+opt.departmentName+"</option>";
 		        			}else{
 		        				output = output + "<option value='" +opt.deptId+ "'>"+opt.departmentName+"</option>";

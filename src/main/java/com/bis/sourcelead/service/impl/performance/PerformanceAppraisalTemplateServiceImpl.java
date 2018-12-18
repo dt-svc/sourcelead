@@ -30,8 +30,6 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@Autowired
-	private DepartmentService departmentService;
 	
 	@Override
 	public PerformanceAppraisalTemplate savePerformanceAppraisalTemplate(
@@ -138,13 +136,10 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   templateDTO.setName(template.getName());
 		   templateDTO.setAppraisalStartDate(template.getAppraisalStartDateStr());
 		   templateDTO.setAppraisalEndDate(template.getAppraisalEndDateStr());
-		   
 		   if(StringUtils.isNotBlank(template.getDepartment())) {
 			   templateDTO.setAppraisalDepartment(template.getDepartment());
-			   List<Long> departmentIds = Arrays.asList(template.getDepartment().split(",")).stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-			   List<DepartmentDTO> departmentDTOList = departmentService.getDepartmentsListByIds(departmentIds);
-			   templateDTO.setDepartmentList(departmentDTOList);
 		   }
+		   
 		   return templateDTO;
 	}
 
