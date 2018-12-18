@@ -87,6 +87,9 @@ function PerformanceManagement(){
   		    	   
   		    	   if(templateId == null || templateId == '' || templateId == 'undefined'){
   		    		performanceManagement.departmentsList();
+  		    		performanceManagement.rolesList();
+  		    		performanceManagement.employeeTypeList();
+  		    		performanceManagement.feedbackCategoriesList();
   		    	   }
   		    	    
   		    	    performanceManagement.appraisalStartDateAndEndDatePickers();
@@ -657,6 +660,9 @@ function PerformanceManagement(){
 			        		 $("#appraisalStartDate").val(response.object.appraisalStartDate);
 			        		 $("#appraisalEndDate").val(response.object.appraisalEndDate);
 			        		 performanceManagement.departmentsList(response.object.appraisalDepartment);
+			        		 performanceManagement.rolesList(response.object.appraisalRoles);
+			        		 performanceManagement.employeeTypeList(response.object.appraisalEmpType);
+			        		 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories);
 			        		 $("#appraisalDetailsLoading").removeAttr('style');
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
@@ -694,6 +700,94 @@ function PerformanceManagement(){
 	        	$("#appraisalDepartment").empty();
 		        $("#appraisalDepartment").append(output);
 		        $('#appraisalDepartment').trigger("chosen:updated");
+	        },
+	    });
+  }
+  
+  this.rolesList = function(rolesIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getRolesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(rolesIds != null && rolesIds != '' && rolesIds != 'undefined'){
+		        			var userRoleIds = rolesIds.split(",");
+		        			if (userRoleIds.indexOf(opt.rolesId.toString()) > -1) {
+		        				output = output + "<option value='" +opt.rolesId+ "' selected>"+opt.displayName+"</option>";
+		        			}else{
+		        				output = output + "<option value='" +opt.rolesId+ "'>"+opt.displayName+"</option>";
+		        			}
+		        		}else{
+		        			output = output + "<option value='" +opt.rolesId+ "'>"+opt.displayName+"</option>";
+		        		}
+		        		
+		        		
+				}
+	        	$("#appraisalRoles").empty();
+		        $("#appraisalRoles").append(output);
+		        $('#appraisalRoles').trigger("chosen:updated");
+	        },
+	    });
+  }
+  
+  this.employeeTypeList = function(employeeTypes){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getEmployeeTypesForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var empType = json[i];
+		        		if(employeeTypes != null && employeeTypes != '' && employeeTypes != 'undefined'){
+		        			var employeeType = employeeTypes.split(",");
+		        			if (employeeType.indexOf(empType.toString()) > -1) {
+		        				output = output + "<option value='" +empType+ "' selected>"+empType+"</option>";
+		        			}else{
+		        				output = output + "<option value='" +empType+ "'>"+empType+"</option>";
+		        			}
+		        		}else{
+		        			output = output + "<option value='" +empType+ "'>"+empType+"</option>";
+		        		}
+		        		
+		        		
+				}
+	        	$("#appraisalEmpType").empty();
+		        $("#appraisalEmpType").append(output);
+		        $('#appraisalEmpType').trigger("chosen:updated");
+	        },
+	    });
+  }
+  
+  
+  this.feedbackCategoriesList = function(categoriesIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(categoriesIds != null && categoriesIds != '' && categoriesIds != 'undefined'){
+		        			var categIds = categoriesIds.split(",");
+		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
+		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
+		        			}else{
+		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
+		        			}
+		        		}else{
+		        			output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
+		        		}
+		        		
+		        		
+				}
+	        	$("#appraisalCategories").empty();
+		        $("#appraisalCategories").append(output);
+		        $('#appraisalCategories').trigger("chosen:updated");
 	        },
 	    });
   }

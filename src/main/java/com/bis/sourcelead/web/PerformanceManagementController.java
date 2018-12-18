@@ -123,15 +123,6 @@ public class PerformanceManagementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("locationDateFormat", orgLocation.getDateFormat());
 		
-		List<Department> departmentList = departmentService.getDepartmentByOrgLocationIdAndStatus(orgLocation.getId(), Constants.MEMBER_ACTIVE);
-		model.addObject("departmentList", departmentList);
-		
-		List<Roles> rolesList = rolesService.getRoles(orgLocation.getId());
-		model.addObject("rolesList", rolesList);
-		
-		List<String> employeeTypeList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
-		model.addObject("employeeTypeList", employeeTypeList);
-		
 		List<PerformanceFeedbackTemplate> categoriesList = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateList(orgLocation.getId());
 		model.addObject("categoriesList", categoriesList);
 		

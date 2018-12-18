@@ -140,6 +140,18 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			   templateDTO.setAppraisalDepartment(template.getDepartment());
 		   }
 		   
+		   if(StringUtils.isNotBlank(template.getRoles())) {
+			   templateDTO.setAppraisalRoles(template.getRoles());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getEmployeeType())) {
+			   templateDTO.setAppraisalEmpType(template.getEmployeeType());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCategories())) {
+			   templateDTO.setAppraisalCategories(template.getCategories());
+		   }
+		   
 		   return templateDTO;
 	}
 

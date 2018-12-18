@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class PerformanceFeedbackTemplateDTO implements Serializable{
 	
@@ -11,6 +12,8 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 	private String description;
 	
 	private String jsonString;
+	
+	private BigInteger templateId;
 
 	public String getTemplateName() {
 		return templateName;
@@ -35,7 +38,14 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 	public void setJsonString(String jsonString) {
 		this.jsonString = jsonString;
 	}
-	
+
+	public BigInteger getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(BigInteger templateId) {
+		this.templateId = templateId;
+	}
 	
 
 }

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -30,6 +32,7 @@ import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
@@ -60,6 +63,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	DepartmentService departmentService;
+	
+	@Autowired
+	RolesService rolesService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -257,6 +263,39 @@ public class PerformanceManagementRestController {
 		     e.printStackTrace();
 		}
 	   return departmentList;
+   }
+   
+   
+   @RequestMapping(value = "/getRolesListForPerformanceAppraisal" , method = RequestMethod.GET)
+   public List<RoleDTO> getRolesListForPerformanceAppraisal(HttpServletRequest request) throws Exception {
+	   OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   List<RoleDTO> rolesList = null;
+	   try {
+		   rolesList = rolesService.getRolesDTOListByOrgLocationId(orgLocation.getId());
+	   }catch (Exception e) {
+		     e.printStackTrace();
+		}
+	   return rolesList;
+   }
+   
+   
+   @RequestMapping(value = "/getEmployeeTypesForPerformanceAppraisal" , method = RequestMethod.GET)
+   public List<String> getEmployeeTypesForPerformanceAppraisal() throws Exception {
+	   List<String> employeeTypeList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
+	   return employeeTypeList;
+   }
+   
+   
+   @RequestMapping(value = "/getFeedBackCategoriesListForPerformanceAppraisal" , method = RequestMethod.GET)
+   public List<PerformanceFeedbackTemplateDTO> getFeedBackCategoriesListForPerformanceAppraisal(HttpServletRequest request) throws Exception {
+	   OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   List<PerformanceFeedbackTemplateDTO> templateDTOList = null;
+	   try {
+		   templateDTOList = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateDTOList(orgLocation.getId());
+	   }catch (Exception e) {
+		     e.printStackTrace();
+		}
+	   return templateDTOList;
    }
 
 }

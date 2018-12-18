@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.performance.PerformanceFeedbackTemplateDao;
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 
@@ -29,6 +30,12 @@ public class PerformanceFeedbackTemplateServiceImpl implements PerformanceFeedba
 	@Override
 	public List<PerformanceFeedbackTemplate> getPerformanceFeedbackTemplateList(Long orgLocationId) throws Exception {
 		return performanceFeedbackTemplateDao.getPerformanceFeedbackTemplateList(orgLocationId);
+	}
+
+	@Override
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceFeedbackTemplateDTOList(Long orgLocationId)
+			throws Exception {
+		return performanceFeedbackTemplateDao.getPerformanceFeedbackTemplateDTOList(orgLocationId);
 	}
 
 	

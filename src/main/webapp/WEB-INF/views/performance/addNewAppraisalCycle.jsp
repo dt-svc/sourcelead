@@ -52,9 +52,6 @@
 							<select multiple class="chosen-select form-control"
 											name="appraisalDepartment" id="appraisalDepartment" data-placeholder="Select Department"
 											data-validation-optional="true">
-											<%-- <c:forEach var="dept" items="${departmentList}">
-													<option value="${dept.id}">${dept.departmentName}</option>
-											</c:forEach> --%>
 							</select>
 							          	
 					  </div>
@@ -65,9 +62,6 @@
 							<select  multiple class="chosen-select form-control"
 											name="appraisalRoles" data-placeholder="Select Roles"
 											id="appraisalRoles" data-validation-optional="true">
-							  <c:forEach var="roles" items="${rolesList}">
-									<option value="${roles.id}">${roles.displayName}</option>
-							</c:forEach>
 							</select>          	
 					  </div>
 					</div> 
@@ -77,9 +71,6 @@
 							<select  multiple class="chosen-select form-control"
 											name="appraisalEmpType" data-placeholder="Employee Type"
 											id="appraisalEmpType" data-validation-optional="true">
-							  <c:forEach var="empType" items="${employeeTypeList}">
-									<option value="${empType}">${empType}</option>
-							</c:forEach>
 							</select>         	
 					  </div>
 					</div>
@@ -183,9 +174,6 @@
 						<select  multiple class="chosen-select form-control"
 												name="appraisalCategories" data-placeholder="Categories"
 												id="appraisalCategories" field-name="Categories" data-validation="required">
-						 <c:forEach var="categories" items="${categoriesList}">
-									<option value="${categories.id}">${categories.name}</option>
-							  </c:forEach>
 						</select>
 				  </div>
 				  <input type="hidden" name="jsonCategoriesString" id="jsonCategoriesString"/>

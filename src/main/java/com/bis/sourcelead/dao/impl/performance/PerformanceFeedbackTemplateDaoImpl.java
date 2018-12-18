@@ -4,8 +4,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceFeedbackTemplateDao;
+import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -81,5 +85,21 @@ public class PerformanceFeedbackTemplateDaoImpl implements PerformanceFeedbackTe
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from PerformanceFeedbackTemplate template where template.orgLocationId.id =:orgLocationId and template.status ='1' ";
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	}
+
+	@Override
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceFeedbackTemplateDTOList(Long orgLocationId)
+			throws Exception {
+		List<PerformanceFeedbackTemplateDTO> templateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT TEMP.ID AS templateId, "
+				+ " TEMP.NAME AS templateName "
+				+ " FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMP WHERE TEMP.ORG_LOCATION_ID = :orgLocationId AND TEMP.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
+		templateDTOList = queryObj.list();
+		return templateDTOList;
 	}
 }

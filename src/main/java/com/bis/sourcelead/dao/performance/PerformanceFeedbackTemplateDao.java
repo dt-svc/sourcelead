@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.performance;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 
 public interface PerformanceFeedbackTemplateDao {
@@ -11,4 +12,6 @@ public interface PerformanceFeedbackTemplateDao {
 	PerformanceFeedbackTemplate getPerformanceFeedbackTemplateById(Long id) throws Exception;
 	
 	List<PerformanceFeedbackTemplate> getPerformanceFeedbackTemplateList(Long orgLocationId) throws Exception;
+	
+	List<PerformanceFeedbackTemplateDTO> getPerformanceFeedbackTemplateDTOList(Long orgLocationId) throws Exception;
 }
