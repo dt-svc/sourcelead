@@ -3175,22 +3175,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue)throws Exception {
-		List<MarketplacePurchaseSalesDTO> salesOrderDtoList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, null, searchValue);
-		if(salesOrderDtoList != null){
-		return salesOrderDtoList;
-		}else{
-		return null;
-	}}
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue)throws Exception {
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+		return responseList;
+		}
 
 	@Override
 	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderBySalesUuid(OrgLocations orgLocations, String salesUuid) throws Exception {
-		List<MarketplacePurchaseSalesDTO> salesOrderDto = candidateDao.getMarketplaceSalesOrderList(null, orgLocations, salesUuid, null);
-		if(salesOrderDto != null && salesOrderDto.size() > 0){
-		return salesOrderDto.get(0);
-		}else{
-		return null;
-	}}
+		MarketplaceSalesOrder salesOrder = candidateDao.getMarketplaceSalesOrderBySalesUuid(orgLocations.getId(), salesUuid);
+		MarketplacePurchaseSalesDTO salesOrderDto = null;
+		String formattedDate =  null;
+			salesOrderDto = new MarketplacePurchaseSalesDTO();
+			BeanUtils.copyProperties(salesOrder, salesOrderDto);
+			formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), salesOrder.getOrderDate());
+			salesOrderDto.setOrderDate(formattedDate);
+			salesOrderDto.setTotalresume(salesOrder.getNoOfResumes());
+			salesOrderDto.setTotalPrice(salesOrder.getTotalResumePrice());
+			salesOrderDto.setCandidateName(salesOrder.getCandidateMarketPlace().getCandidateId().getFullName());
+		return salesOrderDto;
+	}
 
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
