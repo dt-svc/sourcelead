@@ -2254,7 +2254,6 @@ public class UserDaoImpl implements UserDao {
 						if(userDTO.getUserRequirementsCount() != null) {
 							bd = bd.add(userDTO.getUserRequirementsCount());
 						}*/
-						System.out.println("manager");
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					userDTO = associatesListMap.get(reportDTO.getPrimaryUserId());
@@ -2264,7 +2263,6 @@ public class UserDaoImpl implements UserDao {
 							if(userDTO.getUserRequirementsCount() != null) {
 								bd = bd.add(userDTO.getUserRequirementsCount());
 							}*/
-							System.out.println("primary");
 							userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}
 					
@@ -2278,14 +2276,28 @@ public class UserDaoImpl implements UserDao {
 						}
 						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
 					}*/
-					System.out.println("pid>>>"+reportDTO.getPrimaryUserId());
-					System.out.println("assid>>>"+reportDTO.getAssignedUserId());
-					if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1") && reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) {
+					
+					//for reference
+					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
+							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 						if(userDTO != null){
 								jobIds.add(reportDTO.getRequirementId());
 								System.out.println("assign");
 								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+						}
+					}*/
+					
+					if(reportDTO.getAssignedUserId() != null){
+						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
+								&& (reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) 
+								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
+							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
+							if(userDTO != null){
+									jobIds.add(reportDTO.getRequirementId());
+									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
+							}
 						}
 					}
 					
@@ -2316,6 +2328,8 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserInterviewedApplicantsCount(userDTO.getUserInterviewedApplicantsCount().add(recuiterReportView.getApplicantInterviewCount()));
 						userDTO.setUserApplicantsBackOutCount(userDTO.getUserApplicantsBackOutCount().add(recuiterReportView.getApplicantBackOutCount()));
 						userDTO.setUserApplicantsJoinedCount(userDTO.getUserApplicantsJoinedCount().add(recuiterReportView.getApplicantJoinedCount()));
+						userDTO.setUserOnHoldApplicantsCount(userDTO.getUserOnHoldApplicantsCount().add(recuiterReportView.getUserOnHoldApplicantsCount()));
+						userDTO.setUserNoResponseApplicantsCount(userDTO.getUserNoResponseApplicantsCount().add(recuiterReportView.getUserNoResponseApplicantsCount()));
 					}
 					
 				}
@@ -2608,7 +2622,7 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList)) group by u.ID,req.ID"; 
+			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
 				 }
 		
        
@@ -2749,6 +2763,30 @@ String sortingQry ="";
 		
 	return usersList;
 	
+	}
+
+	@Override
+	@Transactional
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String subQry = " and user.id <> :userId";
+		if(StringUtils.isNotBlank(userId)) {
+			String query = "from User user where user.ssn = :ssnNumber "+subQry;
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).setLong("userId", Long.parseLong(userId)).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}else {
+			String query = "from User user where user.ssn = :ssnNumber ";
+			List<User> list = session.createQuery(query).setString("ssnNumber", ssnNumber.trim()).list();
+			if(list != null && list.size() >0) {
+				user = list.get(0);
+			}
+		}
+		
+		return user;
 	}
 
 	

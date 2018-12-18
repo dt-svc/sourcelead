@@ -230,7 +230,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 
 	@Override
 	@Transactional
-	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates) throws Exception {
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmissionHistory> submissionHistoryList = null;
 		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
@@ -254,7 +254,12 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			stageQuery = " rsh.toStage = 'JOINED'";
 		}else if(stage.equalsIgnoreCase("BACKOUT")) {
 			stageQuery = " rsh.toStage = 'BACKOUT'";
+		}else if(stage.equalsIgnoreCase("ONHOLD")) {
+			stageQuery = " rsh.toStage = 'ONHOLD'";
+		}else if(stage.equalsIgnoreCase("NORESPONSE")) {
+			stageQuery = " rsh.toStage = 'NORESPONSE'";
 		}
+		
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(sumissionHistoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(sumissionHistoryDTO.getSearchValue())) {
@@ -266,7 +271,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			 
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId group by rs.id";  
 		queryObj = session.createQuery(query);
 		
 		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
@@ -274,14 +279,14 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
 
-		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameter("locationId", locationId).list();
 		
 		countlist = session.createQuery("select count(*) "+ countQuery).setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
 		
 		int totalCount = 0;
 		if (sumissionHistoryDTO != null) {
-			if (countlist != null && !countlist.isEmpty()) {
-				totalCount = countlist.iterator().next().intValue();
+			if (submissionHistoryList != null && !submissionHistoryList.isEmpty()) {
+				totalCount = submissionHistoryList.size();
 			}
 		}
 		submissionHistoryList.forEach(history->{

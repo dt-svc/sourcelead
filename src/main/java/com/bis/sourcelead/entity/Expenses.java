@@ -130,7 +130,7 @@ private static final long serialVersionUID = 1L;
 	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
-    private Set<ExpensesApproverHierarchy> approverHierarchyList;
+    private List<ExpensesApproverHierarchy> approverHierarchyList;
 
 	@Transient
 	@JsonProperty
@@ -326,11 +326,11 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
-	public Set<ExpensesApproverHierarchy> getApproverHierarchyList() {
+	public List<ExpensesApproverHierarchy> getApproverHierarchyList() {
 		return approverHierarchyList;
 	}
 
-	public void setApproverHierarchyList(Set<ExpensesApproverHierarchy> approverHierarchyList) {
+	public void setApproverHierarchyList(List<ExpensesApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
 	}
 

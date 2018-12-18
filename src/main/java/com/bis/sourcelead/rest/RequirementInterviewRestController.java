@@ -141,7 +141,7 @@ public class RequirementInterviewRestController {
 		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null && user.getId() == requirement.getPrimaryRecruiterUserId().getId()) {
 			user = requirement.getManagerUserId();
 		}
 		if(user != null) {
