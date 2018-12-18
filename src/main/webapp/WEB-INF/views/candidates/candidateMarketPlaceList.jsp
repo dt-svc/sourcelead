@@ -88,7 +88,7 @@ function setValuesForAllMCandidates(){
 	} */
 	
 	var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
-	if(format.test($('#amountForAll').val())){
+	if(format.test($('#amountForAll').val()) || isNaN($('#amountForAll').val())){
 		popupDisplay("Please enter proper amount");
 		return false;
 	}
