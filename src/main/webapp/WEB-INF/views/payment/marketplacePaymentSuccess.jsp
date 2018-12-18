@@ -10,7 +10,7 @@
         </div>
         <div class="pull-right brud-crum">
 				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="<c:url value='/app/orgLicenseSubscriptionList'/>"> Marketplace List</a> &raquo; Payment Success
+					href="<c:url value='${appPath}/globalMarketplacePage'/>"> Marketplace List</a> &raquo; Payment Success
 			</div>
     </section>
     <div class="scontent-new clearfix">

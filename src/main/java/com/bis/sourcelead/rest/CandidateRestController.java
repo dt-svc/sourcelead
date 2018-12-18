@@ -1435,8 +1435,7 @@ public class CandidateRestController {
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
-	  		responseList.setData(salesOrderList);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
 	  		return responseList;
 		}catch(Exception e){
   			e.printStackTrace();
