@@ -2,7 +2,11 @@
 <%-- <jsp:include page="masterSideNav.jsp" /> --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%
+// INIT USER/SESSION CONTEXT
+// INIT AGGREGATE QUERY
+//
+%>
 <html>
 <head>
 <meta charset="utf-8">
@@ -19,6 +23,7 @@
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css">
+
 <script src="/resources/js/jquery-1.11.1.min.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
@@ -34,11 +39,24 @@
 <script src="/resources/js/masterHeader.js"></script>
 </head>
 
+<!-- 
+JQUERY DOs AND DONTs 
+ONE AND ONLY ONE JQUERY READY
+ALWAYS CACHE VARIABLES LIKE YOU DO IN JAVA
+-->
 
 <script>
-$(document).ready(function() {
+  $(document).ready(function() {
+	// DOA()
+	// DOB()
+	
+	//ASYNCCHAIN.add(DOA).add(DOB);
+	
+	//INITIALIZE USER CONTEXT
+	// MERGE THESE TWO into ONE CALL
 	   getLoginUserTabsList();
 	   getLoginUserRolesActionsList();
+	   // USE head.js for loading resources
 		$('body').load("/resources/dashboardHtml.html");
 	});
 </script>
