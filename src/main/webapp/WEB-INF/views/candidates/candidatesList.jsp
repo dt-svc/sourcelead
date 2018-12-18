@@ -1775,7 +1775,7 @@ function exportToPdf(){
 	  }
 }
 
-function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...candidatesNotInMarketplace){
+function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace,candidatesNotInMarketplace){
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1790,7 +1790,7 @@ function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...c
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function cancelMarketplacePopup(...candidatesNotInMarketplace){
+function cancelMarketplacePopup(candidatesNotInMarketplace){
 	$("#remove_immigration_pop").fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
 	if(candidatesNotInMarketplace.length != 0){
