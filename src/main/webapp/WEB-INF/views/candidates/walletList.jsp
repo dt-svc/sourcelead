@@ -98,37 +98,37 @@
         </div>
         
         <div class="col-md-6 positionRelative">
-          <div class="clearfix dynamic_search filterDynamicsearch">
+         <!--  <div class="clearfix dynamic_search filterDynamicsearch hidden">
             <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
-            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div>
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="">
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="timeInterval" value="2366" type="radio">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="timeInterval" value="2366" type="radio">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="timeInterval" value="2367" type="radio">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="timeInterval" value="2367" type="radio">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="timeInterval" value="2367" type="radio">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="timeInterval" value="2367" type="radio">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio" id="custmdateChkbx">
+				<input name="timeInterval" value="customDates" type="radio" id="custmdateChkbx">
 				<label>Custom Dates</label>
 			  </li>
 			  </ul>
@@ -145,10 +145,10 @@
               <li class="positionRelative">
                 <div class="row">
                 <div class="col-md-6" id="custFromDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date" id="frmDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" onclick="showWalletFromDate();" placeholder="From Date" id="frmDate">
                 </div>
                 <div class="col-md-6" id="custToDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date" id="toDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" onclick="showWalletToDate();" placeholder="To Date" id="toDate">
 				</div>
              </div>
               </li>
@@ -169,9 +169,9 @@
 </div></form>
   </div>
  <script>
-  function goToCandidateList(){
+  /* function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
-	}
+	} */
 		
 	function goToGlobalMarketPlaceList(){
 		location.href = "${appPath}/globalMarketplacePage";
@@ -186,9 +186,9 @@
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-	function goToWalletList(){
+	/* function goToWalletList(){
 		location.href = "${appPath}/walletList";
-	}
+	} */
   </script>
   
   <script>
@@ -330,18 +330,7 @@
 	});
 </script>
 <script>
-    function showCustomFields(){
-    var frequency = $("#dateFrequency").val();
-    if(frequency == "Custom"){
-        $("#customDates").show();
-         $('#frmDate').attr('data-validation',"required");
-         $('#toDate').attr('data-validation',"required");
-    }else{
-        $("#customDates").hide();
-        $('#frmDate').removeAttr('data-validation');
-        $('#toDate').removeAttr('data-validation');
-    }
-    
+    function showWalletFromDate(){
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
       var finalDateFormatEndDate = '';
       if(locationDate.match("yyyy-MM-dd")){
@@ -364,8 +353,21 @@
 	            dt.setDate(dt.getDate() + 1);
 	            $("#toDate").datepicker("option", "minDate", dt);
 	        }
-	  });
-      
+	  }).datepicker('show');
+    }
+    
+    function showWalletToDate(){
+        var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+          var finalDateFormatEndDate = '';
+          if(locationDate.match("yyyy-MM-dd")){
+              finalDateFormatEndDate = 'yy-mm-dd';
+          }if(locationDate.match("dd-MM-yyyy")){
+              finalDateFormatEndDate = 'dd-mm-yy'; 
+          }if(locationDate.match("MM-dd-yyyy")){
+              finalDateFormatEndDate = 'mm-dd-yy'; 
+          }if(locationDate.match("yyyy-dd-MM")){
+              finalDateFormatEndDate = 'yy-dd-mm'; 
+          }
       $('#toDate').datepicker({
 	      dateFormat: finalDateFormatEndDate,
 	      changeMonth: true,
@@ -376,15 +378,15 @@
 	            dt.setDate(dt.getDate() + 1);
 	            $("#frmDate").datepicker("option", "maxDate", dt);
 	        }
-	  });
+	  }).datepicker('show');
   }
 
-	function removeStartValid(){
+	/* function removeStartValid(){
 	    $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
 	}
 	function removeEndValid(){
 	    $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-	}
+	} */
 
   /*  function validateCustDates(){
     var frequency = $("#dateFrequency").val();
@@ -415,6 +417,38 @@
 } */
 </script>
 <script>
+
+/* function showWalletStartDate(){
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatClientInvoiceDate = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
+	  }
+	  
+	
+	$('#billingStartDate').datepicker({
+		changeMonth: true,
+		changeYear: true, 
+		dateFormat : finalDateFormatClientInvoiceDate,
+		onSelect : function(selected) {
+			//var dt = new Date(selected);
+			//var dt = toDate("#billingStartDate");
+			 var dt = $(this).datepicker('getDate', '+1d');
+	            dt.setDate(dt.getDate() + 1);
+			$("#billingEndDate").datepicker("option", "minDate", dt);
+			removeStartdateval();
+		}
+	}).datepicker('show');;
+} */
+
+
 	function openPop(){
 		$("#modalWallet, .mask").fadeIn();
 	}
@@ -422,12 +456,25 @@
 		$("#modalWallet, .mask").fadeOut();
 	});
 	//Custom Dates
-	$("#custmdateChkbx").click(function() {
-	if($(this).is(":checked")){
-		$("#customDates").show();
-	}else {
-		$("#customDates").hide();
-	}
+	$('input[name=timeInterval]').on('change', function() {
+   		if($(this).val() == "customDates"){
+   			$("#customDates").show();
+	   		$('#frmDate').attr('data-validation',"required");
+	        $('#toDate').attr('data-validation',"required");
+   		}else{
+   			$("#customDates").hide();
+   			$('#frmDate').removeAttr('data-validation');
+   	        $('#toDate').removeAttr('data-validation');
+   		}
+		
 	});
+	/* $("#custmdateChkbx").click(function() {
+		
+	if($(this).is(":checked")){
+		
+	}else {
+		
+	}
+	}); */
 </script>
   <jsp:include page="../masterFooter.jsp" /> 

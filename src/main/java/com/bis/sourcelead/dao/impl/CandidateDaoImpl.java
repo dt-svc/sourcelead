@@ -2507,9 +2507,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.sourceOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId";
+		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.sourceOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId and marketplaceCart.cartStatus <> :cartStatusVal";
 		int count = ((Long) session.createQuery(query).setParameter("orgId", orgId)
-				.setParameter("marketplaceId", marketPlaceId).uniqueResult()).intValue();
+				.setParameter("marketplaceId", marketPlaceId).setParameter("cartStatusVal", Constants.PURCHASED).uniqueResult()).intValue();
 		return count;
 	}
 
