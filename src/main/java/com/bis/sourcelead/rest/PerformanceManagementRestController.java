@@ -205,6 +205,7 @@ public class PerformanceManagementRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 try {
 			 if(Validator.validate(templateDTO)){
+			 performanceAppraisalTemplateService.storePerformanceAppraisalTemplate(templateDTO, orgLocation.getId(), user.getId(), orgLocation.getDateFormat());
 			 resObj.setResponse(Result.SUCCESS.name());
 			 resObj.setResponseMessage(Result.SUCCESS.getValue());
 		    }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity.performance;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,9 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PERFORMANCE_APPRAISAL_TEMPLATE")
@@ -70,7 +73,7 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	private String description ;
 	
 	@Column(name = "DESCRIPTION_DISPLAY")
-	private String discriptionDisplay;
+	private String descriptionDisplay;
 	
 	@Column(name = "CATEGORIES", columnDefinition = "TEXT default NULL")
 	private String categories;
@@ -101,6 +104,14 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="UPDATED_BY", nullable=false )        
     private User updatedBy;
+	
+	@Transient
+	@JsonProperty
+    private String appraisalStartDateStr;
+	
+	@Transient
+	@JsonProperty
+    private String appraisalEndDateStr;
 	
 	
 
@@ -224,12 +235,12 @@ public class PerformanceAppraisalTemplate implements Serializable{
 		this.description = description;
 	}
 
-	public String getDiscriptionDisplay() {
-		return discriptionDisplay;
+	public String getDescriptionDisplay() {
+		return descriptionDisplay;
 	}
 
-	public void setDiscriptionDisplay(String discriptionDisplay) {
-		this.discriptionDisplay = discriptionDisplay;
+	public void setDescriptionDisplay(String descriptionDisplay) {
+		this.descriptionDisplay = descriptionDisplay;
 	}
 
 	public String getCategories() {
@@ -302,6 +313,32 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getAppraisalStartDateStr() {
+		
+		if(appraisalStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			appraisalStartDateStr = dateFormat.format(appraisalStartDate);	
+		}
+		
+		return appraisalStartDateStr;
+	}
+
+	public void setAppraisalStartDateStr(String appraisalStartDateStr) {
+		this.appraisalStartDateStr = appraisalStartDateStr;
+	}
+
+	public String getAppraisalEndDateStr() {
+		if(appraisalEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			appraisalEndDateStr = dateFormat.format(appraisalEndDate);	
+		}
+		return appraisalEndDateStr;
+	}
+
+	public void setAppraisalEndDateStr(String appraisalEndDateStr) {
+		this.appraisalEndDateStr = appraisalEndDateStr;
 	}
 	
 	

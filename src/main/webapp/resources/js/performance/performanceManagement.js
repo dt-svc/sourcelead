@@ -93,6 +93,7 @@ function PerformanceManagement(){
   		     success :function(response) {
   		    	    $("#performanceManagementDiv").empty();  
   		    	    $("#performanceManagementDiv").append(response);
+  		    	    performanceManagement.appraisalTemplatespagination();
   				},
   			}); 
     }
@@ -483,7 +484,7 @@ function PerformanceManagement(){
 	  
 	  
 	  if ($('#createAppraisal_form').validate(false, validationSettings)){ 
-		  
+		  var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		   var templates = [];
 			$(".multiTemplates").each(function() {				
 				templates.push({
@@ -492,13 +493,14 @@ function PerformanceManagement(){
 				});
 			});
 			var con = JSON.stringify(templates);
-			$("#jsonTemplateString").val(con);
-	        var appraisalFormData = getFormData("createAppraisal_form");
+			$("#jsonCategoriesString").val(con);
+	        var appraisalFormData = getFormData1("createAppraisal_form");
 	        $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:200%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	        alert("hi");
 	        $.ajax({
 		    	type: "POST",
-		    	data: appraisalFormData,
+		    	 processData: false,
+                 contentType: false,
+		    	 data: appraisalFormData,
 		    	 url: sourceleadUrl+"/saveAppraisalCycleTemplate",
 		        success: function(response) {
 		        	$("#appraisalDetailsLoading").removeAttr('style');
@@ -602,5 +604,27 @@ function PerformanceManagement(){
   this.clearAppraisalApprovingEndDate = function(){
 	  $("#appraisalApprovingEndDate").val("");
   }
+  
+  this.changeDescriptionDisplayStatus = function(){
+	  var isChecked = $("#descriptionDisplay").is(":checked");
+	  if(isChecked){
+		  $("#descriptionDisplay").val("Y");
+	  }else{
+		  $("#descriptionDisplay").val("N");
+	  }
+  }
 	
+  this.appraisalTemplatespagination = function(){
+	  $('#appraisalTemplatesPagination').DataTable( { 
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": ""
+	     	}
+	    } );
+  }
 }

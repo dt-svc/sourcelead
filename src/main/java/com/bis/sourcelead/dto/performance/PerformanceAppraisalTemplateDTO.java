@@ -34,19 +34,21 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String applicableFor;
 	
+	@Required (desc = "experienceYears", dependsOn = "applicableFor", parentValue = "Experienced")
 	private String experienceYears;
 	
+	@Required (desc = "experienceMonths", dependsOn = "applicableFor",  parentValue = "Experienced")
 	private String experienceMonths;
 	
 	private String description ;
 	
-	private String discriptionDisplay;
+	private String descriptionDisplay;
 	
-	@Required(desc="categories")
-	private String categories;
+	@Required(desc="appraisalCategories")
+	private String appraisalCategories;
 	
 	@Required(desc="jsonTemplateString")
-	private String jsonTemplateString ;
+	private String jsonCategoriesString ;
 	
 	public String getName() {
 		return name;
@@ -160,31 +162,30 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 		this.description = description;
 	}
 
-	public String getDiscriptionDisplay() {
-		return discriptionDisplay;
+
+	public String getDescriptionDisplay() {
+		return descriptionDisplay;
 	}
 
-	public void setDiscriptionDisplay(String discriptionDisplay) {
-		this.discriptionDisplay = discriptionDisplay;
+	public void setDescriptionDisplay(String descriptionDisplay) {
+		this.descriptionDisplay = descriptionDisplay;
 	}
 
-	public String getCategories() {
-		return categories;
+	public String getAppraisalCategories() {
+		return appraisalCategories;
 	}
 
-	public void setCategories(String categories) {
-		this.categories = categories;
+	public void setAppraisalCategories(String appraisalCategories) {
+		this.appraisalCategories = appraisalCategories;
 	}
 
-	public String getJsonTemplateString() {
-		return jsonTemplateString;
+	public String getJsonCategoriesString() {
+		return jsonCategoriesString;
 	}
 
-	public void setJsonTemplateString(String jsonTemplateString) {
-		this.jsonTemplateString = jsonTemplateString;
+	public void setJsonCategoriesString(String jsonCategoriesString) {
+		this.jsonCategoriesString = jsonCategoriesString;
 	}
-	
-	
-	
+
 	
 }

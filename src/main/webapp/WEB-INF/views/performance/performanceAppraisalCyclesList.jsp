@@ -13,15 +13,67 @@
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/performanceManagementConfiguration">Performance Management</a> &raquo; Appraisals List <span id = "fname"></a> </div>
     </section>
       
-      <div class="timesheet_out" style="display: block;">
+       <div class="contentareaInner-styles clearfix">
+      <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
-          <div class="positionRelative clearfix">
-            <ul class="pull-right list-unstyled list-inline mb0">
-              <li class="noMar"><a class="newAdBtn" title="Add" id="addPop" onclick="performanceManagement.addNewAppraisalCycle();">+ Add Appraisal</a></li>
+            
+          </div>
+          <div class="require_wrap_table tableFirstSecond datatable_filter clearfix">
+          
+          <div class="timesheet_head clearfix minHeight40">
+          <ul class="pull-right list-unstyled list-inline">
+              <li><a class="newAdBtn mr5" onclick="performanceManagement.addNewAppraisalCycle();"  title="Add">+ Add</a></li>
             </ul>
           </div>
-          <div class="clearfix row">
+          
+          
+          
+            <table id='appraisalTemplatesPagination' class='display' cellspacing='0' width='100%'>
+              <thead>
+                <tr>
+                  <th>Cycle Name</th>
+                  <th>Performance Period</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                <c:if test="${appraisalTemplatesListSize > 0}">
+		            <c:forEach var="appraisal" items="${appraisalTemplatesList}">
+		            
+		            	<tr>
+		                  <td><div class="tblminwidth-75">${appraisal.name}</div></td>
+		                  <td>
+							  <div>
+							  <span class="tblminwidth-75 mr">${appraisal.appraisalStartDateStr}</span>
+							  <span class="tblminwidth-75">${appraisal.appraisalEndDateStr}</span>
+							  </div>
+						  </td>
+		                  <td>
+							  <div class="tblminwidth-50">
+								  <ul class="list-unstyled list-inline">
+									  <li><i class="fa fa-pencil"></i></li>
+									  <li><i class="fa fa-trash"></i></li>
+								  </ul>
+							  </div>
+						  </td>
+		                </tr>
+		            
+		            </c:forEach>
+	            </c:if>
+	            
+	            <%-- <c:if test="${appraisalTemplatesListSize == 0}">
+	            <div class='row'> 
+					 <div class='col-lg-12'> 
+						 <div class='dataTables_empty'>
+						 </div>
+					 </div>
+				 </div>
+	            </c:if> --%>
+              </tbody>
+            </table>
           </div>
         </div>
-     </div>
+      </div>
+    </div>
        

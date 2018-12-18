@@ -17,10 +17,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -49,6 +51,9 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	RolesService rolesService;
+	
+	@Autowired
+	PerformanceAppraisalTemplateService performanceAppraisalTemplateService;
 	
 	
 	
@@ -138,8 +143,11 @@ public class PerformanceManagementController {
 	public ModelAndView getPerformanceAppraisalCyclesList(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("performance/performanceAppraisalCyclesList");
+		List<PerformanceAppraisalTemplate> appraisalTemplatesList = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateList(orgLocation.getId());
+		model.addObject("appraisalTemplatesList", appraisalTemplatesList);
+		model.addObject("appraisalTemplatesListSize", appraisalTemplatesList.size());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/performanceAppraisalCyclesList");
 		return model;
 	}
 	

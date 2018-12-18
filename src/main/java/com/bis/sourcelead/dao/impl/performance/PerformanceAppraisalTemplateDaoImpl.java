@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -57,5 +58,12 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return performanceAppraisalTemplate;
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PerformanceAppraisalTemplate template where template.orgLocationId.id =:orgLocationId and template.status ='1' ";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 }

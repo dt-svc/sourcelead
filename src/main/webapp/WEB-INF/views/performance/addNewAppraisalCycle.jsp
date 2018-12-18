@@ -50,13 +50,14 @@
 					<div class="form-group">
 					  <label class="col-md-3">Department</label>
 					  <div class="col-md-9">
-							<select  multiple class="chosen-select form-control"
-											name="appraisalDepartment" data-placeholder="Select Department"
-											id="appraisalDepartment" data-validation-optional="true">
-							  <c:forEach var="dept" items="${departmentList}">
-									<option value="${dept.id}">${dept.departmentName}</option>
-							  </c:forEach>
-							</select>          	
+							<select multiple class="chosen-select form-control"
+											name="appraisalDepartment" id="appraisalDepartment" data-placeholder="Select Department"
+											data-validation-optional="true">
+											<c:forEach var="dept" items="${departmentList}">
+													<option value="${dept.id}">${dept.departmentName}</option>
+											</c:forEach>
+							</select>
+							          	
 					  </div>
 					</div> 
 					<div class="form-group">
@@ -127,7 +128,7 @@
 			
 				<div class="form-group">
 						<span class="radioStyles mr">
-						<input id="applicableForAll" name="applicableFor"  value="All" type="radio" onClick="performanceManagement.applicableType();">
+						<input id="applicableForAll" name="applicableFor" checked  value="All" type="radio" onClick="performanceManagement.applicableType();">
 						<label for="applicableForAll">All</label>
 						</span>
 					<span class="radioStyles">
@@ -164,10 +165,10 @@
 				<div class="clearfix">
 						<label class="col-md-12"><span class="pull-left mr">Description</span>
 						  	<div class="checkbox-new pull-left">
-								<input id="paymentStub" class="checkbox-custom" name="discriptionDisplay" type="checkbox" onclick="paymentStub();">
-								<label for="paymentStub" class="checkbox-custom-label"></label>
+								<input id="descriptionDisplay" class="checkbox-custom" name="descriptionDisplay" value="N" onclick="performanceManagement.changeDescriptionDisplayStatus();" type="checkbox"/>
+								<label for="descriptionDisplay" class="checkbox-custom-label"/>
 								<span class="ml10 text-muted">Display to Employees </span>
-							</div>						
+							</div>
 						</label>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 							<textarea id="txtEditor" name="description"   value="" class="form-control newContrtextarea"  data-validation-optional="true"></textarea>
@@ -188,7 +189,7 @@
 							  </c:forEach>
 						</select>
 				  </div>
-				  <input type="hidden" name="jsonTemplateString" id="jsonTemplateString"/>
+				  <input type="hidden" name="jsonCategoriesString" id="jsonCategoriesString"/>
 				</div> 
 				
 			<div class="clearfix"></div>
