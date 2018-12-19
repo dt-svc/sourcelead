@@ -39,6 +39,13 @@ public class RecruiterReportView {
 	@Column(name = "APPLICANT_JOINED_COUNT")
 	private BigDecimal applicantJoinedCount;
 	
+	@Column(name = "APPLICANT_ONHOLD_COUNT")
+	private BigDecimal userOnHoldApplicantsCount;
+	
+	@Column(name = "APPLICANT_NORESPONSECOUNT_COUNT")
+	private BigDecimal userNoResponseApplicantsCount;
+	
+	
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
 	
@@ -155,6 +162,26 @@ public class RecruiterReportView {
 
 	public void setApplicantJoinedCount(BigDecimal applicantJoinedCount) {
 		this.applicantJoinedCount = applicantJoinedCount;
+	}
+
+	public BigDecimal getUserOnHoldApplicantsCount()
+	{
+		return userOnHoldApplicantsCount;
+	}
+
+	public void setUserOnHoldApplicantsCount(BigDecimal userOnHoldApplicantsCount)
+	{
+		this.userOnHoldApplicantsCount = userOnHoldApplicantsCount;
+	}
+
+	public BigDecimal getUserNoResponseApplicantsCount()
+	{
+		return userNoResponseApplicantsCount;
+	}
+
+	public void setUserNoResponseApplicantsCount(BigDecimal userNoResponseApplicantsCount)
+	{
+		this.userNoResponseApplicantsCount = userNoResponseApplicantsCount;
 	}
 	
 	

@@ -574,6 +574,13 @@ if(selectedTextInvoice =='percentage'){
 		        	 
 		        	$("#savedInvoiceId").val(json['id']);
 		        	
+		        	if(json.customInvoiceId > 0 && json.customInvoiceName != "") {
+		        		$("#invoiceTemplateId").empty();
+		        		$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+		    			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+		    			$("#invoiceTemplateId").append("<option value='" + json.customInvoiceId + "' selected>" + json.customInvoiceName + "</option>");
+		        	}
+		        	
 		        	var test = json['invoiceParentId'];
 		        	if(json['invoiceStatus'] == "Rejected" && test != null){
 			   			 document.getElementById("sendButtonId").style.display="none";
@@ -1491,7 +1498,7 @@ function pagination(){
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
 				success :function(response) {
-					if(response.object !='' && response != 'undefined' && response != null){
+					if(response != null && response.object != null && response.object != '' && response != 'undefined'){
 // 						var json = JSON.parse(data);
 						$("#exchangeRate").html(response.object.exchangeRate);
 						$("#exchangeCurrency").html(response.object.exchangeCurrency);
