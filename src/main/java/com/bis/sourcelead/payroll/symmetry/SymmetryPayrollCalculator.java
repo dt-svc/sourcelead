@@ -95,6 +95,7 @@ public class SymmetryPayrollCalculator {
 				}
 				boolean federalExempt = false;
 				boolean medicareExempt = false;
+				boolean socsecExemt = false;
 				boolean isResident = PayrollUtil.getEmployeeResident(candidate);
 				if(associateTaxView.getFederalExempt() != null) {
 					federalExempt = associateTaxView.getFederalExempt();
@@ -102,8 +103,11 @@ public class SymmetryPayrollCalculator {
 				if(associateTaxView.getMediacareExempt() !=null) {
 					medicareExempt = associateTaxView.getMediacareExempt();
 				}
+				if(associateTaxView.getSocialSecurityExempt() !=null) {
+					socsecExemt = associateTaxView.getSocialSecurityExempt();
+				}
 				STE.setFederalParameters(federalExempt, federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
-				STE.setFICAParameters(false, false, zero, zero, true);
+				STE.setFICAParameters(socsecExemt, false, zero, zero, true);
 				STE.setMedicareParameters(medicareExempt, zero, zero);
 				STE.setEICParameters(EarnedIncomeCredit.SINGLE, zero, false);
 				// The code for Indianapolis, Indiana (Marion County) is   MARRIED,SINGLE
@@ -139,17 +143,15 @@ public class SymmetryPayrollCalculator {
 				}
 				
 				// State Disability Insurance (SDI)
-				// Hawaii
-				if(PayrollConstant.HAWAII.equalsIgnoreCase(candidate.getResidenceState().trim())) {
-					STE.setSDI(locationCode, zero, zero, zero, zero, zero, false);
-				}
-				
 				if(PayrollConstant.CALIFORNIA.equalsIgnoreCase(candidate.getResidenceState().trim())
 				   || PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())
 				   || PayrollConstant.PUERTO_RICO.equalsIgnoreCase(candidate.getResidenceState().trim())
-				   || PayrollConstant.RHODE_ISLAND.equalsIgnoreCase(candidate.getResidenceState().trim())) {
+				   || PayrollConstant.RHODE_ISLAND.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.HAWAII.equalsIgnoreCase(candidate.getResidenceState().trim())
+				   || PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					
-					STE.setSDI(locationCode, zero, zero, zero, zero, false);
+//					STE.setSDI(locationCode, zero, zero, zero, zero, false);
+					STE.setSDI(locationCode, zero, zero, zero, zero, zero, false);
 				}
 				
 				// Family Leave Insurance (FLI)
@@ -298,9 +300,12 @@ public class SymmetryPayrollCalculator {
 					logger.info("New York Metro Commuter Transportation: " + mctmtWithholding);
 					logger.info("");
 					
+					
+//                .add(payrollCalculator.getSDI().asBigDecimal()).add(payrollCalculator.getFLI().asBigDecimal())
+//                .add(payrollCalculator.getHCSF().asBigDecimal()).add(payrollCalculator.getWC().asBigDecimal());
 				
 				}
-				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())
+				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())
 						  || PayrollConstant.PENNSYLVANIA.equalsIgnoreCase(candidate.getResidenceState().trim())
 						   || PayrollConstant.ALASKA.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 							STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
@@ -308,12 +313,13 @@ public class SymmetryPayrollCalculator {
 							
 							// State Unemployment Insurance (SUI)
 							SUI = STE.getSUICalc(locationCode);
+							payrollCalculatorDTO.setSUI(SUI);
 							logger.info("Unemployment Rate: (SUI)" + SUI);
-							
 							
 						}
 				// SDI
 				SDI = STE.getSDICalc(locationCode);
+				payrollCalculatorDTO.setSDI(SDI);
 				logger.info("SDI Calculation : " +SDI);
 				
 				// FLI
@@ -323,17 +329,21 @@ public class SymmetryPayrollCalculator {
 					HCSF = STE.getHealthCareSubsidyFundCalc(locationCode);
 					logger.info("NJ FLI Calculation: " + FLI);	
 					logger.info("NJ Health Care Subsidy Fund: " + HCSF);	
+					payrollCalculatorDTO.setFLI(FLI);
+					payrollCalculatorDTO.setHCSF(HCSF);
 				}
 				//New York Family Leave Insurance tax
 				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					FLI = STE.getFLICalc(locationCode);
 					logger.info("NY FLI Calculation: " + FLI);
+					payrollCalculatorDTO.setFLI(FLI);
 				}
 				
 				//Workers Compensation (WC)
 				if(PayrollConstant.NEW_MEXICO.equalsIgnoreCase(candidate.getResidenceState().trim()) || PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					WC = STE.getWorkersCompCalc(locationCode);
 					logger.info("New Mexico Worker’s Comp Calculation: " +WC);
+					payrollCalculatorDTO.setWC(WC);
 				}
 				
 				
