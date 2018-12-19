@@ -73,6 +73,20 @@ public class MarketplacePurchaseOrder implements Serializable {
 	@Column(name = "PURCHASE_UUID" )
 	private String purchaseUuid;
 	
+	@Column(name = "PAYMENT_METHOD")
+	private String paymentMethod;
+	
+	@Column(name = "FIRST_NAME")
+	private String firstName;
+
+	@Column(name = "LAST_NAME")
+	private String lastName;
+
+	@Column(name = "EMAIL")
+	private String email;
+	
+	@Column(name = "COUNTRY_CODE")
+	private String countryCode;
 	
 	public String getPurchaseUuid() {
 		return purchaseUuid;

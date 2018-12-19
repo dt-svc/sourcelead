@@ -265,6 +265,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String defaultOrgProbationPeriod;
 	
+	private String marketPrice;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1268,5 +1270,14 @@ public class CandidateDTO extends SearchDTO{
 	public void setDefaultOrgProbationPeriod(String defaultOrgProbationPeriod) {
 		this.defaultOrgProbationPeriod = defaultOrgProbationPeriod;
 	}
-	
+
+	public String getMarketPrice() {
+		return marketPrice;
+	}
+
+	public void setMarketPrice(String marketPrice) {
+		this.marketPrice = marketPrice;
+	}
+
+
 }

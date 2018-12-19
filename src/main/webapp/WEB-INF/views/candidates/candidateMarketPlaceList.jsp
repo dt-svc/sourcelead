@@ -171,17 +171,16 @@ function callValidatePriceAmount(){
 		}
 	});
 	
-	/* $("input[id='priceVal']").each(function() {
-		var formatDigit = /^\d+\.\d\d$/
-		if(!formatDigit.test($(this).val())){
-			flagPriceValueDotTwoDigit = true;
-		}
-	}); */
-	
-	/* if(flagPriceValueDotTwoDigit){
-		popupDisplay("Please enter two digits");
+	var amountText = $("#priceVal").val();
+	var val = parseFloat($('#priceVal').val());
+	if(amountText.length < 1 || amountText.length > 5){
+		popupDisplay("Please enter 1 to 5 digits");
 		return false;
-	} */
+	}else if (isNaN(val) || (val === 0))
+	{
+		popupDisplay("Please enter proper amount");
+		return false;
+	} 
 	
 	if(flagPriceValueEnterZeroValue){
 		popupDisplay("Please enter proper amount");

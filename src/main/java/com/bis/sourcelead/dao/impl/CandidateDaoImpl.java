@@ -2590,7 +2590,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				checkBoxQuery.append("and DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
 						+ customStartdate + "' and '" + customEnddate + "'");
 			}
-			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId";
+			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
@@ -2934,17 +2934,17 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String salesUuid, String searchValue) {
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
 			StringBuilder queryBuilder2 = new StringBuilder();
+			List<Long> countlist = null;
+			Integer filterCount = 0;
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
 			MarketplacePurchaseSalesDTO salesOrderDto = null;
 			String formattedDate =  null;
-			if(salesUuid != null && !"".equalsIgnoreCase(salesUuid)){
-				queryBuilder1.append(" and (salesOrder.salesUuid like '%"+salesUuid+"%')");
-			}
+			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
 				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
 				queryBuilder1.append(" or (salesOrder.orderNo like '%"+searchValue+"%')) ");
@@ -2953,14 +2953,29 @@ public class CandidateDaoImpl implements CandidateDao {
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryBuilder2.append(" order by salesOrder." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryBuilder2.append(" order by salesOrder.id " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
+			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
 			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			countlist = session.createQuery(countQuery + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			int totalCount = 0;
+			if (marketplacePurchaseSalesDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query.toString() != null && !query.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
 			if(salesOrderList != null){
 			for(MarketplaceSalesOrder sales : salesOrderList){
 				salesOrderDto = new MarketplacePurchaseSalesDTO();
@@ -2973,13 +2988,29 @@ public class CandidateDaoImpl implements CandidateDao {
 				salesOrderDtoList.add(salesOrderDto);
 				}
 			}
-			return salesOrderDtoList;
+			responseList.setData(salesOrderDtoList);
+			return responseList;
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public MarketplaceSalesOrder getMarketplaceSalesOrderBySalesUuid(Long orgLocationId, String salesUuid) {
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		MarketplaceSalesOrder marketplaceSalesOrder = null;
+		String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id =:orgLocationId and salesOrder.salesUuid =:salesUuid";
+		marketplaceSalesOrder = (MarketplaceSalesOrder) session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("salesUuid", salesUuid).uniqueResult();
+		return marketplaceSalesOrder;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
@@ -3046,6 +3077,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return responseList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from MarketplacePurchaseOrder mpo where mpo.orgLocationId.id=:rajat";
+		List<MarketplacePurchaseOrder> list = session.createQuery(query).setLong("rajat", id).list();
+		return list;
 	}
 
 }
