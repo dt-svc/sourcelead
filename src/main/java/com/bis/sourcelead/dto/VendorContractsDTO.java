@@ -100,6 +100,7 @@ public class VendorContractsDTO {
 	private String isOwner;
 	private List<Long> ownerUserIds;
 	private String revisedReason;
+	private String autoGenId;
 	
 	public String getTemplateId()
 	{
@@ -995,5 +996,16 @@ public class VendorContractsDTO {
 	{
 		this.revisedReason = revisedReason;
 	}
+
+	public String getAutoGenId()
+	{
+		return autoGenId;
+	}
+
+	public void setAutoGenId(String autoGenId)
+	{
+		this.autoGenId = autoGenId;
+	}
+	
 	
 }

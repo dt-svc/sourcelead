@@ -2394,7 +2394,7 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.CHANGE_REPORTING_MANAGER_EMAIL,attachmentList);
 		
 		String actionLink="";
-		emailScenerioUtil.sendNotification(actionLink, userRole.getUser(), user, locations, notificationScenario, new HashMap<String, String>());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, locations, notificationScenario, new HashMap<String, String>());
 	}
 
 	@Override
@@ -2438,6 +2438,12 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,uRole.getOrgLocations().getOrg(),uRole.getOrgLocations(),Constants.CONFIRMATION_OF_EMPLOYMENT_MAIL,attachmentList);
 		
 		
+	}
+
+	@Override
+	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
+	{
+		return userDao.validateSSNDuplicate(ssnNumber,locationId,userId);
 	}
 
 	
