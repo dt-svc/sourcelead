@@ -230,6 +230,10 @@ public interface CandidateDao {
 
 	public void saveToMarketplacePurchaseOrder(MarketplacePurchaseOrder newMarketplacePurchaseorder) throws Exception;
 
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
+	
+	public Candidate getCandidateByMasterCandidateId(Long masterCandidateId);
+
 	public void saveToMarketplaceSalesOrder(MarketplaceSalesOrder newMarketplaceSalesorder) throws Exception;
 
 	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception;

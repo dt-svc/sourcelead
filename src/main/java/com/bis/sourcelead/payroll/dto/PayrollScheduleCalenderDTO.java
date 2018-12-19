@@ -17,6 +17,10 @@ public class PayrollScheduleCalenderDTO {
 	private String dateFormat;
 	
 	private int month;
+	
+	private String payCheckDateFormat;
+	
+	private String payRunDateFormat;
 
 	public String getPayPeriod()
 	{
@@ -96,6 +100,26 @@ public class PayrollScheduleCalenderDTO {
 	public void setMonth(int month)
 	{
 		this.month = month;
+	}
+
+	public String getPayCheckDateFormat()
+	{
+		return payCheckDateFormat;
+	}
+
+	public String getPayRunDateFormat()
+	{
+		return payRunDateFormat;
+	}
+
+	public void setPayCheckDateFormat(String payCheckDateFormat)
+	{
+		this.payCheckDateFormat = payCheckDateFormat;
+	}
+
+	public void setPayRunDateFormat(String payRunDateFormat)
+	{
+		this.payRunDateFormat = payRunDateFormat;
 	}
 	
 	

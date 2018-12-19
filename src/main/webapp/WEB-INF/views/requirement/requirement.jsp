@@ -4422,8 +4422,12 @@ function getJoinersAmountType(e){
 		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
 		 $(x).find("p.jquery_form_error_message").remove();
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value = "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('field-name');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("field-name", "Amount");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('placeholder');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("placeholder", "Amount");
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
-		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-10 validate_int");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "required validate_Space validate_length length1-10 validate_int");
 		 
 	 } 
 	 
@@ -4440,8 +4444,12 @@ function getJoinersAmountType(e){
 		 var x = document.getElementById("nofJoinersDiv["+rId+"].rowId");
 		 $(x).find("p.jquery_form_error_message").remove();
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").value= "";
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('field-name');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("field-name", "Percentage");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('placeholder');
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("placeholder", "Percentage");
 		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").removeAttribute('data-validation');
-		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "validate_Space validate_length length1-2 validate_int");
+		 document.getElementById("requirementIncentive["+rId+"].joinersAmount").setAttribute("data-validation", "required validate_Space validate_between between0-100 validate_int");
 	 }
 }
 

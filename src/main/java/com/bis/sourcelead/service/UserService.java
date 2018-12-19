@@ -276,5 +276,7 @@ public void sendEmailForNewReportingManager(User user, User loginUser, String pa
 
 void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser, OrgLocations orgLocations, String confirmationDate, String designation) throws Exception;
 
+User validateSSNDuplicate(String ssnNumber, Long id, String userId);
+
 }	
 
