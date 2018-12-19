@@ -39,7 +39,7 @@
                       <input id="trashHdr" class="checkbox-custom" name="paidComponent" type="checkbox">
                       <label for="trashHdr" class="checkbox-custom-label"></label>
                     </div>
-				  <a class="pull-left mt2 mr10" onclick="deleteAllCandidatesFromMarketcart()" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete</small></a>
+				  <a class="pull-left mt2 mr10" onclick="deleteAllCandidatesFromMarketcart()" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete All</small></a>
 				</li>
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
