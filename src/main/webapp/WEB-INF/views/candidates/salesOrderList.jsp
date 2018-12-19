@@ -8,7 +8,7 @@
       <div class="pull-left">
         <h2>Sales Orders List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Sales Order List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Sales Order List</div>
     </section>
     
        <div class="clearfix">
@@ -33,7 +33,7 @@
             <ul class="pull-right list-unstyled list-inline noPad">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
                 <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
@@ -47,26 +47,112 @@
           	<div id="dynamicSalesOrderList"></div>
                
       		</div>
-          
-          
-           <!-- <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav> --> 
         </div>
       </div>
     </div> 
   </section>
   
+  
+<div class="mask"></div>
+<div class="popupWrap" id="modalWallet">
+      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose"></i></div>
+        <form id="#" name="" action="" method="post">
+        <div class="popupContent">
+			<div class="addInner">
+      <div class="row">
+        <div class="col-md-6 mb positionRelative">
+        <div class="clearfix dynamic_search filterDynamicsearch">
+        	<h5>Payment Status</h5>
+		</div>
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="" type="checkbox">
+                <label>Success</label>
+              </li>
+              <li class="checkBox positionRelative">
+                <input name="orgManagers" value="" type="checkbox">
+                <label>Failure</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6 positionRelative">
+          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
+            <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
+            <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
+          <div class="clearfix filterSearch-ul">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="">
+			<li class="checkBox positionRelative">
+                <input name="userRole" value="2366" type="radio">
+                <label>Today</label>
+            </li>
+			<li class="checkBox positionRelative">
+                <input name="userRole" value="2366" type="radio">
+                <label>Week Ago</label>
+            </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>This Month</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>3 months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>6 Months ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio">
+				<label>1 Year ago</label>
+			  </li>
+			  <li class="checkBox positionRelative">
+				<input name="userRole" value="2367" type="radio" id="custmdateChkbx">
+				<label>Custom Dates</label>
+			  </li>
+			  </ul>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+		  <div class="clearfix" id="customDates" style="display: none;">
+		<div class="col-md-12 positionRelative">
+          <div class="clearfix dynamic_search filterDynamicsearch" >
+          <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
+		  </div>
+          <div class="clearfix">
+            <ul class="list-unstyled positionRelative filterSearch mb0">
+              <li class="positionRelative">
+                <div class="row">
+                <div class="col-md-6" id="custFromDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date" id="frmDate">
+                </div>
+                <div class="col-md-6" id="custToDateDiv">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date" id="toDate">
+				</div>
+             </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+	</div>
+      </div>
+    </div>			
+		</div>
+        
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Save</button>
+          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+        </div>
+        
+        <div>
+</div></form>
+  </div>
+  
+  
   <script>
+  var table = "";
   $(document).ready(function () {
 	  getDynamicSalesOrderList();
 	});
@@ -94,7 +180,7 @@
   
   function dynamicSalesOrderList(url){
 	  var colIndex = 0;
-	    $('#salesOrderListTable').DataTable( { 
+	    table = $('#salesOrderListTable').DataTable( { 
 		  "processing": true,
 	      "serverSide": true,
 	      "searching": false,
@@ -215,15 +301,32 @@
 	    		   getDynamicSalesOrderList();
 	    	   }
 	    	});
-	}
+	 	
+	    
+  }
   
   function goToSalesOrder(salesUuid){
 	  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
   }
   
-  </script>
-   <script>
+  function exportToPdf(){
+	  if (!table.data().count()) {
+		    alert( 'Empty table' );
+		}else{
+	  		window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		}
+  	}
   
+  function exportToExcel(){
+		if (!table.data().count()) {
+		    alert( 'Empty table' );
+		}else{
+			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+		}
+	}
+
+   </script>
+   <script>
   function goToCandidateList(){
 		location.href = "${appPath}/candidatesList";
 	}
@@ -247,6 +350,44 @@
 	function refreshPage(){
 		location.reload();
 	}
+  </script>
+  <script>
+  function openPop(){
+		$("#modalWallet, .mask").fadeIn();
+	}
+	$(".popClose").click(function() {
+		$("#modalWallet, .mask").fadeOut();
+	});
+  
+	//Custom Dates
+	$("#custmdateChkbx").click(function() {
+	if($(this).is(":checked")){
+		$("#customDates").show();
+	}else {
+		$("#customDates").hide();
+	}
+	});
 	
+	function getActions(){
+		$(".action-pop").slideToggle(200);
+		$(".newActPop").slideUp(200);
+	}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+ 		e.stopPropagation();
+	});	
+
+	function newActions(){
+		$(".newActPop").slideToggle(200);
+		$(".action-pop").slideUp(200);
+	}
+	$("html").click(function(){
+	$(".newActPop").slideUp(200);
+	});
+	$(".overIcon, .newActPop").click(function(e){
+ 		e.stopPropagation();
+	});	
   </script>
   <jsp:include page="../masterFooter.jsp" /> 

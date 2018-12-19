@@ -2953,7 +2953,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryBuilder2.append(" order by salesOrder."+sortColumnName+" "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
 					queryBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
@@ -3077,6 +3077,16 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return responseList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from MarketplacePurchaseOrder mpo where mpo.orgLocationId.id=:rajat";
+		List<MarketplacePurchaseOrder> list = session.createQuery(query).setLong("rajat", id).list();
+		return list;
 	}
 
 }
