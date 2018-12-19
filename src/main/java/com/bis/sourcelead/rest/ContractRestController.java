@@ -1206,4 +1206,14 @@ public class ContractRestController {
 		}
 		return response;
 	}
+	
+	@RequestMapping(value = "/getIndividualCounts", method = RequestMethod.GET)
+	public @ResponseBody Contracts getIndividualCounts(@RequestParam(value = "contractStatus", required = false) String contractStatus,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Contracts indivisualCount = contractsTemplateService.getAllVendorClientAndApplicantCountByLocationIdAndStatus(orgLocation, "", "", "", contractStatus, user, userRoleName);
+		return indivisualCount;
+	}
 }
