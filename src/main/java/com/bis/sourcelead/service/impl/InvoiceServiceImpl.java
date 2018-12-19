@@ -459,6 +459,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			if(customInvoiceTemplate != null) {
 				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", defaultFont);
 				invoiceTemplateConfigured = true;
+				
+				invoice.setCustomInvoiceTemplate(customInvoiceTemplate);
 			}
 		} 
 		if(!invoiceTemplateConfigured)
