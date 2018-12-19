@@ -1,11 +1,13 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -97,6 +100,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.CandidateExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -172,6 +176,9 @@ public class CandidateRestController {
 
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	CandidateExportUtil candidateExportUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1416,11 +1423,11 @@ public class CandidateRestController {
 		return response;
 	 	}
 	
-	@RequestMapping(value = "/app/getDynamicSalesOrderList")
+	@RequestMapping(value = {"/app/getDynamicSalesOrderList", "/app/exportSalesOrderToPdfOrExcel"} )
 	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
 	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
 			 @RequestParam(value = "searchValue", required = false)String searchValue,	 
-			 HttpServletRequest request)  {
+			 HttpServletRequest request, HttpServletResponse response)  {
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1435,8 +1442,32 @@ public class CandidateRestController {
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		List<MarketplacePurchaseSalesDTO>  salesOrderList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
-	  		responseList.setData(salesOrderList);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+	  		File file = null;
+	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
+		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {
+		    	 file=  candidateExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
+		    }else {
+		    	 file=  candidateExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
+		    }
+			
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileNameSB = new StringBuilder();
+			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file!= null){
+				file.delete();
+			}
+	  		}
 	  		return responseList;
 		}catch(Exception e){
   			e.printStackTrace();
@@ -1488,6 +1519,8 @@ public class CandidateRestController {
 			
 			return saleOrdersListDTOList;
 		}
+	    
+	    
 
 }
 
