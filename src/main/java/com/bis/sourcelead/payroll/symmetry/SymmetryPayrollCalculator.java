@@ -160,7 +160,7 @@ public class SymmetryPayrollCalculator {
 					//HCSF
 					STE.setHealthCareSubsidyFund(locationCode, null, null, null, true);
 					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
-					STE.setFLI(locationCode, zero, null, null, false);			
+					STE.setFLI(locationCode, new Money(grossAamount), null, null, false);			
 				}
 				//New York Family Leave Insurance tax
 				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
