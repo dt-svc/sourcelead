@@ -13,5 +13,7 @@ public interface PerformanceAppraisalTemplateService {
 	
 	List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception;
 	
-	PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateById(Long id) throws Exception;
+	PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception;
+	
+	PerformanceAppraisalTemplate getPerformanceAppraisalTemplateById(Long id) throws Exception;
 }

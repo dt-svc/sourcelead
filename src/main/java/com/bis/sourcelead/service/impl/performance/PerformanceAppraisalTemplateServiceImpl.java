@@ -157,7 +157,7 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	}
 
 	@Override
-	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateById(Long id) throws Exception {
+	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception {
 		   PerformanceAppraisalTemplateDTO templateDTO = new PerformanceAppraisalTemplateDTO();
 		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
 		   templateDTO.setAppraisalTemplateId(template.getId());
@@ -219,6 +219,11 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   
 		   
 		   return templateDTO;
+	}
+
+	@Override
+	public PerformanceAppraisalTemplate getPerformanceAppraisalTemplateById(Long id) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
 	}
 
 }

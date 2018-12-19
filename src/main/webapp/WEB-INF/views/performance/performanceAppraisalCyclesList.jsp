@@ -53,7 +53,7 @@
 							  <div class="tblminwidth-50">
 								  <ul class="list-unstyled list-inline">
 									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	      <li><a onclick="#" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 								  </ul>
 							  </div>
 						  </td>

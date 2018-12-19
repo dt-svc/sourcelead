@@ -28,6 +28,7 @@ import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
@@ -238,7 +239,7 @@ public class PerformanceManagementRestController {
    public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleTemplateDetailsById(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
 	   Response<PerformanceAppraisalTemplateDTO> resObj = new Response<>();
 	   try {
-		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(templateId);
+		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateDTOById(templateId);
 		   resObj.setObject(templateDTO);
 		   resObj.setResponse(Result.SUCCESS.name());
 		   resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -296,6 +297,22 @@ public class PerformanceManagementRestController {
 		     e.printStackTrace();
 		}
 	   return templateDTOList;
+   }
+   
+   @RequestMapping(value = "/deleteAppraisalCycleTemplateById", method = RequestMethod.POST)
+ 	public String deleteAppraisalCycleTemplateById(HttpServletRequest request, 
+ 			@RequestParam(value = "templateId", required = true) Long templateId){
+ 		 String resObj = null;
+ 		 try {
+ 			 PerformanceAppraisalTemplate template =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(templateId);
+ 			template.setStatus(Constants.RECORD_INACTIVE);
+ 			performanceAppraisalTemplateService.savePerformanceAppraisalTemplate(template);
+ 			 resObj = Result.SUCCESS.name();
+ 		    
+ 		 }catch (Exception e) {
+ 			resObj = Result.AWKWARD.name();
+ 		}
+ 		 return resObj;
    }
 
 }

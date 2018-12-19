@@ -894,4 +894,30 @@ function PerformanceManagement(){
 		return;
   }
   
+  
+  this.deleteAppraisalCycle = function(templateId){
+
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deleteAppraisalCycleTemplateById?templateId="+templateId,
+			     success :function(response) {
+			    	 
+			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		performanceManagement.viewAppraisalCycle();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				}); 
+ 
+  }
+  
 }
