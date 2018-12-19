@@ -3945,7 +3945,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				+ orgLocationId + "' and reqSub.CREATED_BY='" + usercode
 				+"' and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + ""
-				+ "' group by reqSub.REQUIREMENT_ID ";
+				+ "' group by reqInst.JOINERS ";
 				     queryString =  session.createSQLQuery(query.toString());
 					ApplicantsJoinedReportDTO applicantsJoinedReportDTO = null;
 //					if (applicantsJoinedReportDTOList != null && applicantsJoinedReportDTOList.size() > 0) {

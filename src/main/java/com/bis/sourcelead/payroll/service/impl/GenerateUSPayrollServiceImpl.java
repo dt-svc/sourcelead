@@ -467,7 +467,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
-						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,PayrollConstant.N);
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 						if(terminated) {
 							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 								if(joiningMonth.equals(payrollRunningMonth)) {
@@ -495,7 +495,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 			} else {
 					if(salaryDto.getJoiningDate() != null) {
-					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,PayrollConstant.N);
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 					    	if(terminated) {
 					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 					    		if(joiningMonth.equals(payrollRunningMonth)) {

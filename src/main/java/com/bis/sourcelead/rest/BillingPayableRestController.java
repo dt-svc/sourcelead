@@ -258,6 +258,12 @@ public class BillingPayableRestController {
 				
 		    	invoice.setClientCurrency(currency);
 		    	invoice.setVendorCurrency(currency);
+		    	
+		    	if(invoice.getCustomInvoiceTemplate() != null) {
+		    		invoice.setCustomInvoiceId(invoice.getCustomInvoiceTemplate().getId());
+		    		invoice.setCustomInvoiceName(invoice.getCustomInvoiceTemplate().getName());
+		    	}
+		    	
 		    }
 		    resultJson = commonUtil.toJSON(invoice);
 			
