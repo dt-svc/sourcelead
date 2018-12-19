@@ -135,7 +135,7 @@ function Projects() {
 		           }
 		           
 		           
-		          if(json.projectApprovalType != null && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
+		        /*  if(json.projectApprovalType != null && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
 		        	   $("#parallelTimesheetsApproval").prop("checked", false); 
 		        	   $("#sequentialTimesheetsApproval").prop("checked", false);  
 		        	   
@@ -160,7 +160,7 @@ function Projects() {
 	        				     $("#sequentialExpenseApproval").prop("checked", true);  
 				        		 $("#expenseApprovalTypeValue").val(json.expenseApprovalType);
 	        			  }
-	        		  }
+	        		  }*/
 		           
 		           
 	        	   $("select[name=status]").val(projectStatus);

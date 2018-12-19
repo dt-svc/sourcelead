@@ -2829,9 +2829,12 @@ return responseList;
 				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,loggedInOrgLocations.getId());
 				if(orgLocation != null && orgRelation != null) {
-					response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
-					/*response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());*/
+					if (Validator.validate(customInvoiceTemplateDTO)) {
+						response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
 				} else {
 					response.setResponse(Result.INVALID_USER.name());
 					response.setResponseMessage(Result.INVALID_USER.getValue());
