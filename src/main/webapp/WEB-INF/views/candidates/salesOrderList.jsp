@@ -33,7 +33,7 @@
             <ul class="pull-right list-unstyled list-inline noPad">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
                 <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
@@ -313,7 +313,7 @@
 	  if (!table.data().count()) {
 		    alert( 'Empty table' );
 		}else{
-	  		window.location.href = sourceleadUrl+"/?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+	  		window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
 		}
   	}
   
@@ -321,7 +321,7 @@
 		if (!table.data().count()) {
 		    alert( 'Empty table' );
 		}else{
-			window.location.href = sourceleadUrl+"/?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
 		}
 	}
 
