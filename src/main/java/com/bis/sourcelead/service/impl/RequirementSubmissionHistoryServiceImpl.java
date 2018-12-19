@@ -191,9 +191,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 
 	@Override
-	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode, String stage,Date[] searchDates) throws Exception {
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
 		
-		return requirementSubmissionHistoryDao.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,stage,searchDates);
+		return requirementSubmissionHistoryDao.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,stage,searchDates,locationId);
 	}
 
 	@Override

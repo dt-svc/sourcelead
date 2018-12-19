@@ -1881,21 +1881,35 @@ private String[] prepareApplicantJoinedListStringArray(RequirementSubmissionHist
 			if(rsh.getSubmissionId().getRequirement().getClientId() != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 				payTerm=payTerm.replaceAll("\\D", "");
-				userArray[12] = payTerm.toString();
+				if(!payTerm.isEmpty()){
+					userArray[12] = payTerm.toString();
+				}
+				else{
+					 userArray[12] = "--";
+				}
 			}
 			else{
 				 userArray[12] = "--";
 			}
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
-				payTerm=payTerm.replaceAll("\\D", "");
-				int result = Integer.parseInt(payTerm);
-				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
-				DateTime dtOrg = new DateTime(generatedInvoiceDate);
-				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				
-			   userArray[13] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
+				 Integer result = 0;
+                 try {
+                     payTerm=payTerm.replaceAll("\\D", "");
+                     result = Integer.parseInt(payTerm);
+                 } catch (Exception e) {
+                     result = 0;
+                 }
+                 if(result != 0){
+     				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
+     				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+     				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+     			   userArray[13] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate());
 
+                 }
+             	else{
+    				userArray[13] = "--";	
+    			}
 			}
 			else{
 				userArray[13] = "--";	
