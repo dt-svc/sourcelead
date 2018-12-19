@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -268,12 +269,12 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional
-	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType, String contractsType,String contractStatus, User user, String userRoleName) throws Exception
+	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, User user, ContractsDTO contractsDTO) throws Exception
 	{
 		String userRoleCondition = "";
 		Long userId = user.getId();
 		String userCode = user.getUserCode();
-		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
+		if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
 			userRoleCondition = "";
 		}else{
 			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.createdBy =:userCode or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
@@ -284,50 +285,59 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			ownerCondition = "or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId))";
 		}*/
 		
-		String[] type = contractsType.split(",");
-		
 		String subQuery = "";
-		if(type.length > 0){
-			for(int i=0; i<type.length; i++){
-				
-				if(type[i].equalsIgnoreCase("MSA")){
-					subQuery = subQuery + "contracts.contractType like '%MSA%' OR ";
+		if(StringUtils.isNotBlank(contractsDTO.getContractsType())){
+			String[] type = contractsDTO.getContractsType().split(",");
+			if(type.length > 0){
+				for(int i=0; i<type.length; i++){
+					
+					if(type[i].equalsIgnoreCase("MSA")){
+						subQuery = subQuery + "contracts.contractType like '%MSA%' OR ";
+					}
+					if(type[i].equalsIgnoreCase("SOW")){
+						subQuery = subQuery + "contracts.contractType like '%SOW%' OR ";
+					}
+					if(type[i].equalsIgnoreCase("NDA")){
+						subQuery = subQuery + "contracts.contractType like '%NDA%' OR ";
+					}
+					if(type[i].equalsIgnoreCase("NSA")){
+						subQuery = subQuery + "contracts.contractType like '%NSA%' OR ";
+					}
 				}
-				if(type[i].equalsIgnoreCase("SOW")){
-					subQuery = subQuery + "contracts.contractType like '%SOW%' OR ";
+				if(null != subQuery && "" != subQuery){
+					subQuery = subQuery.substring(0, subQuery.length() - 3);
+					subQuery = "and (" +subQuery+ ")";
 				}
-				if(type[i].equalsIgnoreCase("NDA")){
-					subQuery = subQuery + "contracts.contractType like '%NDA%' OR ";
-				}
-				if(type[i].equalsIgnoreCase("NSA")){
-					subQuery = subQuery + "contracts.contractType like '%NSA%' OR ";
-				}
-			}
-			if(null != subQuery && "" != subQuery){
-				subQuery = subQuery.substring(0, subQuery.length() - 3);
-				subQuery = "and (" +subQuery+ ")";
 			}
 		}
 		
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(contractsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(contractsDTO.getSearchValue())) {
+			query1.append("and (contracts.contractTitle like '" + contractsDTO.getSearchValue() + "%')");
+			
+		}
+		
+		
 		String[] status = null;
-		if(null != contractStatus && !"".equals(contractStatus)){	
-			status = contractStatus.split(",");
+		if(null != contractsDTO.getContractStatus() && !"".equals(contractsDTO.getContractStatus())){	
+			status = contractsDTO.getContractStatus().split(",");
 		}
 		List<String> statusList = new ArrayList<>();
 		if(status != null){
 			for(int i=0;i<status.length;i++){
 				statusList.add(status[i]);
 			}
-			statusList.add(submissionType);
+			statusList.add(contractsDTO.getContractSubmissionType());
 		}
 		
 		String subquery1 = "";
-		if("WAITING_FOR_APPROVER".equalsIgnoreCase(submissionType)){
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
-		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(submissionType)){
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
-			subquery1 += " contracts.templateSubmissionStatus = '"+submissionType+"'";
+			subquery1 += " contracts.templateSubmissionStatus = '"+contractsDTO.getContractSubmissionType()+"'";
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -345,11 +355,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
-			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).list();
+					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+contractsDTO.getTabType()+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
+			if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).list();
 			}else{
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).list();
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).list();
 			}
 		}else{
 			String query = "from Contracts contracts left join fetch contracts.contractsTemplate "
@@ -364,11 +374,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
-			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
+					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+contractsDTO.getTabType()+"%' "+subQuery+" "+userRoleCondition;
+			if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
 			}else{
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
 			}
 		}
 		

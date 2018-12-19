@@ -66,11 +66,27 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
+				{
 					associateBankData.setBankName(associateBankDataDTO.getBankName());
+				}else {
+					associateBankData.setBankName(null);
+				}
 				if(StringUtils.isNotBlank(associateBankDataDTO.getAccountNumber()))
+					{
 					associateBankData.setAccountNumber(associateBankDataDTO.getAccountNumber());
+					}
+				else {
+					associateBankData.setAccountNumber(null);
+				}
 				if(StringUtils.isNotBlank(associateBankDataDTO.getRoutingNumber()))
+					{
 					associateBankData.setRoutingNumber(associateBankDataDTO.getRoutingNumber());
+					}
+				
+				else {
+					associateBankData.setRoutingNumber(null);
+				}
+				
 				associateBankData.setOrgLocationId(orgLocation);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
