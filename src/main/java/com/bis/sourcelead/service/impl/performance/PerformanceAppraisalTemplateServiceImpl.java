@@ -43,11 +43,22 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			throws Exception {
 		
 		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(orgLocationId);;
+		orgLocations.setId(orgLocationId);
 		User user = new User();
 		user.setId(userId);
 		
-		PerformanceAppraisalTemplate template = new PerformanceAppraisalTemplate();
+		PerformanceAppraisalTemplate template = null;
+		if(performanceAppraisalTemplateDTO.getAppraisalTemplateId() != null) {
+			template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(performanceAppraisalTemplateDTO.getAppraisalTemplateId());
+			template.setUpdatedBy(user);
+			template.setUpdatedDate(new Date());
+		}else {
+			template = new PerformanceAppraisalTemplate();
+			template.setCreatedBy(user);
+			template.setCreatedDate(new Date());
+			template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		
 		template.setName(performanceAppraisalTemplateDTO.getName());
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalStartDate())) {
 			template.setAppraisalStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalStartDate()));
@@ -59,43 +70,63 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalDepartment())) {
 			template.setDepartment(performanceAppraisalTemplateDTO.getAppraisalDepartment());
+		}else {
+			template.setDepartment(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalRoles())) {
 			template.setRoles(performanceAppraisalTemplateDTO.getAppraisalRoles());
+		}else {
+			template.setRoles(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalEmpType())) {
 			template.setEmployeeType(performanceAppraisalTemplateDTO.getAppraisalEmpType());
+		}else {
+			template.setEmployeeType(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSelfAppraisalStartDate())) {
 			template.setSelfAppraisalStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getSelfAppraisalStartDate()));
+		}else {
+			template.setSelfAppraisalStartDate(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSelfAppraisalEndDate())) {
 			template.setSelfAppraisalEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getSelfAppraisalEndDate()));
+		}else {
+			template.setSelfAppraisalEndDate(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate())) {
 			template.setApprovingFromStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate()));
+		}else {
+			template.setApprovingFromStartDate(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalApprovingEndDate())) {
 			template.setApprovingFromEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalApprovingEndDate()));
+		}else {
+			template.setApprovingFromEndDate(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getApplicableFor())) {
 			template.setAppraisalApplicableFor(performanceAppraisalTemplateDTO.getApplicableFor());
+			if(performanceAppraisalTemplateDTO.getApplicableFor().equalsIgnoreCase("Experienced")) {
+				if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceYears())) {
+					template.setExperienceYears(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceYears()));
+				}
+				
+				if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceMonths())) {
+					template.setExperienceMonths(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceMonths()));
+				}
+			}else {
+				template.setExperienceYears(null);
+				template.setExperienceMonths(null);
+			}
 		}
 		
-		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceYears())) {
-			template.setExperienceYears(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceYears()));
-		}
-		
-		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getExperienceMonths())) {
-			template.setExperienceMonths(Integer.valueOf(performanceAppraisalTemplateDTO.getExperienceMonths()));
-		}
+	
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescriptionDisplay())) {
 			template.setDescriptionDisplay(performanceAppraisalTemplateDTO.getDescriptionDisplay());
@@ -103,6 +134,8 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescription())) {
 			template.setDescription(performanceAppraisalTemplateDTO.getDescription());
+		}else {
+			template.setDescription(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalCategories())) {
@@ -113,12 +146,7 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setCategoriesJsonString(performanceAppraisalTemplateDTO.getJsonCategoriesString());
 		}
 		template.setOrgLocationId(orgLocations);
-		template.setCreatedBy(user);
-		template.setUpdatedBy(user);
-		template.setCreatedDate(new Date());
-		template.setUpdatedDate(new Date());
 		template.setStatus(Constants.RECORD_ACTIVE);
-		template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		performanceAppraisalTemplateDao.savePerformanceAppraisalTemplate(template);
 		return template;
 	}
@@ -148,6 +176,22 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			   templateDTO.setAppraisalEmpType(template.getEmployeeType());
 		   }
 		   
+		   if(StringUtils.isNotBlank(template.getSelfAppraisalStartDateStr())) {
+			   templateDTO.setSelfAppraisalStartDate(template.getSelfAppraisalStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getSelfAppraisalEndDateStr())) {
+			   templateDTO.setSelfAppraisalEndDate(template.getSelfAppraisalStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getApprovingFromStartDateStr())) {
+			   templateDTO.setAppraisalApprovingStartDate(template.getApprovingFromStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getApprovingFromEndDateStr())) {
+			   templateDTO.setAppraisalApprovingEndDate(template.getApprovingFromEndDateStr());
+		   }
+		   
 		   if(StringUtils.isNotBlank(template.getCategories())) {
 			   templateDTO.setAppraisalCategories(template.getCategories());
 		   }
@@ -155,6 +199,24 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {
 			   templateDTO.setJsonCategoriesString(template.getCategoriesJsonString());
 		   }
+		   
+		   if(StringUtils.isNotBlank(template.getAppraisalApplicableFor())) {
+			   templateDTO.setApplicableFor(template.getAppraisalApplicableFor());
+			   if(template.getAppraisalApplicableFor().equalsIgnoreCase("Experienced")) {
+				   templateDTO.setExperienceYears(String.valueOf(template.getExperienceYears()));
+				   templateDTO.setExperienceMonths(String.valueOf(template.getExperienceMonths()));
+			   }
+			   
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getDescriptionDisplay())) {
+			   templateDTO.setDescriptionDisplay(template.getDescriptionDisplay());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getDescription())) {
+			   templateDTO.setDescription(template.getDescription());
+		   }
+		   
 		   
 		   return templateDTO;
 	}

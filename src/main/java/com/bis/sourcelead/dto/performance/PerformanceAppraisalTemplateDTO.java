@@ -36,6 +36,7 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String appraisalApprovingEndDate;
 	
+	@Required(desc="applicableFor")
 	private String applicableFor;
 	
 	@Required (desc = "experienceYears", dependsOn = "applicableFor", parentValue = "Experienced")

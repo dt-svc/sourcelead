@@ -46,36 +46,42 @@
 		        
 	        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 		   			<h2>Applicable For</h2>
-					<div class="form-group">
-					  <label class="col-md-3">Department</label>
-					  <div class="col-md-9">
-							<select multiple class="chosen-select form-control"
-											name="appraisalDepartment" id="appraisalDepartment" data-placeholder="Select Department"
-											data-validation-optional="true">
-							</select>
-							          	
-					  </div>
-					</div> 
-					<div class="form-group">
-					  <label class="col-md-3">Roles</label>
-					  <div class="col-md-9">
-							<select  multiple class="chosen-select form-control"
-											name="appraisalRoles" data-placeholder="Select Roles"
-											id="appraisalRoles" data-validation-optional="true">
-							</select>          	
-					  </div>
-					</div> 
-					<div class="form-group">
-					  <label class="col-md-3">Employee Type</label>
-					  <div class="col-md-9">
-							<select  multiple class="chosen-select form-control"
-											name="appraisalEmpType" data-placeholder="Employee Type"
-											id="appraisalEmpType" data-validation-optional="true">
-							</select>         	
-					  </div>
+					
+					<div class="row">
+					
+					<div class="col-md-6">
+						<div class="form-group width100percnt">
+						  <label class="col-md-3">Department</label>
+						  <div class="col-md-9">
+								<select multiple class="chosen-select form-control"
+												name="appraisalDepartment" id="appraisalDepartment" data-placeholder="Select Department"
+												data-validation-optional="true">
+								</select>
+								          	
+						  </div>
+						</div> 
+						<div class="form-group width100percnt">
+						  <label class="col-md-3">Roles</label>
+						  <div class="col-md-9">
+								<select  multiple class="chosen-select form-control"
+												name="appraisalRoles" data-placeholder="Select Roles"
+												id="appraisalRoles" data-validation-optional="true">
+								</select>          	
+						  </div>
+						</div> 
+						<div class="form-group width100percnt">
+						  <label class="col-md-3">Employee Type</label>
+						  <div class="col-md-9">
+								<select  multiple class="chosen-select form-control"
+												name="appraisalEmpType" data-placeholder="Employee Type"
+												id="appraisalEmpType" data-validation-optional="true">
+								</select>         	
+						  </div>
+						</div>
 					</div>
 					
-					<div class="form-group">
+				<div class="col-md-6">
+					<div class="form-group width100percnt">
 			          <label class="col-md-3">Self Appraisal</label>
 			          <div class="col-md-9">
 						  			  <div class="row">
@@ -96,7 +102,7 @@
 					  </div>
 			        </div>
 			        
-			        <div class="form-group">
+			        <div class="form-group width100percnt">
 			          <label class="col-md-3">Approving From</label>
 			          <div class="col-md-9">
 						  <div class="row">
@@ -116,18 +122,18 @@
 					  </div>
 			        </div>
 			
-				<div class="form-group">
+				<div class="form-group width100percnt">
 						<span class="radioStyles mr">
 						<input id="applicableForAll" name="applicableFor" checked  value="All" type="radio" onClick="performanceManagement.applicableType();">
 						<label for="applicableForAll">All</label>
 						</span>
 					<span class="radioStyles">
-						<input id="experienceRadio" name="applicableFor"  value="Experienced" type="radio" onClick="performanceManagement.applicableType();">
-						<label for="experienceRadio">Experienced</label>
+						<input id="applicableForExp" name="applicableFor"  value="Experienced" type="radio" onClick="performanceManagement.applicableType();">
+						<label for="applicableForExp">Experienced</label>
 					</span>
 				</div>
 			
-			<div class="form-group" style="display: none" id="experienceDiv">
+			<div class="form-group width100percnt" style="display: none" id="experienceDiv">
 			 <label class="col-md-3">Experience<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
                <div class="row">
@@ -148,6 +154,9 @@
                </div>
               </div>
             </div>
+            </div>
+            </div>
+            
             </div>
             
 	<div class="clearfix"></div>		

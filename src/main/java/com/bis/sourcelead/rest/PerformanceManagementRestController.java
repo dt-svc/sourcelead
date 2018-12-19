@@ -234,8 +234,8 @@ public class PerformanceManagementRestController {
    
    
    
-   @RequestMapping(value = "/getAppraisalCycleDetailsById" , method = RequestMethod.GET)
-   public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleDetailsById(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+   @RequestMapping(value = "/getAppraisalCycleTemplateDetailsById" , method = RequestMethod.GET)
+   public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleTemplateDetailsById(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
 	   Response<PerformanceAppraisalTemplateDTO> resObj = new Response<>();
 	   try {
 		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(templateId);
