@@ -184,8 +184,10 @@ function getBankDetails(){
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
+			<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
 			<li onclick="getTax();"><a data-toggle="tab" href="#myTax">Tax</a></li>
+			</c:if>
 			<li onclick="getDocuments();"><a data-toggle="tab" href="#myDocuments">Documents</a></li>
 		  </ul>        
 <div class="accountsettings-tab noMar">
@@ -380,7 +382,7 @@ function getBankDetails(){
 			
 			<div id="configure" class="tab-pane panel-body fade">
 				<div class="col-xs-12 col-sm-9 col-md-12">
-					<div class="popHeadTwo mb10">Login Security</div>
+					<div class="popHeadTwo mb10"></div>
 					<div class="form-group">
 						<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
 						<div class="col-md-7 toggle-button">

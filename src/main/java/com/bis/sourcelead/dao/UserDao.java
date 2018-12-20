@@ -214,4 +214,6 @@ public interface UserDao {
 
 	List<ProbationDTO> getAllProbationUsersListForResourceManager(Long resourcemanagerId, Date futureDate, Long orgLocationId);
 
+	User validateSSNDuplicate(String ssnNumber, Long locationId, String userId);
+
 }
