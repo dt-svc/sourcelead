@@ -1132,7 +1132,8 @@ function removeMask(){
 	 
 }
 function validMask(){
-	  $('#customeAmount').attr("readonly","readonly");  
+	  $('#customeAmount').attr("readonly","readonly"); 
+	  $('#customeAmount').attr("data-validation-optional","true"); 
 	  
 }
 /* function amountCal(){
