@@ -2,9 +2,11 @@ package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +20,18 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesDao;
 import com.bis.sourcelead.dao.AssociateLoanAndAdvancesHistoryDao;
+import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
+import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.rest.USPayrollRestController;
+import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -40,6 +45,9 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 	AssociateLoanAndAdvancesDao associateLoanAndAdvancesDao;
 	
 	@Autowired
+	AssociateLoanAndAdvancesHistoryService associateLoanAndAdvancesHistoryService;
+	
+	@Autowired
 	CommonUtil commonUtil;
 
 	@Autowired
@@ -47,6 +55,9 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 	
 	@Autowired
 	AssociateLoanAndAdvancesHistoryDao associateLoanAndAdvancesHistoryDao;
+	
+	@Autowired
+	AssociateSalaryDao associateSalaryDao;
 	
 	@Override
 	public AssociateLoanAndAdvances saveAssociateLoanAndAdvances(AssociateLoanAndAdvances associateLoanAndAdvances)
@@ -266,9 +277,13 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 		
 		List<AssociateLoanAndAdvancesDTO> assLoansAndAdvancesList = new ArrayList<>();
 		try {
-			List<AssociateLoanAndAdvances> assLoansAndAdvances = associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateId(candidateId, orgLocation.getId(),type);
-			for (AssociateLoanAndAdvances associateLoanAndAdvances : assLoansAndAdvances) {
+			List<AssociateLoanAndAdvances> assLoansAndAdvances1 = associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateId(candidateId, orgLocation.getId(),type);
+			AssociateSalary associatePayFrequency = associateSalaryDao.getAssociateSalaryByCandidateIdAndOrgLocationId(candidateId, orgLocation.getId());
+			for (AssociateLoanAndAdvances associateLoanAndAdvances : assLoansAndAdvances1) {
 				AssociateLoanAndAdvancesDTO dto =  getAssociateLoanAndAdvancesDTODetails(associateLoanAndAdvances,orgLocation);
+				Map<String,String> dueAmoutAndDate = calculateNextDueDate(orgLocation, associateLoanAndAdvances, associatePayFrequency);
+				dto.setDueAmount(dueAmoutAndDate.get("dueAmout"));
+				dto.setNextDueDate(dueAmoutAndDate.get("nextDueDate"));
 				assLoansAndAdvancesList.add(dto);
 			}
 		} catch (Exception e) {
@@ -293,5 +308,74 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			Long orgLocationId, List<String> loanStatus) throws Exception {
 		return associateLoanAndAdvancesDao.getAssociateLoanAndAdvancesListByCandidateIdOrgLocationIdAndLoanStatus(candidateId, orgLocationId, loanStatus);
 	}
-
+	
+	private Map<String,String> calculateNextDueDate(OrgLocations orgLocation, AssociateLoanAndAdvances associateLoanAndAdvances, AssociateSalary associatePayFrequency) {
+		Map<String,String> map=new HashMap<String,String>();
+		Calendar dueDate = Calendar.getInstance();
+		dueDate.setTime(associateLoanAndAdvances.getEffectiveDate());
+		
+		AssociateLoanAndAdvanceHistory assLoanAndAdvHis = associateLoanAndAdvancesHistoryService.getLoanAndAdvanceHistoryByCandidateIdAndLocationIdAndAdvanceId(associateLoanAndAdvances.getId());
+		if(assLoanAndAdvHis != null) {
+			if(assLoanAndAdvHis.getSchedule()>0 && assLoanAndAdvHis.getSchedule() != null) {
+				Double dueAmout = associateLoanAndAdvances.getPendingAmount() - assLoanAndAdvHis.getSchedule() * associateLoanAndAdvances.getDeductAmount();
+				map.put("dueAmout", ""+dueAmout);
+				
+				if("Every Pay".equalsIgnoreCase(associateLoanAndAdvances.getScheduler())) {
+					if("Bi-Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 14);
+					if("Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 7);						
+					if("Monthly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.DAY_OF_MONTH));
+					if("Annually".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+				}
+				if("Every Quarter".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 3, dueDate.get(Calendar.DAY_OF_MONTH));
+				if("Half Yearly".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 6, dueDate.get(Calendar.DAY_OF_MONTH));
+				if("Annually".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+			}
+			else {
+				if("Every Pay".equalsIgnoreCase(associateLoanAndAdvances.getScheduler())) {
+					if("Bi-Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 14);
+					if("Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 7);						
+					if("Monthly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.DAY_OF_MONTH));
+					if("Annually".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+						dueDate.set(dueDate.get(Calendar.YEAR) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+				}
+				if("Every Quarter".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 3, dueDate.get(Calendar.DAY_OF_MONTH));
+				if("Half Yearly".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 6, dueDate.get(Calendar.DAY_OF_MONTH));
+				if("Annually".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+					dueDate.set(dueDate.get(Calendar.YEAR) + 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+			}
+		}
+		else {
+			if("Every Pay".equalsIgnoreCase(associateLoanAndAdvances.getScheduler())) {
+				if("Bi-Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 14);
+				if("Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 7);						
+				if("Monthly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.DAY_OF_MONTH));
+				if("Annually".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
+					dueDate.set(dueDate.get(Calendar.YEAR) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+			}
+			if("Every Quarter".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+				dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 3, dueDate.get(Calendar.DAY_OF_MONTH));
+			if("Half Yearly".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+				dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 6, dueDate.get(Calendar.DAY_OF_MONTH));
+			if("Annually".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
+				dueDate.set(dueDate.get(Calendar.YEAR) + 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+		}
+		Date nextDate = dueDate.getTime();
+		map.put("nextDueDate", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), nextDate));
+		return map;
+	}
 }

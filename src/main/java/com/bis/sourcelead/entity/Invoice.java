@@ -217,6 +217,9 @@ public class Invoice {
 	@Column(name = "IS_GENERATE_AUTOMATIC_INVOICE")
 	private String isAutomaticGenerateInvoice;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TEMPLATE_ID")
+	private CustomInvoiceTemplate customInvoiceTemplate;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceLineItems> invoiceLineItems;
@@ -395,6 +398,14 @@ public class Invoice {
 	@Transient
 	@JsonProperty
 	private String generateBill;
+	
+	@Transient
+	@JsonProperty
+	private long customInvoiceId;
+	
+	@Transient
+	@JsonProperty
+	private String customInvoiceName;
 
 	
 	public Long getId()
@@ -1136,6 +1147,14 @@ public class Invoice {
 		this.isAutomaticGenerateInvoice = isAutomaticGenerateInvoice;
 	}
 
+	public CustomInvoiceTemplate getCustomInvoiceTemplate() {
+		return customInvoiceTemplate;
+	}
+
+	public void setCustomInvoiceTemplate(CustomInvoiceTemplate customInvoiceTemplate) {
+		this.customInvoiceTemplate = customInvoiceTemplate;
+	}
+
 	public String getFileUrl() {
 		return fileUrl;
 	}
@@ -1248,6 +1267,22 @@ public class Invoice {
 
 	public void setIsJobClosure(String isJobClosure) {
 		this.isJobClosure = isJobClosure;
+	}
+
+	public long getCustomInvoiceId() {
+		return customInvoiceId;
+	}
+
+	public void setCustomInvoiceId(long customInvoiceId) {
+		this.customInvoiceId = customInvoiceId;
+	}
+
+	public String getCustomInvoiceName() {
+		return customInvoiceName;
+	}
+
+	public void setCustomInvoiceName(String customInvoiceName) {
+		this.customInvoiceName = customInvoiceName;
 	}
 
 	

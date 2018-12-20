@@ -21,6 +21,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Venkat Kesav
  *
@@ -84,6 +86,7 @@ public class Team implements Serializable{
 	private Integer candidateHotlistCount;
 	
 	@Transient
+	@JsonProperty
 	private String isTeamAssigned;
 	
 	@Transient
