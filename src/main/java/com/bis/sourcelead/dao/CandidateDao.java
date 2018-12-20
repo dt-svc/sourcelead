@@ -240,7 +240,7 @@ public interface CandidateDao {
 
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)throws Exception;
 
 	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id)throws Exception;
 	

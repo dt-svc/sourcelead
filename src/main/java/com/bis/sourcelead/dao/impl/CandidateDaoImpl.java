@@ -2891,11 +2891,17 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<MarketplacePurchaseOrder> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO) throws Exception{
 		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder2 = new StringBuilder("");
+			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+			List<Long> countlist = null;
+			Integer filterCount = 0;
+			List<MarketplacePurchaseSalesDTO> purchaseOrderDtoList = new ArrayList<>();
+			MarketplacePurchaseSalesDTO purchaseOrderDto = null;
+			String formattedDate =  null;
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
@@ -2934,8 +2940,33 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 				
 			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId "+query1+"";
+			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
 			List<MarketplacePurchaseOrder>  marketplacePurchaseOrder= session.createQuery(query).setLong("orgLocationId", id).list();
-			return  marketplacePurchaseOrder;
+			countlist = session.createQuery(countQuery).setLong("orgLocationId", id).list();
+			int totalCount = 0;
+			if (marketplacePurchaseSalesDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query.toString() != null && !query.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			if(marketplacePurchaseOrder != null){
+				for(MarketplacePurchaseOrder purchase : marketplacePurchaseOrder){
+					purchaseOrderDto = new MarketplacePurchaseSalesDTO();
+					BeanUtils.copyProperties(purchase, purchaseOrderDto);
+					formattedDate =  commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", purchase.getOrderDate());
+					purchaseOrderDto.setOrderDate(formattedDate);
+					purchaseOrderDtoList.add(purchaseOrderDto);
+					}
+				}
+			responseList.setData(purchaseOrderDtoList);
+			return responseList;
 		}
 		catch(Exception e) {
        	 e.printStackTrace();
