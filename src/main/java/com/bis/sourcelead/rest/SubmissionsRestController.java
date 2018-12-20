@@ -721,8 +721,12 @@ public class SubmissionsRestController {
 				}
 				int shotListCount = submissionId.length;
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				// for URL redirections from mail
+				String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+				Long redirectOrgLocationId = orgLocations.getId();
+				
 				if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
-					sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
+					sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg,redirectURL,redirectOrgLocationId);
 				}
 				if(count>0){
 					requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
@@ -875,7 +879,7 @@ public class SubmissionsRestController {
 	// vendors mail sending the private method
 
 	public void sendEmailToManages(Requirement requirement, OrgLocations loginOrgLocations, User user,
-			Integer shotListCount, Org loginOrg) throws Exception {
+			Integer shotListCount, Org loginOrg,String redirectURL, Long redirectOrgLocationId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
 		emailMessage.setLastName(requirement.getManagerUserId().getLastName());
@@ -951,7 +955,7 @@ public class SubmissionsRestController {
 		}
 
 		StringBuilder loginURLBuilder = new StringBuilder();
-		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicants</div></a>").toString());
 		
 
 		// getting the current EmailScenario by EmailScenario unique name and
