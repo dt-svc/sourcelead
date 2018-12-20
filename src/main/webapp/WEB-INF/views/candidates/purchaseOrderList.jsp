@@ -31,7 +31,7 @@ $(document).ready(function(){
          <div class="clearfix"></div>         
      </ul>
 </div>
-    
+    <div id="emptyPopup"></div>
     <div class="clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
@@ -46,7 +46,7 @@ $(document).ready(function(){
                 <div class="newActPop" style=""> 
                 <span>
                 <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
-                <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+                <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
                  </span> 
                  </div>
               </li>
@@ -57,6 +57,8 @@ $(document).ready(function(){
             </ul>
           </div>
         <div class="candidate_wrap_table datatable_filter">
+        <input type="hidden" id="noCandidates" name="noCandidates" />
+        
         <div id="purchaseList"></div>
         </div>
         </div>
@@ -90,6 +92,9 @@ $(document).ready(function(){
 	}
 	function goToWalletList(){
 	    location.href = "${appPath}/walletList";
+	}
+	function refreshPage(){
+		location.reload();
 	}
 
   </script>
@@ -163,6 +168,7 @@ function purchasePagination(url){
             "sortable": false,
             "render": function ( data, type, report, meta ) {
             	var result = "";
+            	$("#noCandidates").val(1);
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
              result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
             		         		 
@@ -305,6 +311,70 @@ function purchasePagination(url){
     	});
 }
 
+</script>
+<script>
+function candidateCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<script>
+function exportToPdf(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	if(isCandidatesAvailable >0)
+		{
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=pdf";	
+	   }
+	  else{
+		
+		    var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<div class='modal-body text-center'>";
+			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		</div>";
+			result = result +"		<b href='javascript:void(0)'><input class='width100percnt' type='button' value='Ok' onclick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+}
+</script>
+<script>
+function exportToExcel(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	if(isCandidatesAvailable >0)
+		{	
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=xls";	
+	  }
+	else{
+		
+	  		var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<div class='modal-body text-center'>";
+			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		</div>";
+			result = result +"		<b href='javascript:void(0)'><input class='width100percnt'  type='button' value='Ok' onclick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	     } 
+}
 </script>
 
   

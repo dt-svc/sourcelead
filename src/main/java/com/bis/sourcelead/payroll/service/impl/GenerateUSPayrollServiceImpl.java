@@ -467,7 +467,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
-						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 						if(terminated) {
 							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 								if(joiningMonth.equals(payrollRunningMonth)) {
@@ -495,7 +495,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 			} else {
 					if(salaryDto.getJoiningDate() != null) {
-					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 					    	if(terminated) {
 					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 					    		if(joiningMonth.equals(payrollRunningMonth)) {
@@ -537,15 +537,23 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
     * @param slaryDto
     * @param freqStartDate
     * @param freqEndDate
+ * @param isAssociate 
     * @return boolean
     */
-   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+   private boolean isEmployeeTerminated(Date jdate, Date freqStartDate, Date freqEndDate, String isAssociate)
 	{
 	   boolean isTerminated = false;
 //	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
-	   if(date.after(freqStartDate) || date.before(freqEndDate)) {
-		   isTerminated = true;
-		}
+	   if(PayrollConstant.N.equalsIgnoreCase(isAssociate)) {
+		   if(jdate.after(freqStartDate) || jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }else {
+		   if(jdate.after(freqStartDate) && jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }
+	   
 		return isTerminated;
 	}
 

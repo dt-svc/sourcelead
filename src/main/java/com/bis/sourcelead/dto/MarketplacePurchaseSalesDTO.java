@@ -31,7 +31,9 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 	private String salesUuid;
 	private String orderDate;
 	private String description;
+
 	private Long orglocationId;
+	private String exportType;
 	
 	private Double sumOfOrdersAmount;
 	private Long orgLocationId;
@@ -147,5 +149,12 @@ public class MarketplacePurchaseSalesDTO extends SearchDTO implements Serializab
 		this.orgLocationId = orgLocationId;
 
 	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
+	
 	
 }

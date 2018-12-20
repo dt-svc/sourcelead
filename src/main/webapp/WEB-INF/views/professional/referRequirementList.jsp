@@ -430,7 +430,7 @@ function refercontactList(){
   		result = result +'<table id="example" class="display" cellspacing="0" width="100%"  >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';
+// 		result = result +'<th><input type="checkbox" id="checkReferContacts" onclick="toggleContactsGroup(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
 		result = result +'<th>Groups</th>';
@@ -527,7 +527,7 @@ function contactsPagination(url,sourceleadUrl){
             { "data": "contactType"},
         	{ "data": "contactAction"}
         ],
-        "columnDefs": [{
+        "columnDefs": [/* {
     	  	"targets": colIndex++,
     	  	"data": "ischeck",
     	  	"render": function(data, type, opt, meta) {
@@ -543,7 +543,7 @@ function contactsPagination(url,sourceleadUrl){
     	  		result = result + '<td><input'+(flag ? " checked='checked'" : "")+' type="checkbox" onchange="checkContactList(this);"    class="myGroupCheckbox" id="'+opt.id+'" value="'+opt.id+'" data-id="'+opt.id+'" name="contactsList[]" ></td>';
     	  		  return result;
     	  	}
-         },{
+         }, */{
 	    	  	"targets": colIndex++,
 	    	  	"data": "contactName",
 	    	  	"render": function(data, type, opt, meta) {
@@ -1189,7 +1189,7 @@ function closeFilter(){
 function resetContactFilter(){
 	$("ul#contactType > li input:checkbox").prop("checked",false);
 	$("ul#contactgroup > li input:checkbox").prop("checked",false);
-	
+	$("#contactsDataTableSearch").val('');
 	contactsDataTableList()
 }
 </script>
