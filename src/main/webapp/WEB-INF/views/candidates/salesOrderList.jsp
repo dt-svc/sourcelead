@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -36,8 +37,10 @@
                 <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportSalesOrderToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportSalesOrderToExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
+
                 <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
                 <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
+
 			</li>
             </ul>
           </div>
@@ -51,6 +54,13 @@
       </div>
     </div> 
   </section>
+   <script>
+  
+   function getSalesOrderList(){
+	   	getDynamicSalesOrderList();
+	   	
+  }
+  </script>
   
   <div id="emptyPopup"></div>
 <div class="advancedsearch-mask"></div>
@@ -161,8 +171,6 @@
 	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
 		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
-	  	var sourceleadUrl = '${sourceleadUrl}';	
-	  	var url ="";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
@@ -220,12 +228,11 @@
 		    	  	"data": "orderDate",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		var result = "";
-		            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
+		            	  if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
 		           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
 		         		}else{
 		         		  result = result +'<div class="tblminwidth-100">--</div>';
-		         		} 
+ 		         		} 
 		    	  		
 			             return result;
 		    	  	}
@@ -299,9 +306,9 @@
 	    } );
 	    $("#salesOrderListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#salesOrderListTableSearch").keyup(function(e) {
+	    $("#searchByValue").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getDynamicSalesOrderList();
+	    		   getSalesOrderList();
 	    	   }
 	    	});
 	 	
@@ -351,7 +358,8 @@
 	    location.href = "${appPath}/walletList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#searchByValue").val('');
+		getSalesOrderList();
 	}
   </script>
   <script>

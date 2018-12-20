@@ -1,11 +1,14 @@
 package com.bis.sourcelead.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -25,9 +28,12 @@ import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketPlace;
+import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -48,6 +54,9 @@ public class CandidateServiceTest {
 		
 		@Autowired
 		CommonUtil commonUtil;
+		
+		@Autowired
+		OrgLocationService orgLocationService;
 		
 		@Test
 		public void storeCandidate() throws Exception{
@@ -241,6 +250,55 @@ public class CandidateServiceTest {
 			System.out.println("rakshith"+file.getName());
 			
 
+		}
+		
+		@Test
+		public void getMarketplaceTransactionDetails() throws Exception{
+			CandidateMarketPlacePaymentTransactionHistory cmpth = new CandidateMarketPlacePaymentTransactionHistory();
+			CandidateMarketPlacePaymentTransactionHistory cmpthreturn = new CandidateMarketPlacePaymentTransactionHistory();
+			OrgLocations orgLocationId=new OrgLocations();
+			orgLocationId.setId(12l);
+			long d = System.currentTimeMillis();
+			Date date = new Date(d);
+			cmpth.setOrgLocationId(orgLocationId);
+			cmpth.setTransactionId("23A13");
+			cmpth.setTransactionDate(date);
+			candidateService.saveCandidateMarketplacePaymentTranscationHistory(cmpth);
+			cmpthreturn = candidateService.getMarketplaceTransactionDetails(orgLocationId.getId());
+			assertEquals(cmpth.getOrgLocationId().getId(),cmpthreturn.getOrgLocationId().getId());
+		}
+		
+		@Test
+		public void getCandidateDetailsByCandidateId() throws Exception{
+			CandidateMarketPlace cmp = new CandidateMarketPlace();
+			CandidateMarketPlace cmpreturn = new CandidateMarketPlace();
+			User user = new User();
+			Candidate candidate = new Candidate();
+			candidate.setId(4l);
+			user.setId(11l);
+			cmp.setCandidateId(candidate);
+			cmp.setMarketPrice("72a");
+			cmp.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidateService.copyCandidateToMarketplace(String.valueOf(candidate.getId()),user);
+			cmpreturn = candidateService.getCandidateDetailsByCandidateId(candidate.getId());
+			assertEquals(cmp.getStatus(),cmpreturn.getStatus());
+		}
+		
+		@Test
+		public void getUserDetailsBySourceOrgLocationId() throws Exception{
+			OrgLocations sourceOrgLocationId = new OrgLocations();
+			OrgSettings orgSettings = new OrgSettings();
+			orgSettings.setId(12);
+	        orgSettings.setWebsite("www.dum.com");
+			orgSettings.setTimeZone("246");
+			User user = new User();
+			User user1 = new User();
+			user.setId(15l);
+			sourceOrgLocationId.setId(14l);
+			sourceOrgLocationId.setUser(user);
+			orgLocationService.saveOrgLocations(orgSettings,sourceOrgLocationId);
+			user1 = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId.getId());
+			assertEquals(user.getId(),user1.getId());
 		}
 	}
 
