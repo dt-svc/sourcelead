@@ -2994,12 +2994,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, 
-			String searchValue, String salesOrderFromDate, String salesOrderToDate) {
+			String searchValue, String salesOrderFromDate, String salesOrderToDate, Date[] salesOrderDateArray) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
 			StringBuilder queryEndBuilder2 = new StringBuilder();
 			StringBuilder dateQuery1 = new StringBuilder();
+			StringBuilder dateQuery2 = new StringBuilder("");
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
@@ -3024,6 +3025,13 @@ public class CandidateDaoImpl implements CandidateDao {
 				dateQuery1.append(" and DATE_FORMAT(salesOrder.orderDate, '%Y-%m-%d') between '" + customStartdate
 						+ "' and '" + customEnddate + "'");
 			}
+			if (salesOrderDateArray != null && salesOrderDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(salesOrderDateArray[0]);
+				String customEnddate = dateFormat.format(salesOrderDateArray[1]);
+				dateQuery2.append(" and DATE_FORMAT(salesOrder.orderDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "'");
+			}
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
@@ -3034,11 +3042,10 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 			}
 			}
-
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
-			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
-			countlist = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + dateQuery2.toString() +queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			countlist = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + dateQuery2.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
 			int totalCount = 0;
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
