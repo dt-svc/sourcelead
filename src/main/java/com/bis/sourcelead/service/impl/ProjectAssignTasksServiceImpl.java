@@ -123,7 +123,7 @@ public class ProjectAssignTasksServiceImpl implements ProjectAssignTasksService{
 									assignTask.setUpdatedBy(user.getUserCode());
 									projectAssignTasksDao.saveProjectAssignTask(assignTask);
 									if(orgLocations.getId().longValue() == members.getProjectMemberCandidteId().getOrgLocationId().getId()) {
-										String redirectURL = "/projectTaskSummary-params-taskUUID="+projectTask.getProjectTasksUUID()+"-and-projectClientUUID=";
+										String redirectURL = "/projectTaskSummary-params-taskUUID="+projectTask.getProjectTasksUUID()+"-and-projectClientUUID="+projectTasksDTO.getProjectClientUUID();
 										long redirectOrgLocationId = projectTask.getProjectId().getOrgLocationsId().getId();
 										projectTasksService.SendMailtoAssigntoMembersaboutAddingTask(assignTask,projectTasksDTO,projectTask,orgLocations,user, redirectURL, redirectOrgLocationId);
 										 //this code is Assigned to user Activity

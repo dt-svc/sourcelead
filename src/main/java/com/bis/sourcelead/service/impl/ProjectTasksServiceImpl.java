@@ -387,7 +387,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			}	
 		}
 
-        String redirectURL = "/projectTaskSummary-params-taskUUID="+tasks.getProjectTasksUUID()+"-and-projectClientUUID=";
+        String redirectURL = "/projectTaskSummary-params-taskUUID="+tasks.getProjectTasksUUID()+"-and-projectClientUUID="+projectTasksDTO.getProjectClientUUID();
 		long redirectOrgLocationId = tasks.getProjectId().getOrgLocationsId().getId();
 		
         //onwer Task email
