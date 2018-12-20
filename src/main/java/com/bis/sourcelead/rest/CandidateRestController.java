@@ -1151,9 +1151,10 @@ public class CandidateRestController {
 		  			e.printStackTrace();
 		  			return null;
 		  		}
-			List<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
-			res.setData(marketplacePurchaseOrder);
-			return res;
+			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
+			return marketplacePurchaseOrder;
+			/*res.setData(marketplacePurchaseOrder);
+			return res;*/
 		}
 		 
 	
