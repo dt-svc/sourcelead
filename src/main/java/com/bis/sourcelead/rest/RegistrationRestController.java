@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -100,8 +99,6 @@ public class RegistrationRestController {
 	 @Autowired
 	 RegistrationService registrationService;
 	
-	 @Autowired
-	 SourceleadAuthenticationProvider surceleadAuthenticationProvider;
 	 
 	 @Autowired
 	 UserService userService;
@@ -1355,7 +1352,6 @@ public class RegistrationRestController {
 					else
 						registrationService.sendEmailToProfessional(user);
 					status = "success";
-					// verified click to login
 				}else{
 					status = "already Verified";
 				}
@@ -1418,7 +1414,7 @@ public class RegistrationRestController {
 			}
 		}
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userRole, userName, password,verfDone));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userName+"##"+userRole.getId(), password,verfDone));
 		return "true";
 	}
 	
