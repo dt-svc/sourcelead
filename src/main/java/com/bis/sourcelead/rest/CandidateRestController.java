@@ -64,6 +64,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -1133,6 +1134,7 @@ public class CandidateRestController {
 			logger.debug("inside PurchaseOrderList  controller =========>");
 			System.out.println("inside PurchaseOrderList  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 			try{
 			  	String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice", "discount"    };
 			  	int sortColumnIndex = -1; 
@@ -1431,6 +1433,7 @@ public class CandidateRestController {
 			 @RequestParam(value = "salesOrderToDate", required = false)String salesOrderToDate,
 			 @RequestParam(value = "checkedDate", required = false)String checkedDate,
 			 HttpServletRequest request, HttpServletResponse response)  {
+
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

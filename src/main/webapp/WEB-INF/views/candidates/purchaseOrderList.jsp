@@ -51,8 +51,8 @@ $(document).ready(function(){
                  </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+                <input class="repSearchBar" placeholder="Search" id="purchaseOrderDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getPurchaseOrderList();"></span>
 			</li>
             </ul>
           </div>
@@ -86,6 +86,10 @@ $(document).ready(function(){
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
+	function refreshPage(){
+		$("#purchaseOrderDataTableSearch").val('');
+		getPurchaseOrderList();
+	}
 	function goToWalletList(){
 	    location.href = "${appPath}/walletList";
 	}
@@ -98,8 +102,9 @@ $(document).ready(function(){
   <script>
   
    function getPurchaseOrderList(){
-	  
-	   	var url = sourceleadUrl+"/getPurchasedOrderList";
+	    var searchValue = $("#purchaseOrderDataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue;
 	   	getPurchaseOrderListPagin(url);	  
   }
   </script>
@@ -299,7 +304,7 @@ function purchasePagination(url){
     } );
     $("#purchaseTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#purchaseTableSearch").keyup(function(e) {
+    $("#purchaseOrderDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getPurchaseOrderList();
     	   }
