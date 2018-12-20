@@ -330,7 +330,7 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 					location.append(",").append(req.getCity());
 				}
 				// for URL redirections from mail
-				String redirectURL = "/requirementSummary-and-requirementUUID="+req.getRequirementUUID();
+				String redirectURL = "/requirementSummary-params-requirementUUID="+req.getRequirementUUID();
 				Long redirectOrgLocationId = orgLocations.getId();
 				for(RequirementAssignTo newlyAddReqAssiTo : newlyUpdatedRequirementAssignToList){
 					if(newlyAddReqAssiTo.getStatus() != null && newlyAddReqAssiTo.getStatus() != "0"){

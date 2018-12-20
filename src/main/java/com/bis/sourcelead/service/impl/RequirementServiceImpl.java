@@ -1121,7 +1121,7 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		// for URL redirections from mail
-		String redirectURL = "/requirementSummary-and-requirementUUID="+savedRequirement.getRequirementUUID();
+		String redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 		Long redirectOrgLocationId = orgLocations.getId();
 		
 		// store recommended customizeScore

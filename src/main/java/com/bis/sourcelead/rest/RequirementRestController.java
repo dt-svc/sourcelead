@@ -588,7 +588,7 @@ public class RequirementRestController {
 								requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 							}
 							// for URL redirections from mail
-							String redirectURL = "/requirementSummary-and-requirementUUID="+requirement.getRequirementUUID();
+							String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 							Long redirectOrgLocationId = orgLocation.getId();
 							/*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 							RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
@@ -648,7 +648,7 @@ public class RequirementRestController {
 									
 									}
 								// for URL redirections from mail
-								String redirectURL = "/requirementSummary-and-requirementUUID="+requirement.getRequirementUUID();
+								String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 								Long redirectOrgLocationId = orgLocation.getId();
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
