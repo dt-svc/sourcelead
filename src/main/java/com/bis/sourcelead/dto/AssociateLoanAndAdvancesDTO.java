@@ -53,6 +53,10 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 
 	 private String description;
 	 
+	 private String dueAmount;
+	 
+	 private String nextDueDate;
+	 
 	 private long id;
 	 
 	 private String uuid;
@@ -211,6 +215,22 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 		this.description = description;
 	}
 
+	public String getDueAmount() {
+		return dueAmount;
+	}
+
+	public void setDueAmount(String dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+	
+	 public String getNextDueDate() {
+		return nextDueDate;
+	}
+
+	public void setNextDueDate(String nextDueDate) {
+		this.nextDueDate = nextDueDate;
+	}
+	
 	public long getId() {
 		return id;
 	}
