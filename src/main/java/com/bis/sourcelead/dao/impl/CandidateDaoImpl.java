@@ -2972,11 +2972,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
 			MarketplacePurchaseSalesDTO salesOrderDto = null;
 			String formattedDate =  null;
-
-			if(salesUuid != null && !"".equalsIgnoreCase(salesUuid)){
-				queryBuilder1.append(" and (salesOrder.salesUuid like '%"+salesUuid+"%')");
-			}
-			
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
 				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
