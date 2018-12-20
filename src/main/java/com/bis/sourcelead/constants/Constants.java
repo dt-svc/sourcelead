@@ -1182,6 +1182,7 @@ public class Constants {
 	public static final String REPORT_FILTER_CURRENT_MONTH = "current_month";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
+	public static final String REPORT_FILTER_6_MONTHS = "6_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String REPORT_FILTER_Last_Week = "Last_Week";
