@@ -90,7 +90,7 @@ function candidateInvoiceList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-			                     if(opt.invoiceGenerateDate != null && opt.invoiceGenerateDate != '' && opt.invoiceGenerateDate != 'undefined'){
+			                     if(opt.generateDate == true){
 			                    	 result = result +"<td><div><a onClick='genarateInvoiceFromDashboard("+opt.orgRelationId+","+opt.submissionId+","+opt.id+");'>Generate Invoice</a></div></td>";
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
