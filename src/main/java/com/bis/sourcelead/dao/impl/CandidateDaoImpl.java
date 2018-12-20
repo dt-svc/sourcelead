@@ -2928,11 +2928,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue) {
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, 
+			String searchValue, String salesOrderFromDate, String salesOrderToDate) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
-			StringBuilder queryBuilder2 = new StringBuilder();
+			StringBuilder queryEndBuilder2 = new StringBuilder();
+			StringBuilder dateQuery1 = new StringBuilder();
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
@@ -2943,20 +2945,34 @@ public class CandidateDaoImpl implements CandidateDao {
 				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
 				queryBuilder1.append(" or (salesOrder.orderNo like '%"+searchValue+"%')) ");
 			}
+			if (salesOrderFromDate != null && salesOrderToDate != null && !"".equalsIgnoreCase(salesOrderFromDate)
+					&& !"".equalsIgnoreCase(salesOrderToDate)) {
+				if (salesOrderFromDate.contains("/") || salesOrderToDate.contains("/")) {
+					salesOrderFromDate = salesOrderFromDate.replaceAll("/", "-");
+					salesOrderToDate = salesOrderToDate.replaceAll("/", "-");
+				}
+				Date formattedStartdate = new ConversionUtil().getDateFromString(salesOrderFromDate);
+				Date formattedEnddate = new ConversionUtil().getDateFromString(salesOrderToDate);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(formattedStartdate);
+				String customEnddate = dateFormat.format(formattedEnddate);
+				dateQuery1.append(" and DATE_FORMAT(salesOrder.orderDate, '%Y-%m-%d') between '" + customStartdate
+						+ "' and '" + customEnddate + "'");
+			}
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
-			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
-			countlist = session.createQuery(countQuery + queryBuilder1.toString() + queryBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			countlist = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
 			int totalCount = 0;
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {

@@ -3179,8 +3179,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue)throws Exception {
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate)throws Exception {
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate);
 		return responseList;
 		}
 
