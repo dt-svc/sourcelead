@@ -183,9 +183,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 				if(employee.getHireDate().after(freqEndDate)) {
 					continue;
 				}else if(employee.getHireDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(employee.getHireDate()) * employee.getHireDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
-					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - employee.getHireDate().getTime());
+					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - employee.getHireDate().getTime()) + 1;
 				}else if(userRole.getTerminateDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(userRole.getTerminateDate()) * userRole.getTerminateDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
-					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(userRole.getTerminateDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime());
+					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(userRole.getTerminateDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
 				}
 				
 				BigDecimal payAdjustmentConst = new BigDecimal((float)applincablePayrollDays/(float)frequencyPayrollDays).setScale(2, BigDecimal.ROUND_HALF_EVEN);
@@ -233,7 +233,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					}
 					
 					Set<AssociateSalaryPayheadInd> salaryPayheadList = new HashSet<AssociateSalaryPayheadInd>();
-					for(AssociateSalaryPayheadInd associateSalaryPayheadInd : assoSal.getAssociateSalaryPayheadIndList()) {
+					for(AssociateSalaryPayheadInd associateSalaryPayheadInd : assoSal.getAssociateSalaryPayheadIndList().stream().filter(phead -> phead.getStatus() > 0).collect(Collectors.toList())) {
 						boolean isPayheadApplincable = true;
 						if((StringUtils.isNotBlank(associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor()) && associateSalaryPayheadInd.getPayrollPayhead().getApplicableFor().equalsIgnoreCase("Experienced"))) {
 							Date joinDate = null;
