@@ -2843,7 +2843,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,
-			OrgLocations loginOrgLocation, String releasetype) throws Exception {
+			OrgLocations loginOrgLocation, String releasetype,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		User vendorContactUser = null;
 		if (releasetype.equalsIgnoreCase("VENDORS")) {
 			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
@@ -2920,8 +2920,8 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("Experience", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
