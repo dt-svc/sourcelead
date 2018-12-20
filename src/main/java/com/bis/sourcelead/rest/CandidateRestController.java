@@ -101,7 +101,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
-import com.bis.sourcelead.util.CandidateExportUtil;
+import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -179,7 +179,7 @@ public class CandidateRestController {
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
-	CandidateExportUtil candidateExportUtil;
+	CandidateMarketplaceExportUtil candidateMarketplaceExportUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1428,7 +1428,10 @@ public class CandidateRestController {
 	@RequestMapping(value = {"/app/getDynamicSalesOrderList", "/app/exportSalesOrderToPdfOrExcel"} )
 	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
 	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-			 @RequestParam(value = "searchValue", required = false)String searchValue,	 
+			 @RequestParam(value = "searchValue", required = false)String searchValue,
+			 @RequestParam(value = "salesOrderFromDate", required = false)String salesOrderFromDate,
+			 @RequestParam(value = "salesOrderToDate", required = false)String salesOrderToDate,
+			 @RequestParam(value = "checkedDate", required = false)String checkedDate,
 			 HttpServletRequest request, HttpServletResponse response)  {
 
 		try{
@@ -1445,13 +1448,13 @@ public class CandidateRestController {
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate);
 	  		File file = null;
 	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
 		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {
-		    	 file=  candidateExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
 		    }else {
-		    	 file=  candidateExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
 		    }
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

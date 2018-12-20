@@ -4,12 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-$(document).ready(function(){
-	getSalesOrderList();
-});
-</script>
- <section class="content-wraper contentWraper">
+ <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Sales Orders List</h2>
@@ -29,17 +24,17 @@ $(document).ready(function(){
      </ul>
 </div>
     
-    <div class="contentareaInner-styles clearfix">
+    <div class="clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
     	 <div class="positionRelative reportHead clearfix">
-			  <span class="pull-left refreIcon noPad mb10">
+			  <span class="pull-left refreIcon mb10">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
 			  </span>
-            <ul class="pull-right list-unstyled list-inline noPad">
+            <ul class="pull-right list-unstyled list-inline mr">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportSalesOrderToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportSalesOrderToExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
 
@@ -67,9 +62,9 @@ $(document).ready(function(){
   }
   </script>
   
-  
-<div class="mask"></div>
-<div class="popupWrap" id="modalWallet">
+  <div id="emptyPopup"></div>
+<div class="advancedsearch-mask"></div>
+<div class="popupWrap" id="modalSalesOrder">
       <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose"></i></div>
         <form id="#" name="" action="" method="post">
         <div class="popupContent">
@@ -100,31 +95,31 @@ $(document).ready(function(){
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="">
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="userRole" value="today" type="radio" id = "dateCheckBox">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="userRole" value="1_week" type="radio" id = "dateCheckBox">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="Last_Week" type="radio" id = "dateCheckBox">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="1_month" type="radio" id = "dateCheckBox">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="1_Month_Ago" type="radio" id = "dateCheckBox">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="YTD" type="radio" id = "dateCheckBox">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio" id="custmdateChkbx">
+				<input name="userRole" value="" type="radio" id = "customDateCheckBox">
 				<label>Custom Dates</label>
 			  </li>
 			  </ul>
@@ -141,10 +136,10 @@ $(document).ready(function(){
               <li class="positionRelative">
                 <div class="row">
                 <div class="col-md-6" id="custFromDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date" id="frmDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date"  id="salesOrderFromDate">
                 </div>
                 <div class="col-md-6" id="custToDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date" id="toDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date"  id="salesOrderToDate">
 				</div>
              </div>
               </li>
@@ -157,8 +152,8 @@ $(document).ready(function(){
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Save</button>
-          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+          <button type="button" class="slBtn md colorBtn" onclick="closePop();validateSalesOrderdates();getDynamicSalesOrderList();">Apply</button>
+          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();">Reset</button>
         </div>
         
         <div>
@@ -167,11 +162,14 @@ $(document).ready(function(){
   
   
   <script>
-  var table = "";
-  $(document).ready(function () {
-	  getDynamicSalesOrderList();
-	});
-  function getDynamicSalesOrderList(){
+   var table = "";
+   $(document).ready(function () {
+	   getDynamicSalesOrderList();
+	 });
+  
+   function getDynamicSalesOrderList(){
+	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
+		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
@@ -187,12 +185,12 @@ $(document).ready(function(){
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
 	  	var searchValue = $("#searchByValue").val();
-  		url = sourceleadUrl + "/getDynamicSalesOrderList?searchValue="+searchValue;  
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate;  
   		dynamicSalesOrderList(url);
   	}
   
-  function dynamicSalesOrderList(url){
-	  var colIndex = 0;
+   function dynamicSalesOrderList(url){
+	   var colIndex = 0;
 	    table = $('#salesOrderListTable').DataTable( { 
 		  "processing": true,
 	      "serverSide": true,
@@ -317,30 +315,30 @@ $(document).ready(function(){
 	    
   }
   
-  function goToSalesOrder(salesUuid){
-	  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
-  }
-  
-  function exportToPdf(){
-	  if (!table.data().count()) {
-		    alert( 'Empty table' );
-		}else{
-	  		window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
-		}
+  	function goToSalesOrder(salesUuid){
+		  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
   	}
   
-  function exportToExcel(){
-		if (!table.data().count()) {
-		    alert( 'Empty table' );
-		}else{
-			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
-		}
+  	function exportSalesOrderToPdf(){
+		  if (!table.data().count()) {
+			  popupDisplay();
+		  }else{
+	  			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		  }
+  	}
+  
+    function exportSalesOrderToExcel(){
+		 if (!table.data().count()) {
+			 popupDisplay();
+		 }else{
+		 	 window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+		 }
 	}
 
    </script>
    <script>
-  function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+  	function goToCandidateList(){
+			location.href = "${appPath}/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
@@ -365,17 +363,91 @@ $(document).ready(function(){
 	}
   </script>
   <script>
+  
+  	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	var locationDateFormat = getJSDateFormat(locationDate);
+  	if(locationDate.match("yyyy-MM-dd")){
+	  	locationDateFormat = 'yy-mm-dd';
+  	}if(locationDate.match("dd-MM-yyyy")){
+	  	locationDateFormat = 'dd-mm-yy'; 
+  	}if(locationDate.match("MM-dd-yyyy")){
+	  	locationDateFormat = 'mm-dd-yy'; 
+  	}if(locationDate.match("yyyy-dd-MM")){
+	  	locationDateFormat = 'yy-dd-mm'; 
+  	}
+  
+  	function createSalesOrderFromDate(){
+  		$("#salesOrderFromDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  		changeYear: true, 
+  	   		onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '+1d');
+  	         	dt.setDate(dt.getDate() + 1);
+  	         	$("#salesOrderToDate").datepicker("option", "minDate", dt);
+  	     		}
+  	  	})	
+  	}
+  	
+  	function createSalesOrderToDate(){
+  		$("#salesOrderToDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  	  	changeYear: true, 
+  	     	onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '-1d');
+  	         	dt.setDate(dt.getDate() - 1);
+  	         	$("#salesOrderFromDate").datepicker("option", "maxDate", dt);
+  	     		}
+  	  	})
+  	}
+  	
+  	$(function(){
+  		 createSalesOrderFromDate();
+  		 createSalesOrderToDate();
+  	 });
+  	
+  	function validateSalesOrderdates(){
+  		var customDate = $("#customDateCheckBox").val();
+  		var fromDate = $("#salesOrderFromDate").val();
+  		var toDate = $("#salesOrderToDate").val();
+  		if(customDate === "custom"){
+  			 if(fromDate == ''){
+  	            alert('From Date is required.');
+  	        }
+  	        if(toDate == ''){
+  	            alert('To date is required');  	        
+  	        }
+  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+           		//
+        	}else{
+       			//
+    		} 
+  			} 
+ </script>
+  <script>	
+   function closePop(){
+		$("div.popupWrap").hide();
+		$(".advancedsearch-mask").hide();
+	}
+   
+  /* function filterPop(){
+		$(".advancedsearch-mask").show();
+		$("div.popupWrap").toggle();
+	}
+    */
   function openPop(){
-		$("#modalWallet, .mask").fadeIn();
+		$("#modalSalesOrder, .advancedsearch-mask").fadeIn();
 	}
 	$(".popClose").click(function() {
-		$("#modalWallet, .mask").fadeOut();
+		$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
 	});
   
 	//Custom Dates
-	$("#custmdateChkbx").click(function() {
+	$("#customDateCheckBox").click(function() {
 	if($(this).is(":checked")){
 		$("#customDates").show();
+		$("#customDateCheckBox").val("custom");
 	}else {
 		$("#customDates").hide();
 	}
@@ -403,4 +475,25 @@ $(document).ready(function(){
  		e.stopPropagation();
 	});	
   </script>
+  <script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_SalesOrder_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Sales Order.");
+		$("#remove_SalesOrder_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+
+	function cancelMarketplacePopup(){
+		$("#remove_SalesOrder_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+  </script>
+  
   <jsp:include page="../masterFooter.jsp" /> 
