@@ -72,6 +72,8 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String clientOrVendorName;
 	
 	private List<Contracts>contractsList;
+	
+	private Boolean generateDate = false;
 		
 	public long getRequirementId()
 	{
@@ -411,6 +413,12 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	}
 	public void setSpocId(long spocId) {
 		this.spocId = spocId;
+	}
+	public Boolean getGenerateDate() {
+		return generateDate;
+	}
+	public void setGenerateDate(Boolean generateDate) {
+		this.generateDate = generateDate;
 	}
 	
 	

@@ -710,6 +710,7 @@ public class Constants {
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String APPLICANT = "Applicant";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
 	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
