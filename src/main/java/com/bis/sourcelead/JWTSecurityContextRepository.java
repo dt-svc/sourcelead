@@ -60,6 +60,7 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
     	
         HttpServletRequest request = requestResponseHolder.getRequest();
+        System.out.println(request.getParameter("userRoleId"));
         HttpServletResponse response = requestResponseHolder.getResponse();
         
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));

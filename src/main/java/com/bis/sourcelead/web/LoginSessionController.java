@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,14 +33,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserProfileStore;
+import com.bis.sourcelead.couchbase.UserSessionProfileDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
-import com.bis.sourcelead.dto.UserEnrolledLocationsDTO;
-import com.bis.sourcelead.dto.UserSpocRolesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -86,6 +84,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
+import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
+import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -186,6 +186,9 @@ public class LoginSessionController {
 	@Autowired
 	ConfigurePayrollApproverService configurePayrollApproverService;
 	
+	@Autowired
+	UserProfileStore userProfileStore;
+	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -211,6 +214,7 @@ public class LoginSessionController {
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
+		UserSessionProfileDTO userProfileDTO = new UserSessionProfileDTO();
 	
 			if(userRoleId == null){
 				userRoleId =  (Long) request.getSession().getAttribute("userRoleId");
@@ -238,23 +242,6 @@ public class LoginSessionController {
 		if(userLoginSession != null){
 			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated", userLoginSession.getAuthenticated());
 		}
-		
-		/*if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
-			if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
-				if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
-					model.addObject("userId",user.getId());
-					model.addObject("userRoleId",userRole.getId());
-					model.addObject("emailId",user.getEmail());
-					if(StringUtils.isNotBlank(user.getMobilePhone()))
-						model.addObject("mobilePhone",user.getMobilePhone());
-					model.setViewName("otpVerification");
-					return model;
-				}
-			}
-		}*/
-		
-		//commented By Pavan jampana -- switchuserType value will be available in the session no-need to set again.
-//		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
 		
 		List<SourceleadActions> actionsList = null;
 		
@@ -642,8 +629,19 @@ public class LoginSessionController {
 			
 			setTimeZone(request,orgLocations, model);
 			
-			
 		}
+		
+ 	     userProfileDTO = setUserDetailsForCouchStore(user,userProfileDTO);
+		 userProfileDTO = userProfileStore.storeUsersProfileInCouch(user.getId(),orgLocations.getId(),userProfileDTO);
+		 ObjectMapper sessionObj = new ObjectMapper();
+         try {
+			String sessionJsonStr = sessionObj.writeValueAsString(userProfileDTO);
+			SourceLeadSessionManager.setUserProfileJsonString(user.getUserName(), "userProfile", sessionJsonStr);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		
 		boolean dashboardConfigured = false;
 		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
 		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
@@ -654,6 +652,20 @@ public class LoginSessionController {
 		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
 			model.setViewName("dashboard_configured");
 		return model;
+		
+	}
+	
+	
+	private UserSessionProfileDTO setUserDetailsForCouchStore(User user,UserSessionProfileDTO userProfileDTO) {
+		
+		 userProfileDTO.setFirstName(user.getFirstName());
+ 	     userProfileDTO.setLastName(user.getLastName());
+ 	     userProfileDTO.setMiddleName(user.getMiddelName());
+ 	     userProfileDTO.setUserId(user.getId());
+ 	     userProfileDTO.setEmail(user.getEmail());
+ 	     userProfileDTO.setGender(user.getGender());
+ 	     
+		return userProfileDTO;
 		
 	}
 	
