@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,8 +47,28 @@ public class UserLoginHelper {
 	@Autowired
 	WhiteListIpAddressService whiteListIpAddressService;
 
-	public  UsernamePasswordAuthenticationToken redirectToDashboard(UserRole userRole, String username, String password,String verfDone)
+	public  UsernamePasswordAuthenticationToken redirectToDashboard(String username, String password,String verfDone)
 	{
+		
+		 String[] usernameWithRole = username.split("##");
+		 String uname = usernameWithRole[0];
+		 Long userRoleId = 0l;
+		 if(usernameWithRole.length > 1 && StringUtils.isNotEmpty(usernameWithRole[1]) && !usernameWithRole[1].equalsIgnoreCase("0") && NumberUtils.isNumber(usernameWithRole[1])) {
+				userRoleId = new Long(usernameWithRole[1]);
+		 }
+		
+		 User loginUser = userService.findByUserName(uname);
+		 UserRole userRole = null;
+ 	     if(userRoleId != 0 ){
+ 	    	try {
+				userRole = userRoleService.getUserRoleById(userRoleId);
+			} catch (Exception e) {}
+			
+ 	     }else if(loginUser != null) {
+ 	    	 try {
+				userRole = userRoleService.getLoginUserPrimaryRole(loginUser.getId());
+			} catch (Exception e) {}
+ 	     }
 		  OrgLocations orgLocations = userRole.getOrgLocations();
 		  try {
 			  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
@@ -63,7 +84,7 @@ public class UserLoginHelper {
 			  e.printStackTrace();
 		   }
 		  
-		  User loginUser = userService.findByUserName(username);
+		  
 		  RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
 		  if (RequestContextHolder.getRequestAttributes() != null) {
 		      HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();

@@ -6,18 +6,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SaveContextOnUpdateOrErrorResponseWrapper;
 import org.springframework.security.web.context.SecurityContextRepository;
+
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.UserLoginHelper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,31 +37,47 @@ import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JWTSecurityContextRepository implements SecurityContextRepository {
     private static final Logger log = LoggerFactory.getLogger(JWTSecurityContextRepository.class);
+  
+    @Autowired 
+	UserLoginHelper userLoginHelper;
+    
+    @Autowired
+    UserRoleService userRoleService;
+    
+    @Autowired
+    UserService userService;
 
-
-    private final SourceleadUserDetailsService sourceleadUserDetailsService;
     private final String tokenName;
     private final String secret;
+    private static Long userRoleId = 0l;
 
-    JWTSecurityContextRepository(SourceleadUserDetailsService sourceleadUserDetailsService, String tokenName, String secret) {
-        this.sourceleadUserDetailsService = sourceleadUserDetailsService;
+    JWTSecurityContextRepository(String tokenName, String secret) {
         this.tokenName = tokenName;
         this.secret = secret;
     }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
+    	
         HttpServletRequest request = requestResponseHolder.getRequest();
         HttpServletResponse response = requestResponseHolder.getResponse();
+        
         requestResponseHolder.setResponse(new SaveToCookieResponseWrapper(request, response, tokenName, secret));
-        SecurityContext context = readSecurityContextFromCookie(request);
+        SecurityContext context = null;
+		try {
+			context = readSecurityContextFromCookie(request);
+		} catch (Exception e) {}
         if (context == null) {
-            return SecurityContextHolder.createEmptyContext();
+        	 return SecurityContextHolder.createEmptyContext();
         }
         return context;
     }
 
     private SecurityContext readSecurityContextFromCookie(HttpServletRequest request) {
+    	 String userRoleID = request.getParameter("userRoleId");
+        if(StringUtils.isNotEmpty(userRoleID) && StringUtils.isNumeric(userRoleID)) {
+        	userRoleId = new Long(userRoleID.trim());
+         }
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
@@ -70,9 +91,14 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                                 return jws.getBody().getSubject();
                             }
                         });
+                        String[] usernameWithRole = username.split("##");
+                        if(usernameWithRole.length >1  && NumberUtils.isNumber(usernameWithRole[1])) {
+                        	username = usernameWithRole[0];
+                        	userRoleId = new Long(usernameWithRole[1]);
+                        }
+                        String uname = username+"##"+userRoleId;
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
-                        UserDetails userDetails = this.sourceleadUserDetailsService.loadUserByUsername(username);
-                        context.setAuthentication(new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities()));
+                        context.setAuthentication(userLoginHelper.redirectToDashboard(uname, null, null));
                         return context;
                     } catch (ExpiredJwtException ex) {
                         log.debug("authentication cookie is expired");
@@ -81,8 +107,6 @@ public class JWTSecurityContextRepository implements SecurityContextRepository {
                         return null;
                     }
                     System.out.println();
-
-
                 }
             }
         }

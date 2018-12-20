@@ -157,11 +157,9 @@ public class SecurityConfig  {
      }
     
     @Bean
-    public SecurityContextRepository securityContextRepository(SourceleadUserDetailsService sourceleadUserDetailsService, 
-                                                              @Value("${auth.token}") String tokenName, 
+    public SecurityContextRepository securityContextRepository(@Value("${auth.token}") String tokenName, 
                                                               @Value("${auth.secret}") String tokenSecret) {
-        //our custom security context repository
-        return new JWTSecurityContextRepository(sourceleadUserDetailsService, tokenName, tokenSecret);
+        return new JWTSecurityContextRepository(tokenName, tokenSecret);
     }
 	@Bean
 	public FormattingConversionService conversionService() {

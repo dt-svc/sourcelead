@@ -104,10 +104,10 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
             		  else if ((userRolesList.size() == 1 && candidateOffBoarding != null && candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("Y")))
             			  throw new BadCredentialsException("login_offboardUser_error");
             		  else{
-            			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
+            			  return userLoginHelper.redirectToDashboard(username+"##"+userRole.getId(),password,null);
             		  }
         		   }else{
-        			   return userLoginHelper.redirectToDashboard(userRole,username,password,null);
+        			   return userLoginHelper.redirectToDashboard(username+"##"+userRole.getId(),password,null);
         		   }
         		    
         	  }
