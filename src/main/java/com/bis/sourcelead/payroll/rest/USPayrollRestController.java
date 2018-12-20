@@ -1041,8 +1041,18 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		AssociatePayItem associatePayItem = associateSalaryService.findPayItemByPayItemId(Long.valueOf(associatePayItemDTO.getId()));
 		associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEffectiveDate()));
-		associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
-		associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
+		if(associatePayItemDTO.getEndDate() != null) {
+			associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
+		}else {
+			associatePayItem.setEndDate(null);
+		}
+		
+		if(associatePayItemDTO.getPayItemAmount() != null) {
+			associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
+		}else {
+			associatePayItem.setPayItemAmount(null);
+		}
+		
 		associatePayItem = associateSalaryService.saveUpdatedPayItem(associatePayItem);
 		
 		if(associatePayItem != null) {
@@ -2100,7 +2110,7 @@ public class USPayrollRestController {
 			
 			if(api.getPayItemCheck() != null && api.getPayItemCheck().equalsIgnoreCase(Constants.BOOLEAN_TRUE)) {
 				
-				String amount = "";
+				BigDecimal amount = BigDecimal.ZERO;
 				AssociatePayItem associatePayItem = new AssociatePayItem();
 				
 				associatePayItem.setPayItemName(api.getPayItemName());
@@ -2115,13 +2125,13 @@ public class USPayrollRestController {
 					associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), api.getEndDate()));
 				}
 				if (api.getPayItemAmount() != null && !"".equalsIgnoreCase(api.getPayItemAmount())) {
-					amount = api.getPayItemAmount();
+					amount = new BigDecimal(api.getPayItemAmount());
 				}
 				associatePayItem.setOrgPayItemId(api.getPayItemId());
 				
 				AssociateSalary associateSalary = associateSalaryService.getAssociateSalaryBySalaryId(Long.parseLong(associateSalaryDTO.getId()));
 				associatePayItem.setAssociateSalary(associateSalary);
-				associatePayItem.setPayItemAmount(new BigDecimal(amount));
+				associatePayItem.setPayItemAmount(amount);
 				associatePayItem.setCreatedDate(new Date());
 				associatePayItem.setUpdatedDate(new Date());
 				associatePayItem.setCreatedBy(user.getUserCode());
