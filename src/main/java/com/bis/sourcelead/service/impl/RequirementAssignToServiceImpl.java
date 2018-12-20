@@ -329,9 +329,12 @@ private String getDateStr(Date date, Timezone timezone,String dateFormat) throws
 				if(req.getCity() != null){
 					location.append(",").append(req.getCity());
 				}
+				// for URL redirections from mail
+				String redirectURL = "/requirementSummary-and-requirementUUID="+req.getRequirementUUID();
+				Long redirectOrgLocationId = orgLocations.getId();
 				for(RequirementAssignTo newlyAddReqAssiTo : newlyUpdatedRequirementAssignToList){
 					if(newlyAddReqAssiTo.getStatus() != null && newlyAddReqAssiTo.getStatus() != "0"){
-						requirementService.AssignToTeamMembersEmail(user, newlyAddReqAssiTo.getAssignUserId(), req, location, orgLocations);
+						requirementService.AssignToTeamMembersEmail(user, newlyAddReqAssiTo.getAssignUserId(), req, location, orgLocations,redirectURL,redirectOrgLocationId);
 					}
 				}
 			}

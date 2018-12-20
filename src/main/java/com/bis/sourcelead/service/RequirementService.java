@@ -56,9 +56,10 @@ public interface RequirementService {
 
     public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
-    public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
+    public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
-    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
+    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
     void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
