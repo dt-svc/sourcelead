@@ -8,7 +8,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){           
-	                   
+	getIndividualCounts('DRAFT');              
 	var status='${status}'
 	var contractType='${contractType}'
 	if(status == "waiting"){
@@ -165,7 +165,7 @@ padding: 2px 300px 2px 0px;
 <%-- 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')"> --%>
 <%-- 	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li> --%>
 <%--   	  </sec:authorize> --%>
-<%--   </ul> --%> --%>
+<%--   </ul> --%> 
 <!-- </div> -->
 
 <!-- </ul> -->
@@ -222,13 +222,13 @@ padding: 2px 300px 2px 0px;
  
  <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getIndividualCounts('DRAFT');getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_SEND');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_SIGNED');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_VERIFY');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this);getIndividualCounts('FINALIZED');getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getIndividualCounts('EXPIRED');getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getIndividualCounts('REJECTED');getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
   <span onclick="addContracts();">+ Contracts</span>
@@ -251,9 +251,9 @@ padding: 2px 300px 2px 0px;
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending'); ">Clients</a> -->
-			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');">Vendors (${contractsCount.totalDraftVendorCount})</a>
+			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"></a>
 			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</a>
-			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftClientCount})</a>
+			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</a>
 		</div>
 		<ul>
 		
@@ -708,14 +708,14 @@ function preparedContractVendorListDraftPagination(url,tabType){
 		         return result; 
 		          }
 		        },{	
-	        	"targets": colIndex++,
-	    	    "data": "owner",
-	    	    "render": function(data, type, report, meta) {
-	    	        var result = "";
-	    	        result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
-	    	         return result; 
-	    	         }
-	    	        },{
+		        	"targets": colIndex++,
+		    	    "data": "owner",
+		    	    "render": function(data, type, report, meta) {
+		    	         var result = "";
+		    	        result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
+		    	         return result; 
+		    	         }
+		    	        },{
 	    	        	"targets": colIndex++,
 	    	    	    "data": "vendorContact",
 	    	    	    "render": function(data, type, report, meta) {
@@ -782,10 +782,10 @@ function preparedContractVendorListDraftPagination(url,tabType){
 				    	    	    	    			     		'</sec:authorize>';
 				    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 				    	    	    	    			     		if(report.typeOfContract == "New"){
-				    	    	    	    			     			result = result + '| <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				    	    	    	    			     			result = result + ' <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		if(report.typeOfContract == "Custom"){
-				    	    	    	    			     			result = result + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+				    	    	    	    			     			result = result + ' <a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "Finalized"){
@@ -3410,7 +3410,6 @@ function getStageCounts(){
       type : "POST",
        url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,success :function(data) {
     	   var json = JSON.parse(data);
-    	   
     	   if(json.totalDraftCount != null && json.totalDraftCount != "" && json.totalDraftCount != 'undefined'){
     		   $("#draft").html('Draft ('+json.totalDraftCount+')');
     	   }
@@ -3437,6 +3436,19 @@ function getStageCounts(){
 }
 </script>
 
+
+<script>
+function getIndividualCounts(status){
+	$.ajax({
+     type : "GET",
+      url: sourceleadUrl+"/getIndividualCounts?${_csrf.parameterName}=${_csrf.token}&contractStatus="+status,success :function(data) {
+    	  $("#Vendor1").text('Vendors('+data.totalDraftVendorCount+')');
+	      $("#Client1").text('Clients('+data.totalDraftClientCount+')');
+	      $("#Applicants1").text('Applicants('+data.totalDraftApplicantCount+')');
+      }
+	 });
+}
+</script>
 
 <script>
 function Check(val){

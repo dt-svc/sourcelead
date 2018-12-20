@@ -112,7 +112,7 @@ function showHideSalaryDIV(){
 	var payType = $("#payType").val();
 	 if(payType == "HourlyRate" || payType == "LcaWage"){
 		$("#salaryDIV").hide();
-		$("#standardHours").val('');    
+// 		$("#standardHours").val('');    
 		$("#annualSal").val('');
 		$("#perPaySal").val('');
 		$("#hourlyRate").val('');

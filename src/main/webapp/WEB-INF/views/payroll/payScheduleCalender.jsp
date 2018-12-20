@@ -75,8 +75,8 @@ $(document).ready(function(){
 		<div class="positionRelative reportHead clearfix">
 			<div class="clearfix mb10 mt10">
 				<div class="pull-left reqListBtn ml10">
-					 <!--  <span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span>			
-					  <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> -->
+					  <span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span>			
+					  <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> 
 				</div>
 				</div>
 			</div>
@@ -207,12 +207,12 @@ function callDates(data){
         	 var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
         	 
         	 // Preparing eventDates Array
-        	 for (var k = 0; k < dates.length; k++) {
+        	 /* for (var k = 0; k < dates.length; k++) {
         		  eventDates[ new Date(''+dates[k]+'')] = new Date(''+dates[k]+'');
-        		} 
+        		}  */
         	 eventDates[ new Date(''+opt.payCheckDateFormat+'')] = new Date(''+opt.payCheckDateFormat+'');
         	 eventDates[ new Date(''+opt.payRunDateFormat+'')] = new Date(''+opt.payRunDateFormat+'');
-             var dateToday = new Date(''+opt.endDate+'');  // current date calender dates
+             var dateToday = new Date(''+opt.payRunDateFormat+'');  // current date calender dates 
         	  $("#eventCalendar"+i).datepicker({
         		  changeMonth: true,
         	      changeYear: true,
@@ -226,7 +226,7 @@ function callDates(data){
         		  		return (hlText)?[true, "PayRunDateHighlighted", '']: [true, '', ''];   
         		  	  }
         		  	  else{
-        		  		return (hlText)?[true, "Highlighted", '']: [true, '', ''];    
+        		  		return (hlText)?[true, "", '']: [true, '', ''];    
         		  	  }
         		  	
         		  	}
