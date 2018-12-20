@@ -712,7 +712,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ "                select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.projects.id = :projectId and subsah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId and subsah.submissionId.masterCandidateId.id = :masterCandidateId  and subsah.submissionApprovalStatus != 'APPROVED' and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate "
 				+ "           ) and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL "
 				+ "       and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and "
-				+ "      sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id  and pah.status != '0'))  and sah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId "
+				+ "      sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id  and pah.status != '0')  and ((sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.PARALLEL+"'  and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationsId)) OR (sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.SEQUENTIAL+"' and sah.hierarchyId.projectClientsId.orgLocationsId.id =:orgLocationsId)))"
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
@@ -1138,7 +1138,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		String globalUserQuery = "";
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    	globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR (sah.hierarchyId.projectClientsId.orgLocationsId.id NOT IN (select subsah.hierarchyId.projectClientsId.orgLocationsId.id from  SubmissionApproverHierarchy subsah where subsah.submissionId.Id = sah.submissionId.Id) and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)))";
 		    }else {
 		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
 		    }
@@ -1187,16 +1187,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "     )"
+			     + "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " 
+				 + "            and  (sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.PARALLEL+"'"
+				 +"                   OR (sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.SEQUENTIAL+"' and "
+				 + "                          (sah.hierarchyId.level = '1' and sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
+				 + "                             OR  (sah.hierarchyId.level= '1' and (sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))"
+				 + "                             OR  (sah.hierarchyId.level= '2' and '1' IN (select subsah.hierarchyId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate)) "
+				 + "                     )          "
+				 + "             ))"
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
-				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId)"
-				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
-				+" OR  (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
-				+ "   ) "
+				 + " OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId ) and (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select subsah.hierarchyId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))"
+				 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
+				 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType='"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.SEQUENTIAL+"' and ( sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
+				 + "   ) "
 				+ " and sah.status != '0' and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'";
 		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  "+globalUserQuery+"  "
 				+ fillingOptionQuery + " and ( "
@@ -1306,11 +1313,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			String globalUserQuery = "";
 			//String globalUserQuery2 = "";
 			if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-			    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
-			    	//globalUserQuery2 = " userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			    	globalUserQuery = "(sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR  (sah.hierarchyId.projectClientsId.orgLocationsId.id NOT IN(select subsah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.Id = sah.submissionId.Id) and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)))";
 			    }else {
 			    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
-			    	//globalUserQuery2 = "userRole.orgLocations.id = :orgLocationId";
 			    }
 		
 			String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
@@ -1749,7 +1754,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		String globalUserQuery = "";
 	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-	    	globalUserQuery = " pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    	globalUserQuery = " (pclient.orgLocationsId.id = :locationsId OR  (pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and pclient.orgLocationsId.id NOT IN(select subsah.hierarchyId.projectClientsId.orgLocationsId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.Id = sah.submissionId.Id)))";
 	    }else {
 	    	globalUserQuery = " pclient.orgLocationsId.id = :locationsId";
 	    }
@@ -1760,19 +1765,25 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  hierarchy.approverUserId.id = :userId "
-				
-				+ "       OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
-				+ "       OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
-				/*
-				 * logged in user as admin but not in
-				 * project_approver_hierarchy(hint:logged in user is admin but
-				 * not assigned to project as approver)
-				 */
-				+ "  OR ( :userId NOT IN( select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.submissionId.status = '1' and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId and subsah.submissionId.projects.id = project.id and  subsah.submissionId.masterCandidateId.id = mc.id and subsah.frequencyStartDate = :startDate and subsah.frequencyEndDate = :endDate) and "
-				+ "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE') and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0')))) ";
+				   + "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " 
+					 + "            and  (sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.PARALLEL+"'"
+					 +"                   OR (sah.hierarchyId.projectId.projectApprovalType  ='"+Constants.SEQUENTIAL+"' and "
+					 + "                          (sah.hierarchyId.level = '1' and sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST'))"
+					 + "                             OR  (sah.hierarchyId.level= '1' and (sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))"
+					 + "                             OR  (sah.hierarchyId.level= '2' and '1' IN (select subsah.hierarchyId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate)) "
+					 + "                     )          "
+					 + "             ))"
+					/*
+					 * logged in user as admin but not in
+					 * project_approver_hierarchy(hint:logged in user is admin but
+					 * not assigned to project as approver)
+					 */
+					 + " OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId ) and (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select subsah.hierarchyId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))"
+					 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ( sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
+					 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType='"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.SEQUENTIAL+"' and ( sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.submissionId.projectMembers.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
+					 + "   ) ";
 		
-		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("locationsId", locationsId).setLong("projectId", projectId).setLong("masterCandidateId", pmMasterCandidateId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("locationsId", locationsId).setLong("orgLocationId", locationsId).setLong("projectId", projectId).setLong("masterCandidateId", pmMasterCandidateId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		Boolean isRejected = false;
 		Boolean isAPPROVED = false;
 		Boolean isSUBMITTED = false;

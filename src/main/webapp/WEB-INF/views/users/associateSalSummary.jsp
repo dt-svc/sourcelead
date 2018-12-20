@@ -1,14 +1,16 @@
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
- 
- 
+ <input type="hidden" id ="userIdHid"></input>
  <script>
 function associateSalSummary(userId){
+	$("#userIdHid").val(userId);
 	$.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) { 
+            	
+            	var allCheck =json.orgPayItems.length;
             	var result = "";
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
@@ -104,10 +106,18 @@ function associateSalSummary(userId){
                 result = result + '<div class="clearfix"></div>';
                 result = result + '<h4 class="col-md-12">Pay Item</h4>';
                 result = result + '<div class="clearfix col-md-12 styleTables tableStyles-textLeft">';
+                result = result +' <form id="orgPayItems_form" name="orgPayItems_form" method="post">';
                 result = result + '<div class="row">';
                 result = result + '<table>';
                 result = result + '<thead>';
                 result = result + '<tr>';
+                result = result +'<th>';
+				result = result +'	<div class="checkbox-new">';
+				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox" onclick="selectAllCheckBox('+allCheck+');">';
+				result = result +'	<label for="all" class="checkbox-custom-label">';
+				result = result +'</label>';
+				result = result +'</div>';
+				result = result +'	</th>';
                 result = result + '<th>Pay Items</th>';
                 result = result + '<th>Schedule</th>';
                 result = result + '<th>Override</th>';
@@ -116,6 +126,7 @@ function associateSalSummary(userId){
                 result = result + '<th>Amount</th>';
                 result = result + '<th>Action</th>';
                 result = result + '</tr>';
+                
                 result = result + '</thead>';
                 result = result + '<tbody>';
                 if(json.associatePayItemDto != null && json.associatePayItemDto != '' && json.associatePayItemDto != 'undefined'){
@@ -123,6 +134,9 @@ function associateSalSummary(userId){
                   	  
                   	  var opt = json.associatePayItemDto[i];
                   	  result = result + '<tr>';
+                  	  
+	              		result = result +' <td>';
+		        		result = result +' </td>';
                         
                         result = result + '<td>';
                         result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
@@ -170,9 +184,76 @@ function associateSalSummary(userId){
                         result = result + '</tr>';
                     }
                 }
+                
+                
+                
+			    
+    			if(json.orgPayItems !=null && json.orgPayItems !=''){
+					 for (var i=0; i<json.orgPayItems.length; i++)
+						{
+			        		 var opt = json.orgPayItems[i];
+			        		result = result +' <tr id="'+i+'">';
+			        		result = result +' <td>';
+			        		result = result +' 	<div class="checkbox-new">';
+			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
+			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
+			        		result = result +' </div>';
+			        		result = result +' <input type="hidden" id="'+i+'payItemId" name="associatePayItemDto['+i+'].payItemId" value="'+opt.id+'">';
+			        		result = result +' <input type="hidden" id="associateSalaryId" name="associateSalaryId" value="'+json.id+'">';
+			        		result = result +' </td>';
+			        		result = result +' <td>';
+			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
+			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value=\''+opt.payItemName+'\'>';
+			        		result = result +' </td>';
+			        		result = result +' <td>';
+			        		if(opt.paySchedule != '' && opt.paySchedule != 'undefined' && opt.paySchedule != null){
+			        			result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemSchedule" name="associatePayItemDto['+i+'].payItemSchedule" value='+opt.paySchedule+'>';
+			        		}else{
+			        			result = result +' <div class="tblminwidth-100 text-left">--</div>';
+			        		}
+			        		
+			        		result = result +' </td>';
+			        		result = result +'<td>';
+			        		result = result +'<div class="tblminwidth-125">';
+			        		result = result +'	<select class="sel" id="'+i+'overRide" name="associatePayItemDto['+i+'].overRide">';
+			        		result = result +'	<option value="">--Select--</option>';
+			        		result = result +'	<option value="YES">Yes</option>';
+			        		result = result +'	<option value="NO">No</option>';
+			        		result = result +'	</select>';
+			        		result = result +'</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<div class="tblminwidth-50">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" field-name="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text" readonly="readonly">';
+							result = result +'	</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<div class="tblminwidth-50">';
+							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text" readonly="readonly">';
+							result = result +'	</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'<div class="tblminwidth-50">';
+							result = result +'	<input class="form-control" id="'+i+'payItemAmount" name="associatePayItemDto['+i+'].payItemAmount"  type="text">';
+							result = result +'</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<ul class="list-inline list-unstyled tblminwidth-50 mt5">';
+							result = result +'		<li><a href="javascript:void(0)" title="Save" class="noAction" id ="'+i+'saveOrgPayItemId" onclick="saveOrgPayItems();"><i class="fa fa-floppy-o"></i></a></li>';
+							result = result +'		<li><a href="javascript:void(0)" title="Reset" class="anchor-black" onclick="refreshPayItems('+i+');"><i class="fa fa-refresh"></i></a></li>';
+							result = result +'	</ul>';
+							result = result +'</td>';
+							result = result +'</tr>';
+							 
+						}
+					 
+				}
+                
+                
                 result = result + '	</tbody>';
                 result = result + '	</table>';
                 result = result + ' 	</div>';
+				result = result +'</form>';
                 result = result + ' 	</div>';
                 
                 $("#tab-18").empty(); 
@@ -187,10 +268,123 @@ function associateSalSummary(userId){
                 $("#tab-24").empty();
                 $("#tab-25").empty(); 
                 $("#tab-25").append(result); 
+                
+                
+        		if(json !=null && json !=''){
+    				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    				var finalDateFormat = getJSDateFormat(locationDate);
+    				 for (var i=0; i<json.orgPayItems.length; i++)
+    					{
+    					  $("#"+i+"effectiveDate").datepicker({
+    						 dateFormat: finalDateFormat,
+    						 changeMonth: true,
+    						  changeYear: true,
+    						  onSelect : function(selected) {
+    							  var dt = $(this).datepicker('getDate', '+1d');
+    							  dt.setDate(dt.getDate() +1);
+    							  var id = $(this).closest('tr').attr("id");
+    							  $("#"+id+"endDate").datepicker("option", "minDate", dt);
+    						  }
+    						 });
+    						 $("#"+i+"endDate").datepicker({
+    							 dateFormat: finalDateFormat,
+    							 changeMonth: true,
+    						  	  changeYear: true,
+    						 });  
+    						 
+    						}
+    				 
+    				} 
            },
             
        }); 
   } 
+</script>
+
+
+<script>
+function selectCheckBox(i){
+	var isChecked = $("#"+i+"payItemCheck").is(':checked');
+	if(isChecked){
+		$("#"+i+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+i+"effectiveDate").attr('data-validation', "required");
+		$("#"+i+"saveOrgPayItemId").removeClass('noAction');
+	}else{
+		$("#"+i+"effectiveDate").removeAttr('data-validation');
+		$("#"+i+"effectiveDate").attr('data-validation-optional', "true");
+		$("#"+i+"saveOrgPayItemId").addClass('noAction');
+	}
+	$("#"+i+"payItemCheck").val(isChecked);
+}
+</script>  
+
+
+<script>
+function selectAllCheckBox(allCheck){
+	var isChecked = $("#all").is(':checked');
+	for(var j=0;j<allCheck;j++){
+	if(isChecked){
+		$("#"+j+"effectiveDate").removeAttr('data-validation-optional');
+		$("#"+j+"effectiveDate").attr('data-validation', "required");
+		$("#"+j+"payItemCheck").prop("checked","checked");
+		$("#saveAssocioateSal").removeAttr("disabled");
+		$("#"+j+"saveOrgPayItemId").removeClass('noAction');
+
+		
+	}else{
+		$("#"+j+"effectiveDate").removeAttr('data-validation');
+		$("#"+j+"effectiveDate").attr('data-validation-optional', "true");
+		$("#"+j+"payItemCheck").removeProp("checked");
+		$("#"+j+"saveOrgPayItemId").addClass('noAction');
+	}
+	$("#"+j+"payItemCheck").val(isChecked);
+}
+}
+</script> 
+
+
+<script>
+function saveOrgPayItems(){
+	
+	var associateSalaryId = $("#associateSalaryId").val();
+	var user = $("#userIdHid").val();
+	
+	 if ($('#orgPayItems_form').validate(false, validationSettings)){
+		 var formData = getFormData("orgPayItems_form");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+           $.ajax({
+				type : "POST",
+      	    	data: formData,
+				url : sourceleadUrl+"/savePayItemsFromSummary?&id="+associateSalaryId,
+				success : function(result) {
+					associateSalSummary(user);
+				},
+			}); 
+	
+      return true;
+}else{
+	return false;
+}
+	
+	
+	   $('body').on('blur', '#orgPayItems_form', function() {
+			$("#orgPayItems_form").showHelpOnFocus();
+			$("#orgPayItems_form").validateOnBlur(false, validationSettings);  
+	   });
+
+	
+}
+
+</script>
+
+<script>
+function refreshPayItems(i){
+	$("#"+i+"overRide").val('');
+	$("#"+i+"effectiveDate").val('');
+	$("#"+i+"endDate").val('');
+	$("#"+i+"payItemAmount").val('');
+	
+}
 </script>
  
    
@@ -485,6 +679,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 	 document.getElementById("update_associate_salary_form").reset(); 
 	 
 	 if(id != null && id != '' && id != 'undefined'){
+
 		 $("#effectiveDate").val(effectiveDate);
 		 $("#increasePer").val(increasePer);
 			 $("#payType").val(payType);
