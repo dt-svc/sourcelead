@@ -4214,6 +4214,19 @@ public class RequirementServiceImpl implements RequirementService {
 							Long id = jsonObject.getLong("id");
 							Long requirementId = jsonObject.getLong("requirementId");
 							String fairDates = jsonObject.getString("fairDates");
+							String finalFairDates = "";
+							SimpleDateFormat sdf = new SimpleDateFormat(orgLocations.getDateFormat());
+							if(fairDates != null && !fairDates.isEmpty()) {
+								for(String fairDate : fairDates.split(",")) {
+									try {
+										sdf.parse(fairDate);
+										finalFairDates += (finalFairDates.isEmpty() ? "" : ",") + fairDate;
+									} catch (Exception e) {
+//										System.out.println("JobFair Date exception for : " + fairDate);
+									}
+								}
+							}
+							
 							JobFairRequirements jobFairRequirements = null;
 							if (id > 0) {
 								jobFairRequirements = requirementDao.getJobFairRequirementsById(id);
@@ -4223,7 +4236,7 @@ public class RequirementServiceImpl implements RequirementService {
 							jobFairRequirements.setJobFair(jobFair);
 							Requirement requirement = getRequirementByRequirementId(requirementId);
 							jobFairRequirements.setRequirement(requirement);
-							jobFairRequirements.setFairDates(fairDates);
+							jobFairRequirements.setFairDates(finalFairDates);
 							jobFairRequirementList.add(jobFairRequirements);
 							
 							deleteIdsList.remove(jobFairRequirements.getId());
@@ -4409,6 +4422,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag) {
 		List<String> jobFairDatesList = new LinkedList<>();
 		try {
+			int i = 1;
 			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
 			SimpleDateFormat convertToFormatSDF = new SimpleDateFormat("yyyy/MM/dd");
 			Set<String> jobFairDatesSet = new SortedArraySet<>();
