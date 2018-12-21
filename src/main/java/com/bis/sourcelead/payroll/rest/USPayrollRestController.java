@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,7 +77,6 @@ import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
-import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
@@ -111,7 +109,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/pms")
 public class USPayrollRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(USPayrollRestController.class);
@@ -1848,12 +1846,6 @@ public class USPayrollRestController {
 				payrollScheduleDTO.setPayCheckDate(payCheckDate);
 				payrollScheduleDTO.setRunPayDate(runPayDate);
 				payrollScheduleDTO.setPayFrequency(schedule.getPayFrequency());
-				Set<USPayScheduleNotifyMember> notifyMembers = schedule.getPayScheduleNotifyMember();
-				if(notifyMembers != null) {
-					for(USPayScheduleNotifyMember nmem : notifyMembers) {
-						notifiMemIds.add(nmem.getUser().getId());
-					}
-				}
 				payrollScheduleDTO.setNextPayMonth(schedule.getNextPayMonth());
 				payrollScheduleDTO.setNotifiMemIds(notifiMemIds);
 			}

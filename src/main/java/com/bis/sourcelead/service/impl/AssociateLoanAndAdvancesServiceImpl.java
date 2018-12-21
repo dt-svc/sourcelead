@@ -26,7 +26,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.rest.USPayrollRestController;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -34,7 +33,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 @Service
 public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdvancesService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(USPayrollRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AssociateLoanAndAdvancesServiceImpl.class);
 	
 	@Autowired
 	AssociateLoanAndAdvancesDao associateLoanAndAdvancesDao;

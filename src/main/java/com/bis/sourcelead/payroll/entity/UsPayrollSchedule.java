@@ -63,9 +63,6 @@ public class UsPayrollSchedule {
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "payrollScheduleId")
-	private Set<USPayScheduleNotifyMember> payScheduleNotifyMember;
-	
 
 	public Long getId() {
 		return id;
@@ -172,17 +169,6 @@ public class UsPayrollSchedule {
 
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-
-	public Set<USPayScheduleNotifyMember> getPayScheduleNotifyMember()
-	{
-		return payScheduleNotifyMember;
-	}
-
-	public void setPayScheduleNotifyMember(Set<USPayScheduleNotifyMember> payScheduleNotifyMember)
-	{
-		this.payScheduleNotifyMember = payScheduleNotifyMember;
 	}
 
 	public String getPayrollScheduleUUID()
