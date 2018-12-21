@@ -15,6 +15,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -73,6 +74,15 @@ public class UserLoginHelper {
 	
 	@Autowired
 	TabsService tabsService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Value("${GoogleMaps_Location_API_KEY}")
+	private String googleMapsLocationApiKey;
+	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 	
 	   
 
@@ -143,7 +153,10 @@ public class UserLoginHelper {
 		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
-		  
+		  SourceLeadSessionManager.setSessionAttribute(req, "sourceleadUrl", sourceleadUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "pmsUrl", pmsUrl);
+		  SourceLeadSessionManager.setSessionAttribute(req, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+		  SourceLeadSessionManager.setSessionAttribute(req, "userRoleId", userRoleId);
 		   
 		Candidate candidate;
 		try {
