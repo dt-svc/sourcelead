@@ -1,5 +1,5 @@
-var masterHeader = new buildMasterHeaderPanel();
- function buildMasterHeaderPanel (){
+var masterHeader = new MasterHeader();
+ function MasterHeader (){
 	
 	 this.masterHeaderPanel = function(){
 		var fileUrl = '/resources/images/userprofile-img.png'	

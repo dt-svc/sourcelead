@@ -1,5 +1,5 @@
-var masterSideNav = new buildMasterSideNavPanel();
-function buildMasterSideNavPanel(){
+var masterSideNav = new MasterSideNav();
+function MasterSideNav(){
 	 this.masterSideNavPanel = function(){
 	     var sideNavHtml='';
 	      sideNavHtml = sideNavHtml+'<nav class="newMenu">';
