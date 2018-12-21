@@ -73,12 +73,21 @@ public class UserProfileRestController {
 	UserMailUnsubscribeService userMailUnsubscribeService;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
-	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
+	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	
+			@RequestParam(defaultValue = "0") long userId,
+			HttpServletRequest request) throws Exception{
 		addUserProfileDTO.setStaticPath(staticPath);
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(user == null){
-			user = userService.getUserById(addUserProfileDTO.getUserId());
+		User user = null;
+		if(userId > 0){
+			user = userService.getUserById(userId);		
+		} else {
+			user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		}
+		
+		if(user == null){
+			user = userService.getUserById(addUserProfileDTO.getUserId());	
+		}
+		
 		if(user != null){
 			user = userService.saveUserProfileImage(addUserProfileDTO, user);
 			return "success";
@@ -90,8 +99,8 @@ public class UserProfileRestController {
 	
 	
 	@RequestMapping(value = "/rest/saveUserProfileImage", method = RequestMethod.POST)
-	public String saveProfileImageForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request)throws Exception{
-		return saveProfileImage(addUserProfileDTO, request);
+	public String saveProfileImageForMobile(@RequestBody AddUserProfileDTO addUserProfileDTO,HttpServletRequest request)throws Exception{
+		return saveProfileImage(addUserProfileDTO,0, request);
 	}
 
 	/**

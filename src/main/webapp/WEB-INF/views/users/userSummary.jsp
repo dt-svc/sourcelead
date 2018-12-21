@@ -493,15 +493,37 @@ window.onload = function () {
 			}
 				
 				
-				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		       <div class="user_change_img">';
+				result = result + '	 <div class="user_details_cta_img profile-image">';
+				result = result + '<form  id="associate_Image_form"  name="associate_Image_form" method="post" >';
+				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '</div>';
+					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'<button type="button" class="btn btn-sm btn-primary">';
+					result=result+'<i class="fa fa-upload"></i></button>';
+					result=result+'<label class="btn btn-sm btn-primary">';
+		            result=result+'Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;">';
+		            result=result+'</label>';
+		            result=result+'<button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">';
+					result=result+'<i class="fa fa-trash"></i></button>';
+					result=result+'</div>';
 				}else{
-					result = result +                  "<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + ' 		  </div>';
+					result=result+'<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'  <button type="button" class="btn btn-sm btn-primary">';
+					result=result+'  <i class="fa fa-upload"></i></button>';
+					result=result+'  <label class="btn btn-sm btn-primary">';
+		            result=result+'   Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;" >';
+		            result=result+'  </label>';
+					result=result+'  </div>';
 				}
 				
-				result = result + ' 		  </div>';
+				
+				result = result +  '</form>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
 				result = result +socialLinks;
