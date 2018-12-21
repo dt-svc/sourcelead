@@ -77,11 +77,11 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderPaymentStatus">
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentSuccessCheckBox">
                 <label>Success</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentFailureCheckBox">
                 <label>Failure</label>
               </li>
             </ul>
@@ -162,6 +162,7 @@
   <script>
    var table = "";
    var salesOrderFilterDate = "";
+   var paymentStatus = "";
    $(document).ready(function () {
 	   getDynamicSalesOrderList();
 	 });
@@ -170,6 +171,8 @@
 	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
 		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
+	  	var searchValue = $("#searchByValue").val();
+	  	var url = "";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
@@ -183,7 +186,6 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-	  	var searchValue = $("#searchByValue").val();
   		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate;  
   		dynamicSalesOrderList(url);
   	}
@@ -310,9 +312,7 @@
 	    		   getSalesOrderList();
 	    	   }
 	    	});
-	 	
-	    
-  }
+ 	 }
   
   	function goToSalesOrder(salesUuid){
 		  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
@@ -364,9 +364,16 @@
   <script>
   
   	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	var locationDateFormat = 'dd-mm-yy';
-  	//var locationDateFormat = getJSDateFormat(locationDate);
-  	
+  	var locationDateFormat = '';
+  	if(locationDate.match("yyyy-MM-dd")){
+  		locationDateFormat = 'yy-mm-dd';
+    }if(locationDate.match("dd-MM-yyyy")){
+    	locationDateFormat = 'dd-mm-yy'; 
+    }if(locationDate.match("MM-dd-yyyy")){
+    	locationDateFormat = 'mm-dd-yy'; 
+    }if(locationDate.match("yyyy-dd-MM")){
+    	locationDateFormat = 'yy-dd-mm'; 
+    }
   
   	function createSalesOrderFromDate(){
   		$("#salesOrderFromDate").datepicker({
@@ -408,7 +415,7 @@
   			if(fromDate === ''){
   				$("#salesOrderFromDate").focus();
   			}
-  			if(toDate === '' && fromDate != ''){
+  			if(toDate === '' && fromDate !== ''){
 				$("#salesOrderToDate").focus();  				
 	  		}
   	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
@@ -469,7 +476,16 @@
 			salesOrderFilterDate = 'YTD';
 		}
 	}); 
-	
+	$("#paymentSuccessCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'success';
+		}
+	});
+	$("#paymentFailureCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'failure';
+		}
+	});
 	//Custom Dates
 	$("#salesOrderCustomDate").click(function() {
 	if($(this).is(":checked")){
@@ -490,12 +506,10 @@
 	
 	function emptySalesOrderSearchValues(){
 		$("#salesOrderCustomDate").val('');
-		$("#salesOrderFilterDate").val('');
 		$("#salesOrderFromDate").val('');
-		//$("#salesOrderFromDate").empty();
 		$("#salesOrderToDate").val('');
-		//$("#salesOrderToDate").empty();
-		
+		salesOrderFilterDate = '';
+		paymentStatus = '';
 	}
 	
 	function getActions(){
