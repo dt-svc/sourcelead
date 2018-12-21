@@ -281,18 +281,13 @@ function goToOrgMarketPlaceList(){
 }
 
 var checkedDate = "";
+var customDate = "";
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(checkedDate != null){
-		creationStartDate = "";
-		creationEndDate = "";
-	}else{
-		checkedDate = "";
-	}
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
@@ -490,31 +485,37 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 	$("#todayDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = 'today';
+			$("#customDateCheckBox").val("");
 		}
 	});
 	$("#thisWeekAgoDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = '1_week';
+			$("#customDateCheckBox").val("");
 		}
 	});
 	$("#lastWeekDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = 'Last_Week';
+			$("#customDateCheckBox").val("");
 		}
 	});
 	$("#oneMonthDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = '1_month';
+			$("#customDateCheckBox").val("");
 		}
 	});
 	$("#oneMonthAgoDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = '1_Month_Ago';
+			$("#customDateCheckBox").val("");
 		}
 	});
 	$("#thisYearDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			checkedDate = 'YTD';
+			$("#customDateCheckBox").val("");
 		}
 	});	
 		
@@ -522,6 +523,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		if($(this).is(":checked")){
 			$("#customDates").show();
 			$("#customDateCheckBox").val("custom");
+			checkedDate = '';
 		}else {
 			$("#customDates").hide();
 		}
@@ -533,7 +535,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
   		var fromDate = $("#creationStartDate").val();
   		var toDate = $("#creationEndDate").val();
   		if(customDate === "custom"){
-  			checkedDate = '';
+  			alert('custom date validation');
   			if(fromDate === ''){
   				$("#creationStartDate").focus();
   			}
@@ -546,7 +548,6 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
         	}
   			}
   		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				customDate = '';
   				closePop();
 	        	getCandidateDetailsFromMarketcart();
   		}
@@ -559,15 +560,13 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
 		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
-		/* $("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false); */
 	}
 	
 	function emptyMarketCartSearchValues(){
 		$("#customDateCheckBox").val('');
-		$("#creationStartDate").val('');
-		$("#creationEndDate").val('');
 		checkedDate = '';
-		
+		$("#creationStartDate").datepicker('setDate', null);
+		$("#creationEndDate").datepicker('setDate', null);
 	}
 	
 </script> 
