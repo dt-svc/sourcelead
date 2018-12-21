@@ -520,8 +520,9 @@ public class USPayrollRestController {
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Response<AssociateDeductionDTO>  resObj = associateDeductionService.saveAssociateDeduction(associateDeductionDTO,orgLocation,loginUser);	
+		Response<AssociateDeductionDTO>  resObj = associateDeductionService.saveAssociateDeduction(associateDeductionDTO,orgLocation,loginUser);
 		return resObj;
+		
 	}
 	
 	/**

@@ -4242,7 +4242,10 @@ public class EMailJobScheduler {
 	}
 	
 	
-	
-	
+	/*@Scheduled(cron = "0 0 5 1/1 * ?")    cron method for the job reminder according to the aplicant job joining date */
+	public void applicant_Join_Date_to_reminder() throws Exception{
+		
+		
+	}
 	
 }
