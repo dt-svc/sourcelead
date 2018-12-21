@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
+import com.bis.sourcelead.dto.UserLoginAccountsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -66,6 +68,8 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -89,6 +93,8 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -191,6 +197,12 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 TeamService teamService;
+	 
+	 @Autowired
+	 TabsService tabsService;
+	 
+	 @Autowired
+	 SourceleadActionsService sourceleadActionsService;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -2018,5 +2030,76 @@ public class DashboardRestController {
 			file.delete();
 		}
    }
+	
+	
+	@RequestMapping(value = "/getLoginUserTabAccessList")
+	public @ResponseBody List<String> getLoginUserTabAccessList(@RequestParam(value="locationId", required=true) Long locationId,
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, locationId);
+		Collection<Tabs> tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), locationId);
+		List<String> loginUserTabsList = new ArrayList<>();
+		loginUserTabsList.add(userRole.getRoles().getRoleName());
+		loginUserTabsList.add("Dashboard");
+		if(tabsList != null && !tabsList.isEmpty()) {
+			for(Tabs tabs : tabsList) {
+				loginUserTabsList.add(tabs.getTabName());
+			}
+		}
+		return loginUserTabsList;
+	}
+	
+	
+	@RequestMapping(value = "/getLoginUserRoleActionsList")
+	public @ResponseBody List<String> getLoginUserRoleActionsList(@RequestParam(value="locationId", required=true) Long locationId,
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, locationId);
+		List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(null,userRole.getRoles().getId(), locationId);
+		List<String> loginUserActionsList = new ArrayList<>();
+		if(actionsList != null && !actionsList.isEmpty()) {
+			for(SourceleadActions actions : actionsList) {
+				loginUserActionsList.add(actions.getActionName());
+			}
+		}
+		return loginUserActionsList;
+	}
+	
+	@RequestMapping(value = "/getLoginUserMultiAccountsList")
+	public @ResponseBody List<UserLoginAccountsDTO> getLoginUserMultiAccountsList(
+			@RequestParam(value="userId", required=false) Long userId,HttpServletResponse response) throws Exception {
+		List<UserLoginAccountsDTO> userLoginAccountsDTOList = new ArrayList<>();
+		List<Long> accountUserList = new ArrayList<>();
+		List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userId);
+		if (userIdsList != null && !userIdsList.isEmpty()) {
+			for (Long uid : userIdsList) {
+				List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(uid);
+				accountUserList.addAll(linkedUserIdsList);
+			}
+		}
+		userIdsList.addAll(accountUserList);
+		userIdsList.add(userId);
+		List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+		if(userSpocRolesList != null && !userSpocRolesList.isEmpty()) {
+			for(UserRole userRole : userSpocRolesList) {
+				UserLoginAccountsDTO accountsDTO = new UserLoginAccountsDTO();
+				accountsDTO.setDisplayName(userRole.getRoles().getDisplayName());
+				accountsDTO.setOrgLocationId(userRole.getOrgLocations().getId());
+				accountsDTO.setId(userRole.getId());
+				accountsDTO.setLoginSecurity(userRole.getOrgLocations().getLoginSecurity());
+				accountsDTO.setFileUrl(userRole.getOrgLocations().getOrg().getFileUrl());
+				accountsDTO.setCountry(userRole.getOrgLocations().getCountry());
+				accountsDTO.setState(userRole.getOrgLocations().getState());
+				accountsDTO.setCity(userRole.getOrgLocations().getCity());
+				accountsDTO.setUserId(userRole.getUser().getId());
+				accountsDTO.setUserType(userRole.getUserType());
+				accountsDTO.setDesignation(userRole.getDesignation());
+				accountsDTO.setOrgLocationName(userRole.getOrgLocations().getOrgLocationName());
+				userLoginAccountsDTOList.add(accountsDTO);
+			}
+			
+		}
+		return userLoginAccountsDTOList;
+	}
 	
 }

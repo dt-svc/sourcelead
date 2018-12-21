@@ -103,18 +103,19 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
             			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
             		  else if ((userRolesList.size() == 1 && candidateOffBoarding != null && candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("Y")))
             			  throw new BadCredentialsException("login_offboardUser_error");
-            		  else{
-            			  return userLoginHelper.redirectToDashboard(username+"##"+userRole.getId(),password,null);
-            		  }
-        		   }else{
+            		  /*else{
+            			  return userLoginHelper.redirectToDashboard(requestusername+"##"+userRole.getId(),password,null);
+            		  }*/
+        		   }/*else{
         			   return userLoginHelper.redirectToDashboard(username+"##"+userRole.getId(),password,null);
-        		   }
+        		   }*/
         		    
         	  }
         	  else{
         		  throw new BadCredentialsException("login_password_error");
         	  }
           }
+		return authentication;
           
     }
  

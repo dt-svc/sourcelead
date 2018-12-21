@@ -2,7 +2,12 @@ package com.bis.sourcelead.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,19 +16,29 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -46,8 +61,22 @@ public class UserLoginHelper {
 	
 	@Autowired
 	WhiteListIpAddressService whiteListIpAddressService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	ModulesService modulesService;
+	
+	@Autowired
+	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	TabsService tabsService;
+	
+	   
 
-	public  UsernamePasswordAuthenticationToken redirectToDashboard(String username, String password,String verfDone)
+	public  UsernamePasswordAuthenticationToken redirectToDashboard(HttpServletRequest req,String username, String password,String verfDone)
 	{
 		
 		 String[] usernameWithRole = username.split("##");
@@ -104,12 +133,91 @@ public class UserLoginHelper {
 				    userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 				    request.getSession().setAttribute("userLoginSession", userLoginSession);
 			    }
-		      request.getSession().setAttribute("userRoleId", userRole.getId());
 		  }
-		  return new UsernamePasswordAuthenticationToken(username, password, null);
+		  req.getSession().setAttribute("userRoleId", userRole.getId());
+		  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
+		  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocations", orgLocations);
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginOrgLocation", orgLocations);
+		  SourceLeadSessionManager.setSessionAttribute(req, "averageWorkingHours", orgLocations.getAverageWorkingHours());
+		  SourceLeadSessionManager.setSessionAttribute(req, "orgLocationId", orgLocations.getId());
+		  SourceLeadSessionManager.setSessionAttribute(req, "locationCode", orgLocations.getLocationCode());
+		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.getRoles().getRoleName());
+		  
+		   
+		Candidate candidate;
+		try {
+			candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
+			SourceLeadSessionManager.setSessionAttribute(req, "candidateId", candidate.getId());
+		} catch (Exception e) {}
+		SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.getIsGlobal());
 		
-	}
+		
+       List<SourceleadActions> actionsList = null;
+       Collection<Tabs> tabsList = null;
+		Integer associatesTabsCount = 0; 
+		Integer billingTabsCount = 0;
+		Integer expensesTabCount = 0;
+		Integer resourcesTabCount = 0;
+		Integer paryrollTabCount = 0;
+		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
+			orgLocations = userRole.getOrgLocations();
+			Org org = orgLocations.getOrg();
+			List<Long> modulesId;
+			try {
+				modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+				actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+			} catch (Exception e) {}
+			for(Tabs tabs : tabsList){
+					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
+						billingTabsCount = billingTabsCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
+						expensesTabCount = expensesTabCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
+						resourcesTabCount = resourcesTabCount+1;
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Reports")){
+						SourceLeadSessionManager.setSessionAttribute(req, "reportsTabConfigured", "Y");
+					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Run Payroll") || tabs.getTabName().equalsIgnoreCase("My Payroll")){
+						paryrollTabCount = paryrollTabCount+1;
+					}
+				}
+			
+			
+			SourceLeadSessionManager.setSessionAttribute(req, "tabsList", tabsList);
+			SourceLeadSessionManager.setSessionAttribute(req, "associatesTabsCount", associatesTabsCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "billingTabsCount", billingTabsCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			
+				
+		  } 
+		  return  new UsernamePasswordAuthenticationToken(username, password,  buildUserAuthority(actionsList));
+	   }
 	
+		private List<GrantedAuthority> buildUserAuthority(List<SourceleadActions> actionsList) {
+
+    	Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+       
+    	if(actionsList != null && !actionsList.isEmpty()){
+    		// Build user's authorities
+    		for (SourceleadActions sourceleadActions : actionsList) {
+    			setAuths.add(new SimpleGrantedAuthority(sourceleadActions.getActionRole()));
+    		}
+    	}
+    	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+    	return Result;
+    }
 	public String getIpAddress(){
 		 String ipAddress = null;
 		 RequestAttributes attribs = RequestContextHolder.getRequestAttributes();

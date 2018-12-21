@@ -631,7 +631,7 @@ public class LoginSessionController {
 			
 		}
 		
- 	     userProfileDTO = setUserDetailsForCouchStore(user,userProfileDTO);
+ 	    /* userProfileDTO = setUserDetailsForCouchStore(user,userProfileDTO);
 		 userProfileDTO = userProfileStore.storeUsersProfileInCouch(user.getId(),orgLocations.getId(),userProfileDTO);
 		 ObjectMapper sessionObj = new ObjectMapper();
          try {
@@ -639,7 +639,7 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setUserProfileJsonString(user.getUserName(), "userProfile", sessionJsonStr);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		
 		boolean dashboardConfigured = false;
