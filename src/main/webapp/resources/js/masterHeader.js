@@ -1,5 +1,5 @@
-var masterHeader = new buildMasterHeaderPanel();
- function buildMasterHeaderPanel (){
+var masterHeader = new MasterHeader();
+ function MasterHeader (){
 	
 	 this.masterHeaderPanel = function(){
 		var fileUrl = '/resources/images/userprofile-img.png'	
@@ -141,8 +141,11 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>';
 	    masterNavHtml = masterNavHtml+'</ul>';
 		
+	    $("#masterHeaderNav").empty();
 	    $("#masterHeaderNav").append(masterNavHtml);
+	    
 	    sideNewMenuActionListener();
+	    
 	 }
 	 
 	 this.getTopNotificationsByuserId = function(){
@@ -269,7 +272,6 @@ var masterHeader = new buildMasterHeaderPanel();
 		          result = result + ' </div>';
 				  $("#orgLiksPopup").empty();
 		          $("#orgLiksPopup").append(result); 
-		          $('#orgPopView').show();
 		          //To register Accout search event
 		          masterHeader.searchAccout();
 	             

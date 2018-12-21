@@ -1,12 +1,12 @@
-var masterSideNav = new buildMasterSideNavPanel();
-function buildMasterSideNavPanel(){
+var masterSideNav = new MasterSideNav();
+function MasterSideNav(){
 	 this.masterSideNavPanel = function(){
 	     var sideNavHtml='';
 	      sideNavHtml = sideNavHtml+'<nav class="newMenu">';
 	      sideNavHtml = sideNavHtml+'<ul>';
 	       
 	       if(tabAccessArray.indexOf("Dashboard") > -1){
-	    	   sideNavHtml = sideNavHtml+'<li class="navActive"><a href="/app/dashboard/971" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>';
+	    	   sideNavHtml = sideNavHtml+'<li class="navActive"><a href="/app/dashboard/'+locationId+'" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>';
 	        }
 	       
 	       if(tabAccessArray.indexOf("Associates") > -1){
