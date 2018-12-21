@@ -261,9 +261,13 @@ public class UserProfileRestController {
 	}
 
 	@RequestMapping(value = "/deleteProfileImage", method = RequestMethod.GET)
-	public String deleteProfileImage(HttpServletRequest request) throws Exception {
-
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	public String deleteProfileImage(@RequestParam(defaultValue = "0") long userId,HttpServletRequest request) throws Exception {
+		User user = null;
+		if(userId>0){
+			user = userService.getUserById(userId);
+		}else{
+	    user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		}
 		user.setFileUrl(null);
 		user.setFileContentType(null);
 		userService.addUser(user);
