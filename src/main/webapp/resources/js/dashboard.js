@@ -28,10 +28,11 @@ var timezoneId = "246"
 } 
 var country = "India";//'${SourceLeadWeb_orgLocations.country}';
 var locationDate = locationList; // locationList is unique variable using for date format.
-*/var finalDateFormatEDashboardeventCalendar = '';
+*/
+
+var finalDateFormatEDashboardeventCalendar = '';
 var tabAccessArray = '';
 var roleActionsArray = '';
-//$(document).ready(function() {
 	if (locationDate.match("yyyy-MM-dd")) {
 		finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
 	}
@@ -905,7 +906,6 @@ function handleTeamRoleClick() {
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
 	//var sourceleadUrl ='${sourceleadUrl}';
-	var locationDate =locationList;// replaced common variable'${SourceLeadWeb_orgLocations.dateFormat}';
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatScript = 'yy-mm-dd';
@@ -3520,8 +3520,6 @@ $(".addInterview_close, .side_mask").click(function() {
 	$("body").css('overflow-y', 'auto');
 });
 $(function() {
-	var locationDate = locationList; // set the existing variable value in
-										// script.
 	var finalDateFormatProeventCalendar = '';
 	if (locationDate.match("yyyy-MM-dd")) {
 		finalDateFormatProeventCalendar = 'yy-mm-dd';
@@ -3642,7 +3640,6 @@ function getSelectedDateFromCalendar(selectedDate) {
 	if (date == null || date == '' || date == 'undefined') {
 		date = new Date();
 		var month = parseInt(date.getMonth()) + parseInt(1);
-		var locationDate =locationList;
 		if (locationDate.match("yyyy-MM-dd")) {
 			date = date.getFullYear() + "-" + month + "-" + date.getDate();
 		}
@@ -3897,7 +3894,6 @@ function getJobsForSelectedFairDate() {
 	//var sourceleadUrl = '${sourceleadUrl}';
 	var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 	$("#fairJobsDiv").empty();
-	locationDate = locationList; //replaced with dashboard jsp common variable.  
 	$("#fairJobsDiv").attr(
 					'style',
 					'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');

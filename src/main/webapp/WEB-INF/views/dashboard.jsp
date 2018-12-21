@@ -28,10 +28,10 @@
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/dashboard.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/masterSideNav.js"></script>
 <script src="/resources/js/masterHeader.js"></script>
+
 </head>
 
 
@@ -54,7 +54,7 @@ var date = $("#eventCalendar").val();
 //its an entity commented now. var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
 var timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}'; 
 var country = '${SourceLeadWeb_orgLocations.country}';
-var locationDate = locationList; // locationList is unique variable using for date format.
+var locationDate = '${SourceLeadWeb_orgLocations.dateFormat}';	 // locationList is unique variable using for date format.
 var userType = '${SourceLeadWeb_userType}';
 var loginOrgLocationName = '${SourceLeadWeb_loginOrg}';
 var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
@@ -64,3 +64,5 @@ $(document).ready(function() {
 		$('body').load("/resources/html/dashboardHtml.html");
 	});
 </script>
+
+<script src="/resources/js/dashboard.js"></script>
