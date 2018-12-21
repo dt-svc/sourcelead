@@ -43,7 +43,7 @@ window.onload = function() {
 	else if("${login_2_Step_Process_Enabled}" != ''){
 		getUserEnrolledLoctions();
 	}else if("${redirect_to_dashboard}" != ''){
-		redirectToDashbord(userRoleId,userName,password);
+		redirectToDashbord(0,userName,password);
 	}
 }
 </script>

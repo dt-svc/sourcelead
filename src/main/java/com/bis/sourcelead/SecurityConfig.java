@@ -99,7 +99,6 @@ public class SecurityConfig  {
        		     .antMatchers("/").permitAll() 
        		     .antMatchers("/getScheduleStatus").permitAll() 
     		    .antMatchers("/login").permitAll()
-    		    .antMatchers("/pms/**").permitAll()
     		    .antMatchers("/demoRequest").permitAll() 
     		    .antMatchers("/*.html").permitAll() 
     		    .antMatchers("/resetPassword").permitAll() 
