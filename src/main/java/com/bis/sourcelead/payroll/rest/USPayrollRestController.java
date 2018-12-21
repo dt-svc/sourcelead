@@ -1041,13 +1041,13 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		AssociatePayItem associatePayItem = associateSalaryService.findPayItemByPayItemId(Long.valueOf(associatePayItemDTO.getId()));
 		associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEffectiveDate()));
-		if(associatePayItemDTO.getEndDate() != null) {
+		if(StringUtils.isNotBlank(associatePayItemDTO.getEndDate())) {
 			associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
 		}else {
 			associatePayItem.setEndDate(null);
 		}
 		
-		if(associatePayItemDTO.getPayItemAmount() != null) {
+		if(StringUtils.isNotBlank(associatePayItemDTO.getPayItemAmount())) {
 			associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
 		}else {
 			associatePayItem.setPayItemAmount(null);
