@@ -186,7 +186,7 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate;  
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
   		dynamicSalesOrderList(url);
   	}
   
@@ -438,7 +438,7 @@
 		$(".advancedsearch-mask").hide();
 	}
   
-  function openPop(){
+   function openPop(){
 		$("#modalSalesOrder, .advancedsearch-mask").fadeIn();
 	}
     
