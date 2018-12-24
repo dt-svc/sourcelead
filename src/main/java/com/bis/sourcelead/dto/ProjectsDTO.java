@@ -28,10 +28,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	@Required(desc="status")
 	private String status;
 	
-	/*@Required(desc="projectApprovalTypeValue")*/
+	//@Required(desc="projectApprovalTypeValue")
 	private String projectApprovalTypeValue;
 	
-	/*@Required(desc="expenseApprovalTypeValue")*/
+	//@Required(desc="expenseApprovalTypeValue")
 	private String expenseApprovalTypeValue;
 	
 	private String projectApprovalType;

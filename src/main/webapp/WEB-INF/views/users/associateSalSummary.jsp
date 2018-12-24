@@ -16,7 +16,7 @@ function associateSalSummary(userId){
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
             	if(json.id != null && json.id != '' && json.id != 'undefined'){
-            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\',\''+json.effectiveDate+'\',\''+json.increasePer+'\');">Update</a></li>';
                 	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	}else{
             		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
@@ -163,6 +163,10 @@ function associateSalSummary(userId){
                         result = result + '			<div class="width150px" id="endDateDiv'+opt.id+'">';
                         result = result + '			<div>'+opt.endDate+'</div>';
                         result = result + '			</div>';
+                        
+                        if(opt.endDate == "--"){
+                        	opt.endDate = "";
+                    	}
                         
                         result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
                         
@@ -675,11 +679,14 @@ function closeupdateSalaryDetails() {
 </script>  
 
 <script>
-function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
+function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID,effectiveDate,increasePer) {
 	 document.getElementById("update_associate_salary_form").reset(); 
-	
+	 
 	 if(id != null && id != '' && id != 'undefined'){
-			$("#payType").val(payType);
+
+		 $("#effectiveDate").val(effectiveDate);
+		 $("#increasePer").val(increasePer);
+			 $("#payType").val(payType);
 			$("#payFrequency").val(payFrequency);
 			$("#standardHours").val(standardHours);
 			$("#annualSal").val(annualSal);
@@ -726,7 +733,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 			}
 	 }
 	 $(".updateSalaryDetails, .sideMask").fadeIn();
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	
 	var finalDateFormat = getJSDateFormat(locationDate);
 	 $("#effectiveDate").datepicker({
 		 dateFormat: finalDateFormat,
@@ -1071,6 +1078,11 @@ function updatePayItems(payItemId){
 }
 
 function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
+	
+	 if(endDate == ""){
+		 endDate = "--";
+ 	}
+	
 	 document.getElementById("editEffectiveDateDiv"+payItemId).style.display="none";
 	 document.getElementById("effectiveDateDiv"+payItemId).style.display="block";
 	 $("#effectiveDateDiv"+payItemId).empty();
@@ -1084,7 +1096,7 @@ function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
 	 document.getElementById("editpayItemAmountDiv"+payItemId).style.display="none";
 	 document.getElementById("payItemAmountDiv"+payItemId).style.display="block";
 	 $("#payItemAmountDiv"+payItemId).empty();
-	 $("#payItemAmountDiv"+payItemId).append(payAmount);
+	 $("#payItemAmountDiv"+payItemId).append("$ "+payAmount);
 	 
 	 document.getElementById("saveDiv"+payItemId).style.display="none";
 	 document.getElementById("editDiv"+payItemId).style.display="inline-block";
