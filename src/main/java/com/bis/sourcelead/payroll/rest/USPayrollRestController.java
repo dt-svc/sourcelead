@@ -1136,7 +1136,7 @@ public class USPayrollRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
-		model.setViewName("payroll/usPayrollDashboard");
+		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
@@ -2134,6 +2134,28 @@ public class USPayrollRestController {
 		}
 		return ap;
 		
+	}
+	
+	/**
+	 * Return US Payroll Dashboard  JSP
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/uSPayrollDashboard")
+	public ModelAndView uSPayrollDashboardJsp(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("payroll/uSPayrollDashboard");
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.PAYROLL);
+		request.getSession().setAttribute("sessionData", sessionData);
+		return model;
 	}
 		
 }
