@@ -1337,7 +1337,7 @@ public class PayrollUtil {
 		return dto;
     }
 
-	public Response<Map<String, String>> getCategoriesForStaffingFilteredData(FileReader reader) {
+	 public Response<Map<String, String>> getCategoriesForStaffingFilteredData(FileReader reader) {
 		Response<Map<String,String>> res = new Response<>();
 		JSONParser jsonParser = new JSONParser();
 		Map<String,String> map = new HashMap<>();
