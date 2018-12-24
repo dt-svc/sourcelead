@@ -42,4 +42,6 @@ public interface AssociateSalaryService {
 	List<AssociateSalaryInd> getIndAssociateSalaryListByGroupIdForInitiatePayRoll(OrgLocations orgLocation, long groupId,String payType,Date fqStartDate,Date fqEndDate);
 
 	SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
+
+	AssociateSalary getAssociateSalaryBySalaryId(Long salaryId);
 }

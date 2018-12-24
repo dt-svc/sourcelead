@@ -112,7 +112,7 @@ function showHideSalaryDIV(){
 	var payType = $("#payType").val();
 	 if(payType == "HourlyRate" || payType == "LcaWage"){
 		$("#salaryDIV").hide();
-		$("#standardHours").val('');    
+// 		$("#standardHours").val('');    
 		$("#annualSal").val('');
 		$("#perPaySal").val('');
 		$("#hourlyRate").val('');
@@ -304,12 +304,13 @@ function calculateHourlyRateSal(){
 					 for (var i=0; i<response.data.length; i++)
 						{
 			        		 var opt = response.data[i];
-			        		result = result +' <tr>';
+			        		result = result +' <tr id="'+i+'">';
 			        		result = result +' <td>';
 			        		result = result +' 	<div class="checkbox-new">';
 			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
+			        		result = result +' <input type="hidden" id="'+i+'payItemId" name="associatePayItemDto['+i+'].payItemId" value="'+opt.id+'">';
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
@@ -374,7 +375,13 @@ function calculateHourlyRateSal(){
 					  $("#"+i+"effectiveDate").datepicker({
 						 dateFormat: finalDateFormat,
 						 changeMonth: true,
-						  changeYear: true
+						  changeYear: true,
+						  onSelect : function(selected) {
+							  var dt = $(this).datepicker('getDate', '+1d');
+							  dt.setDate(dt.getDate() +1);
+							  var id = $(this).closest('tr').attr("id");
+							  $("#"+id+"endDate").datepicker("option", "minDate", dt);
+						  }
 						 });
 						 $("#"+i+"endDate").datepicker({
 							 dateFormat: finalDateFormat,
@@ -393,6 +400,7 @@ function calculateHourlyRateSal(){
 			} 
 		}); 
   }
+  
   </script>
   
   

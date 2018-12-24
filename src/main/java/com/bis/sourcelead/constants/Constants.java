@@ -204,7 +204,8 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
-	public static final String CART_DETAILS_MAIL_TO_MARKETPLACE_CANDIDATES= "CartDetailsMailToMarketPlaceCandidates";
+	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
+	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -249,6 +250,8 @@ public class Constants {
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	public static final String PURCHASED = "Purchased";
+	public static final String SUCCESS = "Success";
+	public static final String FAILED = "Failed";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
@@ -582,10 +585,10 @@ public class Constants {
 	
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
-	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
@@ -707,6 +710,7 @@ public class Constants {
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String APPLICANT = "Applicant";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
 	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
@@ -936,7 +940,7 @@ public class Constants {
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
-			"Amount" , "Status"  , "Approved by"};
+			"Amount" , "Status"  , "Approved by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
@@ -1100,6 +1104,14 @@ public class Constants {
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
 	public static final String RESTRICTDAY = "RESTRICT_DAY";
 
+	public static final String[] NOTICE_PERIOD = { "Immediately Available", "15 days", "1 Month", "2 Months", "3 Months" };
+	
+	public static final String[] COOLING_OFF_PERIOD = { "0 Days", "1 Week", "2 Weeks", "3 Weeks", "1 Month", "2 Months", "3 Months", "4 Months", "5 Months", "6 Months", "7 Months", "8 Months", "9 Months", "10 Months", "11 Months","1 Year" };
+
+	public static final String[] TRAVEL_ALLOWANCE = {"0%","10%","15%","20%","25%","30%","35%","40%","45%","50%"};
+	
+	public static final String[] EXPERIENCE_LEVEL = {"Level-1","Level-2","Level-3","Level-4"};
+	
 	public static final String LEAVE_PENDING = "PENDING";
 	public static final String LEAVE_APPROVED = "APPROVED";
 	public static final String LEAVE_REJECTED = "REJECTED";
@@ -1348,8 +1360,14 @@ public class Constants {
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
 	
+
+	public static final String PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR = "purchasedCandidateDetailsToContributor";
+
 	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
 	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
 	public static final String PMS_Ticket_Status_Updated_Email = "PMSTicketStatusUpdatedEmail";
+
+	public static final String COMMENTED_RAISED_TICKET_EMAIL = "CommentedRaisedTicketEmail";
+	public static final String COMMENTED_RAISED_TICKET_NOTIFICATION = "CommentedRaisedTicketNotification";
 	
 }

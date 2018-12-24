@@ -588,10 +588,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		if(!isNullOrEmpty(projectsDTO.getProjectApprovalTypeValue())){
 			projects.setProjectApprovalType(projectsDTO.getProjectApprovalTypeValue());
+		}else {
+			projects.setProjectApprovalType(Constants.PARALLEL);
 		}
 		
 		if(!isNullOrEmpty(projectsDTO.getExpenseApprovalTypeValue())){
 			projects.setExpenseApprovalType(projectsDTO.getExpenseApprovalTypeValue());
+		}else {
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 		}
 		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
@@ -1883,10 +1887,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getProjectApprovalTypeValue())){
 		    		projects.setProjectApprovalType(projectDTO.getProjectApprovalTypeValue());
+		    	}else {
+		    		projects.setProjectApprovalType(Constants.PARALLEL);
 		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getExpenseApprovalTypeValue())){
 		    		projects.setExpenseApprovalType(projectDTO.getExpenseApprovalTypeValue());
+		    	}else {
+		    		projects.setExpenseApprovalType(Constants.PARALLEL);
 		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
@@ -3923,7 +3931,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				createExcelsheet.autoSizeColumn(2);
 			}
 
-			if (null != reportList.getProjectManagers()) {
+			if (null != reportList.getProjectManagerNames()) {
 				 writeRow.createCell(3).setCellValue(reportList.getProjectManagerNames());
 				createExcelsheet.autoSizeColumn(3);
 			} else {

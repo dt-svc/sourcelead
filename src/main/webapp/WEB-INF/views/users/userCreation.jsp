@@ -69,6 +69,7 @@
          		 <li><a href="#tab-2" data-toggle="tab" id="indBankingDetails" onclick="getIndAssociateBankingDetails();">Banking Details</a></li>
        		     <li><a href="#tab-3" data-toggle="tab" id="indInformationDetails" onclick="getIndAssociateInformationDetails();">Information</a></li>
        		     <li><a href="#tab-4" data-toggle="tab" id="indLoanAndAdvancesDetails" onclick="loanAdv.getIndAssociateLoanAndAdvancesDetails();">Loan / Advances</a></li>
+       		     <li><a href="#tab-6" data-toggle="tab" id="indLeaveTypeDetails" onclick="getIndAssociateLeaveTypeDetails();">Leave Type</a></li>
        		     <li><a href="#tab-5" data-toggle="tab" id="indSalaryDetails" onClick="indAssociateSalarySummary();">Salary</a></li>
           </c:if>
 
@@ -141,7 +142,7 @@
                 </div>
                 <div class="form-group">
                       <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
-                         <div class="col-md-9">
+                         <div class="col-md-9" id=DateofJoinDiv>
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -536,7 +537,7 @@
 		                </div>
 		                 </div>
                </div>
-               
+               <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
                <div class="form-group">
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
@@ -547,6 +548,7 @@
 		                </div>
 		                 </div>
                </div>
+               </c:if>
                 <c:if test="${!empty sourceleadSectionList}">
 	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               		<c:if test="${sectionOrder.index == 0}">
@@ -584,6 +586,7 @@
               <jsp:include page="associateIndiaBankingDetails.jsp" />
               <jsp:include page="associateIndiaInformationDetails.jsp" />
               <jsp:include page="associateIndiaLoanAndAdvancesDetails.jsp" />
+              <jsp:include page="associateIndLeaveType.jsp" />
               <jsp:include page="associateIndiaSalaryDetails.jsp" />
          </c:if> 
         
@@ -634,6 +637,7 @@ function validateSSNNumber(){
 	}else{
 		calculateSSNLength(length,ssnNumber);
 	}
+	
 }
 function calculateSSNLength(length,ssnNumber){
 	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
@@ -660,8 +664,39 @@ function calculateSSNLength(length,ssnNumber){
 		}else{
 			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		}
+		
 	}
+	validateSSNDuplicate($("#ssnNumber").val());
 }
+ </script>
+ 
+ <script>
+ function validateSSNDuplicate(ssnNumber){
+	 var associateId = $("#associateId").val();
+	 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	 if(ssnNumber != null && ssnNumber != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+						  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  document.getElementById("ssnNumber").setAttribute('record-exist','yes');
+						  document.getElementById("ssnNumber").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }	 
+ }
  </script>
 
 <script>
@@ -1351,6 +1386,7 @@ function getAssociateUserDetails(){
 	  	  maxDate:0,
 	  	  onSelect : function(selected) {
 	  		calculateConfirmationDate();
+	  		removeDateofJoinValid();
 	 	  }
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
@@ -1366,6 +1402,11 @@ function getAssociateUserDetails(){
   } );
 </script>
 <!-- end script for datepicker -->
+<script>
+function removeDateofJoinValid(){
+	$('#DateofJoinDiv').find('p.jquery_form_error_message').remove();
+	}
+</script>
 
  
 <script type="text/javascript">
@@ -1688,7 +1729,13 @@ var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 			if(indLoanAndAdvancesDetails){
 				indLoanAndAdvancesDetails.href = "#";
 				indLoanAndAdvancesDetails.className = "disabledLink";
-			}  
+			}
+			
+			var indLeaveTypeDetails = document.getElementById("indLeaveTypeDetails");
+			if(indLeaveTypeDetails){
+				indLeaveTypeDetails.href = "#";
+				indLeaveTypeDetails.className = "disabledLink";
+			}
 			
 			var indSalaryDetails =  document.getElementById("indSalaryDetails");
 			if(indSalaryDetails){

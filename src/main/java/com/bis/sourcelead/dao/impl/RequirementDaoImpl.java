@@ -441,6 +441,12 @@ public class RequirementDaoImpl implements RequirementDao {
 				}
 				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'UNFILLEDCLOSED' ";
 			}
+			if (Arrays.asList(subStatus).contains("ONHOLD")) {
+				if (StringUtils.isNotEmpty(subQuery7)) {
+					subQuery7 = subQuery7 + " OR ";
+				}
+				subQuery7 = subQuery7 + " requirement.requirementSubmissionStatus = 'ONHOLD' ";
+			}
 			if (Arrays.asList(subStatus).contains("CANCEL")) {
 				if (StringUtils.isNotEmpty(subQuery7)) {
 					subQuery7 = subQuery7 + " OR ";
@@ -691,12 +697,22 @@ public class RequirementDaoImpl implements RequirementDao {
 			String subQuery4 = " requirement.primaryRecruiterUserId.id =:userId ";
 			params.put("userId", userId);
 			
-			String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
-			params.put("approverUserId", userId);
+			/*String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
+			params.put("approverUserId", userId);*/
+			
+			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
+			params.put("userId", user.getId());
+			params.put("level", 1);
 
-			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "") {
+			String subQuery6 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
+			params.put("approverUserId", user.getId());
+			params.put("userId", user.getId());
+			params.put("level1", 1);
+			params.put("level2", 2);
+
+			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 !="") {
 				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1 + ") or ("
-						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") ) ";
+						+ subQuery2 + ")  or (" + subQuery3 + ")  or (" + subQuery4 + ") or (" + subQuery5 + ") or ("+subQuery6+")) ";
 				params.put("orgLocationId", orgLocationId);
 			}
 		} else {
@@ -1866,7 +1882,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		List<Requirement> releasedJobsList = null;
 		String query = "";
 		if (orgRelationId != null && orgLocationId != null) {
-			query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and ( requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC ) and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
+			query = "from Requirement requirement  left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and (date(requirement.createdDate) BETWEEN  :startDateUTC and :endDateUTC)  and requirement.parentRequirement IS NOT NULL group by requirement.clientId.id, requirement.parentRequirement.id";
 			releasedJobsList = session.createQuery(query).setLong("orgRelationId", orgRelationId)
 					.setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
 		}

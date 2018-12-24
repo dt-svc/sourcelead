@@ -994,6 +994,9 @@ public class PayrollUtil {
 					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
+					calenderDTO.setDateFormat(sds.format(monthStartDate).toUpperCase());
+					calenderDTO.setPayRunDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(runPalCal.getTime()));
+					calenderDTO.setPayCheckDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(ncal.getTime()));
 					calenderDTO.setMonth(i);
 					payFrequency.add(calenderDTO);
 				}
@@ -1044,15 +1047,33 @@ public class PayrollUtil {
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
 					
 					calenderDTO.setPayPeriod(sb.toString());
-//					System.out.println("*****************  "+sb.toString());
+//					logger.info("*****************  "+sb.toString());
 					calenderDTO.setPayFrequency(sb.toString());
 					Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(0));
 					Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1));
+					
+					/*//logger.info("---------------------- "+sDate + " / "+eDate);
+					Calendar cal1 = Calendar.getInstance();
+					Calendar cal2 = Calendar.getInstance();
+					cal1.setTime(sDate);
+					cal2.setTime(eDate);
+					boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+					if(sameMonth) {
+						System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ SAME MONTH");
+						getDaysBetweenDates(sDate,eDate);
+					}else {
+						System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ DIFFERENt MONTH");
+						getDaysBetweenDates(sDate,eDate);
+					}*/
+					
+					
+					
 					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(sDate));
 					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(eDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
 					calenderDTO.setPayRunDate(nextPayRunDate);
-					
+					calenderDTO.setPayRunDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(runPalCal.getTime()));
+					calenderDTO.setPayCheckDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(cal.getTime()));
 					String dateFormat = getDateChangedFormat(sDate,eDate);
 					calenderDTO.setDateFormat(dateFormat);
 					payFrequency.add(calenderDTO);
@@ -1068,6 +1089,25 @@ public class PayrollUtil {
 			return payFrequency;
 		}
 		return payFrequency;
+	}
+	
+	
+	
+	private  List<String> getDaysBetweenDates(Date startdate, Date enddate)
+	{
+	    List<String> dates = new ArrayList<String>();
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(startdate);
+        
+	    while (calendar.getTime().getTime() <= enddate.getTime())
+	    {
+	        Date result = calendar.getTime();
+	        dates.add(new SimpleDateFormat("MM/dd/yyyy").format(result));
+	        System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(result));
+//			boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+	        calendar.add(Calendar.DATE, 1);
+	    }
+	    return dates;
 	}
 
 	/**

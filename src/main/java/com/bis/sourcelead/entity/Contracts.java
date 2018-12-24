@@ -318,6 +318,10 @@ public class Contracts {
 	
 	@Transient
 	@JsonProperty
+	private Integer totalDraftApplicantCount;
+	
+	@Transient
+	@JsonProperty
 	private String createdDateStr;
 	
 	@Transient
@@ -1298,4 +1302,13 @@ public class Contracts {
 	public void setTagsList(Set<String> tagsList) {
 		this.tagsList = tagsList;
 	}
+
+	public Integer getTotalDraftApplicantCount() {
+		return totalDraftApplicantCount;
+	}
+
+	public void setTotalDraftApplicantCount(Integer totalDraftApplicantCount) {
+		this.totalDraftApplicantCount = totalDraftApplicantCount;
+	}
+	
 }

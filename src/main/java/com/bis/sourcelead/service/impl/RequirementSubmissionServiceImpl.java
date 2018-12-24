@@ -2013,7 +2013,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
-		 String actionLink="";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+requirement.getRequirementUUID()).toString();		 
+		 
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_NEGOTIATE_REQUIREMENT,new ArrayList<EmailAttachment>());
@@ -2208,7 +2210,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	  				
 	  			 }
 	   			else{
-	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   				if(jsonObj.has("value") && StringUtils.isNotBlank(jsonObj.getString("value"))) {
+	   					jsonObj.put("value", jsonObj.getString("value"));
+	   				}
 	   			}
    			}
    			jsonArray.put(jsonObj);
@@ -5672,20 +5676,32 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
 				payTerm=payTerm.replaceAll("\\D", "");
+				if(!payTerm.isEmpty()){
 				 writeRow.createCell(12).setCellValue(payTerm);
+				}
+				else{
+					writeRow.createCell(12).setCellValue("--");
+				}
 			}
 			else{
 				writeRow.createCell(12).setCellValue("--");
 			}
 			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
 				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
-				payTerm=payTerm.replaceAll("\\D", "");
-				int result = Integer.parseInt(payTerm);
-				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
-				DateTime dtOrg = new DateTime(generatedInvoiceDate);
-				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
-
+				 Integer result = 0;
+                 try {
+                     payTerm=payTerm.replaceAll("\\D", "");
+                     result = Integer.parseInt(payTerm);
+                 } catch (Exception e) {
+                     result = 0;
+                 }
+                 if(result != 0){
+     				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
+    				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+    				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+    				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+	 
+                 }
 			}
 			else{
 				writeRow.createCell(13).setCellValue("--");
@@ -5772,11 +5788,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setOrgRelationId(requirementSubmission.getRequirement().getClientId().getId());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+					String term = requirementSubmission.getRequirement().getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				Date locationDate = commonUtil.orgLocationCommonDate(new Date(),orgLocations);
+				Boolean finaldate = dtOrg.toDate().before(locationDate);
+				if(finaldate){
+					applicantsDto.setGenerateDate(true);	
+				}
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			listOfApplicants.add(applicantsDto);
@@ -5826,11 +5851,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+					String term = requirementSubmission.getRequirement().getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			try{
@@ -5905,17 +5934,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setClientOrVendorName(requirementSubmission.getCandidate().getOrgRelationId().getResponderLocationId().getOrgLocationName());
 				}
 			}
-			if (requirementSubmission.getJoinedDate() != null) {
-				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
-			}
-			
-			try{
+			try {
+				// get released requirement based on parent requirement id
+				Requirement req = requirementDao.getRequirementByParentRequirementId(requirementSubmission.getRequirement().getId());
+				if (req.getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+					if(StringUtils.isNotBlank(req.getClientId().getPaymentTerm())){
+					String term = req.getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
+					Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+					DateTime dtOrg = new DateTime(generatedInvoiceDate);
+					applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+					}
+					applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+				}
+				
 				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
 				if (null != contractsList && contractsList.size() > 0) {
 					applicantsDto.setContractsList(contractsList);
 				}	
-			}catch (Exception e) {
-				e.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 			
 			listOfApplicants.add(applicantsDto);

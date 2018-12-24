@@ -2469,7 +2469,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		public List<RequirementSubmission> getApplicantCountSubmittedByVendorBasedOnStartAndEndDate(Long orgLocationId,
 				Long orgRelationId, Date startUTCDate, Date endUTCDate) {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL and (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC)";
+			String query =" from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.orgLocations left join fetch rs.candidateResumes where rs.orgLocations.id =:orgLocationId and rs.vendorLocationId.id =:orgRelationId and rs.sourceSubmission <> NULL and (date(rs.createdDate) BETWEEN :startDateUTC and :endDateUTC)";
 			List<RequirementSubmission>  subList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).list();
 		    return subList;
 		}
@@ -3945,7 +3945,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				+ orgLocationId + "' and reqSub.CREATED_BY='" + usercode
 				+"' and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + ""
-				+ "' group by reqSub.REQUIREMENT_ID ";
+				+ "' group by reqInst.JOINERS ";
 				     queryString =  session.createSQLQuery(query.toString());
 					ApplicantsJoinedReportDTO applicantsJoinedReportDTO = null;
 //					if (applicantsJoinedReportDTOList != null && applicantsJoinedReportDTOList.size() > 0) {
@@ -4085,7 +4085,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId,"
 					 		+ " urole.TERMINATE_DATE as terminateDate, urole.TERMINATE_REASON as terminatedReason,emp.HIRE_DATE as hireDate,  urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4150,6 +4150,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
 							  		.addScalar("terminatedReason", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("terminateDate", StandardBasicTypes.DATE)
 					  				.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
@@ -4192,7 +4193,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						List<Long> countlist = null;
 						String sortingQry = "";
 					 String query="SELECT emp.ID as empId, emp.USER_ID as userId,emp.ORG_LOCATIONS_ID as orgLocationsId, emp.HIRE_DATE as hireDate, urole.USER_TYPE as userRole,"
-+" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,"
++" emp.EMPLOYMENT_TYPE as empType,user.GENDER as gender, emp.CURRENT_CURRENCY as currency,emp.RATE as rate,emp.RATE_PER as ratePer,emp.PROBATION_STATUS as probationStatus,"
 +" (SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = emp.USER_ID) as empName,"
 +"(SELECT CONCAT(u.FIRST_NAME,space(1),u.LAST_NAME) from USER u where u.ID = urole.REPORTING_MANAGER_ID) as reportingManager," 
 +"(SELECT shft.SHIFT_NAME from SHIFT shft where shft.ID = urole.SHIFT_ID) as shiftName,"
@@ -4256,6 +4257,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							  		.addScalar("rate", StandardBasicTypes.STRING)
 							  		.addScalar("ratePer", StandardBasicTypes.STRING)
 							  		.addScalar("shiftName", StandardBasicTypes.STRING)
+							  		.addScalar("probationStatus", StandardBasicTypes.STRING)
 							  		.addScalar("hireDate", StandardBasicTypes.DATE);
 		                queryString.setResultTransformer(Transformers.aliasToBean(AssociateJoineReportDTO.class));
 		                associateJoineReportDTOList = queryString.list();
@@ -4368,7 +4370,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "select count(*) from Requirement requirement where requirement.id = :requirementID and (requirement.managerUserId = :userId OR requirement.primaryRecruiterUserId = :userId)";
 			
 			if (fromDate != null && toDate != null) {
-				betweenDateQuery = " and requirement.createdDate BETWEEN :fromDate AND :toDate ";
+				betweenDateQuery = " and  date(requirement.createdDate) BETWEEN :fromDate AND :toDate ";
 			}
 			resultQuery = query.concat(betweenDateQuery);
 		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("requirementID", requirementID.intValue()).setLong("userId", userId.intValue())
@@ -4404,7 +4406,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String query = "select count(*) from RequirementAssignTo reqAssign where reqAssign.assignUserId = :userId";
 			
 			if (fromDate != null && toDate != null) {
-				betweenDateQuery = " and reqAssign.createdDate BETWEEN :fromDate AND :toDate ";
+				betweenDateQuery = " and date(reqAssign.createdDate) BETWEEN :fromDate AND :toDate ";
 			}
 			resultQuery = query.concat(betweenDateQuery);
 		     List<Long> appliedCount = session.createQuery(resultQuery).setLong("userId", userId.intValue())
@@ -4440,7 +4442,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'OFFERMADE' or reqSub.submissionStatus='OFFERACCEPTED' or reqSub.previousSubmissionStatus='OFFERMADE' or reqSub.previousSubmissionStatus='OFFERACCEPTED') and reqSub.createdBy = :userCode ";
 				
 				if (fromDate != null && toDate != null) {
-					betweenDateQuery = " and reqSub.updatedDate BETWEEN :fromDate AND :toDate ";
+					betweenDateQuery = " and date(reqSub.updatedDate) BETWEEN :fromDate AND :toDate ";
 				}
 				resultQuery = query.concat(betweenDateQuery);
 			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)
@@ -4476,7 +4478,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				String query = "select count(*) from RequirementSubmission reqSub where (reqSub.submissionStatus = 'JOINED' or  reqSub.previousSubmissionStatus='JOINED' ) and reqSub.createdBy = :userCode ";
 				
 				if (fromDate != null && toDate != null) {
-					betweenDateQuery = " and reqSub.updatedDate BETWEEN :fromDate AND :toDate ";
+					betweenDateQuery = " and date(reqSub.updatedDate) BETWEEN :fromDate AND :toDate ";
 				}
 				resultQuery = query.concat(betweenDateQuery);
 			     List<Long> appliedCount = session.createQuery(resultQuery).setString("userCode", userCode)

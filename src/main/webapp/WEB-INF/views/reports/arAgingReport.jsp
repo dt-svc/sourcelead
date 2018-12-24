@@ -20,6 +20,10 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; A/R Aging</div>
     </section>
     <div class="clearfix"></div>
+
+      <div class="vendor_wrap">
+      
+      
     <div class="ReqRepHead clearfix">
       <div class="col-md-3 pull-left reqListBtn"> <a href='${appPath}/arAgingGraphReport' title="Graphical View" class="btn btn-default"><i class="fa fa-pie-chart"></i></a>
        <a href='${appPath}/arAgingReport' title="List View" class="btn btn-default"><i class="fa fa-list"></i></a>
@@ -41,12 +45,13 @@ $(document).ready(function(){
         </div>
       </div> -->
     </div>
-    <div class="clearfix"></div>
-      <div class="vendor_wrap mt">
-        <div class="tableStyles">
-         <div class="clearfix table_head">
+    <div class="clearfix"></div>      
+      
+      
+        <div class="project_tabs_inn_table positionRelative">
+         <div class="clearfix table_head searchPad">
         	 
-        	 <div class="col-md-offset-4 select-fild col-md-2 mt5">
+        	 <div class="select-fild col-md-2 mt5 pull-right">
                     <select  name="apagingType" id="apagingType" onchange="change();">
                         <option value="Receivable">By Client</option>
                         <option value="Invoice">By Invoice</option>
@@ -95,6 +100,7 @@ $(document).ready(function(){
  	    </div>
       <div id="aragingByInvoice" class="datatable_filter">
          
+        </div>
         </div>
         </div>
   </section>
@@ -245,64 +251,64 @@ function araging(url){
 	    	  	"targets": colIndex++,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  		result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>';
+	    	  		result = result + ' <td><div class="tbldata-dotdot-sm">'+opt.orgName+'</div></td>';
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						result = result + ' <td><div class="tblminwidth-75">'+opt.tenDays.toFixed(2)+'</div></td>';
+						result = result + ' <td><div class="">'+opt.tenDays.toFixed(2)+'</div></td>';
 	              return result;
               		
               }
 	          },{
             "targets": colIndex++,
             "render": function ( data, type, opt, meta ) {
-            	return  '<td><div class="tblminwidth-75">'+opt.fifteenDays.toFixed(2)+'</div></td>';
+            	return  '<td><div class="">'+opt.fifteenDays.toFixed(2)+'</div></td>';
             }
           }, {
               "targets": colIndex++,
               "render": function ( data, type, opt, meta ) {
-            	  return '<td><div class="tbldata-dotdot-vsm" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
+            	  return '<td><div class="" title="'+opt.thirtyDays+'">'+opt.thirtyDays.toFixed(2)+'</div></td>';
               }
             }, {
                 "targets": colIndex++,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-							result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.sixtyDays.toFixed(2)+'</div></td>';
+							result = result + ' <td><div class="">'+opt.sixtyDays.toFixed(2)+'</div></td>';
     	              return result;
                 }
           },{
 	    	  	"targets": colIndex++,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-					result = result + '<td><div class="tblminwidth-50">'+opt.nintyDays.toFixed(2)+'</div></td>';
+					result = result + '<td><div class="">'+opt.nintyDays.toFixed(2)+'</div></td>';
   	              return result;
 	    	  	}
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
-	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
+	    	  			result = result + ' <td><div class="">'+opt.oneeightyDays.toFixed(2)+'</div></td>';
 	    	  		return result;
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
                   "render": function ( data, type, opt, meta ) {
-                	  return '<td><div class="tblminwidth-75">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
+                	  return '<td><div class="">'+opt.threeSixtyFiveDays.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
                     "render": function ( data, type, opt, meta ) {
-                    	return '<td><div class="tblminwidth-75">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
+                    	return '<td><div class="">'+opt.abovethreeSixtyFiveDays.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
                       "render": function ( data, type, opt, meta ) {
                     	  apagingTotal = parseFloat(apagingTotal)+parseFloat(opt.total);
                     	  $("#apagingTotal").html(apagingTotal.toFixed(2));
-                    	  return ' <td><div class="tblminwidth-75">'+opt.total.toFixed(2)+'</div></td>';
+                    	  return ' <td><div class="">'+opt.total.toFixed(2)+'</div></td>';
                       }
                     } ],
 	    	"scrollCollapse": false,

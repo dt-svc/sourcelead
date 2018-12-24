@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssetDTO;
@@ -229,6 +230,9 @@ public class ReportRestController {
 	
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ProjectMembersDao projectMembersDao;
 	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
@@ -487,7 +491,7 @@ public class ReportRestController {
 			sumissionHistoryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			sumissionHistoryDTO.setSortOrder(sortColumnOrder);
 			
-			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates);
+			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates,orgLocations.getId());
 			
 			return list;
 		}
@@ -1754,17 +1758,26 @@ public class ReportRestController {
 									.append(" hours ago").toString());
 						}
 
-						List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(tasks.getId());
-						for(ProjectAssignTask pat:assignUser) {
-							if(pat.getProjectMemberId() != null) {
-								if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
-									 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
-									 pat.setAssignedUserUrl(pat.getProjectMemberId().getProjectMemberCandidteId().getFileUrl());
-								}
+						if(tasks.getProjectId() != null) {
+							List<Long> assignedMembersIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(tasks.getProjectId().getId(), projectTasksDTO.getOrgLocationId());
+							if(!assignedMembersIds.isEmpty()) {
+								List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(tasks.getId());
+								List<ProjectAssignTask> assignedTaskUsersList =  new ArrayList<ProjectAssignTask>();
+								for(ProjectAssignTask pat:assignUser) {
+									if(pat.getProjectMemberId() != null) {
+										if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
+											if(assignedMembersIds.contains(pat.getProjectMemberId().getId().longValue())) {
+												 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+												 pat.setAssignedUserUrl(pat.getProjectMemberId().getProjectMemberCandidteId().getFileUrl());
+												 assignedTaskUsersList.add(pat);
+											}
+										}
+									}
+								 }
+								taskDTO.setAssignedTaskUsers(assignedTaskUsersList);
 							}
-						 }
-						 
-						taskDTO.setAssignedTaskUsers(assignUser);
+						}
+						
 						taskDTOList.add(taskDTO);
 					}
 					responseList.setData(taskDTOList);

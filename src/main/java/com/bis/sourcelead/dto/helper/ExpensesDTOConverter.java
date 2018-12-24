@@ -36,6 +36,7 @@ public class ExpensesDTOConverter {
 			expensesDTO.setProjectUUID(expenses.getProjectMembers().getProjects().getProjectUUID());
 			expensesDTO.setProjectClientUUID(expenses.getProjectMembers().getProjectClientUUID());
 			expensesDTO.setProjectStatus(expenses.getProjectMembers().getProjects().getProjectStatus().name());
+			expensesDTO.setBillingStatus(expenses.getBillingStatus());
 		}
 		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 		if(expenses.getStartDate() != null){

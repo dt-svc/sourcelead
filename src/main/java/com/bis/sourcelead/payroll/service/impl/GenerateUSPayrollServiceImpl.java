@@ -467,7 +467,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
-						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 						if(terminated) {
 							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 								if(joiningMonth.equals(payrollRunningMonth)) {
@@ -495,7 +495,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 			} else {
 					if(salaryDto.getJoiningDate() != null) {
-					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 					    	if(terminated) {
 					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 					    		if(joiningMonth.equals(payrollRunningMonth)) {
@@ -537,15 +537,23 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
     * @param slaryDto
     * @param freqStartDate
     * @param freqEndDate
+ * @param isAssociate 
     * @return boolean
     */
-   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+   private boolean isEmployeeTerminated(Date jdate, Date freqStartDate, Date freqEndDate, String isAssociate)
 	{
 	   boolean isTerminated = false;
 //	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
-	   if(date.after(freqStartDate) || date.before(freqEndDate)) {
-		   isTerminated = true;
-		}
+	   if(PayrollConstant.N.equalsIgnoreCase(isAssociate)) {
+		   if(jdate.after(freqStartDate) || jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }else {
+		   if(jdate.after(freqStartDate) && jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }
+	   
 		return isTerminated;
 	}
 
@@ -1294,12 +1302,12 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Map<String, BigDecimal> map = new HashMap<>();
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				map.put("Federal Withholding", tax.getFederalWithholding());
-				map.put("FICA",tax.getFicaWithholding());
+				map.put("SOC SEC",tax.getFicaWithholding());
 				map.put("Medicare",tax.getMedicareWithholding());
 				map.put("Advanced Earned Income Credit",tax.getEarnedIncCredit());
 				map.put("State Withholding",tax.getStateWithholding());
 				map.put("LocalTax",tax.getLocalTax());
-				map.put("SUI",tax.getSDI());
+				map.put("SDI",tax.getSDI());
 				map.put("SUI", tax.getSUI());
 				map.put("FLI", tax.getFLI());
 				map.put("HCSF", tax.getHCSF());
@@ -1442,7 +1450,7 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payAdjHistory.setRegularHoursAmt(new BigDecimal(regHrsAmt));
 			payAdjHistory.setOvertimeHoursAmt(new BigDecimal(otHrsAmt));
 			payAdjHistory.setPrePayType(payAdjustmentDTO.getAssSalType());
-			payAdjHistory.setPrePayPerSalary(amount);
+			payAdjHistory.setPrePayPerSalary(payAdjustmentDTO.getPreAssSalaryAmount());
 			payAdjHistory.setPayType(payAdjustmentDTO.getAssSalType());
 			payAdjHistory.setPayPerSalary(amount);
 			double preTaxContriSum = 0;
