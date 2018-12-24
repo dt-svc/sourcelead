@@ -16,7 +16,7 @@ function associateSalSummary(userId){
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
             	if(json.id != null && json.id != '' && json.id != 'undefined'){
-            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\');">Update</a></li>';
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\',\''+json.effectiveDate+'\',\''+json.increasePer+'\');">Update</a></li>';
                 	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	}else{
             		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
@@ -679,11 +679,14 @@ function closeupdateSalaryDetails() {
 </script>  
 
 <script>
-function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID) {
+function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID,effectiveDate,increasePer) {
 	 document.getElementById("update_associate_salary_form").reset(); 
-	
+	 
 	 if(id != null && id != '' && id != 'undefined'){
-			$("#payType").val(payType);
+
+		 $("#effectiveDate").val(effectiveDate);
+		 $("#increasePer").val(increasePer);
+			 $("#payType").val(payType);
 			$("#payFrequency").val(payFrequency);
 			$("#standardHours").val(standardHours);
 			$("#annualSal").val(annualSal);
@@ -730,7 +733,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 			}
 	 }
 	 $(".updateSalaryDetails, .sideMask").fadeIn();
-	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	
 	var finalDateFormat = getJSDateFormat(locationDate);
 	 $("#effectiveDate").datepicker({
 		 dateFormat: finalDateFormat,
