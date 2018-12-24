@@ -25,8 +25,18 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.exception.DRException;
+
+/**
+ * 
+ * Util class for exported Pdf and Excel files in Candidates.
+ * 
+ * @author Vishnu
+ * @date 18th December 2018
+ * 
+ */
+
 @Component
-public class CandidateExportUtil {
+public class CandidateMarketplaceExportUtil {
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -88,14 +98,14 @@ public class CandidateExportUtil {
 	}
 	
 	private DRDataSource createSalesOrderDataSource(ResponseList<MarketplacePurchaseSalesDTO> res) {
-		DRDataSource dataSource = new DRDataSource("orderNo","orderDate", "companyName", "noOfResumes","totalResumePrice","paymentStatus");
+		DRDataSource dataSource = new DRDataSource("orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus");
+			String  orderNo= "---";
+			String orderDate = "---";
+			String companyName = "---";
+			String noOfResumes = "---";
+			String totalResumePrice= "---";
+			String  paymentStatus= "---";
 		for(MarketplacePurchaseSalesDTO salesDto :res.getData()) {
-			String  orderNo= "--";
-			String orderDate = "--";
-			String companyName = "--";
-			String noOfResumes = "--";
-			String totalResumePrice= "--";
-			String  paymentStatus= "--";
 			if(salesDto != null && salesDto.getOrderNo() != null) {
 				orderNo = salesDto.getOrderNo();
 			}
