@@ -157,13 +157,22 @@ public class JobPipelineReoprtsRestController {
 		            
 					JobPipelineDTO report = new JobPipelineDTO();
 					
+					Integer openJobcount = new Integer(0);
+					Integer onholdJobcount = new Integer(0);
+					Integer closedJobcount = new Integer(0);
+					Integer unfilledclosedJobcount = new Integer(0);
+					Integer filledclosedJobcount = new Integer(0);
+					Integer cancelJobcount = new Integer(0);
+					
 					List<Requirement> requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
-					Integer openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
-					Integer onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
-					Integer closedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CLOSED")).collect(Collectors.toList()).size();
-					Integer unfilledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("UNFILLEDCLOSED")).collect(Collectors.toList()).size();
-					Integer filledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("FILLEDCLOSED")).collect(Collectors.toList()).size();
-					Integer cancelJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CANCEL")).collect(Collectors.toList()).size();
+					if(requirementList != null && !requirementList.isEmpty()) {
+						openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
+						onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
+						closedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CLOSED")).collect(Collectors.toList()).size();
+						unfilledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("UNFILLEDCLOSED")).collect(Collectors.toList()).size();
+						filledclosedJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("FILLEDCLOSED")).collect(Collectors.toList()).size();
+						cancelJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("CANCEL")).collect(Collectors.toList()).size();
+					}
 
 					int count = 1;
 					int dupCount = 0;

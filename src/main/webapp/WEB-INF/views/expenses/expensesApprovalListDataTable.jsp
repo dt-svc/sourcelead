@@ -22,7 +22,8 @@
 			<th>Action</th>                                                          
 			<th>Start Date<br>(<small class="custom-small">${orgLocationDateFormat}</small>)</th> 
 			<th>End Date<br>(<small class="custom-small">${orgLocationDateFormat}</small>)</th>   
-			<th>No of Items</th>                                                                   
+			<th>No of Items</th>    
+			<th>Billing Status</th>                                                                  
 			                                                                       
 		</tr>                                                                                  
 	</thead>                                                                               
@@ -182,4 +183,27 @@ function searchExpensesDataIcon(){
 	      $('#pageMsg').html(pageMsg);
 	 }
   </script>  
+  
+   <script>
+function changeBillingStatus(id, ele){
+	 var billingStatus = $(ele).val();
+	  $.ajax({
+		    type : "POST",
+		     url: sourceleadUrl+"/updateBillingStatus?billingStatus="+billingStatus+"&expenseId="+id,      
+		     success :function(data) {
+		    	 if(data && data.response === "SUCCESS") {
+					if(data.object === true)			    		 
+			    	 	getTableDataByPageSize();
+					else
+						alert("please try again...");
+		    	 } else {
+		    		 alert(data.responseMessage);
+		    	 }
+		     
+	 		}
+	 }); 
+}
+
+
+</script>
                                                                              
