@@ -59,6 +59,17 @@ private static final long serialVersionUID = 1L;
 	
 	private String projectStatus;
 	
+	private String billingStatus;
+	
+	
+	public String getBillingStatus() {
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus) {
+		this.billingStatus = billingStatus;
+	}
+
 	private BigDecimal totalsubmittedAmount;
 
 	public BigDecimal getTotalsubmittedAmount() {

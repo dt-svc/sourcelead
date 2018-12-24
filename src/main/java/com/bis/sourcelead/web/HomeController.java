@@ -199,10 +199,18 @@ public class HomeController {
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			@RequestParam(value = "token", required = false) String token,
 			@RequestParam(value = "referUUID", required = false) String referUUID,
-			@RequestParam(value = "allowed", required = false) String allowed, HttpServletRequest request,
+			@RequestParam(value = "allowed", required = false) String allowed, 
+			@RequestParam(value = "redirectURL", required = false) String redirectURL,
+			@RequestParam(value = "redirectOrgLocationId", required = false) Long redirectOrgLocationId,
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 
+		if(redirectURL != null && !redirectURL.isEmpty()) {
+			request.getSession().setAttribute("redirectURL", redirectURL);
+			request.getSession().setAttribute("redirectOrgLocationId", redirectOrgLocationId);
+		}
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {

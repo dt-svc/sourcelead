@@ -386,25 +386,28 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				
 			}	
 		}
-        
+
+        String redirectURL = "/projectTaskSummary-params-taskUUID="+tasks.getProjectTasksUUID()+"-and-projectClientUUID=";
+		long redirectOrgLocationId = tasks.getProjectId().getOrgLocationsId().getId();
+		
         //onwer Task email
         if(savedTask.getOwnerUserId() != null) {
         	if(user.getId().longValue() != savedTask.getOwnerUserId().getId().longValue()) {
-                SendMailtoAssigntoMembersaboutAddingTask(null,projectTasksDTO,savedTask,loginOrgLocation,user);
+                SendMailtoAssigntoMembersaboutAddingTask(null,projectTasksDTO,savedTask,loginOrgLocation,user, redirectURL, redirectOrgLocationId);
         	}
         }
         
         //Assign task emails
         for (ProjectAssignTask projectAssignTask : assignProjetcTasks) {
         	if(loginOrgLocation.getId().longValue() == projectAssignTask.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId().getId()) {
-                SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,savedTask,loginOrgLocation,user);
+                SendMailtoAssigntoMembersaboutAddingTask(projectAssignTask,projectTasksDTO,savedTask,loginOrgLocation,user, redirectURL, redirectOrgLocationId);
         	}
         }
         return "success";
 	}
 
-	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser) throws Exception
-	{
+	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser, String redirectURL, long redirectOrgLocationId) throws Exception
+	{ 
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 		User user = null;
 		if(projectAssignTask == null) {
@@ -484,7 +487,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		}
 		globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrgLocationName());
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl + "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Task</div></a>").toString());
 		// calling the sendEmail method of emailScenerioUtil
 		if (null != loginOrgLocation.getId())
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK,new ArrayList<EmailAttachment>());
