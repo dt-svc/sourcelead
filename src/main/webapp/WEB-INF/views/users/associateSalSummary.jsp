@@ -164,6 +164,10 @@ function associateSalSummary(userId){
                         result = result + '			<div>'+opt.endDate+'</div>';
                         result = result + '			</div>';
                         
+                        if(opt.endDate == "--"){
+                        	opt.endDate = "";
+                    	}
+                        
                         result = result + '<div class="edit-input width150px" id="editEndDateDiv'+opt.id+'" style="display:none;"><input type="text" id ="preEnd'+opt.id+'" onclick = "editEndDate(this)" value="'+opt.endDate+'" class="form-control calendar"></div></td>';
                         
                         result = result + '	</td>';
@@ -1071,6 +1075,11 @@ function updatePayItems(payItemId){
 }
 
 function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
+	
+	 if(endDate == ""){
+		 endDate = "--";
+ 	}
+	
 	 document.getElementById("editEffectiveDateDiv"+payItemId).style.display="none";
 	 document.getElementById("effectiveDateDiv"+payItemId).style.display="block";
 	 $("#effectiveDateDiv"+payItemId).empty();
@@ -1084,7 +1093,7 @@ function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
 	 document.getElementById("editpayItemAmountDiv"+payItemId).style.display="none";
 	 document.getElementById("payItemAmountDiv"+payItemId).style.display="block";
 	 $("#payItemAmountDiv"+payItemId).empty();
-	 $("#payItemAmountDiv"+payItemId).append(payAmount);
+	 $("#payItemAmountDiv"+payItemId).append("$ "+payAmount);
 	 
 	 document.getElementById("saveDiv"+payItemId).style.display="none";
 	 document.getElementById("editDiv"+payItemId).style.display="inline-block";
