@@ -368,4 +368,20 @@ public class ExpensesDaoImpl implements ExpensesDao {
         return expenseAmount;
     }
 
+	@Transactional
+    public boolean changeExpenseBillingStatus(long expenseId, String billingStatus) {
+	try {
+		Session session = this.sessionFactory.getCurrentSession();
+	Expenses expenseBillingStatus = session.get(Expenses.class, expenseId);
+		if (expenseBillingStatus != null) {
+			expenseBillingStatus.setBillingStatus(billingStatus);
+			session.saveOrUpdate(expenseBillingStatus);
+		} 
+		return true;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return false;
+	
+}
 }

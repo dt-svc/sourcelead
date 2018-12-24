@@ -276,6 +276,18 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 					associateSalaryDTO.setPayGroupUUID(asal.getGroupId().getGroupUUID());
 					associateSalaryDTO.setPayGroup(asal.getGroupId().getGroupName());
 					
+					if(asal.getEffectiveDate() != null) {
+						associateSalaryDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), asal.getEffectiveDate()));
+					}else {
+						associateSalaryDTO.setEffectiveDate("");
+					}
+					
+					if(StringUtils.isNotBlank(asal.getIncrementPercentage())) {
+						associateSalaryDTO.setIncreasePer(asal.getIncrementPercentage());
+					}else {
+						associateSalaryDTO.setIncreasePer("");
+					}
+					
 					Set<AssociatePayItem> payItemList = asal.getAssociatePayItem();
 					List<AssociatePayItemDTO> list = new ArrayList<>();
 					List<PayItemDTO> allList = new ArrayList<>();
