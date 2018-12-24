@@ -173,10 +173,19 @@ function associateSalSummary(userId){
                         result = result + '	</td>';
                         result = result + '	<td>';
                         result = result + '		<div class="width150px" id="payItemAmountDiv'+opt.id+'">';
-                        result = result + '		<div>$ '+opt.payItemAmount+'</div>';
+                        if(opt.payItemAmount != null && opt.payItemAmount !="" && opt.payItemAmount != "undefined" && opt.payItemAmount != "null"){
+                        	result = result + '		<div>$ '+opt.payItemAmount+'</div>';
+                        }else{
+                        	result = result + '		<div>$ 0.00</div>';
+                        }
                         result = result + '		</div>';
                         
-                        result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
+                        if(opt.payItemAmount != null && opt.payItemAmount !="" && opt.payItemAmount != "undefined" && opt.payItemAmount != "null"){
+                        	result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="'+opt.payItemAmount+'" class="form-control pull-left"></div></td>';
+                        }else{
+                        	result = result + '<div class="edit-input width150px" id="editpayItemAmountDiv'+opt.id+'" style="display:none;"><input type="text" id ="prePayAmount'+opt.id+'" value="0.00" class="form-control pull-left"></div></td>';
+                        }
+                        
                         result = result + '</td>';
                         result = result + '	<td>';
                         result = result + '		<div class="tblminwidth-50">';
@@ -1093,7 +1102,12 @@ function displayNormalDivs(payItemId,effectiveDate,endDate,payAmount){
 	 document.getElementById("editpayItemAmountDiv"+payItemId).style.display="none";
 	 document.getElementById("payItemAmountDiv"+payItemId).style.display="block";
 	 $("#payItemAmountDiv"+payItemId).empty();
-	 $("#payItemAmountDiv"+payItemId).append("$ "+payAmount);
+	
+	 if(payAmount != null && payAmount !="" && payAmount != "undefined" && payAmount != "null"){
+		 $("#payItemAmountDiv"+payItemId).append("$ "+payAmount);
+	 }else{
+		 $("#payItemAmountDiv"+payItemId).append("$ 0.00");
+	 }
 	 
 	 document.getElementById("saveDiv"+payItemId).style.display="none";
 	 document.getElementById("editDiv"+payItemId).style.display="inline-block";
