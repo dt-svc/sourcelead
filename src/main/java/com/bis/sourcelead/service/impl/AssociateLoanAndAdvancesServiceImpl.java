@@ -289,7 +289,6 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 		} catch (Exception e) {
  			logger.error(ExceptionUtils.getFullStackTrace(e));
  			e.printStackTrace();
- 			System.out.println("");
 		}
 		return assLoansAndAdvancesList;
 	}
