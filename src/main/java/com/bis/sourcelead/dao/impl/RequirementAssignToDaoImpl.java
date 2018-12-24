@@ -216,7 +216,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementAssignTo> getAssignedToMembersByRequirementIdAndOrgLocationId(Long requirementId,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementAssignTo rato   where rato.requirementId.id = :requirementId and rato.status <> '0' and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
+		String query = "from RequirementAssignTo rato left join fetch rato.teamId  where rato.requirementId.id = :requirementId and rato.status <> '0' and rato.requirementId.id IN ( select req.id from Requirement req where req.orgLocationId.id =:orgLocationId)";
 		return session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).list();
 	}
 
