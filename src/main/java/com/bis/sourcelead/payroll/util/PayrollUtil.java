@@ -1103,7 +1103,7 @@ public class PayrollUtil {
 	    {
 	        Date result = calendar.getTime();
 	        dates.add(new SimpleDateFormat("MM/dd/yyyy").format(result));
-	        System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(result));
+//	        System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(result));
 //			boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
 	        calendar.add(Calendar.DATE, 1);
 	    }
@@ -1234,8 +1234,8 @@ public class PayrollUtil {
 			    					 }else {
 			    						 averageHours = "8";
 			    					 }
-			    					 System.out.println("******************************averageHours = "+averageHours);
-			    					 System.out.println("******************************averageHours = "+averageHours);
+//			    					 System.out.println("******************************averageHours = "+averageHours);
+//			    					 System.out.println("******************************averageHours = "+averageHours);
 			    					 
 			    					 
 			    					 BigDecimal one = new BigDecimal("1");
@@ -1248,14 +1248,14 @@ public class PayrollUtil {
 			    					    }else if(res1 == -1) {
 			    					    	  dyHours = (avgHrs * leaves);
 			    					    }
-			    						 System.out.println("******************************leaves = "+leaves);
-			    						 System.out.println("******************************leaves = "+dyHours);
-			    						 System.out.println("******************************LOP Amount = "+lopAmt);
+//			    						 System.out.println("******************************leaves = "+leaves);
+//			    						 System.out.println("******************************leaves = "+dyHours);
+//			    						 System.out.println("******************************LOP Amount = "+lopAmt);
 			    						 lopAmt = getTotalAmount(dyHours, hourlyRate);
 			    					
 			    				 }
 			    			 }
-			    			 System.out.println("******************************LOP Amount = "+lopAmt);
+//			    			 System.out.println("******************************LOP Amount = "+lopAmt);
 			    			 payrollLopHis.setLopAmount(lopAmt);
 			    }	
 			}
@@ -1306,7 +1306,8 @@ public class PayrollUtil {
 						FilteredClientDTO dto = parseFilteredClientObject(ob);
 						list.add(dto);
 					}catch(Exception e) {
-						System.out.println("error with index number :"+i);
+						e.printStackTrace();
+//						System.out.println("error with index number :"+i);
 					}
 				}
 			}
@@ -1336,7 +1337,7 @@ public class PayrollUtil {
 		return dto;
     }
 
-	public Response<Map<String, String>> getCategoriesForStaffingFilteredData(FileReader reader) {
+	 public Response<Map<String, String>> getCategoriesForStaffingFilteredData(FileReader reader) {
 		Response<Map<String,String>> res = new Response<>();
 		JSONParser jsonParser = new JSONParser();
 		Map<String,String> map = new HashMap<>();
@@ -1347,10 +1348,10 @@ public class PayrollUtil {
 			Set<String> s = json.keySet();
 			for(String name : s) {
 				if("categories".equalsIgnoreCase(name)) {
-					System.out.println(json.get(name));
+//					System.out.println(json.get(name));
 					JSONObject json1 = (JSONObject) json.get(name);
 					Set<String> catSet = json1.keySet();
-					System.out.println(catSet);
+//					System.out.println(catSet);
 					for(String str : catSet) {
 						JSONObject ob = new JSONObject((Map) json1.get(str));
 						map.put(str, (String) ob.get("category_name"));
@@ -1387,7 +1388,6 @@ public class PayrollUtil {
 									list.add(dto);                                          // add dto to list object
 								}catch(Exception e) {
 									e.printStackTrace();
-									System.out.println("error with index number :"+i);
 								}
 							}
 						}
@@ -1495,7 +1495,7 @@ public class PayrollUtil {
 						VendorRecruitersDTO dto = parseVendorRecruitersObject(ob);
 						list.add(dto);
 					}catch(Exception e) {
-						System.out.println("error with index number :"+i);
+						e.printStackTrace();
 					}
 				}
 			}
