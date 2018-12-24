@@ -2101,48 +2101,10 @@ public class USPayrollRestController {
 	@RequestMapping(value = "/savePayItemsFromSummary",method = RequestMethod.POST)
 	public AssociatePayItem savePayItemsFromSummary(HttpServletRequest request,AssociateSalaryDTO associateSalaryDTO) throws Exception
 	{
-		AssociatePayItem ap = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
-		for (AssociatePayItemDTO api : associateSalaryDTO.getAssociatePayItemDto()) {
-			
-			if(api.getPayItemCheck() != null && api.getPayItemCheck().equalsIgnoreCase(Constants.BOOLEAN_TRUE)) {
-				
-				BigDecimal amount = BigDecimal.ZERO;
-				AssociatePayItem associatePayItem = new AssociatePayItem();
-				
-				associatePayItem.setPayItemName(api.getPayItemName());
-				associatePayItem.setPayItemSchedule(api.getPayItemSchedule());
-				if (api.getOverRide() != null) {
-					associatePayItem.setOverRide(api.getOverRide());
-				}
-				if (api.getEffectiveDate() != null && !"".equalsIgnoreCase(api.getEffectiveDate())) {
-					associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), api.getEffectiveDate()));
-				}
-				if (api.getEndDate() != null && !"".equalsIgnoreCase(api.getEndDate())) {
-					associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), api.getEndDate()));
-				}
-				if (api.getPayItemAmount() != null && !"".equalsIgnoreCase(api.getPayItemAmount())) {
-					amount = new BigDecimal(api.getPayItemAmount());
-				}
-				associatePayItem.setOrgPayItemId(api.getPayItemId());
-				
-				AssociateSalary associateSalary = associateSalaryService.getAssociateSalaryBySalaryId(Long.parseLong(associateSalaryDTO.getId()));
-				associatePayItem.setAssociateSalary(associateSalary);
-				associatePayItem.setPayItemAmount(amount);
-				associatePayItem.setCreatedDate(new Date());
-				associatePayItem.setUpdatedDate(new Date());
-				associatePayItem.setCreatedBy(user.getUserCode());
-				associatePayItem.setUpdatedBy(user.getUserCode());
-				associatePayItem.setStatus(1);
-				ap = associateSalaryService.saveUpdatedPayItem(associatePayItem);
-				
-			}
-			
-		}
-		return ap;
+		return payItemService.savePayItemsFromSummary(associateSalaryDTO,orgLocation,user);
 		
 	}
 		
