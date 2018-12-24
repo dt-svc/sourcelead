@@ -492,7 +492,7 @@ public class ReportRestController {
 			sumissionHistoryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			sumissionHistoryDTO.setSortOrder(sortColumnOrder);
 			
-			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates);
+			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates,orgLocations.getId());
 			
 			return list;
 		}
