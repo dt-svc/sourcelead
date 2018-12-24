@@ -231,8 +231,8 @@ function payHeadCalculation(id, shortCode, method, formula){
 			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = (result).toFixed(2);
 							document.getElementById("payHeadYearly["+shortCode+"]").value = (result*12).toFixed(2);
 			    		}else{
-			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = ("");
-							document.getElementById("payHeadYearly["+shortCode+"]").value = ("");
+			    			document.getElementById("payHeadMonthly["+shortCode+"]").value = ("0.00");
+							document.getElementById("payHeadYearly["+shortCode+"]").value = ("0.00");
 			    		}
 			}
 		}catch(err){

@@ -5795,6 +5795,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				Date locationDate = commonUtil.orgLocationCommonDate(new Date(),orgLocations);
+				Boolean finaldate = dtOrg.toDate().before(locationDate);
+				if(finaldate){
+					applicantsDto.setGenerateDate(true);	
+				}
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
 				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
