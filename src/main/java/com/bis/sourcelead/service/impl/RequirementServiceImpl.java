@@ -97,6 +97,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
+import com.bis.sourcelead.service.AuditService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -201,6 +202,9 @@ public class RequirementServiceImpl implements RequirementService {
 	private RequirementLocationsService requirementLocationsService;
 	@Autowired
 	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	private AuditService auditService;
 
 	@Override
 	public String getRequirementId(OrgLocations orgLocations) {
@@ -310,12 +314,21 @@ public class RequirementServiceImpl implements RequirementService {
 		String requirementClient = "";
 		Date date = new Date();
 		StringBuilder location = new StringBuilder();
+		String oldData = "", newData = "";
+		List<Object> childObjects = new LinkedList<>();
+		childObjects.add(RequirementIncentive.class);
+		childObjects.add(RequirementAssignTo.class);
+		childObjects.add(RequirementApproverHierarchy.class);
+		childObjects.add(RequirementLocations.class);
+		
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
-			requirement = requirementDao
-					.getRequirementByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
+			requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
 			requirement.setId(requirement.getId());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			if(requirement != null) {
+				oldData = auditService.getData(requirement, childObjects);
+			}
 		} else {
 			requirement = new Requirement();
 			requirement.setGeneratedId(getRequirementId(orgLocations));
@@ -1292,6 +1305,12 @@ public class RequirementServiceImpl implements RequirementService {
 					requirementDao.deleteJobFairRequirement(jobFairRequirementId);
 				}
 			}
+		}
+		
+		Requirement storedRequirement = requirementDao.getRequirementByRequirementId(savedRequirement.getId());
+		if(storedRequirement != null) {
+			newData = auditService.getData(storedRequirement, childObjects);
+			auditService.saveAuditReport(storedRequirement.getClass().getSimpleName(), oldData, newData, StringUtils.isNotBlank(requirementDTO.getRequirementId()) ? "UPDATE" : "ADD", user);
 		}
 		return savedRequirement;
 	}
