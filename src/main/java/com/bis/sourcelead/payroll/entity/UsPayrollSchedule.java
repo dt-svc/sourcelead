@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 @Entity
 @Table(name = "US_PAYROLL_SCHEDULE")
 public class UsPayrollSchedule {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id

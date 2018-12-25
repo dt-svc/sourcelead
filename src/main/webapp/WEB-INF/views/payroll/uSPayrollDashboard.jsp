@@ -27,14 +27,18 @@
 		  <div class="positionRelative clearfix"> 
             <div class="col-md-4 positionRelative noPad col-md-offset-8">
         <select class="sel" id="customDates">
-          <option>Select Date</option>
+			<option selected value="Weekly">Weekly</option>
+			<option value="Bi-Weekly">Bi-Weekly</option>
+			<option value="Monthly">Monthly</option>
+			<option value="Annually">Annually</option>
+         <!--  <option>Select Date</option>
           <option value="weekDays">Last 7 days</option>
           <option value="fifteenDays">Last 15 days</option>
           <option value="oneMonth">1 month</option>
           <option value="threeMonths">3 months</option>
           <option value="agYear">YTD</option>
           <option value="agYear">Last Year</option>
-          <option value="custom">Custom</option>
+          <option value="custom">Custom</option> -->
         </select>
 				
 	
