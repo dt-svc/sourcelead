@@ -1859,7 +1859,8 @@ public class ReportRestController {
 //			    
 					
 					Date[] searchDates = null;
-					
+					ResponseList<MarginSheetReportDTO> projectMembersDTOList = new ResponseList<MarginSheetReportDTO>();
+					try{
 						if(!"custom".equalsIgnoreCase(timePeriod)){
 							searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
 						}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
@@ -1901,8 +1902,16 @@ public class ReportRestController {
 
 //					ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
 //					responseList.setData(userDTOList);
-					ResponseList<MarginSheetReportDTO> projectMembersDTOList = projectMembersService.getProjectMemeberByClientProjectAndOrglocation(orgLocationId,searchDates,marginSheetReportDTO);
-//					responseList.setData(projectMembersDTOList);
+					projectMembersDTOList = projectMembersService.getProjectMemeberByClientProjectAndOrglocation(orgLocationId,searchDates,marginSheetReportDTO);
+//					responseList.setData(projectMembersDTOList);	
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+					responseList.setResponse(Result.AWKWARD.name());
+					responseList.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
 					return projectMembersDTOList;
 				}
 		 

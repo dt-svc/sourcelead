@@ -2003,17 +2003,17 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setClinetName(mm[10].toString());
 			  mts.setOrglocationId((BigInteger)mm[11]);
 			  mts.setOrgRelationId((BigInteger)mm[12]);
+			  mts.setMarginRate((double)mm[7] - (double)mm[4] );
 			  totalPayRate+=(double)mm[4];
 			  totalbilRate+=(double)mm[7];
 			  mt.add(mts);
-			  System.out.println(mm[1]);
 		  }
 		  if(totalPayRate != 0 && totalbilRate != 0){
 //			  mts.setTotalPayRate(totalPayRate);
 //			  mts.setTotalbilRate(totalbilRate);
 			  mt.get(0).setTotalPayRate(totalPayRate);
 			  mt.get(0).setTotalbilRate(totalbilRate);
-			  
+			  mt.get(0).setTotalMarginRate(totalbilRate - totalPayRate);
 		  }
 	         int count = 0;
 	            int filteredCount = 0;

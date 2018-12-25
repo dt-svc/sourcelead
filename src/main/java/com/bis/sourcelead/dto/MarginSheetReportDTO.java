@@ -22,6 +22,9 @@ public class MarginSheetReportDTO extends SearchDTO implements Serializable {
 	private double totalPayRate;
 	private double totalbilRate;
 	private String clientId;
+	private double marginRate;
+	private double totalMarginRate;
+	
 	
 
 	public BigInteger getProjectId()
@@ -152,5 +155,21 @@ public class MarginSheetReportDTO extends SearchDTO implements Serializable {
 	{
 		this.clientId = clientId;
 	}
-
+	public double getMarginRate()
+	{
+		return marginRate;
+	}
+	public void setMarginRate(double marginRate)
+	{
+		this.marginRate = marginRate;
+	}
+	public double getTotalMarginRate()
+	{
+		return totalMarginRate;
+	}
+	public void setTotalMarginRate(double totalMarginRate)
+	{
+		this.totalMarginRate = totalMarginRate;
+	}
+	
 }

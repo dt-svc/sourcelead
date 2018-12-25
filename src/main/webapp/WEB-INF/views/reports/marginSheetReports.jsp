@@ -20,19 +20,19 @@
    <div class="col-xs-12 col-sm-3 col-md-4">
    <div class="input-group payRate">
       <span class="input-group-addon">Pay Rate</span>
-      <input type="text" class="form-control input-sm" placeholder="Pay Rate" value="&#36; 99885577">
+      <input type="text" class="form-control input-sm" placeholder="Pay Rate" id="totalPayrate" value="">
     </div>
     </div>
    <div class="col-xs-12 col-sm-3 col-md-4">
    <div class="input-group billRate">
       <span class="input-group-addon">Bill Rate</span>
-      <input type="text" class="form-control input-sm" placeholder="Bill Rate" value="&#36; 99885577">
+      <input type="text" class="form-control input-sm" placeholder="Bill Rate" id="totalbilRate" value="">
     </div>
     </div>
    <div class="col-xs-12 col-sm-3 col-md-4">
    <div class="input-group marginWidget">
       <span class="input-group-addon">Margin</span>
-      <input type="text" class="form-control input-sm" placeholder="Margin" value="&#36; 99885577">
+      <input type="text" class="form-control input-sm" placeholder="Margin" id="totalMarginRate" value="">
     </div>
     </div>
 	</div>
@@ -42,9 +42,9 @@
 		  
         <ul class="pull-right list-unstyled list-inline">
         <li>
-		  <span class="pull-left refreIcon noPad">
-			  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
-		  </span>
+<!-- 		  <span class="pull-left refreIcon noPad"> -->
+<!-- 			  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a> -->
+<!-- 		  </span> -->
 			<span class="pull-left">
 					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 			</span>
@@ -195,7 +195,7 @@
 }
  function marginSheetList(url){
 	 var result = "";
-     result = result +'<div id="marginSheet" class="require_wrap_table tableFirstSecond clearfix">';
+     result = result +'<div id="marginSheet" class="require_wrap_table tableFirstSecond clearfix datatable_filter">';
      result = result +'<table id="marginSheetPagination" class="display" cellspacing="0" width="100%" >'; 
      result = result +'<thead>'; 
      result = result + '<tr>';
@@ -332,11 +332,22 @@ function marginpagination(url){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-	    	  		   if(opt.totalPayRate != null && opt.totalPayRate !='' && opt.totalPayRate != 'undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.totalPayRate+'</span></div></td>';
+	    	  		   if(opt.marginRate != null && opt.marginRate !='' && opt.marginRate != 'undefined'){
+	    	  			result = result + ' <td><div><span>'+opt.marginRate+'</span></div></td>';
+	    	  			
 	    	  		   }else{
 	    	  			result = result + ' <td><div><span>---</span></div></td>';
 	    	  		   }
+	    	  		   if(opt.totalPayRate != null && opt.totalPayRate !='' && opt.totalPayRate != 'undefined'){
+	    	  			 $("#totalPayrate").val(opt.totalPayRate);		    	  			
+		    	  		   }
+	    	  		   if(opt.totalbilRate != null && opt.totalbilRate !='' && opt.totalbilRate != 'undefined'){
+		    	  			 $("#totalbilRate").val(opt.totalbilRate);		    	  			
+			    	  		   }
+	    	  		   if(opt.totalMarginRate != null && opt.totalMarginRate !='' && opt.totalMarginRate != 'undefined'){
+		    	  			 $("#totalMarginRate").val(opt.totalMarginRate);		    	  			
+			    	  		   }
+	    	  		   
 	    	  		return result;
               }
             }],
@@ -374,7 +385,7 @@ function marginpagination(url){
 }
  </script>
     <div class="advancedsearch-mask"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="invoiceFilterId">
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeApplicantFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -398,24 +409,8 @@ function marginpagination(url){
 						</div>
 						
 						 
-						<div class="col-md-3 hidden">
-						<div class="row">
-						
-						  </div>
-						</div>
 	                 
-						<div class="col-md-3 positionRelative mb">
-							<div class="clearfix dynamic_search filterDynamicsearch">
-																<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Search teams">
-								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
-							</div>
-							 <div class="clearfix filterSearch-ul">
-									<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsListUL">
-			                        </ul>
-							 </div> 
-						</div>
-						
-						<div class="col-md-3 positionRelative mb">
+						<div class="col-md-12 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a client">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -537,6 +532,13 @@ function removeEndValid(){
     $('#custToDateDiv').find('p.jquery_form_error_message').remove();
 }
 
+</script>
+<script>
+function resetApplicantFilter(){
+	$("#myClientInput").val('');
+	$("ul#myClinetListUL > li input:checkbox").prop("checked",false);
+	getMarginSheetList();
+}
 </script>
 				<!-- 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
