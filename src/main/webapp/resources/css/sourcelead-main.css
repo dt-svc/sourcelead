@@ -1059,7 +1059,6 @@ padding: 10px 15px; border-bottom: 1px solid #f4f4f4; position: relative;
 	padding: 10px 15px;
 }
 .mail-box.mail-content {
-
 	padding-top: 10px; padding-bottom: 15px; box-shadow: 0 0 3px #999;
 }
 .mail-box.mail-content .mail-box-header {
@@ -4506,7 +4505,6 @@ margin-bottom: 0;
 }
 .applicant_accept {
     padding: 15px; background: rgba(241,240,240,1.00); margin:0; border-radius: 5px;
-
 }
 .applicant_accept h2{
     font-size: 20px; margin-top: 10px; margin-bottom: 10px; color: #333; font-weight: normal;
@@ -5232,7 +5230,6 @@ padding: 15px 15px 25px 15px;
     background-color:none !important;
 }
 .icon_fa {
-
     position: relative; top: 5px;
 }
 /* Billing Dashboard css */
@@ -9275,7 +9272,14 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/walletexpenses.svg); background-repeat: no-repeat; width: 50px; height: 50px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
-
+.submissionShare {
+	background-image: url("../images/submission-share.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.shortlilstedIC {
+	background-image: url("../images/shortlilstedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9421,6 +9425,9 @@ background: url("../images/sortIC.svg"); background-repeat: no-repeat; backgroun
 }
 .printIC {
 background: url("../images/printIC.svg"); background-repeat: no-repeat; background-size: 22px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
+.downloadIC {
+background: url("../images/download.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
 }
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
@@ -9606,8 +9613,68 @@ ul.timelineDots li .media-object img {
 .customeProjectDetails .project_details_cta span {
     width: 50%;
 }
-
-
+.payRate .input-group-addon {
+	background:#d5d5d5 !important; color: #101010 !important; border: 1px solid #d5d5d5; border-radius: 2px 0 0 2px;
+}
+.payRate .form-control {
+	border: 1px solid #d5d5d5 !important; border-radius: 3px; font-size: 100%;
+}
+.billRate .input-group-addon {
+	background: #dbdaef !important; color: #101010 !important; border: 1px solid #dbdaef; border-radius: 2px 0 0 2px;
+}
+.billRate .form-control {
+	border: 1px solid #dbdaef !important; border-radius: 3px; font-size: 100%;
+}
+.marginWidget .input-group-addon {
+	background: #f6e3df !important; color: #101010 !important; border: 1px solid #f6e3df; border-radius: 2px 0 0 2px;
+}
+.marginWidget .form-control {
+	border: 1px solid #f6e3df !important; border-radius: 3px; font-size: 100%;
+}
+.innerPadding {
+	padding: 15px;
+}
+.calendarFrequency {
+background: url("../images/calendarFrequency.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.calendarRundate {
+background: url("../images/calendarRundate.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.calendarPaydate {
+background: url("../images/calendarPaydate.svg"); background-repeat: no-repeat; background-size: 38px; background-position: center; width:40px; text-align: center; display: block; height: 40px;
+}
+.customCalendar-brdnon .ui-widget.ui-widget-content {
+ width: 100% !important;	
+}
+.customCalendar-brdnon .ui-widget-header {
+	border: none !important; background: transparent !important; color:#333;
+}
+.customCalendar-brdnon .ui-state-default, .customCalendar-brdnon .ui-widget-content .ui-state-default, .customCalendar-brdnon .ui-widget-header .ui-state-default {
+	background: transparent; border: 1px solid #ededed; color: #808080; font-weight: 400;
+}
+.navIcons.svgReport  {
+background-size: 60px !important; width: 55px !important; height: 50px !important; top: 13px !important;
+padding-right: 10px;
+}
+.widgetDivLi {
+	cursor: pointer;
+}
+.widgetDivLi li.widgetDiv:nth-child(even) {
+	padding: 15px; transition:all linear 0.2s;background: #fff; border: 1px solid #d5d5d5;
+}
+.widgetDivLi li.widgetDiv:nth-child(odd) {
+	padding: 15px; transition: all linear 0.2s; background: rgb(239, 239, 239); border: 1px solid rgb(203, 203, 203);
+}
+.widgetDiv:hover {
+background: #fff !important; padding: 15px; -webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.widgetDiv h4 {
+	font-size: 14px; transition:all linear 0.2s; color: #404040; font-weight: 400;
+}
+.widgetDiv:hover h4{
+	font-weight: 600;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
