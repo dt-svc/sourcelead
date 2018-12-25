@@ -142,7 +142,7 @@
                 </div>
                 <div class="form-group">
                       <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
-                         <div class="col-md-9">
+                         <div class="col-md-9" id=DateofJoinDiv>
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -1386,6 +1386,7 @@ function getAssociateUserDetails(){
 	  	  maxDate:0,
 	  	  onSelect : function(selected) {
 	  		calculateConfirmationDate();
+	  		removeDateofJoinValid();
 	 	  }
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
@@ -1401,6 +1402,11 @@ function getAssociateUserDetails(){
   } );
 </script>
 <!-- end script for datepicker -->
+<script>
+function removeDateofJoinValid(){
+	$('#DateofJoinDiv').find('p.jquery_form_error_message').remove();
+	}
+</script>
 
  
 <script type="text/javascript">

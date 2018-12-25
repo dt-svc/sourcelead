@@ -455,6 +455,7 @@ function removeMask(){
 }
 function validMask(){
 	  $('#customeAmount, #customeAmountOnline').attr("readonly","readonly");  
+	  $('#customeAmount').attr("data-validation-optional","true"); 
 }
  function amountCal(){
 	var totalAmount =  $("#totalAmount").val();

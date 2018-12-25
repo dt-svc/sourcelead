@@ -103,4 +103,6 @@ public interface ContractsTemplateService {
 	Contracts updateContractSigner(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws NumberFormatException, Exception;
 	
 	Integer deleteContractOwnerHierarchyListByContractId(Long Id);
+
+	Contracts getAllVendorClientAndApplicantCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception;
 }

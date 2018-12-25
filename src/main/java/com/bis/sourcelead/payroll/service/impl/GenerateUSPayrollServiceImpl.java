@@ -467,7 +467,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
-						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,PayrollConstant.N);
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 						if(terminated) {
 							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 								if(joiningMonth.equals(payrollRunningMonth)) {
@@ -495,7 +495,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 			} else {
 					if(salaryDto.getJoiningDate() != null) {
-					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,PayrollConstant.N);
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 					    	if(terminated) {
 					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 					    		if(joiningMonth.equals(payrollRunningMonth)) {
@@ -1302,12 +1302,12 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Map<String, BigDecimal> map = new HashMap<>();
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				map.put("Federal Withholding", tax.getFederalWithholding());
-				map.put("FICA",tax.getFicaWithholding());
+				map.put("SOC SEC",tax.getFicaWithholding());
 				map.put("Medicare",tax.getMedicareWithholding());
 				map.put("Advanced Earned Income Credit",tax.getEarnedIncCredit());
 				map.put("State Withholding",tax.getStateWithholding());
 				map.put("LocalTax",tax.getLocalTax());
-				map.put("SUI",tax.getSDI());
+				map.put("SDI",tax.getSDI());
 				map.put("SUI", tax.getSUI());
 				map.put("FLI", tax.getFLI());
 				map.put("HCSF", tax.getHCSF());
