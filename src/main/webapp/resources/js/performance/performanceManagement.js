@@ -156,6 +156,18 @@ function PerformanceManagement(){
 			}); 
     			
     }
+   
+   
+   this.addNewPerformanceCompetence = function(){
+	   $.ajax({
+ 		  type: "GET",
+ 		    url: sourceleadUrl+"/addNewPerformanceCompetence",
+ 		     success :function(response) {
+ 		    	    $("#performanceManagementDiv").empty();  
+ 		    	    $("#performanceManagementDiv").append(response);
+ 				},
+ 			}); 
+   }
 	
   this.addBadgePopup = function() {
  	  $(".mask, #modalTasktype").fadeIn();
@@ -592,6 +604,7 @@ function PerformanceManagement(){
   this.clearAppraisalStartDate = function(){
 	  $("#appraisalStartDate").val("");
 	  $("#appraisalEndDate").val("");
+	  $("#appraisalEndDate").attr("disabled", "disabled");
   }
   
   this.clearAppraisalEndDate = function(){
@@ -601,6 +614,7 @@ function PerformanceManagement(){
   this.clearSelfAppraisalStartDate = function(){
 	  $("#selfAppraisalStartDate").val("");
 	  $("#selfAppraisalEndDate").val("");
+	  $("#selfAppraisalEndDate").attr("disabled", "disabled");
   }
   
   this.clearSelfAppraisalEndDate = function(){
@@ -610,6 +624,7 @@ function PerformanceManagement(){
   this.clearAppraisalApprovingStartDate = function(){
 	  $("#appraisalApprovingStartDate").val("");
 	  $("#appraisalApprovingEndDate").val("");
+	  $("#appraisalApprovingEndDate").attr("disabled", "disabled");
   }
   
   this.clearAppraisalApprovingEndDate = function(){
@@ -918,6 +933,24 @@ function PerformanceManagement(){
 					},
 				}); 
  
+  }
+  
+  this.addNewCompetenceDesignation = function(){
+		var text='<tr>';
+		text += '<td>';
+		text += '<div class=""><input type="text" class="form-control"></div>';
+		text += '</td>';
+		text += '<td>';
+		text += '<div class=""><input type="text" class="form-control"></div>';
+		text += '</td>';
+		text += '<td>';
+		text += '<div class="width50px pull-left">';
+		text += '<i class="fa fa-times btn btn-danger pull-left"></i>';
+		text += '</div>';
+		text += '</td>';
+		text += '</tr>';
+		$("#addCompetenceDesignationDiv").append(text);
+		return;
   }
   
 }

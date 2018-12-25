@@ -292,5 +292,19 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 		List<String> taskTypeList = (List<String>)queryObj.list();
 	    return taskTypeList;
 	}
+
+	@Override
+	public List<String> getCategoriesListByCategoryType(String category) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="SELECT "
+				+" LD.NAME "
+				+" FROM LOOKUP_DATA LD "
+				+" WHERE "
+				+" LD.CATEGORY = :category ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("category", category);	
+		List<String> taskTypeList = (List<String>)queryObj.list();
+	    return taskTypeList;
+	}
 	 
 }

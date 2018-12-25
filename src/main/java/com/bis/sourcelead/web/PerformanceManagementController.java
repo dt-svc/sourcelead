@@ -21,6 +21,7 @@ import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
@@ -54,6 +55,9 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceAppraisalTemplateService performanceAppraisalTemplateService;
+	
+	@Autowired
+	LookUpDataService lookUpDataService;
 	
 	
 	
@@ -122,10 +126,6 @@ public class PerformanceManagementController {
 		model.setViewName("performance/addNewAppraisalCycle");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("locationDateFormat", orgLocation.getDateFormat());
-		
-		List<PerformanceFeedbackTemplate> categoriesList = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateList(orgLocation.getId());
-		model.addObject("categoriesList", categoriesList);
-		
 		return model;
 	}
 	
@@ -139,6 +139,18 @@ public class PerformanceManagementController {
 		model.addObject("appraisalTemplatesListSize", appraisalTemplatesList.size());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("performance/performanceAppraisalCyclesList");
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/addNewPerformanceCompetence")
+	public ModelAndView addNewPerformanceCompetence(HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		List<String> skillsList = lookUpDataService.getCategoriesListByCategoryType(Constants.SKILLS);
+		model.addObject("skillsList", skillsList);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/addNewPerformanceCompetence");
 		return model;
 	}
 	

@@ -11,6 +11,7 @@
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
 <script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
+<script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <script>
@@ -53,7 +54,7 @@ var locationDateFormat = '${SourceLeadWeb_orgLocations.dateFormat}';
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>
 				<h3>Competence</h3>
-				<span><a href="#" class="colB">Add</a><a href="#" class="">View</a></span>
+				<span><a onclick="performanceManagement.addNewPerformanceCompetence();" class="colB">Add</a><a href="performanceManagement.performanceCompetenceList()" class="">View</a></span>
 			</div>
 			<div class="col-md-4 perfDashCta">
 				<img src="/resources/images/per-manage.svg" alt=""/>

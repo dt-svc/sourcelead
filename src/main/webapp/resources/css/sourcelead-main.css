@@ -8550,7 +8550,7 @@ table.tableNetpay thead > tr >  th {
 .radioStyles [type="radio"]:checked + label:before,
 .radioStyles [type="radio"]:not(:checked) + label:before {
     content: ''; position: absolute; left: 0; top: 0; width: 18px; height: 18px;
-    border: 1px solid #ddd; border-radius: 100%; background: #fff;
+    border: 1px solid #848484; border-radius: 100%; background: #fff;
 }
 .radioStyles [type="radio"]:checked + label:after,
 .radioStyles [type="radio"]:not(:checked) + label:after {
