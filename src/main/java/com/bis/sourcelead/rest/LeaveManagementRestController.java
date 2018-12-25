@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,6 +89,7 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.Roles;
@@ -389,6 +391,8 @@ public class LeaveManagementRestController {
 		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocations.getId()));
 
 		List<LeaveType> roleLeaveType = new ArrayList<>();
+		CopyOnWriteArrayList<LeaveType> leaveTypesList = null;
+		
 		if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 			for (LeaveType leaveType : leaveTypeList) {
 				List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocationId, loginUser.getId());
@@ -407,8 +411,10 @@ public class LeaveManagementRestController {
 					}
 				}
 			}
+			
+			 leaveTypesList = new CopyOnWriteArrayList<>(roleLeaveType);
 
-			for (LeaveType l : roleLeaveType) {
+			for (LeaveType l : leaveTypesList) {
 				float totalLeaves = 0;
 				if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 					 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),userId,orgLocations.getId(),orgLocations.getOrg().getId());
@@ -441,6 +447,13 @@ public class LeaveManagementRestController {
 					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
 						takenLeaveCounts = (float) (takenLeaveCounts + appliedLeaveCount);
 					}
+				}
+				
+				//removing leavetype when overdraw leaves is not checked and pending leave is less than or equal to zero
+				if(Constants.NO.equalsIgnoreCase(l.getOverdrawLeaves()) && pendingLeaveCounts <= 0.0) {
+					
+					Long removeId = l.getId();
+					boolean isRemoved = leaveTypesList.removeIf(role->role.getId().longValue() == removeId);
 				}
 				
 				//do not remove below commented code, need to do some changes further 
@@ -481,7 +494,7 @@ public class LeaveManagementRestController {
 				l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));
 			}
 		}
-		return roleLeaveType;
+		return leaveTypesList;
 	}
 
 	
