@@ -141,6 +141,12 @@
 				    </c:if>
 				</sec:authorize>
 				
+				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				</c:if>
+				</sec:authorize>
+				
 			   <li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
 				
 				
@@ -458,6 +464,12 @@
 					<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				    <li><a href='${appPath}/paidBillReport'>Paid Bill(s)</a></li>
 				    </c:if>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
+				<c:if test="${SourceLeadWeb_vms == 'Y'}">
+				<li><a href='${appPath}/marginSheetReports'>MarginSheetReport</a></li>
+				</c:if>
 				</sec:authorize>
 				
 				<li><a href='${appPath}/assetmanagementGrowth'>Asset Growth</a></li>
