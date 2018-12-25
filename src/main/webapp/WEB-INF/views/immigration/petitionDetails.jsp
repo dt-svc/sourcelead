@@ -66,7 +66,7 @@
              <div class="form-group">
               <label class="col-md-4">Receipt No</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo" data-validation="validate_Space validate_length length2-20" data-validation-optional="true">
               </div>
           </div>
             

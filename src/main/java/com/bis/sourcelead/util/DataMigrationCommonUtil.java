@@ -2277,9 +2277,14 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				}*/
 				if (!dataMigrationDTOJsonCopy.getString("experience").equals("null")) {
-					if(dataMigrationDTOJsonCopy.getString("experience").matches("^[a-zA-Z]+$")){
-					errorSet.put("exp", "experience should be (3.0 years,3years,1.2) Allowd");
-					}
+					String exp = dataMigrationDTOJsonCopy.getString("experience");//.matches("/(^[0-9]+\\.[0-9]+?)+/g");
+					
+					Pattern p = Pattern.compile("^(\\d*\\.)?\\d([ a-zA-Z0-9]?)+$");//. represents single character  
+					Matcher m = p.matcher(exp);  
+					boolean isMatched = m.matches();  
+						if(!isMatched){
+						errorSet.put("experience", "experience data should be like 3.0 years or 3 years or 1.2 only Allowed");
+						}
 					}
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {
