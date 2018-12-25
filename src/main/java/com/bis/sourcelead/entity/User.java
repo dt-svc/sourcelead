@@ -25,6 +25,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,59 +36,74 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit
 	@Column(name = "FIRST_NAME")
 	private String firstName;
 	
+	@Audit
 	@Column(name = "LAST_NAME")
 	private String lastName;
 	
+	@Audit
 	@Column(name = "EMAIL")
 	private String email;
 	
+	@Audit
 	@Column(name = "WORK_PHONE")
 	private String workPhone;
 	
+	@Audit
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
+	@Audit
     @Column(name = "EXTENSION_NUMBER")
 	private String extensionNumber;
 
+	@Audit(isParent = true)
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private Status userState;
 	
+	@Audit
 	@Column(name = "USER_TYPE")
 	private String userType;
 	
+	@Audit
 	@Column(name = "USER_NAME",unique = true, nullable = false)
 	private String userName;
 	
+	@Audit
 	@Column(name = "PASSWORD", nullable = false)
 	private String password;
 	
+	@Audit
 	@Column(name = "USER_CODE",unique = true, nullable = false)
 	private String userCode;
 	
+	@Audit
 	@Column(name = "STATUS")
 	private String status;
 	
-	
+	@Audit
 	@Column(name = "SSN")
 	private String ssn;
 	
+	@Audit
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
+	@Audit
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
@@ -96,26 +112,31 @@ public class User implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status isMailSent;*/
 	
+	@Audit
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
 	
+	@Audit
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
 	
+	@Audit
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
 	private String linkedIn;
 	
-	
+	@Audit
 	@Column(name = "FACEBOOK")
 	@Type(type="text")
 	private String facebook;
 	
+	@Audit
 	@Column(name = "TWITTER")
 	@Type(type="text")
 	private String twitter;
 	
+	@Audit
 	@Column(name = "GOOGLE_PLUS")
 	@Type(type="text")
 	private String googlePlus;
@@ -132,49 +153,57 @@ public class User implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Audit
 	@Column(name = "USER_UUID")
 	private String userUUID;
 	
+	@Audit
 	@Column(name = "PROFESSIONAL_REGISTER_COUNTRY")
 	private String professionalRegisterCountry;
 	
+	@Audit
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
+	@Audit
 	// Immigration columns Start
 	@Column(name = "MIDDLE_NAME")
 	private String middelName ;
-		
+
+	@Audit
 	@Column(name = "DATE_OF_BIRTH")
 	private Date dateOfBirth;
 		
+	@Audit
 	@Column(name = "GENDER")
 	private String gender;
 	
+	@Audit
 	@Column(name = "MARITAL_STATUS")
 	private String maritalStatus;
 	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LINK_USER_ID")
 	@JsonIgnore
 	private User linkUserId;
 	
-	
+	@Audit(isListRecords = true, index = 1)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	
+	@Audit(isListRecords = true, index = 2)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
-	
+	@Audit(isListRecords = true, index = 3)
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
-	
+	@Audit(isListRecords = true, index = 4)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
 	private Set<Candidate> candidateSet;
 	

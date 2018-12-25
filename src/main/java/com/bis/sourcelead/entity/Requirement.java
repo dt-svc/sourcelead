@@ -30,6 +30,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,19 +46,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
     private OrgLocations orgLocationId;
 	
+	@Audit
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
 	
+	@Audit
 	@Column(name = "JOB_TYPE")
 	private String jobType;
 	
@@ -67,27 +72,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "JOB_ID")
 	private String jobId;
 	
+	@Audit
 	@Column(name = "POSITIONS")
 	private String positions;
 	
+	@Audit
 	@Column(name = "EDUCATION", columnDefinition = "TEXT default NULL")
 	private String education;
 	
+	@Audit
 	@Column(name = "MIN_EXP")
 	private String minExp;
 	
+	@Audit
 	@Column(name = "MAX_EXP")
 	private String maxExp;
 	
+	@Audit
 	@Column(name = "CURRENCY_CODE")
 	private String currencyCode;
 	
+	@Audit
 	@Column(name = "RATE")
 	private String rate;
 	
+	@Audit
 	@Column(name = "MAX_RATE")
 	private String maxRate;
 	
+	@Audit
 	@Column(name = "RATE_TYPE") 
 	private String rateType;
 	
@@ -97,21 +110,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "URL")
 	private String url;
 	
+	@Audit
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
+	@Audit
 	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
+	@Audit
 	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
+	@Audit
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
+	@Audit
 	@Column(name = "ZIPCODE")
 	private String zipCode;
 	
+	@Audit
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
@@ -145,11 +164,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "INDUSTRY_NAME")
 	private String industryName;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations clientId;
 	   
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="SPOC_ID", nullable=false )        
@@ -176,6 +197,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "PAY_OUT_PERIOD")
 	private String payOutPeriod;
 	
+	@Audit(isListRecords = true, index = 0)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -204,21 +226,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "REWARD_TYPE")
 	private String rewardType;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate submissionTemplateId;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="CLIENT_SUBMISSION_TEMPLATE_ID" )        
     private SubmissionTemplate clientSubmissionTemplateId;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
 	
+	@Audit(isParent = true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "PRIMARY_RECRUITER_USER_ID", referencedColumnName = "id")
@@ -250,6 +276,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CLIENT_SUBMISSION_TEMPLATE_JSON_STRING", columnDefinition = "TEXT default NULL")
 	private String clientSubmissionTemplateJsonString;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
@@ -321,11 +348,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "BACKGROUNG_CHECK")
 	private String backgroundCheck;
 	
+	@Audit
 	@Column(name = "GENDER")
 	private String gender;
 	
 	
-	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
@@ -378,16 +406,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	private String msg;
 
+	@Audit(isListRecords = true, index = 1)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 
+	@Audit(isListRecords = true, index = 2)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 
+	@Audit(isListRecords = true, index = 3)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)

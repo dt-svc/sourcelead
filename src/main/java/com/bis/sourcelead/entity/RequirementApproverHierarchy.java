@@ -22,6 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 
@@ -31,32 +32,37 @@ public class RequirementApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit
 	@Column(name = "LEVEL")
 	private Integer level;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="APPROVER_USER_ID", nullable=false )        
     private User approverUserId;
 	
+	@Audit
 	@Column(name = "HIERARCHY_TYPE")
 	@Enumerated(EnumType.STRING)
 	private HIERARCHY_TYPE hierarchyType;
 	
+	@Audit
 	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
 	private REQUIREMENT_APPROVER_HIERARCHY_STATUS requirementApproverStatus;
 	
+	@Audit
 	@Column(name = "REJECTED_REASON")
 	private String rejectedReason;
 	

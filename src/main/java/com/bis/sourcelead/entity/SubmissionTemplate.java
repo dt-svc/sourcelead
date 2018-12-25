@@ -15,12 +15,15 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
+
 @Entity
 @Table(name = "SUBMISSION_TEMPLATE")
 public class SubmissionTemplate implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)

@@ -15,31 +15,39 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.annotations.Audit;
+
 @Entity
 @Table(name = "REQUIREMENT_INCENTIVE")
 public class RequirementIncentive implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
+	@Audit
 	@Column(name = "JOINERS")
 	private String joiners;
 	
+	@Audit
 	@Column(name = "JOINERS_AMOUNT_TYPE")
 	private String joinersAmountType;
 	
+	@Audit
 	@Column(name = "JOINERS_AMOUNT")
 	private String joinersAmount;
 	
+	@Audit
 	@Column(name = "STATUS")
 	private Integer status;
 	

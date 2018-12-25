@@ -26,6 +26,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,108 +38,132 @@ public class OrgLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
 	@JsonProperty
     private Org org;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne
 	@JoinColumn(name = "TIMEZONE_ID")
     private Timezone timezone;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	
+	@Audit(isListRecords = true, index = 1)
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;
 	
+	@Audit
 	@Column(name = "DATE_FORMAT")
 	private String dateFormat;
-	 
+	
+	@Audit
 	@Column(name = "AVERAGE_WORKING_HOURS")
 	private Integer averageWorkingHours;
 	
+	@Audit
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
+	@Audit
 	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
+	@Audit
 	@Column(name = "ZIP_CODE")
 	private String zipCode;
 	
+	@Audit
 	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
+	@Audit
 	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
+	@Audit
 	@Column(name = "LATITUDE")
 	private String latitude;
 	
+	@Audit
 	@Column(name = "LONGITUDE")
 	private String longitude;
 	
+	@Audit
 	@Column(name = "STATUS")
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
+	@Audit
 	@Column(name = "FROM_EMAIL")
 	private String fromEmail;
 	
+	@Audit
 	@Column(name = "FROM_EMAIL_PASSWORD")
 	private String fromEmailPassword;
 	
+	@Audit
 	@Column(name = "PHONE")
 	private String phone;
 	
+	@Audit
 	@Column(name = "EMAIL")
 	private String email;
 	
+	@Audit
 	@Column(name = "FAX")
 	private String fax;
 	
+	@Audit
 	@Column(name = "DBA")
 	private String dba;
 	
+	@Audit
 	@Column(name = "FEDERAL_EIN")
 	private String federalEin;
 	
+	@Audit
 	@Column(name = "DEPOSIT_SCHEDULE")
 	private String depositSchedule;
 	
+	@Audit
 	@Column(name = "UNEMPLOYMENT_TAX")
 	private String unemploymentTax;
 	
+	@Audit
 	@Column(name = "FILLING_FORM")
 	private String fillingForm;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="BUSINESS_TYPE", nullable=false )	
 	private LookUpData businessType;
 	
-	
+	@Audit
 	@Column(name = "OTHER_BUSINESS_TYPE")
 	private String otherBusinessType;
 	
+	@Audit
 	@Column(name = "LOCATION_CODE")
 	private String locationCode;
 	
+	@Audit
 	@Column(name = "COOLINGOFF_PERIOD")
 	private String coolingOffPeriod;
 	
+	@Audit
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
@@ -151,108 +176,139 @@ public class OrgLocations implements Serializable{
     @Column(name = "UPDATED_DATE")
 	private Date updatedDate;
     
+    @Audit
     @Column(name = "MODULES_ID")
 	@Type(type="text")
 	private String modulesId;
     
+    @Audit
     @Column(name = "ORG_NAME")
 	private String orgLocationName;
     
+    @Audit
     @Column(name = "ORG_LOCATION_ADDRESS")
    	@Type(type="text")
    	private String orgLocationAddress;
     
+    @Audit
     @Column(name = "WEB_SITE")
 	private String website;
     
+    @Audit
     @Column(name = "ABOUT_COMPANY")
 	@Type(type="text")
 	private String orgDescription;
     
+    @Audit
     @Column(name = "IS_PRIMARY")
 	private String isPrimary;
     
+    @Audit
     @Column(name = "GENERATED_USER_ID")
 	private String generatedUserId;
     
+    @Audit
     @Column(name = "SYSTEM_GENERATED_ID")
 	private String systemGeneratedId;
     
+    @Audit
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
     
-    
+    @Audit
     @Column(name = "ORG_LOCATION_BILLING_ADDRESS")
     @Type(type="text")
 	private String billingAddress;
     
-    
+    @Audit
     @Column(name = "IS_COMPANY_ONBOARDED")
 	private String isCompanyOnboarded;
     
+    @Audit
     @Column(name="PO_EMAIL")
 	private String poEmail;
 	
+    @Audit
 	@Column(name="PAYMENT_REMITTANCE_EMIL")
 	private String remittanceEmail;
 	
+    @Audit
 	@Column(name="FINANCIAL_YEAR_START_MONTH")
 	private String startMonth;
 	
+    @Audit
 	@Column(name="FINANCIAL_YEAR_END_MONTH")
 	private String endMonth;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_SKILL_PERCENT")
 	private Integer recommendedSkillPercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_LOCATION_PERCENT")
 	private Integer recommendedLocationPercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_NOTICE_PERCENT")
 	private Integer recommendedNoticePercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_EXP_PERCENT")
 	private Integer recommendedExpPercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_VISATYPE_PERCENT")
 	private Integer recommendedVisatypePercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_EDUCATION_PERCENT")
 	private Integer recommendedEducationPercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_RATE_PERCENT")
 	private Integer recommendedRatePercent;
 	
+    @Audit
 	@Column(name = "RECOMMENDED_KEYWORDS_PERCENT")
 	private Integer recommendedKeywordsPercent;
 	
+    @Audit
 	@Column(name = "REGISTRATION_STATUS")
 	private String registrationStatus;
 
+    @Audit
 	@Column(name = "IS_LAW_FIRM")
 	private String isLawFirm;
 	
+    @Audit
 	@Column(name = "IS_ACCOUNTING_FIRM")
 	private String isAccountingFirm;
 
+    @Audit
 	@Column(name = "WORKING_DAYS_PER_WEEK")
 	private Integer workingDaysPerWeek;
 	
+    @Audit
 	@Column(name = "WEEK_OFF_DAYS")
 	private String weekOffDays;
 	
+    @Audit
 	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
     private String isTimesheetAvgHoursRequired;
 	
+    @Audit
 	@Column(name = "PROFILE_PERCENTAGE")
 	private Integer profilePercentage;
 	
+    @Audit
 	@Column(name = "PROBATION_PERIOD")
     private String probationPeriod;
 	
+    @Audit
 	@Column(name = "PROBATION_NO_OF_DAYS")
 	private Integer noOfDays;
     
+    @Audit
 	@Column(name = "SHOW_COMPANY_NAME_IN_MARKETPLACE")
 	private String showCompanyNameInMarkeplace;
 	

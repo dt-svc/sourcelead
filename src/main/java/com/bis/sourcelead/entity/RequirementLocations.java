@@ -18,47 +18,60 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
+
 @Entity
 @Table(name = "REQUIREMENT_LOCATIONS")
 public class RequirementLocations implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit(isParent = true)
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
+	@Audit
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
 	
+	@Audit
 	@Column(name = "COUNTRY")
 	private String country;
 	
+	@Audit
 	@Column(name = "STATE")
 	private String state;
 	
+	@Audit
 	@Column(name = "CITY")
 	private String city;
 	
+	@Audit
 	@Column(name = "ZIPCODE")
 	private String zipCode;
 	
+	@Audit
 	@Column(name = "LONGITUDE")
 	private String longitude;
 	
+	@Audit
 	@Column(name = "LATITUDE")
 	private String latitude;
 	
+	@Audit
 	@Column(name = "LOCATION_UID")
 	private String locationUUID;
 	
+	@Audit
 	@Column(name = "STATUS")
 	private Integer status;
 	

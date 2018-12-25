@@ -21,6 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -34,25 +35,30 @@ public class Team implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit
 	@Column(name = "NAME")
 	private String name ;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="OWNER_USER_ID", nullable=false )        
     private User ownerUserId;
 	
+	@Audit
 	@Column(name = "DESCRIPTION ")
 	private String description ;
 	
+	@Audit
 	@Column(name = "CATEGORY")
 	private String category;
 	
+	@Audit
 	@Column(name = "STATUS ")
 	private String status;
 	
@@ -68,7 +74,7 @@ public class Team implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATION_ID")
     private OrgLocations orgLocationsId;

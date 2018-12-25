@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bis.sourcelead.annotations.Audit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -29,6 +30,7 @@ public class LookUpData implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID", nullable = false)

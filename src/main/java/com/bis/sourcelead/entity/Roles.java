@@ -20,48 +20,57 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.annotations.Audit;
+
 @Entity
 @Table(name = "ROLES")
 public class Roles implements Serializable{
  
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Audit
 	@Column(name = "ROLE_NAME")
 	private String roleName;
 	
+	@Audit
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
 	private Org org;
 	
+	@Audit
 	@Column(name = "ACTION_ID")
 	@Type(type="text")
 	private String actionId;
 	
-	
+	@Audit(isParent = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HIERARCHY_ID")
 	private RoleHierarchy roleHierarchy;
 	
+	@Audit
 	@Column(name = "DEFAULT_ROLE")
 	private Integer defaultRole;
 	
+	@Audit
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Audit
 	@Column(name = "UUID")
 	private String uuid;
 	
