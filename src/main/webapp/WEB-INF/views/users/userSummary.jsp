@@ -3168,46 +3168,6 @@ $(document).ready(function() {
 
 </script>
 
-<!-- <script>
-function validateSSNNumber(){
-	var ssnNumber = $("#ssnNumber").val();
-	var length  = $("#ssnNumber").val().length;
-	if(ssnNumber.search("-") > 0){
-		ssnNumber = ssnNumber.replace(/-/g, "");
-		length = ssnNumber.length;
-		calculateSSNLength(length,ssnNumber);
-	}else{
-		calculateSSNLength(length,ssnNumber);
-	}
-}
-function calculateSSNLength(length,ssnNumber){
-	if(length == 0){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else if(length != 9){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else{
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		var value = "";
-		var ssn = ssnNumber.substring(0,3);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(3,5);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(5,9);
-		value += ssn;
-		$("#ssnNumber").val(value);
-		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
-		}else{
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		}
-	}
-}
- </script> -->
 
 <script type="text/javascript">
 function flushProject(){
@@ -3371,7 +3331,38 @@ function getStartandEndDate(){
 				$("#update_user").removeAttr("disabled", "disabled");
 			}
 		}
+		validateSSNDuplicate($("#SSN").val());
 	}
+	 </script>
+	 
+	 <script>
+	 function validateSSNDuplicate(ssnNumber){
+		 /* var associateId = $("#associateId").val(); */
+		 var associateId = '${userId}';
+		 $('#ssnnum').find('p.jquery_form_error_message').remove();
+		 if(ssnNumber != null && ssnNumber != ""){
+			 $("#update_user").attr("disabled", "disabled");
+	         //$("#update_user" ).addClass('button').val('Processing..');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+			        success: function(data) {
+			        	if(data == true){
+	        				  $('#ssnnum').find('p.jquery_form_error_message').remove();
+							  $("input#SSN").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+							  document.getElementById("SSN").setAttribute('record-exist','yes');
+							  document.getElementById("SSN").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#SSN').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#ssnnum').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	 }
 	 </script>
 
 
