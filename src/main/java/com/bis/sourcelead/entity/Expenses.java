@@ -108,6 +108,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_PAYABLE_STATUS")
 	private String billingPayableStatus;
 	
+	@Column(name = "BILLING_STATUS")
+	private String billingStatus;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
@@ -542,6 +544,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
 		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
+
+	public String getBillingStatus() {
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus) {
+		this.billingStatus = billingStatus;
 	}
 
 	
