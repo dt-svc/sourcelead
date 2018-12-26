@@ -119,5 +119,4 @@ candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchV
 Assert.assertEquals(candidateMarketPlaces.size(),1); 
 }
 
-
 }
