@@ -195,7 +195,12 @@ public class UserProfileSessionRestController {
 		
 		 orgLocationDTO.setRoleId(useRole.getId());
 		 orgLocationDTO.setRoleName(useRole.getRoles().getDisplayName());
-		 orgLocationDTO.setDesignation(useRole.getDesignation());
+		 if(StringUtils.isNoneBlank(useRole.getDesignation())) {
+			 orgLocationDTO.setDesignation(useRole.getDesignation()); 
+		 }else {
+			 orgLocationDTO.setDesignation(useRole.getRoles().getDisplayName());
+		 }
+		
 		 orgLocationDTO.setUserState(useRole.getUserState().toString());
 		 orgLocationDTO.setUserType(useRole.getUserType());
 		 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
