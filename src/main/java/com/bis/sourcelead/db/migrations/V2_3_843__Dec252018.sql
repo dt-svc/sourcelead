@@ -13,7 +13,7 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [ApproverName],\n\nThis is to inform i 
 
 #cancel_leave
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'LeaveCancelEmailToUser' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
-UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [ApproverName],\n\nWe are regret to inform you, your leave  got cancelled for the requested period.\nLeave Type : [Leave_Type]\nDuration : [From_Date] - [To_Date]\n Cancelled Reason : [Reason].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='LeaveCancelEmailToUser' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `BODY` ='Dear [Employee_User],\n\nWe are regret to inform you, your leave  got cancelled for the requested period.\nLeave Type : [Leave_Type]\nDuration : [From_Date] - [To_Date]\n Cancelled Reason : [Reason].\n\n[Login_URL]' WHERE `UNIQUE_SCENARIO_NAME`='LeaveCancelEmailToUser' and `ENTITY_TYPE`='Email';
 
 #holiday_cron_mail
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` where UNIQUE_SCENARIO_NAME = 'HolidayRemainder' and `ENTITY_TYPE` = 'Email' and `IS_TEMPLATE_MODIFIED` = 'N'), 'loginURL', '[Login_URL]');
