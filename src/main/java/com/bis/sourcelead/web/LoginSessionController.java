@@ -114,6 +114,9 @@ public class LoginSessionController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
+	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
 	
@@ -277,6 +280,7 @@ public class LoginSessionController {
 			}
 
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
+			SourceLeadSessionManager.setSessionAttribute(request, "pmsUrl", pmsUrl);
 			
 			
 			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
