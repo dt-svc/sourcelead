@@ -84,7 +84,7 @@ public void getGlobalMarketplaceCandList() throws Exception {
 @SuppressWarnings("deprecation")
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
-public void getGlobalMarketplaceCandListGridCard(){
+public void getGlobalMarketplaceCandListGridCard() throws Exception {
 String searchValue = null;
 String[] searchCandidateIds = null;
 String candidateLocation = null;
@@ -106,6 +106,7 @@ when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateId
 //System.out.println(controller);
 candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
 Assert.assertEquals(candidateMarketPlaces.size(),1);
+
 }
 
 }
