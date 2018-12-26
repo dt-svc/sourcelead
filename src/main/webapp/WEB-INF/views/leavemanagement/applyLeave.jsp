@@ -595,7 +595,7 @@ function calculateDuration(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if((leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'N') || (leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'Y')){
+        		  if((leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'N') || (leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'Y') || (leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'Y')){
         			  if(leave.id == leaveId){
             			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
             		  }else{
