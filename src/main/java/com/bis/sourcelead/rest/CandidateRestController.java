@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -101,7 +103,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
-import com.bis.sourcelead.util.CandidateExportUtil;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -179,7 +182,10 @@ public class CandidateRestController {
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
-	CandidateExportUtil candidateExportUtil;
+	CandidateMarketplaceExportUtil candidateMarketplaceExportUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1134,6 +1140,7 @@ public class CandidateRestController {
 			logger.debug("inside PurchaseOrderList  controller =========>");
 			System.out.println("inside PurchaseOrderList  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 			try{
 			  	String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice", "discount"    };
 			  	int sortColumnIndex = -1; 
@@ -1150,9 +1157,10 @@ public class CandidateRestController {
 		  			e.printStackTrace();
 		  			return null;
 		  		}
-			List<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
-			res.setData(marketplacePurchaseOrder);
-			return res;
+			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO);			
+			return marketplacePurchaseOrder;
+			/*res.setData(marketplacePurchaseOrder);
+			return res;*/
 		}
 		 
 	
@@ -1427,10 +1435,15 @@ public class CandidateRestController {
 	@RequestMapping(value = {"/app/getDynamicSalesOrderList", "/app/exportSalesOrderToPdfOrExcel"} )
 	 public ResponseList<MarketplacePurchaseSalesDTO> getDynamicSalesOrderList
 	 		(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-			 @RequestParam(value = "searchValue", required = false)String searchValue,	 
+			 @RequestParam(value = "searchValue", required = false)String searchValue,
+			 @RequestParam(value = "salesOrderFromDate", required = false)String salesOrderFromDate,
+			 @RequestParam(value = "salesOrderToDate", required = false)String salesOrderToDate,
+			 @RequestParam(value = "salesOrderFilterDate", required = false)String salesOrderFilterDate,
 			 HttpServletRequest request, HttpServletResponse response)  {
+
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+			Date[] salesOrderDateArray = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
@@ -1440,16 +1453,19 @@ public class CandidateRestController {
 	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
 	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
 	  		}
+	  		if(salesOrderFilterDate != null && !"".equalsIgnoreCase(salesOrderFilterDate)){
+	  			salesOrderDateArray = reportsUtil.getJobFilterDate(salesOrderFilterDate, orgLocations);
+			}
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderDateArray);
 	  		File file = null;
 	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
 		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {
-		    	 file=  candidateExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToPdf(responseList,orgLocations);
 		    }else {
-		    	 file=  candidateExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
+		    	 file = candidateMarketplaceExportUtil.exportSalesOrderToExcel(responseList,orgLocations);
 		    }
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

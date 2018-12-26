@@ -3,7 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <section class="content-wraper contentWraper">
+
+ <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Sales Orders List</h2>
@@ -23,21 +24,23 @@
      </ul>
 </div>
     
-    <div class="contentareaInner-styles clearfix">
+    <div class="clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
     	 <div class="positionRelative reportHead clearfix">
-			  <span class="pull-left refreIcon noPad mb10">
+			  <span class="pull-left refreIcon mb10">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
 			  </span>
-            <ul class="pull-right list-unstyled list-inline noPad">
+            <ul class="pull-right list-unstyled list-inline mr">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportSalesOrderToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportSalesOrderToExcel();" title="Excel">Export Excel</a> </span> </div>
               </li>
             <li class="noMar">
+
                 <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
                 <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
+
 			</li>
             </ul>
           </div>
@@ -51,11 +54,18 @@
       </div>
     </div> 
   </section>
+   <script>
   
+   function getSalesOrderList(){
+	   	getDynamicSalesOrderList();
+	   	
+  }
+  </script>
   
-<div class="mask"></div>
-<div class="popupWrap" id="modalWallet">
-      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose"></i></div>
+  <div id="emptyPopup"></div>
+<div class="advancedsearch-mask"></div>
+<div class="popupWrap" id="modalSalesOrder">
+      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose" onclick = "closePop();"></i></div>
         <form id="#" name="" action="" method="post">
         <div class="popupContent">
 			<div class="addInner">
@@ -65,13 +75,13 @@
         	<h5>Payment Status</h5>
 		</div>
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderPaymentStatus">
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentSuccessCheckBox">
                 <label>Success</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentFailureCheckBox">
                 <label>Failure</label>
               </li>
             </ul>
@@ -83,33 +93,33 @@
             <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
             <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderCheckBox">
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="userRole" value="" type="radio" id = "todayDateCheckBox" class="mt2">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="2366" type="radio">
+                <input name="userRole" value="" type="radio" id = "OneWeekAgoDateCheckBox" class="mt2">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="" type="radio" id = "thisMonthDateCheckBox" class="mt2">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="" type="radio" id = "threeMonthsAgoDateCheckBox" class="mt2">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="" type="radio" id = "sixMonthsAgoDateCheckBox" class="mt2">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio">
+				<input name="userRole" value="" type="radio" id = "oneYearAgoDateCheckBox" class="mt2">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="2367" type="radio" id="custmdateChkbx">
+				<input name="userRole" value="" type="radio" id = "salesOrderCustomDate" class="mt2">
 				<label>Custom Dates</label>
 			  </li>
 			  </ul>
@@ -120,16 +130,14 @@
 		<div class="col-md-12 positionRelative">
           <div class="clearfix dynamic_search filterDynamicsearch" >
           <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
-		  </div>
-          <div class="clearfix">
             <ul class="list-unstyled positionRelative filterSearch mb0">
               <li class="positionRelative">
                 <div class="row">
                 <div class="col-md-6" id="custFromDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date" id="frmDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="From Date" placeholder="From Date"  id="salesOrderFromDate">
                 </div>
                 <div class="col-md-6" id="custToDateDiv">
-                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date" id="toDate">
+                	<input type="text" value="" class="form-control calendar input-sm" field-name="To Date" placeholder="To Date"  id="salesOrderToDate">
 				</div>
              </div>
               </li>
@@ -142,8 +150,8 @@
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Save</button>
-          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+         <button type="button" class="slBtn md colorBtn" onclick="validateSalesOrderFilter();">Apply</button>
+          <button type="button" class="slBtn md" onclick="resetSalesOrderFilter()">Reset</button>
         </div>
         
         <div>
@@ -152,14 +160,19 @@
   
   
   <script>
-  var table = "";
-  $(document).ready(function () {
-	  getDynamicSalesOrderList();
-	});
-  function getDynamicSalesOrderList(){
+   var table = "";
+   var salesOrderFilterDate = "";
+   var paymentStatus = "";
+   $(document).ready(function () {
+	   getDynamicSalesOrderList();
+	 });
+  
+   function getDynamicSalesOrderList(){
+	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
+		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
-	  	var sourceleadUrl = '${sourceleadUrl}';	
-	  	var url ="";
+	  	var searchValue = $("#searchByValue").val();
+	  	var url = "";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
@@ -173,13 +186,12 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-	  	var searchValue = $("#searchByValue").val();
-  		url = sourceleadUrl + "/getDynamicSalesOrderList?searchValue="+searchValue;  
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
   		dynamicSalesOrderList(url);
   	}
   
-  function dynamicSalesOrderList(url){
-	  var colIndex = 0;
+   function dynamicSalesOrderList(url){
+	   var colIndex = 0;
 	    table = $('#salesOrderListTable').DataTable( { 
 		  "processing": true,
 	      "serverSide": true,
@@ -217,12 +229,11 @@
 		    	  	"data": "orderDate",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		var result = "";
-		            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
+		            	  if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
 		           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
 		         		}else{
 		         		  result = result +'<div class="tblminwidth-100">--</div>';
-		         		} 
+ 		         		} 
 		    	  		
 			             return result;
 		    	  	}
@@ -296,39 +307,37 @@
 	    } );
 	    $("#salesOrderListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#salesOrderListTableSearch").keyup(function(e) {
+	    $("#searchByValue").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getDynamicSalesOrderList();
+	    		   getSalesOrderList();
 	    	   }
 	    	});
-	 	
-	    
-  }
+ 	 }
   
-  function goToSalesOrder(salesUuid){
-	  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
-  }
-  
-  function exportToPdf(){
-	  if (!table.data().count()) {
-		    alert( 'Empty table' );
-		}else{
-	  		window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
-		}
+  	function goToSalesOrder(salesUuid){
+		  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
   	}
   
-  function exportToExcel(){
-		if (!table.data().count()) {
-		    alert( 'Empty table' );
-		}else{
-			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
-		}
+  	function exportSalesOrderToPdf(){
+		  if (!table.data().count()) {
+			  popupDisplay();
+		  }else{
+	  			window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		  }
+  	}
+  
+    function exportSalesOrderToExcel(){
+		 if (!table.data().count()) {
+			 popupDisplay();
+		 }else{
+		 	 window.location.href = sourceleadUrl+"/exportSalesOrderToPdfOrExcel?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+		 }
 	}
 
    </script>
    <script>
-  function goToCandidateList(){
-		location.href = "${appPath}/candidatesList";
+  	function goToCandidateList(){
+			location.href = "${appPath}/candidatesList";
 	}
 		
 	function goToGlobalMarketPlaceList(){
@@ -348,25 +357,160 @@
 	    location.href = "${appPath}/walletList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#searchByValue").val('');
+		getSalesOrderList();
 	}
   </script>
   <script>
-  function openPop(){
-		$("#modalWallet, .mask").fadeIn();
-	}
-	$(".popClose").click(function() {
-		$("#modalWallet, .mask").fadeOut();
-	});
   
+  	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+  	var locationDateFormat = '';
+  	if(locationDate.match("yyyy-MM-dd")){
+  		locationDateFormat = 'yy-mm-dd';
+    }if(locationDate.match("dd-MM-yyyy")){
+    	locationDateFormat = 'dd-mm-yy'; 
+    }if(locationDate.match("MM-dd-yyyy")){
+    	locationDateFormat = 'mm-dd-yy'; 
+    }if(locationDate.match("yyyy-dd-MM")){
+    	locationDateFormat = 'yy-dd-mm'; 
+    }
+  
+  	function createSalesOrderFromDate(){
+  		$("#salesOrderFromDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  		changeYear: true, 
+  	   		onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '+1d');
+  	         	dt.setDate(dt.getDate() + 1);
+  	         	$("#salesOrderToDate").datepicker("option", "minDate", dt);
+  	     		}
+  	  	})	
+  	}
+  	
+  	function createSalesOrderToDate(){
+  		$("#salesOrderToDate").datepicker({
+  	   		dateFormat: locationDateFormat,
+  	   		changeMonth: true,
+  	  	  	changeYear: true, 
+  	     	onSelect: function (selected) {
+  	         	var dt = $(this).datepicker('getDate', '-1d');
+  	         	dt.setDate(dt.getDate() - 1);
+  	         	$("#salesOrderFromDate").datepicker("option", "maxDate", dt);
+  	     		}
+  	  	})
+  	}
+  	
+  	$(function(){
+  		 createSalesOrderFromDate();
+  		 createSalesOrderToDate();
+  	 });
+  	
+  	function validateSalesOrderFilter(){
+  		var customDate = $("#salesOrderCustomDate").val();
+  		var otherDate = salesOrderFilterDate;
+  		var fromDate = $("#salesOrderFromDate").val();
+  		var toDate = $("#salesOrderToDate").val();
+  		if(customDate === "custom"){
+  			if(fromDate === ''){
+  				$("#salesOrderFromDate").focus();
+  			}
+  			if(toDate === '' && fromDate !== ''){
+				$("#salesOrderToDate").focus();  				
+	  		}
+  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+  	        	closePop();
+  	        	getDynamicSalesOrderList();
+        	}
+  			}
+  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+  				closePop();
+	        	getDynamicSalesOrderList();
+  		}
+  		if(otherDate === '' && customDate != 'custom'){
+  			alert('Kindly Select a Check Box.');
+  		}
+  	}
+ </script>
+   <script>	
+   function closePop(){
+		$("div.popupWrap").hide();
+		$(".advancedsearch-mask").hide();
+	}
+  
+   function openPop(){
+		$("#modalSalesOrder, .advancedsearch-mask").fadeIn();
+	}
+    
+    function closePop(){
+    	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
+    }
+  
+	 $("#todayDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = 'today';
+		}
+	});
+	$("#OneWeekAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '1_week';
+		}
+	});
+	$("#thisMonthDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '1_month';
+		}
+	});
+	$("#threeMonthsAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '3_months';
+		}
+	});
+	$("#sixMonthsAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '6_months';
+		}
+	});
+	$("#oneYearAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = 'YTD';
+		}
+	}); 
+	$("#paymentSuccessCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'success';
+		}
+	});
+	$("#paymentFailureCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'failure';
+		}
+	});
 	//Custom Dates
-	$("#custmdateChkbx").click(function() {
+	$("#salesOrderCustomDate").click(function() {
 	if($(this).is(":checked")){
 		$("#customDates").show();
+		$("#salesOrderCustomDate").val("custom");
+		salesOrderFilterDate = '';
 	}else {
 		$("#customDates").hide();
 	}
 	});
+	
+	function resetSalesOrderFilter(){
+		emptySalesOrderSearchValues();
+		$("#customDates").hide();
+		$("ul#salesOrderCheckBox > li input:radio").prop("checked", false);
+		$("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false);
+	}
+	
+	function emptySalesOrderSearchValues(){
+		$("#salesOrderCustomDate").val('');
+		$("#salesOrderFromDate").val('');
+		$("#salesOrderToDate").val('');
+		salesOrderFilterDate = '';
+		paymentStatus = '';
+	}
 	
 	function getActions(){
 		$(".action-pop").slideToggle(200);
@@ -384,10 +528,31 @@
 		$(".action-pop").slideUp(200);
 	}
 	$("html").click(function(){
-	$(".newActPop").slideUp(200);
+		$(".newActPop").slideUp(200);
 	});
 	$(".overIcon, .newActPop").click(function(e){
  		e.stopPropagation();
 	});	
   </script>
+  <script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_SalesOrder_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelMarketplacePopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Sales Order.");
+		$("#remove_SalesOrder_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+
+	function cancelMarketplacePopup(){
+		$("#remove_SalesOrder_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+  </script>
+  
   <jsp:include page="../masterFooter.jsp" /> 
