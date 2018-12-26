@@ -195,8 +195,9 @@
 		if(selectedInterval == undefined){
 			selectedInterval = "";
 		}
-		$("#modalWallet, .mask").fadeOut();
-		$("#customDates").hide();
+		
+		//$("#customDates").hide();
+		//$('input[name=timeInterval]').prop('checked', false);
 		getDynamicWalletList(selectedInterval,selectedTransactionType);
 		
 	}
@@ -242,10 +243,30 @@
 		if(selectedTime == "customDates"){
 			startDate = $('#frmDate').val();
 			endDate = $("#toDate").val();
-		}
+			if(startDate == ''){
+	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+	            $("input#frmDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+	            $("input#frmDate").empty();
+	            return false;
+	        }
+	        if(endDate == ''){
+	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+	            $("input#toDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+	            $("input#toDate").val('');
+	            return false;
+	        }
+	        if((startDate != '' && startDate != 'undefined' && startDate != null) && (endDate != '' && endDate != 'undefined' && endDate != null)){
+	            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+	            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+	        }
+	    }else{
+	        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+	        $('#custToDateDiv').find('p.jquery_form_error_message').remove();   
+	    }	
 		var url = sourceleadUrl	+"/getWalletList?searchValue="+searchValue+"&selectedTime="+selectedTime+"&transactionType="+selectedTransaction+"&fromDate="+startDate+"&toDate="+endDate;
 		prepareWalletList(url);	
   }
+  
   function prepareWalletList(url){
 	     var result = "";
 	     result = result + '<table id="dynamicWalletListTbl">';
@@ -261,7 +282,9 @@
 	     result = result + '</table>';
 	     $("#dynamicWalletListViewDiv").empty();
 	     $("#dynamicWalletListViewDiv").append(result);
+	     $("#modalWallet, .mask").fadeOut();
 	     walletPaginations(url);
+	    
   
   }
   function walletPaginations(url){
@@ -371,6 +394,7 @@
 	     $("#dynamicWalletListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 	     
 	    $("table").colResizable(); // for resizing columns in tables. 
+	    
 	      
   }
   </script>
@@ -524,6 +548,7 @@
    			$("#customDates").hide();
    			$('#frmDate').removeAttr('data-validation');
    	        $('#toDate').removeAttr('data-validation');
+   	     	$('#toDate, #frmDate').val('').datepicker('setDate', null);
    		}
 		
 	});

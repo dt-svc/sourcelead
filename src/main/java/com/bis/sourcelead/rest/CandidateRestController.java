@@ -1206,6 +1206,7 @@ public class CandidateRestController {
 		if (candidateIdsVal != null) {
 			candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
 		}
+		
 		return candidateIds;
 	}
 
