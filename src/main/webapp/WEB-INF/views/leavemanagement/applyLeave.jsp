@@ -612,6 +612,7 @@ function calculateDuration(){
      			            	output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
      			         }
         	  	  } */
+        	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
         	  
