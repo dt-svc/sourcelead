@@ -60,7 +60,7 @@ public class OrgLocations implements Serializable{
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
-	@Audit(isListRecords = true, index = 1)
+	@Audit(isListRecords = true)
 	@OneToMany(mappedBy="responderLocationId",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgRelations> orgRelationsList;

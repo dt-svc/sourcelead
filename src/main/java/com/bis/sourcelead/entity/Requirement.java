@@ -197,7 +197,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "PAY_OUT_PERIOD")
 	private String payOutPeriod;
 	
-	@Audit(isListRecords = true, index = 0)
+	@Audit(isListRecords = true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -406,19 +406,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	private String msg;
 
-	@Audit(isListRecords = true, index = 1)
+	@Audit(isListRecords = true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
 
-	@Audit(isListRecords = true, index = 2)
+	@Audit(isListRecords = true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 
-	@Audit(isListRecords = true, index = 3)
+	@Audit(isListRecords = true)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)

@@ -188,22 +188,22 @@ public class User implements Serializable{
 	@JsonIgnore
 	private User linkUserId;
 	
-	@Audit(isListRecords = true, index = 1)
+	@Audit(isListRecords = true)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@Audit(isListRecords = true, index = 2)
+	@Audit(isListRecords = true)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
-	@Audit(isListRecords = true, index = 3)
+	@Audit(isListRecords = true)
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
-	@Audit(isListRecords = true, index = 4)
+	@Audit(isListRecords = true)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
 	private Set<Candidate> candidateSet;
 	

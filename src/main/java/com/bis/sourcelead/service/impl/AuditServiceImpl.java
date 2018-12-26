@@ -41,7 +41,7 @@ public class AuditServiceImpl implements AuditService {
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public String getData(Object entityObject, List<Object> childClassList) {
+	public String getData(Object entityObject) {
 		String data = "";
 		try {
 			for (Field f : entityObject.getClass().getDeclaredFields()) {

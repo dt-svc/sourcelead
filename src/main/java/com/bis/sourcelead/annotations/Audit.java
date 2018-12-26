@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.FIELD })
 public @interface Audit {
+
 	public boolean isParent() default false;
 
 	public boolean isListRecords() default false;
 
-	public int index() default 0;
 }

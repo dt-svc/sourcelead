@@ -315,11 +315,6 @@ public class RequirementServiceImpl implements RequirementService {
 		Date date = new Date();
 		StringBuilder location = new StringBuilder();
 		String oldData = "", newData = "";
-		List<Object> childObjects = new LinkedList<>();
-		childObjects.add(RequirementIncentive.class);
-		childObjects.add(RequirementAssignTo.class);
-		childObjects.add(RequirementApproverHierarchy.class);
-		childObjects.add(RequirementLocations.class);
 		
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 			requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
@@ -327,7 +322,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			if(requirement != null) {
-				oldData = auditService.getData(requirement, childObjects);
+				oldData = auditService.getData(requirement);
 			}
 		} else {
 			requirement = new Requirement();
@@ -1309,7 +1304,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		Requirement storedRequirement = requirementDao.getRequirementByRequirementId(savedRequirement.getId());
 		if(storedRequirement != null) {
-			newData = auditService.getData(storedRequirement, childObjects);
+			newData = auditService.getData(storedRequirement);
 			auditService.saveAuditReport(storedRequirement.getClass().getSimpleName(), oldData, newData, StringUtils.isNotBlank(requirementDTO.getRequirementId()) ? "UPDATE" : "ADD", user);
 		}
 		return savedRequirement;
