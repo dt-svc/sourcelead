@@ -65,7 +65,7 @@
   <div id="emptyPopup"></div>
 <div class="advancedsearch-mask"></div>
 <div class="popupWrap" id="modalSalesOrder">
-      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose"></i></div>
+      <div class="popupHead"><span>Task Type</span><i class="closePop pull-right popClose" onclick = "closePop();"></i></div>
         <form id="#" name="" action="" method="post">
         <div class="popupContent">
 			<div class="addInner">
@@ -75,13 +75,13 @@
         	<h5>Payment Status</h5>
 		</div>
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderPaymentStatus">
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentSuccessCheckBox">
                 <label>Success</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="orgManagers" value="" type="checkbox" class="mt2" id = "paymentFailureCheckBox">
                 <label>Failure</label>
               </li>
             </ul>
@@ -93,33 +93,33 @@
             <input id="myRolesInput" onkeyup="myRolesFunction()" placeholder="By Date" title="Type in a roles" type="text">
             <span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderCheckBox">
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="today" type="radio" id = "dateCheckBox">
+                <input name="userRole" value="" type="radio" id = "todayDateCheckBox" class="mt2">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="1_week" type="radio" id = "dateCheckBox">
+                <input name="userRole" value="" type="radio" id = "OneWeekAgoDateCheckBox" class="mt2">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="Last_Week" type="radio" id = "dateCheckBox">
+				<input name="userRole" value="" type="radio" id = "thisMonthDateCheckBox" class="mt2">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="1_month" type="radio" id = "dateCheckBox">
+				<input name="userRole" value="" type="radio" id = "threeMonthsAgoDateCheckBox" class="mt2">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="1_Month_Ago" type="radio" id = "dateCheckBox">
+				<input name="userRole" value="" type="radio" id = "sixMonthsAgoDateCheckBox" class="mt2">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="YTD" type="radio" id = "dateCheckBox">
+				<input name="userRole" value="" type="radio" id = "oneYearAgoDateCheckBox" class="mt2">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "customDateCheckBox">
+				<input name="userRole" value="" type="radio" id = "salesOrderCustomDate" class="mt2">
 				<label>Custom Dates</label>
 			  </li>
 			  </ul>
@@ -130,8 +130,6 @@
 		<div class="col-md-12 positionRelative">
           <div class="clearfix dynamic_search filterDynamicsearch" >
           <h5 class="margin-top0">Custom Dates<span class="text-danger paddingLeft">*</span></h5>
-		  </div>
-          <div class="clearfix">
             <ul class="list-unstyled positionRelative filterSearch mb0">
               <li class="positionRelative">
                 <div class="row">
@@ -152,8 +150,8 @@
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="closePop();validateSalesOrderdates();getDynamicSalesOrderList();">Apply</button>
-          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();">Reset</button>
+         <button type="button" class="slBtn md colorBtn" onclick="validateSalesOrderFilter();">Apply</button>
+          <button type="button" class="slBtn md" onclick="resetSalesOrderFilter()">Reset</button>
         </div>
         
         <div>
@@ -163,6 +161,8 @@
   
   <script>
    var table = "";
+   var salesOrderFilterDate = "";
+   var paymentStatus = "";
    $(document).ready(function () {
 	   getDynamicSalesOrderList();
 	 });
@@ -171,6 +171,8 @@
 	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
 		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
+	  	var searchValue = $("#searchByValue").val();
+	  	var url = "";
 	  	result = result +"<table id='salesOrderListTable' class='display' cellspacing='0' width='100%'>";
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
@@ -184,8 +186,7 @@
 	  	result = result +"</thead>";
 	  	result = result +"<table>";
 	  	$("#dynamicSalesOrderList").html(result);
-	  	var searchValue = $("#searchByValue").val();
-  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate;  
+  		url = sourceleadUrl + "/getDynamicSalesOrderList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&salesOrderFromDate="+salesOrderFromDate+"&salesOrderToDate="+salesOrderToDate+"&salesOrderFilterDate="+salesOrderFilterDate;  
   		dynamicSalesOrderList(url);
   	}
   
@@ -311,9 +312,7 @@
 	    		   getSalesOrderList();
 	    	   }
 	    	});
-	 	
-	    
-  }
+ 	 }
   
   	function goToSalesOrder(salesUuid){
 		  location.href = "${appPath}/SalesOrder?salesUuid="+salesUuid;
@@ -365,16 +364,16 @@
   <script>
   
   	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	var locationDateFormat = getJSDateFormat(locationDate);
+  	var locationDateFormat = '';
   	if(locationDate.match("yyyy-MM-dd")){
-	  	locationDateFormat = 'yy-mm-dd';
-  	}if(locationDate.match("dd-MM-yyyy")){
-	  	locationDateFormat = 'dd-mm-yy'; 
-  	}if(locationDate.match("MM-dd-yyyy")){
-	  	locationDateFormat = 'mm-dd-yy'; 
-  	}if(locationDate.match("yyyy-dd-MM")){
-	  	locationDateFormat = 'yy-dd-mm'; 
-  	}
+  		locationDateFormat = 'yy-mm-dd';
+    }if(locationDate.match("dd-MM-yyyy")){
+    	locationDateFormat = 'dd-mm-yy'; 
+    }if(locationDate.match("MM-dd-yyyy")){
+    	locationDateFormat = 'mm-dd-yy'; 
+    }if(locationDate.match("yyyy-dd-MM")){
+    	locationDateFormat = 'yy-dd-mm'; 
+    }
   
   	function createSalesOrderFromDate(){
   		$("#salesOrderFromDate").datepicker({
@@ -407,51 +406,111 @@
   		 createSalesOrderToDate();
   	 });
   	
-  	function validateSalesOrderdates(){
-  		var customDate = $("#customDateCheckBox").val();
+  	function validateSalesOrderFilter(){
+  		var customDate = $("#salesOrderCustomDate").val();
+  		var otherDate = salesOrderFilterDate;
   		var fromDate = $("#salesOrderFromDate").val();
   		var toDate = $("#salesOrderToDate").val();
   		if(customDate === "custom"){
-  			 if(fromDate == ''){
-  	            alert('From Date is required.');
-  	        }
-  	        if(toDate == ''){
-  	            alert('To date is required');  	        
-  	        }
+  			if(fromDate === ''){
+  				$("#salesOrderFromDate").focus();
+  			}
+  			if(toDate === '' && fromDate !== ''){
+				$("#salesOrderToDate").focus();  				
+	  		}
   	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-           		//
-        	}else{
-       			//
-    		} 
-  			} 
+  	        	closePop();
+  	        	getDynamicSalesOrderList();
+        	}
+  			}
+  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+  				closePop();
+	        	getDynamicSalesOrderList();
+  		}
+  		if(otherDate === '' && customDate != 'custom'){
+  			alert('Kindly Select a Check Box.');
+  		}
+  	}
  </script>
-  <script>	
+   <script>	
    function closePop(){
 		$("div.popupWrap").hide();
 		$(".advancedsearch-mask").hide();
 	}
-   
-  /* function filterPop(){
-		$(".advancedsearch-mask").show();
-		$("div.popupWrap").toggle();
-	}
-    */
-  function openPop(){
+  
+   function openPop(){
 		$("#modalSalesOrder, .advancedsearch-mask").fadeIn();
 	}
-	$(".popClose").click(function() {
-		$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
-	});
+    
+    function closePop(){
+    	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
+    }
   
+	 $("#todayDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = 'today';
+		}
+	});
+	$("#OneWeekAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '1_week';
+		}
+	});
+	$("#thisMonthDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '1_month';
+		}
+	});
+	$("#threeMonthsAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '3_months';
+		}
+	});
+	$("#sixMonthsAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = '6_months';
+		}
+	});
+	$("#oneYearAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			salesOrderFilterDate = 'YTD';
+		}
+	}); 
+	$("#paymentSuccessCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'success';
+		}
+	});
+	$("#paymentFailureCheckBox").click(function() {
+		if($(this).is(":checked")){
+			paymentStatus = 'failure';
+		}
+	});
 	//Custom Dates
-	$("#customDateCheckBox").click(function() {
+	$("#salesOrderCustomDate").click(function() {
 	if($(this).is(":checked")){
 		$("#customDates").show();
-		$("#customDateCheckBox").val("custom");
+		$("#salesOrderCustomDate").val("custom");
+		salesOrderFilterDate = '';
 	}else {
 		$("#customDates").hide();
 	}
 	});
+	
+	function resetSalesOrderFilter(){
+		emptySalesOrderSearchValues();
+		$("#customDates").hide();
+		$("ul#salesOrderCheckBox > li input:radio").prop("checked", false);
+		$("ul#salesOrderPaymentStatus > li input:checkbox").prop("checked", false);
+	}
+	
+	function emptySalesOrderSearchValues(){
+		$("#salesOrderCustomDate").val('');
+		$("#salesOrderFromDate").val('');
+		$("#salesOrderToDate").val('');
+		salesOrderFilterDate = '';
+		paymentStatus = '';
+	}
 	
 	function getActions(){
 		$(".action-pop").slideToggle(200);
@@ -469,7 +528,7 @@
 		$(".action-pop").slideUp(200);
 	}
 	$("html").click(function(){
-	$(".newActPop").slideUp(200);
+		$(".newActPop").slideUp(200);
 	});
 	$(".overIcon, .newActPop").click(function(e){
  		e.stopPropagation();

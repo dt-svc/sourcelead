@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -37,6 +38,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -45,6 +47,7 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -2508,7 +2511,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.sourceOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId and marketplaceCart.cartStatus <> :cartStatusVal";
+		String query = "select count(marketplaceCart) from CandidateMarketCart marketplaceCart where marketplaceCart.targetOrgLocationId.id = :orgId and marketplaceCart.marketplaceId.id = :marketplaceId and marketplaceCart.cartStatus <> :cartStatusVal";
 		int count = ((Long) session.createQuery(query).setParameter("orgId", orgId)
 				.setParameter("marketplaceId", marketPlaceId).setParameter("cartStatusVal", Constants.PURCHASED).uniqueResult()).intValue();
 		return count;
@@ -2994,12 +2997,13 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, 
-			String searchValue, String salesOrderFromDate, String salesOrderToDate) {
+			String searchValue, String salesOrderFromDate, String salesOrderToDate, Date[] salesOrderDateArray) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			StringBuilder queryBuilder1 = new StringBuilder();
 			StringBuilder queryEndBuilder2 = new StringBuilder();
 			StringBuilder dateQuery1 = new StringBuilder();
+			StringBuilder dateQuery2 = new StringBuilder("");
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			List<MarketplacePurchaseSalesDTO> salesOrderDtoList = new ArrayList<>();
@@ -3024,6 +3028,13 @@ public class CandidateDaoImpl implements CandidateDao {
 				dateQuery1.append(" and DATE_FORMAT(salesOrder.orderDate, '%Y-%m-%d') between '" + customStartdate
 						+ "' and '" + customEnddate + "'");
 			}
+			if (salesOrderDateArray != null && salesOrderDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(salesOrderDateArray[0]);
+				String customEnddate = dateFormat.format(salesOrderDateArray[1]);
+				dateQuery2.append(" and DATE_FORMAT(salesOrder.orderDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "'");
+			}
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
@@ -3034,11 +3045,10 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 			}
 			}
-
 			String query = "from MarketplaceSalesOrder salesOrder where salesOrder.orgLocationId.id = :orgLocationId";
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
-			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
-			countlist = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			List<MarketplaceSalesOrder> salesOrderList = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + dateQuery2.toString() +queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
+			countlist = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + dateQuery2.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId()).list();
 			int totalCount = 0;
 			if (marketplacePurchaseSalesDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
@@ -3090,39 +3100,66 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
-			String searchValue) {
+	public ResponseList<MarketplaceWalletDTO> getWalletList(MarketplaceWalletDTO marketplaceWalletDTO,
+			String searchValue, String transactionType, Map<String, Date> dateValue) {
 		Session session = this.sessionFactory.getCurrentSession();
 		logger.debug(" inside getWalletList searchValue is: " + searchValue);
 		List<Long> countlist = null;
 		Integer filterCount = 0;
 
-		List<MarketplaceSalesOrder> marketplaceSalesOrderList = null;
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+		List<CandidateMarketWallet> candidateMarketWallets = null;
+		ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
 		try {
 
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-				
-				query1.append(" or (saleOrder.totalResumePrice like '%" + searchValue + "%' )");
-				query1.append(" or (saleOrder.orderNo like '%" + searchValue + "%' )) ");
+				query1.append(" and (cmwallet.transactionId like '%" + searchValue + "%' )");
 			}
-			StringBuilder query2 = new StringBuilder("");
+			StringBuilder transactionTypeQuery = new StringBuilder("");
+			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
+				List<String> tranTypeList = Arrays.asList(transactionType.split(","));
+				transactionTypeQuery.append(" and (cmwallet.paymentStatus IN ( :transactionType ) )");
+			}
+			StringBuilder dateValueTypeQuery = new StringBuilder("");
+			if(!dateValue.isEmpty()){
+				dateValueTypeQuery.append(" and (cmwallet.transactionDate >= :endDate and cmwallet.transactionDate <= :startDate) ");
+			}
+			
 			String sortingQry = "";
-			if (StringUtils.isNotBlank(saleOrdersListDTO.getSortColumn())) {
-				String sortColumnName = saleOrdersListDTO.getSortColumn();
+			if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
+				String sortColumnName = marketplaceWalletDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("marketPrice")){
-					sortingQry = " order by saleOrder." + sortColumnName + " " + saleOrdersListDTO.getSortOrder();
+					sortingQry = " order by cmwallet." + sortColumnName + " " + marketplaceWalletDTO.getSortOrder();
 				}
 			}
-			String  listQuery = "from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
-			String 	listQueryCount = "select count(*) from MarketplaceSalesOrder saleOrder  where  saleOrder.orgLocationId =:orgLocationId  "+query1+"  "+sortingQry+"";
-			Query hqlQuery = session.createQuery(listQuery);
-			marketplaceSalesOrderList = hqlQuery.setFirstResult(saleOrdersListDTO.getStart()).setMaxResults(saleOrdersListDTO.getLength()).setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
-			Query hqlQuery1 = session.createQuery(listQueryCount);
-			countlist = hqlQuery1.setLong("orgLocationId", saleOrdersListDTO.getOrgLocationId()).list();
+			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
+			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
+			Query hqlQuery = session.createQuery(listQuery).setFirstResult(marketplaceWalletDTO.getStart()).setMaxResults(marketplaceWalletDTO.getLength()).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
+			Query hqlQuery1 = session.createQuery(listQueryCount).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
+			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
+				List<String> tranTypeList = Arrays.asList(transactionType.split(","));
+				hqlQuery.setParameterList("transactionType", tranTypeList);
+				hqlQuery1.setParameterList("transactionType", tranTypeList);
+			}
+			if(!dateValue.isEmpty()){
+				Iterator it = dateValue.entrySet().iterator();
+			    while (it.hasNext()) {
+			        Map.Entry pair = (Map.Entry)it.next();
+			        System.out.println(pair.getKey() + " = " + pair.getValue());
+			        if(pair.getKey().equals("fromDate")){
+			        	hqlQuery.setDate("startDate", dateValue.get("fromDate"));
+			        	hqlQuery1.setDate("startDate", dateValue.get("fromDate"));
+			        }
+			        if(pair.getKey().equals("toDate")){
+			        	hqlQuery.setDate("endDate", dateValue.get("toDate"));
+			        	hqlQuery1.setDate("endDate", dateValue.get("toDate"));
+			        }
+			    }
+			}
+			countlist = hqlQuery1.list();
+			candidateMarketWallets = hqlQuery.list();
 			int totalCount = 0;
-			if (saleOrdersListDTO != null) {
+			if (marketplaceWalletDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
 					totalCount = countlist.iterator().next().intValue();
 					filterCount = totalCount;
@@ -3134,21 +3171,14 @@ public class CandidateDaoImpl implements CandidateDao {
 			} else {
 				responseList.setRecordsFiltered(totalCount);
 			}
-			List<MarketplacePurchaseSalesDTO> globalMarketCandDTOList = new ArrayList<MarketplacePurchaseSalesDTO>();
+			List<MarketplaceWalletDTO> globalMarketCandDTOList = new ArrayList<MarketplaceWalletDTO>();
 			Double totalSum =0d;
-			for (MarketplaceSalesOrder source : marketplaceSalesOrderList) {
-				MarketplacePurchaseSalesDTO target = new MarketplacePurchaseSalesDTO();
-				
-				target.setOrderDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getOrderDate()));
-				target.setTotalPrice(source.getTotalResumePrice());
-				target.setOrderNo(source.getOrderNo());
-				//Total Sum Amount calculation for View Purpose(Above The Table In walletList.Jsp)
-				totalSum = totalSum + source.getTotalResumePrice();
-				target.setSumOfOrdersAmount(totalSum);
-				
+			for (CandidateMarketWallet source : candidateMarketWallets) {
+				MarketplaceWalletDTO target = new MarketplaceWalletDTO();
+				BeanUtils.copyProperties(source, target);
+				target.setTransactionDate(commonUtil.dateStrFromOrgDateFormatter(source.getOrgLocationId().getDateFormat(), source.getTransactionDate()));
 				globalMarketCandDTOList.add(target);
 			}
-			logger.debug(" After executing query result  list size is :::>>" + marketplaceSalesOrderList.size());
 			responseList.setData(globalMarketCandDTOList);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -3192,6 +3222,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
+		logger.debug("Storing CandidateMarketWallet");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (wallet != null) {
+				session.save(wallet);
+			}
+			logger.debug("Marketplace Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidateMarketWallet"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 	}
 	

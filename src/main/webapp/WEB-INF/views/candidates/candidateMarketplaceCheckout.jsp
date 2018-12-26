@@ -144,38 +144,38 @@
     <div class="addInner">
       <div class="row">
         <div class="col-md-6 mb positionRelative">
-          <div class="clearfix dynamic_search filterDynamicsearch">
+          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
             <input id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Added On" title="Added On" type="text">
-            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div>
+            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="MarketCartCheckBox">
               <li class=" positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="today" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "todayDateCheckBox">
                 <label>Today</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_week" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "thisWeekAgoDateCheckBox">
                 <label>This Week</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="Last_Week" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "lastWeekDateCheckBox">
                 <label>last Week</label>
               </li>
              <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_month" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "oneMonthDateCheckBox">
                 <label>One Month</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value=1_Month_Ago type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "oneMonthAgoDateCheckBox">
                 <label>One Month Ago</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="YTD" type="checkbox">
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "thisYearDateCheckBox">
                 <label>This Year</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="closed" type="checkbox">
-                <label>Closed</label>
+                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "customDateCheckBox">
+                <label>Custom</label>
               </li>
             </ul>
           </div>
@@ -206,15 +206,12 @@
           </div>
         </div>
         <div class="clearfix"></div>
-      </div>
-    </div>
+   
 	
-	<div class="clearfix">
+	<div class="clearfix" id = "customDates" style="display: none;"> 
 		<div class="col-md-12 positionRelative">
           <div class="clearfix dynamic_search filterDynamicsearch">
-          <h5>Filter by Date <span class="text-danger paddingLeft">*</span></h5>
-		  </div>
-          <div class="clearfix">
+          <h5>Custom Dates<span class="text-danger paddingLeft">*</span></h5>
             <ul class="list-unstyled positionRelative filterSearch" id="">
               <li class="positionRelative mb">
                 <div class="row">
@@ -227,15 +224,17 @@
              </div>
               </li>
             </ul>
-          </div>
+			</div>          
         </div>
-	</div>
+           </div>
+    </div>
+	</div> 
 	
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getCandidateDetailsFromMarketcart();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn btn-sm btn-success" type="button">
+        <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn btn-sm btn-primary" type="button">
       </div>
     </div>
   </div>
@@ -281,20 +280,14 @@ function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
 
-
+var checkedDate = "";
+var customDate = "";
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
-	var checkedDate = $('.dateCheckBox:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(checkedDate != null){
-		creationStartDate = "";
-		creationEndDate = "";
-	}else{
-		checkedDate = "";
-	}
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
@@ -457,6 +450,8 @@ function deleteAllCandidatesForCheckout(){
 
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+
+	function createMarketCartStartDate(){
 	$("#creationStartDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -467,7 +462,9 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationEndDate").datepicker("option", "minDate", dt);
    	}
 		})
-
+	}
+	
+	function createMarketCartEndDate(){
 	$("#creationEndDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -478,7 +475,100 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationStartDate").datepicker("option", "maxDate", dt);
    	}
 		})
-
+	}
+	
+	$(function(){
+		createMarketCartStartDate();
+		createMarketCartEndDate();
+ 	 });
+	
+	$("#todayDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = 'today';
+			$("#customDateCheckBox").val("");
+		}
+	});
+	$("#thisWeekAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = '1_week';
+			$("#customDateCheckBox").val("");
+		}
+	});
+	$("#lastWeekDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = 'Last_Week';
+			$("#customDateCheckBox").val("");
+		}
+	});
+	$("#oneMonthDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = '1_month';
+			$("#customDateCheckBox").val("");
+		}
+	});
+	$("#oneMonthAgoDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = '1_Month_Ago';
+			$("#customDateCheckBox").val("");
+		}
+	});
+	$("#thisYearDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			checkedDate = 'YTD';
+			$("#customDateCheckBox").val("");
+		}
+	});	
+		
+	$("#customDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			$("#customDates").show();
+			$("#customDateCheckBox").val("custom");
+			checkedDate = '';
+		}else {
+			$("#customDates").hide();
+		}
+	});	
+	
+	function validateMarketCartFilter(){
+  		var customDate = $("#customDateCheckBox").val();
+  		var otherDate = checkedDate;
+  		var fromDate = $("#creationStartDate").val();
+  		var toDate = $("#creationEndDate").val();
+  		if(customDate === "custom"){
+  			alert('custom date validation');
+  			if(fromDate === ''){
+  				$("#creationStartDate").focus();
+  			}
+  			if(toDate === '' && fromDate !== ''){
+				$("#creationEndDate").focus();  				
+	  		}
+  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+  	        	closePop();
+  	        	getCandidateDetailsFromMarketcart();
+        	}
+  			}
+  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+  				closePop();
+	        	getCandidateDetailsFromMarketcart();
+  		}
+  		if(otherDate === '' && customDate != 'custom'){
+  			alert('Kindly Select a Check Box.');
+  		}
+  	}
+	
+	function resetMarketCartFilter(){
+		emptyMarketCartSearchValues();
+		$("#customDates").hide();
+		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+	}
+	
+	function emptyMarketCartSearchValues(){
+		$("#customDateCheckBox").val('');
+		checkedDate = '';
+		$("#creationStartDate").datepicker('setDate', null);
+		$("#creationEndDate").datepicker('setDate', null);
+	}
+	
 </script> 
 <script>
 //Window scroll fixed header
@@ -501,11 +591,6 @@ $(window).scroll(function(){
 	$(".advancedsearch-mask").show();
 	$("div.cand-advsrch-popup").toggle();
 	}
-//Date Picker
-$( function(){
-	$("#creationStartDate").datepicker();
-	$("#creationEndDate").datepicker();
-});
 $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })

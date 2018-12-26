@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -101,6 +103,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -180,6 +183,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	CandidateMarketplaceExportUtil candidateMarketplaceExportUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1200,6 +1206,7 @@ public class CandidateRestController {
 		if (candidateIdsVal != null) {
 			candidateIds = candidateService.getAddedMarketplaceCandidates(candidateIdsVal);
 		}
+		
 		return candidateIds;
 	}
 
@@ -1432,11 +1439,12 @@ public class CandidateRestController {
 			 @RequestParam(value = "searchValue", required = false)String searchValue,
 			 @RequestParam(value = "salesOrderFromDate", required = false)String salesOrderFromDate,
 			 @RequestParam(value = "salesOrderToDate", required = false)String salesOrderToDate,
-			 @RequestParam(value = "checkedDate", required = false)String checkedDate,
+			 @RequestParam(value = "salesOrderFilterDate", required = false)String salesOrderFilterDate,
 			 HttpServletRequest request, HttpServletResponse response)  {
 
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
+			Date[] salesOrderDateArray = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
@@ -1446,10 +1454,13 @@ public class CandidateRestController {
 	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
 	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
 	  		}
+	  		if(salesOrderFilterDate != null && !"".equalsIgnoreCase(salesOrderFilterDate)){
+	  			salesOrderDateArray = reportsUtil.getJobFilterDate(salesOrderFilterDate, orgLocations);
+			}
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderDateArray);
 	  		File file = null;
 	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
 		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {
@@ -1495,12 +1506,17 @@ public class CandidateRestController {
 	}
 	 
 	    @RequestMapping(value = "/app/getWalletList", method = RequestMethod.POST)
-		public @ResponseBody ResponseList<MarketplacePurchaseSalesDTO> getWalletList(
-				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-				@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
-			ResponseList<MarketplacePurchaseSalesDTO> saleOrdersListDTOList = null;
+		public @ResponseBody ResponseList<MarketplaceWalletDTO> getWalletList(
+				MarketplaceWalletDTO marketplaceWalletDTO,
+				@RequestParam(value = "searchValue", required = false) String searchValue,
+				@RequestParam(value = "selectedTime", required = false) String selectedTime,
+				@RequestParam(value = "transactionType", required = false) String transactionType,
+				@RequestParam(value = "fromDate", required = false) String fromDate,
+				@RequestParam(value = "toDate", required = false) String toDate,HttpServletRequest request) {
+			ResponseList<MarketplaceWalletDTO> marketWalletDTOList = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			marketplacePurchaseSalesDTO.setOrgLocationId(orgLocations.getId());
+			marketplaceWalletDTO.setOrgLocationId(orgLocations.getId());
+			marketplaceWalletDTO.setOrgLocations(orgLocations);
 			logger.debug("inisde getWalletList  conroller =========> --> ");
 			try {
 				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
@@ -1508,23 +1524,23 @@ public class CandidateRestController {
 				// entity names
 				int sortColumnIndex = -1; // by default sorting using updated date
 				String sortColumnOrder = "desc"; // by default ascending order
-				if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
-					sortColumnIndex = Integer.parseInt(marketplacePurchaseSalesDTO.getOrder().get(0).get("column"));
-					sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
-					marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder); // direction
+				if (marketplaceWalletDTO.getOrder() != null && !marketplaceWalletDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(marketplaceWalletDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = marketplaceWalletDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+					marketplaceWalletDTO.setSortOrder(sortColumnOrder); // direction
 				}
 
-				if (sortColumnIndex != -1)
-					marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
-
-				saleOrdersListDTOList = candidateService.getWalletList(marketplacePurchaseSalesDTO,searchValue);
+				if (sortColumnIndex != -1){
+					marketplaceWalletDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				}
+				marketWalletDTOList = candidateService.getWalletList(marketplaceWalletDTO,searchValue,selectedTime,transactionType,fromDate,toDate);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			logger.debug("after controller  getWalletList  --> " + saleOrdersListDTOList.getRecordsTotal());
+			logger.debug("after controller  getWalletList  --> " + marketWalletDTOList.getRecordsTotal());
 			
-			return saleOrdersListDTOList;
+			return marketWalletDTOList;
 		}
 	    
 	    

@@ -1,43 +1,32 @@
 package com.bis.sourcelead.controller;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static junit.framework.Assert.assertEquals;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.Mockito.when;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -84,11 +73,11 @@ public void getGlobalMarketplaceCandList() throws Exception {
 	candidateDTOList.add(dto2);
 	candidateMarketPlaceDTOList.setData(candidateDTOList);
 	candidateMarketPlaceDTOList.setRecordsTotal(2);
-	System.out.println(" test "+candidateMarketPlaceDTOList.getRecordsTotal());
+//	System.out.println(" test "+candidateMarketPlaceDTOList.getRecordsTotal());
 	when(mockCandidateService.getGlobalMarketCandidateList(dto,"")).thenReturn(candidateMarketPlaceDTOList);
 	ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOResponseList = null;
 	candidateMarketPlaceDTOResponseList = mockCandidateService.getGlobalMarketCandidateList(dto,"");
-	System.out.println(candidateMarketPlaceDTOList.getRecordsTotal());
+//	System.out.println(candidateMarketPlaceDTOList.getRecordsTotal());
 	Assert.assertEquals(mockCandidateService.getGlobalMarketCandidateList(dto,"").getRecordsTotal(),2);
 }
 
@@ -114,9 +103,10 @@ PowerMockito.mockStatic(SourceLeadSessionManager.class);
 PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "orgLocations"))
 .thenReturn(orgLocation);
 when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocation, candidateLocation, searchValue)).thenReturn(candidateMarketPlace);
-System.out.println(controller);
+//System.out.println(controller);
 candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
-Assert.assertEquals(candidateMarketPlaces.size(),1); 
+Assert.assertEquals(candidateMarketPlaces.size(),1);
+
 }
 
 }
