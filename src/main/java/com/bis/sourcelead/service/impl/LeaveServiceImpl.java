@@ -1615,7 +1615,11 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveManagementHistory.setUpdatedBy(user.getUserCode());
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
-			sendWithdrawLeaveMailToAdmin(orgLocations,leave.getId(), user, leaveManagementHistory);
+			
+			// for URL redirections from mail
+			 String redirectURL = null;											
+			Long redirectOrgLocationId = orgLocations.getId(); 	 
+			sendWithdrawLeaveMailToAdmin(orgLocations,leave.getId(), user, leaveManagementHistory,redirectOrgLocationId,redirectURL);
 			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user,leave.getOrgLocations(),leave.getLeaveType().getId(),leave,Constants.LEAVE_WITHDRAW);
 			}*/
@@ -1623,7 +1627,7 @@ public class LeaveServiceImpl implements LeaveService{
 		return isLeaveWithdraw;
 	}
 	
-	private void sendWithdrawLeaveMailToAdmin(OrgLocations orgLocations, Long leaveId, User loginUser, LeaveManagementHistory leaveManagementHistory) throws Exception
+	private void sendWithdrawLeaveMailToAdmin(OrgLocations orgLocations, Long leaveId, User loginUser, LeaveManagementHistory leaveManagementHistory, Long redirectOrgLocationId, String redirectURL) throws Exception
 	{
 		Set<LeaveApproveHierarchy> leaveApproversList = leaveManagementHistory.getLeaveid().getApproverHierarchyList();
 		if(leaveApproversList != null){
@@ -1699,7 +1703,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 	}	
 
-	public void LeaveCancelEmailToUser(User loginUser,LeaveManagementHistory leaveManagementHistory,String reason) throws Exception{
+	public void LeaveCancelEmailToUser(User loginUser,LeaveManagementHistory leaveManagementHistory,String reason,Long redirectOrgLocationId, String redirectURL) throws Exception{
 
 		User toUser = leaveManagementHistory.getLeaveid().getUser();
 		OrgLocations orgLocations = leaveManagementHistory.getLeaveid().getOrgLocations();
@@ -1732,12 +1736,16 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("toDate", ConversionUtil.getDateAsString(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),ConversionUtil.getDateAsString(leaveManagementHistory.getLeaveid().getToDate()))));
 			globalVarsMap.put("reason", reason);
 			
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());					
 			
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.LEAVE_CANCEL_EMAIL_TO_USER,new ArrayList<EmailAttachment>());
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_CANCEL_NOTOFICATION_TO_USER, Constants.ENTITY_TYPE_NOTIFICATION);
 		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationbody);
+		
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("cancelLeaves?notifyLink=notifyLink&leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"&orgLocationId="+orgLocations.getId()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,new HashMap<String,String>());
