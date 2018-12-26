@@ -721,6 +721,7 @@ public class SubmissionsRestController {
 				}
 				int shotListCount = submissionId.length;
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
 				// for URL redirections from mail
 				String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 				Long redirectOrgLocationId = orgLocations.getId();
