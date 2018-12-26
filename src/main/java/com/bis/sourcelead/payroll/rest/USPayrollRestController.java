@@ -2121,4 +2121,15 @@ public class USPayrollRestController {
 			return payItemService.savePayItemsFromSummary(associateSalaryDTO,orgLocation,user);
 		
 		}
+		
+		@RequestMapping(value = "/previousPayrollList", method = RequestMethod.POST)
+		public List<AssociateLoanAndAdvancesDTO> previousPayrollList(HttpServletRequest request, HttpServletResponse response)
+		{
+			List<AssociateLoanAndAdvancesDTO> assLoansAndAdvancesList = new ArrayList<>();
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			
+			
+			return assLoansAndAdvancesList;
+		}
 }
