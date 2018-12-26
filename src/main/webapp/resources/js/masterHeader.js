@@ -1,3 +1,7 @@
+var orgLocationCode = "775BUS";// snigitha copied from the dashboard.js
+var orgCode = '775B';// snigitha copied from the dashboard.js
+var locationId = "3";//'${SourceLeadWeb_orgLocationId}'; snigitha copied from the  dashboard.js
+var userId ="4";// '${SourceLeadWeb_user.id}'; snigitha copied from the  dashboard.js
 var masterHeader = new buildMasterHeaderPanel();
  function buildMasterHeaderPanel (){
 	
@@ -353,5 +357,43 @@ var masterHeader = new buildMasterHeaderPanel();
 	  }
 		
 }
+ /*function linkReadAndUnread(uuId){
+	 $.ajax({
+	      type: "POST",
+	  	  url: sourceleadUrl+"/notificationStatusRead?=&uuId="+uuId,
+	  			  success :function(data) {
+     			 }							     
+	}); 
+}
+ function tagItBykeyForEmails(e){
+		if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+			 $(document).click();
+			 return true;
+		}
+	}
 
 
+ function tagItBykeyForSkills(e){
+		if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 188){
+			 $(document).click();
+			 return true;
+		}
+	}
+ function preventTabkey(e){
+	 if(e.which == 9){
+		 e.preventDefault();
+	 }
+}
+ function predefineProfileImage(imageId){
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
+	}
+ function logoutFormSubmit() {
+		 	var sourceleadUrl = 'http://localhost:8080/app';
+			var userSessionId = '49080';
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
+			document.getElementById("logoutForm").submit();
+		}
+ function linkFormSubmit(orgLocationId) {
+		document.getElementById("logoutForm").action="http://localhost:8080/app/dashboard/"+orgLocationId // need to be dynamic
+		document.getElementById("logoutForm").submit();
+	}*/
