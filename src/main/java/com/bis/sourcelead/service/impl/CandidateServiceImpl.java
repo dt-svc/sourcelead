@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -77,6 +79,7 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
@@ -87,7 +90,6 @@ import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -126,7 +128,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -3200,9 +3201,64 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getWalletList(MarketplacePurchaseSalesDTO saleOrdersListDTO,
-			String searchValue) {
-		return candidateDao.getWalletList(saleOrdersListDTO, searchValue);
+	public ResponseList<MarketplaceWalletDTO> getWalletList(MarketplaceWalletDTO marketplaceWalletDTO,
+			String searchValue, String selectedTime, String transactionType, String fromDate, String toDate) throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(selectedTime.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		
+		if(selectedTime.equalsIgnoreCase("weekAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("thisMonth")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("3monthsAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -3);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("6monthsAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -6);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("oneYearAgo")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(marketplaceWalletDTO.getOrgLocations().getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(selectedTime.equalsIgnoreCase("customDates")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(marketplaceWalletDTO.getOrgLocations().getDateFormat(), fromDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(marketplaceWalletDTO.getOrgLocations().getDateFormat(), toDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		return candidateDao.getWalletList(marketplaceWalletDTO, searchValue, transactionType, dateValue);
 	}
 
 	@Override
@@ -3303,6 +3359,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 			
 			return createExcelsheet;
+	}
+
+	@Override
+	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
+		candidateDao.saveCandidateMarketPlaceWallet(wallet);
 	}
 	
 }

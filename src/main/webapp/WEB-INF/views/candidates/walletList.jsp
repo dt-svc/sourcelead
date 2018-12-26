@@ -86,11 +86,11 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="1883" type="checkbox">
+                <input name="transactionType" value="Credit" type="checkbox">
                 <label>Credit</label>
               </li>
               <li class="checkBox positionRelative">
-                <input name="orgManagers" value="" type="checkbox">
+                <input name="transactionType" value="Debit" type="checkbox">
                 <label>Debit </label>
               </li>
             </ul>
@@ -104,27 +104,27 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="">
 			<li class="checkBox positionRelative">
-                <input name="timeInterval" value="2366" type="radio">
+                <input name="timeInterval" value="today" type="radio">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="timeInterval" value="2366" type="radio">
+                <input name="timeInterval" value="weekAgo" type="radio">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="timeInterval" value="2367" type="radio">
+				<input name="timeInterval" value="thisMonth" type="radio">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="timeInterval" value="2367" type="radio">
+				<input name="timeInterval" value="3monthsAgo" type="radio">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="timeInterval" value="2367" type="radio">
+				<input name="timeInterval" value="6monthsAgo" type="radio">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="timeInterval" value="2367" type="radio">
+				<input name="timeInterval" value="oneYearAgo" type="radio">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
@@ -161,8 +161,8 @@
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="saveInviteCompany();">Save</button>
-          <button type="button" class="slBtn md popClose" onclick="flushInviteCompany();"> Cancel</button>
+          <button type="button" class="slBtn md colorBtn" onclick="getWalletFilter();">Save</button>
+          <button type="button" class="slBtn md popClose" onclick="cancelWalletFilter();"> Cancel</button>
         </div>
         
         <div>
@@ -173,6 +173,33 @@
 		location.href = "${appPath}/candidatesList";
 	} */
 		
+	function cancelWalletFilter(){
+		$('input[name=timeInterval]').prop('checked', false);
+		$('input[name=transactionType]').prop('checked', false);
+		//$("#toDate, #frmDate").val("");
+		//$('#toDate, #frmDate').datepicker('setDate', null);
+		$('#toDate, #frmDate').val('').datepicker('setDate', null);
+		//$.datepicker._clearDate("#toDate");
+		//$.datepicker._clearDate("#frmDate");
+		$("#customDates").hide();
+		getDynamicWalletList();
+		
+	}
+	
+	function getWalletFilter(){
+		var selectedInterval = $('input[name=timeInterval]:checked').val();
+		var selectedTransactionType = [];
+		$('input[name="transactionType"]:checked').each(function() {
+			selectedTransactionType.push(this.value);
+		});
+		if(selectedInterval == undefined){
+			selectedInterval = "";
+		}
+		$("#modalWallet, .mask").fadeOut();
+		$("#customDates").hide();
+		getDynamicWalletList(selectedInterval,selectedTransactionType);
+		
+	}
 	function goToGlobalMarketPlaceList(){
 		location.href = "${appPath}/globalMarketplacePage";
 	}
@@ -192,11 +219,31 @@
   </script>
   
   <script>
-  function getDynamicWalletList(){
+  $("#walletSearch").keyup(function (e) {
+      if (e.which === 13) {
+    	  getDynamicWalletList();
+      }
+  });
+  
+  
+  
+  function getDynamicWalletList(selectedTime, selectedTransaction){
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  var searchValue = $("#walletSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl	+"/getWalletList?searchValue="+searchValue;
+		if(selectedTime == undefined){
+			selectedTime = "";
+		}
+		if(selectedTransaction == undefined){
+			selectedTransaction = "";
+		}
+		var startDate = "";
+		var endDate = "";
+		if(selectedTime == "customDates"){
+			startDate = $('#frmDate').val();
+			endDate = $("#toDate").val();
+		}
+		var url = sourceleadUrl	+"/getWalletList?searchValue="+searchValue+"&selectedTime="+selectedTime+"&transactionType="+selectedTransaction+"&fromDate="+startDate+"&toDate="+endDate;
 		prepareWalletList(url);	
   }
   function prepareWalletList(url){
@@ -204,10 +251,11 @@
 	     result = result + '<table id="dynamicWalletListTbl">';
 	     result = result + '<thead>';
 	     result = result + '<tr>';
-	     result = result + '<th>Transaction Date</th>';
 	     result = result + '<th>Transaction ID</th>';
+	     result = result + '<th>Transaction Date</th>';
 	     result = result + '<th>Description</th>';
 	     result = result + '<th>Amount</th>';
+	     result = result + '<th>Transaction Type</th>';
 	     result = result + '</tr>';
 	     result = result + '</thead>';
 	     result = result + '</table>';
@@ -229,22 +277,35 @@
 	        }),
 	        
 	        "columns": [
-	             {"data": "Transaction Date"},
-	             {"data": "Transaction ID"},
-	             {"data": "Description"},
-	             {"data": "Amount"}
+	        	 {"data": "transactionId"},
+	             {"data": "transactionDate"},
+	             {"data": "description"},
+	             {"data": "amount"},
+	             {"data": "paymentStatus"}
 	         ],
 	         "columnDefs": [
+	        	 {
+	                 "targets": colIndex++,
+	                 "data": "transactionId",
+	                 "render": function (data, type, opt, meta) {
+	                     var result = "";
+	                     if (opt.transactionId !== null && opt.transactionId !== '' && opt.transactionId !== 'undefined') {
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.transactionId+"'>"+opt.transactionId+"</div></td>";
+	                     } else {
+	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+	                     }
+	                     return result;
+	                 }
+	             },
 	             {
 	                 "targets": colIndex++,
 	                 bSortable: true,
 	                 aTargets: [ -1 ],
-	                  "data": "orderDate", 
+	                  "data": "transactionDate", 
 	                 "render": function (data, type, opt, meta) {
-	                	 
 	                     var result = "";
-	                     if (opt.orderDate !== null && opt.orderDate !== '' && opt.orderDate !== 'undefined') {
-	                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.orderDate +"'>"+opt.orderDate+"  </div></td>";
+	                     if (opt.transactionDate !== null && opt.transactionDate !== '' && opt.transactionDate !== 'undefined') {
+	                    	    result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.transactionDate +"'>"+opt.transactionDate+"  </div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     }
@@ -253,11 +314,11 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "orderNo",
+	                 "data": "description",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                     if (opt.orderNo !== null && opt.orderNo !== '' && opt.orderNo !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.orderNo+"'>"+opt.orderNo+"</div></td>";
+	                     if (opt.description !== null && opt.description !== '' && opt.description !== 'undefined') {
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.description+"'>" + opt.description + "</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     }
@@ -266,25 +327,25 @@
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "orderNo",
+	                 "data": "amount",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                     if (opt.orderNo !== null && opt.orderNo !== '' && opt.orderNo !== 'undefined') {
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.orderNo+"'>" + opt.orderNo + "</div></td>";
+	                     if (opt.amount !== null && opt.amount !== '' && opt.amount !== 'undefined') {
+	                    	// $("#totoalAmount").html(opt.sumOfOrdersAmount)
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.amountType+" "+opt.amount+"'>" + opt.amountType +" "+opt.amount+"</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
-	                     }
+	                     } 
 	                     return result;
 	                 }
 	             },
 	             {
 	                 "targets": colIndex++,
-	                 "data": "totalPrice",
+	                 "data": "paymentStatus",
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
-	                     if (opt.totalPrice !== null && opt.totalPrice !== '' && opt.totalPrice !== 'undefined') {
-	                    	 $("#totoalAmount").html(opt.sumOfOrdersAmount)
-	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.totalPrice+"'>" + opt.totalPrice + "</div></td>";
+	                     if (opt.paymentStatus !== null && opt.paymentStatus !== '' && opt.paymentStatus !== 'undefined') {
+	                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.paymentStatus+"'>" + opt.paymentStatus +"</div></td>";
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     } 
@@ -347,12 +408,11 @@
 	      dateFormat: finalDateFormatEndDate,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#toDate").datepicker("option", "minDate", dt);
-	        }
+		  onSelect: function (selected) {
+	           var dt = new Date(selected);
+	           dt.setDate(dt.getDate() + 1);
+	           $("#toDate").datepicker("option", "minDate", dt);
+	      }
 	  }).datepicker('show');
     }
     
@@ -372,12 +432,11 @@
 	      dateFormat: finalDateFormatEndDate,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	      onSelect: function (selected) {
-	            //var dt = new Date(selected);
-	            var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() + 1);
-	            $("#frmDate").datepicker("option", "maxDate", dt);
-	        }
+		  onSelect: function (selected) {
+	           var dt = new Date(selected);
+	           dt.setDate(dt.getDate() - 1);
+	           $("#frmDate").datepicker("option", "maxDate", dt);
+	      }
 	  }).datepicker('show');
   }
 

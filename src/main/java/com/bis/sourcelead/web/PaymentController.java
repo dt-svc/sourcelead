@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.EmailAttachment;
 
 import com.bis.sourcelead.entity.Invoice;
@@ -564,7 +565,6 @@ public class PaymentController {
     @RequestMapping("/init-marketplace-payment")
     @ResponseBody
     public String initMarketplacePayment(HttpServletRequest request, @RequestParam(defaultValue = "") String cartId) {
-        System.out.println("cartId is "+cartId);
     	Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
 
@@ -656,6 +656,7 @@ public class PaymentController {
                     	}
                     	if(marketCartIds != null && marketCartIds.size() > 0){
                     		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
+                    		CandidateMarketWallet wallet = new CandidateMarketWallet();
                 			tranHistory.setId(paymentHistory.getId());
                 			tranHistory.setOrgLocationId(orgLocations);
                 			if(marketCartIds != null && marketCartIds.size() > 0){
@@ -673,6 +674,19 @@ public class PaymentController {
                 			tranHistory.setTransactionUserEmail(paymentHistory.getTransactionUserEmail());
                 			tranHistory.setTransactionDate(paymentHistory.getTransactionDate());
                     		candidateService.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
+                    		
+                    		/*Save CandidateMarketPlaceWallet table*/
+                    		
+                    		wallet.setWalletUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+                    		wallet.setAmount(paymentHistory.getInvoiceAmount());
+                    		wallet.setAmountType(paymentHistory.getCurrency());
+                    		wallet.setMarketPlacePaymentTransactionHistory(tranHistory);
+                    		wallet.setOrgLocationId(orgLocations);
+                    		wallet.setPaymentStatus(Constants.CREDIT_NOTE);
+                    		wallet.setTransactionId(paymentHistory.getTransactionId());
+                    		wallet.setTransactionDate(paymentHistory.getTransactionDate());
+                    		wallet.setDescription(null);
+                    		candidateService.saveCandidateMarketPlaceWallet(wallet);
                     	}
                     	} catch (Exception e) {
                         e.printStackTrace();
@@ -835,6 +849,7 @@ public class PaymentController {
                 	String paymentId = transactionHistory.getPaymentId();
                 	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
                 	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
+                	//candidateService.saveMarketPlaceWallet();
 
                 	//sending Email.
                 	StringBuilder currentUserName = new StringBuilder();
@@ -862,7 +877,6 @@ public class PaymentController {
                 			globalVarsMap.put("dateAndTime", new Date().toString());
                 			
                 			for(int i=0; i< candidateDto.size(); i++){
-                				String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
                 				candidateName.delete(0, candidateName.length());
                 				candidateName.append(candidateDto.get(i).getFirstName()+" "+candidateDto.get(i).getLastName()).toString();
                 				marketPlace = candidateService.getCandidateDetailsByCandidateId(candidateDto.get(i).getId());
@@ -900,6 +914,7 @@ public class PaymentController {
                 			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; margin-top: 15px;'>");
                 			 bodyBuilder.append("<ul style='color: #333; list-style-type: none; margin: 0; padding: 0; font-size: 14px;'>");
                 			 if(candidateDto.get(i).getSkillsName() != null){
+                				 String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
                 			 for(int j = 0; j < candidateSkills.length;){
                 				 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
                 				 bodyBuilder.append(""+candidateSkills[j]+"");
