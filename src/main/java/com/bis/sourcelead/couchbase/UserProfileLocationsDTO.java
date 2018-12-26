@@ -37,7 +37,11 @@ private static final long serialVersionUID = 1L;
 	
 	List<String> rolesList;
 	
+	private String dateFormat;
 	
+	private Long timeZoneId;
+	
+	private String country;
 	
 	
 	
@@ -160,6 +164,30 @@ private static final long serialVersionUID = 1L;
 
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public Long getTimeZoneId() {
+		return timeZoneId;
+	}
+
+	public void setTimeZoneId(Long timeZoneId) {
+		this.timeZoneId = timeZoneId;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 }

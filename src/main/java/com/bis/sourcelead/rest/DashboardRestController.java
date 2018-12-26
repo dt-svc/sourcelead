@@ -629,6 +629,11 @@ public class DashboardRestController {
 	  * @throws NullPointer
 	  */
 	
+	 
+	 
+	 
+	 
+	 
 	 @RequestMapping(value = "/getRequirementSubmissionsCount" , method = RequestMethod.GET)
 	 public Response<DashboardCounts>  getRequirementSubmissionsCount(@RequestParam(value="daterange", required=false) String daterange,@RequestParam(value="orgLocationId", required=false) Long orgLocationId,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
 		 Response<DashboardCounts> response = new Response<>();
@@ -703,6 +708,39 @@ public class DashboardRestController {
 		}
 		return response;
 	   }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/getRequirementSubmissionsDashboardCount" , method = RequestMethod.GET)
+	 public Response<DashboardCounts>  getRequirementSubmissionsDashboardCount(@RequestParam(value="daterange", required=false) String daterange,@RequestParam(value="orgLocationId", required=false) Long orgLocationId,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest request) throws Exception {
+		 Response<DashboardCounts> response = new Response<>();
+		 OrgLocations loginOrgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			DashboardCounts dc= new DashboardCounts();
+			User user = userService.getUserById(userId);
+
+		if(user != null) {
+			try {
+				org.json.simple.JSONObject jobsJsonObject = SourceLeadSessionManager.getDashboardJobsCountJsonObject(request, user.getUserName(),String.valueOf(loginOrgLocations.getId()));
+			   
+			    response.setObject(dc);
+			    response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	   }
+
 
 	 
 	 /**

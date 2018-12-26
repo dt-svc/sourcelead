@@ -57,6 +57,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserProfileDetailsDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -2236,6 +2237,11 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 			}
 		}
 		return datesMap;
+	}
+
+	@Override
+	public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception {
+		return userDao.getAllSourceleadUsers();
 	}
 
 

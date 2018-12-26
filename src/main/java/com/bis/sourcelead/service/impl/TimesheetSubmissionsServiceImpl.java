@@ -252,7 +252,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		
 		    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 		   if(countType.equalsIgnoreCase("APPROVED")) {
-			Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId,  "APPROVED",isGlobalUser);
+			Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(
+					userId, orgLocationId,  "APPROVED",isGlobalUser);
 			timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeCount));
 		   }
 		   if(countType.equalsIgnoreCase("REJECTED")) {
@@ -269,7 +270,8 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		   }
 		   if(countType.equalsIgnoreCase("All")) {
-			   Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId,  "APPROVED",isGlobalUser);
+			   Integer approvedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(
+					   userId, orgLocationId,  "APPROVED",isGlobalUser);
 				timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeCount));
 			   Integer rejectedindividualEmployeeCount = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(userId, orgLocationId, "REJECTED",isGlobalUser);
 				timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeCount));

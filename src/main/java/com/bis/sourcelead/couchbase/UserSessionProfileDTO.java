@@ -20,7 +20,9 @@ public class UserSessionProfileDTO implements Serializable{
 	
 	private String imageUrl;
 	
-	UserProfileLocationsDTO userProfileLocations;
+	Object userProfileLocationsList;
+	
+	private String userName;
 	
 	
 
@@ -81,12 +83,20 @@ public class UserSessionProfileDTO implements Serializable{
 		this.imageUrl = imageUrl;
 	}
 
-	public UserProfileLocationsDTO getUserProfileLocations() {
-		return userProfileLocations;
+	public Object getUserProfileLocationsList() {
+		return userProfileLocationsList;
 	}
 
-	public void setUserProfileLocations(UserProfileLocationsDTO userProfileLocations) {
-		this.userProfileLocations = userProfileLocations;
+	public void setUserProfileLocationsList(Object userProfileLocationsList) {
+		this.userProfileLocationsList = userProfileLocationsList;
 	}
-	
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 }

@@ -172,7 +172,7 @@ function requirementSubmissionsCount(daterange) {
 	$.ajax({
 				type : "GET",
 				url : sourceleadUrl
-						+ "/getRequirementSubmissionsCount?daterange="	+ daterange + "&userId=" + userId + "&orgLocationId="+ orgLocationId,
+						+ "/getRequirementSubmissionsDashboardCount?daterange="	+ daterange + "&userId=" + userId + "&orgLocationId="+ orgLocationId,
 				success : function(data) {
 					if (data.response === "FAILED") {
 						showError(data.responseMessage);

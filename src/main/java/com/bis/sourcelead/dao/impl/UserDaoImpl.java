@@ -13,13 +13,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -41,14 +39,13 @@ import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserProfileDetailsDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
-import com.bis.sourcelead.entity.RequirementIncentive;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -2691,6 +2688,31 @@ String sortingQry ="";
 	}
 
 	
+	@Override
+	@Transactional
+	public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 List<UserProfileDetailsDTO> userProfileDTOList = null;
+		 
+	     
+	     String query = "SELECT "
+				 +" UR.ID AS userId, "
+				 +" UR.FIRST_NAME AS firstName, "
+				 +" UR.LAST_NAME AS lastName, "
+				 +" UR.MIDDLE_NAME AS middleName, "
+				 +" UR.EMAIL AS email, "
+				 +" UR.USER_NAME AS userName, "
+				 +" UR.GENDER AS gender, "
+				 +" UR.FILE_URL AS imageUrl "
+				 +" FROM "
+			     +" USER UR WHERE UR.ID = '800'";
+	     
+		 
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setResultTransformer(Transformers.aliasToBean(UserProfileDetailsDTO.class));
+			userProfileDTOList = queryObj.list();
+			return userProfileDTOList;
+	}
 
 
 }

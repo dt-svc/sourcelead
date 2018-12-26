@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserProfileDetailsDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -268,6 +269,8 @@ public Sheet exportAllApplicantJoinedList(Sheet createExcelsheet, Workbook creat
 public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportDTO>  userDTOList,OrgLocations orgLocations,Date[] searchDates) throws Exception;
 
 public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate, String dateFormat);
+
+public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception;
 
 
 }	

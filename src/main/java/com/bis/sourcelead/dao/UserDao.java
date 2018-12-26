@@ -8,6 +8,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserProfileDetailsDTO;
 import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -210,5 +211,7 @@ public interface UserDao {
 	public ResponseList<ApplicantsJoinedReportDTO> getApplicantsJoinedReport(ApplicantsJoinedReportDTO applicantsJoinedReportDTO,Long orgLocationId,Date[] searchDates,List<Long> teamsList,String type,List<Long> clientIdsList) throws Exception;
 
 	List<Object[]> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate);
+	
+	public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception;
 
 }

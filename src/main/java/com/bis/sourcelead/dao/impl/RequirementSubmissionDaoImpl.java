@@ -3691,7 +3691,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					" END) AS OFFER_COUNT ";
 				try {
 						Session session = this.sessionFactory.getCurrentSession();
-						if(!StringUtils.equalsIgnoreCase(userType, "ADMIN")){
+						if(!StringUtils.equalsIgnoreCase(userType, "Admin")){
 						 String query1 = commanQury +
 					 " FROM REQUIREMENT_SUBMISSION_HISTORY rsh, "+ 
 					 " REQUIREMENT_SUBMISSION rs, "+

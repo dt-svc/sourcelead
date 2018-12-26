@@ -19,44 +19,46 @@ import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryResult;
 import com.couchbase.client.java.query.N1qlQueryRow;
 
-
 public class CouchbaseClient {
 	Cluster cluster;
 	Bucket bucket;
-	
-	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(336699).connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
+	Bucket userProfileBucket;
+	Bucket userDashboardStatsBucket;
+
+	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(336699)
+			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
+
 	public CouchbaseClient(List<String> urls, List<String> couchBucketList, String password) {
-		
+
 		cluster = CouchbaseCluster.create(ENV, urls);
 		bucket = cluster.openBucket(couchBucketList.get(0), password);
-		
-		
+		userProfileBucket = cluster.openBucket(couchBucketList.get(1), password);
+		userDashboardStatsBucket = cluster.openBucket(couchBucketList.get(2), password);
+
 	}
-	
-	
+
 	public void deleteSessionDocumentsFromBucket(String key) {
-		
+
 		bucket.bucketManager().createN1qlPrimaryIndex(true, false);
 		N1qlQueryResult result = bucket.query(N1qlQuery.simple("SELECT meta().id FROM `test`"));
-		if(result != null) {
+		if (result != null) {
 			for (N1qlQueryRow row : result) {
-				  try {
-					    JSONParser parser = new JSONParser(); 
-					    JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
-						  for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-							     String jsonKey = (String) iterator.next();
-							     Object jsonValue = jsonObject.get(jsonKey);
-						    	 String[] sessionId = jsonValue.toString().split("_");
-						    	 if(sessionId[0].equalsIgnoreCase(key)) {
-						    		 bucket.remove(jsonValue.toString());
-						    	 }
-							}
-						  
-				    	 }
-				 catch (ParseException e) {
+				try {
+					JSONParser parser = new JSONParser();
+					JSONObject jsonObject = (JSONObject) parser.parse(row.value().toString());
+					for (Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+						String jsonKey = (String) iterator.next();
+						Object jsonValue = jsonObject.get(jsonKey);
+						String[] sessionId = jsonValue.toString().split("_");
+						if (sessionId[0].equalsIgnoreCase(key)) {
+							bucket.remove(jsonValue.toString());
+						}
+					}
+
+				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-	        }
+			}
 		}
 	}
 
@@ -64,39 +66,53 @@ public class CouchbaseClient {
 		cluster.disconnect();
 	}
 
-	public Object get(String key){
-		
-		if(bucket.get(key) != null) {
+	public Object get(String key) {
+
+		if (bucket.get(key) != null) {
 			return bucket.get(key).content().toString();
-		}else {
+		} else {
 			return null;
 		}
-		
-	}
-	
-	  public void setUserProfile(String id, String key, String value) throws Exception{
-		
-			
-			JsonObject arthur = JsonObject.create()
-		            .put(key, value);
 
-	        // Store the Document
-	        bucket.upsert(JsonDocument.create(id, arthur));			
 	}
-	
-	public static org.json.simple.JSONObject toSimple(JsonObject jo){
+
+	public Object getDashboardStats(String key) {
+
+		if (userDashboardStatsBucket.get(key) != null) {
+			return userDashboardStatsBucket.get(key).content().toString();
+		} else {
+			return null;
+		}
+
+	}
+
+	public void setUserProfile(String id, String key, JsonObject value) throws Exception {
+
+		JsonObject arthur = JsonObject.create().put(key, value);
+
+		// Store the Document
+		userProfileBucket.upsert(JsonDocument.create(id, arthur));
+	}
+
+	public void setUserDashboardStats(String id, String key, JsonObject value) throws Exception {
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the Document
+		userDashboardStatsBucket.upsert(JsonDocument.create(id, arthur));
+	}
+
+	public static org.json.simple.JSONObject toSimple(JsonObject jo) {
 		Map h = jo.toMap();
 		org.json.simple.JSONObject simpleJson = new org.json.simple.JSONObject();
 		simpleJson.putAll(h);
 		return simpleJson;
 	}
-	
-	public static JsonObject fromSimple(org.json.simple.JSONObject simpleJson){
+
+	public static JsonObject fromSimple(org.json.simple.JSONObject simpleJson) {
 		JsonObject content = JsonObject.empty();
-		for(Iterator iterator = simpleJson.keySet().iterator(); iterator.hasNext();) {
-		    String key = (String) iterator.next();
-		    content.put(key, simpleJson.get(key));
-		    System.out.println(simpleJson.get(key));
+		for (Iterator iterator = simpleJson.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			content.put(key, simpleJson.get(key));
+			System.out.println(simpleJson.get(key));
 		}
 		return null;
 	}

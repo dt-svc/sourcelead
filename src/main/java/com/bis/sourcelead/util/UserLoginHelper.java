@@ -134,6 +134,8 @@ public class UserLoginHelper {
 				    request.getSession().setAttribute("userLoginSession", userLoginSession);
 			    }
 		  }
+		  
+		  
 		  req.getSession().setAttribute("userRoleId", userRole.getId());
 		  SourceLeadSessionManager.setSessionAttribute(req, "user", loginUser);
 		  SourceLeadSessionManager.setSessionAttribute(req, "org", orgLocations.getOrg());

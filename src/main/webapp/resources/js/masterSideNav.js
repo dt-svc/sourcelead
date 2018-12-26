@@ -34,7 +34,7 @@ function MasterSideNav(){
 	       }
 	       
 	       if(tabAccessArray.indexOf("Projects") > -1){
-	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="/app/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>';
+	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="/pms/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>';
 	       }
 	       
 	       if(tabAccessArray.indexOf("My Timesheets") > -1 && tabAccessArray.indexOf("Timesheet Approval") > -1){

@@ -879,5 +879,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getLoginUserAccountsList(userId);
 	}
 
+	@Override
+	public List<UserRole> getUserLoginProfilesListByUserId(Long userId) throws Exception {
+		return userRoleDao.getUserLoginProfilesListByUserId(userId);
+	}
+
 
 }

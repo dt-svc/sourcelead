@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.couchbase.client.java.Bucket;
+
 ///import org.apache.log4j.Logger;
 ///import com.couchbase.client.CouchbaseClient;
 
@@ -17,6 +19,8 @@ public class ConnectionManager {
 	private String couchUrl;
 	List<String> urls;
 	private String couchBucket;
+	private String userProfileCouchBucket;
+	private String userDashboardStatsBucket;
 	private String couchPass;
 	
 ///	private Logger logger = Logger.getLogger(ConnectionManager.class);
@@ -45,6 +49,28 @@ public class ConnectionManager {
 		this.couchBucket = couchBucket;
 	}
 	
+	public String getUserProfileCouchBucket() {
+		return userProfileCouchBucket;
+	}
+
+	public void setUserProfileCouchBucket(String userProfileCouchBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.userProfileCouchBucket = userProfileCouchBucket;
+	}
+	
+	
+
+	public String getUserDashboardStatsBucket() {
+		return userDashboardStatsBucket;
+	}
+
+	public void setUserDashboardStatsBucket(String userDashboardStatsBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.userDashboardStatsBucket = userDashboardStatsBucket;
+	}
+
 	public String getCouchPassword() {
 		return couchPass;
 	}
@@ -64,6 +90,8 @@ public class ConnectionManager {
 					hosts = Arrays.asList(new URI(getCouchUrl()));
 					List<String> couchBuckets = new ArrayList<>();
 					couchBuckets.add(getCouchBucket());
+					couchBuckets.add(getUserProfileCouchBucket());
+					couchBuckets.add(getUserDashboardStatsBucket());
 					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
 				}
 			} catch (URISyntaxException e) {
@@ -99,6 +127,8 @@ public class ConnectionManager {
 			if (rb != null) {
 				setCouchUrl(rb.getString("couchbaseUrl"));
 				setCouchBucket(rb.getString("bucket"));
+				setUserProfileCouchBucket(rb.getString("userProfileBucket"));
+				setUserDashboardStatsBucket(rb.getString("userDashboardStatsBucket"));
 				setCouchPassword(rb.getString("password"));
 			}
 
