@@ -65,11 +65,13 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.FilteredClientDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -2111,7 +2113,7 @@ public class USPayrollRestController {
 		return model;
 	}
 	
-
+       
 		@RequestMapping(value = "/savePayItemsFromSummary",method = RequestMethod.POST)
 		public AssociatePayItem savePayItemsFromSummary(HttpServletRequest request,AssociateSalaryDTO associateSalaryDTO) throws Exception
 		{
@@ -2121,4 +2123,16 @@ public class USPayrollRestController {
 			return payItemService.savePayItemsFromSummary(associateSalaryDTO,orgLocation,user);
 		
 		}
+		
+		
+		
+//		@RequestMapping(value = "/getNextPayrollDate",method = RequestMethod.POST)
+//		public CommonPayrollDataDTO getNextPayrollDate(HttpServletRequest request,IntiateUSPayrollDTO intiateUSPayrollDTO) throws Exception
+//		{
+//			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//			
+//			return payItemService.savePayItemsFromSummary(associateSalaryDTO,orgLocation,user);
+//		
+//		}
 }
