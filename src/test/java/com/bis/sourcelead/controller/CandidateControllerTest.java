@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static junit.framework.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,13 +89,13 @@ public void getGlobalMarketplaceCandList() throws Exception {
 	ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOResponseList = null;
 	candidateMarketPlaceDTOResponseList = mockCandidateService.getGlobalMarketCandidateList(dto,"");
 	System.out.println(candidateMarketPlaceDTOList.getRecordsTotal());
-	assertEquals(mockCandidateService.getGlobalMarketCandidateList(dto,"").getRecordsTotal(),2);
+	Assert.assertEquals(mockCandidateService.getGlobalMarketCandidateList(dto,"").getRecordsTotal(),2);
 }
 
 @SuppressWarnings("deprecation")
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
-public void getGlobalMarketplaceCandListGridCard(){
+public void getGlobalMarketplaceCandListGridCard() throws Exception {
 String searchValue = null;
 String[] searchCandidateIds = null;
 String candidateLocation = null;
@@ -115,7 +116,8 @@ PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRe
 when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocation, candidateLocation, searchValue)).thenReturn(candidateMarketPlace);
 System.out.println(controller);
 candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
-assertEquals(candidateMarketPlaces.size(),1); 
+Assert.assertEquals(candidateMarketPlaces.size(),1); 
 }
+
 
 }
