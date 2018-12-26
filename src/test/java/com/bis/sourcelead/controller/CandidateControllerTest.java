@@ -98,8 +98,8 @@ public void getGlobalMarketplaceCandListGridCard(){
 String searchValue = null;
 String[] searchCandidateIds = null;
 String candidateLocation = null;
-List<CandidateMarketPlaceDTO> candidateMarketPlaces = new ArrayList<CandidateMarketPlaceDTO>();;
-List<CandidateMarketPlaceDTO> candidateMarketPlace = new ArrayList<CandidateMarketPlaceDTO>();;
+List<CandidateMarketPlaceDTO> candidateMarketPlaces = new ArrayList<CandidateMarketPlaceDTO>();
+List<CandidateMarketPlaceDTO> candidateMarketPlace = new ArrayList<CandidateMarketPlaceDTO>();
 OrgLocations orgLocation = new OrgLocations();
 orgLocation.setId(1959l);
 CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
