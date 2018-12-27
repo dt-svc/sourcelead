@@ -521,12 +521,12 @@ public class CandidateController {
 		
 	 }	 
 	 
-	 @RequestMapping(value = "/candidateMarketplaceCheckout")
-	 public ModelAndView candidateMarketplaceCheckout()throws Exception
+	 @RequestMapping(value = "/candidateMarketplaceCart")
+	 public ModelAndView candidateMarketplaceCart()throws Exception
 	 { 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("candidates/candidateMarketplaceCheckout");
+		 model.setViewName("candidates/candidateMarketplaceCart");
 		 return model;
 	 }
 	 

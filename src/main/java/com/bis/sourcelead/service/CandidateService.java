@@ -317,7 +317,7 @@ public interface CandidateService {
 
 	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations)throws Exception;
 	
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate, Date[] salesOrderDateArray)throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate, String salesOrderFilterDate)throws Exception;
 
 	public MarketplacePurchaseSalesDTO getMarketplaceSalesOrderBySalesUuid(OrgLocations orgLocations, String salesUuid)throws Exception;
 	
