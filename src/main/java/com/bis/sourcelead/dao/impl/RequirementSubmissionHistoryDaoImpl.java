@@ -238,16 +238,15 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		List<Long> countlist = null;
 		String stageQuery = null;
 		if(stage.equals("SUBMISSION")){
-			stageQuery = " rsh.toStage ='SUBMISSION'";	
+			stageQuery = " rsh.toStage ='SUBMISSION' and ((rsh.fromStage = 'NEW') OR (rsh.fromStage ='request_sent'))";	
 		}else if(stage.equalsIgnoreCase("SHORTLIST")){
 			stageQuery = " rsh.toStage = 'SHORTLIST'";
 		}else if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 			stageQuery = " rsh.toStage = 'SUBMIT_TO_CLIENT'";
 		}else if(stage.equalsIgnoreCase("INTERVIEW")){
-			stageQuery = " (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+			stageQuery = " (rsh.toStage = 'INTERVIEW')";
 		}else if(stage.equalsIgnoreCase("OFFERMADE")){
-			stageQuery = " (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
-					+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+			stageQuery = " (rsh.toStage = 'OFFERMADE') ";
 		}else if(stage.equalsIgnoreCase("REJECTED")) {
 			stageQuery = " rsh.toStage = 'REJECTED'";
 		}else if(stage.equalsIgnoreCase("JOINED")) {
@@ -271,8 +270,8 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			 
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId group by rs.id";  
-		queryObj = session.createQuery(query);
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId";  
+	    queryObj = session.createQuery(query);
 		
 		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
 		
