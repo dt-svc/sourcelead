@@ -1132,7 +1132,7 @@ function resetCandidateFilter(){
 	document.getElementById("myCandidatesRadio").checked = true;
 	$("#globalMarketSearh").val("");
 	$("#candidateLocation").val("");
-	candidateList('gMarketPlace');
+	//candidateList('gMarketPlace');
 }
 function refreshPage(){
   location.reload(); // refresh the page.

@@ -150,31 +150,31 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="MarketCartCheckBox">
               <li class=" positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "todayDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="today" type="radio" >
                 <label>Today</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "thisWeekAgoDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_week" type="radio">
                 <label>This Week</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "lastWeekDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="Last_Week" type="radio" >
                 <label>last Week</label>
               </li>
              <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "oneMonthDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_month" type="radio">
                 <label>One Month</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "oneMonthAgoDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_Month_Ago" type="radio">
                 <label>One Month Ago</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "thisYearDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="YTD" type="radio">
                 <label>This Year</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="" type="radio" id = "customDateCheckBox">
+                <input class="dateCheckBox" name="MarketCartDate" value="custom" type="radio" id = "customDateCheckBox">
                 <label>Custom</label>
               </li>
             </ul>
@@ -279,11 +279,12 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-
+/* 
 var checkedDate = "";
-var customDate = "";
+var customDate = ""; */
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
+	var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();
@@ -482,48 +483,11 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		createMarketCartEndDate();
  	 });
 	
-	$("#todayDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = 'today';
-			$("#customDateCheckBox").val("");
-		}
-	});
-	$("#thisWeekAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = '1_week';
-			$("#customDateCheckBox").val("");
-		}
-	});
-	$("#lastWeekDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = 'Last_Week';
-			$("#customDateCheckBox").val("");
-		}
-	});
-	$("#oneMonthDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = '1_month';
-			$("#customDateCheckBox").val("");
-		}
-	});
-	$("#oneMonthAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = '1_Month_Ago';
-			$("#customDateCheckBox").val("");
-		}
-	});
-	$("#thisYearDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			checkedDate = 'YTD';
-			$("#customDateCheckBox").val("");
-		}
-	});	
-		
 	$("#customDateCheckBox").click(function() {
 		if($(this).is(":checked")){
 			$("#customDates").show();
-			$("#customDateCheckBox").val("custom");
-			checkedDate = '';
+		//	$("#customDateCheckBox").val("custom");
+		//	checkedDate = '';
 		}else {
 			$("#customDates").hide();
 		}
@@ -531,11 +495,10 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 	
 	function validateMarketCartFilter(){
   		var customDate = $("#customDateCheckBox").val();
-  		var otherDate = checkedDate;
+  		var otherDate = $('input[name=MarketCartDate]:checked').val();
   		var fromDate = $("#creationStartDate").val();
   		var toDate = $("#creationEndDate").val();
   		if(customDate === "custom"){
-  			alert('custom date validation');
   			if(fromDate === ''){
   				$("#creationStartDate").focus();
   			}
