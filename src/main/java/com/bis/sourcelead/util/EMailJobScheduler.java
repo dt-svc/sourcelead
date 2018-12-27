@@ -3992,11 +3992,13 @@ public class EMailJobScheduler {
 	}
 	
 	@Scheduled(cron = "0 3 0 1 1 ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateYearlyLeaves() throws Exception
 	{
-		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
-		for(OrgLocations orgLocation : orglocationsList){
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(1890l);
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+//		for(OrgLocations orgLocation : orglocationsList){
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
@@ -4004,7 +4006,7 @@ public class EMailJobScheduler {
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
-		}
+//		}
 	}
 	
     //	0 0 8 ? * MON-FRI  Every Day at * AM 
