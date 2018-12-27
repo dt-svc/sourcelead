@@ -1436,7 +1436,6 @@ public class CandidateRestController {
 
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
-			Date[] salesOrderDateArray = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
@@ -1446,13 +1445,10 @@ public class CandidateRestController {
 	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
 	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
 	  		}
-	  		if(salesOrderFilterDate != null && !"".equalsIgnoreCase(salesOrderFilterDate)){
-	  			salesOrderDateArray = reportsUtil.getJobFilterDate(salesOrderFilterDate, orgLocations);
-			}
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderDateArray);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderFilterDate);
 	  		File file = null;
 	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
 		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {

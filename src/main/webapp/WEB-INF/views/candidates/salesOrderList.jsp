@@ -95,31 +95,31 @@
           <div class="clearfix filterSearch-ul">
             <ul class="list-unstyled positionRelative filterSearch mt5" id="salesOrderCheckBox">
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="" type="radio" id = "todayDateCheckBox" class="mt2">
+                <input name="dateCheckBox" value="today" type="radio" class="mt2">
                 <label>Today</label>
             </li>
 			<li class="checkBox positionRelative">
-                <input name="userRole" value="" type="radio" id = "OneWeekAgoDateCheckBox" class="mt2">
+                <input name="dateCheckBox" value="1_week" type="radio" class="mt2">
                 <label>Week Ago</label>
             </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "thisMonthDateCheckBox" class="mt2">
+				<input name="dateCheckBox" value="1_month" type="radio" class="mt2">
 				<label>This Month</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "threeMonthsAgoDateCheckBox" class="mt2">
+				<input name="dateCheckBox" value="3_months" type="radio" class="mt2">
 				<label>3 months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "sixMonthsAgoDateCheckBox" class="mt2">
+				<input name="dateCheckBox" value="6_months" type="radio" class="mt2">
 				<label>6 Months ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "oneYearAgoDateCheckBox" class="mt2">
+				<input name="dateCheckBox" value="YTD" type="radio" class="mt2">
 				<label>1 Year ago</label>
 			  </li>
 			  <li class="checkBox positionRelative">
-				<input name="userRole" value="" type="radio" id = "salesOrderCustomDate" class="mt2">
+				<input name="dateCheckBox" value="custom" type="radio" id = "salesOrderCustomDate" class="mt2">
 				<label>Custom Dates</label>
 			  </li>
 			  </ul>
@@ -161,13 +161,13 @@
   
   <script>
    var table = "";
-   var salesOrderFilterDate = "";
    var paymentStatus = "";
    $(document).ready(function () {
 	   getDynamicSalesOrderList();
 	 });
   
    function getDynamicSalesOrderList(){
+	   var salesOrderFilterDate = $('input[name=dateCheckBox]:checked').val();
 	 	var salesOrderFromDate = $("#salesOrderFromDate").val();
 		var salesOrderToDate = $("#salesOrderToDate").val(); 
 	  	var result = "";
@@ -408,7 +408,7 @@
   	
   	function validateSalesOrderFilter(){
   		var customDate = $("#salesOrderCustomDate").val();
-  		var otherDate = salesOrderFilterDate;
+  		var otherDate = $('input[name=dateCheckBox]:checked').val();
   		var fromDate = $("#salesOrderFromDate").val();
   		var toDate = $("#salesOrderToDate").val();
   		if(customDate === "custom"){
@@ -446,37 +446,8 @@
     	$("#modalSalesOrder, .advancedsearch-mask").fadeOut();
     }
   
-	 $("#todayDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = 'today';
-		}
-	});
-	$("#OneWeekAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = '1_week';
-		}
-	});
-	$("#thisMonthDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = '1_month';
-		}
-	});
-	$("#threeMonthsAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = '3_months';
-		}
-	});
-	$("#sixMonthsAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = '6_months';
-		}
-	});
-	$("#oneYearAgoDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			salesOrderFilterDate = 'YTD';
-		}
-	}); 
-	$("#paymentSuccessCheckBox").click(function() {
+	 
+	/* $("#paymentSuccessCheckBox").click(function() {
 		if($(this).is(":checked")){
 			paymentStatus = 'success';
 		}
@@ -485,13 +456,11 @@
 		if($(this).is(":checked")){
 			paymentStatus = 'failure';
 		}
-	});
+	}); */
 	//Custom Dates
 	$("#salesOrderCustomDate").click(function() {
 	if($(this).is(":checked")){
 		$("#customDates").show();
-		$("#salesOrderCustomDate").val("custom");
-		salesOrderFilterDate = '';
 	}else {
 		$("#customDates").hide();
 	}
