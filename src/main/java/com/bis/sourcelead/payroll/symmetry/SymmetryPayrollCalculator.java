@@ -134,7 +134,7 @@ public class SymmetryPayrollCalculator {
 				
 				// State Unemployment Insurance (SUI) 
 				
-				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())
+				if(PayrollConstant.NEW_JERSEY.equalsIgnoreCase(candidate.getResidenceState().trim())
 				  || PayrollConstant.PENNSYLVANIA.equalsIgnoreCase(candidate.getResidenceState().trim())
 				   || PayrollConstant.ALASKA.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
@@ -160,7 +160,7 @@ public class SymmetryPayrollCalculator {
 					//HCSF
 					STE.setHealthCareSubsidyFund(locationCode, null, null, null, true);
 					STE.setWages(locationCode, WageType.SUTA_GROSS_WAGES, new Hours(totalHours), new Money(grossAamount),zero, zero, zero);
-					STE.setFLI(locationCode, zero, null, null, false);			
+					STE.setFLI(locationCode, new Money(grossAamount), null, null, false);			
 				}
 				//New York Family Leave Insurance tax
 				if(PayrollConstant.NEW_YORK.equalsIgnoreCase(candidate.getResidenceState().trim())) {
@@ -328,7 +328,7 @@ public class SymmetryPayrollCalculator {
 					FLI = STE.getFLICalc(locationCode);
 					HCSF = STE.getHealthCareSubsidyFundCalc(locationCode);
 					logger.info("NJ FLI Calculation: " + FLI);	
-					logger.info("NJ Health Care Subsidy Fund: " + HCSF);	
+					logger.info("NJ Health Care Subsidy Fund (HCSF): " + HCSF);	
 					payrollCalculatorDTO.setFLI(FLI);
 					payrollCalculatorDTO.setHCSF(HCSF);
 				}
@@ -342,7 +342,7 @@ public class SymmetryPayrollCalculator {
 				//Workers Compensation (WC)
 				if(PayrollConstant.NEW_MEXICO.equalsIgnoreCase(candidate.getResidenceState().trim()) || PayrollConstant.OREGON.equalsIgnoreCase(candidate.getResidenceState().trim())) {
 					WC = STE.getWorkersCompCalc(locationCode);
-					logger.info("New Mexico Worker’s Comp Calculation: " +WC);
+					logger.info("New Mexico Worker’s Comp Calculation (WC): " +WC);
 					payrollCalculatorDTO.setWC(WC);
 				}
 				
