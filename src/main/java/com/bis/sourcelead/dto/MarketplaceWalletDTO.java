@@ -31,6 +31,7 @@ public class MarketplaceWalletDTO extends SearchDTO implements Serializable{
 	private String transactionDate;
 	private Long orgLocationId;
 	private OrgLocations orgLocations;
+	private Double totalBalanceAmount;
 	
 	public String getId() {
 		return id;
@@ -91,6 +92,12 @@ public class MarketplaceWalletDTO extends SearchDTO implements Serializable{
 	}
 	public void setOrgLocations(OrgLocations orgLocations) {
 		this.orgLocations = orgLocations;
+	}
+	public Double getTotalBalanceAmount() {
+		return totalBalanceAmount;
+	}
+	public void setTotalBalanceAmount(Double totalBalanceAmount) {
+		this.totalBalanceAmount = totalBalanceAmount;
 	}
 	
 }

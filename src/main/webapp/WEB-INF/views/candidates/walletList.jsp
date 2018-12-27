@@ -36,7 +36,7 @@
               <div class="media-body">
                 <div class="col-md-9">
 					<div class="ml5">
-                <h4 class="text-muted text-primary mt5 mb0"><span  id="totoalAmount" ></span></h4>
+                <h4 class="text-muted text-primary mt5 mb0"><span  id="totoalAmount" >$ 0.0</span></h4>
 				<p class="text-muted fontSmall mt5">Wallet balance</p>
 						</div>
                   <div class="clearfix"></div>
@@ -288,6 +288,7 @@
   
   }
   function walletPaginations(url){
+	  var countVal = 0;
 		var colIndex = 0;
 	    $('#dynamicWalletListTbl').DataTable( { 
 		  "processing": true,
@@ -372,6 +373,10 @@
 	                     } else {
 	                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
 	                     } 
+	                     countVal++;
+	                     if(countVal == 1){
+	                    	 $("#totoalAmount").empty().text("$ "+opt.totalBalanceAmount);
+	                     }
 	                     return result;
 	                 }
 	             }

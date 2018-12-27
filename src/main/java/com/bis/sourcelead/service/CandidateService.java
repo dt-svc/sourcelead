@@ -331,4 +331,8 @@ public interface CandidateService {
 
 	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception;
 
+	public Double getBalanceAmountFromWallet(Long id);
+
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
+
 }
