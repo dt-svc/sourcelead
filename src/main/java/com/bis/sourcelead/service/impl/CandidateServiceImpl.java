@@ -3432,6 +3432,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
 		candidateDao.saveCandidateMarketPlaceWallet(wallet);
 	}
+
+	@Override
+	public Double getBalanceAmountFromWallet(Long id) {
+		return candidateDao.getBalanceAmountFromWallet(id);
+	}
+
+	@Override
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
+		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+	}
 	
 }
 

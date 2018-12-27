@@ -3114,7 +3114,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			StringBuilder dateValueTypeQuery = new StringBuilder("");
 			if(!dateValue.isEmpty()){
-				dateValueTypeQuery.append(" and (cmwallet.transactionDate >= :endDate and cmwallet.transactionDate <= :startDate) ");
+				dateValueTypeQuery.append(" and (cmwallet.transactionDate BETWEEN :endDate AND :startDate) OR (cmwallet.transactionDate = :endDate) OR (cmwallet.transactionDate = :startDate) ");
 			}
 			
 			String sortingQry = "";
@@ -3230,6 +3230,25 @@ public class CandidateDaoImpl implements CandidateDao {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidateMarketWallet"));
 			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Double getBalanceAmountFromWallet(Long id) {
+		logger.debug("getBalanceAmountFromWallet");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select wallet.totalBalanceAmount from CandidateMarketWallet wallet where wallet.orgLocationId.id = :orgLocationId";
+		Double totalAmount = (Double) session.createQuery(query).setFirstResult(0).setMaxResults(1).setParameter("orgLocationId", id).uniqueResult();
+		return totalAmount;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
+		logger.debug("updateMarketWalletAmount");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "update CandidateMarketWallet wallet set wallet.totalBalanceAmount = :totalAmountValue where wallet.orgLocationId.id = :orgLocationId";
+		int count = session.createQuery(query).setParameter("totalAmountValue", balanceAmountValue).setParameter("orgLocationId", id).executeUpdate();
 	}
 	
 }
