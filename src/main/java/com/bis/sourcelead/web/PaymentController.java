@@ -684,9 +684,17 @@ public class PaymentController {
                     		wallet.setOrgLocationId(orgLocations);
                     		wallet.setPaymentStatus(Constants.CREDIT_NOTE);
                     		wallet.setTransactionId(paymentHistory.getTransactionId());
-                    		wallet.setTransactionDate(paymentHistory.getTransactionDate());
+                    		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), paymentHistory.getTransactionDate());
+                    		wallet.setTransactionDate(formattedDate);
                     		wallet.setDescription(null);
+                    		Double balanceAmount = candidateService.getBalanceAmountFromWallet(orgLocations.getId());
+                    		Double balanceAmountValue = paymentHistory.getInvoiceAmount();
+                    		if(balanceAmount != null){
+                    			balanceAmountValue = balanceAmount + balanceAmountValue;
+                    		}
+                    		wallet.setTotalBalanceAmount(balanceAmountValue);
                     		candidateService.saveCandidateMarketPlaceWallet(wallet);
+                    		candidateService.updateMarketWalletAmount(balanceAmountValue, orgLocations.getId());
                     	}
                     	} catch (Exception e) {
                         e.printStackTrace();
