@@ -8533,4 +8533,5 @@ bottom: auto !important; top: 55px !important;
 	left: 0px !important; top:135px !important;
 }
 
+.noAction {pointer-events: none; color: #ddd;}
 

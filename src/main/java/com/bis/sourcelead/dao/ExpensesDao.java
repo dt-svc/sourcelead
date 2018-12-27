@@ -27,6 +27,7 @@ public interface ExpensesDao {
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId);
 	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long orglocationId,Date startDate, Date endDate);
 	public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate);
+	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus);
 }
 	
 
