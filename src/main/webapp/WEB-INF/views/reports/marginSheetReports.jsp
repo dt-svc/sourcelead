@@ -218,7 +218,7 @@
  }
 </script>
 
-<script>
+<!-- <script>
 function marginpagination(url){
 	var colIndex = 0;
     $('#marginSheetPagination').DataTable({ 
@@ -232,7 +232,7 @@ function marginpagination(url){
         }),
 });
     }
-</script>
+</script> -->
 
 
 <script>
