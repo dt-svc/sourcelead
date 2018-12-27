@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,6 +26,8 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -1247,6 +1250,41 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	
 	}
 
+	@Override
+	@Transactional
+	public int updatePaymentTermsInOrgrelations() {
+		int count = 0;
+		try {
+			System.out.println("-------------hi Start of updatePaymentTermsInOrgrelations()-------------");
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select ors.id,ors.PaymentTerm from OrgRelations ors";
+			List<Object[]> queryList = session.createQuery(query).list();
+			if(queryList != null && !queryList.isEmpty()) {
+				for(Object[] obj : queryList) {
+					System.out.println("ID : " + obj[0] + " PAYMENT_TERM : " + obj[1]);
+					OrgRelations orgRelations = session.get(OrgRelations.class, Long.valueOf(obj[0].toString()));
+					
+					String query2 = "from OrgRelations ors where ors.id = " + obj[0];
+					Query queryObj2 = session.createQuery(query2);
+					List<OrgRelations> rshList = queryObj2.list();
+					for(OrgRelations orgRe : rshList) {
+						if(StringUtils.isNotBlank(orgRelations.getPaymentTerm())){
+						if(orgRelations.getPaymentTerm().equals("SelectPaymentTerms")){
+							orgRe.setPaymentTerm(null);
+							session.saveOrUpdate(orgRe);
+							count++;
+						}
+						
+					}
+					}
+				}
+			}
+			System.out.println("-------------End of updatePaymentTermsInOrgrelations()-------------");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
 	
 	
 }

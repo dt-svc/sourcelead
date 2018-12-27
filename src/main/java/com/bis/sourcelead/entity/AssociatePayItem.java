@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,6 +32,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "PAY_ITEM_NAME")
 	private String payItemName;
 	
+	@Column(name = "ORG_PAY_ITEM_ID")
+	private Long orgPayItemId;
 
 	@Column(name = "PAY_ITEM_SCHEDULE")
 	private String payItemSchedule;
@@ -223,6 +226,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setPayitemEndDate(Date payitemEndDate) {
 		this.payitemEndDate = payitemEndDate;
+	}
+
+	public Long getOrgPayItemId() {
+		return orgPayItemId;
+	}
+
+	public void setOrgPayItemId(Long orgPayItemId) {
+		this.orgPayItemId = orgPayItemId;
 	}
     
 }

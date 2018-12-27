@@ -1,19 +1,13 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import org.json.JSONObject;
 
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class CustomInvoiceTemplateDTO extends SearchDTO implements Serializable {
 
@@ -23,19 +17,34 @@ public class CustomInvoiceTemplateDTO extends SearchDTO implements Serializable 
 	private static final long serialVersionUID = 1L;
 	private long id;
 	private String uuid;
+	
+	@Required(desc = "name")
+	@Type(desc = "name", maxLength = 100)
 	private String name;
+	
+	@Type(desc = "description", maxLength = 1000)
 	private String description;
+	
 	private int status;
+	
 	private String createdByUserId;
+	
 	private String createdByUserName;
+	
 	private String createdDate;
+	
 	private String updatedByUserId;
+	
 	private String updatedByUserName;
+	
 	private String updatedDate;
+	
 	private long orgLocationId;
+	
 	private long orgRelationId;
+	
 	private String jsonData;
-	// @JsonIgnoreProperties(ignoreUnknown = true)
+	
 	@JsonBackReference
 	private List<JSONObject> itemObjectList;
 
