@@ -593,13 +593,25 @@ function calculateDuration(){
         	  var output = "";
         	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeaveDetails();validateMaxLeave(this);">';
         	  output = output +' <option value="">--Select Leave Type--</option>';
-        	  for (var i = 0; i < json.length; i++) { 
+        	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if(leave.id == leaveId){
-        			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N'){
+        			 
         		  }else{
-        			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        			  if(leave.id == leaveId){
+            			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+            		  }else{
+            			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+            		  }
         		  }
+        		  
+        	/* 	  if((leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'N') || (leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'Y') || (leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'Y')){
+     			         if(leave.id == leaveId){
+     			            	output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+     			         }else{
+     			            	output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+     			         }
+        	  	  } */
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
