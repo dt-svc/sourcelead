@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -97,6 +98,8 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
+    @Column(name ="PERCENTAGE_OF_WORK")
+    private BigDecimal percentageOfWork;
     
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
@@ -164,6 +167,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	private String requestedUser;
     
 	
+
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
 
 	public Long getId() {
 		return id;

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -160,4 +161,7 @@ public interface ProjectMembersService {
 	List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,List<Long> projectClientsId) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId,Long orglocationId) throws Exception;
+	
+	ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO);
+	
 }

@@ -51,7 +51,7 @@ $(document).ready(function(){
                           <option value="bill">By Bill</option>
                     </select>
              </div>
-             <div class="col-md-2 dropdown-select positionRelatives mt5" style="display: none" id="customDatesDropdown">
+             <div class="col-md-2 dropdown-select positionRelatives mt5 mb5 pull-right" style="display: none" id="customDatesDropdown">
         <select class="form-control" id="custom-dates"  name="filterDateType" onchange="vendorapagingBill();">
           <option value="">Select Date</option>
           <option value="last_7days">Last 7 days</option> 

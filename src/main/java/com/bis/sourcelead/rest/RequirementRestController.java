@@ -587,13 +587,16 @@ public class RequirementRestController {
 								rah.setUpdatedDate(commonUtil.currentDate());
 								requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 							}
+							// for URL redirections from mail
+							String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+							Long redirectOrgLocationId = orgLocation.getId();
 							/*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 							RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 					    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
 				    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
 				    				for(RequirementAssignTo reqAssign:reqAssignTo ){
 											if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
-												requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+												requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation,redirectURL,redirectOrgLocationId);
 											}
 				    				}
 				    		}
@@ -644,13 +647,16 @@ public class RequirementRestController {
 									}
 									
 									}
+								// for URL redirections from mail
+								String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+								Long redirectOrgLocationId = orgLocation.getId();
 								 /*This logic is to send mail to assigned team members after approver accepted the requirement request(parallel approver)*/
 								RequirementApproverHierarchy hierarchy = requirementApproverHierarchyService.getApproverHierarchyByRequirementId(requirementId);
 						    	 List<RequirementAssignTo> reqAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(requirementId,orgLocation.getId());
 					    			if(null != hierarchy && "APPROVED".equals(hierarchy.getRequirementApproverStatus().toString())){
 					    				for(RequirementAssignTo reqAssign:reqAssignTo ){
 												if(null != reqAssign.getAssignUserId() && !loginUser.getId().equals(reqAssign.getAssignUserId().getId())){
-													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation);
+													requirementService.AssignToTeamMembersEmail(loginUser, reqAssign.getAssignUserId(), requirement,new StringBuilder(),orgLocation,redirectURL,redirectOrgLocationId);
 												}
 					    				}
 					    		}
