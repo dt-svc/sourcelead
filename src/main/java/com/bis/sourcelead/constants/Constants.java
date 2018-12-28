@@ -1366,5 +1366,8 @@ public class Constants {
 	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
 	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
 	public static final String PMS_Ticket_Status_Updated_Email = "PMSTicketStatusUpdatedEmail";
+
+	public static final String COMMENTED_RAISED_TICKET_EMAIL = "CommentedRaisedTicketEmail";
+	public static final String COMMENTED_RAISED_TICKET_NOTIFICATION = "CommentedRaisedTicketNotification";
 	
 }

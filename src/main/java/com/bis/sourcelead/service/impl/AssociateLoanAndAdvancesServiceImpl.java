@@ -287,7 +287,8 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 				assLoansAndAdvancesList.add(dto);
 			}
 		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+ 			logger.error(ExceptionUtils.getFullStackTrace(e));
+ 			e.printStackTrace();
 		}
 		return assLoansAndAdvancesList;
 	}
@@ -359,20 +360,20 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 		else {
 			if("Every Pay".equalsIgnoreCase(associateLoanAndAdvances.getScheduler())) {
 				if("Bi-Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
-					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 14);
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + 14);
 				if("Weekly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
-					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + assLoanAndAdvHis.getSchedule() * 7);						
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH) + 7);						
 				if("Monthly".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
-					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.DAY_OF_MONTH));
+					dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 1, dueDate.get(Calendar.DAY_OF_MONTH));
 				if("Annually".equalsIgnoreCase(associatePayFrequency.getPayFrequency()))
-					dueDate.set(dueDate.get(Calendar.YEAR) + assLoanAndAdvHis.getSchedule() * 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+					dueDate.set(dueDate.get(Calendar.YEAR) + 1, dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
 			}
 			if("Every Quarter".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
 				dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 3, dueDate.get(Calendar.DAY_OF_MONTH));
 			if("Half Yearly".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
 				dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH) + 6, dueDate.get(Calendar.DAY_OF_MONTH));
 			if("Annually".equalsIgnoreCase(associateLoanAndAdvances.getScheduler()))
-				dueDate.set(dueDate.get(Calendar.YEAR) + 1, dueDate.get(Calendar.MONTH) + assLoanAndAdvHis.getSchedule(), dueDate.get(Calendar.DAY_OF_MONTH));
+				dueDate.set(dueDate.get(Calendar.YEAR) + 1, dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
 		}
 		Date nextDate = dueDate.getTime();
 		map.put("nextDueDate", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), nextDate));

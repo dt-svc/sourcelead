@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,17 +9,24 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -43,6 +53,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
@@ -1892,6 +1903,130 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		List<ProjectMembers> allProjectsList =session.createQuery(query).setParameterList("projectClientsId", projectClientsId).setLong("candidateId",candidateId) 
 			    .list();
 		return allProjectsList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReport)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+//		Query queryString = null;
+		List<Object[]> marginSheetReportDTOList = null;
+		ResponseList<MarginSheetReportDTO> marginSheetReportDTO = new ResponseList<>();
+		java.sql.Timestamp fromDate1 = new java.sql.Timestamp(searchDates[0].getTime());
+		java.sql.Timestamp toDate1 = new java.sql.Timestamp(searchDates[1].getTime());
+		java.sql.Date fromDate = new java.sql.Date(fromDate1.getTime());
+		java.sql.Date toDate = new java.sql.Date(toDate1.getTime());
+		String dateQury = null;
+		StringBuilder query1 = new StringBuilder("");
+		String sortingQry = "";
+		dateQury = " and DATE_FORMAT(pm.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+				+ "' and '" + toDate + "'";
+		
+		
+	     if(StringUtils.isNotEmpty(marginSheetReport.getSearchValue()) && marginSheetReport.getSearchValue() != null) {
+			    query1.append(" and ((SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) like '%" + marginSheetReport.getSearchValue() + "%' ")
+				.append("OR user.FIRST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
+				.append("OR user.LAST_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
+				.append("OR ol.ORG_NAME like '%" + marginSheetReport.getSearchValue() + "%' ")
+				.append("OR user.ID like '%" + marginSheetReport.getSearchValue() + "%' )");
+/*			    if(sqlDate != null) {
+			    	query1.append("OR userRole.updatedDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
+			    }*/
+	    	 
+	     }
+		
+         if (StringUtils.isNotBlank(marginSheetReport.getSortColumn())) {
+             sortingQry = " order by " + marginSheetReport.getSortColumn() + " "
+                     + marginSheetReport.getSortOrder();
+         }
+         
+         //Clinet reated filter 
+	        List<Long> clientIdsList = new ArrayList<>();
+	        String clientSubQuery = "";
+			if(marginSheetReport.getClientId() != null && !marginSheetReport.getClientId().isEmpty()){
+				String[] client = marginSheetReport.getClientId().split(",");
+				for(int i=0; i<client.length; i++){
+					clientIdsList.add(Long.valueOf(client[i]));
+				}
+			}else {
+				clientIdsList = null;
+			}
+			Map<String, Object> params = new HashMap<String,Object>();
+    		if(clientIdsList != null) {
+    			clientSubQuery = " and (orl.ID IN (:clientIdsList))";
+				params.put("clientIdsList",clientIdsList);
+    		}
+	     
+//		String 	query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orglocationId) and ps.isClientProject = 'Y' ";
+		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, user.ID as uid,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
+				+" pm.PAY_RATE_TYPE as payRateType, pm.PAY_RATE_CURRENCY as payRateCurrency, pm.CURRENT_BILL_RATE as billRate, pm.RATE_TYPE as billRateType,"
+				+" pm.BILL_RATE_CURRENCY as billRateTypeCurrency, "
+				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId"
+				 +" from PROJECTS projects,PROJECT_CLIENTS pc,"
+				+" PROJECT_MEMBERS pm,EMPLOYEE emp,USER user, ORG_RELATIONS orl,ORG_LOCATIONS ol"
+				 +" where" 
+				+" pc.PROJECT_ID =projects.ID and pc.ORG_LOCATIONS_ID= '" + orglocationId + " ' and projects.IS_CLIENT_PROJECT = 'Y'"
+				+" and pc.PROJECT_ID = pm.PROJECT_ID and pm.EMPLOYEE_ID = emp.ID and emp.USER_ID = user.ID "
+				+" and pc.ORG_RELATION_ID=orl.ID and orl.RESPONDER_LOCATION_ID = ol.ID" + query1 + clientSubQuery + dateQury + sortingQry;
+//		List<ProjectMembers> allProjectsList =session.createSQLQuery(query).list();
+//		  queryString =  session.createSQLQuery(query.toString());
+		  Query queryObj = session.createSQLQuery(query);
+  		for (String str : queryObj.getNamedParameters())
+        {
+  			if(str.equalsIgnoreCase("clientIdsList")){
+  				queryObj.setParameterList(str, clientIdsList);
+			}else{
+				queryObj.setParameter( str, params.get( str ) );
+			}
+        }
+//		  queryObj.setResultTransformer(Transformers.aliasToBean(MarginSheetReportDTO.class));
+		  marginSheetReportDTOList = queryObj.list();
+		  List<MarginSheetReportDTO> mt = new LinkedList<MarginSheetReportDTO>();
+		  double totalPayRate=0;
+		  double totalbilRate=0;
+		  MarginSheetReportDTO mts=null;
+		  for(Object[] mm:marginSheetReportDTOList){
+			  mts= new MarginSheetReportDTO();
+			  mts.setProjectId((BigInteger)mm[0]);		
+			  mts.setEmployeeName(mm[3].toString());
+			  mts.setProjectName(mm[1].toString());
+			  mts.setPayRate((double)mm[4]);
+			  mts.setUid((BigInteger)mm[2]);
+			  mts.setPayRateType(mm[5].toString());
+			  mts.setPayRateCurrency(mm[6].toString());
+			  mts.setBillRate((double)mm[7]);
+			  mts.setBillRateType(mm[8].toString());
+			  mts.setBillRateTypeCurrency(mm[9].toString());
+			  mts.setClinetName(mm[10].toString());
+			  mts.setOrglocationId((BigInteger)mm[11]);
+			  mts.setOrgRelationId((BigInteger)mm[12]);
+			  mts.setMarginRate((double)mm[7] - (double)mm[4] );
+			  totalPayRate+=(double)mm[4];
+			  totalbilRate+=(double)mm[7];
+			  mt.add(mts);
+		  }
+		  if(totalPayRate != 0 && totalbilRate != 0){
+//			  mts.setTotalPayRate(totalPayRate);
+//			  mts.setTotalbilRate(totalbilRate);
+			  mt.get(0).setTotalPayRate(totalPayRate);
+			  mt.get(0).setTotalbilRate(totalbilRate);
+			  mt.get(0).setTotalMarginRate(totalbilRate - totalPayRate);
+		  }
+	         int count = 0;
+	            int filteredCount = 0;
+	            if (mt != null && !mt.isEmpty()) {
+	                count = queryObj.list().size();
+	                filteredCount = queryObj.list().size();
+	            }
+	            marginSheetReportDTO.setRecordsTotal(count);
+	            marginSheetReportDTO.setRecordsFiltered(filteredCount);
+		  
+		marginSheetReportDTO.setData(mt);
+		return marginSheetReportDTO;
 	}
 	
 }

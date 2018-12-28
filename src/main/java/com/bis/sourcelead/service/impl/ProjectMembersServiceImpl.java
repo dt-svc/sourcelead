@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -2195,6 +2196,13 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public List<Long> getAllProjectMembersIdsByProjectIdAndOrgLocationId(Long projectId, Long orglocationId)
 			throws Exception {
 		return projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projectId, orglocationId);
+	}
+
+	@Override
+	public ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO)
+	{
+		return projectMembersDao.getProjectMemeberByClientProjectAndOrglocation(orglocationId,searchDates,marginSheetReportDTO);
+
 	}
 
 }

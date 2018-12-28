@@ -269,7 +269,7 @@
 						result = result + '	</div>';
 						
 						
-						result = result + '<div class="project_details_cta">';
+						 result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Timesheet Approval Mechanism:</strong><span>';
 						   if (json.projectApprovalType != null && json.projectApprovalType != "" && json.projectApprovalType != "undefined") {
 								result = result + '	<span>'+json.projectApprovalType+'</span><div class="clearfix"></div>';
@@ -286,7 +286,7 @@
 							}else{
 								result = result + '	<span>----</span><div class="clearfix"></div>';
 							}
-						result = result + '	</div>'; 
+						result = result + '	</div>';  
 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
@@ -1187,7 +1187,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
 						
-					     result = result+' <div class="col-md-4">';
+					    result = result+' <div class="col-md-4">';
 						result = result + '<label>Timesheet Approval Mechanism</label>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
