@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,9 +39,15 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.CandidateController;
@@ -57,6 +64,15 @@ private CandidateController controller;
 ReportsUtil reportsUtil;
 
 @Autowired
+LookUpDataService lookUpDataService;
+
+@Autowired
+CountriesService countriesService;
+
+@Autowired
+StatesService statesService;
+
+@Autowired
 private CandidateService candidateService;
 
 @Mock
@@ -71,6 +87,14 @@ SourceLeadSessionManager sourceLeadSessionManager;
 @Mock
 ReportsUtil mockReportsUtil;
 
+@Mock
+LookUpDataService mockLookUpDataService;
+
+@Mock
+CountriesService mockCountriesService;
+
+@Mock
+StatesService mockStatesService;
 
 @Before
 public void setUp() throws Exception {
@@ -78,6 +102,9 @@ initMocks(this);
 controller = new CandidateController();
 ReflectionTestUtils.setField(controller, "candidateService", mockCandidateService);
 ReflectionTestUtils.setField(controller, "reportsUtil", mockReportsUtil);
+ReflectionTestUtils.setField(controller, "lookUpDataService", mockLookUpDataService);
+ReflectionTestUtils.setField(controller, "countriesService", mockCountriesService);
+ReflectionTestUtils.setField(controller, "statesService", mockStatesService);
 }
 
 @SuppressWarnings("deprecation")
@@ -190,6 +217,31 @@ public void goToSalesOrder() throws Exception {
 	when(mockCandidateService.getMarketplaceSalesOrderBySalesUuid(orgLocation, salesUuid)).thenReturn(salesOrder);
 	controller.goToSalesOrder(marketplacePurchaseSalesDTO, salesUuid, mockHttpServletRequest);
 	verify(mockCandidateService).getMarketplaceSalesOrderBySalesUuid(orgLocation, salesUuid);
+	
+}
+
+@PrepareForTest({ SourceLeadSessionManager.class })
+@Test
+public void goToGlobalMarketplace() throws Exception {
+	Countries countries = new Countries();
+	List<LookUpData> lookUpData = new ArrayList<LookUpData>();
+	List<Countries> countryList = new ArrayList<Countries>();
+	List<States> statesList = new ArrayList<States>();
+	OrgLocations orgLocation = new OrgLocations();
+	orgLocation.setCountry("abc");
+	PowerMockito.mockStatic(SourceLeadSessionManager.class);
+	PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "orgLocations")).thenReturn(orgLocation);
+	when(mockLookUpDataService.getLookUpDataByCategory("")).thenReturn(lookUpData);
+	when(mockCountriesService.getAllCountries()).thenReturn(countryList);
+	when(mockCountriesService.getCountriesByCountryName(orgLocation.getCountry())).thenReturn(countries);
+	when(mockStatesService.getAllStatesByCountry(countries.getName())).thenReturn(statesList);
+	controller.goToGlobalMarketplace(mockHttpServletRequest);
+	verify(mockLookUpDataService).getLookUpDataByCategory("Educations");
+	verify(mockLookUpDataService).getLookUpDataByCategory("VisaCategory");
+	verify(mockLookUpDataService).getLookUpDataByCategory("Skills");
+	verify(mockCountriesService).getAllCountries();
+	verify(mockCountriesService).getCountriesByCountryName(orgLocation.getCountry());
+	verify(mockStatesService).getAllStatesByCountry(countries.getName());
 	
 }
 
