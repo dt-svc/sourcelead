@@ -1219,6 +1219,12 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		}else{
 			projectMembers.setEstimatedBudget(null);
 		}
+		
+		if(projectMembersDTO.getPercentageOfWork() != null){
+			projectMembers.setPercentageOfWork(projectMembersDTO.getPercentageOfWork());
+		}else{
+			projectMembers.setPercentageOfWork(null);
+		}
 		projectMembers.setProjects(projects);
 		projectMembers.setStatus("1");
 		projectMembers.setCreatedBy(user.getUserCode());
