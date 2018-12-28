@@ -1921,7 +1921,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQury = null;
 		StringBuilder query1 = new StringBuilder("");
 		String sortingQry = "";
-		dateQury = " and DATE_FORMAT(pm.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
+		dateQury = " and DATE_FORMAT(pm.CREATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + "'";
 		
 		
@@ -1970,7 +1970,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				 +" where" 
 				+" pc.PROJECT_ID =projects.ID and pc.ORG_LOCATIONS_ID= '" + orglocationId + " ' and projects.IS_CLIENT_PROJECT = 'Y'"
 				+" and pc.PROJECT_ID = pm.PROJECT_ID and pm.EMPLOYEE_ID = emp.ID and emp.USER_ID = user.ID "
-				+" and pc.ORG_RELATION_ID = orl.ID and pc.ORG_RELATION_ID=orl.ID and orl.RESPONDER_LOCATION_ID = ol.ID" + query1 + clientSubQuery + dateQury + sortingQry;
+				+" and pc.ORG_RELATION_ID=orl.ID and orl.RESPONDER_LOCATION_ID = ol.ID" + query1 + clientSubQuery + dateQury + sortingQry;
 //		List<ProjectMembers> allProjectsList =session.createSQLQuery(query).list();
 //		  queryString =  session.createSQLQuery(query.toString());
 		  Query queryObj = session.createSQLQuery(query);
