@@ -2,16 +2,25 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +36,8 @@ import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
+import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
@@ -45,6 +56,7 @@ import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
+import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -89,6 +101,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	PayrollUtil payrollUtil;
+	
+	@Autowired
+	TaxService taxService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -272,6 +287,13 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					//calculate ARR
 					boolean isARR = false;
 					
+					//calculate TDS
+					boolean isTDS = false;
+					Double tdsYearlyTotal = 0.0;
+					Double tdsMonthlyTotal = 0.0;
+					Double tdsExemptionTotal = 0.0;
+					Double tdsEligibilityTotal = 0.0;
+					
 					for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {
 						//if L&D in Associate Payroll Payheads
 						if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
@@ -361,14 +383,83 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					}
 					employeePayroll.setLopAmount(lopAmount);
 					
+					// TDS process Calculation
+					if(!isTDS) {
+						Calendar c = Calendar.getInstance();
+						String fromYear = c.get(Calendar.YEAR) + "";
+						c.roll(Calendar.YEAR, 1);
+						String toYear = c.get(Calendar.YEAR) + "";
+						int age = 0;
+						if(assoSal.getCandidate().getDateOfBirth() != null) {
+							LocalDate today = LocalDate.now();  //Today's date
+							LocalDate birthdate = assoSal.getCandidate().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
+							Period p = Period.between(birthdate, today);
+							age = p.getYears();
+						}
+						
+						Double taxPercent = 0d;
+						List<Tds> tdsList = taxService.getTDSListByFinancialYear(fromYear + "-" + toYear);
+						if(tdsList.size() > 0) {
+							for(Tds tds : tdsList) {
+								if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1) {
+									taxPercent = tds.getPercentage();
+								}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1) {
+									taxPercent = tds.getPercentage();
+								}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1){
+									taxPercent = tds.getPercentage();
+								}
+							}
+						}
+						
+						SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
+						JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+						if (jsonArray != null) {
+							for (int i = 0; i < jsonArray.length(); i++) {
+								JSONObject jsonObject = jsonArray.getJSONObject(i);
+								if (jsonObject.getJSONArray("items") != null) {
+									for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
+										JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
+										itemsJsonObject.get("amount");
+										itemsJsonObject.get("maxLimit");
+										if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
+											if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+												tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
+											}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+												tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
+											}
+										}
+									}
+								}
+							}
+						}
+						
+						//TDS amount calculation
+						tdsEligibilityTotal = (assoSal.getAnnualSalary()).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
+						tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
+						tdsMonthlyTotal = tdsYearlyTotal/ 12 ;
+						
+						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+						ph.setIndEmployeePayrollId(employeePayroll);
+						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("TDS", orgLocation.getId()));
+						ph.setAnnualy(new BigDecimal(tdsYearlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						ph.setMonthly(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						ph.setStatus(Constants.RECORD_ACTIVE);
+						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						ph.setCreatedBy(loginUser);
+						ph.setUpdatedBy(loginUser);
+						ph.setCreatedDate(new Date());
+						ph.setUpdatedDate(new Date());
+						utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+					}
+					
 					employeePayroll.setNoOfDays(new BigDecimal(frequencyPayrollDays));
 					employeePayroll.setNoOfLeaves( lopList != null ? new BigDecimal(lopList.size()): BigDecimal.ZERO );
 					employeePayroll.setLoanHistory(assLoanAndAdvDTO.getLoanHis());
 					employeePayroll.setAssociatePayrollPayheadHistory(utilDTO.getAssociatePayrollPayheadHistory());
 					employeePayroll.setGrossPay(utilDTO.getGrossPay().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+					employeePayroll.setNetPay((utilDTO.getNetPay().subtract(new BigDecimal(tdsMonthlyTotal)).subtract(new BigDecimal(loanAdvTotal)).subtract(lopAmount).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN)));
 					employeePayroll.setProfessionalTax(utilDTO.getProfessionalTax());
-				    employeePayroll.setTds(utilDTO.getTds());
+				    employeePayroll.setTds(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 				    employeePayroll.setSubmitForAproverStatus(PayrollConstant.NEW);
 					employeePayroll.setIndEmpPayrollUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 					employeePayroll.setStatus(Constants.RECORD_ACTIVE);
