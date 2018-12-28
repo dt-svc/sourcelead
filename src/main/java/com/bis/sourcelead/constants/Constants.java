@@ -741,7 +741,7 @@ public class Constants {
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String ELK_WEB_GEO_CITIES_INDEX = "webgeocities";
 	public static final String ELK_WEBGEO_CITIES_TYPE = "webgeocities";
-	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs" };
+	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs","% of Work" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
