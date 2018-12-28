@@ -363,6 +363,7 @@ function filterStatus() {
 	            result = result + '	     <th>Estimated hrs</th>';
 	            result = result + '	     <th>Estimated Budget</th>';
 	            result = result + '	     <th>Actual hrs</th>';
+	            result = result + '	     <th>%Of Work</th>';
 	            result = result + '	     <th>Action</th>';
 	            result = result + '	 </tr>';
 	            result = result + '	</thead>';
@@ -422,6 +423,11 @@ function filterStatus() {
 		        			estimatedBudget = "------";
 		        		}
 		        		
+		        		if(opt.percentageOfWork != null && opt.percentageOfWork != 'undefined' && opt.percentageOfWork != ''){
+		        			percentageOfWork = opt.percentageOfWork;
+		        		}else{
+		        			percentageOfWork = "------";
+		        		}
 		        		result = result + '	 <tr>';
 		        		 if(('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}') || ('${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}')){
 		        			 if(opt.status == 1){
@@ -446,6 +452,7 @@ function filterStatus() {
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedHours+'">'+estimatedHours+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+estimatedBudget+'">'+estimatedBudget+'</span></div></td>';
 		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.approvedHrs+'">'+opt.approvedHrs+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+percentageOfWork+'">'+percentageOfWork+'</span></div></td>';
 		                
 		                if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}' || '${isClientOrgActive}' == "N" || '${postedSharedProjectOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
 		                	
@@ -787,6 +794,7 @@ function loadProjectMembersDetails(data,candidateName){
     var projectEndDate = '';
     var estHours = '';
     var estBudget = '';
+    var percentageOfWork = '';
     
     var payRateEstdDate = '';
     var billRateEstdDate = '';
@@ -813,6 +821,10 @@ function loadProjectMembersDetails(data,candidateName){
     
     if(data.estBudget != null && data.estBudget != '' && data.estBudget != 'undefined'){
     	estBudget = data.estBudget;
+    }
+    
+    if(data.percentageOfWork != null && data.percentageOfWork != '' && data.percentageOfWork != 'undefined'){
+    	percentageOfWork = data.percentageOfWork;
     }
     
     if(data.payRateEstimatedDate != null && data.payRateEstimatedDate != '' && data.payRateEstimatedDate != 'undefined'){
@@ -955,6 +967,16 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '	      <label class="clearfix">Estimated Budget</label>';
 	result = result + '	      <div class="">';
 	result = result + '	        <input type="text" class="form-control inlineField"  id="estBudget" value="'+estBudget+'"  name="estBudget" field-name="Estimated Budget"  data-validation-optional="true" data-validation="validate_Space validate_int">';
+	result = result + '	      </div>';
+	result = result + '	    </div>';
+	result = result + '	    </div>';
+	
+	
+	
+	result = result + '	    <div class="clearfix mb10 col-md-6">';
+	result = result + '	      <label class="clearfix">%Of Work</label>';
+	result = result + '	      <div class="">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="percentageOfWork" value="'+percentageOfWork+'"  name="percentageOfWork" field-name="%Of Work"  data-validation-optional="true"  data-validation="validate_Space validate_int" onkeyup = "checkValue(this);">';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	result = result + '	    </div>';
@@ -1693,5 +1715,16 @@ function myTeamFunction() {
 
         }
     }
+}
+</script>
+<script>
+function checkValue(ele){
+	var work = $(ele).val();
+	if(work >= 100){
+		if($(ele).next('p.jquery_form_error_message').length === 0) 
+			$(ele).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'>% of work should not be more than 100");
+	}else{
+		$(ele).next('p.jquery_form_error_message').remove();
+	}
 }
 </script>

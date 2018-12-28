@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -143,4 +144,5 @@ public interface ProjectMembersDao {
 	public List<ProjectMembers> getAllActiveProjectsByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByCandidateIdAndProjectClientId(Long candidateId,List<Long> projectClientsId) throws Exception;
+	ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO);
 }
