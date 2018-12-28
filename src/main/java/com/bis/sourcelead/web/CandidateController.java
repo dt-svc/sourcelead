@@ -145,7 +145,6 @@ public class CandidateController {
 			@RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) {
 		ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = null;
 		logger.debug("inisde getGlobalMarketplaceCandList  conroller =========> --> ");
-		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>");
 		try {
 			String[] tableColumns = { "fullName", "location", "skillsName", "currentRate", "expectedRate", "profilePercentage" };// should
 																														// be
@@ -169,8 +168,6 @@ public class CandidateController {
 		}
 		logger.debug(
 				"after controller  getGlobalMarketplaceCandList  --> " + candidateMarketPlaceDTOList.getRecordsTotal());
-		System.out.println("inisde getGlobalMarketplaceCandList  conroller =========>"
-				+ candidateMarketPlaceDTOList.getRecordsTotal());
 		return candidateMarketPlaceDTOList;
 	}
 	
@@ -524,12 +521,12 @@ public class CandidateController {
 		
 	 }	 
 	 
-	 @RequestMapping(value = "/candidateMarketplaceCheckout")
-	 public ModelAndView candidateMarketplaceCheckout()throws Exception
+	 @RequestMapping(value = "/candidateMarketplaceCart")
+	 public ModelAndView candidateMarketplaceCart()throws Exception
 	 { 
 		 ModelAndView model = new ModelAndView();
 		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("candidates/candidateMarketplaceCheckout");
+		 model.setViewName("candidates/candidateMarketplaceCart");
 		 return model;
 	 }
 	 
@@ -742,7 +739,6 @@ public class CandidateController {
 		@RequestMapping(value = "/globalMarketplacePage", method = RequestMethod.GET)
 		public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 			logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-			System.out.println("inisde goToGlobalMarketplace  conroller =========>");
 			ModelAndView model = new ModelAndView();
 			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 			model.addObject("educationsList", educationsList);
@@ -780,13 +776,10 @@ public class CandidateController {
 			String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
-			Date[] checkedDateArray = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					if(checkedDate != null && !"".equalsIgnoreCase(checkedDate)){
-					 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocation);
-					 }
-					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray, searchValue);
+					
+					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
 			}}
 			return candidatesFromMarketplace;
 		}

@@ -942,7 +942,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/ws/dumpCandidateProfilePercentage", method = RequestMethod.GET)
 	public void dumpCandidateProfilePercentage(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		System.out.println("Dumping Profile percentage to candidates starts.....");
 		List<Candidate> candidatesList = candidateService.getAllCandidatesList();
 		for (Candidate can : candidatesList) {
 
@@ -1024,7 +1023,6 @@ public class CandidateRestController {
 			}
 		}
 
-		System.out.println("Dumping Profile percentage to candidates ends.....");
 	}
 
 	public String toJSON(Object obj) {
@@ -1094,7 +1092,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/globalMarketplacePage")
 	public ModelAndView goToGlobalMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde goToGlobalMarketplace  conroller =========>");
-		System.out.println("inisde goToGlobalMarketplace  conroller =========>");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		//candidateService.updateMarketplaceDataFromCandidateGlobal(orgLocations.getId(),user);
@@ -1110,7 +1107,6 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/OrgMarketplace")
 	public ModelAndView goToOrgMarketplace(HttpServletRequest request) throws Exception {
 		logger.debug("inisde OrgMarketplace  conroller =========>");
-		System.out.println("inisde OrgMarketplace  conroller =========>");
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1125,7 +1121,6 @@ public class CandidateRestController {
 		 @RequestMapping(value = "/app/PurchaseOrderList")
 		 public ModelAndView goToPurchaseOrderList(HttpServletRequest request) throws Exception {
 			logger.debug("inside PurchaseOrderList  controller =========>");
-			System.out.println("inside PurchaseOrderList  controller =========>");
 			ModelAndView model = new ModelAndView();		
 			model.setViewName("candidates/purchaseOrderList");
 			model.addObject("sourceleadUrl", sourceleadUrl);			
@@ -1138,7 +1133,6 @@ public class CandidateRestController {
 			
 			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
 			logger.debug("inside PurchaseOrderList  controller =========>");
-			System.out.println("inside PurchaseOrderList  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 			try{
@@ -1170,7 +1164,6 @@ public class CandidateRestController {
 		 @RequestMapping(value = "/app/PurchaseOrder")
 		 public ModelAndView goToPurchaseOrder(@RequestParam(value = "purchaseUuid", required = true) String purchaseUuid,HttpServletRequest request) throws Exception {
 			logger.debug("inside PurchaseOrder  controller =========>");
-			System.out.println("inside PurchaseOrder  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			MarketplacePurchaseSalesDTO marketplacePurchaseOrder = candidateService.getPurchaseDetailByPurchaseUuid(purchaseUuid, orgLocations);
 			ModelAndView model = new ModelAndView();
@@ -1187,7 +1180,6 @@ public class CandidateRestController {
 		 @RequestMapping(value = "/app/SalesOrderList")
 		 public ModelAndView goToSalesOrderList(HttpServletRequest request) throws Exception {
 			logger.debug("inisde SalesOrderList  conroller =========>");
-			System.out.println("inside SalesOrderList  conroller =========>");
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1444,7 +1436,6 @@ public class CandidateRestController {
 
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
-			Date[] salesOrderDateArray = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
@@ -1454,13 +1445,10 @@ public class CandidateRestController {
 	  		sortColumnOrder = marketplacePurchaseSalesDTO.getOrder().get(0).get("dir"); 
 	  		marketplacePurchaseSalesDTO.setSortOrder(sortColumnOrder);
 	  		}
-	  		if(salesOrderFilterDate != null && !"".equalsIgnoreCase(salesOrderFilterDate)){
-	  			salesOrderDateArray = reportsUtil.getJobFilterDate(salesOrderFilterDate, orgLocations);
-			}
 	  		if (sortColumnIndex != -1){
 	  			marketplacePurchaseSalesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderDateArray);
+	  		responseList = candidateService.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderFilterDate);
 	  		File file = null;
 	  		if(marketplacePurchaseSalesDTO.getExportType() != null){
 		    if(marketplacePurchaseSalesDTO.getExportType().equalsIgnoreCase("pdf")) {

@@ -2893,8 +2893,67 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception {
-		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(checkedDate.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("1_week")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("Last_Week")){
+			//calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -14);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate1 = calendar.getTime();
+			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
+			dateValue.put("fromDate", newFormattedDate);
+			dateValue.put("toDate", newFormattedDate1);
+		}
+		if(checkedDate.equalsIgnoreCase("1_month")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("1_Month_Ago")){
+			calendar.add(Calendar.MONTH, -2);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate1 = calendar.getTime();
+			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
+			dateValue.put("fromDate", newFormattedDate);
+			dateValue.put("toDate", newFormattedDate1);
+		}
+		if(checkedDate.equalsIgnoreCase("YTD")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(checkedDate.equalsIgnoreCase("custom")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationStartDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationEndDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
 	}
 
 	@Override
@@ -3188,8 +3247,62 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate,Date[] salesOrderDateArray)throws Exception {
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, salesOrderDateArray);
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate, String salesOrderFilterDate)throws Exception {
+		Date today = new Date();
+		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
+		Calendar calendar = Calendar.getInstance();
+		Map<String, Date> dateValue = new HashMap<>();
+		if(salesOrderFilterDate.equalsIgnoreCase("today")){
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", formattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("1_week")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.DAY_OF_YEAR, -7);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("1_month")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("3_months")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -3);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("6_months")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.MONTH, -6);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("YTD")){
+			calendar.setTime(formattedDate);
+			calendar.add(Calendar.YEAR, -1);
+			Date newDate = calendar.getTime();
+			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+			dateValue.put("fromDate", formattedDate);
+			dateValue.put("toDate", newFormattedDate);
+		}
+		if(salesOrderFilterDate.equalsIgnoreCase("custom")){
+			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderFromDate);
+			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), salesOrderToDate);
+			dateValue.put("fromDate", toDateVal);
+			dateValue.put("toDate", fromDateVal);
+		}
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
 		return responseList;
 		}
 
@@ -3372,6 +3485,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception {
 		candidateDao.saveCandidateMarketPlaceWallet(wallet);
+	}
+
+	@Override
+	public Double getBalanceAmountFromWallet(Long id) {
+		return candidateDao.getBalanceAmountFromWallet(id);
+	}
+
+	@Override
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id) {
+		candidateDao.updateMarketWalletAmount(balanceAmountValue, id);
 	}
 	
 }

@@ -53,6 +53,9 @@ public class CandidateMarketWallet implements Serializable {
 	@Column(name = "AMOUNT")
 	private Double amount;
 	
+	@Column(name = "TOTAL_BALANCE_AMOUNT")
+	private Double totalBalanceAmount;
+	
 	@Column(name = "AMOUNT_TYPE")
 	private String amountType;
 	
@@ -147,6 +150,14 @@ public class CandidateMarketWallet implements Serializable {
 
 	public void setTransactionDate(Date transactionDate) {
 		this.transactionDate = transactionDate;
+	}
+
+	public Double getTotalBalanceAmount() {
+		return totalBalanceAmount;
+	}
+
+	public void setTotalBalanceAmount(Double totalBalanceAmount) {
+		this.totalBalanceAmount = totalBalanceAmount;
 	}
 	
 }
