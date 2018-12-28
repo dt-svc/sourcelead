@@ -390,9 +390,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						c.roll(Calendar.YEAR, 1);
 						String toYear = c.get(Calendar.YEAR) + "";
 						int age = 0;
-						if(assoSal.getCandidate().getDateOfBirth() != null) {
+						if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
 							LocalDate today = LocalDate.now();  //Today's date
-							LocalDate birthdate = assoSal.getCandidate().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
+							LocalDate birthdate = assoSal.getCandidate().getConsultantUser().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
 							Period p = Period.between(birthdate, today);
 							age = p.getYears();
 						}
