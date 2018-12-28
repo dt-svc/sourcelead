@@ -1,9 +1,14 @@
 package com.bis.sourcelead.controller;
-
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.atLeast;
 import static org.hamcrest.CoreMatchers.*;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.spy;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
@@ -57,23 +62,7 @@ import com.bis.sourcelead.web.CandidateController;
 @ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class CandidateControllerTest {
 
-@Autowired	
 private CandidateController controller;
-
-@Autowired
-ReportsUtil reportsUtil;
-
-@Autowired
-LookUpDataService lookUpDataService;
-
-@Autowired
-CountriesService countriesService;
-
-@Autowired
-StatesService statesService;
-
-@Autowired
-private CandidateService candidateService;
 
 @Mock
 private CandidateService mockCandidateService;
@@ -140,6 +129,7 @@ List<CandidateMarketPlaceDTO> candidateMarketPlaces = new ArrayList<CandidateMar
 List<CandidateMarketPlaceDTO> candidateMarketPlace = new ArrayList<CandidateMarketPlaceDTO>();
 OrgLocations orgLocation = new OrgLocations();
 orgLocation.setId(1959l);
+//OrgLocations spyOrgLocations = spy(new OrgLocations());
 CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
 dto.setCandidateId("176294");
 candidateMarketPlace.add(dto);
@@ -231,14 +221,13 @@ public void goToGlobalMarketplace() throws Exception {
 	orgLocation.setCountry("abc");
 	PowerMockito.mockStatic(SourceLeadSessionManager.class);
 	PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "orgLocations")).thenReturn(orgLocation);
-	when(mockLookUpDataService.getLookUpDataByCategory("")).thenReturn(lookUpData);
+	when(mockLookUpDataService.getLookUpDataByCategory(anyString())).thenReturn(lookUpData);
 	when(mockCountriesService.getAllCountries()).thenReturn(countryList);
 	when(mockCountriesService.getCountriesByCountryName(orgLocation.getCountry())).thenReturn(countries);
 	when(mockStatesService.getAllStatesByCountry(countries.getName())).thenReturn(statesList);
 	controller.goToGlobalMarketplace(mockHttpServletRequest);
-	verify(mockLookUpDataService).getLookUpDataByCategory("Educations");
-	verify(mockLookUpDataService).getLookUpDataByCategory("VisaCategory");
-	verify(mockLookUpDataService).getLookUpDataByCategory("Skills");
+	verify(mockLookUpDataService,times(3)).getLookUpDataByCategory(anyString());
+	//verify(mockLookUpDataService, atLeast(2)).getLookUpDataByCategory(anyString()); checks the minimum inovocations of service calls. 
 	verify(mockCountriesService).getAllCountries();
 	verify(mockCountriesService).getCountriesByCountryName(orgLocation.getCountry());
 	verify(mockStatesService).getAllStatesByCountry(countries.getName());
