@@ -1027,7 +1027,7 @@ public class PdfUtil {
 			 }
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
-	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3};
+	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
@@ -1118,6 +1118,12 @@ public class PdfUtil {
 				    empArray[7] = String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee);
 			}else {
 				empArray[7] = "--";
+			}
+			
+			if (projectMember.getPercentageOfWork() != null) {
+				empArray[8] = projectMember.getPercentageOfWork().toString();
+			}else {
+				empArray[8] = "--";
 			}
 			
 		return empArray;
