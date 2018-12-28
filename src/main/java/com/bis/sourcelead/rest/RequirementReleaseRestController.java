@@ -378,7 +378,7 @@ public class RequirementReleaseRestController {
 								releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc,null,loginOrgLocation);
 								// for URL redirections from mail
 								String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
-								Long redirectOrgLocationId = loginOrgLocation.getId();
+								Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
 								requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,redirectURL,redirectOrgLocationId);
 		
 						}
@@ -407,7 +407,7 @@ public class RequirementReleaseRestController {
 									releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
 									// for URL redirections from mail
 									String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
-									Long redirectOrgLocationId = loginOrgLocation.getId();
+									Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
 									requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,redirectURL,redirectOrgLocationId);
 		
 							    }
