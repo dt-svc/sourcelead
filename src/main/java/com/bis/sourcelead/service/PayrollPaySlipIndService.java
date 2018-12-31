@@ -18,4 +18,7 @@ public interface PayrollPaySlipIndService {
 	Boolean validatePayslipNameByOrglocationIdAndPayslipName(Long orglocationId,String paySlipName)throws Exception;
 	
 	List<PayrollPaySlipInd> getIndPayrollPaySlipListByOrglocationInd(Long orglocationId) throws Exception;
+	
+	PayrollPaySlipInd deletePermissionStatsuByDeletePermission(String deletePermission,Long orgLocationId)throws Exception;
+	
 }

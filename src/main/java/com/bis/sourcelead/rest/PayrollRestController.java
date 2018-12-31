@@ -1,6 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,11 +36,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
@@ -60,6 +68,8 @@ import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
+import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
 import com.bis.sourcelead.web.IndianPayrollController;
 
 /**
@@ -110,6 +120,9 @@ public class PayrollRestController {
 	
 	@Autowired
 	PayrollPaySlipIndService payrollPaySlipIndService;
+	
+	@Autowired
+	IndPaySlipPdf indPaySlipPdf;
 	
 	/**
 	 * @author sarath kumar punnana and Ajith Matta
@@ -627,12 +640,35 @@ public class PayrollRestController {
 
     
     @RequestMapping(value = "/deletePayrollPaySlip", method = RequestMethod.POST)
-   	public PayrollPaySlipInd deletePayrollPaySlip(PayrollPaySlipInd payrollPaySlipInd) throws Exception {
+   	public PayrollPaySlipInd deletePayrollPaySlip(PayrollPaySlipInd payrollPaySlipInd,@RequestParam(value = "defaultStatus", required = false) String defaultStatus,
+   			HttpServletRequest request) throws Exception {
+  	   OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+
    		 PayrollPaySlipInd indPaySlip = payrollPaySlipIndService.getPayrollPayslipByUUID(payrollPaySlipInd.getUuid());
-   		 if(indPaySlip != null) {
-   			indPaySlip.setStatus(Constants.RECORD_INACTIVE);
-   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlip);
+   		 if(defaultStatus.equalsIgnoreCase("N")) {
+   			if(indPaySlip != null) {
+   	   			indPaySlip.setStatus(Constants.RECORD_INACTIVE);
+   	   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlip);
+   	   		 }
+   		 }else if(defaultStatus.equalsIgnoreCase("Y")) {
+   			 List<PayrollPaySlipInd> indPayslipList = payrollPaySlipIndService.getIndPayrollPaySlipListByOrglocationInd(orgLocation.getId());
+   	   		 for(PayrollPaySlipInd pps : indPayslipList) {
+   	   			pps.setIsActive(Constants.NO);
+   	   			payrollPaySlipIndService.savePayrollPaySlipInd(pps);
+   	   		 }
+   	    	if(indPaySlip != null) {
+	   			indPaySlip.setStatus(Constants.RECORD_INACTIVE);
+	   			indPaySlip.setIsActive(Constants.NO);
+	   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlip);
+	   		 }
+   	   	   PayrollPaySlipInd indPaySlips =  payrollPaySlipIndService.deletePermissionStatsuByDeletePermission("N", orgLocation.getId());
+   	   	   if(indPaySlips != null) {
+   	   		indPaySlips.setIsActive(Constants.YES);
+	   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlips);
+   	   	   }
+   	   	
    		 }
+   		 
    		return indPaySlip;
    	}
     
@@ -652,5 +688,49 @@ public class PayrollRestController {
    	}
     
     
+    @RequestMapping(value = { "/getDownloadPayslipInd", "/rest/getDownloadPayslipInd" })
+	@ResponseBody
+	public void getDownloadPayslipInd(IndEmployeePayrollDTO indEmployeePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<IndEmployeePayroll> indEmployeePayrollResponse  = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(indEmployeePayrollDTO.getIndEmpPayrollUUID());
+		IndEmployeePayroll indEmployeePayroll = indEmployeePayrollResponse.getObject();
+		File  file=  indPaySlipPdf.getIndiaPaySlipPdf(indEmployeePayroll,orgLocations);
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+	}
+    
+    @RequestMapping(value = "/changeDefaultPayslip", method = RequestMethod.POST)
+   	public PayrollPaySlipInd changeDefaultPayslip(PayrollPaySlipInd payrollPaySlipInd,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+   		 List<PayrollPaySlipInd> indPayslipList = payrollPaySlipIndService.getIndPayrollPaySlipListByOrglocationInd(orgLocation.getId());
+   		 for(PayrollPaySlipInd pps : indPayslipList) {
+   			pps.setIsActive(Constants.NO);
+   			payrollPaySlipIndService.savePayrollPaySlipInd(pps);
+   		 }
+   		 PayrollPaySlipInd indPaySlip = payrollPaySlipIndService.getPayrollPayslipByUUID(payrollPaySlipInd.getUuid());
+   		 if(indPaySlip != null) {
+   			indPaySlip.setIsActive(Constants.YES);
+   			payrollPaySlipIndService.savePayrollPaySlipInd(indPaySlip);
+   		 }
+   		return indPaySlip;
+   	}
+    
+     
     
 }

@@ -1,7 +1,12 @@
 package com.bis.sourcelead.payroll.web;
 
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,19 +25,34 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
+import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
 import com.bis.sourcelead.payroll.entity.File;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * 
@@ -54,13 +74,29 @@ public class PayrollController {
 	private WageTaxSummaryService wageTaxSummaryService;
 	
 	@Autowired
+	private IndPaysheetFrequencyService indPaysheetFrequencyService;
+	
+	@Autowired
+	private AssociatePfEsiService associatePfEsiService;
+	
+	@Autowired
 	PayItemService payItemService;
 	
-	@InitBinder
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	INDPayrollCommonUtil iNDPayrollCommonUtil;
+	
+	@Autowired
+	OrgService orgService;
+	
+	//This method commented by Laxman 
+	/*@InitBinder
 	private void initBinder(WebDataBinder binder)
 	{
 		binder.setValidator(validator);
-	}
+	}*/
 	
 	@RequestMapping(value = "/payrollForm")
 	public String getUploadForm(Model model)
@@ -383,4 +419,92 @@ public class PayrollController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	@RequestMapping(value = "/indPayrollPaySlipView")
+	public ModelAndView indPayrollPaySlipView(HttpServletRequest request,@RequestParam(value="empPayrollUUID", required=false)String empPayrollUUID) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		if(empPayrollUUID != null && empPayrollUUID != "") {
+			Response<IndEmployeePayroll> indEmployeePayroll  = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(empPayrollUUID);
+			
+			//Company Details
+			if(indEmployeePayroll.getObject().getIndPaysheetFrequency()   != null) {
+				OrgLocations orgLocation = indEmployeePayroll.getObject().getIndPaysheetFrequency().getOrgLocation();
+				if(orgLocation.getOrgLocationAddress() != null) {
+					model.addObject("companyAddress", orgLocation.getOrgLocationAddress());
+				}else {
+					StringBuilder companyAddress = new StringBuilder();
+					if(orgLocation.getZipCode() != null) {
+						companyAddress.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(orgLocation.getCity()).append("-").append(orgLocation.getZipCode());
+					}else {
+						companyAddress.append(orgLocation.getCountry()).append(",").append(orgLocation.getState()).append(orgLocation.getCity());
+					}
+					model.addObject("companyAddress", companyAddress);
+				}
+				model.addObject("companyName", orgLocation.getOrgLocationName());
+				if(orgLocation.getOrg().getFileUrl() != null) {
+					model.addObject("copanyImage", orgLocation.getOrg().getFileUrl());
+				}
+			}
+			PayrollPaySlipInd ppsi  = indEmployeePayroll.getObject().getPayrollPaySlipInd();
+			if(ppsi!= null) {
+				model.addObject("ppsi", ppsi);
+			}
+			model.addObject("empPayrollUUID", empPayrollUUID);
+			
+			//Eploye  ESI & PF Details
+			AssociatePfEsiDetails ape = associatePfEsiService.findAssociatePfEsiByCandidateId(indEmployeePayroll.getObject().getCandidate().getId(), indEmployeePayroll.getObject().getCandidate().getOrgLocationId());
+			if(ape != null) {
+				model.addObject("pfEsi", ape);
+			}
+			
+			Employees employee = indEmployeePayroll.getObject().getEmployee();
+			
+			Candidate candidate = indEmployeePayroll.getObject().getCandidate();
+			model.addObject("candidate",  candidate);
+			
+			PaymentAccount paymentAccount = orgService.getCandidateAcitivatePaymentAccount(candidate.getId());
+			if(paymentAccount != null) {
+				model.addObject("paymentAccount",  paymentAccount);
+			}
+			
+			if(employee.getHireDate() != null) {
+				model.addObject("joinDate", commonUtil.dateStrFromOrgDateFormatter(employee.getOrgLocations().getDateFormat(), employee.getHireDate()));
+			}
+			if(employee.getEmployeeId() != null ) {
+				model.addObject("employeeId",  employee.getEmployeeId());
+			}
+			
+			
+			if(indEmployeePayroll.getObject().getPayCheckDate() != null) {
+				SimpleDateFormat month_date = new SimpleDateFormat("MMMM - yyyy");
+				String payslipDate = month_date.format(indEmployeePayroll.getObject().getPayCheckDate());
+				model.addObject("payslipDate",  payslipDate);
+			}
+			
+			model.addObject("indEmployeePayroll",  indEmployeePayroll.getObject());
+			
+			//payslip Table data
+		   		HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
+		   		payrollList.add(indEmployeePayroll.getObject());
+		   		INDPayrollDTO indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, indEmployeePayroll.getObject().getIndPaysheetFrequency().getOrgLocation()).iterator().next();
+		   		List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
+			
+		   	if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
+				List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))).collect(Collectors.toList());
+				model.addObject("earningPayhead", earningList);
+				List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)).collect(Collectors.toList());
+				model.addObject("decuctionPayhead", decuctionList);
+			 }
+		   	model.addObject("indPayrollDTO", indPayrollDTO);
+			
+		   	model.addObject("numbersToWords", commonUtil.convertToIndianCurrency(indPayrollDTO.getNetPay()));
+			
+		}
+		model.setViewName("payroll/indPayrollPaySlipView");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
 }

@@ -89,7 +89,13 @@ function highlight(id) {
     $("#"+id).addClass("active");
 } 
 </script>
+<script>
+function downloadPayslip(payslipUUID){
+	 window.location.href = sourceleadUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
 
+}
+
+</script>
 
 
 

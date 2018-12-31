@@ -1059,7 +1059,6 @@ padding: 10px 15px; border-bottom: 1px solid #f4f4f4; position: relative;
 	padding: 10px 15px;
 }
 .mail-box.mail-content {
-
 	padding-top: 10px; padding-bottom: 15px; box-shadow: 0 0 3px #999;
 }
 .mail-box.mail-content .mail-box-header {
@@ -4506,7 +4505,6 @@ margin-bottom: 0;
 }
 .applicant_accept {
     padding: 15px; background: rgba(241,240,240,1.00); margin:0; border-radius: 5px;
-
 }
 .applicant_accept h2{
     font-size: 20px; margin-top: 10px; margin-bottom: 10px; color: #333; font-weight: normal;
@@ -5232,7 +5230,6 @@ padding: 15px 15px 25px 15px;
     background-color:none !important;
 }
 .icon_fa {
-
     position: relative; top: 5px;
 }
 /* Billing Dashboard css */
@@ -6115,7 +6112,7 @@ margin-top: 0px !important;
 }
 .width150px{
     width: 150px; display: inline-block;
-}
+}	
 .width215px{
     width: 215px; display: inline-block;
 }
@@ -9422,6 +9419,9 @@ background: url("../images/sortIC.svg"); background-repeat: no-repeat; backgroun
 .printIC {
 background: url("../images/printIC.svg"); background-repeat: no-repeat; background-size: 22px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
 }
+.downloadIC {
+background: url("../images/download.svg"); background-repeat: no-repeat; background-size: 30px; background-position: center; width:25px; text-align: center; display: block; height: 32px;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9606,8 +9606,46 @@ ul.timelineDots li .media-object img {
 .customeProjectDetails .project_details_cta span {
     width: 50%;
 }
+.payRate .input-group-addon {
+	background:#d5d5d5 !important; color: #101010 !important; border: 1px solid #d5d5d5; border-radius: 2px 0 0 2px;
+}
+.payRate .form-control {
+	border: 1px solid #d5d5d5 !important; border-radius: 3px; font-size: 100%;
+}
+.billRate .input-group-addon {
+	background: #dbdaef !important; color: #101010 !important; border: 1px solid #dbdaef; border-radius: 2px 0 0 2px;
+}
+.billRate .form-control {
+	border: 1px solid #dbdaef !important; border-radius: 3px; font-size: 100%;
+}
+.marginWidget .input-group-addon {
+	background: #f6e3df !important; color: #101010 !important; border: 1px solid #f6e3df; border-radius: 2px 0 0 2px;
+}
+.marginWidget .form-control {
+	border: 1px solid #f6e3df !important; border-radius: 3px; font-size: 100%;
+}
+.innerPadding {
+	padding: 15px;
+}
 
-
+.payslipTable table td, .payslipTable table th  {
+	border-collapse:border; border:1px solid #d6d6d6 !important;
+}
+.payslipTable table thead {
+	border:1px solid #6C7686 !important; background-color: #6C7686 !important;
+}
+.payslipTable table thead th {
+	  color: #fff !important; padding: 3px 10px  !important;
+}
+.payslipTable table tbody th, .payslipTable table tbody td, .payslipTable table tfoot td, .payslipTable table tfoot th	 {
+	padding: 3px 10px  !important; vertical-align: middle;
+}
+.payslipTable table tbody td, .payslipTable table tfoot td  {
+	text-align: right !important;
+}
+.payslipTable table tfoot {
+	background-color: #ededed; color: #333; font-weight: 600;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

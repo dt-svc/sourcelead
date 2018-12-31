@@ -68,6 +68,8 @@ public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
 		}else {
 			 pps = new PayrollPaySlipInd();
 			 pps.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			 pps.setIsActive(Constants.NO);
+			 pps.setDeletePermission(Constants.YES);
 		}
 		
 		pps.setPaySlipName(payrollPaySlipIndDTO.getPaySlipName());
@@ -75,86 +77,50 @@ public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
 
 		
 		//Company releated code
-		if(payrollPaySlipIndDTO.getCompanyName() != null && payrollPaySlipIndDTO.getCompanyName() != "") {
 			pps.setCompanyName(payrollPaySlipIndDTO.getCompanyName());
-		}
-		
-		if(payrollPaySlipIndDTO.getCompanyAddress() != null && payrollPaySlipIndDTO.getCompanyAddress() != "") {
 			pps.setCompanyAddress(payrollPaySlipIndDTO.getCompanyAddress());
-		}
-		if(payrollPaySlipIndDTO.getCompanyContactDetails() != null && payrollPaySlipIndDTO.getCompanyContactDetails() != "") {
 			pps.setCompanyContactDetails(payrollPaySlipIndDTO.getCompanyContactDetails());
-		}
-		if(payrollPaySlipIndDTO.getCompanyLogo() != null && payrollPaySlipIndDTO.getCompanyLogo() != "") {
 			pps.setCompanyLogo(payrollPaySlipIndDTO.getCompanyLogo());
-		}
-		
 		
 		//Employee Reated code
-		if(payrollPaySlipIndDTO.getEmployeeId() != null && payrollPaySlipIndDTO.getEmployeeId() != "") {
 			pps.setEmployeeId(payrollPaySlipIndDTO.getEmployeeId());
-		}
-		if(payrollPaySlipIndDTO.getEmployeeType() != null && payrollPaySlipIndDTO.getEmployeeType() != "") {
 			pps.setEmployeeType(payrollPaySlipIndDTO.getEmployeeType());
-		}
-		if(payrollPaySlipIndDTO.getEmpProject() != null && payrollPaySlipIndDTO.getEmpProject() != "") {
-			pps.setEmployeeProject(payrollPaySlipIndDTO.getEmpProject());
-		}
-		if(payrollPaySlipIndDTO.getEmployeePfNumber() != null && payrollPaySlipIndDTO.getEmployeePfNumber() !="") {
+			pps.setEmployeeUanNumber(payrollPaySlipIndDTO.getEmployeeUanNumber());
 			pps.setEmployeePfNumber(payrollPaySlipIndDTO.getEmployeePfNumber());
-		}
-		if(payrollPaySlipIndDTO.getEmployeeEsiNumber() != null && payrollPaySlipIndDTO.getEmployeeEsiNumber() != "") {
 			pps.setEmployeeEsiNumber(payrollPaySlipIndDTO.getEmployeeEsiNumber());
-		}	
-		if(payrollPaySlipIndDTO.getEmployeeBankDetails() != null && payrollPaySlipIndDTO.getEmployeeBankDetails() !="") {
 			pps.setEmployeeBankDetails(payrollPaySlipIndDTO.getEmployeeBankDetails());
-		}
-		if(payrollPaySlipIndDTO.getEmployeeDesignation() != null && payrollPaySlipIndDTO.getEmployeeDesignation() != "") {
 			pps.setEmployeeDesignation(payrollPaySlipIndDTO.getEmployeeDesignation());
-		}
-		if(payrollPaySlipIndDTO.getEmployeeName() != null && payrollPaySlipIndDTO.getEmployeeName() != "") {
 			pps.setEmployeeName(payrollPaySlipIndDTO.getEmployeeName());
-		}
-		if(payrollPaySlipIndDTO.getEmpContactDetails() != null && payrollPaySlipIndDTO.getEmpContactDetails() != "") {
 			pps.setEmployeeContactDetails(payrollPaySlipIndDTO.getEmpContactDetails());
-		}
-		if(payrollPaySlipIndDTO.getEmpJoiningdate() != null && payrollPaySlipIndDTO.getEmpJoiningdate() != "") {
 			pps.setEmployeeJoinDate(payrollPaySlipIndDTO.getEmpJoiningdate());
-		}
-		if(payrollPaySlipIndDTO.getEmployeeLocation() != null && payrollPaySlipIndDTO.getEmployeeLocation() != "") {
 			pps.setEmployeeLocation(payrollPaySlipIndDTO.getEmployeeLocation());
-		}
+			pps.setEmployeePanNumber(payrollPaySlipIndDTO.getEmployeePanNumber());
+			
 		
 		//Leave Related code
-		if(payrollPaySlipIndDTO.getLeaveAttended() != null && payrollPaySlipIndDTO.getLeaveAttended() != "") {
 			pps.setLeaveAttended(payrollPaySlipIndDTO.getLeaveAttended());
-		}
-		if(payrollPaySlipIndDTO.getLeaveLeaves() != null && payrollPaySlipIndDTO.getLeaveLeaves() != "") {
 			pps.setLeaveLeaves(payrollPaySlipIndDTO.getLeaveLeaves());
-		}
-		if(payrollPaySlipIndDTO.getLeaveLop() != null && payrollPaySlipIndDTO.getLeaveLop() != "") {
 			pps.setLeaveLop(payrollPaySlipIndDTO.getLeaveLop());
-		}
 		
 		
-		if(payrollPaySlipIndDTO.getPreviousMonth() != null && payrollPaySlipIndDTO.getPreviousMonth() != "") {
 			pps.setPreviousMonthPaid(payrollPaySlipIndDTO.getPreviousMonth());
-		}
-		if(payrollPaySlipIndDTO.getRegularHours() != null && payrollPaySlipIndDTO.getRegularHours() != "") {
 			pps.setRegularHours(payrollPaySlipIndDTO.getRegularHours());
-		}
-		if(payrollPaySlipIndDTO.getOvertimeHours() != null && payrollPaySlipIndDTO.getOvertimeHours() != "") {
 			pps.setOvertimeHours(payrollPaySlipIndDTO.getOvertimeHours());
-		}
 		
-		pps.setOrgLocationId(payrollPaySlipIndDTO.getOrgLocation());
-		pps.setStatus(Constants.RECORD_ACTIVE);
-		pps.setCreatedDate(new Date());
-		pps.setCreatedBy(payrollPaySlipIndDTO.getUser());
+			pps.setOrgLocationId(payrollPaySlipIndDTO.getOrgLocation());
+			pps.setStatus(Constants.RECORD_ACTIVE);
+			pps.setCreatedDate(new Date());
+			pps.setCreatedBy(payrollPaySlipIndDTO.getUser());
 		
 		payrollPaySlipIndDao.savePayrollPaySlipInd(pps);
 		
 		return "success";
+	}
+
+
+	@Override
+	public PayrollPaySlipInd deletePermissionStatsuByDeletePermission(String deletePermission,Long orgLocationId) throws Exception {
+		return payrollPaySlipIndDao.deletePermissionStatsuByDeletePermission(deletePermission,orgLocationId);
 	}
 
 
