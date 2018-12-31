@@ -9675,6 +9675,9 @@ box-shadow: 0 1px 4px rgba(57,73,76,0.35);
 .widgetDiv:hover h4{
 	font-weight: 600;
 }
+input.inputDisable {
+	border: none; width: 100%; padding-left: 0; font-weight: 500;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

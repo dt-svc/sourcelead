@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class IntiateUSPayrollDTO {
 	
-	private String payFreqency;
+	private String payFrequency;
 	
 	private Date payrollFreqStartDate;
 	
@@ -13,10 +13,27 @@ public class IntiateUSPayrollDTO {
 	private Date payrollCheckDate;
 	
 	private Date payrollRunDate;
+	
+	private String groupName;
 
-	public String getPayFreqency()
+	public String getGroupName()
 	{
-		return payFreqency;
+		return groupName;
+	}
+
+	public void setGroupName(String groupName)
+	{
+		this.groupName = groupName;
+	}
+
+	public String getPayFrequency()
+	{
+		return payFrequency;
+	}
+
+	public void setPayFrequency(String payFrequency)
+	{
+		this.payFrequency = payFrequency;
 	}
 
 	public Date getPayrollFreqStartDate()
@@ -39,10 +56,6 @@ public class IntiateUSPayrollDTO {
 		return payrollRunDate;
 	}
 
-	public void setPayFreqency(String payFreqency)
-	{
-		this.payFreqency = payFreqency;
-	}
 
 	public void setPayrollFreqStartDate(Date payrollFreqStartDate)
 	{
