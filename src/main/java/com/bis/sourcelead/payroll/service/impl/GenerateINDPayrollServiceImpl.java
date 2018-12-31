@@ -436,7 +436,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						//TDS amount calculation
 						tdsEligibilityTotal = (assoSal.getAnnualSalary()).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
 						tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
-						tdsMonthlyTotal = tdsYearlyTotal/ 12 ;
+						tdsMonthlyTotal = tdsYearlyTotal / 12 ;
 						
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 						ph.setIndEmployeePayrollId(employeePayroll);
