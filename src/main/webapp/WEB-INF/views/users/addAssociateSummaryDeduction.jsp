@@ -91,7 +91,7 @@ getDeductionType();
                <div class="minHeightcol5 mt">
                <div class="col-md-5" id="dedTypeDiv">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();" onblur="validateDuplicateDeductions();">
+                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount(); resetValues();" onblur="validateDuplicateDeductions();">
                       </select>
                   </div>
                   
@@ -276,6 +276,13 @@ function deductionPopup(){
 	 }
  }
  </script>
+ 
+ <script>
+function resetValues(){
+	$("#amt").val('');
+	$("#mthd").val('');
+}
+</script>
  
  <script>
  function validateDuplicateDeductions(){
