@@ -727,10 +727,10 @@ function deleteImage(){
 <script type="text/javascript">
 function deleteProfileImage(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	
+	var userId = 0;
 	 $.ajax({
 		    type: "GET",
-            url: sourceleadUrl+"/deleteProfileImage",
+            url: sourceleadUrl+"/deleteProfileImage?&userId"+userId,
 	        success: function(data) {
 	        	 var result = data;
      		if(result == "success"){

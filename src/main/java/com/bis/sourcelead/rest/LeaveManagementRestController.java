@@ -2170,9 +2170,11 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public Response<String> storeCancelReason(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId,  HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isCancelled = false;
 		Response<String> response = new Response<>();
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		
 		User user = userService.getUserById(userId);
 	  try {
 			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2226,7 +2228,12 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
-			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
+			
+			
+			// for URL redirections from mail
+			Long redirectOrgLocationId = orgLocations.getId();
+			String  redirectURL = "/cancelLeaves-params-notifyLink=notifyLink-and-leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"-and-orgLocationId="+orgLocations.getId();
+			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason,redirectOrgLocationId,redirectURL);
 			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
 			}*/
