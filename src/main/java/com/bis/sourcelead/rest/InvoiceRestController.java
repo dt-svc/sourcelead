@@ -2746,7 +2746,10 @@ return responseList;
 		return "Success";
 	}
 	
-	@RequestMapping(value="/generateCustomInvoicePDF")
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	/*@RequestMapping(value="/generateCustomInvoicePDF")
 	public void generateCustomInvoicePDF(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2761,12 +2764,12 @@ return responseList;
 			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				vendorOrgLocation = orgRelation.getResponderLocationId();
 			}
-			Invoice invoice =  invoiceDao.getInvoicetById(105L);
+			Invoice invoice =  invoiceDao.getInvoicetById(149L);
 			
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
-			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(5L);
-			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont);
-			/*if(file!= null){
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(8L);
+			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont, sourceleadUrl);
+			if(file!= null){
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
 				mimeType = "application/octet-stream";
@@ -2781,11 +2784,11 @@ return responseList;
 				response.getOutputStream().close();
 				response.getOutputStream().flush();
 				file.delete();
-			}*/
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@RequestMapping(value = "/invoiceTemplateList", method = RequestMethod.POST)
 	public ResponseList<CustomInvoiceTemplateDTO> customizeInvoice(HttpServletRequest request, SearchDTO searchDTO,
@@ -2829,9 +2832,12 @@ return responseList;
 				OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 				OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(orgLocationId,orgRelationId,loggedInOrgLocations.getId());
 				if(orgLocation != null && orgRelation != null) {
-					response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
-					/*response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());*/
+					if (Validator.validate(customInvoiceTemplateDTO)) {
+						response = invoiceService.saveCustomInvoiceTemplate(customInvoiceTemplateDTO, orgRelation, orgLocation, loggedInUser, loggedInOrgLocations);
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
 				} else {
 					response.setResponse(Result.INVALID_USER.name());
 					response.setResponseMessage(Result.INVALID_USER.getValue());

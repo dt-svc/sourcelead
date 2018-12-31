@@ -42,16 +42,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ContractRequestDocumentsDao;
 import com.bis.sourcelead.dao.ContractsTemplateDao;
+import com.bis.sourcelead.dto.ClientContractsDTO;
 import com.bis.sourcelead.dto.ContractDocumentsDTO;
 import com.bis.sourcelead.dto.ContractReqDocsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.FullTimeContractsDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
@@ -374,13 +377,33 @@ public class ContractRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getAllContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody ContractsDTO getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public @ResponseBody ResponseList<VendorContractsDTO> getAllContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		ContractsDTO contracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, tabType, contractsType, contractStatus, user, userRoleName);
-		return contracts;
+		ResponseList<VendorContractsDTO> vendorContracts = contractsTemplateService.getAllContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, tabType, contractsType, contractStatus, user, userRoleName, searchValue);
+		return vendorContracts;
+	}
+	
+	@RequestMapping(value = "/getAllClientContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<ClientContractsDTO> getAllClientContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		ResponseList<ClientContractsDTO> clientContracts = contractsTemplateService.getAllClientContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, tabType, contractsType, contractStatus, user, userRoleName, searchValue);
+		return clientContracts;
+	}
+	
+	@RequestMapping(value = "/getAllApplicantContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<FullTimeContractsDTO> getAllApplicantContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		ResponseList<FullTimeContractsDTO> applicantContracts = contractsTemplateService.getAllApplicantContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, tabType, contractsType, contractStatus, user, userRoleName, searchValue);
+		return applicantContracts;
 	}
 	
 	@RequestMapping(value = "/getEditContractTemplateDetails", method = RequestMethod.GET)
@@ -1182,5 +1205,15 @@ public class ContractRestController {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/getIndividualCounts", method = RequestMethod.GET)
+	public @ResponseBody Contracts getIndividualCounts(@RequestParam(value = "contractStatus", required = false) String contractStatus,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Contracts indivisualCount = contractsTemplateService.getAllVendorClientAndApplicantCountByLocationIdAndStatus(orgLocation, "", "", "", contractStatus, user, userRoleName);
+		return indivisualCount;
 	}
 }

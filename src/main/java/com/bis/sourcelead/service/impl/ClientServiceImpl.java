@@ -1202,6 +1202,8 @@ public class ClientServiceImpl implements ClientService {
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}else{
+				orgRelation.setPaymentTerm(null);
 			}
 
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
@@ -1369,6 +1371,8 @@ public class ClientServiceImpl implements ClientService {
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}else{
+				orgRelation.setPaymentTerm(null);
 			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);

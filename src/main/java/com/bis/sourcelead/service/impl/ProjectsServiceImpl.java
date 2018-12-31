@@ -588,10 +588,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 		if(!isNullOrEmpty(projectsDTO.getProjectApprovalTypeValue())){
 			projects.setProjectApprovalType(projectsDTO.getProjectApprovalTypeValue());
+		}else {
+			projects.setProjectApprovalType(Constants.PARALLEL);
 		}
 		
 		if(!isNullOrEmpty(projectsDTO.getExpenseApprovalTypeValue())){
 			projects.setExpenseApprovalType(projectsDTO.getExpenseApprovalTypeValue());
+		}else {
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 		}
 		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
@@ -1883,10 +1887,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getProjectApprovalTypeValue())){
 		    		projects.setProjectApprovalType(projectDTO.getProjectApprovalTypeValue());
+		    	}else {
+		    		projects.setProjectApprovalType(Constants.PARALLEL);
 		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getExpenseApprovalTypeValue())){
 		    		projects.setExpenseApprovalType(projectDTO.getExpenseApprovalTypeValue());
+		    	}else {
+		    		projects.setExpenseApprovalType(Constants.PARALLEL);
 		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
@@ -2698,6 +2706,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	  pm.setTerminateReason(pm.getTerminateReason());
 		      }
 	       	 
+		      if(pm.getPercentageOfWork() != null) {
+		    	  pm.setPercentageOfWork(pm.getPercentageOfWork());
+		      }
+		      
 	       	 if(pm.getCandidateId() != null){
 	
 	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(pm.getMasterCandidateId().getId(), projectId, "DRAFT");

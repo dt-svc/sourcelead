@@ -111,16 +111,20 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 			projectPlanningRequest.setProjectId(projects);
 			projectPlanningRequest.setProjectName(projects.getProjectName());
 		}
-		
+//		System.out.println(resourceRequestDTO.getAssociateResources().get(1).getPercentageOfWork());
+
 		if(!isNullOrEmpty(resourceRequestDTO.getDescription())){
 			projectPlanningRequest.setDescription(resourceRequestDTO.getDescription());
 		}
-		 
+		
+		
 		
 		if(!isNullOrEmpty(resourceRequestDTO.getEstimatedBudgetCurrencyType())){
 			projectPlanningRequest.setEstimatedBudgetCurrency(resourceRequestDTO.getEstimatedBudgetCurrencyType());
 		}
 		
+		
+		//projectPlanningRequest
 		
 		projectPlanningRequest.setOrgLocationId(orgLocations);
 		projectPlanningRequest.setRequestedUser(loginUser.getFullName());
@@ -135,6 +139,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		List<Long> approvedResources = new ArrayList<>();
 		Double approvedResourcesEstBudget = (double) 0;
 		Double approvedResourcesEstHours = (double) 0;
+		BigDecimal approvedResourcesPercentageOfWork = new BigDecimal(0);
 		if(projectPlanningRequest.getId() != null){
 			 resourceRequestIds = projectPlanningResourceRequestDao.getProjectPlanningResourceRequestIdsByRequestId(projectPlanningRequest.getId());
 			 Set<ProjectPlanningResourceRequest> approvedResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
@@ -143,6 +148,7 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 					 approvedResources.add(resourceRequest.getId());
 					 approvedResourcesEstBudget = approvedResourcesEstBudget+resourceRequest.getEstimatedBudget();
 					 approvedResourcesEstHours = approvedResourcesEstHours+resourceRequest.getEstimatedHours();
+					 approvedResourcesPercentageOfWork = approvedResourcesPercentageOfWork.add(resourceRequest.getPercentageOfWork());
 				 }
 			 }
 		}
@@ -159,7 +165,14 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
 		if(!isNullOrEmpty(resourceRequestDTO.getEstimatedBudget())){
 				projectPlanningRequest.setEstimatedBudget(Double.valueOf(resourceRequestDTO.getEstimatedBudget())+approvedResourcesEstBudget);
 			}
-			
+		
+		
+		projectPlanningRequest.setPercentageOfWork(resourceRequestDTO.getPercentageOfWork().add(approvedResourcesPercentageOfWork));
+		
+/*		if(resourceRequestDTO.getAssociateResources().get(1).getPercentageOfWork() != null) {
+			projectPlanningRequest.setPercentageOfWork(resourceRequestDTO.getAssociateResources().get(1).getPercentageOfWork());
+		}*/
+		
 		if(!isNullOrEmpty(resourceRequestDTO.getSaveType()) && resourceRequestDTO.getSaveType().equalsIgnoreCase("Draft")){
 			projectPlanningRequest.setRequestStatus(Constants.RESOURCE_REQUEST_DRAFT);
 		}else{
@@ -621,6 +634,8 @@ private String getNewRequestedResourcesTable(Set<ProjectPlanningNewResourceReque
 					}else{
 						resourceRequest.setRequestStatus(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL);
 					}
+			     
+			     resourceRequest.setPercentageOfWork(associateRequestDTO.getPercentageOfWork());
 			     
 				 resourceRequest.setOrgLocationId(orgLocations);
 				 resourceRequest.setProjectPlanningRequestId(projectPlanningRequest);

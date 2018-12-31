@@ -706,10 +706,13 @@ public class Constants {
 	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
 
 	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "Job Rating","process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+	
+	public static final String[] PURCHASE_CANDIDATE_HEADERS = {"Order No", "Order Date", "Company Name", "Total Resumes", "Total Price", "Service Fee", "Discount", "Grand Total", "Payment Status"};
 
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String APPLICANT = "Applicant";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
 	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
@@ -740,7 +743,7 @@ public class Constants {
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String ELK_WEB_GEO_CITIES_INDEX = "webgeocities";
 	public static final String ELK_WEBGEO_CITIES_TYPE = "webgeocities";
-	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs" };
+	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs","% of Work" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
@@ -939,7 +942,7 @@ public class Constants {
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
-			"Amount" , "Status"  , "Approved by"};
+			"Amount" , "Status"  , "Approved by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
@@ -1180,6 +1183,7 @@ public class Constants {
 	public static final String REPORT_FILTER_CURRENT_MONTH = "current_month";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
+	public static final String REPORT_FILTER_6_MONTHS = "6_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String REPORT_FILTER_Last_Week = "Last_Week";
@@ -1365,5 +1369,8 @@ public class Constants {
 	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
 	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
 	public static final String PMS_Ticket_Status_Updated_Email = "PMSTicketStatusUpdatedEmail";
+
+	public static final String COMMENTED_RAISED_TICKET_EMAIL = "CommentedRaisedTicketEmail";
+	public static final String COMMENTED_RAISED_TICKET_NOTIFICATION = "CommentedRaisedTicketNotification";
 	
 }

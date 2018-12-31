@@ -112,7 +112,7 @@ function showHideSalaryDIV(){
 	var payType = $("#payType").val();
 	 if(payType == "HourlyRate" || payType == "LcaWage"){
 		$("#salaryDIV").hide();
-		$("#standardHours").val('');    
+// 		$("#standardHours").val('');    
 		$("#annualSal").val('');
 		$("#perPaySal").val('');
 		$("#hourlyRate").val('');
@@ -310,6 +310,7 @@ function calculateHourlyRateSal(){
 			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox" onclick="selectCheckBox('+i+');">';
 			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
 			        		result = result +' </div>';
+			        		result = result +' <input type="hidden" id="'+i+'payItemId" name="associatePayItemDto['+i+'].payItemId" value="'+opt.id+'">';
 			        		result = result +' </td>';
 			        		result = result +' <td>';
 			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */

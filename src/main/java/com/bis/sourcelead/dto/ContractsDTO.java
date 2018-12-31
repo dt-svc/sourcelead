@@ -1,11 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Transient;
 import com.bis.sourcelead.annotations.CleanHtml;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ContractsDTO {
+public class ContractsDTO extends SearchDTO implements Serializable {
 	private String staticPath;
 	private String contrId;
 	private String contractType;
@@ -78,6 +79,16 @@ public class ContractsDTO {
 	private String revisedReason;
 	
 	private String typeOfContract;
+	
+	private String contractSubmissionType;
+	
+	private String tabType;
+	
+	private String contractsType;
+	
+	private String contractStatus;
+	
+	private String userRoleName;
 	
 	public String getStaticPath()
 	{
@@ -650,5 +661,56 @@ public class ContractsDTO {
 	{
 		this.typeOfContract = typeOfContract;
 	}
+
+	public String getContractSubmissionType()
+	{
+		return contractSubmissionType;
+	}
+
+	public void setContractSubmissionType(String contractSubmissionType)
+	{
+		this.contractSubmissionType = contractSubmissionType;
+	}
+
+	public String getTabType()
+	{
+		return tabType;
+	}
+
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
+	}
+
+	public String getContractsType()
+	{
+		return contractsType;
+	}
+
+	public void setContractsType(String contractsType)
+	{
+		this.contractsType = contractsType;
+	}
+
+	public String getContractStatus()
+	{
+		return contractStatus;
+	}
+
+	public void setContractStatus(String contractStatus)
+	{
+		this.contractStatus = contractStatus;
+	}
+
+	public String getUserRoleName()
+	{
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName)
+	{
+		this.userRoleName = userRoleName;
+	}
+	
 	
 }

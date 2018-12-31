@@ -1304,4 +1304,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return expensesDao.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(projectId, OrglocationId,startDate,endDate);
 	}
 	
+	@Override
+	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus) {
+		// TODO Auto-generated method stub
+		return expensesDao.changeExpenseBillingStatus(expenseId,billingStatus);
+	}
+	
 }
