@@ -74,63 +74,63 @@ function loadVendorRecruiters(){
 	        		 }
 	        		 
 	        		 if(opt.experienceAs !=null && opt.experienceAs !='' && opt.experienceAs !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceAs+'"><div class="tblminwidth-150">'+opt.experienceAs+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceAs+'"><div class="tbldata-dotdot">'+opt.experienceAs+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 if(opt.experienceDetail !=null && opt.experienceDetail !='' && opt.experienceDetail !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceDetail+'"><div class="tblminwidth-150">'+opt.experienceDetail+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceDetail+'"><div class="tbldata-dotdot-verybig">'+opt.experienceDetail+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.experienceDetails !=null && opt.experienceDetails !='' && opt.experienceDetails !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceDetails+'"><div class="tblminwidth-150">'+opt.experienceDetails+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceDetails+'"><div class="tbldata-dotdot-100">'+opt.experienceDetails+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.experienceFrom !=null && opt.experienceFrom !='' && opt.experienceFrom !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceFrom+'"><div class="tblminwidth-150">'+opt.experienceFrom+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceFrom+'"><div class="tblminwidth-75">'+opt.experienceFrom+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.experienceId !=null && opt.experienceId !='' && opt.experienceId !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceId+'"><div class="tblminwidth-150">'+opt.experienceId+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceId+'"><div class="tblminwidth-75">'+opt.experienceId+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.experienceTillPresent !=null && opt.experienceTillPresent !='' && opt.experienceTillPresent !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceTillPresent+'"><div class="tblminwidth-150">'+opt.experienceTillPresent+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceTillPresent+'"><div class="tblminwidth-100">'+opt.experienceTillPresent+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.experienceTo !=null && opt.experienceTo !='' && opt.experienceTo !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceTo+'"><div class="tblminwidth-150">'+opt.experienceTo+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.experienceTo+'"><div class="tblminwidth-75">'+opt.experienceTo+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 
 	        		 if(opt.userFname !=null && opt.userFname !='' && opt.userFname !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userFname+'"><div class="tblminwidth-150">'+opt.userFname+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userFname+'"><div class="tbldata-dotdot-vsm">'+opt.userFname+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 if(opt.userId !=null && opt.userId !='' && opt.userId !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userId+'"><div class="tblminwidth-150">'+opt.userId+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userId+'"><div class="tblminwidth-75">'+opt.userId+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 if(opt.userLname !=null && opt.userLname !='' && opt.userLname !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userLname+'"><div class="tblminwidth-150">'+opt.userLname+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.userLname+'"><div class="tbldata-dotdot-vsm">'+opt.userLname+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 if(opt.vendorName !=null && opt.vendorName !='' && opt.vendorName !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.vendorName+'"><div class="tblminwidth-150">'+opt.vendorName+'</div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;" title="'+opt.vendorName+'"><div class="tbldata-dotdot-vsm">'+opt.vendorName+'</div></td>'; 
 	        		 }else{
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
