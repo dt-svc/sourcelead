@@ -11,12 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IND_PAYSLIP")
@@ -33,67 +30,79 @@ public class PayrollPaySlipInd {
 	private String paySlipDescription;
 	
 	@Column(name = "COMPANY_NAME")
-	private String companyName = "N";
+	private String companyName;
 	
 	@Column(name = "COMPANY_ADDRESS")
-	private String companyAddress = "N";
+	private String companyAddress;
 	
 	@Column(name = "COMPANY_CONTACT_DETAILS")
-	private String companyContactDetails = "N";
+	private String companyContactDetails;
 	
 	@Column(name = "COMPANY_LOGO")
-	private String companyLogo = "N";
+	private String companyLogo;
 	
 	@Column(name = "EMPLOYEE_ID")
-	private String employeeId = "N";
+	private String employeeId;
 	
 	@Column(name = "EMPLOYEE_NAME")
-	private String employeeName = "N";
+	private String employeeName;
 	
 	@Column(name = "EMPLOYEE_TYPE")
-	private String employeeType = "N";
+	private String employeeType;
 	
 	@Column(name = "EMPLOYEE_CONTACT_DETAILS")
-	private String employeeContactDetails = "N";
+	private String employeeContactDetails;
 	
 	@Column(name = "EMPLOYEE_PROJECT")
-	private String employeeProject = "N";
+	private String employeeProject;
 	
 	@Column(name = "EMPLOYEE_JOIN_DATE")
-	private String employeeJoinDate = "N";
+	private String employeeJoinDate;
+	
+	@Column(name = "EMPLOYEE_UAN_NUMBER")
+	private String employeeUanNumber;
 	
 	@Column(name = "EMPLOYEE_PF_NUMBER")
-	private String employeePfNumber = "N";
+	private String employeePfNumber;
+	
+	@Column(name = "EMPLOYEE_PAN_NUMBER")
+	private String employeePanNumber;
 	
 	@Column(name = "EMPLOYEE_ESI_NUMBER")
-	private String employeeEsiNumber = "N";
+	private String employeeEsiNumber;
 	
 	@Column(name = "EMPLOYEE_BANK_DETAILS")
-	private String employeeBankDetails = "N";
+	private String employeeBankDetails;
 	
 	@Column(name = "EMPLOYEE_DESIGNATION")
-	private String employeeDesignation = "N";
+	private String employeeDesignation;
 	
 	@Column(name = "EMPLOYEE_LOCATION")
-	private String employeeLocation = "N";
+	private String employeeLocation;
 	
 	@Column(name = "LEAVE_ATTENDED")
-	private String leaveAttended = "N";
+	private String leaveAttended;
 	
 	@Column(name = "LEAVE_LEAVES")
-	private String leaveLeaves = "N";
+	private String leaveLeaves;
 	
 	@Column(name = "LEAVE_LOP")
-	private String leaveLop = "N";
+	private String leaveLop;
 	
 	@Column(name = "PREVIOUS_MONTH_PAID")
-	private String previousMonthPaid = "N";
+	private String previousMonthPaid;
 	
 	@Column(name = "REGULAR_HOURS")
-	private String regularHours = "N";
+	private String regularHours;
 	
 	@Column(name = "OVERTIME_HOURS")
-	private String overtimeHours = "N";
+	private String overtimeHours;
+	
+	@Column(name = "IS_ACTIVE")
+	private String isActive;
+	
+	@Column(name = "DELETE_PERMISSION")
+	private String deletePermission;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -105,6 +114,9 @@ public class PayrollPaySlipInd {
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "PAYSLIP_STATUS")
+	private String payslipStatus;
     
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -367,5 +379,45 @@ public class PayrollPaySlipInd {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getPayslipStatus() {
+		return payslipStatus;
+	}
+
+	public void setPayslipStatus(String payslipStatus) {
+		this.payslipStatus = payslipStatus;
+	}
+
+	public String getEmployeeUanNumber() {
+		return employeeUanNumber;
+	}
+
+	public void setEmployeeUanNumber(String employeeUanNumber) {
+		this.employeeUanNumber = employeeUanNumber;
+	}
+
+	public String getEmployeePanNumber() {
+		return employeePanNumber;
+	}
+
+	public void setEmployeePanNumber(String employeePanNumber) {
+		this.employeePanNumber = employeePanNumber;
+	}
+
+	public String getIsActive() {
+		return isActive;
+	}
+
+	public String getDeletePermission() {
+		return deletePermission;
+	}
+
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
+	}
+
+	public void setDeletePermission(String deletePermission) {
+		this.deletePermission = deletePermission;
 	}
 }
