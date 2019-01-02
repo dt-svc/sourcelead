@@ -579,26 +579,27 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			queryObj.setResultTransformer(Transformers.aliasToBean(IntiateUSPayrollDTO.class));
 			recentRunRecord = queryObj.list();
 //			System.out.println(recentRunRecord.get(0).getPayrollFreqStartDate() +" / " +recentRunRecord.get(0).getPayrollFreqEndDate());
-			
-			Calendar c = Calendar.getInstance(); 
-			c.setTime(recentRunRecord.get(0).getPayrollFreqEndDate()); 
-			c.add(Calendar.DATE, 1);
-			Date nextForEndDate = c.getTime();
-			java.sql.Date freqStartDate = new java.sql.Date(nextForEndDate.getTime());
-			
-			String qry = "from USPayScheduleDate scheduleDate where scheduleDate.payPeriodStartDate = :payrollFreqStartDate";
-			List<USPayScheduleDate> uSPayScheduleDate = session.createQuery(qry).setDate("payrollFreqStartDate", freqStartDate).list();
-			
-			if(uSPayScheduleDate != null && uSPayScheduleDate.size() > 0) {
-				StringBuilder payFreq = new StringBuilder();
-				commonPayrollDataDTO.setPayrollFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodStartDate()));
-				commonPayrollDataDTO.setPayrollFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodEndDate()));
-				commonPayrollDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getCheckDate()));
-				commonPayrollDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayRunDate()));
-				payFreq.append(commonPayrollDataDTO.getPayrollFreqStartDate()).append(" to ").append(commonPayrollDataDTO.getPayrollFreqEndDate());
-				commonPayrollDataDTO.setPayrollFrequency(payFreq.toString());
+			if(recentRunRecord != null && recentRunRecord.size() >0) {
+				Calendar c = Calendar.getInstance(); 
+				c.setTime(recentRunRecord.get(0).getPayrollFreqEndDate()); 
+				c.add(Calendar.DATE, 1);
+				Date nextForEndDate = c.getTime();
+				java.sql.Date freqStartDate = new java.sql.Date(nextForEndDate.getTime());
+				
+				String qry = "from USPayScheduleDate scheduleDate where scheduleDate.payPeriodStartDate = :payrollFreqStartDate";
+				List<USPayScheduleDate> uSPayScheduleDate = session.createQuery(qry).setDate("payrollFreqStartDate", freqStartDate).list();
+				
+				if(uSPayScheduleDate != null && uSPayScheduleDate.size() > 0) {
+					StringBuilder payFreq = new StringBuilder();
+					commonPayrollDataDTO.setPayrollFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodStartDate()));
+					commonPayrollDataDTO.setPayrollFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayPeriodEndDate()));
+					commonPayrollDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getCheckDate()));
+					commonPayrollDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgDateFormat, uSPayScheduleDate.get(0).getPayRunDate()));
+					payFreq.append(commonPayrollDataDTO.getPayrollFreqStartDate()).append(" to ").append(commonPayrollDataDTO.getPayrollFreqEndDate());
+					commonPayrollDataDTO.setPayrollFrequency(payFreq.toString());
+				}	
 			}
-//			System.out.println("Next Payroll Date "+uSPayScheduleDate.get(0).getPayPeriodStartDate()+" / "+uSPayScheduleDate.get(0).getPayPeriodEndDate());
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

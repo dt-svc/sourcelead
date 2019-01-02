@@ -2106,14 +2106,24 @@ public class USPayrollRestController {
 	public ModelAndView uSPayrollDashboardJsp(HttpServletRequest request, HttpServletResponse response)
 	{
 		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/uSPayrollDashboard");
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			if(configurePayrollApprover != null && StringUtils.isNotBlank(configurePayrollApprover.getAutoPayrollFrequency())) {
+				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
+			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("payroll/uSPayrollDashboard");
+			sessionData.setNav(Constants.PAYROLL);
+			request.getSession().setAttribute("sessionData", sessionData);	
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-		sessionData.setNav(Constants.PAYROLL);
-		request.getSession().setAttribute("sessionData", sessionData);
+		
 		return model;
 	}
 	
