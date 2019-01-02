@@ -122,7 +122,7 @@ $(document).ready(function(){
     <h4 class="clearfix">Previous Payroll</h4>
     <div class="require_wrap_table clearfix tableHDRBgColor">
            <div id="recentPayrollDataGrid"></div>
-          <div class="clearfix mt">
+          <div class="clearfix mt" id="recentPayrollDataForViewMore">
           	<a href="#" class="btn pull-right btn-sm btnBgColor anchorBlack">View more...</a>
           </div>
           </div>
@@ -196,9 +196,25 @@ $(function() {
 		    	type: "POST",
 		        url: sourceleadUrl+"/getNextPayrollDate?"+tokenParamName+"="+tokenValue+"&payFrequency="+payFrequency, 
 		        success: function(data) {
-		        	$("#payrollFrequency").val(data.payrollFrequency);
-		        	$("#payRunDate").val(data.payrollCheckDate);
-		        	$("#payCheckDate").val(data.payrollRunDate);
+		        	if(data.payrollFrequency != null && data.payrollFrequency != ''){
+		        		$("#payrollFrequency").val(data.payrollFrequency);
+		        	}else{
+		        		$("#payrollFrequency").val('--');
+		        	}
+		        	
+		        	if(data.payrollCheckDate != null && data.payrollCheckDate != ''){
+		        		$("#payRunDate").val(data.payrollCheckDate);
+		        	}else{
+		        		$("#payRunDate").val('--');
+		        	}
+		        	
+		        	if(data.payrollRunDate != null && data.payrollRunDate != ''){
+		        		$("#payCheckDate").val(data.payrollRunDate);
+		        	}else{
+		        		$("#payCheckDate").val('--');
+		        	}
+		        	
+		        	
 		        	populateRecentRunPayrollDataGraph(data.payrollGraphData);
 		        	populateRecentRunPayrollDataGrid(data.payrollGridData);
 		        },
@@ -212,58 +228,74 @@ $(function() {
 <script>
 function populateRecentRunPayrollDataGraph(json){
 	 var chartData = [];
-	 for(var i=0;i<json.length;i++){
-		 var opt = json[i];
-		 chartData.push({
-					"column-1": opt.netPay,
-					"category": opt.payFrequency
-				});
-	 }
-		 
-	AmCharts.makeChart("agYear",
+	 
+		 for(var i=0;i<json.length;i++){
+			 var opt = json[i];
+			 chartData.push({
+						"column-1": opt.netPay,
+						"category": opt.payFrequency
+					});
+		 }
+	
+		 var chart = AmCharts.makeChart("agYear",
 			{
-		"type": "serial",
-		"categoryField": "category",
-		"startDuration": 1,
-		"categoryAxis": {
-			"autoRotateAngle": 0,
-			"autoWrap": true,
-			"gridPosition": "start",
-			"axisAlpha": 0,
-			"axisColor": "#FFFFFF",
-			"axisThickness": 0,
-			"gridAlpha": 0,
-			"gridColor": "#6FC9FD",
-			"gridThickness": 0
-		},
-		"trendLines": [],
-		"graphs": [
-			{
-				"bullet": "round",
-				"fillAlphas": 0.1,
-				"id": "totalPays",
-				"lineColor": "#6FC9FD",
-				"title": "Totalpays",
-				"valueField": "column-1"
-			}
-		],
-		"guides": [],
-		"valueAxes": [
-			{
-				"id": "ValueAxis-1",
-				"axisAlpha": 0.5,
-				"axisColor": "#6FC9FD",
-				"gridAlpha": 0.5,
-				"gridColor": "#6FC9FD",
-				"gridThickness": 0
-			}
-		],
-		"allLabels": [],
-		"balloon": {},
-		"titles": [],
-		"dataProvider": chartData
+				"type": "serial",
+				"categoryField": "category",
+				"startDuration": 1,
+				"categoryAxis": {
+					"autoRotateAngle": 0,
+					"autoWrap": true,
+					"gridPosition": "start",
+					"axisAlpha": 0,
+					"axisColor": "#FFFFFF",
+					"axisThickness": 0,
+					"gridAlpha": 0,
+					"gridColor": "#6FC9FD",
+					"gridThickness": 0
+				},
+				"trendLines": [],
+				"graphs": [
+					{
+						"bullet": "round",
+						"fillAlphas": 0.1,
+						"id": "totalPays",
+						"lineColor": "#6FC9FD",
+						"title": "Totalpays",
+						"valueField": "column-1"
+					}
+				],
+				"guides": [],
+				"valueAxes": [
+					{
+						"id": "ValueAxis-1",
+						"axisAlpha": 0.5,
+						"axisColor": "#6FC9FD",
+						"gridAlpha": 0.5,
+						"gridColor": "#6FC9FD",
+						"gridThickness": 0
+					}
+				],
+				"allLabels": [],
+				"balloon": {},
+				"titles": [],
+				"dataProvider": chartData
+			});
+	
+	AmCharts.checkEmptyData = function (chart) {
+	    if ( 0 == chart.dataProvider.length ) {
+	        chart.valueAxes[0].minimum = 0;
+	        chart.valueAxes[0].maximum = 100;
+	        var dataPoint = {
+	            dummyValue: 0
+	        };
+	        dataPoint[chart.categoryField] = '';
+	        chart.dataProvider = [dataPoint];
+	        chart.addLabel(0, '50%', 'The Chart Contains No Data', 'center');
+	        chart.chartDiv.style.opacity = 0.8;
+	        chart.validateNow();
+	    }
 	}
-);
+	AmCharts.checkEmptyData(chart);
 }
 </script>
 
@@ -273,7 +305,7 @@ function populateRecentRunPayrollDataGrid(json){
 	result = result + '<table>';
 	result = result + '<thead>';
 	result = result + '<tr>';
-	result = result + '<th>Prequency</th>';
+	result = result + '<th>Frequency</th>';
 	result = result + '<th>Pay Group</th>';
 	result = result + '<th>Run Date</th>';
 	result = result + '<th>Check Date</th>';
@@ -284,22 +316,29 @@ function populateRecentRunPayrollDataGrid(json){
 	result = result + '</tr>';
 	result = result + '</thead>';
 	result = result + '<tbody>';
-	for(var i=0;i<json.length;i++){
-		var opt = json[i];
-		result = result + '<tr>';
-		result = result + '<td>';
-		result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</div>';
-		result = result + '</td>';
-		result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
-		result = result + '<td><div class="tblminwidth-75">'+opt.payrollRunDate+'</div></td>';
-		result = result + ' <td><div class="tblminwidth-75">'+opt.payrollCheckDate+'</div></td>';
-		result = result + '<td><div class="tblminwidth-30">'+opt.noOfEmployees+'</div></td>';
-		result = result + ' <td><div class="tblminwidth-30">'+opt.noOfDirectDeposit+'</div></td>';
-		result = result + '<td><div class="tblminwidth-30">'+opt.noOfCheques+'</div></td>';
-		result = result + '<td><div class="tblminwidth-125 text-right">'+opt.netPay+'</div></td>';
-		result = result + ' </tr>';
-	}
 	
+	if(json != null && json != "" && json != "undefined")
+	{
+		for(var i=0;i<json.length;i++){
+			var opt = json[i];
+			result = result + '<tr>';
+			result = result + '<td>';
+			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</div>';
+			result = result + '</td>';
+			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
+			result = result + '<td><div class="tblminwidth-75">'+opt.payrollRunDate+'</div></td>';
+			result = result + ' <td><div class="tblminwidth-75">'+opt.payrollCheckDate+'</div></td>';
+			result = result + '<td><div class="tblminwidth-30">'+opt.noOfEmployees+'</div></td>';
+			result = result + ' <td><div class="tblminwidth-30">'+opt.noOfDirectDeposit+'</div></td>';
+			result = result + '<td><div class="tblminwidth-30">'+opt.noOfCheques+'</div></td>';
+			result = result + '<td><div class="tblminwidth-125 text-right">'+opt.netPay+'</div></td>';
+			result = result + ' </tr>';
+		}
+	}
+	else
+	{
+		$("#recentPayrollDataForViewMore").hide();
+	}
 	result = result + ' </tbody>';
 	result = result + '</table>';
 	$("#recentPayrollDataGrid").empty();
