@@ -1707,6 +1707,15 @@ public class TaxServiceImpl implements TaxService {
 		return taxSubmissionMasterDTOList;
 	}
 
-	
+	@Override
+	public List<Tds> getTDSListByFinancialYear(String financialYear) {
+		return taxDao.getTDSListByFinancialYear(financialYear);
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(Long userId, Long orgLocationId, String financialYear) {
+		
+		return taxDao.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(userId, orgLocationId, financialYear);
+	}
 }
 

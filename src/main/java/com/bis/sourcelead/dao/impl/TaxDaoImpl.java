@@ -893,5 +893,43 @@ public class TaxDaoImpl implements TaxDao {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Tds> getTDSListByFinancialYear(String financialYear) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Tds tds where tds.centraltaxid.ctfinancialYear = :financialYear";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("financialYear", financialYear);
+			List<Tds> tdsList = queryObj.list();
+			if (tdsList != null && !tdsList.isEmpty() && tdsList.size()>0) {
+				return tdsList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(Long userId, Long orgLocationId, String financialYear) {
+		try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from SourceleadTaxITDeclarationSubmission it where it.orgLocations.id=:orgLocationId and it.financialYear=:financialYear and it.user.id=:userId ";
+				Query queryObj = session.createQuery(query);
+				queryObj.setLong("userId", userId);
+				queryObj.setLong("orgLocationId", orgLocationId);
+				queryObj.setString("financialYear", financialYear);
+				List<SourceleadTaxITDeclarationSubmission> itDeclarationSubmissionList = queryObj.list();
+				if (itDeclarationSubmissionList != null && !itDeclarationSubmissionList.isEmpty()) {
+					return itDeclarationSubmissionList.get(0);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+
 
 }

@@ -684,6 +684,7 @@ public class ProjectsRestController {
 	    	  
 	    	  projectMebersDTO.setEstHours(projectMebers.getEstimatedHours());
 	    	  projectMebersDTO.setEstBudget(projectMebers.getEstimatedBudget());
+	    	  projectMebersDTO.setPercentageOfWork(projectMebers.getPercentageOfWork());
 	    	  
 	    	  projectMebersDTO.setProjectMemberId(projectMebers.getId());
 	    	  
@@ -774,6 +775,12 @@ public class ProjectsRestController {
 	    			projectMembers.setEstimatedHours(projectMembersDTO.getEstHours());
 	    		}else {
 	    			projectMembers.setEstimatedHours(null);
+	    		}
+	    		
+	    		if(projectMembersDTO.getPercentageOfWork() != null){
+	    			projectMembers.setPercentageOfWork(projectMembersDTO.getPercentageOfWork());
+	    		}else {
+	    			projectMembers.setPercentageOfWork(null);
 	    		}
 	    		
 	    		projectMembersService.saveProjectMember(projectMembers);
