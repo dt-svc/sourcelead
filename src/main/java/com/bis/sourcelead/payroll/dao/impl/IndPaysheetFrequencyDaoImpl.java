@@ -30,6 +30,8 @@ import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 @Repository
+@Transactional
+@SuppressWarnings("unchecked")
 public class IndPaysheetFrequencyDaoImpl implements IndPaysheetFrequencyDao{
 
 private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl.class);
@@ -38,7 +40,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	SessionFactory sessionFactory;
 	
 	@Override
-	@Transactional
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation, IndPaysheetFrequencyDTO indPaysheetFrequencyDTO) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -98,7 +99,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 
 	@Override
-	@Transactional
 	public IndPaysheetFrequency addIndPaysheetFrequency(IndPaysheetFrequency paySheetFreq) {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
@@ -113,7 +113,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	
 	@Override
-	@Transactional
 	public IndPaysheetFrequency getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -130,7 +129,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	
 	@Override
-	@Transactional
 	public ResponseList<IndEmployeePayroll> getIndEmployeePayrollListByPaysheetFrequencyUuid(String paysheetFrequencyUuid) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -145,7 +143,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	
 	@Override
-	@Transactional
 	public Response<IndEmployeePayroll> getIndEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -166,7 +163,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	
 	@Override
-	@Transactional
 	public ResponseList<IndEmployeePayroll> getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(String paysheetFrequencyUuid, String empApproveStatus) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -182,7 +178,6 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	
 	
 	@Override
-	@Transactional
 	public ResponseList<IndEmployeePayroll> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
@@ -268,4 +263,20 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		return response;
 	}
 
+
+	
+	@Override
+	public IndEmployeePayroll indEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String qry = "from IndEmployeePayroll iep where iep.indEmpPayrollUUID =:empPayrollUUID and iep.status = '1'";
+		List<IndEmployeePayroll> empList = null;
+		Query queryObj = session.createQuery(qry);
+		empList = queryObj.setString("empPayrollUUID", empPayrollUUID).list();
+		
+		IndEmployeePayroll empPay = null;
+		if (empList != null && !empList.isEmpty()) {
+			empPay = (IndEmployeePayroll) empList.iterator().next();
+		}
+		return empPay;
+	}
 }
