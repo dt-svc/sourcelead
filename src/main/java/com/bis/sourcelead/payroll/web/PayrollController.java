@@ -47,6 +47,7 @@ import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
@@ -91,6 +92,8 @@ public class PayrollController {
 	@Autowired
 	OrgService orgService;
 	
+	@Autowired
+	PayrollPaySlipIndService payrollPaySlipIndService;
 	//This method commented by Laxman 
 	/*@InitBinder
 	private void initBinder(WebDataBinder binder)
@@ -449,6 +452,9 @@ public class PayrollController {
 			PayrollPaySlipInd ppsi  = indEmployeePayroll.getObject().getPayrollPaySlipInd();
 			if(ppsi!= null) {
 				model.addObject("ppsi", ppsi);
+			}else {
+				PayrollPaySlipInd ppsisDefault= payrollPaySlipIndService.deletePermissionStatsuByDeletePermission(Constants.NO, indEmployeePayroll.getObject().getIndPaysheetFrequency().getOrgLocation().getId());
+				model.addObject("ppsi", ppsisDefault);
 			}
 			model.addObject("empPayrollUUID", empPayrollUUID);
 			

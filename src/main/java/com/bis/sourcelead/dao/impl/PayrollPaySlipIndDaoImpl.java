@@ -112,5 +112,18 @@ public class PayrollPaySlipIndDaoImpl implements PayrollPaySlipIndDao{
 		}
 		return payrollPaySlipInd;
 	}
+
+	@Override
+	public PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollPaySlipInd ppsi  where ppsi.isActive ='Y' and ppsi.orgLocationId.id =:orgLocationId and ppsi.status = 1 "; 
+		List<PayrollPaySlipInd> indPayrollPayList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		PayrollPaySlipInd  payrollPaySlipInd = null;
+		if(indPayrollPayList != null && !indPayrollPayList.isEmpty())
+		{
+			payrollPaySlipInd = (PayrollPaySlipInd) indPayrollPayList.iterator().next();
+		}
+		return payrollPaySlipInd;
+	}
 	 
 }

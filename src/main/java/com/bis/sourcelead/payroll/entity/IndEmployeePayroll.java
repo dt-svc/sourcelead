@@ -125,7 +125,7 @@ public class IndEmployeePayroll implements Serializable {
 	private BigDecimal lopAmount;
 	
 	@ManyToOne
-	@JoinColumn(name = "IND_PAYSLIP_ID", nullable = false)
+	@JoinColumn(name = "IND_PAYSLIP_ID")
 	private PayrollPaySlipInd payrollPaySlipInd;
 	
 	public Long getId() {

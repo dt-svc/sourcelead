@@ -23,5 +23,7 @@ public interface PayrollPaySlipIndDao {
 	List<PayrollPaySlipInd> getIndPayrollPaySlipListByOrglocationInd(Long orglocationId) throws Exception;
 
 	PayrollPaySlipInd deletePermissionStatsuByDeletePermission(String deletePermission, Long orgLocationId)throws Exception;
-
+	
+	PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId)throws Exception;
 }
+

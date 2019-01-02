@@ -21,4 +21,7 @@ public interface PayrollPaySlipIndService {
 	
 	PayrollPaySlipInd deletePermissionStatsuByDeletePermission(String deletePermission,Long orgLocationId)throws Exception;
 	
+	PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId)throws Exception;
+
+	
 }

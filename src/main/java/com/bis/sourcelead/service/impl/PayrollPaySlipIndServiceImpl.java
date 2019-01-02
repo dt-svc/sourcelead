@@ -124,5 +124,11 @@ public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
 	}
 
 
+	@Override
+	public PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId) throws Exception {
+		return payrollPaySlipIndDao.getActivePayslipByOrglocationId(orgLocationId);
+	}
+
+
 	
 }

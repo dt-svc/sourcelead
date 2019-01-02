@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
 import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.ibm.icu.text.SimpleDateFormat;
@@ -75,6 +77,9 @@ public class IndPaySlipPdf {
 	
 	@Autowired
 	OrgService orgService;
+	
+	@Autowired
+	PayrollPaySlipIndService payrollPaySlipIndService;
 	
 	
 	public File getIndiaPaySlipPdf(IndEmployeePayroll indEmployeePayroll, OrgLocations orgLocations) throws Exception {
@@ -122,7 +127,12 @@ public class IndPaySlipPdf {
 				subtotalStyle.setBorder(pen);
 				
 				OrgLocations orgLocation = indEmployeePayroll.getIndPaysheetFrequency().getOrgLocation();
-				PayrollPaySlipInd ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+				PayrollPaySlipInd ppsi = null;
+				if(indEmployeePayroll.getPayrollPaySlipInd() != null) {
+					ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+				}else {
+					ppsi = payrollPaySlipIndService.deletePermissionStatsuByDeletePermission(Constants.NO, orgLocations.getId());
+				}
 				
 				StyleBuilder leftStyle = stl.style();
 				leftStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
@@ -325,10 +335,15 @@ public class IndPaySlipPdf {
 	}
 	
 	
-	private ComponentBuilder<?, ?> createEmployeeComponent2(IndEmployeePayroll indEmployeePayroll,INDPayrollDTO indPayrollDTO) {
+	private ComponentBuilder<?, ?> createEmployeeComponent2(IndEmployeePayroll indEmployeePayroll,INDPayrollDTO indPayrollDTO) throws Exception {
 		Candidate candidate = indEmployeePayroll.getCandidate();
 		AssociatePfEsiDetails ape = associatePfEsiService.findAssociatePfEsiByCandidateId(indEmployeePayroll.getCandidate().getId(), indEmployeePayroll.getCandidate().getOrgLocationId());
-		PayrollPaySlipInd ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+		PayrollPaySlipInd ppsi = null;
+		if(indEmployeePayroll.getPayrollPaySlipInd() != null) {
+			ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+		}else {
+			ppsi = payrollPaySlipIndService.deletePermissionStatsuByDeletePermission(Constants.NO, indEmployeePayroll.getIndPaysheetFrequency().getOrgLocation().getId());
+		}
 		HorizontalListBuilder list = cmp.horizontalList();
 		if(candidate.getPanNumber() != null) {
 			if(ppsi.getEmployeePanNumber() != null && ppsi.getEmployeePanNumber().equalsIgnoreCase("Y")) {
@@ -354,10 +369,10 @@ public class IndPaySlipPdf {
 				}
 			}
 		}
-		if(ppsi.getLeaveAttended() != null && ppsi.getLeaveAttended().equalsIgnoreCase("Y")) {
+		if(ppsi.getLeaveAttended() != null && ppsi.getLeaveAttended().equalsIgnoreCase("Y") && indPayrollDTO.getNoOfDays() != null) {
 			addEmployeeAttribute(list, "Attended ", String.format("%.0f", indPayrollDTO.getNoOfDays())+" "+"Days");
 		}
-		if(ppsi.getLeaveLeaves() != null && ppsi.getLeaveLeaves().equalsIgnoreCase("Y")) {
+		if(ppsi.getLeaveLeaves() != null && ppsi.getLeaveLeaves().equalsIgnoreCase("Y") && indPayrollDTO.getNoOfLeaves() != null) {
 			addEmployeeAttribute(list, "Leaves ", String.format("%.0f", indPayrollDTO.getNoOfLeaves()));
 		}
 		
@@ -384,10 +399,15 @@ public class IndPaySlipPdf {
 		}
 	}
 	
-	private ComponentBuilder<?, ?> createEmployeeComponent1(IndEmployeePayroll indEmployeePayroll) {
+	private ComponentBuilder<?, ?> createEmployeeComponent1(IndEmployeePayroll indEmployeePayroll) throws Exception {
 		Employees employee = indEmployeePayroll.getEmployee();
 		Candidate candidate = indEmployeePayroll.getCandidate();
-		PayrollPaySlipInd ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+		PayrollPaySlipInd ppsi = null;
+		if(indEmployeePayroll.getPayrollPaySlipInd() != null) {
+			ppsi = indEmployeePayroll.getPayrollPaySlipInd();
+		}else {
+			ppsi = payrollPaySlipIndService.deletePermissionStatsuByDeletePermission(Constants.NO, indEmployeePayroll.getIndPaysheetFrequency().getOrgLocation().getId());
+		}
 		PaymentAccount paymentAccount = orgService.getCandidateAcitivatePaymentAccount(candidate.getId());
 
 		HorizontalListBuilder list = cmp.horizontalList();
