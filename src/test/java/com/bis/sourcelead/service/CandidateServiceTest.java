@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
+
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -300,6 +302,39 @@ public class CandidateServiceTest {
 			user1 = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId.getId());
 			assertEquals(user.getId(),user1.getId());
 		}
-	}
+
+		@Test
+		public void testUpdateMarketplaceCartCountAndPrice() {
+			try{
+				logger.info("testing updateMarketplaceCartCountAndPrice service");
+				User user = new User();
+				user.setId(4l);
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				Object obj[] = candidateService.updateMarketplaceCartCountAndPrice(orglocations.getId(), Constants.ROLE_ADMIN, user);
+				Assert.assertNotNull(obj);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void testUpdateMarketCartStatus() {
+			try{
+				logger.info("testing updateMarketCartStatus service");
+				List<Long> marketCartIds = new ArrayList<Long>();
+				marketCartIds.add(3l);
+				marketCartIds.add(5l);
+				marketCartIds.add(8l);
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				Boolean flag = candidateService.updateMarketCartStatus(marketCartIds, orglocations.getId());
+				Assert.assertTrue(flag);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+}
 
 
