@@ -1001,6 +1001,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 			}
 			responseList.setData(payrollReportList);
+			responseList.setRecordsTotal(payrollReportList.size());
+			responseList.setRecordsFiltered(payrollReportList.size());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -32,6 +32,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.search.FlagTerm;
 
 import com.bis.sourcelead.dto.AttachmentDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
@@ -64,10 +65,14 @@ public class MailBox {
 			Folder[] f = store.getDefaultFolder().list("*");
 			// Folder[] f = store.getDefaultFolder().listSubscribed();
 			/*int temp = 1;*/
-			for (Folder fd : f) {
+			for (Folder folder : f) {
 				/*System.out.println((temp++) + " " + fd.getName());*/
-				if (fd.getName().equalsIgnoreCase("INBOX") || fd.isSubscribed()) {
-					folderList.add(fd.getName() + "<<>>" + fd.getFullName().replaceAll("&", "-and-"));
+				if (folder.getName().equalsIgnoreCase("INBOX") || folder.isSubscribed()) {
+					Flags seen = new Flags(Flags.Flag.SEEN);
+					FlagTerm unseenFlagTerm = new FlagTerm(seen, false);
+					folder.open(Folder.READ_ONLY);
+					Message[] messages = folder.search(unseenFlagTerm);
+					folderList.add(folder.getName() + "<<>>" + folder.getFullName().replaceAll("&", "-and-") + "<<>>" + messages.length);
 				}
 			}
 			// close the store and folder objects
@@ -128,7 +133,7 @@ public class MailBox {
 			Message[] messages = emailFolder.getMessages(from, to);
 
 			paginator.setTotalRows(messagesCount);
-			paginator.setSortType(unreadCount);
+			paginator.setFilterType(unreadCount);
 			FetchProfile fetchProfile = new FetchProfile();
 			fetchProfile.add(FetchProfile.Item.ENVELOPE);
 			fetchProfile.add("X-mailer");
@@ -138,7 +143,9 @@ public class MailBox {
 				ReadMailDTO readMailDTO = new ReadMailDTO();
 				UIDFolder uf = (UIDFolder) emailFolder;
 				long messageId = uf.getUID(message);
+				boolean seen = message.isSet(Flags.Flag.SEEN);
 				readMailDTO.setMessageId(messageId);
+				readMailDTO.setSeen(seen);
 				
 				if (message.getFrom() != null && message.getFrom().length > 0) {
 					InternetAddress internetAddress = (InternetAddress) ((Address) message.getFrom()[0]);

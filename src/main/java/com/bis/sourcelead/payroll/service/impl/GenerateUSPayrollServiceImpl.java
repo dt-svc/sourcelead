@@ -1302,12 +1302,12 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Map<String, BigDecimal> map = new HashMap<>();
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				map.put("Federal Withholding", tax.getFederalWithholding());
-				map.put("FICA",tax.getFicaWithholding());
+				map.put("SOC SEC",tax.getFicaWithholding());
 				map.put("Medicare",tax.getMedicareWithholding());
 				map.put("Advanced Earned Income Credit",tax.getEarnedIncCredit());
 				map.put("State Withholding",tax.getStateWithholding());
 				map.put("LocalTax",tax.getLocalTax());
-				map.put("SUI",tax.getSDI());
+				map.put("SDI",tax.getSDI());
 				map.put("SUI", tax.getSUI());
 				map.put("FLI", tax.getFLI());
 				map.put("HCSF", tax.getHCSF());

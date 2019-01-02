@@ -67,8 +67,10 @@ $(document).ready(function(){
         <h2>Upcoming pay period and paydays</h2>
       </div>
      <!--  <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Upcomming pay period and paydays</div> -->
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> <a href="<c:url value='${appPath}/payrollScheduleList'/>">Pay Schedule List &raquo;</a> </div>
-      
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
+          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
+          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;View Pay Schedule
+        </div>
     </section>
     
 	<div class="timesheet_out clearfix">

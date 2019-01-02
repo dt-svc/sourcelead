@@ -168,9 +168,9 @@ public void getCandidateDetailsFromMarketcart() throws Exception{
 	PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "loginUserRole")).thenReturn(userRoleName);
 	PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "orgLocations")).thenReturn(orgLocation);
 	when(mockReportsUtil.getJobFilterDate(checkedDate, orgLocation)).thenReturn(checkedDateArray);
-	when(mockCandidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray, searchValue)).thenReturn(candidatesFromMarketplace);
+	when(mockCandidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue)).thenReturn(candidatesFromMarketplace);
     controller.getCandidateDetailsFromMarketcart(searchValue, creationStartDate, creationEndDate, checkedDate, mockHttpServletRequest);
-	verify(mockCandidateService).getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDateArray, searchValue);
+	verify(mockCandidateService).getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
  
 }
 

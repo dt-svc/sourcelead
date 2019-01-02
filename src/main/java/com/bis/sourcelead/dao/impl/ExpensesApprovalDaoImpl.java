@@ -139,8 +139,9 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
 				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
 				.append("OR sah.expenseId.expenseId like '%" + searchValue + "%' ")
+				.append("OR sah.expenseId.billingStatus = '" + searchValue + "' ")
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
-				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
+				.append("OR sah.expenseApprovalStatus like '%" + searchValue + "%' ");
 		   
 
 		   
