@@ -8534,4 +8534,9 @@ bottom: auto !important; top: 55px !important;
 }
 
 .noAction {pointer-events: none; color: #ddd;}
+.unseen{background-color: #e6e6e633 !important; font-weight: 600;}
+.unseen-text{ font-weight: 600;}
+.unseen .mailIcon.trashIcon { background-color: #e6e6e633 !important;}
+
+
 

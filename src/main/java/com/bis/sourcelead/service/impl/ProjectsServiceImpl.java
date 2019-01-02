@@ -2706,6 +2706,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	  pm.setTerminateReason(pm.getTerminateReason());
 		      }
 	       	 
+		      if(pm.getPercentageOfWork() != null) {
+		    	  pm.setPercentageOfWork(pm.getPercentageOfWork());
+		      }
+		      
 	       	 if(pm.getCandidateId() != null){
 	
 	                Float draftTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(pm.getMasterCandidateId().getId(), projectId, "DRAFT");

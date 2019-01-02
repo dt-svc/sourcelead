@@ -225,7 +225,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 			impDTO.setNetPay(imp.getNetPay());
 			impDTO.setTds(imp.getTds());
 			impDTO.setSubmitForApproverStatus(imp.getSubmitForAproverStatus());
-			
+			impDTO.setIndEmpPayrollUUID(imp.getIndEmpPayrollUUID());
 			list.add(impDTO);
 		}
 		responseList.setData(list);
@@ -235,5 +235,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	@Override
 	public IndPaysheetFrequency getIndPaysheetFrequencyByEmpPayrollUUID(String payrollFrequencyUUID) throws Exception {
 		return indPaysheetFrequencyDao.getIndPaysheetFrequencyByEmpPayrollUUID(payrollFrequencyUUID);
+	}
+
+	@Override
+	public IndEmployeePayroll indEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception {
+		return indPaysheetFrequencyDao.indEmployeePayrollByEmpPayrollUUID(empPayrollUUID);
 	}
 }
