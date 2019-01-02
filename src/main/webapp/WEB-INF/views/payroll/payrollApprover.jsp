@@ -70,6 +70,22 @@ $(document).ready(function(){
             </div>
 		</div>
 		</div>
+		
+		 <div class="clearfix row"> 
+          <div class="col-md-5">
+            <div class="form-group clearfix">
+              <label class="clearfix">Payroll Frequency</label>
+				<div class="clearfix">
+					<select class="chosen-select" id="payrollFrequency" name="payrollFrequency" field-name="Payroll Frequency" data-validation="required">
+							<option selected value="Weekly">Weekly</option>
+							<option value="Bi-Weekly">Bi-Weekly</option>
+							<option value="Monthly">Monthly</option>
+							<option value="Annually">Annually</option>
+					</select>
+				</div>
+            </div>
+			</div>
+      </div>
 
          <div class="clearfix row"> 
           <div class="col-md-5">
@@ -123,6 +139,9 @@ $(document).ready(function(){
 				}
 				if(data.confAprrover != null && data.confAprrover != 'undefined'){
 					$("#confAprrover").val(data.confAprrover);
+				}
+				if(data.automaticFrequency != null && data.automaticFrequency != ''){
+					$("#payrollFrequency").val(data.automaticFrequency);
 				}
 				
 		        },
