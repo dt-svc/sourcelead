@@ -2250,8 +2250,8 @@ $("#editRoleDetailsList").empty();
 					
 					// moving date bottom to top
 					    result = result + ' <div class="user_summary_edit_cta">';
-					    result = result + ' <label>Department</label>';
-						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+					    result = result + ' <label>Department <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  data-validation="required" field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
