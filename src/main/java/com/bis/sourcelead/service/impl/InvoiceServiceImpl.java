@@ -457,7 +457,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", defaultFont);
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", defaultFont, sourceleadUrl);
 				invoiceTemplateConfigured = true;
 				
 				invoice.setCustomInvoiceTemplate(customInvoiceTemplate);
@@ -3292,7 +3292,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if(invoiceDTO.getInvoiceTemplateId() > 0) {
 			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(invoiceDTO.getInvoiceTemplateId());
 			if(customInvoiceTemplate != null) {
-				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other", defaultFont);
+				file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "other", defaultFont, sourceleadUrl);
 				invoiceTemplateConfigured = true;
 			}
 		}

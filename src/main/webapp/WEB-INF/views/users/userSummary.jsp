@@ -493,15 +493,41 @@ window.onload = function () {
 			}
 				
 				
-				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		       <div class="user_change_img">';
+				result = result + '	 <div class="user_details_cta_img profile-image">';
+				result = result + '<form  id="associate_Image_form"  name="associate_Image_form" method="post" >';
+				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '</div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'<button type="button" class="btn btn-sm btn-primary">';
+					result=result+'<i class="fa fa-upload"></i></button>';
+					result=result+'<label class="btn btn-sm btn-primary">';
+		            result=result+'Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;">';
+		            result=result+'</label>';
+		            result=result+'<button type="button" class="btn btn-sm btn-danger" onclick="deleteAssociateImage('+json.user.id+')">';
+					result=result+'<i class="fa fa-trash"></i></button>';
+					result=result+'</div>';
+					'</sec:authorize>';
 				}else{
-					result = result +                  "<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + ' 		  </div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result+'<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'  <button type="button" class="btn btn-sm btn-primary">';
+					result=result+'  <i class="fa fa-upload"></i></button>';
+					result=result+'  <label class="btn btn-sm btn-primary">';
+		            result=result+'   Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;" >';
+		            result=result+'  </label>';
+					result=result+'  </div>';
+					'</sec:authorize>';
 				}
 				
-				result = result + ' 		  </div>';
+				
+				result = result +  '</form>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
 				result = result +socialLinks;
@@ -947,6 +973,40 @@ window.onload = function () {
 	      },
 	});
  }
+</script>
+
+<script type="text/javascript">
+function deleteAssociateImage(userId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteAssociateProfileImage(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteProfileImage?&userId="+userId,
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.reload();
+        	 }
+	        
+	       },
+	        
+     }); 
+}
 </script>
 
 <script type="text/javascript">
