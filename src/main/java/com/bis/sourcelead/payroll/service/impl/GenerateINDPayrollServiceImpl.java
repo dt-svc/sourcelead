@@ -55,6 +55,7 @@ import com.bis.sourcelead.payroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
@@ -104,6 +105,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	
 	@Autowired
 	TaxService taxService;
+	
+	@Autowired
+	PayrollPaySlipIndService payrollPaySlipIndService;
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateINDPayrollServiceImpl.class);
 
@@ -240,6 +244,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setRegularHours(String.valueOf(totalHours));
 					employeePayroll.setEmpPayRate(payRate);
 					employeePayroll.setCandidate(assoSal.getCandidate());
+					employeePayroll.setPayrollPaySlipInd(payrollPaySlipIndService.getActivePayslipByOrglocationId(orgLocation.getId()));
 					employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
@@ -436,7 +441,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						//TDS amount calculation
 						tdsEligibilityTotal = (assoSal.getAnnualSalary()).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
 						tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
-						tdsMonthlyTotal = tdsYearlyTotal/ 12 ;
+						tdsMonthlyTotal = tdsYearlyTotal / 12 ;
 						
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 						ph.setIndEmployeePayrollId(employeePayroll);
