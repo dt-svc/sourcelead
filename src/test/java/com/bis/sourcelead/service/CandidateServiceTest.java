@@ -29,9 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -330,6 +332,35 @@ public class CandidateServiceTest {
 				orglocations.setId(5l);
 				Boolean flag = candidateService.updateMarketCartStatus(marketCartIds, orglocations.getId());
 				Assert.assertTrue(flag);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void testGetCandidateMarketPlaceDetailsByUUId(){
+			try{
+				logger.info("testing getCandidateMarketPlaceDetailsByUUId service");
+				CandidateMarketPlace market = new CandidateMarketPlace();
+				market.setMarketplaceUUID("zRA7Z6Rw");
+				CandidateMarketPlace market1 = candidateService.getCandidateMarketPlaceDetailsByUUId(market.getMarketplaceUUID());
+				Assert.assertEquals(market.getMarketplaceUUID(), market1.getMarketplaceUUID());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+		}
+		
+		@Test
+		public void testGetMarketplaceSalesOrderBySalesUuid(){
+			try{
+				logger.info("testing getMarketplaceSalesOrderBySalesUuid service");
+				MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
+				salesOrder.setSalesUuid("bwjswsPO");
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				MarketplacePurchaseSalesDTO salesDto = candidateService.getMarketplaceSalesOrderBySalesUuid(orglocations, salesOrder.getSalesUuid());
+				Assert.assertEquals(salesOrder.getSalesUuid(), salesDto.getSalesUuid());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
