@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.EmailAttachment;
 
 import com.bis.sourcelead.entity.Invoice;
@@ -564,7 +565,6 @@ public class PaymentController {
     @RequestMapping("/init-marketplace-payment")
     @ResponseBody
     public String initMarketplacePayment(HttpServletRequest request, @RequestParam(defaultValue = "") String cartId) {
-        System.out.println("cartId is "+cartId);
     	Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
 
@@ -656,6 +656,7 @@ public class PaymentController {
                     	}
                     	if(marketCartIds != null && marketCartIds.size() > 0){
                     		CandidateMarketPlacePaymentTransactionHistory tranHistory = new CandidateMarketPlacePaymentTransactionHistory();
+                    		CandidateMarketWallet wallet = new CandidateMarketWallet();
                 			tranHistory.setId(paymentHistory.getId());
                 			tranHistory.setOrgLocationId(orgLocations);
                 			if(marketCartIds != null && marketCartIds.size() > 0){
@@ -673,6 +674,27 @@ public class PaymentController {
                 			tranHistory.setTransactionUserEmail(paymentHistory.getTransactionUserEmail());
                 			tranHistory.setTransactionDate(paymentHistory.getTransactionDate());
                     		candidateService.saveCandidateMarketplacePaymentTranscationHistory(tranHistory);
+                    		
+                    		/*Save CandidateMarketPlaceWallet table*/
+                    		
+                    		wallet.setWalletUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+                    		wallet.setAmount(paymentHistory.getInvoiceAmount());
+                    		wallet.setAmountType(paymentHistory.getCurrency());
+                    		wallet.setMarketPlacePaymentTransactionHistory(tranHistory);
+                    		wallet.setOrgLocationId(orgLocations);
+                    		wallet.setPaymentStatus(Constants.CREDIT_NOTE);
+                    		wallet.setTransactionId(paymentHistory.getTransactionId());
+                    		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), paymentHistory.getTransactionDate());
+                    		wallet.setTransactionDate(formattedDate);
+                    		wallet.setDescription(null);
+                    		Double balanceAmount = candidateService.getBalanceAmountFromWallet(orgLocations.getId());
+                    		Double balanceAmountValue = paymentHistory.getInvoiceAmount();
+                    		if(balanceAmount != null){
+                    			balanceAmountValue = balanceAmount + balanceAmountValue;
+                    		}
+                    		wallet.setTotalBalanceAmount(balanceAmountValue);
+                    		candidateService.saveCandidateMarketPlaceWallet(wallet);
+                    		candidateService.updateMarketWalletAmount(balanceAmountValue, orgLocations.getId());
                     	}
                     	} catch (Exception e) {
                         e.printStackTrace();
@@ -771,9 +793,11 @@ public class PaymentController {
                 	String orgName= transactionDetails.getOrgLocationId().getOrg().getOrgName();
 					Set<Long> keySet =  orgAndCandidatesMap.keySet();
 					List<Long> aList = keySet.stream().collect(Collectors.toList());
+					String numberOfResumes = null;
+					User userDetails = null;
 					for(Long sourceOrgLocationId : aList){
 				    // Getting primary contact user details by passing the source org location from the above list. It will always be single record.
-					User userDetails = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+					userDetails = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
 					StringBuilder sb1 = new StringBuilder(); 
                 	StringBuilder cb = new StringBuilder();
                 	Map<String, String> globalVarsMap1 = new HashMap<String, String>(); 
@@ -792,7 +816,7 @@ public class PaymentController {
                 		emailMessage1.setFromEmail(paymentSuccessReturnEmail);
                 		globalVarsMap1.put("toEmail", userDetails.getEmail());
                 		List<Long> candidateIdList = orgAndCandidatesMap.get(sourceOrgLocationId);
-                		String numberOfResumes = String.valueOf(candidateIdList.size());
+                		numberOfResumes = String.valueOf(candidateIdList.size());
                 		Date date = transactionDetails.getTransactionDate();  
                 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
                 		String transactionDate = dateFormat.format(date);
@@ -808,7 +832,7 @@ public class PaymentController {
                 		//Getting the candidate details from the candidate market place table. It will be a single records.
                 		CandidateMarketPlace candidateDetails = candidateService.getCandidateDetailsByCandidateId(candidateId);
                 		           cb.append("-"+candidateDetails.getMarketPrice()+"<br>");
-                		           amount += Integer.parseInt(candidateDetails.getMarketPrice());
+                		           amount += Double.parseDouble(candidateDetails.getMarketPrice());
                 		}
                 		
                 		globalVarsMap1.put("numberOfResumes", numberOfResumes);
@@ -833,20 +857,25 @@ public class PaymentController {
                 	String paymentId = transactionHistory.getPaymentId();
                 	candidateService.saveToMarketplacePurchaseOrder(marketCartList,orgLocations,orderNo,purchasedOrgName,paymentId);
                 	candidateService.saveToMarketplaceSalesOrder(marketCartList,orderNo,paymentId);
+                	//candidateService.saveMarketPlaceWallet();
 
                 	//sending Email.
                 	StringBuilder currentUserName = new StringBuilder();
                 	StringBuilder bodyBuilder = new StringBuilder();
                 	StringBuilder candidateName = new StringBuilder();
+                	CandidateMarketPlace marketPlace = null;
+                	String marketPrice = null;
                 	Map<String, String> globalVarsMap = new HashMap<String, String>();
-                	
-                	if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
+                	for(Long sourceOrgLocationId : aList){
+    					userDetails = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId);
+    					emailMessage.setToEmail(userDetails.getEmail());
+    					globalVarsMap.put("otherUser", userDetails.getFirstName()+" "+userDetails.getLastName());
+    				if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
           				 currentUserName.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
           				 globalVarsMap.put("currentUser", currentUserName.toString());
           			 	}else{
           				 globalVarsMap.put("currentUser", loginUser.getFirstName());
           			 	}
-                	
                 	if(candidateDto !=null && candidateDto.size() > 0){
                 			emailMessage.setFromEmail(defaultFromEmailAddressForProd);
                 			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -856,12 +885,10 @@ public class PaymentController {
                 			globalVarsMap.put("dateAndTime", new Date().toString());
                 			
                 			for(int i=0; i< candidateDto.size(); i++){
-                				String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
+                				candidateName.delete(0, candidateName.length());
                 				candidateName.append(candidateDto.get(i).getFirstName()+" "+candidateDto.get(i).getLastName()).toString();
-
-                				//should be updated from user table
-                			emailMessage.setToEmail(candidateDto.get(i).getEmail());
-                			globalVarsMap.put("otherUser", candidateDto.get(i).getFirstName()+" "+candidateDto.get(i).getLastName());
+                				marketPlace = candidateService.getCandidateDetailsByCandidateId(candidateDto.get(i).getId());
+                				marketPrice = "<strong style='color: #f60;'>&#36; "+(marketPlace.getMarketPrice() == null ? "---" : marketPlace.getMarketPrice())+"</strong>";
                 			
                 			 bodyBuilder.append("<table width='100%' style='border-collapse:collapse; border: 1px solid #ddd; font-family: 'Helvetica Neue', Helvetica, Arial;'>");
                 			 bodyBuilder.append("<tr>");
@@ -871,7 +898,7 @@ public class PaymentController {
                 			 bodyBuilder.append("</div>");
                 			 bodyBuilder.append("<div style='font-size: 14px; clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>");
                 			 bodyBuilder.append("<span>Price: </span>");
-                			 bodyBuilder.append("<strong style='color: #f60;'>&#36; 250</strong>");
+                			 bodyBuilder.append(marketPrice);
                 			 bodyBuilder.append("</div>");
                 			 bodyBuilder.append("<div style='clear: both; display: inline-block; width: 100%; text-align: center; margin-bottom: 10px;'>");
                 			 bodyBuilder.append("<button type='button' style='background-color: #fff; border: 1px solid #0277BD; color: #0277BD; padding:3px 10px; border-radius: 3px; cursor: pointer;'>&#43; Add</button>");
@@ -895,6 +922,7 @@ public class PaymentController {
                 			 bodyBuilder.append("<div style='display: inline-block; clear: both; width: 100%; margin-top: 15px;'>");
                 			 bodyBuilder.append("<ul style='color: #333; list-style-type: none; margin: 0; padding: 0; font-size: 14px;'>");
                 			 if(candidateDto.get(i).getSkillsName() != null){
+                				 String candidateSkills[] = candidateDto.get(i).getSkillsName().split(",");
                 			 for(int j = 0; j < candidateSkills.length;){
                 				 bodyBuilder.append("<li style='float: left; background-color: #ededed; border: 1px solid #ededed; border-radius: 2px; padding: 2px 5px; margin-right: 10px; margin-bottom: 10px;'>");
                 				 bodyBuilder.append(""+candidateSkills[j]+"");
@@ -926,16 +954,17 @@ public class PaymentController {
 
 
                 		}
-                		
 
-                	    //sending Notification.
-                		//User mail address and resume count should be updated
-                		globalVarsMap.put("resumeCount", "resumes");
+                		if(Integer.parseInt(numberOfResumes) > 1){
+                			globalVarsMap.put("resumeCount", "resumes");
+                		}else{
+                			globalVarsMap.put("resumeCount", "resume");
+                		}
                 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PROFILES_ADDED_TO_CART_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
                 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
                 		notificationScenario.setBody(notificationBody);
-                		emailScenerioUtil.sendNotification(null, loginUser, loginUser, orgLocations, notificationScenario, new HashMap<String,String>());	
-
+                		emailScenerioUtil.sendNotification(null, loginUser, userDetails, orgLocations, notificationScenario, new HashMap<String,String>());	
+                	}
                 	
                 } catch (Exception e) {
                     e.printStackTrace();

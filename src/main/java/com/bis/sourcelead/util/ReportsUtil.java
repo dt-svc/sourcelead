@@ -574,6 +574,31 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		return dates;
 	}
 	
+	/**
+	 * Get from and to date of last 6 Months
+	 * 
+	 * @return Date[] Date[0] = start date ,Date[1] = End date
+	 * @throws Exception 
+	 */
+	public Date[] last6MonthDates(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime sixMonthZoned = zoned.minusMonths(6);
+		String sixMonthDate = outputFormatter.print(sixMonthZoned);
+		Date sixMonthDateUTC = TZ_DF_TS.parse(sixMonthDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = sixMonthDateUTC;
+		dates[1] = startDateUTC;
+		
+		return dates;
+	}
 	
 	
    public Date[] last2Weeks(OrgLocations orgLocations) throws Exception {
@@ -671,6 +696,8 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 			searchDates = lastWeek(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_Month_Ago)) {
 			searchDates = lastMonth(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_6_MONTHS)) {
+			searchDates = last6MonthDates(orgLocations);
 		}
 		
 		

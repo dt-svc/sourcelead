@@ -25,13 +25,12 @@
   </section>
   <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
-         <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
-         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+            <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+            <li id="" class="current"><a href="javascript:void(0)" >Marketplace</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+            <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
-           
-         
+            <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
          <div class="clearfix"></div>
      </ul>
 </div>
@@ -258,15 +257,16 @@
 	                	 var result = "";
 	                 	  var currentRateCurrency = "";
 	                 	  var currentRate = "";
-	                  	  if(opt.currentRateCurrency != null && opt.currentRateCurrency !='' && opt.currentRateCurrency !='undefined'){
-	                  			currentRateCurrency = opt.currentRateCurrency;
-	            		    }else{
-	            		    	currentRateCurrency = '<span>--</span>';
-	            		    }
+	                  	  
 	   	               	if(opt.currentRate != null && opt.currentRate !='' && opt.currentRate !='undefined'){
 	   	               		currentRate = opt.currentRate;
+	   	               	if(opt.currentRateCurrency != null && opt.currentRateCurrency !='' && opt.currentRateCurrency !='undefined'){
+                  			currentRateCurrency = opt.currentRateCurrency;
+            		    }else{
+            		    	currentRateCurrency = "--";
+            		    }
 	   	     		    }else{
-	   	     		    	currentRate = '<span>--</span>';
+	   	     		    	currentRate = "--";
 	   	     		    }
 	   	               	result = result + '<td><div class="tblminwidth-75"><span title="'+currentRateCurrency +" "+currentRate+'">'+currentRateCurrency +" "+currentRate+'</span></div></td>';
 	                     return result;
@@ -279,15 +279,16 @@
 	                	 var result = "";
 	                	 var expectedRateCurrencey = "";
 		              	  var expectedRate = "";
-		               	  if(opt.expectedRateCurrencey != null && opt.expectedRateCurrencey !='' && opt.expectedRateCurrencey !='undefined'){
-		               		expectedRateCurrencey = opt.expectedRateCurrencey;
-		         		    }else{
-		         		    	expectedRateCurrencey = '<span>--</span>';
-		         		    }
+		               	  
 			               	if(opt.expectedRate != null && opt.expectedRate !='' && opt.expectedRate !='undefined'){
 			               		expectedRate = opt.expectedRate;
+			               		if(opt.expectedRateCurrencey != null && opt.expectedRateCurrencey !='' && opt.expectedRateCurrencey !='undefined'){
+				               		expectedRateCurrencey = opt.expectedRateCurrencey;
+				         		    }else{
+				         		    	expectedRateCurrencey = '--';
+				         		    }
 			     		    }else{
-			     		    	expectedRate = '<span>--</span>';
+			     		    	expectedRate = '--';
 			     		    }
 			               	result = result + '<td><div class="tblminwidth-75"> <span title="'+expectedRateCurrencey +" "+expectedRate+'">'+expectedRateCurrencey +" "+expectedRate+'</span></div></td>';
 	                     return result;
@@ -408,7 +409,7 @@ function saveEditMarketPriceFun(id, obj){
 	var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?]/;
 	var amountText = $("#priceVal").val();
 	var val = parseFloat($('#priceVal').val());
-	//var formatDigit = /^\d+\.\d\d$/
+	var formatDigit = /^\d+\.\d\d$/
 	if(format.test(amountText)){
 		popupDisplay("Please enter proper amount");
 		return false;
@@ -416,10 +417,10 @@ function saveEditMarketPriceFun(id, obj){
 	{
 		popupDisplay("Please enter proper amount");
 		return false;
-	}/* else if(!formatDigit.test(amountText)){
-		popupDisplay("Please enter two digits");
+	} else if(amountText.length < 1 || amountText.length > 5){
+		popupDisplay("Please enter 1 to 5 digits");
 		return false;
-	} */else if(marketPrice == ""){
+	} else if(marketPrice == ""){
 		popupDisplay("Please enter amount!");
 		return false;
 	}
@@ -468,7 +469,9 @@ function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
 
-
+function goToWalletList(){
+    location.href = "${appPath}/walletList";
+}
 function cancelMarketPlace(){
 	$("#remove_marketPlace_pop, .project_inn_mask").fadeOut();
 	$("#reasonForMarketPlace").val('');
