@@ -795,8 +795,8 @@ return responseList;
 				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+			billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+			billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 			billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 			billingDto.setPaymentStatus(invoice.getPaymentStatus());
 			if (null != invoice.getProjectID()) {
@@ -807,7 +807,7 @@ return responseList;
 						|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 					draftCount = draftCount + 1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+					billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -819,7 +819,7 @@ return responseList;
 					Float paidAmount = Float.parseFloat(invoice.getTotal())
 							- Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
-					billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+					billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -836,14 +836,14 @@ return responseList;
 							overDueInvoiceCount = overDueInvoiceCount + 1;
 							dueAfterInvoiceAmount = dueAfterInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
+							billingDto.setDueAfterInvoiceAmount(String.format("%.3f", dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}
 						else {
 							openInvoiceCount = openInvoiceCount + 1;
 							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
+							billingDto.setDueBeforeInvoiceAmount(String.format("%.3f", dueBeforeInvoiceAmount));
 						}
 					}
 				}
@@ -1015,8 +1015,8 @@ return responseList;
 			}
 		}
 		billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-		billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-		billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+		billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+		billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 		billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 		billingDto.setPaymentStatus(invoice.getPaymentStatus());
 		if (null != invoice.getProjectID()) {
@@ -1027,7 +1027,7 @@ return responseList;
 					|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				draftCount = draftCount + 1;
 				draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-				billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+				billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 			}
 			if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 					&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -1039,7 +1039,7 @@ return responseList;
 				Float paidAmount = Float.parseFloat(invoice.getTotal())
 						- Float.parseFloat(invoice.getDueAmount());
 				paidTotalAmount = paidTotalAmount + paidAmount;
-				billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+				billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 			}
 			
 		}

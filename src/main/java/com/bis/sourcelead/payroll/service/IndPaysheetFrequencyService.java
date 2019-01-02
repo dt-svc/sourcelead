@@ -31,4 +31,7 @@ public interface IndPaysheetFrequencyService {
 	Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, IndPaysheetFrequency indPaysheetFrequency,OrgLocations orgLocation, User loginUser) throws Exception;
 	
 	ResponseList<IndEmployeePayrollDTO> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception;
+	
+	IndEmployeePayroll  indEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception;
+
 }

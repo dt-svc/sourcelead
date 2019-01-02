@@ -301,7 +301,7 @@
 				if (result.response === "AWKWARD") {
 	                location.href = "/errorPage";
 	            }else if(result.response === "SUCCESS") {
-	            	
+	            	updateMarketplaceCartCountAndPrice();
 	            	$("#deleteCandidateFromCartDiv").empty();
 					$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addCartListModel" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\')" class="anchorHighlight">Add</a>');
 					$("#remove_marketCart_pop").fadeOut(200);
@@ -322,6 +322,7 @@
 		             }else if(result.response === "SUCCESS") {
 		            	$("#addCandidateMarketToCartDiv").empty().append('<a type="button" id="addedCartCardModel" class="anchorHighlight anchorHighlightActive">Added</a>');
 			        	$("#deleteCandidateFromCartDiv").empty().append('<a class="removeSelected mt" title="Remove Selected" onclick="deleteCandidateMarketplaceCart(\''+candidateName+'\', \''+UUID+'\');"><i class="fa fa-trash-o"></i></a>');
+			        	updateMarketplaceCartCountAndPrice();
 		             }else{
 		            	 showError("Operation failed, please try again");
 		            }
