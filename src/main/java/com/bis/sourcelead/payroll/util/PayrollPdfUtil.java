@@ -70,11 +70,11 @@ public class PayrollPdfUtil {
 			        	zipcode = orgLocation.getZipCode();
 			        }
 			        StringBuilder address = new StringBuilder();
-			        String streetAddress = orgLocation.getLocation().substring( 0, orgLocation.getLocation().indexOf(","));
-			        address.append(orgLocation.getOrgLocationName()+"\n\n")
+			        String streetAddress = payroll.getPaysheetFrequency().getOrgLocation().getLocation().substring( 0, payroll.getPaysheetFrequency().getOrgLocation().getLocation().indexOf(","));
+			        address.append(payroll.getPaysheetFrequency().getOrgLocation().getOrgLocationName()+"\n\n")
 			         .append(streetAddress+"\n\n")
-			        .append(orgLocation.getCity()+"\n\n")
-			        .append(orgLocation.getState()+"\n\n").append(zipcode);
+			        .append(payroll.getPaysheetFrequency().getOrgLocation().getCity()+"\n\n")
+			        .append(payroll.getPaysheetFrequency().getOrgLocation().getState()+"\n\n").append(zipcode);
 			        bell =new Paragraph(address.toString(),f3);
 //			        bell =new Paragraph(payroll.getCandidate().getResidenceAddress(),f3);
 			        PdfPCell cell1 = new PdfPCell(bell);
@@ -177,7 +177,17 @@ public class PayrollPdfUtil {
 			       cell17.setPaddingLeft(10);
 			       cell17.setHorizontalAlignment(Element.ALIGN_LEFT);
 			       cell17.setVerticalAlignment(Element.ALIGN_LEFT);
-			       bell =new Paragraph(associateTax.getStateTaxFilliingStatus()+ "\n\n"+associateTax.getStateTaxAllowances()+"\n\n"+associateTax.getStateTaxAdditionnalWithHolding()+"\n"+" ",f3);
+			       String StateTaxFilliingStatus = "--", StateTaxAllowances = "--", StateTaxAdditionnalWithHolding = "--";
+			       if(StringUtils.isNoneBlank(associateTax.getStateTaxFilliingStatus())) {
+			    	   StateTaxFilliingStatus = associateTax.getStateTaxFilliingStatus();
+			       }
+			       if(StringUtils.isNoneBlank(associateTax.getStateTaxAllowances())) {
+			    	   StateTaxAllowances = associateTax.getStateTaxAllowances();
+			       }
+			       if(StringUtils.isNoneBlank(associateTax.getStateTaxAdditionnalWithHolding())) {
+			    	   StateTaxAdditionnalWithHolding = associateTax.getStateTaxAdditionnalWithHolding();
+			       }
+			       bell =new Paragraph(StateTaxFilliingStatus+ "\n\n"+StateTaxAllowances+"\n\n"+StateTaxAdditionnalWithHolding+"\n"+" ",f3);
 			       PdfPCell cell18 = new PdfPCell(new Paragraph(bell));
 			       cell18.setBorderColor(BaseColor.BLACK);
 			       cell18.setPaddingLeft(10);

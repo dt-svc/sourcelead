@@ -90,7 +90,11 @@ function candidateInvoiceList(){
 			                     }else{
 			                    	 result = result +"<td><div>---</div></td>";
 			                     }
-		                    	 result = result +"<td><div>---</div></td>";
+			                     if(opt.generateDate == true){
+			                    	 result = result +"<td><div><a onClick='genarateInvoiceFromDashboard("+opt.orgRelationId+","+opt.submissionId+","+opt.id+");'>Generate Invoice</a></div></td>";
+			                     }else{
+			                    	 result = result +"<td><div>---</div></td>";
+			                     }
 			                     result = result +"</tr>";
 	                    	 }
 // 	                     }
@@ -120,3 +124,16 @@ function candiInvoicePagination(){
     } );
 }
 </script> 
+
+<script>
+function genarateInvoiceFromDashboard(orgRelationId,submissionId,candidateId){
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateInvoiceForJobClosureDashboard?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&submissionId="+submissionId+"&candidateId="+candidateId+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(result) {
+            	 location.reload();
+        },
+    });  
+}
+</script>

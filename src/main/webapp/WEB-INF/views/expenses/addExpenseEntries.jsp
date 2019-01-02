@@ -395,7 +395,7 @@ function addAttachment(entityRowId,from){
 <div id="divAddRowTr1Td8" style="display: none; float: left;">
        <div id="hideAndShowDetailsDivREPLACEROWID" class="tbldata-dotdot_50">
 			<span id="hideAndShowDetailsButtonREPLACEROWID" style="display:none;"> <i class="fa fa-pencil-square-o AddRow" onclick="hideAndShowDetailsRow(REPLACEDOWNROWID,'Edit');"></i></span>
-			<i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i>
+			<span id="hideAndShowDeleteButtonREPLACEROWID"  style="display:none;" ><i class="glyphicon glyphicon-trash Cred" onclick="removeExpenseRow(REPLACEROWID,REPLACEDOWNROWID);"></i></span>
 		</div>
 </div>
 
@@ -606,7 +606,6 @@ function addExpenseRow(from){
 			cell2_0.innerHTML = divRowTd2_0Str;
 			cell2_0.colSpan = 8;
 			
-			
 			$("#categoryDate"+maxRowNum).datepicker("destroy");
 			var projectStartDate = $('#projectStartDateExpensesId').val();
 			var projectEndDate =   $('#projectEndDateExpensesId').val();
@@ -780,6 +779,14 @@ function addExpenseRow(from){
 			var hideAndShowDetailsHtml =  $("#hideAndShowDetailsButton"+entityId).html();
 			$("#hideAndShowDetailsButton"+entityId).remove();
 			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDetailsHtml);
+			
+			
+			$("#hideAndShowDeleteButton"+entityId).removeAttr('style');
+			var hideAndShowDeleteHtml =  $("#hideAndShowDeleteButton"+entityId).html();
+			$("#hideAndShowDeleteButton"+entityId).remove();
+			$("#hideAndShowDetailsDiv"+entityId).prepend(hideAndShowDeleteHtml);
+			
+			
 			
 			$("#addExpenseCategoryButton"+entityId).removeAttr('value');
 			$("#addExpenseCategoryButton"+entityId).attr('value','Update');

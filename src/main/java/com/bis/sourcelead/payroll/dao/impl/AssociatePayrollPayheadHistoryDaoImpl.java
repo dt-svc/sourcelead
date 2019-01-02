@@ -50,8 +50,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Transactional
 	public List<AssociatePayrollPayheadHistory> getLatestAssociatePayrollPayheadByEmpPayrollId(Long empPayrollId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from AssociatePayrollPayheadHistory apph where apph.indEmployeePayrollId.id = :empPayrollId and apph.status = '1' and apph.updatedDate "
-				+ " IN(select Max(subapph.updatedDate) from AssociatePayrollPayheadHistory subapph where subapph.indEmployeePayrollId.id = :empPayrollId and subapph.payrollPayhead.id = apph.payrollPayhead.id and subapph.status = '1') ";  
+		String query = "from AssociatePayrollPayheadHistory apph left join fetch apph.indEmployeePayrollId iemp left join fetch apph.payrollPayhead app where iemp.id = :empPayrollId and apph.status = '1' and apph.updatedDate "
+				+ " IN(select Max(subapph.updatedDate) from AssociatePayrollPayheadHistory subapph  where subapph.indEmployeePayrollId.id = :empPayrollId and subapph.payrollPayhead.id = app.id and subapph.status = '1') ";  
 		List<AssociatePayrollPayheadHistory> associatePayrollPayheadList =  session.createQuery(query).setLong("empPayrollId", empPayrollId).list();
 	return associatePayrollPayheadList;
 	}

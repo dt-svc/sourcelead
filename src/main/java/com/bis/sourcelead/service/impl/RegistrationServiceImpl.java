@@ -420,6 +420,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+		commonUtil.saveDefaultPayslipTemplate(orgLocations,user);
 
 		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
@@ -572,6 +573,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 			projects.setUpdatedDate(new Date());
 			projects.setIsProjectForTimeSheets(Constants.YES);
 			projects.setIsProjectForExpenses(Constants.YES);
+			projects.setProjectApprovalType(Constants.PARALLEL);
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 			
 			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
@@ -1125,7 +1128,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userRole.setRoles(roles);
 		userRole.setUserState(Status.NOT_LOGGEDIN);
 		userRole.setUserType(roles.getDisplayName());
-		
+		if(orgLocations.getUser() != null) {
+			userRole.setResourceManager(orgLocations.getUser());
+			userRole.setReportingManager(orgLocations.getUser());
+		}
 		userRole.setCreatedBy(user.getUserCode());
 		userRole.setCreatedDate(new Date());
 		userRole.setUpdatedBy(user.getUserCode());

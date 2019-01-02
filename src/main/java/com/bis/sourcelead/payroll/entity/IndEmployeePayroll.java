@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 
 @Entity
 @Table(name = "IND_EMPLOYEE_PAYROLL")
@@ -116,6 +117,16 @@ public class IndEmployeePayroll implements Serializable {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indEmployeePayrollId")
 	private Set<AssociateLoanAndAdvanceHistory> loanHistory;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "indPayroll")
+	private Set<PayrollLopHis> payrollLopHis;
+	
+	@Column(name = "LOP_AMOUNT")
+	private BigDecimal lopAmount;
+	
+	@ManyToOne
+	@JoinColumn(name = "IND_PAYSLIP_ID")
+	private PayrollPaySlipInd payrollPaySlipInd;
 	
 	public Long getId() {
 		return id;
@@ -346,5 +357,27 @@ public class IndEmployeePayroll implements Serializable {
 		this.type = type;
 	}
 
-	
+	public Set<PayrollLopHis> getPayrollLopHis() {
+		return payrollLopHis;
+	}
+
+	public void setPayrollLopHis(Set<PayrollLopHis> payrollLopHis) {
+		this.payrollLopHis = payrollLopHis;
+	}
+
+	public BigDecimal getLopAmount() {
+		return lopAmount;
+	}
+
+	public void setLopAmount(BigDecimal lopAmount) {
+		this.lopAmount = lopAmount;
+	}
+
+	public PayrollPaySlipInd getPayrollPaySlipInd() {
+		return payrollPaySlipInd;
+	}
+
+	public void setPayrollPaySlipInd(PayrollPaySlipInd payrollPaySlipInd) {
+		this.payrollPaySlipInd = payrollPaySlipInd;
+	}
 }

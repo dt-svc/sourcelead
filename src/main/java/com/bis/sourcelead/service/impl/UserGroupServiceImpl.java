@@ -231,14 +231,6 @@ public class UserGroupServiceImpl implements UserGroupService{
 			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
 		}
 		dates.addAll(set);
-		
-//		Map<BigInteger, List<PayPeriodDTO>> uniqueData = datesList.stream().collect(Collectors.groupingBy(PayPeriodDTO::getPaySheetFreqId));
-		
-//		List<Date> dates = new ArrayList<>();
-//		for (PayPeriodDTO payPeriodDTO : datesList) {
-//			payPeriodDTO.setConvertedFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqStartDate()));
-//			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
-//		}
 		return dates;
 	}
 
@@ -246,6 +238,12 @@ public class UserGroupServiceImpl implements UserGroupService{
 	public List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId)
 	{
 		return userGroupDao.getAllUserGroupsByLocationIdAndDepartmentId(orgLocation,userId);
+	}
+
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayrollFrequency(OrgLocations orgLocation, String autoPayrollFrequency)
+	{
+		return userGroupDao.getAllUserGroupsByLocationIdAndPayrollFrequency(orgLocation,autoPayrollFrequency);
 	}
 	
 	

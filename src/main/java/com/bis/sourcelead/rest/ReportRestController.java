@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,13 +49,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
-import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -67,8 +66,6 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
-import com.bis.sourcelead.entity.Asset;
-import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Employees;
@@ -78,6 +75,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -98,6 +96,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -229,6 +228,12 @@ public class ReportRestController {
 	
 	@Autowired
 	ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	private ProjectMembersService projectMembersService;
 	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
@@ -487,7 +492,7 @@ public class ReportRestController {
 			sumissionHistoryDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			sumissionHistoryDTO.setSortOrder(sortColumnOrder);
 			
-			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates);
+			ResponseList<RequirementSubmissionHistory> list = requirementSubmissionHistoryService.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,sumissionHistoryDTO.getToStage(),searchDates,orgLocations.getId());
 			
 			return list;
 		}
@@ -1754,17 +1759,26 @@ public class ReportRestController {
 									.append(" hours ago").toString());
 						}
 
-						List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(tasks.getId());
-						for(ProjectAssignTask pat:assignUser) {
-							if(pat.getProjectMemberId() != null) {
-								if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
-									 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
-									 pat.setAssignedUserUrl(pat.getProjectMemberId().getProjectMemberCandidteId().getFileUrl());
-								}
+						if(tasks.getProjectId() != null) {
+							List<Long> assignedMembersIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(tasks.getProjectId().getId(), projectTasksDTO.getOrgLocationId());
+							if(!assignedMembersIds.isEmpty()) {
+								List<ProjectAssignTask> assignUser = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(tasks.getId());
+								List<ProjectAssignTask> assignedTaskUsersList =  new ArrayList<ProjectAssignTask>();
+								for(ProjectAssignTask pat:assignUser) {
+									if(pat.getProjectMemberId() != null) {
+										if(pat.getProjectMemberId().getProjectMemberCandidteId() != null) {
+											if(assignedMembersIds.contains(pat.getProjectMemberId().getId().longValue())) {
+												 pat.setAssignedUserName(pat.getProjectMemberId().getProjectMemberCandidteId().getFullName());
+												 pat.setAssignedUserUrl(pat.getProjectMemberId().getProjectMemberCandidteId().getFileUrl());
+												 assignedTaskUsersList.add(pat);
+											}
+										}
+									}
+								 }
+								taskDTO.setAssignedTaskUsers(assignedTaskUsersList);
 							}
-						 }
-						 
-						taskDTO.setAssignedTaskUsers(assignUser);
+						}
+						
 						taskDTOList.add(taskDTO);
 					}
 					responseList.setData(taskDTOList);
@@ -1826,4 +1840,79 @@ public class ReportRestController {
 						file.delete();
 					}
 				}
+		 
+		 
+			@RequestMapping(value = "/getMarginSheetList")
+			public @ResponseBody ResponseList<MarginSheetReportDTO> getMarginSheetList(@RequestParam(value="timePeriod", required=false) String timePeriod,
+					@RequestParam(value="customStartDate", required=false) String customStartDate,
+					@RequestParam(value="customEndDate", required=false) String customEndDate,
+					@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
+					@RequestParam(value="searchValue", required=false) String searchValue,
+					MarginSheetReportDTO marginSheetReportDTO,
+					HttpServletRequest request) throws Exception {
+					ResponseList<MarginSheetReportDTO> responseList = new ResponseList<>();
+			      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+//			      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//			      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+//			      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+//			    
+					
+					Date[] searchDates = null;
+					ResponseList<MarginSheetReportDTO> projectMembersDTOList = new ResponseList<MarginSheetReportDTO>();
+					try{
+						if(!"custom".equalsIgnoreCase(timePeriod)){
+							searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+						}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+				    	    
+				    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+							
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				    	   
+				    	    searchDates = new Date[2];
+				    	    searchDates[0] = startDateUTC;
+				    	    searchDates[1] = endDateUTC;
+						}
+						List<Long> clientIdsList = new ArrayList<>();
+						/*if(userRoleDto.getClients() != null && !userRoleDto.getClients().isEmpty()) {
+							String[] clients = userRoleDto.getClients().split(",");
+							for(int i=0; i < clients.length; i++) {
+								clientIdsList.add(Long.parseLong(clients[i]));
+							}
+						}*/
+					String[] tableColumns = { "uid", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+					int sortColumnIndex = 1; // by default sorting using updated date
+					String sortColumnOrder = "desc"; // by default descending order
+					
+					if (marginSheetReportDTO.getOrder() != null && !marginSheetReportDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(marginSheetReportDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = marginSheetReportDTO.getOrder().get(0).get("dir");
+					}
+					marginSheetReportDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					marginSheetReportDTO.setSortOrder(sortColumnOrder);
+
+//					ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getApplicantsJoinedReport(userRoleDto,orgLocations.getId(),searchDates,teamsList,type,clientIdsList);
+
+//					ResponseList<ApplicantsJoinedReportDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,clientIdsList);
+//					responseList.setData(userDTOList);
+					projectMembersDTOList = projectMembersService.getProjectMemeberByClientProjectAndOrglocation(orgLocationId,searchDates,marginSheetReportDTO);
+//					responseList.setData(projectMembersDTOList);	
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+					responseList.setResponse(Result.AWKWARD.name());
+					responseList.setResponseMessage(Result.AWKWARD.getValue());
+					logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+					return projectMembersDTOList;
+				}
+		 
 }

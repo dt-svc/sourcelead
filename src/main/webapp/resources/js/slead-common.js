@@ -53,6 +53,8 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
 			        		 for (var i=0; i < skillsArray.length; i++) {
+			        			 if(skillsArray[i] == '' || skillsArray[i] == 'undefined' || skillsArray[i] == null)
+        		        		     continue;
 			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
 			        			 select.append(option);
 			 		             select.find(option).prop('selected', true);
@@ -360,18 +362,23 @@ function saveCandidateImage(candidateId, formId, data){
 }
 
 
-function saveUserProfileImage(formId,data){
+function saveUserProfileImage(userId,formId,data){
     if ($('#'+formId).validate(false, validationSettings)){
           var formData = getFormData(formId);
-        if(formId === "profileImage_form"){    
+        if(formId === "profileImage_form" || formId === "associate_Image_form"){    
         $.ajax({
               type: "POST",
               data: formData,
-              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue+"&userId="+userId,
               success: function(result) {
-                  if(result)
+                  if(result){
                       $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                    location.replace(sourceleadUrl+"/userProfile");  
+                  if(userId !=null){
+                	location.reload();  
+                  }else{
+                	  location.replace(sourceleadUrl+"/userProfile");  	  
+                  }
+                  }
               },  
         });
         } else{

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -112,6 +113,9 @@ public class ProjectMembers implements Serializable {
 	
 	@Column(name = "ESTIMATED_BUDGET")
 	private Double estimatedBudget;
+	
+	@Column(name = "PERCENTAGE_OF_WORK")
+	private BigDecimal percentageOfWork;
 
 	@Column(name = "STATUS")
 	private String status;
@@ -1621,4 +1625,17 @@ public class ProjectMembers implements Serializable {
 		this.projectMemberStatus = projectMemberStatus;
 	}
 
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
+
+	
+
+	
+	
+	
 }

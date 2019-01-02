@@ -22,11 +22,13 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PayrollScheduleDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
-import com.bis.sourcelead.payroll.entity.USPayScheduleNotifyMember;
+import com.bis.sourcelead.payroll.entity.USPayScheduleDate;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
 import com.bis.sourcelead.payroll.service.PayrollScheduleService;
+import com.bis.sourcelead.payroll.util.PayrollUtil;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -44,6 +46,9 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	PayrollUtil payrollUtil;
 
 	@Override
 	public Response<PayrollScheduleDTO> savePayrollSchedule(PayrollScheduleDTO payrollScheduleDTO,OrgLocations orgLocations,User loginUser) {
@@ -72,8 +77,30 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 				usPayrollSchedule.setCreatedDate(new Date());
 				usPayrollSchedule.setUpdatedDate(new Date());
 				usPayrollSchedule.setPayrollScheduleUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-				Set<USPayScheduleNotifyMember> payScheduleNotifyMember = getPayScheduleNotifyMember(usPayrollSchedule,payrollScheduleDTO,loginUser);
-				usPayrollSchedule.setPayScheduleNotifyMember(payScheduleNotifyMember);
+				
+				if(payrollScheduleDTO.getNotifyMember() != null) {
+					usPayrollSchedule.setNotifyMember(payrollScheduleDTO.getNotifyMember());
+				}else {
+					usPayrollSchedule.setNotifyMember("0");
+				}
+				
+				List<PayrollScheduleCalenderDTO> dates  = payrollUtil.getPayScheduleWeeksByDate(usPayrollSchedule,orgLocations);
+				Set<USPayScheduleDate> set = new HashSet<>();
+				for(PayrollScheduleCalenderDTO dto : dates) {
+					USPayScheduleDate  uSPayScheduleDate = new USPayScheduleDate(); 
+					uSPayScheduleDate.setCheckDate(dto.getCheckDate());
+					uSPayScheduleDate.setPayRunDate(dto.getRunDate());
+					uSPayScheduleDate.setPayPeriodStartDate(dto.getPayPeriodStartDate());
+					uSPayScheduleDate.setPayPeriodEndDate(dto.getPayPeriodEndDate());
+					uSPayScheduleDate.setScheduleId(usPayrollSchedule);
+					uSPayScheduleDate.setStatus(1);
+					uSPayScheduleDate.setCreatedDate(new Date());
+					uSPayScheduleDate.setUpdatedDate(new Date());
+					uSPayScheduleDate.setCreatedBy(loginUser.getId());
+					uSPayScheduleDate.setUpdatedBy(loginUser.getId());
+					set.add(uSPayScheduleDate);
+				}
+				usPayrollSchedule.setScheduleDates(set);	
 				UsPayrollSchedule savedUsPayrollSchedule = payrollScheduleDao.savePayrollSchedule(usPayrollSchedule, orgLocations);
 				if (savedUsPayrollSchedule != null) {
 					resObj.setResponse(Result.SUCCESS.name());
@@ -94,39 +121,7 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 		return resObj;
 	}
 
-	/**
-	 * 
-	 * @param usPayrollSchedule
-	 * @param payrollScheduleDTO
-	 * @param loginUser 
-	 * @return
-	 */
-	private Set<USPayScheduleNotifyMember> getPayScheduleNotifyMember(UsPayrollSchedule usPayrollSchedule, PayrollScheduleDTO payrollScheduleDTO, User loginUser)
-	{
-		Set<USPayScheduleNotifyMember> set = new HashSet<>();
-		try {
-			if(StringUtils.isNotBlank(payrollScheduleDTO.getNotifyMember())) {
-				int isDeleted = payrollScheduleDao.deleteExistedNotifyMembers(usPayrollSchedule.getId());
-				String[] approverId = payrollScheduleDTO.getNotifyMember().split(",");
-				for(String userId : approverId) {
-					USPayScheduleNotifyMember uSPayScheduleNotifyMember = new USPayScheduleNotifyMember();
-					User user = userService.getUserById(Long.parseLong(userId));
-					uSPayScheduleNotifyMember.setUser(user);
-					uSPayScheduleNotifyMember.setPayrollScheduleId(usPayrollSchedule);
-					uSPayScheduleNotifyMember.setStatus(1);
-					uSPayScheduleNotifyMember.setCreatedBy(loginUser.getId());
-					uSPayScheduleNotifyMember.setUpdatedBy(loginUser.getId());
-					uSPayScheduleNotifyMember.setCreatedDate(new Date());
-					uSPayScheduleNotifyMember.setUpdatedDate(new Date());
-					set.add(uSPayScheduleNotifyMember);
-				}
-			}	
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return set;
-	}
-
+	
 	@Override
 	public List<String> getWeeklyFrequenciesBySelectedDate(String selectedDate, String orgLocDateFormat,String dateFrequency) throws Exception {
 		
@@ -211,6 +206,10 @@ public class PayrollScheduleServiceImpl implements PayrollScheduleService {
 	public UsPayrollSchedule findScheduleByFrequency(String payFrequency, Long orgLocationId,String scheduleUUID)
 	{
 		return payrollScheduleDao.findScheduleByFrequency(payFrequency,orgLocationId,scheduleUUID);
+	}
+	@Override
+	public List<UsPayrollSchedule> getAllPayrollScheduleByOrgLocationId(Long orgLocationId) {
+		return payrollScheduleDao.getAllPayrollScheduleByOrgLocationId(orgLocationId);
 	}
 
 }

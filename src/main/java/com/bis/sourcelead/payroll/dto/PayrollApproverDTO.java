@@ -28,6 +28,22 @@ public class PayrollApproverDTO {
 
 	private String payPeriodNum;
 	
+	private String payType;
+	
+	private String payrollFrequency;
+	
+	
+	
+	public String getPayrollFrequency()
+	{
+		return payrollFrequency;
+	}
+
+	public void setPayrollFrequency(String payrollFrequency)
+	{
+		this.payrollFrequency = payrollFrequency;
+	}
+
 	public String getConfAprrover()
 	{
 		return confAprrover;
@@ -147,6 +163,16 @@ public class PayrollApproverDTO {
 	public void setPayPeriodNum(String payPeriodNum)
 	{
 		this.payPeriodNum = payPeriodNum;
+	}
+
+	public String getPayType()
+	{
+		return payType;
+	}
+
+	public void setPayType(String payType)
+	{
+		this.payType = payType;
 	}
 	
 	

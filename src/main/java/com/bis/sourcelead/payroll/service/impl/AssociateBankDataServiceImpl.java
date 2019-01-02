@@ -49,7 +49,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
 				if(associateBankDataDTO.getUserId() != null){
-					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.valueOf(associateBankDataDTO.getUserId()),orgLocation.getId());
+					Candidate candidate = candidateDao.getCandidateByConsultantUserId(Long.parseLong(associateBankDataDTO.getUserId()),orgLocation.getId());
 					associateBankData = associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
 					if(associateBankData != null) {
 						associateBankData.setUpdatedBy(loginUser.getUserCode());
@@ -66,11 +66,27 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
+				{
 					associateBankData.setBankName(associateBankDataDTO.getBankName());
+				}else {
+					associateBankData.setBankName(null);
+				}
 				if(StringUtils.isNotBlank(associateBankDataDTO.getAccountNumber()))
+					{
 					associateBankData.setAccountNumber(associateBankDataDTO.getAccountNumber());
+					}
+				else {
+					associateBankData.setAccountNumber(null);
+				}
 				if(StringUtils.isNotBlank(associateBankDataDTO.getRoutingNumber()))
+					{
 					associateBankData.setRoutingNumber(associateBankDataDTO.getRoutingNumber());
+					}
+				
+				else {
+					associateBankData.setRoutingNumber(null);
+				}
+				
 				associateBankData.setOrgLocationId(orgLocation);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -101,11 +117,12 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Override
 	public AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
 	{
-		AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
+		AssociateBankDataDTO associateBankDataDTO = null;
 		try {
 			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
 			AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByCandidateId(candidate.getId(),orgLocation);
 			if(associateBankData != null){
+				associateBankDataDTO = new AssociateBankDataDTO();
 //				associateBankDataDTO = new AssociateBankDataDTO();
 				associateBankDataDTO.setId(associateBankData.getId());
 				associateBankDataDTO.setAccountType(associateBankData.getAccountType());
@@ -120,5 +137,10 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 			e.printStackTrace();
 		}
 		return associateBankDataDTO;
+	}
+
+	@Override
+	public AssociateBankData getAssociateBankDataByOrgLocationId(Long locationId) {
+		return associateBankDataDao.getAssociateBankDataByOrgLocationId(locationId);
 	}
 }

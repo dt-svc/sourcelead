@@ -61,7 +61,9 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			      <div class="billing_dashboard">                                                                                                                                                                             ';
  result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
  result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
+
  result = result + '			            <div class="pull-right select-field ml">                                                                                                                                                               ';
+ result = result + '							<a class="pull-left newAdBtn mr" href="' + sourceleadUrl + '/customizeInvoice?orgLocationId=' + clientLocationId + '&orgRelationId=' + orgRelationId +'">Templates</a>'; 
  result = result + '			              <select class="form-control input-sm" id="dayWiseTypeId" onchange="getInvoiceListBasedonClient('+orgRelationId+','+clientLocationId+');customInvoiceList('+orgRelationId+','+clientLocationId+');">                                                                                           ';
  result = result + '			                <option value="month">Last 30 days</option>                                                                                                                                                        ';
  result = result + '			                <option value="twomonths">Last 60 Days</option>                                                                                                                                                    ';
@@ -131,10 +133,6 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                    </li>                                                                                                                                                                                          ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                                                                                                                                                                                                                   ';
- 
- 
- result = result + '			                    <li><a href="' + sourceleadUrl + '/customizeInvoice"><i class="fa fa-cog ml"></i></a></li>';
- 
  
  result = result + '			            <div class="pull-right mt40 select-field hidden">                                                                                                                                                      ';
  result = result + '			              <select class="form-control">                                                                                                                                                                        ';

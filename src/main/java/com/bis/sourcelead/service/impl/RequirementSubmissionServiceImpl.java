@@ -53,6 +53,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
+import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -1803,15 +1804,30 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-			 StringBuilder locBuild = new StringBuilder();
-			 globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else if(requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-		 		StringBuilder locBuild = new StringBuilder();
-		 		globalVarsMap.put("location", locBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else{
-			globalVarsMap.put("location","--");
+		 
+		 
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			globalVarsMap.put("location", location);
+	
 		 if(requirement.getRate()!= null && !"".equalsIgnoreCase(requirement.getRate())){
 			 StringBuilder rateBuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", rateBuild.append(requirement.getCurrencyCode()).append("-").append(requirement.getRate()).append("-").append(requirement.getRateType()).toString());
@@ -1997,7 +2013,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
-		 String actionLink="";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+requirement.getRequirementUUID()).toString();		 
+		 
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_NEGOTIATE_REQUIREMENT,new ArrayList<EmailAttachment>());
@@ -2192,7 +2210,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	  				
 	  			 }
 	   			else{
-	   			   jsonObj.put("value", jsonObj.getString("value"));
+	   				if(jsonObj.has("value") && StringUtils.isNotBlank(jsonObj.getString("value"))) {
+	   					jsonObj.put("value", jsonObj.getString("value"));
+	   				}
 	   			}
    			}
    			jsonArray.put(jsonObj);
@@ -5592,76 +5612,99 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(3).setCellValue(rsh.getSubmissionId().getRequirement().getJobTitle());
 			}
 		}
-		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
-				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
- 
+		 if(rsh.getSubmissionId().getRequirement().getJobRate() != null){
+				writeRow.createCell(4).setCellValue(rsh.getSubmissionId().getRequirement().getJobRate());
+
 		 }
 		 else{
 			 writeRow.createCell(4).setCellValue("--"); 
+		 }
+		 if(rsh.getSubmissionId().getRequirement().getProcess() != null){
+				writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getProcess());
+ 
+		 }
+		 else{
+			 writeRow.createCell(5).setCellValue("--"); 
 		 }
 		//Clinet Name
 		if(rsh.getSubmissionId().getRequirement().getClientId() != null) {
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId() != null) {
-					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(5).setCellValue("--");
+					writeRow.createCell(6).setCellValue("--");
 				}
 			}
 			if (rsh.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")) {
 				if (rsh.getSubmissionId().getRequirement().getClientId().getLocationId() != null) {
-					writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
+					writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName());
 				}else {
-					writeRow.createCell(5).setCellValue("--");
+					writeRow.createCell(6).setCellValue("--");
 				}
 			}
 		}else {
-			writeRow.createCell(5).setCellValue("--");
+			writeRow.createCell(6).setCellValue("--");
 		}
 		 
 		RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
 		if(reqInterview != null && reqInterview.getDateOfInterview() !=  null){
-			writeRow.createCell(6).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
+			writeRow.createCell(7).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
 		}
 		else{
-			writeRow.createCell(6).setCellValue("--");
+			writeRow.createCell(7).setCellValue("--");
 		}
 		
 		RequirementOffers reqOffers=requirementOffersService.getRequirementOfferSubmissionById(rsh.getSubmissionId().getId());
 			
 		if(reqOffers != null && reqOffers.getAmount() !=  null && reqOffers.getPaymentType() !=null && reqOffers.getPaymentMode() != null){
-			writeRow.createCell(7).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
+			writeRow.createCell(8).setCellValue(reqOffers.getAmount()+"-"+reqOffers.getPaymentType()+"/"+reqOffers.getPaymentMode());
 		}
 		else{
-			writeRow.createCell(7).setCellValue("--");
+			writeRow.createCell(8).setCellValue("--");
 		}
 		//Sourece Name
-		 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
+		 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getCreatedUser());
 		 //Submitted On
-		 writeRow.createCell(9).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
+		 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getCreatedDate())); 
 
 			if(rsh.getSubmissionId().getJoinedDate()  != null){
-				 writeRow.createCell(10).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
-			}
-			else{
-				writeRow.createCell(10).setCellValue("--");
-			}
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
-				 writeRow.createCell(11).setCellValue(rsh.getSubmissionId().getRequirement().getPayOutPeriod().toString());
+				 writeRow.createCell(11).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),rsh.getSubmissionId().getJoinedDate()));
 			}
 			else{
 				writeRow.createCell(11).setCellValue("--");
 			}
-			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
-				int result = Integer.parseInt(rsh.getSubmissionId().getRequirement().getPayOutPeriod());
-				Date generatedInvoiceDate=CalendarUtil.addDays(rsh.getSubmissionId().getJoinedDate(), result);
-				DateTime dtOrg = new DateTime(generatedInvoiceDate);
-				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
-				 writeRow.createCell(12).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
-
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null){
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				payTerm=payTerm.replaceAll("\\D", "");
+				if(!payTerm.isEmpty()){
+				 writeRow.createCell(12).setCellValue(payTerm);
+				}
+				else{
+					writeRow.createCell(12).setCellValue("--");
+				}
 			}
 			else{
 				writeRow.createCell(12).setCellValue("--");
+			}
+			if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+				String payTerm=rsh.getSubmissionId().getRequirement().getClientId().getPaymentTerm();
+				 Integer result = 0;
+                 try {
+                     payTerm=payTerm.replaceAll("\\D", "");
+                     result = Integer.parseInt(payTerm);
+                 } catch (Exception e) {
+                     result = 0;
+                 }
+                 if(result != 0){
+     				Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), result);
+    				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+    				DateTime generatedInvoiceDatePlusOne = dtOrg.plusDays(1);
+    				 writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),generatedInvoiceDatePlusOne.toDate()));
+	 
+                 }
+			}
+			else{
+				writeRow.createCell(13).setCellValue("--");
 			}
 
 		return createExcelsheet;
@@ -5694,6 +5737,29 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	}
 
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoineReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateTerminateReport(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoineReport(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+	@Override
+	public ResponseList<AssociateJoineReportDTO> getAssociateJoinedGraph(AssociateJoineReportDTO requirementSubmissionHistoryDTO, Long orgLocationsId, Date startUTCDate, Date endUTCDate) throws Exception
+	{
+		return requirementSubmissionDao.getAssociateJoinedGraph(requirementSubmissionHistoryDTO,orgLocationsId,startUTCDate,endUTCDate);
+
+	}
+
+
 	@SuppressWarnings("null")
 	@Override
 	public List<RequirementSubmissionsDTO > getCandidateForInvoiceDashBoard(OrgLocations orgLocations, User user) {
@@ -5706,6 +5772,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			RequirementSubmissionsDTO applicantsDto = new RequirementSubmissionsDTO();
 			applicantsDto.setCandidateName(requirementSubmission.getCandidate().getFullName());
 			applicantsDto.setRequirementName(requirementSubmission.getRequirement().getJobTitle());
+			applicantsDto.setSubmissionId(requirementSubmission.getId());
+			applicantsDto.setId(requirementSubmission.getCandidate().getId());
 			if(requirementSubmission.getRequirementOffersList().size()>0){
 				for(RequirementOffers offer : requirementSubmission.getRequirementOffersList()){
 					if(offer.getOfferStatus().equals("OFFERACCEPTED")){
@@ -5717,13 +5785,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			if (requirementSubmission.getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {
 				if (requirementSubmission.getRequirement().getClientId().getResponderLocationId() != null) {
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
+					applicantsDto.setOrgRelationId(requirementSubmission.getRequirement().getClientId().getId());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+					String term = requirementSubmission.getRequirement().getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				Date locationDate = commonUtil.orgLocationCommonDate(new Date(),orgLocations);
+				Boolean finaldate = dtOrg.toDate().before(locationDate);
+				if(finaldate){
+					applicantsDto.setGenerateDate(true);	
+				}
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			listOfApplicants.add(applicantsDto);
@@ -5773,11 +5851,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setClientOrVendorName(requirementSubmission.getRequirement().getClientId().getResponderLocationId().getOrgLocationName());
 				}
 			}
-			if (requirementSubmission.getRequirement().getPayOutPeriod() != null && requirementSubmission.getJoinedDate() != null) {
-				int result = Integer.parseInt(requirementSubmission.getRequirement().getPayOutPeriod());
+			if (requirementSubmission.getRequirement().getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+				if(StringUtils.isNotBlank(requirementSubmission.getRequirement().getClientId().getPaymentTerm())){
+					String term = requirementSubmission.getRequirement().getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
 			}
 			try{
@@ -5852,17 +5934,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					applicantsDto.setClientOrVendorName(requirementSubmission.getCandidate().getOrgRelationId().getResponderLocationId().getOrgLocationName());
 				}
 			}
-			if (requirementSubmission.getJoinedDate() != null) {
-				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
-			}
-			
-			try{
+			try {
+				// get released requirement based on parent requirement id
+				Requirement req = requirementDao.getRequirementByParentRequirementId(requirementSubmission.getRequirement().getId());
+				if (req.getClientId() != null && requirementSubmission.getJoinedDate() != null) {
+					if(StringUtils.isNotBlank(req.getClientId().getPaymentTerm())){
+					String term = req.getClientId().getPaymentTerm();
+					term = term.replaceAll("\\D", "");
+					int result = Integer.parseInt(term);
+					Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
+					DateTime dtOrg = new DateTime(generatedInvoiceDate);
+					applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
+					}
+					applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
+				}
+				
 				List<Contracts> contractsList = getSowContract(requirementSubmission.getCandidate().getId(), orgLocations, orgRelationId, contractType);
 				if (null != contractsList && contractsList.size() > 0) {
 					applicantsDto.setContractsList(contractsList);
 				}	
-			}catch (Exception e) {
-				e.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 			
 			listOfApplicants.add(applicantsDto);

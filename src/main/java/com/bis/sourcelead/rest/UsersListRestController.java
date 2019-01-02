@@ -48,6 +48,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateSalaryDao;
+import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
@@ -65,6 +67,8 @@ import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.AssociateGrades;
+import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -101,6 +105,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -273,6 +278,12 @@ public class UsersListRestController {
 	
 	@Autowired
 	private ProbationHistoryService probationHistoryService;
+	
+	@Autowired
+	AssociateSalaryService associateSalaryService;
+	
+	@Autowired
+	PayrollPayheadDao payrollPayheadDao;
 	
 	
 	/**
@@ -2224,10 +2235,32 @@ public class UsersListRestController {
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
-				Department department= departmentService.getDepartmentById(Long.parseLong(addUserDTO.getDepartment()));
-				employees.setDepartmentId(department);
+				if(employees.getDepartmentId() != null ? !employees.getDepartmentId().getId().equals(Long.parseLong(addUserDTO.getDepartment())) : true) {
+					Department department= departmentService.getDepartmentById(Long.parseLong(addUserDTO.getDepartment()));
+					employees.setDepartmentId(department);
+					Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+					if(candidate != null) {
+						AssociateSalaryInd associateSalaryInd =  payrollPayheadDao.getAssociateSalaryIndByCandidateId(candidate.getId());
+						if(associateSalaryInd != null) {
+							associateSalaryInd.setGroupId(null);
+							associateSalaryInd.setUpdatedDate(new Date());
+							associateSalaryInd.setUpdatedBy(loginUser);
+							payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+						}
+					}
+				}
 			}else{
 				employees.setDepartmentId(null);
+				Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+				if(candidate != null) {
+					AssociateSalaryInd associateSalaryInd =  payrollPayheadDao.getAssociateSalaryIndByCandidateId(candidate.getId());
+					if(associateSalaryInd != null) {
+						associateSalaryInd.setGroupId(null);
+						associateSalaryInd.setUpdatedDate(new Date());
+						associateSalaryInd.setUpdatedBy(loginUser);
+						payrollPayheadDao.saveAssociateSalaryInd(associateSalaryInd);
+					}
+				}
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
@@ -2302,7 +2335,7 @@ public class UsersListRestController {
 			probationHistory.setProbationPeriod(addUserDTO.getProbationPeriod());
 			probationHistory.setFromStatus(previousStatus);
 			probationHistory.setToStatus(addUserDTO.getProbationStatus());
-			if(addUserDTO.getConfirmationDate() != null)
+			if(StringUtils.isNotBlank(addUserDTO.getConfirmationDate()))
 				probationHistory.setActualConfirmationDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), addUserDTO.getConfirmationDate()));
 			else
 				probationHistory.setActualConfirmationDate(null);
