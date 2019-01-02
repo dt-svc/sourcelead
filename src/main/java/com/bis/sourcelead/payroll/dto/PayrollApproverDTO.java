@@ -30,6 +30,20 @@ public class PayrollApproverDTO {
 	
 	private String payType;
 	
+	private String payrollFrequency;
+	
+	
+	
+	public String getPayrollFrequency()
+	{
+		return payrollFrequency;
+	}
+
+	public void setPayrollFrequency(String payrollFrequency)
+	{
+		this.payrollFrequency = payrollFrequency;
+	}
+
 	public String getConfAprrover()
 	{
 		return confAprrover;
