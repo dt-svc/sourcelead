@@ -1473,7 +1473,8 @@ public class PayrollUtil {
 				detailsDto.setJobs(jobsList);
 			}
 			
-			detailsDtoList.add(detailsDto);
+//			detailsDtoList.add(detailsDto);
+			dto.setDetails(detailsDto);
 //		}
 		return dto;
 
