@@ -9708,6 +9708,7 @@ text-align: right !important;
 .payslipTable table tfoot {
 background-color: #ededed; color: #333; font-weight: 600;
 }
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
