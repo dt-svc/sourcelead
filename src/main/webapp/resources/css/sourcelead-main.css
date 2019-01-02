@@ -9280,6 +9280,18 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url("../images/shortlilstedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.invterviewIC {
+	background-image: url("../images/interviewIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.jobOfferIC {
+	background-image: url("../images/jobOfferIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.joinedIC {
+	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9674,6 +9686,27 @@ box-shadow: 0 1px 4px rgba(57,73,76,0.35);
 }
 .widgetDiv:hover h4{
 	font-weight: 600;
+}
+input.inputDisable {
+border: none; width: 100%; padding-left: 0; font-weight: 500;
+}
+.payslipTable table td, .payslipTable table th {
+border-collapse:border; border:1px solid #d6d6d6 !important;
+}
+.payslipTable table thead {
+border:1px solid #6C7686 !important; background-color: #6C7686 !important;
+}
+.payslipTable table thead th {
+color: #fff !important; padding: 3px 10px !important;
+}
+.payslipTable table tbody th, .payslipTable table tbody td, .payslipTable table tfoot td, .payslipTable table tfoot th {
+padding: 3px 10px !important; vertical-align: middle;
+}
+.payslipTable table tbody td, .payslipTable table tfoot td {
+text-align: right !important;
+}
+.payslipTable table tfoot {
+background-color: #ededed; color: #333; font-weight: 600;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

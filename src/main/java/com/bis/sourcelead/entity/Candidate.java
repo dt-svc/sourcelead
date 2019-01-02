@@ -48,7 +48,6 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "PARENT_CANDIDATE_ID")
 	private Candidate parentCandidateId;
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
@@ -59,8 +58,7 @@ public class Candidate implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_ID")
-	private Shift shift;
-	
+	private Shift shift;	
  
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "WORK_LOCATION")

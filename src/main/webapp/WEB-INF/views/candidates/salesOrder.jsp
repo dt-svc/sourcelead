@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>Sales Order</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/SalesOrderList'/>">Sales Order List</a>  &raquo;Sales Order</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/SalesOrderList'/>">Sales Order List</a> &raquo; Sales Order</div>
     
     </section>
     <div class="clearfix backgroundWhite">
@@ -31,7 +31,7 @@
                   <div class="col-md-6">
                     <label class="col-md-4 control-label">Order Date :</label>
                     <div class="col-md-8">
-                      <label>${marketplaceSalesOrder.orderDateStr != null ? marketplaceSalesOrder.orderDateStr : "---"}</label>
+                      <label>${marketplaceSalesOrder.orderDate != null ? marketplaceSalesOrder.orderDate : "---"}</label>
                     </div>
                   </div>
                   <div class="col-md-6">

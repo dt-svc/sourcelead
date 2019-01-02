@@ -489,11 +489,17 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		}else {
 			writeRow.createCell(6).setCellValue("--");
 		}
-		if(projectMember.getMasterCandidateId() != null){
-			 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
-			writeRow.createCell(7).setCellValue(approvalTimesheetsSubmissionsCountAsEmployee);
+		if (projectMember.getPercentageOfWork() != null ) {
+			writeRow.createCell(7).setCellValue(projectMember.getPercentageOfWork().doubleValue());
 		}else {
 			writeRow.createCell(7).setCellValue("--");
+		}
+		
+		if(projectMember.getMasterCandidateId() != null){
+			 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
+			writeRow.createCell(8).setCellValue(approvalTimesheetsSubmissionsCountAsEmployee);
+		}else {
+			writeRow.createCell(8).setCellValue("--");
 		}
 		
 	 
