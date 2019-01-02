@@ -230,7 +230,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 
 	@Override
 	@Transactional
-	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates) throws Exception {
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmissionHistory> submissionHistoryList = null;
 		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
@@ -238,23 +238,27 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		List<Long> countlist = null;
 		String stageQuery = null;
 		if(stage.equals("SUBMISSION")){
-			stageQuery = " rsh.toStage ='SUBMISSION'";	
+			stageQuery = " rsh.toStage ='SUBMISSION' and ((rsh.fromStage = 'NEW') OR (rsh.fromStage ='request_sent'))";	
 		}else if(stage.equalsIgnoreCase("SHORTLIST")){
 			stageQuery = " rsh.toStage = 'SHORTLIST'";
 		}else if(stage.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
 			stageQuery = " rsh.toStage = 'SUBMIT_TO_CLIENT'";
 		}else if(stage.equalsIgnoreCase("INTERVIEW")){
-			stageQuery = " (rsh.toStage = 'INTERVIEW' or rsh.toStage = 'CLIENT_INTERVIEW')";
+			stageQuery = " (rsh.toStage = 'INTERVIEW')";
 		}else if(stage.equalsIgnoreCase("OFFERMADE")){
-			stageQuery = " (rsh.toStage = 'OFFERMADE' OR rsh.toStage = 'OFFERACCEPTED' OR rsh.toStage = 'OFFERREJECTED' "
-					+ " OR rsh.toStage = 'CLIENT_OFFERMADE' OR rsh.toStage = 'CLIENT_OFFERACCEPTED' OR rsh.toStage = 'CLIENT_OFFERREJECTED') ";
+			stageQuery = " (rsh.toStage = 'OFFERMADE') ";
 		}else if(stage.equalsIgnoreCase("REJECTED")) {
 			stageQuery = " rsh.toStage = 'REJECTED'";
 		}else if(stage.equalsIgnoreCase("JOINED")) {
 			stageQuery = " rsh.toStage = 'JOINED'";
 		}else if(stage.equalsIgnoreCase("BACKOUT")) {
 			stageQuery = " rsh.toStage = 'BACKOUT'";
+		}else if(stage.equalsIgnoreCase("ONHOLD")) {
+			stageQuery = " rsh.toStage = 'ONHOLD'";
+		}else if(stage.equalsIgnoreCase("NORESPONSE")) {
+			stageQuery = " rsh.toStage = 'NORESPONSE'";
 		}
+		
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(sumissionHistoryDTO.getSearchValue() != null && !"".equalsIgnoreCase(sumissionHistoryDTO.getSearchValue())) {
@@ -266,22 +270,22 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			 
 		}
 		
-		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";  
-		queryObj = session.createQuery(query);
+		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId";  
+	    queryObj = session.createQuery(query);
 		
 		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
 		
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
 
-		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameter("locationId", locationId).list();
 		
 		countlist = session.createQuery("select count(*) "+ countQuery).setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
 		
 		int totalCount = 0;
 		if (sumissionHistoryDTO != null) {
-			if (countlist != null && !countlist.isEmpty()) {
-				totalCount = countlist.iterator().next().intValue();
+			if (submissionHistoryList != null && !submissionHistoryList.isEmpty()) {
+				totalCount = submissionHistoryList.size();
 			}
 		}
 		submissionHistoryList.forEach(history->{

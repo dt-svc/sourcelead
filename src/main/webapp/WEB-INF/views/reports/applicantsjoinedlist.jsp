@@ -268,6 +268,7 @@ function daywiseLeaveReportsListPagination(url){
 		      {
 		          "targets": colIndex++,
 		          "data": "incentives",
+		          "sortable": false,
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		        	  result = result + ' <td>';
@@ -372,6 +373,7 @@ function prepareOfferList(url){
 		result = result + '<th>Applicant name</th>';
 		result = result + '<th>Contact Number</th>';
 		result = result + '<th>Job Title</th>';
+		result = result + '<th>Job Rating</th>';
 		result = result + '<th>Client</th>';
 		result = result + '<th>Source</th>';
 		result = result + '<th>Date Of Join</th>';
@@ -405,6 +407,7 @@ function offerpagination(url){
             { "data": "applicantName" },
             { "data": "contactNumber"},
             { "data": "job"},
+            { "data": "jobRate"},
             { "data": "client"},
             { "data": "souorce"},
             { "data": "joinDate"},
@@ -461,7 +464,22 @@ function offerpagination(url){
             	  return result;
               		
               }
-	          },{
+	          },
+	          {
+		    	  "targets": colIndex++,
+	              "data": "jobRate",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.jobRate !=null && opt.jobRate !='' && opt.jobRate !='undefined'){
+	                		  result = result + '<td><div><span title='+opt.jobRate+'>'+opt.jobRate+'</span></div></td>';
+	            		}else{
+							result = result + ' <td><div>--</div></td>';
+						}
+	            	  return result;
+	              		
+	              }
+		          },
+	          {
             "targets": colIndex++,
             "data": "client",
             "render": function ( data, type, opt, meta ) {
@@ -504,8 +522,8 @@ function offerpagination(url){
                       "data": "paymentTerm",
                       "render": function ( data, type, opt, meta ) {
                     	  var result = "";
-      	    	  		   if(opt.payOutPeriod != null && opt.payOutPeriod !='' && opt.payOutPeriod != 'undefined'){
-      	    	  			result = result + ' <td><div><span>'+opt.payOutPeriod+'</span></div></td>';
+      	    	  		   if(opt.payTerm != null && opt.payTerm !='' && opt.payTerm != 'undefined'){
+      	    	  			result = result + ' <td><div><span>'+opt.payTerm+'</span></div></td>';
       	    	  		   }else{
       	    	  			result = result + ' <td><div><span>---</span></div></td>';
       	    	  		   }

@@ -43,6 +43,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class SourceleadTicketServiceImpl implements SourceleadTicketService{
@@ -50,6 +51,9 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
+
 	@Autowired
 	HttpServletRequest request;
 	
@@ -73,6 +77,10 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	
 	 @Autowired
 	 EmailScenerioUtil emailScenerioUtil;
+	 
+	 @Value("${env}")
+	 private String environment;
+	 
 	 
 	@Override
 	public String saveSourceleadTickets(SourceleadTicketDTO sourceleadTicketDTO,User user, OrgLocations orgLocation) throws Exception {
@@ -123,40 +131,50 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	}
 
 	private void sendEmailSourceleadTicketToSourceleadAdmin(SourceleadTickets sourceleadTickets, User user,OrgLocations orgLocation)throws Exception {
-		EmailMessage emailMessage = new EmailMessage();
-		 emailMessage.setFirstName(user.getFirstName());
-		 emailMessage.setLastName(user.getLastName());
-		 emailMessage.setToEmail("info@sourcelead.com");
-		 emailMessage.setFromEmail(user.getEmail());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		if (environment.equalsIgnoreCase("prod")) {
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("companyName",orgLocation.getOrgLocationName());
-		 globalVarsMap.put("tikcetTitle", sourceleadTickets.getTicketTitle());
-		 globalVarsMap.put("ticketType",sourceleadTickets.getTicketType());
-		 globalVarsMap.put("ticketModule",sourceleadTickets.getTabId().getTabName());
-		  
-		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("ticketLoginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-		
-		 
-		 
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,new ArrayList<EmailAttachment>());
-		 
-		 /*EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGREQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
-		 String actionLink = "";
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
-		 noificationEmailScenario.setBody(notificationbody);
-		 
-		 User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
-		 
-		 emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin, null, new OrgLocations(), noificationEmailScenario);*/
-		
+			 String[] toEmails = {"info@sourcelead.com","support@sourcelead.com"};
+			 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("companyName",orgLocation.getOrgLocationName());
+			 globalVarsMap.put("tikcetTitle", sourceleadTickets.getTicketTitle());
+			 globalVarsMap.put("ticketType",sourceleadTickets.getTicketType());
+			 globalVarsMap.put("ticketModule",sourceleadTickets.getTabId().getTabName());
+			  
+			 StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("ticketLoginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+			 //calling the sendEmail method of emailScenerioUtil
+			 for(String toEmail : toEmails) {
+				 emailMessage.setToEmail(toEmail);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,new ArrayList<EmailAttachment>());
+			 }
+		}else {
+			 EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(user.getFirstName());
+			 emailMessage.setLastName(user.getLastName());
+			 emailMessage.setToEmail("qa@sourcelead.com");
+			 emailMessage.setFromEmail(user.getEmail());
+			 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("companyName",orgLocation.getOrgLocationName());
+			 globalVarsMap.put("tikcetTitle", sourceleadTickets.getTicketTitle());
+			 globalVarsMap.put("ticketType",sourceleadTickets.getTicketType());
+			 globalVarsMap.put("ticketModule",sourceleadTickets.getTabId().getTabName());
+			  
+			 StringBuilder loginBuilder = new StringBuilder();
+			 globalVarsMap.put("ticketLoginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+			
+			 //calling the sendEmail method of emailScenerioUtil
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,new ArrayList<EmailAttachment>());
+		}
 	}
 
 	private String getTicketGeneratedId(OrgLocations orgLocations) {
@@ -242,6 +260,7 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	
 	@Override
 	public void saveSourceleadTicketComment(SourceleadTicketDTO sourceleadTicketDTO, User user) throws Exception {
+		
 		SourceleadTicketsComments stc = new SourceleadTicketsComments();
 		SourceleadTickets sourceleadTickets= sourceleadTicketDao.getSourceleadTicketsByTicketUUID(sourceleadTicketDTO.getTicketUUID());
 		stc.setDescription(sourceleadTicketDTO.getTicketComment());
@@ -250,6 +269,7 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 		stc.setCreatedBy(user);
 		stc.setCreatedDate(new Date());
 		sourceleadTicketDao.saveSourceleadTicketsComments(stc);
+		mailCommentedOnRaisedTicket(sourceleadTickets, user, sourceleadTicketDTO.getTicketComment());
 	}
 	
 	
@@ -288,9 +308,88 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 	public List<OrgLocations> getSourceleadTicketRequestedOrgLocatons() throws Exception {
 		return sourceleadTicketDao.getSourceleadTicketRequestedOrgLocatons();
 	}
-
 	
+	public void pmsTicketStatusUpdatedEmail(User user,Org org,OrgLocations orgloc, SourceleadTickets sourceleadTicket, String existingticketStatus, String ticketStatus)throws Exception{
+		if (environment.equalsIgnoreCase("prod")) {
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(sourceleadTicket.getUserId().getFirstName());
+			 emailMessage.setLastName(sourceleadTicket.getUserId().getLastName());
+			 emailMessage.setToEmail(sourceleadTicket.getUserId().getEmail());
+			 emailMessage.setFromEmail("info@sourcelead.com");
+			 emailMessage.setFromName("Sourcelead");
+			 emailMessage.setEmailType(Constants.PMS_Ticket_Status_Updated_Email);
+			 emailMessage.setCreatedBy(user.getUserCode());
 
-	 
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("ticketId",sourceleadTicket.getTicketGeneratedId());
+			 globalVarsMap.put("ticketOwner", sourceleadTicket.getUserId().getFullName());	 
+			 globalVarsMap.put("previousStatus", existingticketStatus);
+			 globalVarsMap.put("currentStatus",ticketStatus);
+			 globalVarsMap.put("ticketTitle",sourceleadTicket.getTicketTitle());
+			 globalVarsMap.put("module",sourceleadTicket.getTabId().getTabName());
+			 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,org,orgloc,Constants.PMS_Ticket_Status_Updated_Email,attachmentList);
+			
+		}else {
+			EmailMessage emailMessage = new EmailMessage();
+			 emailMessage.setFirstName(sourceleadTicket.getUserId().getFirstName());
+			 emailMessage.setLastName(sourceleadTicket.getUserId().getLastName());
+			 emailMessage.setToEmail(sourceleadTicket.getUserId().getEmail());
+			 emailMessage.setFromEmail("qa@sourcelead.com");
+			 emailMessage.setFromName("Sourcelead");
+			 emailMessage.setEmailType(Constants.PMS_Ticket_Status_Updated_Email);
+			 emailMessage.setCreatedBy(user.getUserCode());
+
+			//setting the class filed values
+			 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("ticketId",sourceleadTicket.getTicketGeneratedId());
+			 globalVarsMap.put("ticketOwner", sourceleadTicket.getUserId().getFullName());	 
+			 globalVarsMap.put("previousStatus", existingticketStatus);
+			 globalVarsMap.put("currentStatus",ticketStatus);
+			 globalVarsMap.put("ticketTitle",sourceleadTicket.getTicketTitle());
+			 globalVarsMap.put("module",sourceleadTicket.getTabId().getTabName());
+			 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,org,orgloc,Constants.PMS_Ticket_Status_Updated_Email,attachmentList);
+		}
+	}
 	
+	private void mailCommentedOnRaisedTicket(SourceleadTickets sourceleadTicket, User user, String latestComment) throws Exception {
+		if(sourceleadTicket != null) {
+			
+			User toUser = sourceleadTicket.getCreatedBy();
+			OrgLocations orgLocation = sourceleadTicket.getOrgLocationId();
+			
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(sourceleadTicket.getUserId().getFirstName());
+			emailMessage.setLastName(sourceleadTicket.getUserId().getLastName());
+			emailMessage.setToEmail(sourceleadTicket.getUserId().getEmail());
+			emailMessage.setFromEmail("info@sourcelead.com");
+			emailMessage.setFromName("Sourcelead");
+			emailMessage.setEmailType(Constants.COMMENTED_RAISED_TICKET_EMAIL);
+			emailMessage.setCreatedBy(user.getUserCode());
+			 
+			//setting the class filed values
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("issueId",sourceleadTicket.getTicketGeneratedId());
+			globalVarsMap.put("ticketId",sourceleadTicket.getTicketGeneratedId());
+			globalVarsMap.put("ticketOwner", sourceleadTicket.getUserId().getFullName());
+			globalVarsMap.put("latestComment", latestComment);
+			List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.COMMENTED_RAISED_TICKET_EMAIL,attachmentList);			 
+
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.COMMENTED_RAISED_TICKET_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink = "";
+			
+			actionLink = notificationLink.append(sourceleadUrl).append("/").append("sourceleadTicketView?"
+					+ "ticketUUID=" + sourceleadTicket.getTicketUUID()).toString();
+			
+			emailScenerioUtil.sendNotification(actionLink, user, toUser, orgLocation, notificationScenario, new HashMap<String, String>());
+		}
+	}
 }
+

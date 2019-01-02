@@ -204,6 +204,8 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
+	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
+	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
 	public static final String ENTITY_TYPE_NOTIFICATION = "Notification";
 	public static final String ENTITY_TYPE_TEMPLATE = "Notification";
@@ -248,6 +250,8 @@ public class Constants {
 	public static final String ADDED_CART = "In_Cart";
 	public static final String INACTIVE = "In-Active";
 	public static final String PURCHASED = "Purchased";
+	public static final String SUCCESS = "Success";
+	public static final String FAILED = "Failed";
 	/** projectMemberHistory constants **/
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
@@ -581,10 +585,10 @@ public class Constants {
 	
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
-	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No Of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
@@ -671,7 +675,7 @@ public class Constants {
 	public static final String[] PROJECT_TASKS_PDF_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To", "Status"};
 	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
 
-	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
+	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type*" , "Task Title*","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status*", "Owner","Billing Type*","Currency Type","Business Value", "Description"};
 	
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
@@ -701,11 +705,14 @@ public class Constants {
 
 	public static final String[] REQIREMENT_BACKOUT_HEADERS = { "Applicant Name", "Email", "Job", "Client", "Backout Type", "Backout Reason",  "Source", "Status","Job Rating" ,"Incentivized"};
 
-	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+	public static final String[] APPLICANTS_JOINED_HEADERS = { "Applicant Name", "Email Id","Contact Number","Job Title", "Job Rating","process","Client", "Date Of Interview", "Offer Rate","Source","Submitted On","Date Of Join", "Payment Term","Generate Invoice"};
+	
+	public static final String[] PURCHASE_CANDIDATE_HEADERS = {"Order No", "Order Date", "Company Name", "Total Resumes", "Total Price", "Service Fee", "Discount", "Grand Total", "Payment Status"};
 
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
+	public static final String APPLICANT = "Applicant";
 	public static final String JOB_CAMPAIGN_VENDOR = "JobCampaignVendor";
 	public static final String HOT_LIST_CAMPAIGN_VENDOR = "ClientHotListCampaign";
 	public static final String ELK_PROJECT_INDEX = "projects";
@@ -736,7 +743,7 @@ public class Constants {
 	public static final String MAIL_REQUESTED = "Requested";
 	public static final String ELK_WEB_GEO_CITIES_INDEX = "webgeocities";
 	public static final String ELK_WEBGEO_CITIES_TYPE = "webgeocities";
-	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs" };
+	public static final String[] PROJECT_ASSIGNED_EMPLOYEES = { "Emp Name","Start Date", "End Date","Bill Rate", "Pay Rate", "Estimated Hrs", "Estimated Budget", "Actual Hrs","% of Work" };
 	// public static String[] VENDOR_CONTACTS_HEADERS = {"Vendor Name*","First
 	// Name*","Last Name","Email*","Phone","Status","Owner(Email)*"};
 	// public static String[] CLIENT_CONTACTS_HEADERS = {"Client Name*","First
@@ -933,9 +940,9 @@ public class Constants {
 	public static final String[] MY_EXPENSES_HEADERS ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description"};
 	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status","Billable"};
 
-	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = { "Employee Name", "Employee Emailid", "Phone Number",
+	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
-			"Amount" , "Status"  , "Approved by"};
+			"Amount" , "Status"  , "Approved by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
@@ -1099,6 +1106,14 @@ public class Constants {
 	public static final String LEAVE_OPTION = "LEAVE_OPTION";
 	public static final String RESTRICTDAY = "RESTRICT_DAY";
 
+	public static final String[] NOTICE_PERIOD = { "Immediately Available", "15 days", "1 Month", "2 Months", "3 Months" };
+	
+	public static final String[] COOLING_OFF_PERIOD = { "0 Days", "1 Week", "2 Weeks", "3 Weeks", "1 Month", "2 Months", "3 Months", "4 Months", "5 Months", "6 Months", "7 Months", "8 Months", "9 Months", "10 Months", "11 Months","1 Year" };
+
+	public static final String[] TRAVEL_ALLOWANCE = {"0%","10%","15%","20%","25%","30%","35%","40%","45%","50%"};
+	
+	public static final String[] EXPERIENCE_LEVEL = {"Level-1","Level-2","Level-3","Level-4"};
+	
 	public static final String LEAVE_PENDING = "PENDING";
 	public static final String LEAVE_APPROVED = "APPROVED";
 	public static final String LEAVE_REJECTED = "REJECTED";
@@ -1168,6 +1183,7 @@ public class Constants {
 	public static final String REPORT_FILTER_CURRENT_MONTH = "current_month";
 	public static final String REPORT_FILTER_1_MONTH = "1_month";
 	public static final String REPORT_FILTER_3_MONTHS = "3_months";
+	public static final String REPORT_FILTER_6_MONTHS = "6_months";
 	public static final String REPORT_FILTER_YTD = "YTD";
 	public static final String REPORT_FILTER_LAST_YEAR = "Last_Year";
 	public static final String REPORT_FILTER_Last_Week = "Last_Week";
@@ -1250,6 +1266,9 @@ public class Constants {
     
     public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
     
+    public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
+
+    
     public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
@@ -1331,7 +1350,7 @@ public class Constants {
 	public static final String PROBATIONARY_ASSOCiATES_EMAIL = "ProbationaryAssociatesEmail";
 
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
-	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusNotification";
+	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusEmail";
 
 	
 	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
@@ -1344,5 +1363,14 @@ public class Constants {
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
 	
+
+	public static final String PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR = "purchasedCandidateDetailsToContributor";
+
 	public static final String CONFIRMATION_OF_EMPLOYMENT_MAIL = "ConfirmationOfEmploymentMail";
+	public static final String US_PAYROLL_SCHEDULE_EMAIL = "USPayrollScheduleEmail";
+	public static final String PMS_Ticket_Status_Updated_Email = "PMSTicketStatusUpdatedEmail";
+
+	public static final String COMMENTED_RAISED_TICKET_EMAIL = "CommentedRaisedTicketEmail";
+	public static final String COMMENTED_RAISED_TICKET_NOTIFICATION = "CommentedRaisedTicketNotification";
+	
 }

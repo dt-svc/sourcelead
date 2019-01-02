@@ -53,7 +53,7 @@ display: inline-block;
 }
 </style>
 <script
-	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
+	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}"
 	type="text/javascript"></script>
 <script
 	src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
@@ -1335,7 +1335,7 @@ function prepareOpenJobsElkList(response,offset){
 				result = result +'<input type="hidden" id="maxJobCount" value="'+json.length+'"/>';
 				result = result +'<input type="hidden" id="searchType" value="mainsearch"/>';
 // 				result = result +'	<h3 style="color:#368ee0;" onclick="getOpenJobsRequirementSummary(\''+requirements.requirementUUID+'\');">'+requirements.jobTitle+'</h3>';
-				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'  '+requirements.requirementUUID+'</h3></a>';
+				result = result +'	<a target="_blank" href="'+sourceleadUrl+'/job/'+requirements.url+'-'+requirements.requirementId+'"><h3 style="color:#368ee0;">	'+requirements.jobTitle+'</h3></a>';
 				description =  description+'Job Title:'+requirements.jobTitle+";";
 				
 				
@@ -2755,6 +2755,8 @@ function createAlert(requirementUUID){
         		    	   var skillsArray = this.value.split(",");
         			    	 if(skillsArray.length > 1){
         		        		 for (var i=0; i < skillsArray.length; i++) {
+        		        			 if(skillsArray[i] == '' || skillsArray[i] == 'undefined' || skillsArray[i] == null)
+        		        		     continue;
         		        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
         		        			 select.append(option);
         		 		             select.find(option).prop('selected', true);

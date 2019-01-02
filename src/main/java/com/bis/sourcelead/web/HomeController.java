@@ -1,10 +1,12 @@
 package com.bis.sourcelead.web;
 
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +54,8 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+
+import edu.emory.mathcs.backport.java.util.LinkedList;
 
 /**
  * This class is used for...
@@ -195,10 +199,18 @@ public class HomeController {
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			@RequestParam(value = "token", required = false) String token,
 			@RequestParam(value = "referUUID", required = false) String referUUID,
-			@RequestParam(value = "allowed", required = false) String allowed, HttpServletRequest request,
+			@RequestParam(value = "allowed", required = false) String allowed, 
+			@RequestParam(value = "redirectURL", required = false) String redirectURL,
+			@RequestParam(value = "redirectOrgLocationId", required = false) Long redirectOrgLocationId,
+			HttpServletRequest request,
 			HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 
+		if(redirectURL != null && !redirectURL.isEmpty()) {
+			request.getSession().setAttribute("redirectURL", redirectURL);
+			request.getSession().setAttribute("redirectOrgLocationId", redirectOrgLocationId);
+		}
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() != null && !(auth instanceof AnonymousAuthenticationToken)
 				&& !StringUtils.isNotEmpty(logout)) {
@@ -447,5 +459,20 @@ public class HomeController {
         String time = df.format(dateWithTime);
     	return time;
     }
+    
+	@RequestMapping(value="/getAvailableFonts")
+	@ResponseBody
+	public List<String> getAvailableSystemFonts(HttpServletRequest request) {
+		List<String> fontsList = new LinkedList();
+		try {
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			for(String font : g.getAvailableFontFamilyNames()) {
+				fontsList.add(font);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return fontsList;
+	}
 
 }

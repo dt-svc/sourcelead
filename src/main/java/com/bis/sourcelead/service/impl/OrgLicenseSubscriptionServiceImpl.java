@@ -315,6 +315,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default NDA Template",Constants.NDA);
+			commonUtil.saveDefaultPayslipTemplate(orgLocations,user);
+			
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
@@ -366,6 +368,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			projects.setUpdatedDate(new Date());
 			projects.setIsProjectForTimeSheets(Constants.YES);
 			projects.setIsProjectForExpenses(Constants.YES);
+			projects.setProjectApprovalType(Constants.PARALLEL);
+			projects.setExpenseApprovalType(Constants.PARALLEL);
 			Countries countires = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			if(countires != null) {
 				projects.setCurrency(countires.getCurrency());

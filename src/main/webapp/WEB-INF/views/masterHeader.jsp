@@ -545,7 +545,7 @@ function preventTabkey(e){
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
          <li>
-         		<a href="${appPath}/candidateMarketplaceCheckout" class="" href="javascript:void(0)">
+         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCart" class="" href="javascript:void(0)">
          		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
          		</a>
          </li>	
@@ -1948,10 +1948,12 @@ function updateMarketplaceCartCountAndPrice(){
 	        		$("#headerCartCount").html(object[0]);
 	        		$("#cartCount").html(object[0]);
 	        		if(object[0] === 0){
-		        		$("#headerCartCount").bind("click", false);
-		        		}else{
-		        		$("#headerCartCount").unbind("click", false);
-			        	}
+		        		$("#cartCount").bind("click", false);
+		        		$("#headerCartCountLink").bind("click", false);
+	        			}else{
+		        		$("#cartCount").unbind("click", false);
+		        		$("#headerCartCountLink").unbind("click", false);
+	        			}
 	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        	}}

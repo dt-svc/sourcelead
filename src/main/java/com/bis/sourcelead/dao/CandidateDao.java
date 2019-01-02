@@ -8,6 +8,8 @@ import java.util.Map;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
+import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -16,6 +18,9 @@ import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
@@ -202,7 +207,7 @@ public interface CandidateDao {
 	
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception;
 	
-	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue)throws Exception;
+	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue)throws Exception;
 	
 	public void deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid)throws Exception;
 
@@ -210,7 +215,7 @@ public interface CandidateDao {
 			CandidateMarketPlaceDTO candidateMarketPlaceDTO, OrgLocations orgLocations, String searchValue);
 	
 	public List<CandidateMarketCart> getMarketCartIdsFromMarketcart(Long orgLocationId)throws Exception;
-
+	
 	List<CandidateMarketPlace> getGlobalMarketplaceDataByOrgId(Long id, Long marketplaceId);
 
 	public List<CandidateDTO> getCandidatesListByIds(List<Long> Ids)throws Exception;
@@ -218,6 +223,41 @@ public interface CandidateDao {
 	public Boolean updateMarketCartStatus(List<Long> marketCartIds, Long orgLocationId)throws Exception;
 	
 	public void saveCandidateMarketplacePaymentTranscationHistory(CandidateMarketPlacePaymentTransactionHistory tranHistory)throws Exception;
+	
+	public CandidateMarketPlacePaymentTransactionHistory getMarketplaceTransactionDetails(Long orgLocationId) throws Exception;
+	
+	public User getUserDetailsBySourceOrgLocationId(Long sourceOrgLocationId)throws Exception;
+	
+	public CandidateMarketPlace getCandidateDetailsByCandidateId(Long candidateId) throws Exception;
 
+	public void saveToMarketplacePurchaseOrder(MarketplacePurchaseOrder newMarketplacePurchaseorder) throws Exception;
 
+	public List<Candidate> getCandidateDetailsListById(List<Long> Ids)throws Exception;
+	
+	public Candidate getCandidateByMasterCandidateId(Long masterCandidateId);
+
+	public void saveToMarketplaceSalesOrder(MarketplaceSalesOrder newMarketplaceSalesorder) throws Exception;
+
+	public CandidateMarketPlacePaymentTransactionHistory getOrderNo(Long id) throws Exception;
+
+	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
+
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO)throws Exception;
+
+	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id)throws Exception;
+	
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplaceSalesOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue, String salesOrderFromDate, String salesOrderToDate, Map<String, Date> dateValue)throws Exception;
+	
+	public MarketplaceSalesOrder getMarketplaceSalesOrderBySalesUuid(Long orgLocationId, String salesUuid)throws Exception;
+	
+	public ResponseList<MarketplaceWalletDTO> getWalletList(MarketplaceWalletDTO marketplaceWalletDTO, String searchValue, String transactionType, Map<String, Date> dateValue);
+
+	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id)throws Exception;
+
+	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception;
+
+	public Double getBalanceAmountFromWallet(Long id);
+
+	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
+	
 }

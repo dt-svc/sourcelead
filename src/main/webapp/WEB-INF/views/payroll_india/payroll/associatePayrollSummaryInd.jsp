@@ -30,12 +30,14 @@
 			</div>
 		</div>
 		<div class="col-md-2 text-center">
-			<div class="pull-right">
-				<button type="button" class="btn btn-success btnSuccess editNetpay"
-					onClick="editNetpay();">Edit</button>
-				<button type="button" class="btn btn-success btnSuccess saveNetpay"
-					onClick="saveNetpay();" style="display: none;">Save</button>
-			</div>
+			<c:if test="${indPayrollDTO.approverStatus != 'APPROVED'}">
+				<div class="pull-right">
+					<button type="button" class="btn btn-success btnSuccess editNetpay"
+						onClick="editNetpay();">Edit</button>
+					<button type="button" class="btn btn-success btnSuccess saveNetpay"
+						onClick="saveNetpay();" style="display: none;">Save</button>
+				</div>
+			</c:if>
 		</div>
 	</div>
 	<div class="row">
@@ -100,6 +102,13 @@
 								<c:set var="decuctionTotal" value="${decuctionTotal + decuction.monthly}"/>
 							</tr>
 						</c:forEach>
+						<c:if test="${!empty indPayrollDTO.lopAmount && indPayrollDTO.lopAmount != '' && indPayrollDTO.lopAmount != '0' && indPayrollDTO.lopAmount != '0.0' && indPayrollDTO.lopAmount != '0.00'}">
+							<tr>
+								<th><div class="tbldata-dotdot inlineBlock">Loss of Pay</div></th>
+								<td><input type="text" id="lopAmount" name="lopAmount" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" value="${indPayrollDTO.lopAmount}" class="formControl" readOnly onBlur="calculateNetSalary();"> </td>
+							</tr>
+							<c:set var="decuctionTotal" value="${decuctionTotal + indPayrollDTO.lopAmount}"/>
+						</c:if>
 						</tbody>
 						<tfoot>
 						<tr><th><strong>Total</strong></th><td id="deductionPayheadAmountTotal">${decuctionTotal}</td></tr>

@@ -11,11 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bis.sourcelead.entity.User;
-
 @Entity
-@Table(name = "USPAY_SCHEDULE_NOTIFY_MEMBER")
-public class USPayScheduleNotifyMember {
+@Table(name = "US_PAY_SCHEDULE_DATE")
+public class USPayScheduleDate {
+	
 	
 private static final long serialVersionUID = 1L;
 	
@@ -25,12 +24,20 @@ private static final long serialVersionUID = 1L;
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "US_PAYROLL_SCHEDULE_ID", nullable = false)
-	private UsPayrollSchedule payrollScheduleId;
+	@JoinColumn(name = "SCHEDULE_ID", nullable = false)
+	private UsPayrollSchedule scheduleId;
 	
-	@ManyToOne
-	@JoinColumn(name = "USER_ID", nullable = false)
-	private User user;
+	@Column(name = "PAY_PERIOD_SDATE")
+	private Date payPeriodStartDate;
+	
+	@Column(name = "PAY_PERIOD_DATE")
+	private Date payPeriodEndDate;
+	
+	@Column(name = "PAY_CHECK_DATE")
+	private Date checkDate;
+	
+	@Column(name = "PAY_RUN_DATE")
+	private Date payRunDate;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -55,6 +62,31 @@ private static final long serialVersionUID = 1L;
 	public Long getId()
 	{
 		return id;
+	}
+
+	public UsPayrollSchedule getScheduleId()
+	{
+		return scheduleId;
+	}
+
+	public Date getPayPeriodStartDate()
+	{
+		return payPeriodStartDate;
+	}
+
+	public Date getPayPeriodEndDate()
+	{
+		return payPeriodEndDate;
+	}
+
+	public Date getCheckDate()
+	{
+		return checkDate;
+	}
+
+	public Date getPayRunDate()
+	{
+		return payRunDate;
 	}
 
 	public Integer getStatus()
@@ -87,17 +119,30 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-
-	public UsPayrollSchedule getPayrollScheduleId()
+	public void setScheduleId(UsPayrollSchedule scheduleId)
 	{
-		return payrollScheduleId;
+		this.scheduleId = scheduleId;
 	}
 
-	public void setPayrollScheduleId(UsPayrollSchedule payrollScheduleId)
+	public void setPayPeriodStartDate(Date payPeriodStartDate)
 	{
-		this.payrollScheduleId = payrollScheduleId;
+		this.payPeriodStartDate = payPeriodStartDate;
 	}
 
+	public void setPayPeriodEndDate(Date payPeriodEndDate)
+	{
+		this.payPeriodEndDate = payPeriodEndDate;
+	}
+
+	public void setCheckDate(Date checkDate)
+	{
+		this.checkDate = checkDate;
+	}
+
+	public void setPayRunDate(Date payRunDate)
+	{
+		this.payRunDate = payRunDate;
+	}
 
 	public void setStatus(Integer status)
 	{
@@ -123,16 +168,9 @@ private static final long serialVersionUID = 1L;
 	{
 		this.updatedBy = updatedBy;
 	}
-
-	public User getUser()
-	{
-		return user;
-	}
-
-	public void setUser(User user)
-	{
-		this.user = user;
-	}
+	
+	
+	
 	
 	
 }

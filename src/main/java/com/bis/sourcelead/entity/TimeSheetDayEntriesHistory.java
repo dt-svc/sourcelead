@@ -51,6 +51,8 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	@Column(name = "BILLABLE_HOURS")
 	private String billableHours;
 	
+	@Column(name = "HOURLY_TYPE")
+	private String hourlyType;
 	 
 	@Column(name = "NONBILLABLE_HOURS")
 	private String nonBillableHours;
@@ -217,4 +219,13 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	public void setTimesheetActivityId(Long timesheetActivityId) {
 		this.timesheetActivityId = timesheetActivityId;
 	}
+
+	public String getHourlyType() {
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType) {
+		this.hourlyType = hourlyType;
+	}
+	
 }

@@ -71,6 +71,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -2330,7 +2331,7 @@ public class CandidateListRestController {
 
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String[] tableColumns = { "fullName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "profilePercentage", "marketPrice"};
+		String[] tableColumns = { "firstName", "designation", "skillsName", "currentRate", "expectedRate", "experienceYears", "location", "candidateProfilePercentage", "marketPrice"};
 		
 		int sortColumnIndex = 1; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
@@ -2344,5 +2345,42 @@ public class CandidateListRestController {
 		return candidateDTOList;
 		
 	}
+	
+	@RequestMapping(value = "/getPurchaseCandidatesExportList")
+	public void getPurchaseCandidatesExportList(@RequestParam(value = "exportType", required = false) String exportType,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations OrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<MarketplacePurchaseOrder> 	purchaseCandidatesList = candidateService.getPurchaseCandidateListByOrglocation(OrgLocation.getId());
+
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(exportType)) 
+		{
+     		file = candidateService.getPurchaseCandidateExcelFile(purchaseCandidatesList ,OrgLocation.getId());
+		} 
+		else 
+		{
+			file = candidateService.getPurchaseCandidatePdf(purchaseCandidatesList,OrgLocation.getId());
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+
+		StringBuilder filename = new StringBuilder();
+	
+		response.setHeader("Content-Disposition",
+				filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+	}
+
 
 }

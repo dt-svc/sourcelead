@@ -54,6 +54,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
@@ -187,6 +189,9 @@ public class LoginSessionController {
 
 	@Autowired
 	OrglocationDepositTaxesService orglocationDepositTaxesService;
+	
+	@Autowired
+	AssociateBankDataService associateBankDataService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -343,6 +348,9 @@ public class LoginSessionController {
 			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
 					.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
+			
+			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(orgLocations.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "associateBankData", associateBankData);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
@@ -687,17 +695,33 @@ public class LoginSessionController {
 			setTimeZone(request, orgLocations, model);
 
 		}
-		boolean dashboardConfigured = false;
-		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
-		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
-			dashboardConfigured = true;
-		}
-		model.addObject("dashboardConfigured", dashboardConfigured);
-		model.addObject("dashboardItems", dashboardItems);
-		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
-			model.setViewName("dashboard_configured");
-		return model;
+		boolean redirectFlag = false;
+		if(request.getSession().getAttribute("redirectURL") != null) {
+			String redirectURL = (String) request.getSession().getAttribute("redirectURL");
+			long redirectOrgLocationId = (Long) request.getSession().getAttribute("redirectOrgLocationId");
+			if(orgLocations != null && orgLocations.getId() == redirectOrgLocationId) {
+				redirectURL = redirectURL.replaceAll("-params-", "?").replaceAll("-and-", "&");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("redirectURL", redirectURL);
+				model.setViewName("redirectURL");
 
+				request.getSession().removeAttribute("redirectURL");
+				request.getSession().removeAttribute("redirectOrgLocationId");
+				redirectFlag = true;
+			}
+		}
+		if(!redirectFlag) {
+			boolean dashboardConfigured = false;
+			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
+			if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
+				dashboardConfigured = true;
+			}
+			model.addObject("dashboardConfigured", dashboardConfigured);
+			model.addObject("dashboardItems", dashboardItems);
+			if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
+				model.setViewName("dashboard_configured");
+		}
+		return model;
 	}
 
 	private void setTimeZone(HttpServletRequest request, OrgLocations orgLocations, ModelAndView model)

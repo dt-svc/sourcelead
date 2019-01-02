@@ -39,7 +39,7 @@
                       <input id="trashHdr" class="checkbox-custom" name="paidComponent" type="checkbox">
                       <label for="trashHdr" class="checkbox-custom-label"></label>
                     </div>
-				  <a class="pull-left mt2 mr10" href="javascript:void(0)" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete</small></a>
+				  <a class="pull-left mt2 mr10" onclick="deleteAllCandidatesFromMarketcart()" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete All</small></a>
 				</li>
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
@@ -119,7 +119,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="javascript:void(0)">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -144,38 +144,38 @@
     <div class="addInner">
       <div class="row">
         <div class="col-md-6 mb positionRelative">
-          <div class="clearfix dynamic_search filterDynamicsearch">
+          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
             <input id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Added On" title="Added On" type="text">
-            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div>
+            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="MarketCartCheckBox">
               <li class=" positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="today" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="today" type="radio" >
                 <label>Today</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_week" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_week" type="radio">
                 <label>This Week</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="Last_Week" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="Last_Week" type="radio" >
                 <label>last Week</label>
               </li>
              <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_month" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_month" type="radio">
                 <label>One Month</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value=1_Month_Ago type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_Month_Ago" type="radio">
                 <label>One Month Ago</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="YTD" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="YTD" type="radio">
                 <label>This Year</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="closed" type="checkbox">
-                <label>Closed</label>
+                <input class="dateCheckBox" name="MarketCartDate" value="custom" type="radio" id = "customDateCheckBox">
+                <label>Custom</label>
               </li>
             </ul>
           </div>
@@ -206,15 +206,12 @@
           </div>
         </div>
         <div class="clearfix"></div>
-      </div>
-    </div>
+   
 	
-	<div class="clearfix">
+	<div class="clearfix" id = "customDates" style="display: none;"> 
 		<div class="col-md-12 positionRelative">
           <div class="clearfix dynamic_search filterDynamicsearch">
-          <h5>Filter by Date <span class="text-danger paddingLeft">*</span></h5>
-		  </div>
-          <div class="clearfix">
+          <h5>Custom Dates<span class="text-danger paddingLeft">*</span></h5>
             <ul class="list-unstyled positionRelative filterSearch" id="">
               <li class="positionRelative mb">
                 <div class="row">
@@ -227,15 +224,17 @@
              </div>
               </li>
             </ul>
-          </div>
+			</div>          
         </div>
-	</div>
+           </div>
+    </div>
+	</div> 
 	
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getCandidateDetailsFromMarketcart();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn btn-sm btn-success" type="button">
+        <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn btn-sm btn-primary" type="button">
       </div>
     </div>
   </div>
@@ -245,7 +244,7 @@
 
 $(document).ready(function () {
 	getCandidateDetailsFromMarketcart();
-	updateInvoiceAndCartDetails();
+	updateInvoiceDetails();
 
 });
 
@@ -280,35 +279,32 @@ $('.chosen-select').each(function() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-
-
+/* 
+var checkedDate = "";
+var customDate = ""; */
 function getCandidateDetailsFromMarketcart(){
-	var checkedDate = $('.dateCheckBox:checked').val();
+	var candidateLength = 0;
+	var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(checkedDate != null){
-		creationStartDate = "";
-		creationEndDate = "";
-	}else{
-		checkedDate = "";
-	}
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		async : false,
 		success : function(object) {
 			if(object != null){
 			var result ="";
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
-				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o'></i></a>";
+				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o mt5'></i></a>";
 				result = result + "<div class='media-left'>";
 				result = result + "<div class='cartImg positionRelative'>";
 				result = result + "<img onerror='predefineProfileImage(this);' src='"+object[i].imageUrl+"' class='media-object' alt='Image'>";
 				result = result + "<i class='fa fa-shopping-cart faCart'></i>";
 				result = result + "<div class='clearfix'></div>";
-				result = result + "<h4 class='text-center'><span class='label label-default'>100%</span></h4>";
+				result = result + "<h4 class='text-center'><span class='label label-default'>"+object[i].profilePercentage+"%</span></h4>";
 				result = result + "</div></div>";
 				result = result + "<div class='media-body'>";
 				result = result + "<div class='col-md-9'>";
@@ -324,7 +320,7 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "</ul> <div class='clearfix'></div>";
 				if(object[i].skillsName != null){
 					var skills = object[i].skillsName.split(',');
-					result = result + '<ul class="list-unstyled list-inline mb0 mt5">';
+					result = result + '<ul class="list-unstyled list-inline profileSkills mb0 mt5">';
 					var count = 0;
 					for(var entry of skills) {
 						result = result + '<li>'+entry+'</li>';
@@ -352,22 +348,22 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "</div></div></div></div></div>";
          		}
 			$("#gridView").empty().append(result);
+			candidateLength =  object.length;
 			}
 		}
 		});
+	return candidateLength;
 	}
 
-function updateInvoiceAndCartDetails(){
+function updateInvoiceDetails(){
 	var totalPriceInCurrency;
 	$.ajax({
 		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
-	        		$("#cartCount").html(object[0]);
-	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
-	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 		        	$("#invoiceCartCount").html(object[0]);
+		        	totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		$("#invoiceTotalAmount").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
 	        		}}
@@ -384,7 +380,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	<div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"  <b>Do you want to remove "+candidateName+" from Market cart!</b>";
+	result = result +"  <div class='modal-body'> <b>Do you want to remove "+candidateName+" from Market cart!</b> </div>";
 	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcartByCandidateUuid(\""+candidateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCart();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
@@ -393,6 +389,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	}
 
 function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
+	var cLength;
 	$.ajax({
 	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
@@ -400,18 +397,62 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	getCandidateDetailsFromMarketcart();
-				updateInvoiceAndCartDetails();
+            	cLength = getCandidateDetailsFromMarketcart();
+            	if(cLength === 0){
+    				window.location.replace("${appPath}/globalMarketplacePage");
+    			}
+            	updateInvoiceDetails();
+				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
     			$(".project_inn_mask").fadeOut(200);
+            }else{
+           	 	showError("Operation failed, please try again");
+            }
+			
+		}
+	});
+	}
+
+//deleteAllCandidatesFromMarketCart
+function cancelMarketCartDeleteAll(){
+	$("#remove_marketCartDeleteAll_pop, .project_inn_mask").fadeOut();
+	}
+	
+function deleteAllCandidatesFromMarketcart(){ 
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div id='remove_marketCartDeleteAll_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"  <b>Do you want to remove All Candidates from Market cart!</b>";
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteAllCandidatesForCheckout();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartDeleteAll();'></b>";
+	result = result +"	</div>";
+	$("#popUp").empty().append(result);
+	$("#remove_marketCartDeleteAll_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	}
+
+function deleteAllCandidatesForCheckout(){
+	$.ajax({
+	 	url: sourceleadUrl + "/deleteAllCandidatesFromMarketcart",
+		type: 'GET',
+		success : function(result){
+			if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            }else if(result.response === "SUCCESS") {
+            	window.location.replace("${appPath}/globalMarketplacePage");
             }else{
            	 	showError("Operation failed, please try again");
             }}
 	});
 	}
-	
+
+
+//
+
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+
+	function createMarketCartStartDate(){
 	$("#creationStartDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -422,7 +463,9 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationEndDate").datepicker("option", "minDate", dt);
    	}
 		})
-
+	}
+	
+	function createMarketCartEndDate(){
 	$("#creationEndDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -433,12 +476,67 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationStartDate").datepicker("option", "maxDate", dt);
    	}
 		})
-
+	}
+	
+	$(function(){
+		createMarketCartStartDate();
+		createMarketCartEndDate();
+ 	 });
+	
+	$("#customDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			$("#customDates").show();
+		//	$("#customDateCheckBox").val("custom");
+		//	checkedDate = '';
+		}else {
+			$("#customDates").hide();
+		}
+	});	
+	
+	function validateMarketCartFilter(){
+  		var customDate = $("#customDateCheckBox").val();
+  		var otherDate = $('input[name=MarketCartDate]:checked').val();
+  		var fromDate = $("#creationStartDate").val();
+  		var toDate = $("#creationEndDate").val();
+  		if(customDate === "custom"){
+  			if(fromDate === ''){
+  				$("#creationStartDate").focus();
+  			}
+  			if(toDate === '' && fromDate !== ''){
+				$("#creationEndDate").focus();  				
+	  		}
+  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+  	        	closePop();
+  	        	getCandidateDetailsFromMarketcart();
+        	}
+  			}
+  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+  				closePop();
+	        	getCandidateDetailsFromMarketcart();
+  		}
+  		if(otherDate === '' && customDate != 'custom'){
+  			alert('Kindly Select a Check Box.');
+  		}
+  	}
+	
+	function resetMarketCartFilter(){
+		emptyMarketCartSearchValues();
+		$("#customDates").hide();
+		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+	}
+	
+	function emptyMarketCartSearchValues(){
+		$("#customDateCheckBox").val('');
+		checkedDate = '';
+		$("#creationStartDate").datepicker('setDate', null);
+		$("#creationEndDate").datepicker('setDate', null);
+	}
+	
 </script> 
 <script>
 //Window scroll fixed header
 $(window).scroll(function(){
-    if ($(window).scrollTop() >= 150) {
+    if ($(window).scrollTop() >= 100) {
         $('.reportHead').addClass('profileDetails-headerFixed');
 		$('.cartInvoice').addClass('cartInvoiceFixed');
     }
@@ -456,11 +554,6 @@ $(window).scroll(function(){
 	$(".advancedsearch-mask").show();
 	$("div.cand-advsrch-popup").toggle();
 	}
-//Date Picker
-$( function(){
-	$("#creationStartDate").datepicker();
-	$("#creationEndDate").datepicker();
-});
 $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })
