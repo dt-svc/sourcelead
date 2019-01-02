@@ -546,7 +546,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		
-		response.setData(tasksList);
+		response.setData(projectTasksList);
 		return response;
 		}
 
