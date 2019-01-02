@@ -218,6 +218,7 @@ function resourceRequestsTab(){
 	    		result = result + '	             <th>Allocated Resource</th>';
 	    		result = result + '	             <th>Estimated Hours<br></th>';
 	    		result = result + '	             <th>Estimated Budget<br></th>';
+	    		result = result + '	             <th>%Of Work<br></th>';
 	    		result = result + '	             <th>Req. On<br>(<small class="custom-small">'+resourceReqListDate+'</small>)</th>';
 	    		result = result + '	             <th>Req. By</th>';
 	    		/* result = result + '	             <th>Action</th>'; */
@@ -258,6 +259,7 @@ function resourceRequestsTab(){
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';
 		    		result = result + '	             <td><i class="pull-left"></i>'+report.estimatedBudgetCurrency+'<div class="pull-right">'+report.estimatedBudget+'</div></td>';
+		    		result = result + '	             <td><div>'+(report.percentageOfWork != null ? report.percentageOfWork : '--') +'</div></td>';
 		    		result = result + '	             <td><div class="tblminwidth-75">'+report.requestedDateStr+'</div></td>';
 		    		result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.requestedUser+'</div></td>';
 		    	

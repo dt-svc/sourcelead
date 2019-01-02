@@ -56,15 +56,16 @@ public interface RequirementService {
 
     public void acceptEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
-    public void mailRequirementtoManager(User loginUser, User intiatorUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
+    public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
-    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
+    public void AssignToTeamMembersEmail(User loginUser, User managerUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
     void rejectedEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
     void rejectedInitiatorUserEmailScenario(User loginUser, User initiatorUser, Requirement requirement, StringBuilder location, String rejectedReason, OrgLocations loginOrgLocation) throws Exception;
 
-    void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype) throws Exception;
+    void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc, OrgLocations loginOrgLocation, String releasetype,String redirectURL,Long redirectOrgLocationId) throws Exception;
 
     public Requirement getRequirementByParentRequirementId(Long requirementId) throws Exception;
 

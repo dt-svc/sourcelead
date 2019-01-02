@@ -9,8 +9,10 @@ function associateSalSummary(userId){
            type : "GET",
            url: sourceleadUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
             success :function(json) { 
-            	
-            	var allCheck =json.orgPayItems.length;
+            	var allCheck = "";
+            	if(json.orgPayItems != null && json.orgPayItems != '' && json.orgPayItems != 'undefined' && json.orgPayItems.length > 0){
+            	  allCheck =json.orgPayItems.length;
+            	}  
             	var result = "";
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';

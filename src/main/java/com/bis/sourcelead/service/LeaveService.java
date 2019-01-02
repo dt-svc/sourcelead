@@ -67,7 +67,7 @@ public interface LeaveService {
 
 	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser,Leave savedLeave) throws Exception;
 	
-	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
+	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason, Long redirectOrgLocationId, String redirectURL) throws Exception;
 
 	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveUUID, User user, String reason) throws Exception;
 

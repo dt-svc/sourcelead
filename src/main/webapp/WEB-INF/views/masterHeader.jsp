@@ -545,7 +545,7 @@ function preventTabkey(e){
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
          <li>
-         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCheckout" class="" href="javascript:void(0)">
+         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCart" class="" href="javascript:void(0)">
          		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
          		</a>
          </li>	
