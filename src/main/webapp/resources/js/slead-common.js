@@ -362,18 +362,23 @@ function saveCandidateImage(candidateId, formId, data){
 }
 
 
-function saveUserProfileImage(formId,data){
+function saveUserProfileImage(userId,formId,data){
     if ($('#'+formId).validate(false, validationSettings)){
           var formData = getFormData(formId);
-        if(formId === "profileImage_form"){    
+        if(formId === "profileImage_form" || formId === "associate_Image_form"){    
         $.ajax({
               type: "POST",
               data: formData,
-              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue,
+              url: sourceleadUrl+"/saveUserProfileImage?"+tokenParamName+"="+tokenValue+"&userId="+userId,
               success: function(result) {
-                  if(result)
+                  if(result){
                       $("img[data-id=userProfileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                    location.replace(sourceleadUrl+"/userProfile");  
+                  if(userId !=null){
+                	location.reload();  
+                  }else{
+                	  location.replace(sourceleadUrl+"/userProfile");  	  
+                  }
+                  }
               },  
         });
         } else{

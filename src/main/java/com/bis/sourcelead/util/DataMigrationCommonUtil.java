@@ -1902,7 +1902,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 101 && length > 1 ) {
 						dataMigrationDTOJsonCopy.put("antiVirus", dataMigrationDTOJsonCopy.getString("antiVirus").trim());
 					}else {
-						errorSet.put("antiVirus", dataMigrationDTOJsonCopy.getString("antiVirus").trim()+"  should be between 1-100 characters");
+						errorSet.put("antiVirus", "Anti-Virus  " + dataMigrationDTOJsonCopy.getString("antiVirus").trim()+"  should be between 1-100 characters");
 					}
 				}
 				
@@ -1910,9 +1910,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if(!dataMigrationDTOJsonCopy.getString("osKey").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("osKey"))) {
 					int length = dataMigrationDTOJsonCopy.getString("osKey").trim().length();	
 					if(length < 51 && length > 5 ) {
-						dataMigrationDTOJsonCopy.put("osKey", dataMigrationDTOJsonCopy.getString("osKey").trim());
+						dataMigrationDTOJsonCopy.put("osKey  ", dataMigrationDTOJsonCopy.getString("osKey").trim());
 					}else {
-						errorSet.put("osKey", dataMigrationDTOJsonCopy.getString("osKey").trim()+"  should be between 1-100 characters");
+						errorSet.put("osKey", "OS Key"+dataMigrationDTOJsonCopy.getString("osKey").trim()+"  should be between 5-100 characters");
 					}
 				}
 				
@@ -1921,7 +1921,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 101 && length > 1 ) {
 						dataMigrationDTOJsonCopy.put("operatingSystem", dataMigrationDTOJsonCopy.getString("operatingSystem").trim());
 					}else {
-						errorSet.put("operatingSystem", dataMigrationDTOJsonCopy.getString("operatingSystem").trim()+"  should be between 1-100 characters");
+						errorSet.put("operatingSystem", "Operating System "+ dataMigrationDTOJsonCopy.getString("operatingSystem").trim()+"  should be between 1-100 characters");
 					}
 				}
 				
@@ -1930,7 +1930,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					if(length < 51 && length > 8 ) {
 						dataMigrationDTOJsonCopy.put("macAddress", dataMigrationDTOJsonCopy.getString("macAddress").trim());
 					}else {
-						errorSet.put("macAddress", dataMigrationDTOJsonCopy.getString("macAddress").trim()+"  should be between 8-50 characters");
+						errorSet.put("macAddress", "MAC Address  "+dataMigrationDTOJsonCopy.getString("macAddress").trim()+"  should be between 8-50 characters");
 					}
 				}
 				
@@ -2277,9 +2277,14 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				}*/
 				if (!dataMigrationDTOJsonCopy.getString("experience").equals("null")) {
-					if(dataMigrationDTOJsonCopy.getString("experience").matches("^[a-zA-Z]+$")){
-					errorSet.put("exp", "experience should be (3.0 years,3years,1.2) Allowd");
-					}
+					String exp = dataMigrationDTOJsonCopy.getString("experience");//.matches("/(^[0-9]+\\.[0-9]+?)+/g");
+					
+					Pattern p = Pattern.compile("^(\\d*\\.)?\\d([ a-zA-Z0-9]?)+$");//. represents single character  
+					Matcher m = p.matcher(exp);  
+					boolean isMatched = m.matches();  
+						if(!isMatched){
+						errorSet.put("experience", "experience data should be like 3.0 years or 3 years or 1.2 only Allowed");
+						}
 					}
 				
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType")) || dataMigrationDTOJsonCopy.getString("petitionType").equals("null")) {

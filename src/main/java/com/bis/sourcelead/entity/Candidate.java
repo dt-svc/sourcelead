@@ -48,7 +48,6 @@ public class Candidate implements Serializable {
 	@JoinColumn(name = "PARENT_CANDIDATE_ID")
 	private Candidate parentCandidateId;
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
@@ -59,8 +58,7 @@ public class Candidate implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_ID")
-	private Shift shift;
-	
+	private Shift shift;	
  
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "WORK_LOCATION")
@@ -1510,12 +1508,14 @@ public class Candidate implements Serializable {
 		if (StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else {
-			if (StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)) {
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			} else if (StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)) {
-				fullName = lastName;
-			} else if (StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)) {
-				fullName = firstName + " " + lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}

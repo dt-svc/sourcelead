@@ -17,10 +17,11 @@
 				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv('Outstanding');" title="Loans & Advances">Loans & Advances</a></li>
 			</ul>
 	   </div>
-   </div>
+   
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
    <div id="myPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
+   </div>
 </section>
 
 <script>
@@ -89,7 +90,13 @@ function highlight(id) {
     $("#"+id).addClass("active");
 } 
 </script>
+<script>
+function downloadPayslip(payslipUUID){
+	 window.location.href = sourceleadUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
 
+}
+
+</script>
 
 
 
