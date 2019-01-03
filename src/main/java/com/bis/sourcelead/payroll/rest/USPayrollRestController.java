@@ -2186,6 +2186,7 @@ public class USPayrollRestController {
 					  int dd = 0;
 					  int cheque = 0;
 					  BigDecimal netPay = BigDecimal.ZERO;
+					  BigDecimal grossPay = BigDecimal.ZERO;
 					  if(approvedPayroll.size() > 0) {
 						  for(EmployeePayroll payroll : payrollList) {
 							  if(payroll.getBankDataHistory() != null && payroll.getBankDataHistory().size() > 0) {
@@ -2199,9 +2200,14 @@ public class USPayrollRestController {
 							  if(payroll.getNetPay() != null) {
 								  netPay = netPay.add(payroll.getNetPay());
 							  }
+							  
+							  if(payroll.getGrossPay() != null) {
+								  grossPay = grossPay.add(payroll.getGrossPay()) ;
+							  }
 						  }	  
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setPayGroupName(paysheetFrequency.getUserGroup().getGroupName());
+						  recentPayrollRunDataDTO.setGrossPay(grossPay);
 						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getCreatedDate()));
 						  recentPayrollRunDataDTO.setNoOfEmployees(approvedPayroll.size());
