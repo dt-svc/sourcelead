@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.FileUploadUtil;
 
@@ -200,5 +201,10 @@ public class OrgServiceImpl implements OrgService {
 	@Override
 	public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId, boolean onlyEnabledAccounts) {
 		return orgDao.getPaymentAccountListByCandidateId(candidateId, onlyEnabledAccounts);
+	}
+
+	@Override
+	public PaymentAccount getCandidateAcitivatePaymentAccount(long candidateId) {
+		return orgDao.getCandidateAcitivatePaymentAccount(candidateId);
 	}
 }
