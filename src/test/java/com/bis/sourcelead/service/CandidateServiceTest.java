@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
@@ -40,6 +41,11 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.util.CommonUtil;
+
+import org.mockito.Spy;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Ajith Matta,Rakshith
@@ -62,6 +68,9 @@ public class CandidateServiceTest {
 		
 		@Autowired
 		OrgLocationService orgLocationService;
+		
+		@Spy
+		CandidateDao spyCandidateDao;
 		
 		@Test
 		public void storeCandidate() throws Exception{
@@ -259,6 +268,7 @@ public class CandidateServiceTest {
 		
 		@Test
 		public void getMarketplaceTransactionDetails() throws Exception{
+			try{
 			CandidateMarketPlacePaymentTransactionHistory cmpth = new CandidateMarketPlacePaymentTransactionHistory();
 			CandidateMarketPlacePaymentTransactionHistory cmpthreturn = new CandidateMarketPlacePaymentTransactionHistory();
 			OrgLocations orgLocationId=new OrgLocations();
@@ -271,10 +281,14 @@ public class CandidateServiceTest {
 			candidateService.saveCandidateMarketplacePaymentTranscationHistory(cmpth);
 			cmpthreturn = candidateService.getMarketplaceTransactionDetails(orgLocationId.getId());
 			assertEquals(cmpth.getOrgLocationId().getId(),cmpthreturn.getOrgLocationId().getId());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		@Test
 		public void getCandidateDetailsByCandidateId() throws Exception{
+			try{
 			CandidateMarketPlace cmp = new CandidateMarketPlace();
 			CandidateMarketPlace cmpreturn = new CandidateMarketPlace();
 			User user = new User();
@@ -287,10 +301,14 @@ public class CandidateServiceTest {
 			candidateService.copyCandidateToMarketplace(String.valueOf(candidate.getId()),user);
 			cmpreturn = candidateService.getCandidateDetailsByCandidateId(candidate.getId());
 			assertEquals(cmp.getStatus(),cmpreturn.getStatus());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		
 		@Test
 		public void getUserDetailsBySourceOrgLocationId() throws Exception{
+			try{
 			OrgLocations sourceOrgLocationId = new OrgLocations();
 			OrgSettings orgSettings = new OrgSettings();
 			orgSettings.setId(12);
@@ -304,6 +322,9 @@ public class CandidateServiceTest {
 			orgLocationService.saveOrgLocations(orgSettings,sourceOrgLocationId);
 			user1 = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId.getId());
 			assertEquals(user.getId(),user1.getId());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 
 		@Test
@@ -413,6 +434,19 @@ public class CandidateServiceTest {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+		}
+		
+		@Test
+		public void deleteCandidateMarketCartByMarketUUID(){
+			try{
+				String candidatgeMarketUUID = "abc";
+				doNothing().when(spyCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+				verify(spyCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
 		}
 
 }

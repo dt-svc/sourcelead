@@ -3945,7 +3945,7 @@ public class EMailJobScheduler {
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
 //	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
-	public void calculateMonthlyLeaves() throws Exception
+	public void calculateMonthlyLeaves() throws Exception 
 	{
 		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
 		for(OrgLocations orgLocation : orglocationsList){
@@ -3999,11 +3999,13 @@ public class EMailJobScheduler {
 	}
 	
 	@Scheduled(cron = "0 3 0 1 1 ?")
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateYearlyLeaves() throws Exception
 	{
-		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
-		for(OrgLocations orgLocation : orglocationsList){
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(1890l);
+//		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+//		for(OrgLocations orgLocation : orglocationsList){
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			for(LeaveType leaveType : leaveTypeList){
 				if(Constants.YEARLY.equalsIgnoreCase(leaveType.getPeriod())){
@@ -4011,29 +4013,26 @@ public class EMailJobScheduler {
 					int status = associateBalanceLeaveService.calculateAndUpdateAssociateBalanceLeaves(orgLocation,leaveType,dates[0],dates[1]);
 				}
 			}
-		}
+//		}
 	}
-	
-    //	0 0 8 ? * MON-FRI  Every Day at * AM 
+	/**
+	 * 0 0 8 ? * MON-FRI  Every Day at 8 AM 
+	 * //@Scheduled(cron = "0 0/1 * 1/1 * ?") Every 5 min for testing purpose
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 0 8 ? * MON-FRI")
-	//@Scheduled(cron = "0 0/1 * 1/1 * ?") Every 5 min for testing purpose
 	public void autoMaticPayrollRunning() throws Exception
 	{
 		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
 		for(OrgLocations orgLocation : orglocationsList){
 			ConfigurePayrollApprover configurePayroll = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
 			if(configurePayroll != null && "YES".equalsIgnoreCase(configurePayroll.getAutomaticPayroll())) {
-				List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+				List<UserGroup> groupList = userGroupService.getAllUserGroupsByLocationIdAndPayrollFrequency(orgLocation,configurePayroll.getAutoPayrollFrequency());
 				for(UserGroup usrGroup : groupList) {
 					UsPayrollSchedule uSPayrollSchedule = payrollScheduleService.findScheduleByFrequency(usrGroup.getPayFrequency(), orgLocation.getId(), "");
 					if(uSPayrollSchedule != null) {
 						List<PayrollScheduleCalenderDTO> scheduleList = payrollUtil.getPayScheduleWeeksByDate(uSPayrollSchedule,orgLocation);
 						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//11-10-2018
-//						Calendar cal = Calendar.getInstance();
-//						cal.set(Calendar.MONTH, 10);
-//						cal.set(Calendar.DATE,10);
-//						cal.set(Calendar.YEAR,2018);
-//						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date());//cal.getTime();
 						for(PayrollScheduleCalenderDTO scheduleDto : scheduleList) {
 							Date nextPayRunDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), scheduleDto.getPayRunDate());
 							if(nextPayRunDate.equals(currentDate)) {
@@ -4041,8 +4040,6 @@ public class EMailJobScheduler {
 								String dates[] = scheduleDto.getPayPeriod().split(",");
 								Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
 								Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
-								PaysheetFrequencyDTO paysheetFrequencyDTO = null;
-								
 								generateUSPayrollDTO.setGroupId(usrGroup.getGroupUUID());
 								generateUSPayrollDTO.setPayPeriod(scheduleDto.getPayPeriod());
 								PaysheetFrequencyDTO existedData = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
@@ -4081,26 +4078,7 @@ public class EMailJobScheduler {
 										paySheetFreq.setEmployeepayroll(payrollList);
 										uSPaysheetService.addPaysheetFrequency(paySheetFreq);
 									}
-										/*paysheetFrequencyDTO = generateUSPayrollService.getPayrollData(generateUSPayrollDTO,orgLocation,orgLocation.getUser());
-										if(paysheetFrequencyDTO != null && paysheetFrequencyDTO.getPayrollDTO() != null) {
-											List<USPayrollDTO> draftPayroll = null;
-											if(Constants.ALL_RECORDS.equalsIgnoreCase(generateUSPayrollDTO.getPayType())) {
-												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
-														.stream()
-														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
-														.collect(Collectors.toList());
-											}else {
-												draftPayroll = paysheetFrequencyDTO.getPayrollDTO()
-														.stream()
-														.filter(p->p.getEmployeeDesignationType() != null && PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()) && p.getPayType().equalsIgnoreCase(generateUSPayrollDTO.getPayType()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
-														.collect(Collectors.toList());
-											}
-											paysheetFrequencyDTO.setNoOfGeneratedPayroll(draftPayroll.size());
-											paysheetFrequencyDTO.setTotalGeneratedAmount(draftPayroll.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add));
-											paysheetFrequencyDTO.setPayrollDTO(draftPayroll);
-										}*/
 								}
-//								return paysheetFrequencyDTO;
 							}
 						}
 					}	
@@ -4160,63 +4138,63 @@ public class EMailJobScheduler {
 						int beforeDay=0;
 						try {
 							beforeDay = Integer.parseInt(usPayrollSchedule.getNotifyMember());
-						} catch (Exception e) {
-							// TODO: handle exception
-						}
-						if(usPayrollSchedule.getNotifyMember() != null && beforeDay > 0){
-							List<PayrollScheduleCalenderDTO> scheduleDates = payrollUtil.getPayScheduleWeeksByDate(usPayrollSchedule,orgLocation);
-							Set<PayrollApprover> NotifyApprover= configurePayroll.getPayrollApprover();
-							for (PayrollApprover NotifyApproverObj : NotifyApprover) {
-								User approver = NotifyApproverObj.getUser();
-								for(PayrollScheduleCalenderDTO scheduleCalDTO : scheduleDates) {
-									 EmailMessage emailMessage = new EmailMessage();
-									 emailMessage.setFirstName(approver.getFirstName());
-									 emailMessage.setLastName(approver.getLastName());
-									 emailMessage.setToEmail(approver.getEmail());
-									 emailMessage.setFromEmail("donotreply@sourcelead.com");
-									 emailMessage.setFromName("Sourcelead Team");
-									 emailMessage.setEmailType(Constants.US_PAYROLL_SCHEDULE_EMAIL);
-									 emailMessage.setCreatedBy(orgLocation.getUser().getUserCode());
-									 emailMessage.setOrgLocationId(orgLocation.getUser().getId());
-									//setting the class filed values
-									 
-									String payFrequency = "";
-									String payPeriod = "";
-									if("Weekly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
-										payFrequency = usPayrollSchedule.getPayFrequency();
-										payPeriod = scheduleCalDTO.getPayFrequency();
-									}
-									if("Bi-Weekly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
-										payFrequency = usPayrollSchedule.getPayFrequency();
-										payPeriod = scheduleCalDTO.getPayFrequency();
-									}
-									if("Monthly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
-										payFrequency = usPayrollSchedule.getPayFrequency();
-										payPeriod = scheduleCalDTO.getPayPeriod();
-									}
-									 Map<String, String> globalVarsMap = new HashMap<String, String>();
-									 StringBuilder builder=new StringBuilder();
-									 if(approver.getLastName() != null && approver.getLastName() !=""){
-										 globalVarsMap.put("PayrollApproverName",builder.append(approver.getFirstName()).append(" ").append(approver.getLastName()).toString());	 
-									 }else{
-										 globalVarsMap.put("PayrollApproverName", approver.getFirstName());	 
-									 }
-									 globalVarsMap.put("PayPeriod",payPeriod);
-									 globalVarsMap.put("RunPayrollDate",scheduleCalDTO.getPayRunDate());
-									 globalVarsMap.put("PayFrequency",payFrequency);
-									 globalVarsMap.put("PayDate",scheduleCalDTO.getPayCheckDate());
-									 
-									 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+							if(usPayrollSchedule.getNotifyMember() != null && beforeDay > 0){
+								List<PayrollScheduleCalenderDTO> scheduleDates = payrollUtil.getPayScheduleWeeksByDate(usPayrollSchedule,orgLocation);
+								Set<PayrollApprover> NotifyApprover= configurePayroll.getPayrollApprover();
+								for (PayrollApprover NotifyApproverObj : NotifyApprover) {
+									User approver = NotifyApproverObj.getUser();
+									for(PayrollScheduleCalenderDTO scheduleCalDTO : scheduleDates) {
+										 EmailMessage emailMessage = new EmailMessage();
+										 emailMessage.setFirstName(approver.getFirstName());
+										 emailMessage.setLastName(approver.getLastName());
+										 emailMessage.setToEmail(approver.getEmail());
+										 emailMessage.setFromEmail("donotreply@sourcelead.com");
+										 emailMessage.setFromName("Sourcelead Team");
+										 emailMessage.setEmailType(Constants.US_PAYROLL_SCHEDULE_EMAIL);
+										 emailMessage.setCreatedBy(orgLocation.getUser().getUserCode());
+										 emailMessage.setOrgLocationId(orgLocation.getUser().getId());
+										//setting the class filed values
+										 
+										String payFrequency = "";
+										String payPeriod = "";
+										if("Weekly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
+											payFrequency = usPayrollSchedule.getPayFrequency();
+											payPeriod = scheduleCalDTO.getPayFrequency();
+										}
+										if("Bi-Weekly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
+											payFrequency = usPayrollSchedule.getPayFrequency();
+											payPeriod = scheduleCalDTO.getPayFrequency();
+										}
+										if("Monthly".equalsIgnoreCase(usPayrollSchedule.getPayFrequency())) {
+											payFrequency = usPayrollSchedule.getPayFrequency();
+											payPeriod = scheduleCalDTO.getPayPeriod();
+										}
+										 Map<String, String> globalVarsMap = new HashMap<String, String>();
+										 StringBuilder builder=new StringBuilder();
+										 if(approver.getLastName() != null && approver.getLastName() !=""){
+											 globalVarsMap.put("PayrollApproverName",builder.append(approver.getFirstName()).append(" ").append(approver.getLastName()).toString());	 
+										 }else{
+											 globalVarsMap.put("PayrollApproverName", approver.getFirstName());	 
+										 }
+										 globalVarsMap.put("PayPeriod",payPeriod);
+										 globalVarsMap.put("RunPayrollDate",scheduleCalDTO.getPayRunDate());
+										 globalVarsMap.put("PayFrequency",payFrequency);
+										 globalVarsMap.put("PayDate",scheduleCalDTO.getPayCheckDate());
+										 
+										 List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
 
-									    Date payDate = new SimpleDateFormat(orgLocation.getDateFormat()).parse(scheduleCalDTO.getPayCheckDate());
-							 		    Date runDate = new SimpleDateFormat(orgLocation.getDateFormat()).parse(scheduleCalDTO.getPayRunDate()); 
-										Date rqurdDate = commonUtil.calculateBeforeDate(runDate,Integer.parseInt(usPayrollSchedule.getNotifyMember()));
-										if(rqurdDate.after(payDate) && rqurdDate.before(runDate))
-										{
-												 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation, Constants.US_PAYROLL_SCHEDULE_EMAIL, attachmentList);
-										}	
-									 }
-								}
+										    Date payDate = new SimpleDateFormat(orgLocation.getDateFormat()).parse(scheduleCalDTO.getPayCheckDate());
+								 		    Date runDate = new SimpleDateFormat(orgLocation.getDateFormat()).parse(scheduleCalDTO.getPayRunDate()); 
+											Date rqurdDate = commonUtil.calculateBeforeDate(runDate,Integer.parseInt(usPayrollSchedule.getNotifyMember()));
+											if(rqurdDate.after(payDate) && rqurdDate.before(runDate))
+											{
+													 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation, Constants.US_PAYROLL_SCHEDULE_EMAIL, attachmentList);
+											}	
+										 }
+									}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 				}

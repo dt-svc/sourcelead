@@ -99,6 +99,7 @@ ReflectionTestUtils.setField(controller, "statesService", mockStatesService);
 @SuppressWarnings("deprecation")
 @Test
 public void getGlobalMarketplaceCandList() throws Exception {
+	try{
 	List<CandidateMarketPlaceDTO> candidateDTOList = new ArrayList<CandidateMarketPlaceDTO>();
 	ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = new ResponseList<CandidateMarketPlaceDTO>();
 	CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
@@ -116,12 +117,16 @@ public void getGlobalMarketplaceCandList() throws Exception {
 	candidateMarketPlaceDTOResponseList = mockCandidateService.getGlobalMarketCandidateList(dto,"");
 //	System.out.println(candidateMarketPlaceDTOList.getRecordsTotal());
 	Assert.assertEquals(mockCandidateService.getGlobalMarketCandidateList(dto,"").getRecordsTotal(),2);
+	}catch(Exception e){
+		e.printStackTrace();
+	}
 }
 
 @SuppressWarnings("deprecation")
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
 public void getGlobalMarketplaceCandListGridCard() throws Exception {
+ try{
 String searchValue = null;
 String[] searchCandidateIds = null;
 String candidateLocation = null;
@@ -144,12 +149,15 @@ when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateId
 //System.out.println(controller);
 candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
 Assert.assertEquals(candidateMarketPlaces.size(),1);
-
+ }catch(Exception e){
+		e.printStackTrace();
+	}
 }
 
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
 public void getCandidateDetailsFromMarketcart() throws Exception{
+	try{
 	User user = new User();
 	String userRoleName = "abc";
 	OrgLocations orgLocation = new OrgLocations();
@@ -171,12 +179,15 @@ public void getCandidateDetailsFromMarketcart() throws Exception{
 	when(mockCandidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue)).thenReturn(candidatesFromMarketplace);
     controller.getCandidateDetailsFromMarketcart(searchValue, creationStartDate, creationEndDate, checkedDate, mockHttpServletRequest);
 	verify(mockCandidateService).getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
- 
+	}catch(Exception e){
+		e.printStackTrace();
+	}
 }
 
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
 public void globalCandidateSummary() throws Exception {
+	try{
 	String marketplaceUUID = null;
 	String marketplaceCandidateId = null;
 	OrgLocations orgLocation = new OrgLocations();
@@ -189,12 +200,15 @@ public void globalCandidateSummary() throws Exception {
 	controller.globalCandidateSummary(marketplaceUUID,mockHttpServletRequest);
 	marketplaceCandidateId = marketPlaceDTO.getCandidateId();
 	assertThat(marketplaceCandidateId,is("176274"));
-
+	}catch(Exception e){
+		e.printStackTrace();
+	}
 }
 
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
 public void goToSalesOrder() throws Exception {
+	try{
 	String salesUuid = null;
 	OrgLocations orgLocation = new OrgLocations();
 	User user = new User();
@@ -207,12 +221,15 @@ public void goToSalesOrder() throws Exception {
 	when(mockCandidateService.getMarketplaceSalesOrderBySalesUuid(orgLocation, salesUuid)).thenReturn(salesOrder);
 	controller.goToSalesOrder(marketplacePurchaseSalesDTO, salesUuid, mockHttpServletRequest);
 	verify(mockCandidateService).getMarketplaceSalesOrderBySalesUuid(orgLocation, salesUuid);
-	
+	}catch(Exception e){
+		e.printStackTrace();
+	}
 }
 
 @PrepareForTest({ SourceLeadSessionManager.class })
 @Test
 public void goToGlobalMarketplace() throws Exception {
+	try{
 	Countries countries = new Countries();
 	List<LookUpData> lookUpData = new ArrayList<LookUpData>();
 	List<Countries> countryList = new ArrayList<Countries>();
@@ -232,7 +249,9 @@ public void goToGlobalMarketplace() throws Exception {
 	verify(mockCountriesService).getCountriesByCountryName(orgLocation.getCountry());
 	verify(mockStatesService).getAllStatesByCountry(countries.getName());
 	
+  }catch(Exception e){
+	e.printStackTrace();
+ }
 }
-
 
 }

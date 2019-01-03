@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.dao.HolidayDAO;
+import com.bis.sourcelead.dao.PayrollPaySlipIndDao;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
@@ -29,6 +33,7 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -36,6 +41,7 @@ import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
@@ -139,6 +145,9 @@ public class DumpPublicRestCalls {
 	
 	@Autowired
 	ExpensesEntriesService expensesEntriesService;
+	
+	@Autowired
+	PayrollPaySlipIndDao payrollPaySlipIndDao;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
@@ -544,4 +553,52 @@ public class DumpPublicRestCalls {
 		}
 		logger.info("End Time"+java.time.LocalDateTime.now());
 	}*/
+	
+	
+	@RequestMapping(value = "/ws/dumpDefaultPayslipAllOrgs", method = RequestMethod.GET)
+    public void dumpSubmissionTemplateFileds(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Start the method");
+		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
+        for (OrgLocations orgLocation : locationsList) {
+    	 
+        	     PayrollPaySlipInd	 pps = new PayrollPaySlipInd();
+    			 pps.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+    			 pps.setIsActive(Constants.YES);
+    			 pps.setDeletePermission(Constants.NO);
+    		
+    		     pps.setPaySlipName("Default Payslip");
+    		     pps.setPaySlipDescription("Default Payslip");
+    		
+    	     	//Company releated code
+    			pps.setCompanyName(Constants.YES);
+    			pps.setCompanyAddress(Constants.YES);
+    			pps.setCompanyLogo(Constants.YES);
+    		
+    		    //Employee Reated code
+    			pps.setEmployeeId(Constants.YES);
+    			pps.setEmployeeType(Constants.YES);
+    			pps.setEmployeeUanNumber(Constants.YES);
+    			pps.setEmployeePfNumber(Constants.YES);
+    			pps.setEmployeeBankDetails(Constants.YES);
+    			pps.setEmployeeDesignation(Constants.YES);
+    			pps.setEmployeeName(Constants.YES);
+    			pps.setEmployeeContactDetails(Constants.YES);
+    			pps.setEmployeeJoinDate(Constants.YES);
+    			pps.setEmployeeLocation(Constants.YES);
+    			pps.setEmployeePanNumber(Constants.YES);
+    		
+    		    //Leave Related code
+    			pps.setLeaveAttended(Constants.YES);
+    			pps.setLeaveLeaves(Constants.YES);
+    			
+    			pps.setOrgLocationId(orgLocation);
+    			pps.setStatus(Constants.RECORD_ACTIVE);
+    			pps.setCreatedDate(new Date());
+    		
+    		payrollPaySlipIndDao.savePayrollPaySlipInd(pps);
+        }
+		System.out.println("End the method");
+
+    }
+	
 }

@@ -362,7 +362,7 @@ public class ProjectTasksRestController {
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				comments.setActivityTimezoneStr(convertedDateStr);
 			}
-
+			comments.setFileUrl(comments.getUserId().getFileUrl());
 			long diff = commonUtil.currentDate().getTime() - comments.getCreatedDate().getTime();
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
@@ -475,7 +475,7 @@ public class ProjectTasksRestController {
 				String convertedDateStr = DF_DMY.format(convertedDate);
 				activity.setActivityTimezoneStr(convertedDateStr);
 			}
-
+			activity.setFileUrl(activity.getUserId().getFileUrl());
 			long diff = commonUtil.currentDate().getTime() - activity.getCreatedDate().getTime();
 			long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;

@@ -24,4 +24,7 @@ public interface IndPaysheetFrequencyDao {
 	ResponseList<IndEmployeePayroll> getIndPayrollApprovedEmployeeListByPaysheetFrequencyUuidAndEmpApproveStatus(String paysheetFrequencyUuid, String empApproveStatus) throws Exception;
 	
 	ResponseList<IndEmployeePayroll> getEmployeePaysByOrgLocationIdAndUserId(OrgLocations orgLocation, User user, IndEmployeePayrollDTO indEmployeePayrollDTO) throws Exception;
+	
+	IndEmployeePayroll  indEmployeePayrollByEmpPayrollUUID(String empPayrollUUID) throws Exception;
+
 }
