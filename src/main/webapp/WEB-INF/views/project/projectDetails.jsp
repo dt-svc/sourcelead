@@ -957,7 +957,7 @@ function editClientProjectDetails(projectId){
 							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 						}
 							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager">';
+							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager" onChange="manager2()">';
 							result = result    +'<option value="">-Select Manager-</option>';
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -1292,6 +1292,14 @@ function editClientProjectDetails(projectId){
 					
 				});
 
+	}
+	
+	function manager2(){
+		var manager2 = $("#level2Manager").val();
+		if(manager2 == ""){
+			$('#level2ExpenseApprover').val('').trigger("chosen:updated");
+		} 
+		
 	}
 </script>
 
