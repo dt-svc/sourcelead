@@ -105,7 +105,7 @@ public class OrgRelationsRestController {
 	
 	
 	
-	  @RequestMapping(value = "/saveFinanceConfigureEmail", method = RequestMethod.POST)
+	 @RequestMapping(value = "/saveFinanceConfigureEmail", method = RequestMethod.POST)
 	 @ResponseBody
 	 public String saveFinanceConfigureEmail(EmailreminderConfigurationDTO emailreminderConfigurationDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
