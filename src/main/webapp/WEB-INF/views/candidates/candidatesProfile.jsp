@@ -247,11 +247,11 @@ function editCandidate(candidateId){
 							result = result + ' <div class="col-md-6 mb10">';
 							result = result + '<div class="input-group">';
 							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
-								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder = "DateOfBirth" readonly="readonly" class="form-control calendar">';
+								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder = "DateOfBirth" readonly="readonly" class="form-control calendar" readonly>';
 								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 							}else{
-								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder = "DateOfBirth" class="form-control calendar">';
+								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate"  placeholder = "DateOfBirth" class="form-control calendar">';
 								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 							}
@@ -591,7 +591,7 @@ function editCandidate(candidateId){
 								      dateFormat: finalDateFormat,
 								      changeMonth: true,
 								  	  changeYear: true, 
-								      //minDate: 0  this line for to restrict selection of previous dates
+								  	  maxDate:0
 								  });
 							});
             		 

@@ -322,7 +322,7 @@ if(locationDate.match("yyyy-MM-dd")){
 
 function receivePaymentPop1(invoiceId,total){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
-	var paymentAmount = total.toFixed(2);
+	var paymentAmount = total.toFixed(3);
 	 var result = "";
 	result = result +'  <div class="modal-dialog modal-lg">';
 	result = result +'    <div class="modal-content">                                                     ';

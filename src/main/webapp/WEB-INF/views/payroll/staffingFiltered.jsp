@@ -68,14 +68,65 @@ function getCategoriesForStaffingFiltered(){
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
+          <button type="button" class="close" onClick="closeDetailFun();">&times;</button>
+          <h4 class="modal-title">Details</h4>
         </div>
         <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          
+          <div class="row">
+          	
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">Vendor Id</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailsVenId">0003333000</span>
+	          	</div>
+          	</div>
+          	
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">Vendor Name</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailVenName">ssssssss </span>
+	          	</div>
+          	</div>
+          	<div class="clearfix"></div>
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">Clients</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailClients"> ssssssss </span>
+	          	</div>
+          	</div>
+          	
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">HLCC</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailHlcc">Pavankumar Srinivas Rajasekhar</span>
+	          	</div>
+          	</div>
+          	
+          	<div class="clearfix"></div>
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">Jobs</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailJobs">0003333000</span>
+	          	</div>
+          	</div>
+          	
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">Rating</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="detailRating">Pavankumar Srinivas Rajasekhar</span>
+	          	</div>
+          	</div>
+          	
+          	<div class="clearfix"></div>
+          	<div class="col-md-6 mb">
+	          	<label class="col-md-4">reviews</label>
+	          	<div class="col-md-8">
+	          		<span class="text-muted" id="reviews">0003333000</span>
+	          	</div>
+          	</div>
+            </div>
+          
         </div>
       </div>
       
@@ -186,9 +237,9 @@ function getStaffingFilteredList(){
 	        			 result = result + '<td style="vertical-align: middle;">---</td>';
 	        		 }
 	        		 if(opt.details !=null && opt.details !='' && opt.details !='undefined'){
-	        			 result = result + '<td style="vertical-align: middle;"><div class="tblminwidth-50 text-center"><a onclick="getDetails('+opt.details+');"><i class="fa fa-info-circle"></i></a></div></td>'; 
+	        			 result = result + '<td style="vertical-align: middle;"><div class="tblminwidth-50 text-center"><a onclick="getDetails(\''+opt.details+'\'); detailsFun();"><i class="fa fa-info-circle"></i></a></div></td>'; 
 	        		 }else{
-	        			 result = result + '<td style="vertical-align: middle;"><div class="tblminwidth-50 text-center cursorPointer"><i class="fa fa-info-circle" title="Details" onClick="detailsFun()"></i></div></td>';
+	        			 result = result + '<td style="vertical-align: middle;"><div class="tblminwidth-50 text-center cursorPointer"><i class="fa fa-info-circle" title="Details"></i></div></td>';
 	        		 }
 	        		 
 	        		  result = result + '  </tr>';
@@ -205,8 +256,22 @@ function getStaffingFilteredList(){
 }
 </script>
 <script>
+function getDetails(data){
+	$("#detailsVenId").html(data.vendorId);
+	$("#detailVenName").html(data.vendorName);
+	$("detailClients").html(data.clients);
+	$("detailHlcc").html(data.Hlcc);
+	$("detailJobs").html(data.Jobs);
+	$("detailRating").html(data.Rating);
+	$("reviews").html(data.Reviews);
+}
+</script>
+<script>
 function detailsFun(){
 	$(".mask, #detailsPop").fadeIn();
+}
+function closeDetailFun() {
+	$(".mask, #detailsPop").fadeOut();
 }
 </script>
 <script>

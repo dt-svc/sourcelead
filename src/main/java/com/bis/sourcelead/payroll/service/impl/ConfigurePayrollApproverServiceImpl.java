@@ -72,6 +72,7 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 				approverDTO.setPayrollType(configurePayrollApprover.getPayrollType());
 				approverDTO.setAutomaticPayroll(configurePayrollApprover.getAutomaticPayroll());
 				approverDTO.setConfAprrover(String.valueOf(configurePayrollApprover.getId()));
+				approverDTO.setAutomaticFrequency(configurePayrollApprover.getAutoPayrollFrequency());
 			}
 			
 			tabAccessuserList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_RUN_PAYROLL));
@@ -126,6 +127,7 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 			if(StringUtils.isNotBlank(payrollApproverDTO.getAutomaticPayroll())) {
 				confPayApprover.setAutomaticPayroll(PayrollConstant.YES);
 			}
+			confPayApprover.setAutoPayrollFrequency(payrollApproverDTO.getPayrollFrequency());
 			confPayApprover.setPayrollType(payrollApproverDTO.getPayrollType());
 			confPayApprover.setCreatedBy(loginUser.getId());
 			confPayApprover.setUpdatedBy(loginUser.getId());
