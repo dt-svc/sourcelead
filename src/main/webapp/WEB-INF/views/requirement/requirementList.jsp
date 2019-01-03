@@ -775,7 +775,9 @@ function closeFilter(){
 			  }
 	    });
 		$(".colPop").hide();
-	   
+		
+		reqTable.column(0).visible(false);
+
 	}
 	function checkAllColumns(obj){
 		var id = obj.id;
@@ -1297,8 +1299,6 @@ function refreshGoogleApiCity(cityId){
 							 </div> 
 						</div>
 						
-						
-						
 							<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myCityInput" onkeyup="myCityFunction()" placeholder="City" title="Type in a teams">
@@ -1322,7 +1322,7 @@ function refreshGoogleApiCity(cityId){
 						</div>
 						
 			<!-- //projectList -->
-			
+			<div class="clearfix"></div>
 			
 			<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
@@ -1399,6 +1399,23 @@ function myProjectFunction() {
     }
 }
 
+function myCityFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCityInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCitytUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
 
 $(document).keyup(function(e) {
 	  if (e.keyCode === 27) {
@@ -1409,6 +1426,7 @@ $(document).keyup(function(e) {
 <script>
 function resetJobFilter(){
 	$("ul#myprojectUL > li input:checkbox").prop("checked",false);
+	$("ul#myCitytUL > li input:checkbox").prop("checked",false);
 	$("ul#myClientUL > li input:checkbox").prop("checked",false);
 	$("ul#jobs > li input:checkbox").prop("checked",false);
 	$("ul#status > li input:checkbox").prop("checked",false);
