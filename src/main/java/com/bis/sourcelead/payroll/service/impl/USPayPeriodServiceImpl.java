@@ -63,6 +63,7 @@ public class USPayPeriodServiceImpl implements USPayPeriodService{
 			double sum = payRollSet.stream().filter(paySet -> paySet.getPayPeriodNum() != null && Integer.parseInt(paySet.getPayPeriodNum()) == pay.getPayPeriodNum()).mapToDouble(i->i.getNetPay().doubleValue()).sum();
 			pfd.setTotal(BigDecimal.valueOf(sum));
 			pfd.setGroupId(String.valueOf(pay.getPaysheetFrequency().getUserGroup().getId()));
+			if(sum > 0)
 			totalList.add(pfd);
 		});
 		res.setData(totalList);
