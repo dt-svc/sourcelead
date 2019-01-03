@@ -2,7 +2,7 @@ package com.bis.sourcelead.service;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,6 +33,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -310,11 +311,18 @@ public class CandidateServiceTest {
 			try{
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
-				user.setId(4l);
 				OrgLocations orglocations = new OrgLocations();
+				user.setId(4l);
 				orglocations.setId(5l);
 				Object obj[] = candidateService.updateMarketplaceCartCountAndPrice(orglocations.getId(), Constants.ROLE_ADMIN, user);
-				Assert.assertNotNull(obj);
+				assertNotNull(obj);
+				User user1 = new User();
+				OrgLocations orglocations1 = new OrgLocations();
+				user1.setId(3l);
+				orglocations1.setId(7l);
+				Object obj1[] = candidateService.updateMarketplaceCartCountAndPrice(orglocations1.getId(), Constants.ROLE_ADMIN, user1);
+				assertNotNull(obj1);
+				assertEquals(obj[0].toString(), obj1[0].toString());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -327,11 +335,17 @@ public class CandidateServiceTest {
 				List<Long> marketCartIds = new ArrayList<Long>();
 				marketCartIds.add(3l);
 				marketCartIds.add(5l);
-				marketCartIds.add(8l);
 				OrgLocations orglocations = new OrgLocations();
 				orglocations.setId(5l);
 				Boolean flag = candidateService.updateMarketCartStatus(marketCartIds, orglocations.getId());
-				Assert.assertTrue(flag);
+				assertTrue(flag);
+				marketCartIds.add(8l);
+				marketCartIds.add(10l);
+				OrgLocations orglocations1 = new OrgLocations();
+				orglocations1.setId(6l);
+				Boolean flag1 = candidateService.updateMarketCartStatus(marketCartIds, orglocations1.getId());
+				assertTrue(flag1);
+				assertEquals(flag, flag1);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -344,11 +358,11 @@ public class CandidateServiceTest {
 				CandidateMarketPlace market = new CandidateMarketPlace();
 				market.setMarketplaceUUID("zRA7Z6Rw");
 				CandidateMarketPlace market1 = candidateService.getCandidateMarketPlaceDetailsByUUId(market.getMarketplaceUUID());
-				Assert.assertEquals(market.getMarketplaceUUID(), market1.getMarketplaceUUID());
+				assertNotNull(market1);
+				assertEquals(market.getMarketplaceUUID(), market1.getMarketplaceUUID());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
 		}
 		
 		@Test
@@ -360,7 +374,42 @@ public class CandidateServiceTest {
 				OrgLocations orglocations = new OrgLocations();
 				orglocations.setId(5l);
 				MarketplacePurchaseSalesDTO salesDto = candidateService.getMarketplaceSalesOrderBySalesUuid(orglocations, salesOrder.getSalesUuid());
-				Assert.assertEquals(salesOrder.getSalesUuid(), salesDto.getSalesUuid());
+				assertNotNull(salesDto);
+				assertEquals(salesOrder.getSalesUuid(), salesDto.getSalesUuid());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void testGetPurchaseDetailByPurchaseUuid(){
+			try{
+				logger.info("testing getPurchaseDetailByPurchaseUuid service");
+				MarketplacePurchaseOrder purchaseOrder = new MarketplacePurchaseOrder();
+				purchaseOrder.setPurchaseUuid("PG1doDtM");
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				MarketplacePurchaseSalesDTO purchaseDto = candidateService.getPurchaseDetailByPurchaseUuid(purchaseOrder.getPurchaseUuid(), orglocations);
+				assertNotNull(purchaseDto);
+				assertEquals(purchaseOrder.getPurchaseUuid(), purchaseDto.getPurchaseUuid());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void testGetBalanceAmountFromWallet(){
+			try{
+				logger.info("testing getBalanceAmountFromWallet service");
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				Double walletAmount = candidateService.getBalanceAmountFromWallet(orglocations.getId());
+				assertNotNull(walletAmount);
+				OrgLocations orglocations1 = new OrgLocations();
+				orglocations.setId(5l);
+				Double walletAmount1 = candidateService.getBalanceAmountFromWallet(orglocations1.getId());
+				assertNotNull(walletAmount1);
+				assertEquals(walletAmount, walletAmount1);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
