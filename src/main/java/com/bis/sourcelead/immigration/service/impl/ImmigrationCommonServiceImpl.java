@@ -741,8 +741,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidate.setResidenceStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 					immigrationDTO.getResidenceStartDate()));
 			}
-			candidate.setExperienceMonths(immigrationDTO.getExperienceMonths());
+			if(immigrationDTO.getExperienceYears() != null && !immigrationDTO.getExperienceYears().isEmpty()) {
 			candidate.setExperienceYears(immigrationDTO.getExperienceYears());
+			}
+			if(immigrationDTO.getExperienceMonths() != null && !immigrationDTO.getExperienceMonths().isEmpty()) {
+				candidate.setExperienceMonths(immigrationDTO.getExperienceMonths());
+			}
 			return candidate;
 		} catch (Exception e) {
 			logger.error("Exception caugth in savePetitionCandidate service" + e.getMessage());

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.util;
 
+import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -8,12 +9,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,8 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
@@ -31,9 +38,14 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
+import com.bis.sourcelead.payroll.dto.FilteredClientDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredDetailsDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredReviewsDTO;
+import com.bis.sourcelead.payroll.dto.VendorRecruitersDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
@@ -963,19 +975,21 @@ public class PayrollUtil {
 //					cal.set(Calendar.DATE,1);
 					cal.set(Calendar.DATE, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
 					Date monthStartDate = cal.getTime();
+					calenderDTO.setPayPeriodStartDate(monthStartDate);
 					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 					Date monthEndDate = cal.getTime();
+					calenderDTO.setPayPeriodEndDate(monthEndDate);
 					// System.out.println(nextMonthLastDay);
 					Calendar ncal = Calendar.getInstance();
 					ncal.setTime(monthEndDate); // Now use today date.
 					ncal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
 					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ncal.getTime());
-					
+					calenderDTO.setCheckDate(ncal.getTime());
 					Calendar runPalCal = Calendar.getInstance();
 					runPalCal.setTime(monthEndDate); // Now use today date.
 					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
-					
+					calenderDTO.setRunDate(runPalCal.getTime());
 					calenderDTO.setPayPeriod(sds.format(monthStartDate).toUpperCase());
 					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
 					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
@@ -1028,34 +1042,19 @@ public class PayrollUtil {
 					cal.setTime(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1))); // Now use today date.
 					cal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
 					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), cal.getTime());
-					
+					calenderDTO.setCheckDate(cal.getTime());
 					Calendar runPalCal = Calendar.getInstance();
 					runPalCal.setTime(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1))); // Now use today date.
 					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
 					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
-					
+					calenderDTO.setRunDate(runPalCal.getTime());
 					calenderDTO.setPayPeriod(sb.toString());
 //					logger.info("*****************  "+sb.toString());
 					calenderDTO.setPayFrequency(sb.toString());
 					Date sDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(0));
 					Date eDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), innerList.get(1));
-					
-					/*//logger.info("---------------------- "+sDate + " / "+eDate);
-					Calendar cal1 = Calendar.getInstance();
-					Calendar cal2 = Calendar.getInstance();
-					cal1.setTime(sDate);
-					cal2.setTime(eDate);
-					boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-					if(sameMonth) {
-						System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ SAME MONTH");
-						getDaysBetweenDates(sDate,eDate);
-					}else {
-						System.out.println("^^^^^^^^^^^^^^^^^^^^^^^ DIFFERENt MONTH");
-						getDaysBetweenDates(sDate,eDate);
-					}*/
-					
-					
-					
+					calenderDTO.setPayPeriodStartDate(sDate);
+					calenderDTO.setPayPeriodEndDate(eDate);
 					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(sDate));
 					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(eDate));
 					calenderDTO.setPayCheckDate(nextPayCheckDate);
@@ -1278,4 +1277,237 @@ public class PayrollUtil {
 		return BigDecimal.valueOf(totatAmount);
 	}
 
+	public ResponseList<FilteredClientDTO> getFilteredClientListData(FileReader reader) {
+		ResponseList<FilteredClientDTO> res = new ResponseList<>();
+		List<FilteredClientDTO> list = new ArrayList<>();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			Object obj = jsonParser.parse(reader);
+			JSONObject json = (JSONObject) obj;
+			Set<String> s = json.keySet();
+			for(String name : s) {
+				JSONArray arr = (JSONArray) json.get(name);
+				for(int i=0;i< arr.size(); i++) {
+					try{
+						JSONObject ob=new JSONObject((Map) arr.get(i));
+						FilteredClientDTO dto = parseFilteredClientObject(ob);
+						list.add(dto);
+					}catch(Exception e) {
+						System.out.println("error with index number :"+i);
+					}
+				}
+			}
+			res.setData(list);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	private FilteredClientDTO parseFilteredClientObject(JSONObject ob)
+    {
+		FilteredClientDTO dto = new FilteredClientDTO();
+		
+		dto.setCompanyName((String) ob.get("company_name"));
+		dto.setCompanyId((String) ob.get("company_id"));
+		dto.setCompanyWebsite((String)ob.get("company_website"));
+		dto.setOfficeCity((String)ob.get("office_city"));
+		dto.setOfficeCountry((String)ob.get("office_country"));
+		dto.setOfficeMetroArea((String)ob.get("office_metro_area"));
+		dto.setOfficePhone((String)ob.get("office_phone"));
+		dto.setOfficeState((String) ob.get("office_state"));
+		dto.setOfficeStreet((String)ob.get("office_street"));
+		dto.setOfficeWebsite((String)ob.get("office_website"));
+		dto.setOfficeStreet((String)ob.get("office_street"));
+         
+		return dto;
+    }
+
+	public Response<Map<String, String>> getCategoriesForStaffingFilteredData(FileReader reader) {
+		Response<Map<String,String>> res = new Response<>();
+		JSONParser jsonParser = new JSONParser();
+		Map<String,String> map = new HashMap<>();
+		try {
+			Object obj = jsonParser.parse(reader);
+
+			JSONObject json = (JSONObject) obj;
+			Set<String> s = json.keySet();
+			for(String name : s) {
+				if("categories".equalsIgnoreCase(name)) {
+					System.out.println(json.get(name));
+					JSONObject json1 = (JSONObject) json.get(name);
+					Set<String> catSet = json1.keySet();
+					System.out.println(catSet);
+					for(String str : catSet) {
+						JSONObject ob = new JSONObject((Map) json1.get(str));
+						map.put(str, (String) ob.get("category_name"));
+					}
+				}
+			}
+			res.setObject(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public ResponseList<StaffingFilteredDTO> getStaffingFilteredListByCategoryIdData(FileReader reader, String categoryId) {
+		ResponseList<StaffingFilteredDTO> res = new ResponseList<>();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			Map<String,String> map = new HashMap<>();
+			Object obj = jsonParser.parse(reader);
+			JSONObject json = (JSONObject) obj;
+			Set<String> s = json.keySet();
+			List<StaffingFilteredDTO> list = new ArrayList<>(); 		// create list object for staffing filtered
+			for(String name : s) {
+				if("all".equalsIgnoreCase(name)) {
+					JSONObject json1 = (JSONObject) json.get(name);
+					Set<String> catSet = json1.keySet();
+					for(String catId : catSet) {
+						if(categoryId.equalsIgnoreCase(catId)) {
+							JSONArray arr = (JSONArray) json1.get(catId);
+							for(int i=0;i< arr.size(); i++) {
+								try{
+									JSONObject ob=new JSONObject((Map) arr.get(i));
+									StaffingFilteredDTO dto = prepareStaffingFilteredDTO(ob);
+									list.add(dto);                                          // add dto to list object
+								}catch(Exception e) {
+									e.printStackTrace();
+									System.out.println("error with index number :"+i);
+								}
+							}
+						}
+					}
+					
+				}
+			}
+			res.setData(list);     	// set list object to response
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	private StaffingFilteredDTO prepareStaffingFilteredDTO(JSONObject ob) {
+
+		StaffingFilteredDTO dto = new StaffingFilteredDTO();
+		dto.setCategoryId((String) ob.get("category_id"));
+		dto.setCategoryName((String) ob.get("category_name"));
+		dto.setOfficeCity((String) ob.get("office_city"));
+		dto.setOfficeCountry((String) ob.get("office_country"));
+		dto.setOfficeMetroArea((String) ob.get("office_metro_area"));
+		dto.setOfficePhone((String) ob.get("office_phone"));
+		dto.setOfficeState((String) ob.get("office_state"));
+		dto.setOfficeStreet((String) ob.get("office_street"));
+		dto.setOfficeWebsite((String) ob.get("office_website"));
+		dto.setOfficeZip((String) ob.get("office_zip"));
+		dto.setVendorId((String) ob.get("vendor_id"));
+		dto.setVendorName((String) ob.get("vendor_name"));
+		dto.setVendorWebsite((String) ob.get("vendor_website"));
+
+		//details
+		JSONObject json = (JSONObject) ob.get("details");
+		List<StaffingFilteredDetailsDTO> detailsDtoList = new ArrayList<>();
+//		for(int i=0; i<arr.size();i++) {
+//			JSONObject json = (JSONObject) arr.get(i);
+			StaffingFilteredDetailsDTO detailsDto = new StaffingFilteredDetailsDTO();
+			detailsDto.setRating(String.valueOf(json.get("rating")));
+			detailsDto.setVendorId((String) json.get("vendor_id"));
+			detailsDto.setVendorName((String) json.get("vendor_name"));
+			JSONArray clientArr = (JSONArray) json.get("clients");
+			List<String> clientList = new ArrayList<>();
+			for(int j=0; j<clientArr.size(); j++) {
+				JSONObject cliObj = (JSONObject) clientArr.get(j);
+				clientList.add((String) cliObj.get("company_name"));
+			}
+			detailsDto.setClients(clientList);
+			
+			JSONArray hlccArr = (JSONArray) json.get("h1cc");
+			List<Map<String,String>> mapList = new ArrayList<>();
+			for(int k=0; k<hlccArr.size();k++) {
+				JSONObject hlccObj = (JSONObject) hlccArr.get(k);
+				Map<String,String> map = new HashMap<>();
+				map.put("hire_corpcorp",(String) hlccObj.get("hire_corpcorp"));
+				map.put("sponsor_h1",(String) hlccObj.get("sponsor_h1"));
+				mapList.add(map);
+			}
+			detailsDto.setHlcc(mapList);
+			
+			//reviews
+			
+			JSONArray revarr = (JSONArray) ob.get("reviews");
+			if(revarr != null) {
+				List<StaffingFilteredReviewsDTO> reviewDtoList = new ArrayList<>();
+				for(int l=0; l<revarr.size(); l++) {
+					JSONObject jsonrev = (JSONObject) revarr.get(l);
+					StaffingFilteredReviewsDTO reviewsDto = new StaffingFilteredReviewsDTO();
+					reviewsDto.setAnonymous((String) jsonrev.get("anonymous"));
+					reviewsDto.setDescription((String) jsonrev.get("description"));
+					reviewsDto.setRating((String) jsonrev.get("rating"));
+					reviewsDto.setVendorId((String) jsonrev.get("vendor_id"));
+					reviewDtoList.add(reviewsDto);
+				}
+				detailsDto.setReviews(reviewDtoList);
+			}
+			
+			JSONArray jobArr = (JSONArray) ob.get("jobs");
+			if(jobArr != null) {
+				List<String> jobsList = new ArrayList<>();
+				for(int job = 0; job<jobArr.size();job++) {
+					// to do
+				}
+				detailsDto.setJobs(jobsList);
+			}
+			
+			detailsDtoList.add(detailsDto);
+//		}
+		return dto;
+
+	}
+
+	public ResponseList<VendorRecruitersDTO> getVendorRecruiterData(FileReader reader) {
+		ResponseList<VendorRecruitersDTO> res = new ResponseList<>();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			List<VendorRecruitersDTO> list = new ArrayList<>();
+			Object obj = jsonParser.parse(reader);
+			JSONObject json = (JSONObject) obj;
+			Set<String> s = json.keySet();
+			for(String name : s) {
+				JSONArray arr = (JSONArray) json.get(name);
+				for(int i=0;i< arr.size(); i++) {
+					try{
+						JSONObject ob=new JSONObject((Map) arr.get(i));
+						VendorRecruitersDTO dto = parseVendorRecruitersObject(ob);
+						list.add(dto);
+					}catch(Exception e) {
+						System.out.println("error with index number :"+i);
+					}
+				}
+			}
+			res.setData(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	private VendorRecruitersDTO parseVendorRecruitersObject(JSONObject ob)
+	{
+		VendorRecruitersDTO dto = new VendorRecruitersDTO();
+		dto.setCompanyName((String) ob.get("company_name"));
+		dto.setExperienceAs((String) ob.get("experience_as"));
+		dto.setExperienceDetail((String) ob.get("experience_detail"));
+		dto.setExperienceDetails((String) ob.get("experience_details"));
+		dto.setExperienceFrom((String) ob.get("experience_from"));
+		dto.setExperienceId((String) ob.get("experience_id"));
+		dto.setExperienceTillPresent((String) ob.get("experience_till_present"));
+		dto.setExperienceTo((String) ob.get("experience_to"));
+		dto.setUserFname((String) ob.get("user_fname"));
+		dto.setUserId((String) ob.get("user_id"));
+		dto.setUserLname((String) ob.get("user_lname"));
+		dto.setVendorName((String) ob.get("vendor_name"));
+		return dto;
+	}
 }

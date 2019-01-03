@@ -276,7 +276,7 @@
 						<c:if test="${sessionData.nav == 'Payroll' || sessionData.nav == 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							 <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
 								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i>Legacy Payroll</a></li>
 								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i>My Payroll</a></li>
 							</c:if>
@@ -291,7 +291,7 @@
 						<c:if test="${sessionData.nav != 'Payroll' || sessionData.nav != 'My Payroll'}">
 							<ul class="collapses" style="display: none">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'treview-active' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><i class="fa fa-chevron-right"></i> Run Payroll</a></li>
 								<li><a href="<c:url value='${appPath}/userPay'/>" title="Legacy Payroll"><i class="fa fa-chevron-right"></i> Legacy Payroll</a></li>
 								<li><a href="<c:url value='${appPath}/myPayroll'/>" title="My Payroll"><i class="fa fa-chevron-right"></i> My Payroll</a></li>
 							</c:if>
@@ -308,7 +308,7 @@
 					
 					<c:if test="${SourceLeadWeb_paryrollTabCount < 2 && userTabs.tabName == 'Run Payroll'}">
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/payrollList'/>" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
+								<li class="${sessionData.nav == 'Payroll' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/uSPayrollDashboard'/>" title="Run Payroll"><span class="navIcons payIcon"></span><b>Run Payroll</b></a></li>
 							</c:if>
 							
 							<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">

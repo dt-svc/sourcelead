@@ -89,7 +89,7 @@ $(document).ready(function(){
                <div class="minHeightcol5">
                <div class="col-md-5">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount();" onblur="validateDuplicateContribution();">
+                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount(); resetValues();" onblur="validateDuplicateContribution();">
                       </select>
                   </div>
                   
@@ -281,6 +281,13 @@ function contributionPopup(){
 		});
  }
  </script>
+ 
+ <script>
+function resetValues(){
+	$("#contriAmt").val('');
+	$("#contricontributionMethod").val('');
+}
+</script>
  
  <script>
  function validateDuplicateContribution(){
