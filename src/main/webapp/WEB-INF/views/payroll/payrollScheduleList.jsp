@@ -46,7 +46,7 @@ $(document).ready(function(){
               <li><a class="newAdBtn mr5" href="<c:url value='${appPath}/paySchedule'/>"  title="Add">+ Add</a></li>
             </ul> 
           </div>
-          <div class="require_wrap_table tableFirstSecond datatable_filter clearfix filter_position">
+          <div class="require_wrap_table tableFirstSecond datatable_filter clearfix overflow_inherint width100percnt">
            <div id="payrollScheduleDIV"></div>
           </div>
         </div>

@@ -2106,14 +2106,24 @@ public class USPayrollRestController {
 	public ModelAndView uSPayrollDashboardJsp(HttpServletRequest request, HttpServletResponse response)
 	{
 		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll/uSPayrollDashboard");
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			if(configurePayrollApprover != null && StringUtils.isNotBlank(configurePayrollApprover.getAutoPayrollFrequency())) {
+				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
+			}
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("payroll/uSPayrollDashboard");
+			sessionData.setNav(Constants.PAYROLL);
+			request.getSession().setAttribute("sessionData", sessionData);	
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
-		sessionData.setNav(Constants.PAYROLL);
-		request.getSession().setAttribute("sessionData", sessionData);
+		
 		return model;
 	}
 	
@@ -2176,6 +2186,7 @@ public class USPayrollRestController {
 					  int dd = 0;
 					  int cheque = 0;
 					  BigDecimal netPay = BigDecimal.ZERO;
+					  BigDecimal grossPay = BigDecimal.ZERO;
 					  if(approvedPayroll.size() > 0) {
 						  for(EmployeePayroll payroll : payrollList) {
 							  if(payroll.getBankDataHistory() != null && payroll.getBankDataHistory().size() > 0) {
@@ -2189,9 +2200,14 @@ public class USPayrollRestController {
 							  if(payroll.getNetPay() != null) {
 								  netPay = netPay.add(payroll.getNetPay());
 							  }
+							  
+							  if(payroll.getGrossPay() != null) {
+								  grossPay = grossPay.add(payroll.getGrossPay()) ;
+							  }
 						  }	  
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setPayGroupName(paysheetFrequency.getUserGroup().getGroupName());
+						  recentPayrollRunDataDTO.setGrossPay(grossPay);
 						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getCreatedDate()));
 						  recentPayrollRunDataDTO.setNoOfEmployees(approvedPayroll.size());

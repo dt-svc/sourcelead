@@ -30,7 +30,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "PAY_PERIOD_SDATE")
 	private Date payPeriodStartDate;
 	
-	@Column(name = "PAY_PERIOD_DATE")
+	@Column(name = "PAY_PERIOD_EDATE")
 	private Date payPeriodEndDate;
 	
 	@Column(name = "PAY_CHECK_DATE")
