@@ -3938,7 +3938,7 @@ public class EMailJobScheduler {
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
 //	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
-	public void calculateMonthlyLeaves() throws Exception
+	public void calculateMonthlyLeaves() throws Exception 
 	{
 		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
 		for(OrgLocations orgLocation : orglocationsList){

@@ -605,7 +605,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					 float totalBal = 0;
 					 float periodDays = 0;
 					 if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-						 periodDays += leaveType.getNoOfDaysPerPeriod();
+						 if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+						 	periodDays += leaveType.getNoOfDaysPerPeriod();
+						 }else {
+							periodDays += leaveType.getNoOfDays();
+						 }
+//						 periodDays += leaveType.getNoOfDaysPerPeriod();
 						}else {
 							Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
 							String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
@@ -682,7 +687,11 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 		float perMnthDays = 0f;
 		try {
 			if("All Employees".equalsIgnoreCase(leaveType.getLeaveEffective())) {
-				perMnthDays += leaveType.getNoOfDaysPerPeriod();
+				if(Constants.YES.equalsIgnoreCase(leaveType.getAccuralPolicy())){
+					perMnthDays += leaveType.getNoOfDaysPerPeriod();
+				}else {
+					perMnthDays += leaveType.getNoOfDays();
+				}
 			}else {
 				Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocations.getId());
 				String expType = leaveManagementUtil.getExperienceType(leaveType, emp, user);
