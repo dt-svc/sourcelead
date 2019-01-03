@@ -1157,8 +1157,8 @@ public class USPayrollRestController {
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
 		model.addObject("redirect",redirect);		
-		model.setViewName("payroll/usPayrollDashboard");
-		//model.setViewName("payroll/payrollCalculator");
+//		model.setViewName("payroll/usPayrollDashboard");
+		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
