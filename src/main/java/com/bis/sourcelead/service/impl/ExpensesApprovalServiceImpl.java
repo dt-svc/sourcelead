@@ -286,6 +286,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setUserTypeVendorName(expensesApproverHierarchy.getUserTypeVendorName());
 		expensesApproverHierarchyDto.setExpenseId(expensesApproverHierarchy.getExpenseId().getExpenseId());
 		expensesApproverHierarchyDto.setExpensesStatus(expensesApproverHierarchy.getExpenseStatus().getValue());
+		expensesApproverHierarchyDto.setBillingStatus(expensesApproverHierarchy.getExpenseId().getBillingStatus());
 		expensesApproverHierarchyDto.setExpenseApprovalStatus(expensesApproverHierarchy.getExpenseApprovalStatus().toString());
 		 if(null != projectMember && 
 				 null != projectMember.getProjectClientsId().getOrgRelationId()){
@@ -371,7 +372,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,5});
+            table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,5,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -539,6 +540,12 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
 			}else{
 				expenseArray[14] = "--";
 			}
+			if(null != ex.getBillingStatus()){
+				expenseArray[15] = ex.getBillingStatus();
+			}else{
+				expenseArray[15] = "--";
+			}
+			
 		}
 		arrayList.add(expenseArray);
 	}
@@ -717,6 +724,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 				writeRow.createCell(14).setCellValue(expensesList.getActionPerformedBy());
 				createExcelsheet.autoSizeColumn(14);
 			}
+			if(null != expensesList.getBillingStatus()){
+				writeRow.createCell(15).setCellValue(expensesList.getBillingStatus());
+				createExcelsheet.autoSizeColumn(15);
+			}
+			
 		}
 	return createExcelsheet;
 	

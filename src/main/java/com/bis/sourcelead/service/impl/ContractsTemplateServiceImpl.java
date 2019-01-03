@@ -609,7 +609,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	{
 		if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())){
 		StringBuilder autoGenId = new StringBuilder();
-		autoGenId.append(orgLocation.getGeneratedUserId().substring(0, 3));
+		if(StringUtils.isNotBlank(orgLocation.getGeneratedUserId())) {
+			autoGenId.append(orgLocation.getGeneratedUserId().substring(0, 3));
+		}
 		if("Client MSA".equalsIgnoreCase(contracts.getContractType()) || "Client SOW".equalsIgnoreCase(contracts.getContractType()))
 			autoGenId.append("-CL");
 		if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType()))
@@ -1504,8 +1506,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		Integer totalExpiredCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "EXPIRED", user, userRoleName);
 		Integer totalRejectedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, Constants.REJECTED, user, userRoleName);
 		
-		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, Constants.DRAFT, user, userRoleName);
-		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftApplicantCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.APPLICANT, contractsType, Constants.APPLICANT, user, userRoleName);
 		
 		Contracts contractsForList = new Contracts();
 		
@@ -1517,8 +1520,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		contractsForList.setTotalExpiredCount(totalExpiredCount);
 		contractsForList.setTotalRejectedCount(totalRejectedCount);
 		
-		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
-		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
+//		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
+//		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
+//		contractsForList.setTotalDraftApplicantCount(totalDraftApplicantCount);
 		return contractsForList;
 	}
 
@@ -3688,6 +3692,23 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
 	{
 		return contractsTemplateDao.deleteContractOwnerHierarchyListByContractId(id);
+	}
+
+	@Override
+	public Contracts getAllVendorClientAndApplicantCountByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user,String userRoleName) throws Exception {
+		
+		Contracts individualCounts = new Contracts();
+		
+		Integer totalVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus, user, userRoleName);
+		Integer totalClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus, user, userRoleName);
+		Integer totalApplicantCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Full Time", contractsType, contractStatus, user, userRoleName);
+		
+//		if()
+		individualCounts.setTotalDraftVendorCount(totalVendorCount);
+		individualCounts.setTotalDraftClientCount(totalClientCount);
+		individualCounts.setTotalDraftApplicantCount(totalApplicantCount);
+		
+		return individualCounts;
 	}
 	
 }

@@ -275,7 +275,7 @@ function addInvoice(){
 		 var grandDueTotal = $("#grandTotalAmount").text();
 		 var grandTotalReceived = $("#totalAmount").val();
 		 var finalAmountReceived =parseFloat(grandTotalReceived);
-		 if(grandDueTotal == finalAmountReceived.toFixed(2)){
+		 if(grandDueTotal == finalAmountReceived.toFixed(3)){
 		 var invoiceIds= []
 		 var amount = "";
 		 $('input:checkbox[name=invoices]:checked').each(function() {
@@ -388,9 +388,9 @@ function showCheckBoxDivPopup(){
 	       totalValue= totalValue+parseFloat(value);
 	  	} 
 	  });
-	  $("#grandTotalAmount").text(totalValue.toFixed(2));
+	  $("#grandTotalAmount").text(totalValue.toFixed(3));
 	// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(2));
+	  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(totalValue.toFixed(3));
   }
   
   
@@ -410,7 +410,7 @@ function showCheckBoxDivPopup(){
    <script>
 	function toggleInvoices(source) {
 	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-	    var total = 0.00;
+	    var total = 00.000;
 	    for (var i = 0; i < checkboxes.length; i++) {
 	        if (checkboxes[i] != source){
 	            checkboxes[i].checked = source.checked;
@@ -420,12 +420,12 @@ function showCheckBoxDivPopup(){
 	        		total += parseFloat(checkboxes[i].value);
 	            }else{
 	            	$("#totalAmountRow"+checkboxes[i].id).val('');
-	            	total = 0.00;
+	            	total = 00.000;
 	            }
 	    	}
-	        $("#grandTotalAmount").text(total.toFixed(2));
+	        $("#grandTotalAmount").text(total.toFixed(3));
 	     // For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(2));
+			  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(total.toFixed(3));
 	    }
 
 	$('input:checkbox:not(#checkAllRecords)').click(function() {
@@ -440,9 +440,9 @@ function showCheckBoxDivPopup(){
 	function checkSingleInvoice(id, amount){
 		var totalAmount = $("#grandTotalAmount").text();
 		if(totalAmount == ''){
-			totalAmount = 0.00;
+			totalAmount = 00.000;
 		}
-		var grandTotalAmount = 0.00;
+		var grandTotalAmount = 00.000;
 		  if($("#"+id).is(':checked')){
 			  $("#totalAmountRow"+id).val(amount);
 			 grandTotalAmount =  parseFloat(totalAmount)+parseFloat(amount);
@@ -451,9 +451,9 @@ function showCheckBoxDivPopup(){
 			  $("#totalAmountRow"+id).val('');
 			  grandTotalAmount =  parseFloat(totalAmount)-parseFloat(inputAmount);
 		  }
-		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		  $("#grandTotalAmount").text(grandTotalAmount.toFixed(3));
 		// For innerTable scrool we have to main this script, Please don't remove.. ask @Ajit
-		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(2));
+		  $(".dataTables_scrollFoot").find("#grandTotalAmount").text(grandTotalAmount.toFixed(3));
 	  }
 	</script>
 <script>

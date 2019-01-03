@@ -17,6 +17,8 @@ public class ApproverDTO {
 	
 	private String confAprrover;
 	
+	private String automaticFrequency;
+	
 
 	public String getConfAprrover()
 	{
@@ -74,6 +76,18 @@ public class ApproverDTO {
 	public void setAutomaticPayroll(String automaticPayroll)
 	{
 		this.automaticPayroll = automaticPayroll;
+	}
+
+
+	public String getAutomaticFrequency()
+	{
+		return automaticFrequency;
+	}
+
+
+	public void setAutomaticFrequency(String automaticFrequency)
+	{
+		this.automaticFrequency = automaticFrequency;
 	}
 
 	

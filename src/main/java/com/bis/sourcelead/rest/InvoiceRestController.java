@@ -795,8 +795,8 @@ return responseList;
 				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+			billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+			billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 			billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 			billingDto.setPaymentStatus(invoice.getPaymentStatus());
 			if (null != invoice.getProjectID()) {
@@ -807,7 +807,7 @@ return responseList;
 						|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 					draftCount = draftCount + 1;
 					draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-					billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+					billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -819,7 +819,7 @@ return responseList;
 					Float paidAmount = Float.parseFloat(invoice.getTotal())
 							- Float.parseFloat(invoice.getDueAmount());
 					paidTotalAmount = paidTotalAmount + paidAmount;
-					billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+					billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 				}
 				if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 						&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -836,14 +836,14 @@ return responseList;
 							overDueInvoiceCount = overDueInvoiceCount + 1;
 							dueAfterInvoiceAmount = dueAfterInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueAfterInvoiceAmount(String.format("%.2f", dueAfterInvoiceAmount));
+							billingDto.setDueAfterInvoiceAmount(String.format("%.3f", dueAfterInvoiceAmount));
 							isInvoiceDueDate = true;
 						}
 						else {
 							openInvoiceCount = openInvoiceCount + 1;
 							dueBeforeInvoiceAmount = dueBeforeInvoiceAmount
 									+ Float.parseFloat(invoice.getDueAmount());
-							billingDto.setDueBeforeInvoiceAmount(String.format("%.2f", dueBeforeInvoiceAmount));
+							billingDto.setDueBeforeInvoiceAmount(String.format("%.3f", dueBeforeInvoiceAmount));
 						}
 					}
 				}
@@ -1015,8 +1015,8 @@ return responseList;
 			}
 		}
 		billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
-		billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
-		billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));
+		billingDto.setTotal(String.format("%.3f", Float.valueOf(invoice.getTotal())));
+		billingDto.setDueAmount(String.format("%.3f", Float.valueOf(invoice.getDueAmount())));
 		billingDto.setInvoiceStatus(invoice.getInvoiceStatus());
 		billingDto.setPaymentStatus(invoice.getPaymentStatus());
 		if (null != invoice.getProjectID()) {
@@ -1027,7 +1027,7 @@ return responseList;
 					|| Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())) {
 				draftCount = draftCount + 1;
 				draftTotalAmount = draftTotalAmount + Float.parseFloat(invoice.getDueAmount());
-				billingDto.setDraftInvoiceAmount(String.format("%.2f", draftTotalAmount));
+				billingDto.setDraftInvoiceAmount(String.format("%.3f", draftTotalAmount));
 			}
 			if (!Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())
 					&& !Constants.REJECTED.equalsIgnoreCase(invoice.getInvoiceStatus())
@@ -1039,7 +1039,7 @@ return responseList;
 				Float paidAmount = Float.parseFloat(invoice.getTotal())
 						- Float.parseFloat(invoice.getDueAmount());
 				paidTotalAmount = paidTotalAmount + paidAmount;
-				billingDto.setPaidInvoiceAmount(String.format("%.2f", paidTotalAmount));
+				billingDto.setPaidInvoiceAmount(String.format("%.3f", paidTotalAmount));
 			}
 			
 		}
@@ -2746,7 +2746,10 @@ return responseList;
 		return "Success";
 	}
 	
-	@RequestMapping(value="/generateCustomInvoicePDF")
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	/*@RequestMapping(value="/generateCustomInvoicePDF")
 	public void generateCustomInvoicePDF(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2761,12 +2764,12 @@ return responseList;
 			if (orgRelation.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				vendorOrgLocation = orgRelation.getResponderLocationId();
 			}
-			Invoice invoice =  invoiceDao.getInvoicetById(105L);
+			Invoice invoice =  invoiceDao.getInvoicetById(149L);
 			
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
-			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(5L);
-			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont);
-			/*if(file!= null){
+			CustomInvoiceTemplate customInvoiceTemplate = invoiceDao.getCustomInvoiceTemplateById(8L);
+			File file = customInvoicePDFHelper.createCustomInvoicePDF(invoice, orgLocation, user, org, vendorCurrencyCode, loginOrgCurrencyCode, customInvoiceTemplate, "client/project", systemDefaultFont, sourceleadUrl);
+			if(file!= null){
 				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 				if (mimeType == null) {
 				mimeType = "application/octet-stream";
@@ -2781,11 +2784,11 @@ return responseList;
 				response.getOutputStream().close();
 				response.getOutputStream().flush();
 				file.delete();
-			}*/
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@RequestMapping(value = "/invoiceTemplateList", method = RequestMethod.POST)
 	public ResponseList<CustomInvoiceTemplateDTO> customizeInvoice(HttpServletRequest request, SearchDTO searchDTO,

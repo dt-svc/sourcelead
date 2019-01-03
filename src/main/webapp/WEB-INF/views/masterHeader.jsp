@@ -545,7 +545,7 @@ function preventTabkey(e){
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
          <li>
-         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCheckout" class="" href="javascript:void(0)">
+         		<a id = "headerCartCountLink" href="${appPath}/candidateMarketplaceCart" class="" href="javascript:void(0)">
          		<b id="headerCartCount" class="headerCartCountShow mt2"></b><i class="shopping-cart" title="Cart"></i>
          		</a>
          </li>	
@@ -618,9 +618,6 @@ function preventTabkey(e){
 					  	</sec:authorize>
 						 
 						 <li><a href="<c:url value="/app/projectAttributes" />">Project Attributes</a></li>
-						 
-						 <li><a href="<c:url value="/app/emailreminderConfigurationDashboard" />">Reminder Configuration</a></li>
-						 
 						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>

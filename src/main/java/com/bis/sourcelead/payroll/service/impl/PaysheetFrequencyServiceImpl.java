@@ -48,10 +48,12 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
+import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.EmployeeHoursDTO;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -1001,9 +1003,31 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 			}
 			responseList.setData(payrollReportList);
+			responseList.setRecordsTotal(payrollReportList.size());
+			responseList.setRecordsFiltered(payrollReportList.size());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return responseList;
 	}
+
+	@Override
+	public CommonPayrollDataDTO getNextPayrollDate(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId,String orgDateFormat)
+	{
+		return paysheetFrequencyDao.getNextPayrollDate(intiateUSPayrollDTO,orgLocationId,orgDateFormat);
+	}
+
+	@Override
+	public List<PaysheetFrequency> getRecentlyRunPayrollListByFrequency(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId, String dateFormat)
+	{
+		return paysheetFrequencyDao.getRecentlyRunPayrollListByFrequency(intiateUSPayrollDTO, orgLocationId,dateFormat);
+	}
+
+	@Override
+	public List<PaysheetFrequency> getRecentlyRunPayrollData( Long orgLocationId)
+	{
+		return paysheetFrequencyDao.getRecentlyRunPayrollData(orgLocationId);
+	}
+
 }

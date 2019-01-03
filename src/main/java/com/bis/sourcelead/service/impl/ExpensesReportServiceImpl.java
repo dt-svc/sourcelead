@@ -970,6 +970,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		 
 		 Date decStartDate = decStartDateAndEndDate.get("STARTDATE");
 		 Date decEndDate =   decStartDateAndEndDate.get("ENDDATE");
+		 
+		 int count = 0;
 		if(projectMember != null){
 				 Float Q1ExpenseTotal = 0f;
 				 Float Q2ExpenseTotal = 0f;
@@ -980,6 +982,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				 Float expenseUnApprovedAmount = 0f;
 				 Float claimedExpenseApprovedAmount = 0f;
 				 Float claimedExpenseUnApprovedAmount = 0f;
+				 if(count == 0)
 					 projectMember.setMonthsStringFormat(dateList);
 				 List<Expenses> expenses  = getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),convertedStartDate,convertedEndDate);
 				 List<Expenses> expensesClaimendAmount  = getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
@@ -1070,22 +1073,24 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						}else{
 							 writeRow.createCell(8).setCellValue("--"); 
 						}
+					 	
+					 	 
 						 Date d = new Date(exp.getEndDate().getTime());
-						 	if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
+						if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
 							 
 							 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 								 if(projectMember.getJanExpenseApprovedTotal() != null){
 									 janApprovedTotal = new BigDecimal(projectMember.getJanExpenseApprovedTotal());
 								 }
-								  janApprovedTotal.add(exp.getTotalAmount());
+								  janApprovedTotal=janApprovedTotal.add(exp.getTotalAmount());
 								  projectMember.setJanExpenseApprovedTotal(janApprovedTotal.floatValue());
 								  expenseApprovedAmount += janApprovedTotal.floatValue();
 							 }
 							 else{
 								 if(projectMember.getJanExpenseUnApprovedTotal() != null){
-									 janUnApprovedTotal =  new BigDecimal(projectMember.getJanExpenseUnApprovedTotal());
+									 janUnApprovedTotal = new BigDecimal(projectMember.getJanExpenseUnApprovedTotal());
 								 }
-								 janUnApprovedTotal.add(exp.getTotalAmount());
+								 janUnApprovedTotal=janUnApprovedTotal.add(exp.getTotalAmount());
 								 projectMember.setJanExpenseUnApprovedTotal(janUnApprovedTotal.floatValue());
 								 expenseUnApprovedAmount += janUnApprovedTotal.floatValue();
 							 }
@@ -1097,19 +1102,19 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							 
 							 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 								 if(projectMember.getFebExpenseApprovedTotal() != null){
-									 febApprovedTotal =  new BigDecimal(projectMember.getFebExpenseApprovedTotal());
+									 febApprovedTotal = new BigDecimal(projectMember.getFebExpenseApprovedTotal());
 								 }
-								  febApprovedTotal.add(exp.getTotalAmount());
+								  febApprovedTotal=febApprovedTotal.add(exp.getTotalAmount());
 								  projectMember.setFebExpenseApprovedTotal(febApprovedTotal.floatValue());
 								  expenseApprovedAmount += febApprovedTotal.floatValue();
 							 }
 							 else{
 								 if(projectMember.getFebExpenseUnApprovedTotal() != null){
-									 febUnApprovedTotal =  new BigDecimal(projectMember.getFebExpenseUnApprovedTotal());
+									 febUnApprovedTotal = new BigDecimal(projectMember.getFebExpenseUnApprovedTotal());
 								 }
-								 febUnApprovedTotal.add(exp.getTotalAmount());
+								 febUnApprovedTotal=febUnApprovedTotal.add(exp.getTotalAmount());
 								 projectMember.setFebExpenseUnApprovedTotal(febUnApprovedTotal.floatValue());
-								  expenseUnApprovedAmount += febUnApprovedTotal.floatValue();
+								  expenseUnApprovedAmount +=febUnApprovedTotal.floatValue();
 							 }
 							 projectMember.setFebExpenseTotal(febApprovedTotal.floatValue()+febUnApprovedTotal.floatValue());
 							
@@ -1119,19 +1124,19 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							 
 							 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 								 if(projectMember.getMarExpenseApprovedTotal() != null){
-									 marApprovedTotal =  new BigDecimal(projectMember.getMarExpenseApprovedTotal());
+									 marApprovedTotal = new BigDecimal(projectMember.getMarExpenseApprovedTotal());
 								 }
-								  marApprovedTotal.add(exp.getTotalAmount());
+								  marApprovedTotal=marApprovedTotal.add(exp.getTotalAmount());
 								  projectMember.setMarExpenseApprovedTotal(marApprovedTotal.floatValue());
-								  expenseApprovedAmount += marApprovedTotal.floatValue();
+								  expenseApprovedAmount +=marApprovedTotal.floatValue();
 							 }
 							 else{
 								 if(projectMember.getMarExpenseUnApprovedTotal() != null){
-									 marUnApprovedTotal =  new BigDecimal(projectMember.getMarExpenseUnApprovedTotal());
+									 marUnApprovedTotal = new BigDecimal(projectMember.getMarExpenseUnApprovedTotal());
 								 }
-								 marUnApprovedTotal.add(exp.getTotalAmount());
+								 marUnApprovedTotal =marUnApprovedTotal.add(exp.getTotalAmount());
 								 projectMember.setMarExpenseUnApprovedTotal(marUnApprovedTotal.floatValue());
-								  expenseUnApprovedAmount +=marUnApprovedTotal.floatValue();
+								  expenseUnApprovedAmount += marUnApprovedTotal.floatValue();
 							 }
 							 projectMember.setMarExpenseTotal(marApprovedTotal.floatValue()+marUnApprovedTotal.floatValue());
 							
@@ -1141,17 +1146,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 else if(CalendarUtil.isDateBetweenTwoDates(aprStartDate, aprEndDate, d)){
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getAprExpenseApprovedTotal() != null){
-								 aprApprovedTotal =  new BigDecimal(projectMember.getAprExpenseApprovedTotal());
+								 aprApprovedTotal = new BigDecimal(projectMember.getAprExpenseApprovedTotal());
 							 }
-							  aprApprovedTotal .add(exp.getTotalAmount());
+							  aprApprovedTotal=aprApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setAprExpenseApprovedTotal(aprApprovedTotal.floatValue());
-							  expenseApprovedAmount +=aprApprovedTotal.floatValue();
+							  expenseApprovedAmount = expenseApprovedAmount.floatValue()+aprApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getAprExpenseUnApprovedTotal() != null){
-								 aprUnApprovedTotal =  new BigDecimal(projectMember.getAprExpenseUnApprovedTotal());
+								 aprUnApprovedTotal = new BigDecimal(projectMember.getAprExpenseUnApprovedTotal());
 							 }
-							 aprUnApprovedTotal .add(exp.getTotalAmount());
+							 aprUnApprovedTotal=aprUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setAprExpenseUnApprovedTotal(aprUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount +=aprUnApprovedTotal.floatValue();
 						 }
@@ -1162,19 +1167,19 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 else if(CalendarUtil.isDateBetweenTwoDates(mayStartDate, mayEndDate, d)){
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getMayExpenseApprovedTotal() != null){
-								 mayApprovedTotal =  new BigDecimal(projectMember.getMayExpenseApprovedTotal());
+								 mayApprovedTotal = new BigDecimal(projectMember.getMayExpenseApprovedTotal());
 							 }
-							  mayApprovedTotal.add(exp.getTotalAmount());
+							  mayApprovedTotal=mayApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setMayExpenseApprovedTotal(mayApprovedTotal.floatValue());
-							  expenseApprovedAmount +=mayApprovedTotal.floatValue();
+							  expenseApprovedAmount += mayApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getMayExpenseUnApprovedTotal() != null){
-								 mayUnApprovedTotal =  new BigDecimal(projectMember.getMayExpenseUnApprovedTotal());
+								 mayUnApprovedTotal = new BigDecimal(projectMember.getMayExpenseUnApprovedTotal());
 							 }
-							 mayUnApprovedTotal.add(exp.getTotalAmount());
+							 mayUnApprovedTotal =mayUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setMayExpenseUnApprovedTotal(mayUnApprovedTotal.floatValue());
-							  expenseUnApprovedAmount += mayUnApprovedTotal.floatValue();
+							  expenseUnApprovedAmount +=mayUnApprovedTotal.floatValue();
 						 }
 						 projectMember.setMayExpenseTotal(mayApprovedTotal.floatValue()+mayUnApprovedTotal.floatValue());
 						
@@ -1184,17 +1189,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getJunExpenseApprovedTotal() != null){
-								 junApprovedTotal =  new BigDecimal(projectMember.getJunExpenseApprovedTotal());
+								 junApprovedTotal = new BigDecimal(projectMember.getJunExpenseApprovedTotal());
 							 }
-							  junApprovedTotal .add(exp.getTotalAmount());
+							  junApprovedTotal=junApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setJunExpenseApprovedTotal(junApprovedTotal.floatValue());
-							  expenseApprovedAmount += junApprovedTotal.floatValue();
+							  expenseApprovedAmount +=junApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getJunExpenseUnApprovedTotal() != null){
-								 junUnApprovedTotal =  new BigDecimal(projectMember.getJunExpenseUnApprovedTotal());
+								 junUnApprovedTotal = new BigDecimal(projectMember.getJunExpenseUnApprovedTotal());
 							 }
-							 junUnApprovedTotal.add(exp.getTotalAmount());
+							 junUnApprovedTotal=junUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setJunExpenseUnApprovedTotal(junUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += junUnApprovedTotal.floatValue();
 						 }
@@ -1206,20 +1211,20 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getJulExpenseApprovedTotal() != null){
-								 julApprovedTotal =  new BigDecimal(projectMember.getJulExpenseApprovedTotal());
+								 julApprovedTotal = new BigDecimal(projectMember.getJulExpenseApprovedTotal());
 							 }
-							  julApprovedTotal.add(exp.getTotalAmount());
+							  julApprovedTotal=julApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setJulExpenseApprovedTotal(julApprovedTotal.floatValue());
-							  expenseApprovedAmount += julApprovedTotal.floatValue();
+							  expenseApprovedAmount +=julApprovedTotal.floatValue();
 						 }
 						 else{
 							 
 							 if(projectMember.getJulExpenseUnApprovedTotal() != null){
-								 julUnApprovedTotal =  new BigDecimal(projectMember.getJulExpenseUnApprovedTotal());
+								 julUnApprovedTotal = new BigDecimal(projectMember.getJulExpenseUnApprovedTotal());
 							 }
-							 julUnApprovedTotal.add(exp.getTotalAmount());
+							 julUnApprovedTotal=julUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setJulExpenseUnApprovedTotal(julUnApprovedTotal.floatValue());
-							  expenseUnApprovedAmount += julUnApprovedTotal.floatValue();
+							  expenseUnApprovedAmount +=julUnApprovedTotal.floatValue();
 						 }
 						 projectMember.setJulExpenseTotal(julApprovedTotal.floatValue()+julUnApprovedTotal.floatValue());
 						
@@ -1229,17 +1234,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getAugExpenseApprovedTotal() != null){
-								 augApprovedTotal =  new BigDecimal(projectMember.getAugExpenseApprovedTotal());
+								 augApprovedTotal = new BigDecimal(projectMember.getAugExpenseApprovedTotal());
 							 }
-							  augApprovedTotal .add(exp.getTotalAmount());
+							  augApprovedTotal=augApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setAugExpenseApprovedTotal(augApprovedTotal.floatValue());
-							  expenseApprovedAmount +=augApprovedTotal.floatValue();
+							  expenseApprovedAmount += augApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getAugExpenseUnApprovedTotal() != null){
-								 augUnApprovedTotal =  new BigDecimal(projectMember.getAugExpenseUnApprovedTotal());
+								 augUnApprovedTotal = new BigDecimal(projectMember.getAugExpenseUnApprovedTotal());
 							 }
-							 augUnApprovedTotal.add(exp.getTotalAmount());
+							 augUnApprovedTotal=augUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setAugExpenseUnApprovedTotal(augUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += augUnApprovedTotal.floatValue();
 						 }
@@ -1251,17 +1256,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getSepExpenseApprovedTotal() != null){
-								 sepApprovedTotal =  new BigDecimal(projectMember.getSepExpenseApprovedTotal());
+								 sepApprovedTotal = new BigDecimal(projectMember.getSepExpenseApprovedTotal());
 							 }
-							  sepApprovedTotal .add(exp.getTotalAmount());
+							  sepApprovedTotal=sepApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setSepExpenseApprovedTotal(sepApprovedTotal.floatValue());
 							  expenseApprovedAmount += sepApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getSepExpenseUnApprovedTotal() != null){
-								 sepUnApprovedTotal =  new BigDecimal(projectMember.getSepExpenseUnApprovedTotal());
+								 sepUnApprovedTotal = new BigDecimal(projectMember.getSepExpenseUnApprovedTotal());
 							 }
-							 sepUnApprovedTotal .add(exp.getTotalAmount());
+							 sepUnApprovedTotal=sepUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setSepExpenseUnApprovedTotal(sepUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += sepUnApprovedTotal.floatValue();
 						 }
@@ -1273,17 +1278,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 else if(CalendarUtil.isDateBetweenTwoDates(octStartDate, octEndDate, d)){
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getOctExpenseApprovedTotal() != null){
-								 octApprovedTotal =  new BigDecimal(projectMember.getOctExpenseApprovedTotal());
+								 octApprovedTotal = new BigDecimal(projectMember.getOctExpenseApprovedTotal());
 							 }
-							  octApprovedTotal .add(exp.getTotalAmount());
+							  octApprovedTotal=octApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setOctExpenseApprovedTotal(octApprovedTotal.floatValue());
 							  expenseApprovedAmount += octApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getOctExpenseUnApprovedTotal() != null){
-								 octUnApprovedTotal =  new BigDecimal(projectMember.getOctExpenseUnApprovedTotal());
+								 octUnApprovedTotal = new BigDecimal(projectMember.getOctExpenseUnApprovedTotal());
 							 }
-							 octUnApprovedTotal.add(exp.getTotalAmount());
+							 octUnApprovedTotal=octUnApprovedTotal .add(exp.getTotalAmount());
 							 projectMember.setOctExpenseUnApprovedTotal(octUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += octUnApprovedTotal.floatValue();
 						 }
@@ -1295,17 +1300,17 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getNovExpenseApprovedTotal() != null){
-								 novApprovedTotal =  new BigDecimal(projectMember.getNovExpenseApprovedTotal());
+								 novApprovedTotal = new BigDecimal(projectMember.getNovExpenseApprovedTotal());
 							 }
-							  novApprovedTotal.add(exp.getTotalAmount());
+							  novApprovedTotal=novApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setNovExpenseApprovedTotal(novApprovedTotal.floatValue());
-							  expenseApprovedAmount += novApprovedTotal.floatValue();
+							  expenseApprovedAmount = expenseApprovedAmount.floatValue()+novApprovedTotal.floatValue();
 						 }
 						 else{
 							 if(projectMember.getNovExpenseUnApprovedTotal() != null){
-								 novUnApprovedTotal =  new BigDecimal(projectMember.getNovExpenseUnApprovedTotal());
+								 novUnApprovedTotal = new BigDecimal(projectMember.getNovExpenseUnApprovedTotal());
 							 }
-							 novUnApprovedTotal .add(exp.getTotalAmount());
+							 novUnApprovedTotal=novUnApprovedTotal .add(exp.getTotalAmount());
 							 projectMember.setNovExpenseUnApprovedTotal(novUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += novUnApprovedTotal.floatValue();
 						 }
@@ -1317,9 +1322,9 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 						 
 						 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 							 if(projectMember.getDecExpenseApprovedTotal() != null){
-								 decApprovedTotal =  new BigDecimal(projectMember.getDecExpenseApprovedTotal());
+								 decApprovedTotal = new BigDecimal(projectMember.getDecExpenseApprovedTotal());
 							 }
-							  decApprovedTotal .add(exp.getTotalAmount());
+							  decApprovedTotal=decApprovedTotal.add(exp.getTotalAmount());
 							  projectMember.setDecExpenseApprovedTotal(decApprovedTotal.floatValue());
 							  expenseApprovedAmount += decApprovedTotal.floatValue();
 						 }
@@ -1327,7 +1332,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							 if(projectMember.getDecExpenseUnApprovedTotal() != null){
 								 decUnApprovedTotal = new BigDecimal(projectMember.getDecExpenseUnApprovedTotal());
 							 }
-							 decUnApprovedTotal .add(exp.getTotalAmount());
+							 decUnApprovedTotal =decUnApprovedTotal.add(exp.getTotalAmount());
 							 projectMember.setDecExpenseUnApprovedTotal(decUnApprovedTotal.floatValue());
 							  expenseUnApprovedAmount += decUnApprovedTotal.floatValue();
 						 }
@@ -1359,7 +1364,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								 }
 								 approvedClaimedTotal .add(exp.getTotalAmount());
 								  projectMember.setClaimedExpenseApprovedTotal(approvedClaimedTotal.floatValue());
-								  claimedExpenseApprovedAmount += approvedClaimedTotal.floatValue();
+								  claimedExpenseApprovedAmount +=approvedClaimedTotal.floatValue();
 							 }
 							 else{
 								 BigDecimal unApprovedClaimedTotal = new BigDecimal(0);
@@ -1371,15 +1376,16 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								 claimedExpenseUnApprovedAmount += unApprovedClaimedTotal.floatValue();
 							 }
 							 
-							 BigDecimal expenseClaimedTotal = new BigDecimal(0);
+							 Float expenseClaimedTotal = 0f;
 							 if(projectMember.getClaimedExpenseTotal() != null){
-								 expenseClaimedTotal = new BigDecimal(projectMember.getClaimedExpenseTotal());
+								 expenseClaimedTotal = projectMember.getClaimedExpenseTotal();
 							 }
 							 if(exp.getExpenseStatus().equals(Submission_Status.APPROVED)) {
-								 expenseClaimedTotal.add(exp.getTotalAmount());
-								 projectMember.setClaimedExpenseTotal(expenseClaimedTotal.floatValue());
+								 expenseClaimedTotal += exp.getTotalAmount().floatValue();
+								 projectMember.setClaimedExpenseTotal(expenseClaimedTotal);
 							 }
 					   }
+				      
 				      int countArray = 8;
 				      for(String monthHeader :headers){
 				    	  if(monthHeader.equalsIgnoreCase("January")){

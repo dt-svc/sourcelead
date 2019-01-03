@@ -493,15 +493,41 @@ window.onload = function () {
 			}
 				
 				
-				result = result + '	 <div class="user_details_cta_img">';
-				result = result + '		       <div class="user_change_img">';
+				result = result + '	 <div class="user_details_cta_img profile-image">';
+				result = result + '<form  id="associate_Image_form"  name="associate_Image_form" method="post" >';
+				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
-					result = result +                  "<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result + '</div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'<button type="button" class="btn btn-sm btn-primary">';
+					result=result+'<i class="fa fa-upload"></i></button>';
+					result=result+'<label class="btn btn-sm btn-primary">';
+		            result=result+'Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;">';
+		            result=result+'</label>';
+		            result=result+'<button type="button" class="btn btn-sm btn-danger" onclick="deleteAssociateImage('+json.user.id+')">';
+					result=result+'<i class="fa fa-trash"></i></button>';
+					result=result+'</div>';
+					'</sec:authorize>';
 				}else{
-					result = result +                  "<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + '<div class="user_change_img">';
+					result = result +"<img data-id= 'userProfileImage'  src='/resources/images/userprofile-img.png' alt='image'>";
+					result = result + ' 		  </div>';
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
+					result=result+'<div class="btn-group uploadfile uploadfile-candidate">';
+					result=result+'  <button type="button" class="btn btn-sm btn-primary">';
+					result=result+'  <i class="fa fa-upload"></i></button>';
+					result=result+'  <label class="btn btn-sm btn-primary">';
+		            result=result+'   Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, \'associate_Image_form\', '+json.user.id+', true);" style="display: none;" >';
+		            result=result+'  </label>';
+					result=result+'  </div>';
+					'</sec:authorize>';
 				}
 				
-				result = result + ' 		  </div>';
+				
+				result = result +  '</form>';
 				result = result + '             <span>'+userName+'</span>';
 				result = result + ' <div class="user_badg" id="counts">';
 				result = result +socialLinks;
@@ -947,6 +973,40 @@ window.onload = function () {
 	      },
 	});
  }
+</script>
+
+<script type="text/javascript">
+function deleteAssociateImage(userId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script type="text/javascript">
+function deleteAssociateProfileImage(userId){
+	var sourceleadUrl ='${sourceleadUrl}';
+	
+	 $.ajax({
+		    type: "GET",
+            url: sourceleadUrl+"/deleteProfileImage?&userId="+userId,
+	        success: function(data) {
+	        	 var result = data;
+     		if(result == "success"){
+     			location.reload();
+        	 }
+	        
+	       },
+	        
+     }); 
+}
 </script>
 
 <script type="text/javascript">
@@ -2190,8 +2250,8 @@ $("#editRoleDetailsList").empty();
 					
 					// moving date bottom to top
 					    result = result + ' <div class="user_summary_edit_cta">';
-					    result = result + ' <label>Department</label>';
-						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+					    result = result + ' <label>Department <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  data-validation="required" field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
@@ -3108,46 +3168,6 @@ $(document).ready(function() {
 
 </script>
 
-<!-- <script>
-function validateSSNNumber(){
-	var ssnNumber = $("#ssnNumber").val();
-	var length  = $("#ssnNumber").val().length;
-	if(ssnNumber.search("-") > 0){
-		ssnNumber = ssnNumber.replace(/-/g, "");
-		length = ssnNumber.length;
-		calculateSSNLength(length,ssnNumber);
-	}else{
-		calculateSSNLength(length,ssnNumber);
-	}
-}
-function calculateSSNLength(length,ssnNumber){
-	if(length == 0){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else if(length != 9){
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
-		$("#update_user").attr("disabled", "disabled");
-	}else{
-		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		var value = "";
-		var ssn = ssnNumber.substring(0,3);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(3,5);
-		value += ssn+"-";
-		ssn = ssnNumber.substring(5,9);
-		value += ssn;
-		$("#ssnNumber").val(value);
-		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
-		}else{
-			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
-		}
-	}
-}
- </script> -->
 
 <script type="text/javascript">
 function flushProject(){
@@ -3311,7 +3331,38 @@ function getStartandEndDate(){
 				$("#update_user").removeAttr("disabled", "disabled");
 			}
 		}
+		validateSSNDuplicate($("#SSN").val());
 	}
+	 </script>
+	 
+	 <script>
+	 function validateSSNDuplicate(ssnNumber){
+		 /* var associateId = $("#associateId").val(); */
+		 var associateId = '${userId}';
+		 $('#ssnnum').find('p.jquery_form_error_message').remove();
+		 if(ssnNumber != null && ssnNumber != ""){
+			 $("#update_user").attr("disabled", "disabled");
+	         //$("#update_user" ).addClass('button').val('Processing..');
+			 $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+			        success: function(data) {
+			        	if(data == true){
+	        				  $('#ssnnum').find('p.jquery_form_error_message').remove();
+							  $("input#SSN").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+							  document.getElementById("SSN").setAttribute('record-exist','yes');
+							  document.getElementById("SSN").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#SSN').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#ssnnum').find('p.jquery_form_error_message').remove(); 
+			        		 $("#update_user" ).addClass('us-btn').val('Update');
+	                         $("#update_user").removeAttr("disabled");
+			        	}
+			        },
+			    });
+		 }
+	 }
 	 </script>
 
 

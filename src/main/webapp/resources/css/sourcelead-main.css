@@ -9272,7 +9272,26 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url(../images/walletexpenses.svg); background-repeat: no-repeat; width: 50px; height: 50px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
-
+.submissionShare {
+	background-image: url("../images/submission-share.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.shortlilstedIC {
+	background-image: url("../images/shortlilstedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.invterviewIC {
+	background-image: url("../images/interviewIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.jobOfferIC {
+	background-image: url("../images/jobOfferIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.joinedIC {
+	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9642,10 +9661,54 @@ background: url("../images/calendarPaydate.svg"); background-repeat: no-repeat; 
 .customCalendar-brdnon .ui-widget-header {
 	border: none !important; background: transparent !important; color:#333;
 }
+.customCalendar-brdnon .ui-state-default, .customCalendar-brdnon .ui-widget-content .ui-state-default, .customCalendar-brdnon .ui-widget-header .ui-state-default {
+	background: transparent; border: 1px solid #ededed; color: #808080; font-weight: 400;
+}
 .navIcons.svgReport  {
 background-size: 60px !important; width: 55px !important; height: 50px !important; top: 13px !important;
 padding-right: 10px;
 }
+.widgetDivLi {
+	cursor: pointer;
+}
+.widgetDivLi li.widgetDiv:nth-child(even) {
+	padding: 15px; transition:all linear 0.2s;background: #fff; border: 1px solid #d5d5d5;
+}
+.widgetDivLi li.widgetDiv:nth-child(odd) {
+	padding: 15px; transition: all linear 0.2s; background: rgb(239, 239, 239); border: 1px solid rgb(203, 203, 203);
+}
+.widgetDiv:hover {
+background: #fff !important; padding: 15px; -webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.widgetDiv h4 {
+	font-size: 14px; transition:all linear 0.2s; color: #404040; font-weight: 400;
+}
+.widgetDiv:hover h4{
+	font-weight: 600;
+}
+input.inputDisable {
+border: none; width: 100%; padding-left: 0; font-weight: 500;
+}
+.payslipTable table td, .payslipTable table th {
+border-collapse:border; border:1px solid #d6d6d6 !important;
+}
+.payslipTable table thead {
+border:1px solid #6C7686 !important; background-color: #6C7686 !important;
+}
+.payslipTable table thead th {
+color: #fff !important; padding: 3px 10px !important;
+}
+.payslipTable table tbody th, .payslipTable table tbody td, .payslipTable table tfoot td, .payslipTable table tfoot th {
+padding: 3px 10px !important; vertical-align: middle;
+}
+.payslipTable table tbody td, .payslipTable table tfoot td {
+text-align: right !important;
+}
+.payslipTable table tfoot {
+background-color: #ededed; color: #333; font-weight: 600;
+}
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
