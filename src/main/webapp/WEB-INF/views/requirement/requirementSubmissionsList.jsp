@@ -145,8 +145,8 @@ function prepareSubmissionList(url){
         result = result +'<thead>'; 
         result = result + '<tr>';
 		result = result + '<th>Applicant name</th>';
-		result = result + '<th>Job</th>';
 		result = result + '<th>Client</th>';
+		result = result + '<th>Job</th>';
 		result = result + '<th>Applied On</th>';
 		result = result + '<th>Submitted On</th>';
 		result = result + '<th>Sub rate</th>';
