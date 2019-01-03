@@ -25,6 +25,8 @@ public class RecentPayrollRunDataDTO {
 	
 	private Date endDate;
 	
+	private BigDecimal grossPay;
+	
 
 	public String getPayFrequency()
 	{
@@ -125,5 +127,14 @@ public class RecentPayrollRunDataDTO {
 	{
 		this.endDate = endDate;
 	}
+
+	public BigDecimal getGrossPay() {
+		return grossPay;
+	}
+
+	public void setGrossPay(BigDecimal grossPay) {
+		this.grossPay = grossPay;
+	}
+	
 
 }
