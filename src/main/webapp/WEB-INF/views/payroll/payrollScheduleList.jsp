@@ -63,7 +63,7 @@ $(document).ready(function(){
 		        url: sourceleadUrl+"/findAllPayrollScheduleList?"+tokenParamName+"="+tokenValue, 
 		        success: function(data) {
 		        	
-		        	 var result = "";
+		        	var result = "";
 		        	result = result + "<table id='scheduleListTable' class='display' cellspacing='0' width='100%' >";
 		        	result = result + "<thead>";
 		        	result = result + "<tr>";
@@ -72,7 +72,7 @@ $(document).ready(function(){
 		        	result = result + "<th>Calender</th>";
 		 /*        	result = result + "<th>PayCheckDate</th>";
 		        	result = result + "<th>Run Pay Date</th>"; */
-		        	result = result + "<th>Action</th>";
+		        	/* result = result + "<th>Action</th>"; */
 		        	result = result + "</tr>";
 		        	result = result + "</thead>";
 		        	result = result + "<tbody>";
@@ -96,7 +96,7 @@ $(document).ready(function(){
 			        	/* result = result + "<td><div class='tblminwidth-75'><a onClick='calendarPop(\""+opt.payFrequency+"\" , \""+opt.payPeriodStartDate+"\",\""+opt.payCheckDate+"\",\""+opt.runPayDate+"\");'>"+opt.payPeriodStartDate+"</a></div></td>";
 			        	result = result + "<td><div class='tblminwidth-75'>"+opt.payCheckDate+"</div></td>";
 			        	result = result + "<td><div class='tblminwidth-75'>"+opt.runPayDate+"</div></td>"; */
-			        	result = result + '<td><div class="tblminwidth-50"><a href="<c:url value="/app/payScheduleCalEdit?payScheduleUUID='+opt.payrollScheduleUUID+'"/>"><i class="fa fa-pencil"></i></a></div></td>';
+			        	/* result = result + '<td><div class="tblminwidth-50"><a href="<c:url value="/app/payScheduleCalEdit?payScheduleUUID='+opt.payrollScheduleUUID+'"/>"><i class="fa fa-pencil"></i></a></div></td>'; */
 			        	result = result + "</tr>";
 		        	}
 		        	

@@ -1508,12 +1508,14 @@ public class Candidate implements Serializable {
 		if (StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else {
-			if (StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)) {
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			} else if (StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)) {
-				fullName = lastName;
-			} else if (StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)) {
-				fullName = firstName + " " + lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}
