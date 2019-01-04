@@ -1149,13 +1149,15 @@ public class USPayrollRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView getPayrollList(@RequestParam(value="redirect",required=false)String redirect,HttpServletRequest request, HttpServletResponse response)
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
+		model.addObject("redirect",redirect);		
+//		model.setViewName("payroll/usPayrollDashboard");
 		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
@@ -2109,7 +2111,7 @@ public class USPayrollRestController {
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
-			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLoc(orgLocation);
+			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLocAndStatus(orgLocation);
 			if (sessionData == null) {
 				sessionData = new SessionMaintainanceData();
 			}
@@ -2166,6 +2168,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
 						  recentDataList.add(recentPayrollRunDataDTO);
 					  }
@@ -2186,6 +2189,7 @@ public class USPayrollRestController {
 					  int dd = 0;
 					  int cheque = 0;
 					  BigDecimal netPay = BigDecimal.ZERO;
+					  BigDecimal grossPay = BigDecimal.ZERO;
 					  if(approvedPayroll.size() > 0) {
 						  for(EmployeePayroll payroll : payrollList) {
 							  if(payroll.getBankDataHistory() != null && payroll.getBankDataHistory().size() > 0) {
@@ -2199,9 +2203,14 @@ public class USPayrollRestController {
 							  if(payroll.getNetPay() != null) {
 								  netPay = netPay.add(payroll.getNetPay());
 							  }
+							  
+							  if(payroll.getGrossPay() != null) {
+								  grossPay = grossPay.add(payroll.getGrossPay()) ;
+							  }
 						  }	  
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setPayGroupName(paysheetFrequency.getUserGroup().getGroupName());
+						  recentPayrollRunDataDTO.setGrossPay(grossPay);
 						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getCreatedDate()));
 						  recentPayrollRunDataDTO.setNoOfEmployees(approvedPayroll.size());

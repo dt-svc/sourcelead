@@ -8,6 +8,18 @@ $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 	$("#historySearchDiv").hide();
+	var redirectValue = "${redirect}";
+	if(redirectValue != null && redirectValue != '' && redirectValue != 'undefined'){
+		if(redirectValue == "draft"){
+			$("#draftAId").parent().addClass("current");
+	        $("#draftAId").parent().siblings().removeClass("current");
+			getDraftData();
+		}else if(redirectValue == "history"){
+			$("#historyAId").parent().addClass("current");
+	        $("#historyAId").parent().siblings().removeClass("current");
+	        getPayPeriodData();
+		}
+	}
 });
 </script>
 
@@ -29,19 +41,20 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard'/>">Total Pays</a> &raquo; Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
    	    <li id="dashId" class="current"><a href="javascript:void(0)" class="active" onclick="dashboardTab();">Dashboard</a></li>
-	   <li id="overId"><a href="javascript:void(0)" onclick="getOverviewdata();">Overview</a></li>
-	   <li><a onclick="getDraftData();">Draft</a></li>
+	   <li id="overId"><a href="javascript:void(0)" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
+
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
-	        <li><a onclick="getPayPeriodData();">History</a></li>
+	        <li><a onclick="getPayPeriodData();" id="historyAId">History</a></li>
 <%-- 	   </c:if> --%>
 	   
-	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
+	   <li><a onclick="getUserGroupList('DASHBOARD');" id="employeesAId">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -116,7 +129,7 @@ function approvePayrollDiv(){
 
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
-	<div id="submitButtonDiv">
+	<div id="submitButtonDiv" style="display:none">
 	
 <div class="col-md-7">
 	<div class="row">
@@ -162,7 +175,7 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	 <div class='reportHead' id="historySearchDiv">
+	 <div class='reportHead' id="historySearchDiv" style = "display : none">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
@@ -245,7 +258,6 @@ $(document).ready(function() {
   
   <script>
   function getOverviewdata(){
-	  
 	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
@@ -834,5 +846,5 @@ function dashboardTab(){
 }
 </script>
 
-  
+
 <jsp:include page="../masterFooter.jsp" />
