@@ -427,6 +427,7 @@ function filter(){
 	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
+		result = result +'	<th>Id</th>';
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
@@ -513,6 +514,7 @@ function projectsPagination(url,sourceleadUrl){
           pages: 1
         }),
         "columns": [
+        	 { "data": "Id" },
             { "data": "projectSequeneNumber" },
             { "data": "projectName"},
             { "data": "projectManagers"},
@@ -523,6 +525,14 @@ function projectsPagination(url,sourceleadUrl){
             { "data": "projectStatus"}
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "projectSequeneNumber",
+    	  	"render": function(data, type, opt, meta) {
+    	  		  var result = "";
+		         result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.id+'</div></td>';
+	             return result;
+    	  	   }
+           }, {
 	    	  	"targets": colIndex++,
 	    	  	"data": "projectSequeneNumber",
 	    	  	"render": function(data, type, opt, meta) {
@@ -684,7 +694,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[5,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -696,6 +706,7 @@ function projectsPagination(url,sourceleadUrl){
     } );
     $("#projectsListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+    $('#projectsListTable').DataTable().column(0).visible(false);
     $("#projectsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   

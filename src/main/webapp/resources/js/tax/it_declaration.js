@@ -45,8 +45,8 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("ITDeclaration added successfully....");
 				        		setTimeout(function() {
-				        			location.href = sourceleadUrl + "/forms/list";					 			
-						 		},100);
+				        			location.href = sourceleadUrl + "/myPayrollInd?redirectionTab=forms";
+						 		}, 100);
 			        		}
 			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
 			        		showError(response.responseMessage);
