@@ -73,19 +73,17 @@ function hideandshowjobclosing(){
 							<div class="row">
 								<div class="clerfix"></div>
 								<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-									<label class="col-md-3 paddingRight">Send<sup>1st</sup>
-										Reminder
-									</label>
+									<label class="col-md-3 paddingRight">Reminder 1</label>
 									<div class="col-md-9">
 
 										<div class="row">
 
 											<div class="col-md-6">
-												<input type="text" class="form-control" name="Name" value="">
+												<input type="text" class="form-control" name="emailReminderHierarchyList[0].reminderdays" value="">
 											</div>
 
 											<div class="clockpicker col-md-4">
-												<input type="text" class="form-control timeicon" name="Name"
+												<input type="text" class="form-control timeicon" name="emailReminderHierarchyList[0].remindertime"
 													value="">
 											</div>
 
@@ -106,8 +104,9 @@ function hideandshowjobclosing(){
 								<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 									<label class="col-md-3">Notify To</label>
 									<div class="col-md-9">
-										<input type="text" class="form-control" name="Name" value="">
+										<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="">
 									</div>
+									<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="ApplicantJoining">
 								</div>
 							</div>
 						</div>
@@ -210,15 +209,14 @@ function hideandshowjobclosing(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#'+form).validate(false, validationSettings)) {
-			$('#saveJobConfigureBtn').prop('disabled', true);
-			var formData = getFormData1(form);
+			/* $('#saveJobConfigureBtn').prop('disabled', true); */
+			var formData = getFormData1("job_ApplicantJoining_form");
 			alert(formData);
-
+alert(sourceleadUrl);
 			$.ajax({
 				type : "POST",
 				data : formData,
-				url : sourceleadUrl + "/storeJobConfigureEmail?"
-						+ tokenParamName + "=" + tokenValue,
+				url : sourceleadUrl + "/storeJobConfigureEmail",
 				success : function(result) {
 					if (result.object === 'MissingData') {
 						showError("Invalid data");
@@ -277,17 +275,17 @@ $('.clockpicker').clockpicker({
 });
 var m = 0;
 function cloneRow(eve) {
-	var m = $(".reminderDiv").length;
+	var m = $(".reminderDiv").length + 1;
 	var clone = "";
 	clone += '<div class="col-xs-12 col-sm-12 col-md-12 mb minHeight50 reminderDiv" id="clone'+m+'">';
-	clone += '<label class="col-md-3 paddingRight">Send<sup id="">2nd</sup> Reminder</label>';
+	clone += '<label class="col-md-3 paddingRight">Reminder '+m+'</label>';
 	clone += '<div class="col-md-9">';
 	clone += '<div class="row">';
 	clone += '<div class="col-md-6">';
-	clone += '<input type="text" class="form-control" name="Name" value="">';
+	clone += '<input type="text" class="form-control" name="emailReminderHierarchyList['+m+'].reminderdays" value="">';
 	clone += '</div>';
 	clone += '<div class="clockpicker col-md-4">';
-	clone += '<input type="text" class="form-control timeicon" name="Name" value="">';
+	clone += '<input type="text" class="form-control timeicon" name="emailReminderHierarchyList['+m+'].remindertime" value="">';
 	clone += '</div>';
 	clone += '<div title="Add Reminder" class="col-md-2">';
 	clone += '<div class="mt5" onclick="removeCloneDiv(this)">';
