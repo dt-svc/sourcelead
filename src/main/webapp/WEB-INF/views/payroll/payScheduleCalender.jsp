@@ -91,7 +91,7 @@ $(document).ready(function(){
 		</div>
 		
 		
-		<div class="clearfix">
+		<div class="clearfix calenderView_col-md-3">
 		<div id="calenderViewDIV" class="mb mt"></div>
         </div>
 		

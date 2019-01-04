@@ -3022,6 +3022,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
 			Query query1 = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
 			Query query2 = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
+			countlist = query2.list();
 			int totalCount = 0;
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
@@ -3043,14 +3044,13 @@ public class CandidateDaoImpl implements CandidateDao {
 					filterCount = totalCount;
 				}
 			}
-			List<MarketplaceSalesOrder> salesOrderList = query1.list();
-			countlist = query2.list();
 			responseList.setRecordsTotal(totalCount);
 			if (query.toString() != null && !query.toString().isEmpty()) {
 				responseList.setRecordsFiltered(filterCount);
 			} else {
 				responseList.setRecordsFiltered(totalCount);
 			}
+			List<MarketplaceSalesOrder> salesOrderList = query1.list();
 			if(salesOrderList != null){
 			for(MarketplaceSalesOrder sales : salesOrderList){
 				salesOrderDto = new MarketplacePurchaseSalesDTO();
