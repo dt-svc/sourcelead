@@ -37,6 +37,7 @@ function getUserGroupListData(url,fromType){
   	 	$("#reviewPayrollDiv").hide();
   	 	$("#historySearchDiv").hide();
   	    $("#searchDivForEmployee").show();
+  	    $("#dashboardDiv").hide();
         $("#userGroupDiv").show();
         $("#userGroupDiv").empty();
         $("#userGroupDiv").append(result);

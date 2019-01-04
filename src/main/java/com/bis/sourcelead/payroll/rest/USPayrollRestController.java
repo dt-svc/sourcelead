@@ -2119,7 +2119,7 @@ public class USPayrollRestController {
 				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("payroll/uSPayrollDashboard");
+			model.setViewName("payroll/payrollCalculator");
 			sessionData.setNav(Constants.PAYROLL);
 			request.getSession().setAttribute("sessionData", sessionData);	
 		}catch (Exception e) {
@@ -2168,6 +2168,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
 						  recentDataList.add(recentPayrollRunDataDTO);
 					  }
