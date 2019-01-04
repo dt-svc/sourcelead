@@ -752,7 +752,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 					requirementSubmissionHistory.setFromStage("NEW");
-					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					Requirement req = requirementSubmission.getRequirement();
 					if(null != req){
 						Integer totalApplicatsCountForRequirement = 0;
