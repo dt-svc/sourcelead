@@ -34,8 +34,8 @@ function approvePayrollDiv(){
 
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
-   	    
-	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
+   	    <li id="dashId" class="current"><a href="javascript:void(0)" class="active" onclick="dashboardTab();">Dashboard</a></li>
+	   <li id="overId"><a href="javascript:void(0)" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();">Draft</a></li>
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();">History</a></li>
@@ -55,7 +55,7 @@ function approvePayrollDiv(){
     
     <div id="overViewDiv">
 <div class="clearfix"></div>
-<div class="timesheet_out" id="reviewPayrollDiv">
+<div class="timesheet_out" id="reviewPayrollDiv" style = "display : none">
 
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight">
@@ -227,7 +227,7 @@ function approvePayrollDiv(){
 <!--   Error Message   --> 
 
 
-
+<jsp:include page="uSPayrollDashboard.jsp" />
 <jsp:include page="usPayrollApprove.jsp" />
 <jsp:include page="payrollAdjustment.jsp" />
 <jsp:include page="usPayrollDashboardEmployees.jsp" />
@@ -246,6 +246,7 @@ $(document).ready(function() {
   <script>
   function getOverviewdata(){
 	  
+	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
 	  $("#payrollFrequencyDiv").hide();
@@ -297,6 +298,7 @@ $(document).ready(function() {
 		$("#approveDiv").hide();
 		$("#userGroupDiv").hide();
 		$("#searchDivForEmployee").hide();
+		$("#dashboardDiv").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -795,6 +797,7 @@ function getDraftData(){
 			        	$("#historyDataTableSearch").hide();
 			        	$("#userGroupDiv").hide();
 			        	$("#searchDivForEmployee").hide();
+			        	 $("#dashboardDiv").hide();
 			        	$("#draftFrequencyDiv").show();
 			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();
@@ -816,6 +819,19 @@ function draftPagination(){
     } );
 }
 
+</script>
+
+<script>
+function dashboardTab(){
+	  $("#overViewDiv").hide();
+	  $("#userGroupDiv").hide();
+	  $("#draftFrequencyDiv").hide();
+	  $("#payrollFrequencyDiv").hide();
+	  $("#historySearchDiv").hide();
+	  $("#searchDivForEmployee").hide();
+	  $("#dashboardDiv").show();
+	
+}
 </script>
 
   

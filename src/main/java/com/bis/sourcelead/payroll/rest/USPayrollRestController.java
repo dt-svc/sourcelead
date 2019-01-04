@@ -2117,7 +2117,7 @@ public class USPayrollRestController {
 				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("payroll/uSPayrollDashboard");
+			model.setViewName("payroll/payrollCalculator");
 			sessionData.setNav(Constants.PAYROLL);
 			request.getSession().setAttribute("sessionData", sessionData);	
 		}catch (Exception e) {
