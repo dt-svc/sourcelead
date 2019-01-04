@@ -312,9 +312,9 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "<h6 class='text-muted mb5 fontSmall mt5'>"+(object[i].designation == null ? "---" : object[i].designation)+"</h6>";
 				result = result + "<div class='clearfix'></div>";
 				result = result + "<ul class='list-unstyled list-inline mt5 mb0 skillCart'>";
-				result = result + "<li class='mb5' title='Current Rate'><i class='fa fa-location-arrow mr text-info'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].currentRate == null ? "---" : object[i].currentRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<li class='mb5' title='Current Rate'><i class='fa fa-location-arrow mr text-info'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].currentRate == null ? "---" : object[i].currentRate)+"<small class='paddingLeft'>/ "+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+"</small></li>";
 				result = result + "<li class='mb5' title='Expected Rate'>";
-				result = result + "<i class='fa fa-check mr textDanger'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<i class='fa fa-check mr textDanger'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+"<small class='paddingLeft'>/ "+(object[i].expectedRateType == null ? "---" : object[i].expectedRateType)+"</small></li>";
 				result = result + "<li class='mb5' title='Total Experience'><i class='fa fa-object-group mr text-warning'></i> : <span class='paddingRight'><i class='fa fa-briefcase text-muted' aria-hidden='true'></i></span>"+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+"<small class='text-muted paddingLeft'>(Yrs)</small></li>";
 				result = result + "<li class='mb5' title='Location'><span class='paddingRight'><i class='fa fa-map-marker text-muted'></i></span> : "+(object[i].location == null ? "---" : object[i].location)+"</li>";
 				result = result + "</ul> <div class='clearfix'></div>";
