@@ -5295,7 +5295,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				writeRow.createCell(7).setCellValue(rsh.getToStage());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5333,7 +5333,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(9).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5362,7 +5362,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5396,7 +5396,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				 writeRow.createCell(8).setCellValue(rsh.getToStage());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5431,7 +5431,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5455,7 +5455,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(6).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5491,7 +5491,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5515,7 +5515,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(6).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {

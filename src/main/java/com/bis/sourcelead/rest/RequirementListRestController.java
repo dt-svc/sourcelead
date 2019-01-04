@@ -377,8 +377,8 @@ public class RequirementListRestController {
 						}
 					}
 				requirementAssignToDtoResponse.setData(requirementAssignToList);
-				requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
-				requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+				requirementAssignToDtoResponse.setRecordsFiltered(list.getRecordsFiltered());
+				requirementAssignToDtoResponse.setRecordsTotal(list.getRecordsTotal());
 				requirementAssignToDtoResponse.setError(list.getError());
 				requirementAssignToDtoResponse.setResponse(Result.SUCCESS.name());
 				requirementAssignToDtoResponse.setResponseMessage(Result.SUCCESS.getValue());

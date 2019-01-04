@@ -1,5 +1,5 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
+<%-- <jsp:include page="../masterHeader.jsp" /> --%>
+<%-- <jsp:include page="../masterSideNav.jsp" /> --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
@@ -24,27 +24,29 @@ $(document).ready(function(){
 </script>
 
  <!-- Content Area -->
-<section class="content-wraper">
+<!-- <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Total Pays</h2></div>
+
       <div class="pull-right brud-crum">Home &raquo; Total Pays</div>
-    </section>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Total Pays</div>
+    </section>  -->
     
-	<div class="clearfix project_wrap">
+	<div class="clearfix project_wrap" id="dashboardDiv">
 	<div class="mt mb clearfix">
 		<div class="col-md-8">
 		  <div class="positionRelative clearfix"> 
             <div class="col-md-4 positionRelative noPad col-md-offset-8">
         <select class="chosen-select" id="payFrequency" name = "payFrequency" onchange="nextPayrollDate();">
-        <c:if test="${not empty payFrequency}">
+        <%-- <c:if test="${not empty payFrequency}">
          <option selected value="${payFrequency}">${payFrequency}</option>
         </c:if>
-        <c:if test="${empty payFrequency}">
+        <c:if test="${empty payFrequency}"> --%>
             <option selected value="Weekly">Weekly</option>
    			<option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
 			<option value="Annually">Annually</option>
-		</c:if>
+		<%-- </c:if> --%>
 			
 			<!-- <option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
@@ -87,7 +89,7 @@ $(document).ready(function(){
 					<h5 class="media-heading text-muted">Frequency :</h5>
 					<p class="fontSmall hidden">01/11-2018 - 30/11/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payrollFrequency" value="" class="inputDisable">
+						<input type="text" id="payrollFrequency" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
@@ -101,7 +103,7 @@ $(document).ready(function(){
 					<h5 class="media-heading text-primary">Run Date :</h5>
 					<p class="fontSmall hidden">29/11/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payRunDate" value="" class="inputDisable">
+						<input type="text" id="payRunDate" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
@@ -115,13 +117,13 @@ $(document).ready(function(){
 					<h5 class="media-heading text-green">Pay Date :</h5>
 					<p class="fontSmall hidden">02/12/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payCheckDate" value="" class="inputDisable">
+						<input type="text" id="payCheckDate" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
 			</div>
 <div class="clearfix mt col-md-8 padding_left">
-    <a href="<c:url value='${appPath}/payrollList'/>" class="btn btn-default btn-block btnBgColor">Initiate Payroll</a>
+    <a class="btn btn-default btn-block btnBgColor" onclick="overviewRedirection();">Initiate Payroll</a>
  </div>
 
 		</div>
@@ -132,19 +134,16 @@ $(document).ready(function(){
     <div class="require_wrap_table clearfix tableHDRBgColor">
            <div id="recentPayrollDataGrid"></div>
           <div class="clearfix mt" id="recentPayrollDataForViewMore">
-          	<a href="#" class="btn pull-right btn-sm btnBgColor anchorBlack">View more...</a>
+          	<!-- <a href="#" class="btn pull-right btn-sm btnBgColor anchorBlack">View more...</a> -->
           </div>
           </div>
-
-
-
   </div>
 
 	</div>
 		
 		<div class="clearfix"></div>
 	</div>
-  </section>
+<!--   </section> -->
   
   
   <!-- amCharts javascript sources --> 
@@ -223,7 +222,23 @@ $(function() {
 		        		$("#payCheckDate").val('--');
 		        	}
 		        	
-		        	
+		        	/* var result = "";
+		        	var frequency =$("#payrollFrequency").val();
+		        	var runDate = $("#payRunDate").val();
+		        	var checkDate = $("#payCheckDate").val();
+		        	if(frequency != "--" && runDate != "--" && checkDate != "--")
+		        	{
+			        	result = result + '<a href="';
+			        	result = result + '<c:url value="';
+			        	result = result + '/app/payrollList?Frequency=' + frequency + '&RunDate=' + runDate + '&CheckDate=' + checkDate;
+			        	result = result + '"/>"';
+			        	result = result + 'class="btn btn-default btn-block btnBgColor">Initiate Payroll</a>';
+		        	}
+		        	else{
+		        		result = result + '<a href="#" class="btn btn-default btn-block btnBgColor">Initiate Payroll</a>';
+		        	}
+		        	$("#initPayroll").empty();
+		        	$("#initPayroll").append(result); */
 		        	populateRecentRunPayrollDataGraph(data.payrollGraphData);
 		        	populateRecentRunPayrollDataGrid(data.payrollGridData);
 		        },
@@ -242,7 +257,7 @@ function populateRecentRunPayrollDataGraph(json){
 			 var opt = json[i];
 			 chartData.push({
 						"column-1": opt.netPay,
-						"category": opt.payFrequency
+						"category": opt.payrollCheckDate
 					});
 		 }
 	
@@ -316,6 +331,7 @@ function populateRecentRunPayrollDataGrid(json){
 	result = result + '<tr>';
 	result = result + '<th>Frequency</th>';
 	result = result + '<th>Pay Group</th>';
+	result = result + '<th>Gross Pay</th>';
 	result = result + '<th>Run Date</th>';
 	result = result + '<th>Check Date</th>';
 	result = result + '<th>No. Employees</th>';
@@ -330,17 +346,19 @@ function populateRecentRunPayrollDataGrid(json){
 	{
 		for(var i=0;i<json.length;i++){
 			var opt = json[i];
+			var frequencyArgs = opt.payFrequency;
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</div>';
+			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</a></div>';
 			result = result + '</td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
+			result = result + '<td><div class="tblminwidth-75">$  '+opt.grossPay+'</div></td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payrollRunDate+'</div></td>';
 			result = result + ' <td><div class="tblminwidth-75">'+opt.payrollCheckDate+'</div></td>';
 			result = result + '<td><div class="tblminwidth-30">'+opt.noOfEmployees+'</div></td>';
 			result = result + ' <td><div class="tblminwidth-30">'+opt.noOfDirectDeposit+'</div></td>';
 			result = result + '<td><div class="tblminwidth-30">'+opt.noOfCheques+'</div></td>';
-			result = result + '<td><div class="tblminwidth-125 text-right">'+opt.netPay+'</div></td>';
+			result = result + '<td><div class="tblminwidth-125 text-right">$  '+opt.netPay+'</div></td>';
 			result = result + ' </tr>';
 		}
 	}
@@ -355,4 +373,28 @@ function populateRecentRunPayrollDataGrid(json){
 }
 
 </script>
-<jsp:include page="../masterFooter.jsp" />
+
+<script>
+function overviewRedirection(){
+	
+	$("#dashboardDiv").hide();
+  	$('#payrollPayDateDivId').find('p.jquery_form_error_message').remove();
+  	$('#payTypeIdDiv').find('p.jquery_form_error_message').remove();
+  	$('#payPeriodDiv').find('p.jquery_form_error_message').remove();
+  	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+  	
+  	$("#dashId").removeClass("current");
+  	$("#overId").addClass("current");
+	$("#overViewDiv").show();
+	$("#reviewPayrollDiv").show();
+	
+}
+</script>
+
+<script>
+function loadFrequencyList(frequency){
+	window.location.href = sourceleadUrl + "/viewPaySheetFrequencyData";
+}
+</script>
+
+<%-- <jsp:include page="../masterFooter.jsp" /> --%>

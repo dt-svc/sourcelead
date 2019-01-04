@@ -39,7 +39,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-	<a href='${appPath}/campaignStats'>	
+	<a href="${appPath}/campaignStats">	
 	<div class="repDashCta">
 		<span><i class="fa fa-bullhorn"></i></span>
 		<div class="repDashCtaWrap">
