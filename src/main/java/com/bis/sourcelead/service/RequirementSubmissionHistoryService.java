@@ -22,7 +22,7 @@ public interface RequirementSubmissionHistoryService {
 	 * @return
 	 * @throws Exception
 	 */
-	RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission, User user, RequirementSubmissionHistory requirementSubmissionHistory)throws Exception;
+	RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission, User user, RequirementSubmissionHistory requirementSubmissionHistory, String masterUserCode)throws Exception;
 
 	List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndStage(Long orgLocationID,String submissionType, Long submissionId)throws Exception;
 	
