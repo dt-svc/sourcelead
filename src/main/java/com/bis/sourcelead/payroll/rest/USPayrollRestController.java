@@ -2168,6 +2168,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
 						  recentDataList.add(recentPayrollRunDataDTO);
 					  }
