@@ -960,12 +960,13 @@ public class PayrollUtil {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
 			     Calendar cal = Calendar.getInstance();
-				int year = cal.get(Calendar.YEAR);
+				int year = Integer.parseInt(mm[1]);
 				SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
 				cal.set(Calendar.YEAR,year);
 				
 				Calendar calEndDate = Calendar.getInstance();
 				calEndDate.set(Calendar.MONTH,month);
+				calEndDate.set(Calendar.YEAR,year);
 				calEndDate.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 				int checkDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getPayCheckDate());
 				int runPayDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getRunPayrollDate());
