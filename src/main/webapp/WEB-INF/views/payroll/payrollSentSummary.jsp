@@ -61,7 +61,7 @@ function approvePayrollTab(){
             <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
             <li><a href="#" class="btn btn-default ml mr" onclick="confirmPayroll();">Confirm</a></li>
             </c:if>
-            <li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList'/>">Cancel</a></li>
+            <li><a class="btn btn-default" href="<c:url value='${appPath}/payrollList?&redirect=history'/>">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
