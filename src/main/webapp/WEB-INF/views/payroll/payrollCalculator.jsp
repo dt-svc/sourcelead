@@ -8,6 +8,18 @@ $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 	$("#historySearchDiv").hide();
+	var redirectValue = "${redirect}";
+	if(redirectValue != null && redirectValue != '' && redirectValue != 'undefined'){
+		if(redirectValue == "draft"){
+			$("#draftAId").parent().addClass("current");
+	        $("#draftAId").parent().siblings().removeClass("current");
+			getDraftData();
+		}else if(redirectValue == "history"){
+			$("#historyAId").parent().addClass("current");
+	        $("#historyAId").parent().siblings().removeClass("current");
+	        getPayPeriodData();
+		}
+	}
 });
 </script>
 
@@ -35,13 +47,13 @@ function approvePayrollDiv(){
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
    	    
-	   <li class="current"><a href="javascript:void(0)" class="active" onclick="getOverviewdata();">Overview</a></li>
-	   <li><a onclick="getDraftData();">Draft</a></li>
+	   <li class="current"><a href="javascript:void(0)" class="active" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
-	        <li><a onclick="getPayPeriodData();">History</a></li>
+	        <li><a onclick="getPayPeriodData();" id="historyAId">History</a></li>
 <%-- 	   </c:if> --%>
 	   
-	   <li><a onclick="getUserGroupList('DASHBOARD');">Employees</a></li>
+	   <li><a onclick="getUserGroupList('DASHBOARD');" id="employeesAId">Employees</a></li>
 <!-- 	   <li><a href="javascript:void(0)">Contractors</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Tax Forms</a></li> -->
 <!-- 	   <li><a href="javascript:void(0)">Settings</a></li> -->
@@ -116,7 +128,7 @@ function approvePayrollDiv(){
 
 <div class="clearfix">
 <!-- <div class="col-md-2"><a href="javascript:void(0)" class="btn anchorBlue">Exclude</a></div> -->
-	<div id="submitButtonDiv">
+	<div id="submitButtonDiv" style="display:none">
 	
 <div class="col-md-7">
 	<div class="row">
@@ -162,7 +174,7 @@ function approvePayrollDiv(){
 	</div>
 	<div class="clearfix"></div>
 		
-	 <div class='reportHead' id="historySearchDiv">
+	 <div class='reportHead' id="historySearchDiv" style = "display : none">
 		<ul class='pull-right'>
 		<li><input type='text' placeholder='Search' class='repSearchBar' id='historyDataTableSearch'/><span class='repSearchIcon' onClick=''></span></li>
 		</ul>
