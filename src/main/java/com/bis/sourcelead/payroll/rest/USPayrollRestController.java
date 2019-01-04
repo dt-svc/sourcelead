@@ -1149,13 +1149,27 @@ public class USPayrollRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView getPayrollList(@RequestParam(value = "Frequency", required = false) String frequency,
+			@RequestParam(value = "RunDate", required = false) String runDate,
+			@RequestParam(value = "CheckDate", required = false) String checkDate,
+			@RequestParam(value = "payFrequency", required = false) String payFrequency,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
-		model.addObject("userGroupList",userGroupList);		
+		model.addObject("userGroupList",userGroupList);
+		
+		if(frequency != null)
+			model.addObject("Frequency",frequency);
+		if(runDate != null)
+			model.addObject("RunDate",runDate);
+		if(checkDate != null)
+			model.addObject("CheckDate",checkDate);
+		if(payFrequency != null)
+			model.addObject("payFrequency",payFrequency);
+		
 		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
@@ -2166,6 +2180,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
 						  recentDataList.add(recentPayrollRunDataDTO);
 					  }

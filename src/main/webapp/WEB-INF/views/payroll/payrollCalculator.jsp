@@ -8,6 +8,7 @@ $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 	$("#historySearchDiv").hide();
+	setDataIntoComponents();
 });
 </script>
 
@@ -29,7 +30,7 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard'/>">Total Pays</a> &raquo; Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
@@ -245,7 +246,7 @@ $(document).ready(function() {
   
   <script>
   function getOverviewdata(){
-	  
+  
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
 	  $("#payrollFrequencyDiv").hide();
@@ -817,6 +818,28 @@ function draftPagination(){
 }
 
 </script>
-
-  
+<script>
+function setDataIntoComponents(){
+	var frequency = '${Frequency}';
+	var runDate = '${RunDate}';
+	var checkDate = '${CheckDate}';
+	
+	var result = "";
+	if(frequency != null && frequency != '--' && runDate != null && runDate != '--' && checkDate != null && checkDate != '--'){
+		
+		var output = "";
+        output = output + "<option value=''>Ferquency</option>";
+        var date = frequency.replace(",", " to ");
+		output = output + "<option value='" +frequency+ "'>"+date+"</option>";
+		$("#payPeriod").empty();
+		$("#payPeriod").append(output);
+		$('#payPeriod').trigger("chosen:updated");
+		result = result + '<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" value="'+checkDate+'" data-validation="required" field-name="Check Date" readonly="readonly">';
+	}else{
+		result = result + '<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Check Date" readonly="readonly">';
+	}
+	$("#payrollPayDateDivId").empty();
+	$("#payrollPayDateDivId").append(result);
+}
+</script>  
 <jsp:include page="../masterFooter.jsp" />
