@@ -1,7 +1,6 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,9 +72,10 @@ import com.bis.sourcelead.entity.CronTracker;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailReminder;
+import com.bis.sourcelead.entity.EmailReminderHierarchy;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Immigration;
@@ -83,7 +83,6 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -98,8 +97,6 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
-import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -112,9 +109,7 @@ import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
-import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
@@ -133,6 +128,7 @@ import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -382,6 +378,9 @@ public class EMailJobScheduler {
 
 	@Autowired
 	private CronTrackerDao cronTrackerDao;
+	
+	@Autowired
+	private EmailReminderService emailReminderService;
 
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -4229,6 +4228,37 @@ public class EMailJobScheduler {
 	public void applicant_Join_Date_to_reminder() throws Exception{
 		
 		
+	}
+	
+	
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Async
+	public void runJobSchedulerEmailReminderAtOrgLevel() {
+		try {
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderList();
+			for(EmailReminder emailReminder : emailReminderList) {
+				
+				if(emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for(EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+						
+						emailReminderHierarchy.getReminderdays();
+						
+						
+					}
+				}
+				
+				
+				
+				 
+			}
+			
+			
+			
+			logger.debug("******************  EmailReminder on org locations Completed **********************");
+		} catch (Exception e) {
+			logger.error("*****************Exception caught while EmailReminder shceduler *************"+e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 }

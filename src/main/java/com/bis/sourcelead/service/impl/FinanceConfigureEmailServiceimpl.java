@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.FinanceConfigureEmailDao;
-import com.bis.sourcelead.dto.EmailreminderConfigurationDTO;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -23,7 +23,7 @@ public class FinanceConfigureEmailServiceimpl implements FinanceConfigureEmailSe
 	private static final Logger logger = LoggerFactory.getLogger(FinanceConfigureEmailServiceimpl.class);
 
 	@Override
-	public EmailReminder storeFinanceConfigureEmailService(EmailreminderConfigurationDTO emailreminderConfigurationDTO,
+	public EmailReminder storeFinanceConfigureEmailService(EmailReminderDTO emailreminderConfigurationDTO,
 			Org org, OrgLocations orgLocations) {
 		logger.debug("In SaveFinanceConfigureEmailServiceimpl class storeFinanceConfigureEmailService method...");
 		
@@ -33,7 +33,7 @@ public class FinanceConfigureEmailServiceimpl implements FinanceConfigureEmailSe
 			email.setCreatedBy(emailreminderConfigurationDTO.getCreatedBy());
 //			email.setScenarioId(scenarioId);
 //			email.setScenarioStatus(scenarioStatus);
-			email.setTime(emailreminderConfigurationDTO.getRemindertime());
+//			email.setTime(emailreminderConfigurationDTO.getRemindertime());
 //			email.setCreatedDate(createdDate);
 			//email.setId(1);	///emailreminderConfigurationDTO.getId()
 			email.setScenarionName(emailreminderConfigurationDTO.getScenarioName());

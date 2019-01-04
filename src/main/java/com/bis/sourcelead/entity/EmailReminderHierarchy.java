@@ -24,7 +24,7 @@ public class EmailReminderHierarchy {
     private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "EMAIL_REMAINDER_ID",nullable = false)
+	@JoinColumn(name = "EMAIL_REMINDER_ID",nullable = false)
 	private EmailReminder emailReminder;
 	
 	@Column(name = "REMINDER_DAYS")
@@ -37,7 +37,7 @@ public class EmailReminderHierarchy {
 	private String reminderhierarchy;
 	
 	@Column(name = "STATUS")
-	private String status;
+	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createddate;
@@ -95,12 +95,12 @@ public class EmailReminderHierarchy {
 	}
 
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
 
-	public void setStatus(String status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

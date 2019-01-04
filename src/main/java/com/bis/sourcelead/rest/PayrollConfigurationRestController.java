@@ -34,7 +34,7 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.EmailreminderConfigurationDTO;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
@@ -59,6 +59,7 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateNomineeService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -134,6 +135,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	AssociateNomineeService associateNomineeService;
+	
+	@Autowired
+	EmailReminderService emailReminderService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -1090,16 +1094,15 @@ public class PayrollConfigurationRestController {
 	
 	
 	 @RequestMapping(value = "/storeJobConfigureEmail" , method = RequestMethod.POST)
-		public Response<String> storeJobConfigureEmail(EmailreminderConfigurationDTO emailreminderConfigurationDTO, HttpServletRequest request)
+		public Response<String> storeJobConfigureEmail(EmailReminderDTO emailreminderDTO, HttpServletRequest request)
 				throws Exception {
-		 System.out.println("INSIDE THE CONTROLLER FOR SAVING VALUES FOR JOB REMINDER CONFIGURATION");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Response<String> response = new Response<>();
 			if (user != null) {
-				if (Validator.validate(emailreminderConfigurationDTO)) {
+				if (Validator.validate(emailreminderDTO)) {
 					try {
-//						emailReminder emailReminder = saveEmailReminderConfigurationService.saveJobEmailConfiguration(emailreminderConfigurationDTO, user, orgLocations);
+						EmailReminder emailReminder = emailReminderService.saveEmailReminderDetails(emailreminderDTO, user, orgLocations);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					} catch (Exception e) {

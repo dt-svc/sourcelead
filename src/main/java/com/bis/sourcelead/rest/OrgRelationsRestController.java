@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
-import com.bis.sourcelead.dto.EmailreminderConfigurationDTO;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -107,7 +107,7 @@ public class OrgRelationsRestController {
 	
 	 @RequestMapping(value = "/saveFinanceConfigureEmail", method = RequestMethod.POST)
 	 @ResponseBody
-	 public String saveFinanceConfigureEmail(EmailreminderConfigurationDTO emailreminderConfigurationDTO,
+	 public String saveFinanceConfigureEmail(EmailReminderDTO emailreminderConfigurationDTO,
 			@RequestParam(value = "responderType", required = false) String responderType,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
 			throws Exception {
@@ -118,7 +118,7 @@ public class OrgRelationsRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		if (null != orgLocationId) {
-			emailreminderConfigurationDTO.setOrgLocationId(orgLocationId.toString());
+			emailreminderConfigurationDTO.setOrgLocationId(orgLocationId);
 		}
 
 		FinanceConfigureEmailService.storeFinanceConfigureEmailService(emailreminderConfigurationDTO,org,orgLocation);
