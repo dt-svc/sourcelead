@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.util.Date;
+
 public class PayrollScheduleCalenderDTO {
 	
 	private String payPeriod;
@@ -21,6 +23,15 @@ public class PayrollScheduleCalenderDTO {
 	private String payCheckDateFormat;
 	
 	private String payRunDateFormat;
+	
+	private Date payPeriodStartDate;
+	
+	private Date payPeriodEndDate;
+	
+	private Date checkDate;
+	
+	private Date runDate;
+	
 
 	public String getPayPeriod()
 	{
@@ -120,6 +131,46 @@ public class PayrollScheduleCalenderDTO {
 	public void setPayRunDateFormat(String payRunDateFormat)
 	{
 		this.payRunDateFormat = payRunDateFormat;
+	}
+
+	public Date getPayPeriodStartDate()
+	{
+		return payPeriodStartDate;
+	}
+
+	public Date getPayPeriodEndDate()
+	{
+		return payPeriodEndDate;
+	}
+
+	public Date getCheckDate()
+	{
+		return checkDate;
+	}
+
+	public Date getRunDate()
+	{
+		return runDate;
+	}
+
+	public void setPayPeriodStartDate(Date payPeriodStartDate)
+	{
+		this.payPeriodStartDate = payPeriodStartDate;
+	}
+
+	public void setPayPeriodEndDate(Date payPeriodEndDate)
+	{
+		this.payPeriodEndDate = payPeriodEndDate;
+	}
+
+	public void setCheckDate(Date checkDate)
+	{
+		this.checkDate = checkDate;
+	}
+
+	public void setRunDate(Date runDate)
+	{
+		this.runDate = runDate;
 	}
 	
 	

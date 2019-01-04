@@ -5026,7 +5026,7 @@ padding: 5px 5px;
     padding-bottom:5px; width: 29%;
 }
 .user_summary_edit.user_summaryEdit .user_summary_edit_cta p{
-margin: 0; bottom: -10px;
+margin: 0; bottom: -10px !important;
 }
 .user_summary_edit.user_summaryEdit .user_summary_edit_cta select.rate_sele {
     width: 25% !important;
@@ -9707,6 +9707,9 @@ text-align: right !important;
 }
 .payslipTable table tfoot {
 background-color: #ededed; color: #333; font-weight: 600;
+}
+.calenderView_col-md-3 .col-md-3 {
+min-height: 260px;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {

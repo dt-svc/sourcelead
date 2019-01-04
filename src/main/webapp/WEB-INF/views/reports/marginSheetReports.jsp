@@ -237,6 +237,10 @@ function marginpagination(url){
 
 <script>
 function marginpagination(url){
+	$("#totalPayrate").val("");
+	$("#totalbilRate").val("");
+	$("#totalMarginRate").val("");
+	
 	var colIndex = 0;
     $('#marginSheetPagination').DataTable( { 
     		"processing": true,

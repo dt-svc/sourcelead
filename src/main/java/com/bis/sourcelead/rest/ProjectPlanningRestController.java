@@ -948,7 +948,7 @@ public class ProjectPlanningRestController {
 									 clientCandidate.setCountry(candidate.getCountry());
 									 clientCandidate.setOrgLocationId(clientOrgLoc);
 									 clientCandidate.setIsAssociate(Constants.NO);
-									 clientCandidate.setDesignationType("C2C");
+									 clientCandidate.setDesignationType("Offshore C2C");
 									 
 									 if(projectPlanningResourceRequest.getBillRate() != null){
 										 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());

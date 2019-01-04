@@ -531,10 +531,10 @@ function showHideSalaryDIV(){
 	var payType = $("#payType").val();
 	 if(payType == "HourlyRate" || payType == "LcaWage"){
 		$("#salaryDIV").hide();
-		$("#standardHours").val('');    
-		$("#annualSal").val('');
-		$("#perPaySal").val('');
-		$("#hourlyRate").val('');
+// 		$("#standardHours").val('');    
+// 		$("#annualSal").val('');
+// 		$("#perPaySal").val('');
+// 		$("#hourlyRate").val('');
 		$("#standardHours").removeAttr('data-validation');
 		$('#standardHours').attr('data-validation-optional',"true");
 		$("#annualSal").removeAttr('data-validation');
@@ -719,10 +719,10 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 			
 			 if(payType == "HourlyRate" || payType == "LcaWage"){
 				    $("#salaryDIV").hide();
-					$("#standardHours").val('');    
-					$("#annualSal").val('');
-					$("#perPaySal").val('');
-					$("#hourlyRate").val('');
+// 					$("#standardhours").val('');    
+// 					$("#annualSal").val('');
+// 					$("#perPaySal").val('');
+// 					$("#hourlyRate").val('');
 					$("#standardHours").removeAttr('data-validation');
 					$('#standardHours').attr('data-validation-optional',"true");
 					$("#annualSal").removeAttr('data-validation');
@@ -733,6 +733,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 					$('#hourlyRate').attr('data-validation-optional',"true");
 			}else{
 				$("#salaryDIV").show();
+				$("#standardHours").val(standardHours);
 				$("#standardHours").removeAttr('data-validation-optional');
 				$('#standardHours').attr('data-validation',"required validate_float");
 				$("#annualSal").removeAttr('data-validation-optional ');
