@@ -1157,8 +1157,8 @@ public class USPayrollRestController {
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
 		model.addObject("redirect",redirect);		
-		model.setViewName("payroll/usPayrollDashboard");
-		//model.setViewName("payroll/payrollCalculator");
+//		model.setViewName("payroll/usPayrollDashboard");
+		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
@@ -2168,6 +2168,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
 						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
 						  recentDataList.add(recentPayrollRunDataDTO);
 					  }

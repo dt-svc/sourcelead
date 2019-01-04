@@ -55,7 +55,7 @@ $(document).ready(function(){
                <div class="row">
                		<div class="col-md-6">
                		<label >Frequency1<span class="text-danger">&nbsp;*</span></label>
-               			<select class="form-control sel" id="payPeriod" name="payPeriod" field-name="Frequency1" data-validation="required">
+               			<select class="form-control sel" id="payPeriod" onchange="validateComparisonDates();" name="payPeriod" field-name="Frequency1" data-validation="required">
 					   <!--  <option>Select Pay Period</option>
 						<option>01-02-2018 28-02-2018</option>
 						<option>01-03-2018 28-03-2018</option>
@@ -64,7 +64,7 @@ $(document).ready(function(){
                		</div>
                		<div class="col-md-6">
                		 <label >Frequency2<span class="text-danger">&nbsp;*</span></label>
-               			<select class="form-control sel" id="payPeriod2" name="payPeriod2" field-name="Frequency2" data-validation="required">
+               			<select class="form-control sel" id="payPeriod2" onchange="validateComparisonDates();" name="payPeriod2" field-name="Frequency2" data-validation="required">
 					   <!--  <option>Select Pay Period</option>
 						<option>01-02-2018 28-02-2018</option>
 						<option>01-03-2018 28-03-2018</option>
@@ -72,7 +72,7 @@ $(document).ready(function(){
 					</select>
                		</div>
                </div>
-                
+                <div id="frequencyDiv"></div>
               </div>
             </div>
              <div class="form-group">
@@ -92,7 +92,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
+            <input value="Run" id="run_id" class="btn btn-success btnSuccess" type="button" onClick="runPayrollregister();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onClick="resetData();">
           </div>
         </div>
@@ -341,9 +341,31 @@ function resetData() {
 	 $("#payPeriod2").empty();
 	 $("#payrollDepartment").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
+	 $("#frequencyDiv").find('p.jquery_form_error_message').remove();
+	 $("#run_id").removeAttr("disabled");
 	
 }
 </script>
+
+<script>
+function validateComparisonDates(){
+	
+	var compareDate1 = $('#payPeriod :selected').text();
+	var compareDate2 = $('#payPeriod2 :selected').text();
+	
+	if (compareDate1 == compareDate2) {
+		$("#frequencyDiv").find('p.jquery_form_error_message').remove();
+		$("#run_id").removeAttr("disabled");
+		$("#run_id").attr("disabled", "disabled");
+		$("#frequencyDiv")
+				.append(
+						"<p class='jquery_form_error_message'>Both frequencies cannot be same</span>");
+	} else {
+		$("#frequencyDiv").find('p.jquery_form_error_message').remove();
+		$("#run_id").removeAttr("disabled");
+	}
+}
+</script>s
 
 <script type="text/javascript">
 function runPayrollregister(){
@@ -468,6 +490,12 @@ function runPayrollregister(){
 	return false;
 }
 }
+
+$('body').on('blur', '#payroll_comparison_form', function() {
+	$("#payroll_comparison_form").showHelpOnFocus();
+	$("#payroll_comparison_form").validateOnBlur(false, validationSettings);
+}); 
+
 </script>
  
 <jsp:include page="../masterFooter.jsp" />

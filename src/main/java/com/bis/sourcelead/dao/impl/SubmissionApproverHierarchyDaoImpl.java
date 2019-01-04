@@ -1134,17 +1134,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Session session = this.sessionFactory.getCurrentSession();
 		ResponseList<SubmissionApproverHierarchy> response = new ResponseList<>();
 		StringBuilder searchCountQuery = new StringBuilder();
-		
-		
-		//String globalUserQuery = "";
-		/* if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-			 */
 			 
-          String globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR  (sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')))";
-			 
-		    /*}else {
-		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
-		    }*/
+          String globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR  "
+          		        + "(sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) "
+          		        + "and ( :locationsId NOT IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id) OR sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"'))))";
 
 		if (StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 			searchCountQuery.append(" and (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%"
@@ -1306,7 +1299,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus,String isGlobalUser)
 	{
 			Session session = this.sessionFactory.getCurrentSession();
-			 String globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR  (sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')))";
+			 String globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR (sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and (:locationsId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id) OR sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"'))))";
 			String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
 					+ Submission_ApprovalStatus.NEW + "' OR (sah.submissionApprovalStatus = '"
 					+ Submission_ApprovalStatus.NEW
@@ -1741,12 +1734,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (endDate != null) {
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
-		String globalUserQuery = "";
-	   /* if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {*/
-	    	globalUserQuery = " (pclient.orgLocationsId.id = :locationsId OR  (pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and pclient.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = :masterCandidateId and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')))";
-	    /*}else {
-	    	globalUserQuery = " pclient.orgLocationsId.id = :locationsId";
-	    }*/
+		String globalUserQuery = " (pclient.orgLocationsId.id = :locationsId OR  (pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId) and (pclient.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = :masterCandidateId and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')) OR :locationsId NOT IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = :masterCandidateId)))";
 		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.masterCandidateId mc  left join fetch ts.projectMembers pm left join fetch ts.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
 				+ " where "+globalUserQuery+" and  project.id = :projectId and mc.id = :masterCandidateId and sah.frequencyStartDate = :startDate and sah.frequencyEndDate = :endDate and sah.submissionId.status = '1'"
 				+ "  and ( "

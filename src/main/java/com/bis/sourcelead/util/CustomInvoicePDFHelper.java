@@ -924,7 +924,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -972,7 +972,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1037,7 +1037,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1085,7 +1085,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1154,7 +1154,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1202,7 +1202,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1574,7 +1574,7 @@ public class CustomInvoicePDFHelper {
 								break;
 
 							case "font-size":
-								styleBuilder.setFontSize(Integer.parseInt(style[1].split("px")[0]) - 2);
+								styleBuilder.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()) - 2);
 								break;
 
 							case "text-align":
@@ -1609,19 +1609,19 @@ public class CustomInvoicePDFHelper {
 								break;
 
 							case "padding-top":
-								styleBuilder.setTopPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setTopPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-right":
-								styleBuilder.setRightPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setRightPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-bottom":
-								styleBuilder.setBottomPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setBottomPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-left":
-								styleBuilder.setLeftPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setLeftPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 							}
 						}
