@@ -596,7 +596,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if (!Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
 				&& !Constants.WAITING_TO_SEND.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
-				&& !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())) {
+				&& !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
+				&& !Constants.VENDOR_NDA.equalsIgnoreCase(savedContracts.getContractType())
+				&& !Constants.VENDOR_NSA.equalsIgnoreCase(savedContracts.getContractType())) {
 			saveClientOrVendorContract(savedContracts,vendorContracts,user,orgLocation);
 		}
 		
@@ -861,7 +863,34 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				User vendorUser = savedContracts.getContactUser();
 				vendorContracts.setOwnerUserId(vendorUser);
 				// vendorContracts.setContactUser(ownerUser);
+			}else if(Constants.VENDOR_MSA.equalsIgnoreCase(savedContracts.getContractType())
+					|| Constants.VENDOR_SOW.equalsIgnoreCase(savedContracts.getContractType())) {
+				if (Constants.VENDOR_MSA.equalsIgnoreCase(savedContracts.getContractType())) {
+					vendorContracts.setContractType(Constants.CLIENT_MSA);
+				}else {
+					vendorContracts.setContractType(Constants.CLIENT_SOW);
+				}
+				
+				vendorContracts.setInitiatorType(Constants.VENDOR);
+				vendorContracts.setParentContractId(savedContracts);
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				OrgRelations orgRelations = savedContracts.getOrgRelations();
+				vendorContracts.setOrgRelations(orgRelations);
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}
+				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				User vendorUser = savedContracts.getContactUser();
+				vendorContracts.setOwnerUserId(vendorUser);
+				
 			}
+			
+			
+			
+			
+			
 			// vendorContracts.setContractUUID(contracts.getContractUUID());
 			if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 				vendorContracts.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);

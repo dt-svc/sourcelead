@@ -1422,7 +1422,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setEmail(candidateUser.getEmail());
 			candidate.setStatus(Constants.RECORD_ACTIVE);
 			candidate.setCreatedBy(loginUser.getUserCode());
-			candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+			candidate.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 			
 			if(StringUtils.isNotBlank(addUserDTO.getRate())){
 				candidate.setCurrentRate(addUserDTO.getRate());
@@ -2771,11 +2771,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType) {
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception {
 		CandidateMarketPlace marketPlace= candidateDao.getCandidateMarketPlaceById(id);
+		CandidateMarketCart marketCart = candidateDao.getCandidateFromMarketCartByMarketplaceId(id);
 		marketPlace.setMarketPrice(priceVal);
 		marketPlace.setMarketRateCurrencey(priceValType);
 		candidateDao.updateMarketPlacePrice(marketPlace);
+		//updating cart price in global marketplace after it is edited and saved in local marketplace.
+		marketCart.setAmount(Double.parseDouble(priceVal));
+		candidateDao.addCandidateToMarketCart(marketCart);
 	}
 	
 	@Override

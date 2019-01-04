@@ -107,5 +107,20 @@ public class ConfigurePayrollApproverDaoImpl implements ConfigurePayrollApprover
 		}
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public ConfigurePayrollApprover getConfigurePayrollApproverByLocAndStatus(OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		ConfigurePayrollApprover configurePayrollApprover = null;
+		try {
+			String query = "from ConfigurePayrollApprover cpa where cpa.orgLocation.id =:orgLocationId and cpa.automaticPayroll = 'YES'";
+			configurePayrollApprover = (ConfigurePayrollApprover) session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configurePayrollApprover;
+	}
 	
 }

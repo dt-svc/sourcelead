@@ -2294,7 +2294,7 @@ function refreshVendorList(){
 function refreshClientList(autoPopClientId){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var selectedOrgId = '${contract.orgRelations.id}';
-		 alert(selectedOrgId)
+	     /* alert(selectedOrgId)  */
 		 if(selectedOrgId == null || selectedOrgId == '' || selectedOrgId == 'undefined'){
 			 selectedOrgId = autoPopClientId;
 		 }

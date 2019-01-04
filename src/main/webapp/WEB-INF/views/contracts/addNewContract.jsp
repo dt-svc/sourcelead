@@ -32,7 +32,12 @@
 	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
 	 var contractType = '${contractType}';
+	 var conStatus = '${contract.templateSubmissionStatus}';
 
+	 if(conStatus != null && conStatus != '' && conStatus != 'undefined' && conStatus != "DRAFT"){
+		 $("#draft_template").hide();
+		 $("#draft_template").attr("disabled");
+	 }
 	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 

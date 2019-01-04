@@ -166,7 +166,7 @@ public class SubmissionsRateController {
 			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
 			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			Candidate candidate = requirementSubmission.getCandidate();
@@ -300,7 +300,7 @@ public class SubmissionsRateController {
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			
 			Requirement requirement = requirementSubmission.getRequirement();
 			OrgLocations orgLocations = requirementSubmission.getOrgLocations();
