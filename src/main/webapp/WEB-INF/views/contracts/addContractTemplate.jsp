@@ -48,6 +48,8 @@
 							</div>
 							<input type="hidden" name="templateId" id="templateId"
 								value="${contractsTemplate.id}" />
+								<input type="hidden" name="templateUUID" id="templateUUID"
+								value="${contractsTemplate.templateUUID}" />
 						</div>
 
 						<div class="form-group">
@@ -685,6 +687,7 @@
 		var templateName = $('#templateName').val();
 		var contractType = $('#contractType').val();
 		var sourceleadUrl = '${sourceleadUrl}';
+		var templateUUID = $("#templateUUID").val();
 		if (templateName != null && templateName != "" && contractType != null
 				&& contractType != "") {
 			$
@@ -693,7 +696,7 @@
 						url : sourceleadUrl
 								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
 								+ templateName + "&contractType="
-								+ contractType,
+								+ contractType+"&templateUUID="+templateUUID,
 						success : function(data) {
 							if (data == 'true') {
 

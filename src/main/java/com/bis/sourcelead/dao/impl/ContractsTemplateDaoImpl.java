@@ -529,11 +529,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception {
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
+			if(StringUtils.isNotBlank(templateUUID)) {
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId and conTemp.templateUUID != :templateUUID" )
+						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setString("templateUUID", templateUUID ).list();
+			}else {
 				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId" )
 						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).list();
+			}
+				
 				if (contractsTemp.size() > 0) {
 					return contractsTemp.get(0);
 				} else {

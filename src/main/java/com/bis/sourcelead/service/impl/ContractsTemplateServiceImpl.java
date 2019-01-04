@@ -2134,8 +2134,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	}
 	
 	@Override
-	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId) throws Exception {
-		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId);
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType,Long orgLocationId, String templateUUID) throws Exception {
+		return contractsTemplateDao.findByContractTemplateName(templateName,contractType,orgLocationId,templateUUID);
 	}
 
 	@Override

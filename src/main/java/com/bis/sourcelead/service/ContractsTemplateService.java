@@ -55,7 +55,7 @@ public interface ContractsTemplateService {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception;
 
 	List<Contracts> getListOfContractsEnvId();
 	
