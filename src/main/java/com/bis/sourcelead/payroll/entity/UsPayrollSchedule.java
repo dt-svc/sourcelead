@@ -14,11 +14,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
 
 @Entity
 @Table(name = "US_PAYROLL_SCHEDULE")
 public class UsPayrollSchedule {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -65,6 +67,10 @@ public class UsPayrollSchedule {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scheduleId")
+	private Set<USPayScheduleDate> scheduleDates;
 	
 	public Long getId() {
 		return id;
@@ -188,6 +194,16 @@ public class UsPayrollSchedule {
 	public void setPayrollScheduleUUID(String payrollScheduleUUID)
 	{
 		this.payrollScheduleUUID = payrollScheduleUUID;
+	}
+
+	public Set<USPayScheduleDate> getScheduleDates()
+	{
+		return scheduleDates;
+	}
+
+	public void setScheduleDates(Set<USPayScheduleDate> scheduleDates)
+	{
+		this.scheduleDates = scheduleDates;
 	}
 
 	
