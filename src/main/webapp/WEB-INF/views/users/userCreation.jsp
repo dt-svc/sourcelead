@@ -869,7 +869,6 @@ function getEmployeementType(designationType){
 // 			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 //             $( "#create_user" ).addClass('button').val('Processing..');	
-            
             $.ajax({
 				type : "POST",
         	    data: formData,
@@ -881,7 +880,6 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-
 					else if(loginLocationCountry == 'India'){
 						    $("#associateId").val(result.object.userId);
 						    $("#associateCandidateId").val(result.object.candidateId); 
@@ -891,9 +889,7 @@ function getEmployeementType(designationType){
 							 indBankingDetails.href="#tab-2";
 							 $("#indBankingDetails").click();
 					}
-					
 					else if(loginLocationCountry == 'United States') {
-
 						$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
@@ -902,8 +898,8 @@ function getEmployeementType(designationType){
 						$("#associateSalary").click();
 						 getPayItemList();
 					}
-				
-			});
+				}
+            });
 	        return true;
 		
 	  }else{

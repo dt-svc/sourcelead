@@ -279,13 +279,14 @@ function clearAlldata(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
 } */
+var reqTable = "";
 function jpagination(url,sourceleadUrl){ 
 	var selectedColumns = "";
 	$("#jobCustomColumns").each(function () {
 		
 	});
 	var colIndex = 0;
-    $('#requirementPagination').DataTable( { 
+	reqTable =  $('#requirementPagination').DataTable( { 
    		"processing": true,
        "serverSide": true,
        "searching": false,
@@ -329,6 +330,7 @@ function jpagination(url,sourceleadUrl){
 	   	   	  	"targets": colIndex++,
 	   		  	"data": "requirementId",
 	   		  	"sortable": true,
+	   		    "visible": false,
 	   		  	"render": function(data, type, opt, meta) {
 	   		  		 var result = "";
 	   		  		 result = result +"<td>";

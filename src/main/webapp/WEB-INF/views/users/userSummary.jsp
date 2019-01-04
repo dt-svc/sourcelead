@@ -2052,7 +2052,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					result = result + ' <div class="col-md-5 errBotValEdit">';
 					result = result + ' <label>Extension</label>';
-					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">';
+					result = result + ' <input type="text" value="'+extensionNumber+'" name="extensionNumber" data-validation="validate_Space validate_extno validate_int length1-5" data-validation-optional="true" maxLength=5>';
 					result = result + ' </div>';
 					result = result + ' </div>';
 					
@@ -2250,8 +2250,8 @@ $("#editRoleDetailsList").empty();
 					
 					// moving date bottom to top
 					    result = result + ' <div class="user_summary_edit_cta">';
-					    result = result + ' <label>Department</label>';
-						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
+					    result = result + ' <label>Department <span class="text-danger">*</span></label>';
+						result = result + '<select class="form-control chosen-select" id="department" name="department"  data-validation="required" field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
 						result = result + '<input type="hidden" name="updatedepartment" id="updatedepartment" value="'+json.departmentName+'">';
 						result = result + '<input type="hidden" name="updateDepartmentOrgRelationId" id="updateDepartmentOrgRelationId" value="'+json.department+'">';	
