@@ -22,8 +22,9 @@
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
-		          <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
                  <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+                 <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
 		         <div class="clearfix"></div>
 		     </ul>
       </div>
@@ -64,7 +65,7 @@
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
-				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
@@ -847,6 +848,10 @@ function goToPurchaseOrderList(){
 function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
+function goToWalletList(){
+    location.href = "${appPath}/walletList";
+}
+
 </script>
 <script>
 //Window scroll fixed header
@@ -1127,7 +1132,7 @@ function resetCandidateFilter(){
 	document.getElementById("myCandidatesRadio").checked = true;
 	$("#globalMarketSearh").val("");
 	$("#candidateLocation").val("");
-	candidateList('gMarketPlace');
+	//candidateList('gMarketPlace');
 }
 function refreshPage(){
   location.reload(); // refresh the page.

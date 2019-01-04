@@ -256,7 +256,7 @@ public class CustomInvoicePDFHelper {
 
 	public File createCustomInvoicePDF(Invoice invoice, OrgLocations orgLocation, User user, Org org,
 			String vendorCurrencyCode, String loginOrgCurrencyCode, CustomInvoiceTemplate customInvoiceTemplate,
-			String pdfType, String defaultFont) {
+			String pdfType, String defaultFont, String sourceleadURL) {
 		try {
 			File invoiceFile = new File(
 					orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime() + ".pdf");
@@ -293,7 +293,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject1.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder1 = getLogoDataFromJSON(jsonObject1);
+										cellBuilder1 = getLogoDataFromJSON(jsonObject1, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -329,7 +329,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject2.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder2 = getLogoDataFromJSON(jsonObject2);
+										cellBuilder2 = getLogoDataFromJSON(jsonObject2, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -439,7 +439,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject1.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder1 = getLogoDataFromJSON(jsonObject1);
+										cellBuilder1 = getLogoDataFromJSON(jsonObject1, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -475,7 +475,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject2.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder2 = getLogoDataFromJSON(jsonObject2);
+										cellBuilder2 = getLogoDataFromJSON(jsonObject2, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -604,7 +604,7 @@ public class CustomInvoicePDFHelper {
 		return grandTotal.toString();
 	}
 
-	private HorizontalListCellBuilder getLogoDataFromJSON(JSONObject jsonObject) throws JSONException {
+	private HorizontalListCellBuilder getLogoDataFromJSON(JSONObject jsonObject, String sourceleadURL) throws JSONException {
 		HorizontalListCellBuilder cellBuilder = null;
 		JSONArray subItemsArrayJSON = jsonObject.getJSONArray("subItems");
 		if (subItemsArrayJSON != null && subItemsArrayJSON.length() > 0) {
@@ -654,7 +654,7 @@ public class CustomInvoicePDFHelper {
 						}
 					}
 					StyleBuilder columnStyle = stl.style(Templates.columnStyle);
-					cellBuilder = cmp.hListCell(cmp.image("http://localhost:8080" + subItemObject.getString("value"))
+					cellBuilder = cmp.hListCell(cmp.image(sourceleadURL.replace("/app", "") + subItemObject.getString("value"))
 							.setStyle(columnStyle).setHorizontalAlignment(horizontalAlignment)
 							.setFixedDimension(width, width / 2).setFixedWidth(245)).heightFixedOnTop();
 				}

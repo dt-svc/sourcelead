@@ -694,17 +694,33 @@ public class LoginSessionController {
 			setTimeZone(request, orgLocations, model);
 
 		}
-		boolean dashboardConfigured = false;
-		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
-		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
-			dashboardConfigured = true;
-		}
-		model.addObject("dashboardConfigured", dashboardConfigured);
-		model.addObject("dashboardItems", dashboardItems);
-		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
-			model.setViewName("dashboard_configured");
-		return model;
+		boolean redirectFlag = false;
+		if(request.getSession().getAttribute("redirectURL") != null) {
+			String redirectURL = (String) request.getSession().getAttribute("redirectURL");
+			long redirectOrgLocationId = (Long) request.getSession().getAttribute("redirectOrgLocationId");
+			if(orgLocations != null && orgLocations.getId() == redirectOrgLocationId) {
+				redirectURL = redirectURL.replaceAll("-params-", "?").replaceAll("-and-", "&");
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.addObject("redirectURL", redirectURL);
+				model.setViewName("redirectURL");
 
+				request.getSession().removeAttribute("redirectURL");
+				request.getSession().removeAttribute("redirectOrgLocationId");
+				redirectFlag = true;
+			}
+		}
+		if(!redirectFlag) {
+			boolean dashboardConfigured = false;
+			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
+			if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
+				dashboardConfigured = true;
+			}
+			model.addObject("dashboardConfigured", dashboardConfigured);
+			model.addObject("dashboardItems", dashboardItems);
+			if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
+				model.setViewName("dashboard_configured");
+		}
+		return model;
 	}
 
 	private void setTimeZone(HttpServletRequest request, OrgLocations orgLocations, ModelAndView model)

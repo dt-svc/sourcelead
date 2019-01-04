@@ -2291,7 +2291,7 @@ public class UserDaoImpl implements UserDao {
 					
 					if(reportDTO.getAssignedUserId() != null){
 						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
-								&& (reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) 
+								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
 								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
 							if(userDTO != null){
