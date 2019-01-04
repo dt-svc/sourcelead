@@ -27,7 +27,8 @@ $(document).ready(function(){
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Total Pays</h2></div>
-      <div class="pull-right brud-crum">Home &raquo; Total Pays</div>
+<!--       <div class="pull-right brud-crum">Home &raquo; Total Pays</div> -->
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Total Pays</div>
     </section>
     
 	<div class="clearfix project_wrap">
@@ -87,7 +88,7 @@ $(document).ready(function(){
 					<h5 class="media-heading text-muted">Frequency :</h5>
 					<p class="fontSmall hidden">01/11-2018 - 30/11/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payrollFrequency" value="" class="inputDisable">
+						<input type="text" id="payrollFrequency" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
@@ -101,7 +102,7 @@ $(document).ready(function(){
 					<h5 class="media-heading text-primary">Run Date :</h5>
 					<p class="fontSmall hidden">29/11/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payRunDate" value="" class="inputDisable">
+						<input type="text" id="payRunDate" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
@@ -115,7 +116,7 @@ $(document).ready(function(){
 					<h5 class="media-heading text-green">Pay Date :</h5>
 					<p class="fontSmall hidden">02/12/2018</p>
 					<div class="clearfix mt5">
-						<input type="text" id="payCheckDate" value="" class="inputDisable">
+						<input type="text" id="payCheckDate" value="" class="inputDisable" readonly>
 					</div>
 				  </div>
 				</div>
@@ -316,6 +317,7 @@ function populateRecentRunPayrollDataGrid(json){
 	result = result + '<tr>';
 	result = result + '<th>Frequency</th>';
 	result = result + '<th>Pay Group</th>';
+	result = result + '<th>Gross Pay</th>';
 	result = result + '<th>Run Date</th>';
 	result = result + '<th>Check Date</th>';
 	result = result + '<th>No. Employees</th>';
@@ -335,12 +337,13 @@ function populateRecentRunPayrollDataGrid(json){
 			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</div>';
 			result = result + '</td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
+			result = result + '<td><div class="tblminwidth-75">$  '+opt.grossPay+'</div></td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payrollRunDate+'</div></td>';
 			result = result + ' <td><div class="tblminwidth-75">'+opt.payrollCheckDate+'</div></td>';
 			result = result + '<td><div class="tblminwidth-30">'+opt.noOfEmployees+'</div></td>';
 			result = result + ' <td><div class="tblminwidth-30">'+opt.noOfDirectDeposit+'</div></td>';
 			result = result + '<td><div class="tblminwidth-30">'+opt.noOfCheques+'</div></td>';
-			result = result + '<td><div class="tblminwidth-125 text-right">'+opt.netPay+'</div></td>';
+			result = result + '<td><div class="tblminwidth-125 text-right">$  '+opt.netPay+'</div></td>';
 			result = result + ' </tr>';
 		}
 	}
