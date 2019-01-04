@@ -8,7 +8,6 @@ $(document).ready(function(){
 	$("#approveDiv").hide();
 	$("#submitButtonDiv").hide();
 	$("#historySearchDiv").hide();
-	setDataIntoComponents();
 });
 </script>
 
@@ -818,28 +817,4 @@ function draftPagination(){
 }
 
 </script>
-<script>
-function setDataIntoComponents(){
-	var frequency = '${Frequency}';
-	var runDate = '${RunDate}';
-	var checkDate = '${CheckDate}';
-	
-	var result = "";
-	if(frequency != null && frequency != '--' && runDate != null && runDate != '--' && checkDate != null && checkDate != '--'){
-		
-		var output = "";
-        output = output + "<option value=''>Ferquency</option>";
-        var date = frequency.replace(",", " to ");
-		output = output + "<option value='" +frequency+ "'>"+date+"</option>";
-		$("#payPeriod").empty();
-		$("#payPeriod").append(output);
-		$('#payPeriod').trigger("chosen:updated");
-		result = result + '<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" value="'+checkDate+'" data-validation="required" field-name="Check Date" readonly="readonly">';
-	}else{
-		result = result + '<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Check Date" readonly="readonly">';
-	}
-	$("#payrollPayDateDivId").empty();
-	$("#payrollPayDateDivId").append(result);
-}
-</script>  
 <jsp:include page="../masterFooter.jsp" />
