@@ -37,15 +37,15 @@ $(document).ready(function(){
 		  <div class="positionRelative clearfix"> 
             <div class="col-md-4 positionRelative noPad col-md-offset-8">
         <select class="chosen-select" id="payFrequency" name = "payFrequency" onchange="nextPayrollDate();">
-        <c:if test="${not empty payFrequency}">
+        <%-- <c:if test="${not empty payFrequency}">
          <option selected value="${payFrequency}">${payFrequency}</option>
         </c:if>
-        <c:if test="${empty payFrequency}">
+        <c:if test="${empty payFrequency}"> --%>
             <option selected value="Weekly">Weekly</option>
    			<option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
 			<option value="Annually">Annually</option>
-		</c:if>
+		<%-- </c:if> --%>
 			
 			<!-- <option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
@@ -133,12 +133,9 @@ $(document).ready(function(){
     <div class="require_wrap_table clearfix tableHDRBgColor">
            <div id="recentPayrollDataGrid"></div>
           <div class="clearfix mt" id="recentPayrollDataForViewMore">
-          	<a href="#" class="btn pull-right btn-sm btnBgColor anchorBlack">View more...</a>
+          	<!-- <a href="#" class="btn pull-right btn-sm btnBgColor anchorBlack">View more...</a> -->
           </div>
           </div>
-
-
-
   </div>
 
 	</div>
@@ -224,7 +221,23 @@ $(function() {
 		        		$("#payCheckDate").val('--');
 		        	}
 		        	
-		        	
+		        	/* var result = "";
+		        	var frequency =$("#payrollFrequency").val();
+		        	var runDate = $("#payRunDate").val();
+		        	var checkDate = $("#payCheckDate").val();
+		        	if(frequency != "--" && runDate != "--" && checkDate != "--")
+		        	{
+			        	result = result + '<a href="';
+			        	result = result + '<c:url value="';
+			        	result = result + '/app/payrollList?Frequency=' + frequency + '&RunDate=' + runDate + '&CheckDate=' + checkDate;
+			        	result = result + '"/>"';
+			        	result = result + 'class="btn btn-default btn-block btnBgColor">Initiate Payroll</a>';
+		        	}
+		        	else{
+		        		result = result + '<a href="#" class="btn btn-default btn-block btnBgColor">Initiate Payroll</a>';
+		        	}
+		        	$("#initPayroll").empty();
+		        	$("#initPayroll").append(result); */
 		        	populateRecentRunPayrollDataGraph(data.payrollGraphData);
 		        	populateRecentRunPayrollDataGrid(data.payrollGridData);
 		        },
@@ -243,7 +256,7 @@ function populateRecentRunPayrollDataGraph(json){
 			 var opt = json[i];
 			 chartData.push({
 						"column-1": opt.netPay,
-						"category": opt.payFrequency
+						"category": opt.payrollCheckDate
 					});
 		 }
 	
@@ -332,9 +345,10 @@ function populateRecentRunPayrollDataGrid(json){
 	{
 		for(var i=0;i<json.length;i++){
 			var opt = json[i];
+			var frequencyArgs = opt.payFrequency;
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</div>';
+			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</a></div>';
 			result = result + '</td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
 			result = result + '<td><div class="tblminwidth-75">$  '+opt.grossPay+'</div></td>';
@@ -357,5 +371,10 @@ function populateRecentRunPayrollDataGrid(json){
 	$("#recentPayrollDataGrid").append(result);
 }
 
+</script>
+<script>
+function loadFrequencyList(frequency){
+	window.location.href = sourceleadUrl + "/viewPaySheetFrequencyData";
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />
