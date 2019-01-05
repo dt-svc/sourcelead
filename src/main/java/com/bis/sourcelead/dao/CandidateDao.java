@@ -260,4 +260,6 @@ public interface CandidateDao {
 
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
+	public CandidateMarketCart getCandidateFromMarketCartByMarketplaceId(Long marketplaceId)throws Exception;
+	
 }

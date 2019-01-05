@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.PayrollTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
@@ -57,6 +59,7 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.AssociateNomineeService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
@@ -132,6 +135,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	AssociateNomineeService associateNomineeService;
+	
+	@Autowired
+	EmailReminderService emailReminderService;
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -1082,6 +1088,37 @@ public class PayrollConfigurationRestController {
 		
 		model.setViewName("indPayroll/addNomineeDetails");
 		model.addObject("sourceleadUrl", sourceleadUrl);
-	    return model;
+	    return model;  
 	}
+	
+	
+	
+	 @RequestMapping(value = "/storeJobConfigureEmail" , method = RequestMethod.POST)
+		public Response<String> storeJobConfigureEmail(EmailReminderDTO emailreminderDTO, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response = new Response<>();
+			if (user != null) {
+				if (Validator.validate(emailreminderDTO)) {
+					try {
+						EmailReminder emailReminder = emailReminderService.saveEmailReminderDetails(emailreminderDTO, user, orgLocations);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+				}else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
+		}
 }

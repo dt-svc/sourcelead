@@ -2683,7 +2683,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 				requirementSubmission.setJoinedDate(null);
 			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		}
 		return "success";
 	}

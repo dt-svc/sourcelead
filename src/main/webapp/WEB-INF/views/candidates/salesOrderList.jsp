@@ -54,13 +54,6 @@
       </div>
     </div> 
   </section>
-   <script>
-  
-   function getSalesOrderList(){
-	   	getDynamicSalesOrderList();
-	   	
-  }
-  </script>
   
   <div id="emptyPopup"></div>
 <div class="advancedsearch-mask"></div>
@@ -309,7 +302,7 @@
 	    $("input[type=search]").hide();
 	    $("#searchByValue").keyup(function(e) {
 	    	   if(e.which === 13) {
-	    		   getSalesOrderList();
+	    		   getDynamicSalesOrderList();
 	    	   }
 	    	});
  	 }
@@ -358,7 +351,7 @@
 	}
 	function refreshPage(){
 		$("#searchByValue").val('');
-		getSalesOrderList();
+		getDynamicSalesOrderList();
 	}
   </script>
   <script>
