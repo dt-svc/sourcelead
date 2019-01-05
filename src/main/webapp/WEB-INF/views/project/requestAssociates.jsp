@@ -329,7 +329,7 @@ function getRequestedAssociateListDiv(){
 	 
 	 result = result +'<td><div class="tblminwidth-150"><span class="pull-left paddingRight">'+currencyCode+'</span><input type="text" value = "0" id="estimatedBudget" name="estimatedBudget" class="ReadTextFli" readonly></div>';
 	 result = result +'</td>';
-	 result = result +'<td><div class="tblminwidth-150"><span class="pull-left paddingRight"></span>%OfWork<input type="text" value = "0" id="totalPercentageOfWork" name="percentageOfWork" class="ReadTextFli" readonly></div></td>';
+	 result = result +'<td><div class="tblminwidth-175"><span class="pull-left paddingRight">%OfWork</span><input type="text" value = "0" id="totalPercentageOfWork" name="percentageOfWork" class="ReadTextFli" readonly></div></td>';
 	 result = result +'</tr>';
 	 result = result +'</tfoot>';
 	 
