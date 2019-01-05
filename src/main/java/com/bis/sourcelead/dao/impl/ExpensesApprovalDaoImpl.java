@@ -508,11 +508,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    	}
 	    }
 		Expenses expenses = expensesDao.getExpenseById(expenseId);
-		List<Submission_ApprovalStatus> expenseStatus = new ArrayList<>();
-		expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus()).collect(Collectors.toList());
-		if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
+		List<String> expenseStatus = new ArrayList<>();
+		expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+		if(expenseStatus.contains(Submission_ApprovalStatus.REJECTED.getValue())){
 			expenses.setExpenseStatus(Submission_Status.REJECTED);
-		}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
+		}else if(expenseStatus.contains(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.getValue())){
 			expenses.setExpenseStatus(Submission_Status.SUBMITTED);
 		}else{
 			expenses.setExpenseStatus(Submission_Status.APPROVED);
