@@ -45,6 +45,8 @@ public interface UserRoleDao {
 	
 	public UserRole getUserDetailsByUserIdAndLocationId(Long userId,Long locationId) throws Exception;
 	
+	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId,String designationType) throws Exception;
+	
 	public Boolean isUserAdmin(Long userId);
 
 	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
