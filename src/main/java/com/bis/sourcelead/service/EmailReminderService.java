@@ -12,5 +12,7 @@ public interface EmailReminderService {
 	EmailReminder saveEmailReminderDetails(EmailReminderDTO emailReminder, User user, OrgLocations orgLocations);
 	
 	List<EmailReminder> getEmailReminderList();
+	
+	List<EmailReminder> getEmailReminderListByEmailScenarioName(String scenarioName);
 
 }
