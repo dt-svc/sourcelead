@@ -37,7 +37,7 @@ function approvePayrollTab(){
       <div class="pull-left">
         <h2>Review Payroll</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Review Payroll</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard?&redirect=history'/>">Payroll Dashboard</a> &raquo;  Review Payroll</div>
     </section>
     
     <div class="tabsMenu clearfix">
