@@ -6,9 +6,11 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -31,10 +33,13 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -272,7 +277,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getMarketplaceTransactionDetails() throws Exception{
+		public void getMarketplaceTransactionDetails(){
 			try{
 			CandidateMarketPlacePaymentTransactionHistory cmpth = new CandidateMarketPlacePaymentTransactionHistory();
 			CandidateMarketPlacePaymentTransactionHistory cmpthreturn = new CandidateMarketPlacePaymentTransactionHistory();
@@ -292,7 +297,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getCandidateDetailsByCandidateId() throws Exception{
+		public void getCandidateDetailsByCandidateId(){
 			try{
 			CandidateMarketPlace cmp = new CandidateMarketPlace();
 			CandidateMarketPlace cmpreturn = new CandidateMarketPlace();
@@ -312,7 +317,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getUserDetailsBySourceOrgLocationId() throws Exception{
+		public void getUserDetailsBySourceOrgLocationId(){
 			try{
 			OrgLocations sourceOrgLocationId = new OrgLocations();
 			OrgSettings orgSettings = new OrgSettings();
@@ -333,7 +338,7 @@ public class CandidateServiceTest {
 		}
 
 		@Test
-		public void updateMarketplaceCartCountAndPrice() {
+		public void updateMarketplaceCartCountAndPrice(){
 			try{
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
@@ -355,7 +360,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void updateMarketCartStatus() {
+		public void updateMarketCartStatus(){
 			try{
 				logger.info("testing updateMarketCartStatus service");
 				List<Long> marketCartIds = new ArrayList<Long>();
@@ -506,6 +511,17 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
+		public void saveCandidateMarketPlaceWallet(){
+			try{
+				CandidateMarketWallet wallet = new CandidateMarketWallet();
+				doNothing().when(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				verify(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		@Test
 		public void withdrawCandidateFromMarketplace(){
 			try{
 				logger.info("testing withdrawCandidateFromMarketplace service");
@@ -531,7 +547,68 @@ public class CandidateServiceTest {
 			}
 		}
 		
+		@Test
+		public void updateMarketWalletAmount() {
+			try{
+				Double balanceAmountValue = 123.4;
+				Long id = 123l;
+				doNothing().when(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				verify(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		
+		@Test
+		public void getPurchaseCandidateExcelFile(){
+			try{
+				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
+				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
+				Long orgLocationId = 123l;
+				purchaseCandidatesList.add(mpo1);
+				File file = candidateService.getPurchaseCandidateExcelFile(purchaseCandidatesList, orgLocationId);
+				//System.out.println("marketplace file"+ file.getName().contains("Purchased Candidates"));
+				assertEquals(file.getName().contains("Purchased Candidates"),true);
+				file.delete();
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void getPurchaseCandidatePdf(){
+			try{
+				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
+				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
+				Long orgLocationId = 123l;
+				purchaseCandidatesList.add(mpo1);
+				File file = candidateService.getPurchaseCandidatePdf(purchaseCandidatesList, orgLocationId);
+				//System.out.println("marketplace file"+ file.getName());
+				assertEquals(file.getName().contains("PurchaseCandidate"),true);
+				file.delete();
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void getWalletList(){
+			try{
+				MarketplaceWalletDTO marketplaceWalletDTO = new MarketplaceWalletDTO();
+				String searchValue = "abc";
+				String transactionType = "dummy";
+				Map<String, Date> dateValue = new HashMap<>();
+				ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
+				when(spyCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue)).thenReturn(responseList);
+				assertNotNull(responseList);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 
 }
 
