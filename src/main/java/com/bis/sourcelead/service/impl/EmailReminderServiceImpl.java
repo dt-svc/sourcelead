@@ -15,6 +15,7 @@ import com.bis.sourcelead.dto.EmailReminderHierarchyDTO;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailReminderHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -40,6 +41,9 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 			emailReminder.setCreatedDate(new Date());
 		}
 		emailReminder.setOrgLocationsId(orgLocations);
+		Tabs tab = new Tabs();
+		tab.setId(emailReminderDTO.getTabsId());
+		emailReminder.setTabsId(tab);
 		emailReminder.setStatus(Constants.RECORD_ACTIVE);
 		emailReminder.setNotifyTo(emailReminderDTO.getNotifyTo().trim());
 		emailReminder.setScenarioId(emailReminderDTO.getScenarioId());
