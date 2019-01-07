@@ -1,10 +1,13 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.bis.sourcelead.entity.User;
 
-public class EmailReminderHierarchyDTO {
+public class EmailReminderHierarchyDTO implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Long emailReminderId;
 	private Long reminderdays;

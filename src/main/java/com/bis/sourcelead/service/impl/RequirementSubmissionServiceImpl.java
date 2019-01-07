@@ -5968,4 +5968,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return listOfApplicants;
 	}
 
+	@Override
+	public List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(
+			Long orgLocationId, String submissionStatus, Date joiningDate) throws Exception {
+		return requirementSubmissionDao.getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(orgLocationId, submissionStatus, joiningDate);
+	}
+
 } 

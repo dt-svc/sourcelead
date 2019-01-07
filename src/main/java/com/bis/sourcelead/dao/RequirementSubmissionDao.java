@@ -263,4 +263,6 @@ public interface RequirementSubmissionDao {
 	long getOfferCountByUserIdAndDates(String userCode, Date[] searchDates);
 
 	long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates);
+
+	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate);
 }

@@ -1,6 +1,10 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <link rel="stylesheet" href="/resources/css/bootstrap-clockpicker.min.css">
 <script src="/resources/js/bootstrap-clockpicker.min.js"></script>
 
@@ -50,7 +54,7 @@ function hideandshowjobclosing(){
     <div class="pull-left">
       <h2>Jobs</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs</a></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; Jobs Configuration</div>
   </section>
    
   <div class="content-area content-new clearfix" style="min-height: 50px;">
@@ -66,29 +70,26 @@ function hideandshowjobclosing(){
 				</div>
 				<div class="clearfix"></div>
 
-				<div class="clearfix mt" id="employeeonLeaveDiv"
-					style="display: none;">
+				<div class="clearfix mt" id="employeeonLeaveDiv" style="display: none;">
 					<form:form id="job_ApplicantJoining_form" name="job_ApplicantJoining_form">
 						<div class="clearfix form-horizontal">
 							<div class="row">
 								<div class="clerfix"></div>
 								<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-									<label class="col-md-3 paddingRight">Send<sup>1st</sup>
-										Reminder
-									</label>
+									<label class="col-md-3 paddingRight">Reminder 1<span class="text-danger paddingLeft">*</span></label>
 									<div class="col-md-9">
 
 										<div class="row">
 
 											<div class="col-md-6">
-												<input type="text" class="form-control" name="Name" value="">
+												<input type="text" class="form-control" name="emailReminderHierarchyList[0].reminderdays" value="" placeholder="Enter in days" field-name="Remainder Days" data-validation="required validate_Space validate_int validate_between between0-365">
 											</div>
 
 											<div class="clockpicker col-md-4">
-												<input type="text" class="form-control timeicon" name="Name"
-													value="">
+												<input type="text" class="form-control timeicon" name="emailReminderHierarchyList[0].remindertime"
+													value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">
 											</div>
-
+												<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[0].reminderhierarchy" value="0">
 											<div title="Add Reminder" onClick="cloneRow(this);"
 												class="col-md-2">
 												<div class="mt5">
@@ -104,10 +105,11 @@ function hideandshowjobclosing(){
 								<div id="reminderParent" class="clearfix"></div>
 
 								<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-									<label class="col-md-3">Notify To</label>
+									<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 									<div class="col-md-9">
-										<input type="text" class="form-control" name="Name" value="">
+										<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
 									</div>
+									<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="ApplicantJoining">
 								</div>
 							</div>
 						</div>
@@ -115,10 +117,10 @@ function hideandshowjobclosing(){
 						<div class="clearfix footerstyelsNew">
 							<div class="col-lg-12">
 								<div class="pull-right">
-									<input type="button" value="Save" id="saveJobConfigureBtn"
+									<input type="button" value="Save" id="job_ApplicantJoining_form_btn"
 										class="btn btn-primary"
-										onclick="stroeJobReminderConfiguration('job_ApplicantJoining_form');"> <input
-										type="button" value="Cancel" class="btn btn-default ml10">
+										onclick="stroeJobReminderConfiguration('job_ApplicantJoining_form');"> 
+										<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
 								</div>
 							</div>
 						</div>
@@ -128,7 +130,7 @@ function hideandshowjobclosing(){
 
 
 			<div class="clearfix mt"></div>
-			<div class="row">
+			<%-- <div class="row">
 				<div class="col-md-3 textBold">Jobs Closing</div>
 				<div class="col-md-9">
 					<div class="checkbox-new">
@@ -192,7 +194,7 @@ function hideandshowjobclosing(){
 					</form:form>
 
 				</div>
-			</div>
+			</div> --%>
 		</div>
     
     
@@ -202,7 +204,6 @@ function hideandshowjobclosing(){
  
 <script>
 	function stroeJobReminderConfiguration(form) {
-		alert(form);
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -210,35 +211,32 @@ function hideandshowjobclosing(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		if ($('#'+form).validate(false, validationSettings)) {
-			$('#saveJobConfigureBtn').prop('disabled', true);
-			var formData = getFormData1(form);
-			alert(formData);
-
+			$('#job_ApplicantJoining_form_btn').prop('disabled', true);
+			var formData = getFormData(form);
 			$.ajax({
 				type : "POST",
 				data : formData,
-				url : sourceleadUrl + "/storeJobConfigureEmail?"
-						+ tokenParamName + "=" + tokenValue,
+				url : sourceleadUrl + "/storeJobConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
-					if (result.object === 'MissingData') {
-						showError("Invalid data");
-					} else {
-						if (result.response === "SESSION_TIMEDOUT") {
-							location.replace(sourceleadUrl);
-						} else if (result.response === "AWKWARD") {
-							location.href = "/errorPage";
-						} else if (result.response === "SUCCESS") {
-							location.replace(sourceleadUrl
-									+ "/emailreminderConfigurationDashboard");
-						} else if (result.indexOf('Sign In') !== -1) {
+					if(result.object === 'MissingData'){
+			  			showError("Invalid data");
+			  		}else{
+			  			if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	location.replace(sourceleadUrl+"/emailreminderConfigurationDashboard");
+		                	
+		                	
+		                } else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {
-							showError("Operation failed, please try again");
-						}
-					}
+		                    showError("Operation failed, please try again");
+		                }
+			  		}
 				},
 			});
-
 			return true;
 		} else {
 			return false;
@@ -277,18 +275,19 @@ $('.clockpicker').clockpicker({
 });
 var m = 0;
 function cloneRow(eve) {
-	var m = $(".reminderDiv").length;
+	var m = $(".reminderDiv").length + 1;
 	var clone = "";
 	clone += '<div class="col-xs-12 col-sm-12 col-md-12 mb minHeight50 reminderDiv" id="clone'+m+'">';
-	clone += '<label class="col-md-3 paddingRight">Send<sup id="">2nd</sup> Reminder</label>';
+	clone += '<label class="col-md-3 paddingRight">Reminder '+m+'<span class="text-danger paddingLeft">*</span></label>';
 	clone += '<div class="col-md-9">';
 	clone += '<div class="row">';
 	clone += '<div class="col-md-6">';
-	clone += '<input type="text" class="form-control" name="Name" value="">';
+	clone += '<input type="text" class="form-control" name="emailReminderHierarchyList['+m+'].reminderdays" value="" placeholder="Enter in days" field-name="Remainder Days" data-validation="required validate_Space validate_int validate_between between0-365">';
 	clone += '</div>';
 	clone += '<div class="clockpicker col-md-4">';
-	clone += '<input type="text" class="form-control timeicon" name="Name" value="">';
+	clone += '<input type="text" class="form-control timeicon" name="emailReminderHierarchyList['+m+'].remindertime" value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">';
 	clone += '</div>';
+	clone += '<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList['+m+'].reminderhierarchy" value="'+m+'">';
 	clone += '<div title="Add Reminder" class="col-md-2">';
 	clone += '<div class="mt5" onclick="removeCloneDiv(this)">';
 	clone += '<i class="fa fa-times cursorPointer colorRed btn btn-default removeCloneDiv" title="Remove"></i>';
@@ -306,4 +305,6 @@ $("#arfi").click(function() {
 	$("#arfiDiv").toggle();
 });
 </script>
+
+
 <jsp:include page="../masterFooter.jsp" />
