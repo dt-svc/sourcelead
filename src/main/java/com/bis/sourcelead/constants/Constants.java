@@ -1373,4 +1373,9 @@ public class Constants {
 	public static final String COMMENTED_RAISED_TICKET_EMAIL = "CommentedRaisedTicketEmail";
 	public static final String COMMENTED_RAISED_TICKET_NOTIFICATION = "CommentedRaisedTicketNotification";
 	
+	
+	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
+	
+	
+	
 }

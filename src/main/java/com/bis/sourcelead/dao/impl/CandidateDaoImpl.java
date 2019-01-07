@@ -2501,7 +2501,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			session.save(marketcart);
+			session.saveOrUpdate(marketcart);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3022,6 +3022,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			String countQuery = "select count(*) from MarketplaceSalesOrder salesOrder  where  salesOrder.orgLocationId =:orgLocationId";
 			Query query1 = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
 			Query query2 = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId", orgLocations.getId());
+			countlist = query2.list();
 			int totalCount = 0;
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
@@ -3043,14 +3044,13 @@ public class CandidateDaoImpl implements CandidateDao {
 					filterCount = totalCount;
 				}
 			}
-			List<MarketplaceSalesOrder> salesOrderList = query1.list();
-			countlist = query2.list();
 			responseList.setRecordsTotal(totalCount);
 			if (query.toString() != null && !query.toString().isEmpty()) {
 				responseList.setRecordsFiltered(filterCount);
 			} else {
 				responseList.setRecordsFiltered(totalCount);
 			}
+			List<MarketplaceSalesOrder> salesOrderList = query1.list();
 			if(salesOrderList != null){
 			for(MarketplaceSalesOrder sales : salesOrderList){
 				salesOrderDto = new MarketplacePurchaseSalesDTO();
@@ -3246,6 +3246,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "update CandidateMarketWallet wallet set wallet.totalBalanceAmount = :totalAmountValue where wallet.orgLocationId.id = :orgLocationId";
 		int count = session.createQuery(query).setParameter("totalAmountValue", balanceAmountValue).setParameter("orgLocationId", id).executeUpdate();
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketCart getCandidateFromMarketCartByMarketplaceId(Long marketplaceId) {
+		// TODO Auto-generated method stub
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateMarketCart marketcart where marketcart.marketplaceId.id = :marketplaceId";
+			CandidateMarketCart marketcart = (CandidateMarketCart) session.createQuery(query)
+					.setParameter("marketplaceId", marketplaceId).uniqueResult();
+			return marketcart;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

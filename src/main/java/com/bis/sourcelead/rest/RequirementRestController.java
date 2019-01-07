@@ -1516,7 +1516,7 @@ public class RequirementRestController {
 								RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 								requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 								requirementSubmissionHistory.setFromStage("NEW");
-								requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory);
+								requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 								
 								if(null != requirement){
 									Integer totalApplicatsCountForRequirement = 0;
