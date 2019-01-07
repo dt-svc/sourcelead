@@ -21,6 +21,7 @@ public class EmailReminderDTO implements Serializable{
 	private User updatedby;
 	private String updatedDate;
 	private Long orgLocationId;
+	private Long tabsId;
 	private List<EmailReminderHierarchyDTO> emailReminderHierarchyList;
 	
 	
@@ -29,6 +30,12 @@ public class EmailReminderDTO implements Serializable{
 	}
 	public void setOrgLocationId(Long orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	public Long getTabsId() {
+		return tabsId;
+	}
+	public void setTabsId(Long tabsId) {
+		this.tabsId = tabsId;
 	}
 	public User getUpdatedby() {
 		return updatedby;
