@@ -334,6 +334,10 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.APPROVED);
 		    		}
 		    		else{
+		    			Expenses expenses =eah.getExpenseId();
+		    			expenses.setExpenseStatus(Submission_Status.REOPENED);
+		    			session.saveOrUpdate(expenses);
+		    			
 		    			eah.setExpenseStatus(Submission_Status.REOPENED);
 		    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 		    			eah.setReopenRejectedReason(null);
