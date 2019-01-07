@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -330,7 +331,7 @@ public class CandidateServiceTest {
 		}
 
 		@Test
-		public void updateMarketplaceCartCountAndPrice() {
+		public void updateMarketplaceCartCountAndPrice() throws Exception{
 			try{
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
@@ -352,7 +353,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void updateMarketCartStatus() {
+		public void updateMarketCartStatus() throws Exception{
 			try{
 				logger.info("testing updateMarketCartStatus service");
 				List<Long> marketCartIds = new ArrayList<Long>();
@@ -375,7 +376,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getCandidateMarketPlaceDetailsByUUId(){
+		public void getCandidateMarketPlaceDetailsByUUId() throws Exception{
 			try{
 				logger.info("testing getCandidateMarketPlaceDetailsByUUId service");
 				CandidateMarketPlace market = new CandidateMarketPlace();
@@ -389,7 +390,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getMarketplaceSalesOrderBySalesUuid(){
+		public void getMarketplaceSalesOrderBySalesUuid() throws Exception{
 			try{
 				logger.info("testing getMarketplaceSalesOrderBySalesUuid service");
 				MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
@@ -405,7 +406,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getPurchaseDetailByPurchaseUuid(){
+		public void getPurchaseDetailByPurchaseUuid() throws Exception{
 			try{
 				logger.info("testing getPurchaseDetailByPurchaseUuid service");
 				MarketplacePurchaseOrder purchaseOrder = new MarketplacePurchaseOrder();
@@ -421,7 +422,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getBalanceAmountFromWallet(){
+		public void getBalanceAmountFromWallet() throws Exception{
 			try{
 				logger.info("testing getBalanceAmountFromWallet service");
 				OrgLocations orglocations = new OrgLocations();
@@ -439,7 +440,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void deleteCandidateMarketCartByMarketUUID(){
+		public void deleteCandidateMarketCartByMarketUUID() throws Exception{
 			try{
 				String candidatgeMarketUUID = "abc";
 				doNothing().when(spyCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
@@ -452,7 +453,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void saveToMarketplacePurchaseOrder(){
+		public void saveToMarketplacePurchaseOrder() throws Exception{
 			try{
 				MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
 				doNothing().when(spyCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
@@ -463,7 +464,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void saveToMarketplaceSalesOrder(){
+		public void saveToMarketplaceSalesOrder() throws Exception{
 			try{
 				 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
 				 doNothing().when(spyCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
@@ -475,7 +476,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void deleteAllCandidatesFromMarketcart(){
+		public void deleteAllCandidatesFromMarketcart() throws Exception{
 			try{
 				Long orgLocationId = 123l;
 				 doNothing().when(spyCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
@@ -486,7 +487,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getPurchaseCandidateListByOrglocation(){
+		public void getPurchaseCandidateListByOrglocation() throws Exception{
 			try{
 				Long id = 1234l;
 				MarketplacePurchaseOrder mpo = new MarketplacePurchaseOrder();
@@ -496,6 +497,18 @@ public class CandidateServiceTest {
 				when(spyCandidateDao.getPurchaseCandidateListByOrglocation(id)).thenReturn(list);
 				list1 = spyCandidateDao.getPurchaseCandidateListByOrglocation(id);
 				assertThat(list1.size(),is(1));
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void saveCandidateMarketPlaceWallet() throws Exception{
+			try{
+				CandidateMarketWallet wallet = new CandidateMarketWallet();
+				doNothing().when(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				verify(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
 				
 			}catch(Exception e){
 				e.printStackTrace();
