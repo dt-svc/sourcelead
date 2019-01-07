@@ -40,8 +40,9 @@ public class ContractsTemplate {
 	@Column(name = "TEMPLATE_TYPE")
 	private String templateType;
 	
-	@Column(name = "LETTER_HEAD")
-	private String letterHead;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "LETTER_HEAD")
+	private LetterHead letterHead;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
@@ -116,13 +117,12 @@ public class ContractsTemplate {
 		this.templateType = templateType;
 	}
 
-	public String getLetterHead()
-	{
+
+	public LetterHead getLetterHead() {
 		return letterHead;
 	}
 
-	public void setLetterHead(String letterHead)
-	{
+	public void setLetterHead(LetterHead letterHead) {
 		this.letterHead = letterHead;
 	}
 
