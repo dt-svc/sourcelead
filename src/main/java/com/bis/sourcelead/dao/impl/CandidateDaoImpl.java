@@ -2501,7 +2501,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			session.save(marketcart);
+			session.saveOrUpdate(marketcart);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3246,6 +3246,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "update CandidateMarketWallet wallet set wallet.totalBalanceAmount = :totalAmountValue where wallet.orgLocationId.id = :orgLocationId";
 		int count = session.createQuery(query).setParameter("totalAmountValue", balanceAmountValue).setParameter("orgLocationId", id).executeUpdate();
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateMarketCart getCandidateFromMarketCartByMarketplaceId(Long marketplaceId) {
+		// TODO Auto-generated method stub
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateMarketCart marketcart where marketcart.marketplaceId.id = :marketplaceId";
+			CandidateMarketCart marketcart = (CandidateMarketCart) session.createQuery(query)
+					.setParameter("marketplaceId", marketplaceId).uniqueResult();
+			return marketcart;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

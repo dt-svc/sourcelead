@@ -941,7 +941,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 						
-						 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
+						 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				  }
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
@@ -1021,7 +1021,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
+					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			  }
 	    	
 	    	

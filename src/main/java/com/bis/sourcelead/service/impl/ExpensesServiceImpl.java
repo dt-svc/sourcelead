@@ -1322,5 +1322,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 		// TODO Auto-generated method stub
 		return expensesDao.changeExpenseBillingStatus(expenseId,billingStatus);
 	}
+
+	@Override
+	public List<Expenses> getAllExpenses() {
+		// TODO Auto-generated method stub
+		return  expensesDao.getAllExpenses();
+	}
 	
 }
