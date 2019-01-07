@@ -156,7 +156,7 @@ function approvePayrollDiv(){
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/uSPayrollDashboard'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -844,6 +844,8 @@ function dashboardTab(){
 	  $("#historySearchDiv").hide();
 	  $("#searchDivForEmployee").hide();
 	  $("#dashboardDiv").show();
+	  
+	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
 	
 }
 </script>
