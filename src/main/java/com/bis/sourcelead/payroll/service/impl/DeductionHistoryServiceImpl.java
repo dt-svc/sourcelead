@@ -21,6 +21,7 @@ import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.dto.YTDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.service.DeductionHistoryService;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
 
@@ -84,6 +85,7 @@ public class DeductionHistoryServiceImpl implements DeductionHistoryService{
 					
 					
 					EmployeePayroll payroll = new EmployeePayroll();
+					payroll.setPaysheetFrequency(iterator.getValue().get(0).getPayroll().getPaysheetFrequency());
 					Candidate can = new Candidate();
 					can.setId(iterator.getKey());
 					payroll.setCandidate(can);
@@ -148,6 +150,7 @@ public class DeductionHistoryServiceImpl implements DeductionHistoryService{
 					
 					
 					EmployeePayroll payroll = new EmployeePayroll();
+					payroll.setPaysheetFrequency(iterator.getValue().get(0).getPayroll().getPaysheetFrequency());
 					Candidate can = new Candidate();
 					can.setId(iterator.getKey());
 					payroll.setCandidate(can);

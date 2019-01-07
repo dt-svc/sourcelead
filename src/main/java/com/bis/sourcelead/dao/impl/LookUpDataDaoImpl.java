@@ -224,7 +224,7 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 	public List<LookUpData> getLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		query = "from LookUpData lookupdata where (lookupdata.category = :category and lookupdata.orgLocationId IS NULL ) or (lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId) ";
+		query = "from LookUpData lookupdata where (lookupdata.category = :category and lookupdata.orgLocationId IS NULL ) or (lookupdata.category = :category and lookupdata.orgLocationId =:orgLocationId) ORDER BY lookupdata.name Asc ";
 	    List<LookUpData> taskTypeList = session.createQuery(query.toString()).setString("category", category).setLong("orgLocationId", orgLocationId).list();
 	    return taskTypeList;
 	}
