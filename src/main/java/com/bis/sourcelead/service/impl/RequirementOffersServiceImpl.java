@@ -941,7 +941,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 						
-						 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
+						 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				  }
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
@@ -1021,7 +1021,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
 					 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory);
+					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, loginUser, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			  }
 	    	
 	    	
@@ -1798,6 +1798,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	@Override
 	public RequirementOffers getOnboardRequirementOfferId(Long offerId) throws Exception {
 		return requirementOffersDao.getOnboardRequirementOfferId(offerId);
+	}
+
+
+	@Override
+	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId,
+			Date joiningDate) throws Exception {
+		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(orgLocationId, joiningDate);
 	}
 
 }

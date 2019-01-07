@@ -48,6 +48,17 @@ public class EmailReminderDaoImpl implements EmailReminderDao {
 		return emailReminderList;
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<EmailReminder> getEmailReminderList(String scenarioName) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailReminder e  where e.scenarionName =:scenarioName and e.status = '1' "; 
+		List<EmailReminder> emailReminderList = session.createQuery(query).setString("scenarioName", scenarioName).list();
+		return emailReminderList;
+	}
+
 	
 	
 }
