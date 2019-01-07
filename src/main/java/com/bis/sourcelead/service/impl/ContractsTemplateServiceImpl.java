@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.NewContractCustomFieldDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
@@ -145,6 +147,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	LetterHeadService letterHeadService;
+	
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
@@ -166,10 +171,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(String templateType : contractTemplateDTO.getContractType())
 		contractsTemplate.setTemplateType(templateType);
 		
+		if(StringUtils.isNotBlank(contractTemplateDTO.getLetterHead())) {
+			LetterHead letterHead = letterHeadService.getLetterheadByUUID(contractTemplateDTO.getLetterHead());
+			contractsTemplate.setLetterHead(letterHead);
+		}
+		
+		
 		//This Is Not Using.
-		/*if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
-			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
-		}*/
+//		if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
+//			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
+//		}
 		
 		if(StringUtils.isNotBlank(contractTemplateDTO.getDescription())){
 			contractsTemplate.setDescription(contractTemplateDTO.getDescription().trim());
