@@ -360,7 +360,7 @@ public class RequirementInterviewRestController {
 			   requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),requirementSubmission.getOrgLocations(),loginOrg,user);	 
 			 }
 			 if(user != null){
-			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			 }
 			return "success";
 
@@ -790,7 +790,7 @@ public class RequirementInterviewRestController {
 		if(!orgLocations.getId().equals(submission.getCandidate().getOrgLocationId().getId()) && submission.getSourceSubmission() != null &&  !submission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 			requirementSubmissionService.sendRejectionMailToVendorContact(user, submission.getRejectedReason(), submission.getId(), orgLocations);
 		}
-		requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
 	}
 	
 	public void saveSubmissionStatusForSelectedInterview(Long interviewId, RequirementSubmission submission, User user, OrgLocations orgLocations) throws Exception {
@@ -808,7 +808,7 @@ public class RequirementInterviewRestController {
 			submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 			submission.setUpdatedDate(new Date());
 			requirementSubmissionService.storeRequirementSubmission(submission);
-			requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+			requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
 		}
 	}
 	 

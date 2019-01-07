@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -24,4 +25,6 @@ public interface RequirementOffersDao {
 	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId);
 	
 	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
+
+	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId, Date joiningDate) throws Exception;
 }
