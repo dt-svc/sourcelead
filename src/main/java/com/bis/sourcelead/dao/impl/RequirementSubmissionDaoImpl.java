@@ -4496,6 +4496,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			}
 			return count;
 	}
+	
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 java.sql.Date sqlJoiningDate = new java.sql.Date(joiningDate.getTime());
+		 
+	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = 'SUBMISSION' and date(rs.joinedDate) =:joiningDate and rs.status = '1' ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
+	     return shortListCandidatesList;
+	}
 
 }
 
