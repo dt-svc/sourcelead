@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -309,7 +310,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate", "/rest/getRequirmentOrgSubmissionTemplate" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
@@ -317,6 +318,16 @@ public class SubmissionsRestController {
 
 		return requirement.getSubmissionTemplateJsonString();
 
+	}
+	
+	@RequestMapping(value = {"/app/rest/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.POST)
+	@ResponseBody
+	public org.json.simple.JSONArray getRequirmentOrgSubmissionTemplateForMobile(
+			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		JSONParser par = new JSONParser();
+		org.json.simple.JSONArray template = (org.json.simple.JSONArray)par.parse(requirement.getSubmissionTemplateJsonString());
+		return template;
 	}
 	
 	@RequestMapping(value = "/getGuestUserRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
