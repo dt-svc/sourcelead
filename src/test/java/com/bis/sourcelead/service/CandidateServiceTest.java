@@ -32,6 +32,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -46,6 +47,7 @@ import org.mockito.Spy;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.*;
 
 /**
  * @author Ajith Matta,Rakshith
@@ -328,7 +330,7 @@ public class CandidateServiceTest {
 		}
 
 		@Test
-		public void testUpdateMarketplaceCartCountAndPrice() {
+		public void updateMarketplaceCartCountAndPrice() {
 			try{
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
@@ -350,7 +352,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void testUpdateMarketCartStatus() {
+		public void updateMarketCartStatus() {
 			try{
 				logger.info("testing updateMarketCartStatus service");
 				List<Long> marketCartIds = new ArrayList<Long>();
@@ -373,7 +375,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void testGetCandidateMarketPlaceDetailsByUUId(){
+		public void getCandidateMarketPlaceDetailsByUUId(){
 			try{
 				logger.info("testing getCandidateMarketPlaceDetailsByUUId service");
 				CandidateMarketPlace market = new CandidateMarketPlace();
@@ -387,7 +389,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void testGetMarketplaceSalesOrderBySalesUuid(){
+		public void getMarketplaceSalesOrderBySalesUuid(){
 			try{
 				logger.info("testing getMarketplaceSalesOrderBySalesUuid service");
 				MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
@@ -403,7 +405,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void testGetPurchaseDetailByPurchaseUuid(){
+		public void getPurchaseDetailByPurchaseUuid(){
 			try{
 				logger.info("testing getPurchaseDetailByPurchaseUuid service");
 				MarketplacePurchaseOrder purchaseOrder = new MarketplacePurchaseOrder();
@@ -419,7 +421,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void testGetBalanceAmountFromWallet(){
+		public void getBalanceAmountFromWallet(){
 			try{
 				logger.info("testing getBalanceAmountFromWallet service");
 				OrgLocations orglocations = new OrgLocations();
@@ -447,6 +449,57 @@ public class CandidateServiceTest {
 				e.printStackTrace();
 			}
 			
+		}
+		
+		@Test
+		public void saveToMarketplacePurchaseOrder(){
+			try{
+				MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
+				doNothing().when(spyCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+				verify(spyCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void saveToMarketplaceSalesOrder(){
+			try{
+				 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
+				 doNothing().when(spyCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+				 verify(spyCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void deleteAllCandidatesFromMarketcart(){
+			try{
+				Long orgLocationId = 123l;
+				 doNothing().when(spyCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
+				 verify(spyCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void getPurchaseCandidateListByOrglocation(){
+			try{
+				Long id = 1234l;
+				MarketplacePurchaseOrder mpo = new MarketplacePurchaseOrder();
+				List<MarketplacePurchaseOrder> list = new ArrayList<MarketplacePurchaseOrder>();
+				List<MarketplacePurchaseOrder> list1 = new ArrayList<MarketplacePurchaseOrder>();
+				list.add(mpo);
+				when(spyCandidateDao.getPurchaseCandidateListByOrglocation(id)).thenReturn(list);
+				list1 = spyCandidateDao.getPurchaseCandidateListByOrglocation(id);
+				assertThat(list1.size(),is(1));
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 
 }
