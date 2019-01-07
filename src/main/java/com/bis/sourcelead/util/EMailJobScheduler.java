@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -4242,7 +4243,7 @@ public class EMailJobScheduler {
 	
 	@SuppressWarnings("deprecation")
 	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+//	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runJobSchedulerEmailReminderAtOrgLevel() {
 		try {
@@ -4265,66 +4266,66 @@ public class EMailJobScheduler {
 							
 					        List<RequirementOffers> reqSubOfferList = requirementOffersService.getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(emailReminder.getOrgLocationsId().getId(), updatedDate);
 							if(reqSubOfferList != null && reqSubOfferList.size() > 0) {
-								StringBuffer applicantsInfoGrid = new StringBuffer();
-								applicantsInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-								applicantsInfoGrid.append("<tbody>");
-								applicantsInfoGrid.append("<tr>");
-								applicantsInfoGrid.append("<th> Applicant Name </th>");
-								applicantsInfoGrid.append("<th> Job Title </th>");
-								applicantsInfoGrid.append("<th> Client </th>");
-								applicantsInfoGrid.append("<th> Rate </th>");
-								applicantsInfoGrid.append("<th> Join Date </th>");
-								applicantsInfoGrid.append("</tr>");
-								for(RequirementOffers reqSubOffer : reqSubOfferList) {
-									String clientName = "--";
-									String rate = "--";
-									String jobId = "";
-									if(reqSubOffer.getSubmissionId().getRequirement().getClientId() != null){
-										if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-											clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
-										}
-										if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-											clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
-										}
-									}
-									if(reqSubOffer.getAmount() != null && reqSubOffer.getPaymentMode() != null){
-										rate = reqSubOffer.getPaymentType() + " " + reqSubOffer.getAmount()+"/"+reqSubOffer.getPaymentMode();
-									}
-									if(reqSubOffer.getSubmissionId().getRequirement().getJobId() != null){
-										jobId = reqSubOffer.getSubmissionId().getRequirement().getJobId() + " - ";
-									}
-									applicantsInfoGrid.append("<tr>");
-									applicantsInfoGrid.append("<td>"+reqSubOffer.getSubmissionId().getCandidate().getFullName()+"</td>");
-									applicantsInfoGrid.append("<td>"+jobId+reqSubOffer.getSubmissionId().getRequirement().getJobTitle()+"</td>");
-									applicantsInfoGrid.append("<td>"+clientName+"</td>");
-									applicantsInfoGrid.append("<td>"+rate+"</td>");
-									applicantsInfoGrid.append("<td>"+updatedDateStr+"</td>");
-									applicantsInfoGrid.append("</tr>");
-								}
-								applicantsInfoGrid.append("</tbody>");
-								applicantsInfoGrid.append("</table>");
 								
-								for(String email : emailReminder.getNotifyTo().split(",")) {
-									EmailMessage emailMessage = new EmailMessage();
-									emailMessage.setFirstName("");
-									emailMessage.setLastName("");
-									emailMessage.setToEmail(email.trim());
-									emailMessage.setFromEmail("info@sourcelead.com");
-									emailMessage.setFromName("Sourcelead Team");
-									emailMessage.setEmailType(Constants.APPLICANT_JOINING);
-									emailMessage.setCreatedBy(emailReminder.getOrgLocationsId().getUser().getUserCode());
-									emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
-									
-									//setting the class filed values
-									Map<String, String> globalVarsMap = new HashMap<String, String>();
-									globalVarsMap.put("noOfApplicants", String.valueOf(reqSubOfferList.size())+" applicants");
-									globalVarsMap.put("joinDate",updatedDateStr);
-									globalVarsMap.put("jobOwner","");
-									globalVarsMap.put("noOfDays",emailReminderHierarchy.getReminderdays()+" days");
-									globalVarsMap.put("applicantsInfo",applicantsInfoGrid.toString());
-									List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
-									commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.APPLICANT_JOINING, attachmentList);
-								}
+								//filter for unique requirement
+								TreeSet<RequirementOffers> list = reqSubOfferList.stream().collect(Collectors.toCollection(
+								          () -> new TreeSet<RequirementOffers>((p1, p2) -> p1.getSubmissionId().getRequirement().getId().compareTo(p2.getSubmissionId().getRequirement().getId())) ));
+										
+										for (RequirementOffers r : list) {
+											StringBuffer applicantsInfoGrid = new StringBuffer();
+											applicantsInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+											applicantsInfoGrid.append("<tbody>");
+											applicantsInfoGrid.append("<tr>");
+											applicantsInfoGrid.append("<th> Applicant Name </th>");
+											applicantsInfoGrid.append("<th> Job Title </th>");
+											applicantsInfoGrid.append("<th> Client </th>");
+											applicantsInfoGrid.append("<th> Rate </th>");
+											applicantsInfoGrid.append("<th> Join Date </th>");
+											applicantsInfoGrid.append("</tr>");
+											
+											for(RequirementOffers reqSubOffer : reqSubOfferList) {
+												if(reqSubOffer.getSubmissionId().getRequirement().getId() == r.getSubmissionId().getRequirement().getId()) {
+													String clientName = "--";
+													String rate = "--";
+													String jobId = "";
+													if(reqSubOffer.getSubmissionId().getRequirement().getClientId() != null){
+														if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+															clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
+														}
+														if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+															clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
+														}
+													}
+													if(reqSubOffer.getAmount() != null && reqSubOffer.getPaymentMode() != null){
+														rate = reqSubOffer.getPaymentType() + " " + reqSubOffer.getAmount()+"/"+reqSubOffer.getPaymentMode();
+													}
+													if(reqSubOffer.getSubmissionId().getRequirement().getJobId() != null){
+														jobId = reqSubOffer.getSubmissionId().getRequirement().getJobId() + " - ";
+													}
+													applicantsInfoGrid.append("<tr>");
+													applicantsInfoGrid.append("<td>"+reqSubOffer.getSubmissionId().getCandidate().getFullName()+"</td>");
+													applicantsInfoGrid.append("<td>"+jobId+reqSubOffer.getSubmissionId().getRequirement().getJobTitle()+"</td>");
+													applicantsInfoGrid.append("<td>"+clientName+"</td>");
+													applicantsInfoGrid.append("<td>"+rate+"</td>");
+													applicantsInfoGrid.append("<td>"+updatedDateStr+"</td>");
+													applicantsInfoGrid.append("</tr>");
+												}
+											}
+											applicantsInfoGrid.append("</tbody>");
+											applicantsInfoGrid.append("</table>");
+											
+											//loop for notify to emails
+											for(String email : emailReminder.getNotifyTo().split(",")) {
+												User toUser = new User();
+												toUser.setEmail(email.trim());
+												toUser.setFirstName("");
+												toUser.setLastName("");
+												applicationReminderEmailPreparationAndSend(toUser, emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);;
+											}
+											
+											//mail to job manager
+											applicationReminderEmailPreparationAndSend(r.getSubmissionId().getRequirement().getManagerUserId(), emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);
+										}
 							}
 						}
 					}
@@ -4336,6 +4337,35 @@ public class EMailJobScheduler {
 			logger.error("*****************Exception caught while EmailReminder shceduler *************"+e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	
+	private void applicationReminderEmailPreparationAndSend(User toUser, EmailReminder emailReminder, EmailReminderHierarchy emailReminderHierarchy, StringBuffer applicantsInfoGrid, List<RequirementOffers> reqSubOfferList, String updatedDateStr) {
+		EmailMessage emailMessage = new EmailMessage();
+		String jobOwner = "";
+		if(StringUtils.isNotBlank(toUser.getFirstName())) {
+			emailMessage.setFirstName(toUser.getFirstName());
+			jobOwner = toUser.getFullName();
+		}
+		if(StringUtils.isNotBlank(toUser.getLastName())) {
+			emailMessage.setLastName(toUser.getLastName());
+		}
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail("info@sourcelead.com");
+		emailMessage.setFromName("Sourcelead Team");
+		emailMessage.setEmailType(Constants.APPLICANT_JOINING);
+		emailMessage.setCreatedBy(emailReminder.getOrgLocationsId().getUser().getUserCode());
+		emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
+		
+		//setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("noOfApplicants", String.valueOf(reqSubOfferList.size())+" applicants");
+		globalVarsMap.put("joinDate",updatedDateStr);
+		globalVarsMap.put("jobOwner",jobOwner);
+		globalVarsMap.put("noOfDays",emailReminderHierarchy.getReminderdays()+" days");
+		globalVarsMap.put("applicantsInfo",applicantsInfoGrid.toString());
+		List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.APPLICANT_JOINING, attachmentList);
 	}
 	
 }
