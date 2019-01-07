@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
+import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -272,7 +273,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getMarketplaceTransactionDetails() throws Exception{
+		public void getMarketplaceTransactionDetails(){
 			try{
 			CandidateMarketPlacePaymentTransactionHistory cmpth = new CandidateMarketPlacePaymentTransactionHistory();
 			CandidateMarketPlacePaymentTransactionHistory cmpthreturn = new CandidateMarketPlacePaymentTransactionHistory();
@@ -292,7 +293,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getCandidateDetailsByCandidateId() throws Exception{
+		public void getCandidateDetailsByCandidateId(){
 			try{
 			CandidateMarketPlace cmp = new CandidateMarketPlace();
 			CandidateMarketPlace cmpreturn = new CandidateMarketPlace();
@@ -312,7 +313,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getUserDetailsBySourceOrgLocationId() throws Exception{
+		public void getUserDetailsBySourceOrgLocationId(){
 			try{
 			OrgLocations sourceOrgLocationId = new OrgLocations();
 			OrgSettings orgSettings = new OrgSettings();
@@ -333,7 +334,7 @@ public class CandidateServiceTest {
 		}
 
 		@Test
-		public void updateMarketplaceCartCountAndPrice() {
+		public void updateMarketplaceCartCountAndPrice(){
 			try{
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
@@ -355,7 +356,7 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void updateMarketCartStatus() {
+		public void updateMarketCartStatus(){
 			try{
 				logger.info("testing updateMarketCartStatus service");
 				List<Long> marketCartIds = new ArrayList<Long>();
@@ -506,6 +507,17 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
+		public void saveCandidateMarketPlaceWallet(){
+			try{
+				CandidateMarketWallet wallet = new CandidateMarketWallet();
+				doNothing().when(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				verify(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		@Test
 		public void withdrawCandidateFromMarketplace(){
 			try{
 				logger.info("testing withdrawCandidateFromMarketplace service");
@@ -531,7 +543,19 @@ public class CandidateServiceTest {
 			}
 		}
 		
-		
+		@Test
+		public void updateMarketWalletAmount() {
+			try{
+				Double balanceAmountValue = 123.4;
+				Long id = 123l;
+				doNothing().when(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				verify(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
 
 }
 
