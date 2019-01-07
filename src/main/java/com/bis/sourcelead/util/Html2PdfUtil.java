@@ -163,6 +163,14 @@ public class Html2PdfUtil {
 	                    			}
 	                    		}
 	                    	}
+	                    }else {
+	                    	StringBuilder ownersb = new StringBuilder();
+                			if(StringUtils.isNotBlank(contracts.getContactUser().getLastName())){
+                				ownersb.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName());
+                			}else{
+                				ownersb.append(contracts.getContactUser().getFirstName());
+                			}
+                			matchPattern.appendReplacement(sb, ownersb.toString());
 	                    }
 	                	
 	                	
