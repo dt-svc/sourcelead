@@ -6,9 +6,11 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -31,6 +33,8 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
+import com.bis.sourcelead.dto.MarketplaceWalletDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
@@ -555,7 +559,56 @@ public class CandidateServiceTest {
 				e.printStackTrace();
 			}
 		}
-
+		
+		@Test
+		public void getPurchaseCandidateExcelFile(){
+			try{
+				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
+				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
+				Long orgLocationId = 123l;
+				purchaseCandidatesList.add(mpo1);
+				File file = candidateService.getPurchaseCandidateExcelFile(purchaseCandidatesList, orgLocationId);
+				//System.out.println("marketplace file"+ file.getName().contains("Purchased Candidates"));
+				assertEquals(file.getName().contains("Purchased Candidates"),true);
+				file.delete();
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void getPurchaseCandidatePdf(){
+			try{
+				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
+				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
+				Long orgLocationId = 123l;
+				purchaseCandidatesList.add(mpo1);
+				File file = candidateService.getPurchaseCandidatePdf(purchaseCandidatesList, orgLocationId);
+				//System.out.println("marketplace file"+ file.getName());
+				assertEquals(file.getName().contains("PurchaseCandidate"),true);
+				file.delete();
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+		@Test
+		public void getWalletList(){
+			try{
+				MarketplaceWalletDTO marketplaceWalletDTO = new MarketplaceWalletDTO();
+				String searchValue = "abc";
+				String transactionType = "dummy";
+				Map<String, Date> dateValue = new HashMap<>();
+				ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
+				when(spyCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue)).thenReturn(responseList);
+				assertNotNull(responseList);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 
 }
 
