@@ -921,8 +921,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			if(projects.getProjectShortCode() != null && !projects.getProjectShortCode().isEmpty()) {
 				projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			}
+			projectTasks.setCreatedBy(projects.getCreatedBy());
 			projectTasks.setCreatedDate(new Date());
-			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);

@@ -244,7 +244,10 @@ $('#payPeriodStartDate').datepicker({
 			}
 			var dd = new Date(finalDateFormat);
 			dd.setDate(dt);
-			$("#payPeriodEndDate").html(dt);
+			var strDate = dt.toString();
+			var ed = strDate.split(" ");
+			var endDate = ed[0]+" "+ed[1]+" "+ed[2]+" "+ed[3];
+			$("#payPeriodEndDate").html(endDate);
 			$("#endDateDIV").show();
 			$("#payCheckDate").datepicker("option", "minDate", dt);
 			removePayPeriodStartDate();

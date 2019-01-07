@@ -194,8 +194,8 @@ public class ExpensesRestController {
                         }
                     }
                 }
-        		Submission_Status submissionStatus = eah.getExpenseStatus();
-        		expenses.setExpenseStatus(submissionStatus);
+        		//Submission_Status submissionStatus = eah.getExpenseStatus();
+        		//expenses.setExpenseStatus(submissionStatus);
             }
             /*if(expenses.getOrgRelationId() != null && !expenses.getOrgRelationId().isEmpty()){
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
