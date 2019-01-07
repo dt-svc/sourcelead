@@ -73,6 +73,9 @@ public class CandidateServiceTest {
 		OrgLocationService orgLocationService;
 		
 		@Spy
+		CandidateService spyCandidateService;
+		
+		@Spy
 		CandidateDao spyCandidateDao;
 		
 		@Test
@@ -504,16 +507,41 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
+
 		public void saveCandidateMarketPlaceWallet() throws Exception{
 			try{
 				CandidateMarketWallet wallet = new CandidateMarketWallet();
 				doNothing().when(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
 				verify(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
-				
+				}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		public void withdrawCandidateFromMarketplace(){
+			try{
+				logger.info("testing withdrawCandidateFromMarketplace service");
+				CandidateMarketPlace marketplace = new CandidateMarketPlace();
+				Candidate candidate = new Candidate();
+				candidate.setId(007l);
+				marketplace.setCandidateId(candidate);
+				candidate = doNothing().when(spyCandidateDao).getCandidateById(candidate.getId());
+				assertNotNull(candidate);
+				candidate.setIsSharedInMarketplace(Constants.NO);
+				doNothing().when(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
+				verify(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
+				doNothing().when(spyCandidateDao).storeCandidate(candidate);
+				verify(spyCandidateDao).storeCandidate(candidate);
+				doNothing().when(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
+				verify(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
+				marketplace.setCandidateUUID("aXbYcZ");
+				doNothing().when(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
+				verify(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
+
 
 }
 

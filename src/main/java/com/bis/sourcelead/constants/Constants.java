@@ -1376,6 +1376,6 @@ public class Constants {
 	
 	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
 	
-	
+	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	
 }

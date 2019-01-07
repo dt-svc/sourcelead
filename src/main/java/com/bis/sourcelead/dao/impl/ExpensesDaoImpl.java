@@ -348,6 +348,16 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Expenses> getAllExpenses() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Expenses expenses";
+		List<Expenses> expenses = session.createQuery(query).list();
+		return expenses;
+	}
+	
 	@Transactional(rollbackFor = { Exception.class })
     public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate) {
         Session session = this.sessionFactory.getCurrentSession();

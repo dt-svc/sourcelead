@@ -669,6 +669,32 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId,String designationType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserDetailsByEmailAndLocationId method  start");
+		String globalUserQuery = "";
+		if(StringUtils.isNotEmpty(designationType) && designationType.equalsIgnoreCase(Constants.OFFSHORE_C2C)) {
+			globalUserQuery = " and (userRole.orgLocations.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationId) and userRole.isPrimary = '1')";
+		}else {
+			globalUserQuery = " and userRole.orgLocations.id = :locationId ";
+		}
+		userRole = session
+				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
+						+ " left join fetch userRole.resourceManager left join fetch userRole.user left join fetch userRole.reportingManager left join fetch userRole.user.linkUserId  "
+						+ " where userRole.user.id = :userId "+globalUserQuery)
+
+				.setLong("userId", userId).setLong("locationId", locationId).list();
+		logger.debug("getUserDetailsByEmailAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return getLoginUserPrimaryRole(userId);
+		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public HashSet<ProjectMembers> getAllUserPrevoiusFridayTimeSheetSubmissionStatus(String invoiceFrequency,String dateFormat) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		Calendar cal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
