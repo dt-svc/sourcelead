@@ -41,7 +41,7 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard'/>">Total Pays</a> &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
@@ -156,7 +156,7 @@ function approvePayrollDiv(){
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/uSPayrollDashboard'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -258,6 +258,8 @@ $(document).ready(function() {
   
   <script>
   function getOverviewdata(){
+	  
+	  $("#approveDiv").hide();
 	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
@@ -842,6 +844,8 @@ function dashboardTab(){
 	  $("#historySearchDiv").hide();
 	  $("#searchDivForEmployee").hide();
 	  $("#dashboardDiv").show();
+	  
+	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
 	
 }
 </script>

@@ -96,6 +96,7 @@ function prepareTemplateList(url,sourceleadUrl){
 	result = result + '   <tr>';
 	result = result + '     <th>Template Title</th>';
 	result = result + '    <th>Template Type</th>';
+	result = result + '    <th>Letter Head</th>';
 	result = result + '    <th>Description</th>';
  	result = result + '    <th>Actions</th>';
 //  result = result + '    <th>Document</th>';
@@ -124,6 +125,7 @@ function contractTemplatePagination(url,sourceleadUrl){
         "columns": [
             { "data": "templateName" },
             { "data": "templateType"},
+            { "data": "letterHead"},
             { "data": "description"},
             { "data": "action"}
             
@@ -154,6 +156,19 @@ function contractTemplatePagination(url,sourceleadUrl){
               		
               }
 	          },{
+		    	  "targets": colIndex++,
+	              "data": "letterHead",
+	              "render": function ( data, type, report, meta ) {
+	            	  var result = "";
+	            	  if(report.letterHead != null && report.letterHead != '' && report.letterHead !='undefined'){
+	            	       	       result = result + '<div><span title="'+report.letterHead.letterHeadName+'">'+report.letterHead.letterHeadName+'</span></div>';
+	            	 		} else{
+	            			       result = result + '<div><span>---</span></div>';
+	            			    }
+		              return result;
+	              		
+	              }
+		          },{
              "targets": colIndex++,
              "data": "description",
              "render": function ( data, type, report, meta ) {
@@ -220,7 +235,8 @@ $("#filterContractTypePop, .statusFiler-1, .approved_pop").click(function(e) {
 <script type="text/javascript">
 function previewPDF(id,tempName) {
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
+// 	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
+	window.open(sourceleadUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
 }</script>
 
  <script>
