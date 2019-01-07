@@ -359,7 +359,8 @@ function applicantsPagination(){
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": ""
        }
-    } );
+    });
+    $('#applicantsPagination').wrap("<div class='overflow_Auto width100percnt'></div>")
 }
 </script>
  
