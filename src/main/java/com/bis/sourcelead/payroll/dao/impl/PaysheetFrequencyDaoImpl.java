@@ -89,11 +89,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus,int periodYear)
 	{
 		List<EmployeePayroll> payrollList = null;
 		try {
-			Date[] ytdDates = payrollUtil.getYTDDates(orgLocation);
+			Date[] ytdDates = payrollUtil.getYTDDatesPerYear(orgLocation,periodYear);
 			java.sql.Date startDate = new java.sql.Date(ytdDates[0].getTime());
 			java.sql.Date endDate = new java.sql.Date(ytdDates[1].getTime());
 			Session session = this.sessionFactory.getCurrentSession();
