@@ -19,7 +19,7 @@ public interface PaysheetFrequencyDao {
 
 	List<PaysheetFrequency> getPaysheetFrequencyDraftDataByOrgLocationId(Long orgLocationId);
 
-	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus);
+	List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation, String approverStatus,int periodYear);
 
 	ResponseList<EmployeePayroll> getPayrollRegisterReports(PayrollReportDTO payPeriodDTO);
 

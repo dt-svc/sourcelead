@@ -619,6 +619,8 @@ function preventTabkey(e){
 						 
 						 <li><a href="<c:url value="/app/projectAttributes" />">Project Attributes</a></li>
 						 
+						 <li><a href="<c:url value="/app/emailreminderConfigurationDashboard" />">Reminder Configuration</a></li>
+						 
 						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
 							 <li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>
 							 	<div class="campsubMenuView">

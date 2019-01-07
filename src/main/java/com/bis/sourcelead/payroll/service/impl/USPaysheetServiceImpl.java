@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -351,7 +352,8 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
 					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
-					payrollDTO.setPayRate(pay.getEmpPayRate());
+//					payrollDTO.setPayRate(pay.getEmpPayRate());
+					payrollDTO.setPayPerSal(pay.getPayPerSalary());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
 					float regHours = 0;
@@ -361,7 +363,14 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setRegularHours(regHours);
 					payrollDTO.setTaxes(pay.getTaxes());
 					payrollDTO.setOtHoursTotalAmt(pay.getOverTimeAmount());
-					YTDPayrollDTO ytdTaxes = payrollUtil.getEmployeeYTDPayroll(pay.getCandidate(), orgLocation, "APPROVED");
+					
+					//passing frequency year to calculate ytd
+					Date date = pay.getPaysheetFrequency().getFrequencyStartDate();
+					Calendar c = Calendar.getInstance();
+					c.setTime(date);
+					int year = c.get(Calendar.YEAR);
+					
+					YTDPayrollDTO ytdTaxes = payrollUtil.getEmployeeYTDPayroll(pay.getCandidate(), orgLocation, "APPROVED",year);
 					payrollDTO.setYtdDTO(ytdTaxes);
 					double overTimeHours = 0;
 					if(StringUtils.isNoneBlank(pay.getOverTimeHours())) {

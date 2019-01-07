@@ -404,7 +404,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						
 						Double taxPercent = 0d;
 						List<Tds> tdsList = taxService.getTDSListByFinancialYear(fromYear + "-" + toYear);
-						if(tdsList.size() > 0) {
+						if(tdsList != null && tdsList.size() > 0) {
 							for(Tds tds : tdsList) {
 								if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1) {
 									taxPercent = tds.getPercentage();
@@ -417,26 +417,29 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						}
 						
 						SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
-						JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
-						if (jsonArray != null) {
-							for (int i = 0; i < jsonArray.length(); i++) {
-								JSONObject jsonObject = jsonArray.getJSONObject(i);
-								if (jsonObject.getJSONArray("items") != null) {
-									for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
-										JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
-										itemsJsonObject.get("amount");
-										itemsJsonObject.get("maxLimit");
-										if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
-											if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-												tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
-											}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-												tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
+						if(itDeclarationSubmission != null) {
+							JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+							if (jsonArray != null) {
+								for (int i = 0; i < jsonArray.length(); i++) {
+									JSONObject jsonObject = jsonArray.getJSONObject(i);
+									if (jsonObject.getJSONArray("items") != null) {
+										for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
+											JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
+											itemsJsonObject.get("amount");
+											itemsJsonObject.get("maxLimit");
+											if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
+												if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+													tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
+												}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+													tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
+												}
 											}
 										}
 									}
 								}
 							}
 						}
+						
 						
 						//TDS amount calculation
 						tdsEligibilityTotal = (assoSal.getAnnualSalary()).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
