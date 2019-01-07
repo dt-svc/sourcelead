@@ -1800,4 +1800,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		return requirementOffersDao.getOnboardRequirementOfferId(offerId);
 	}
 
+
+	@Override
+	public List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId,
+			Date joiningDate) throws Exception {
+		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(orgLocationId, joiningDate);
+	}
+
 }
