@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AddExpensesDao;
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.PayrollPaySlipIndDao;
@@ -33,16 +35,13 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
-import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -67,6 +66,7 @@ import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -147,6 +147,12 @@ public class DumpPublicRestCalls {
 	ExpensesEntriesService expensesEntriesService;
 	
 	@Autowired
+	ExpensesService expensesService;
+	
+	@Autowired
+	AddExpensesDao addExpensesDao;
+	
+	@Autowired
 	PayrollPaySlipIndDao payrollPaySlipIndDao;
 	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
@@ -166,6 +172,40 @@ public class DumpPublicRestCalls {
 		return list;
 		
 	}
+	@RequestMapping(value = "/ws/updateAllExpensesStatus", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesStatus() throws Exception {
+		List<Expenses> expensesList = expensesService.getAllExpenses();
+		int count =0;
+		if(expensesList != null && !expensesList.isEmpty()) {
+			for(Expenses expenses :expensesList) {
+				List<String> expenseStatus = new ArrayList<>();
+				expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+				if(expenseStatus.contains(Submission_ApprovalStatus.REJECTED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REJECTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.getValue())){
+					expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}
+			}
+		}
+		return  count+" Records updated SuccessFully";
+	}
+	
+	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
+	List<String> expenseStatus = new ArrayList<>();
+	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
+	if(expenseStatus.contains(Submission_Status.REJECTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.REJECTED);
+	}else if(expenseStatus.contains(Submission_Status.SUBMITTED.getValue())){
+		expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+	}else{
+		expenses.setExpenseStatus(Submission_Status.APPROVED);
+	}
+	addExpensesDao.storeAddExpensesData(expenses);*/
 	
 	@RequestMapping(value = "/ws/dumpExpenseCategorySubmittedAmount", method = RequestMethod.GET)
 	@ResponseBody

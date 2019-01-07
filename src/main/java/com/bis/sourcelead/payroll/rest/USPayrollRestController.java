@@ -2118,6 +2118,10 @@ public class USPayrollRestController {
 			if(configurePayrollApprover != null && StringUtils.isNotBlank(configurePayrollApprover.getAutoPayrollFrequency())) {
 				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
 			}
+			
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+			model.addObject("userGroupList",userGroupList);		
+			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("payroll/payrollCalculator");
 			sessionData.setNav(Constants.PAYROLL);
@@ -2166,7 +2170,7 @@ public class USPayrollRestController {
 						  sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyStartDate())).append(" to ")
 						     .append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyEndDate()));
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
-						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
+						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
 						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());

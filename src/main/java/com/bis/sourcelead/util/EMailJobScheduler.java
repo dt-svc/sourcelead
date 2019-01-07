@@ -1,7 +1,6 @@
 package com.bis.sourcelead.util;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,9 +72,10 @@ import com.bis.sourcelead.entity.CronTracker;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailReminder;
+import com.bis.sourcelead.entity.EmailReminderHierarchy;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Immigration;
@@ -83,7 +83,6 @@ import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Lca;
-import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.LcaPlaceOfEployment;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -98,13 +97,14 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
@@ -112,9 +112,7 @@ import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
-import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
-import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
@@ -133,6 +131,7 @@ import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -151,6 +150,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -382,6 +382,12 @@ public class EMailJobScheduler {
 
 	@Autowired
 	private CronTrackerDao cronTrackerDao;
+	
+	@Autowired
+	private EmailReminderService emailReminderService;
+	
+	@Autowired
+	private RequirementOffersService requirementOffersService;
 
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -4227,7 +4233,109 @@ public class EMailJobScheduler {
 	}
 	
 	
+	/*@Scheduled(cron = "0 0 5 1/1 * ?")    cron method for the job reminder according to the aplicant job joining date */
+	public void applicant_Join_Date_to_reminder() throws Exception{
+		
+		
+	}
 	
 	
+	@SuppressWarnings("deprecation")
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Async
+	public void runJobSchedulerEmailReminderAtOrgLevel() {
+		try {
+			
+			// Applicant Joining remainder
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.APPLICANT_JOINING);
+			for(EmailReminder emailReminder : emailReminderList) {
+				if(emailReminder.getEmailReminderHierarchyList().size() > 0) {
+					for(EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(), emailReminder.getOrgLocationsId());
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(convertedOrgDate);
+						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+						int ampm = calendar.get(Calendar.AM_PM);
+						if( (ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])) || (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM") && hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])+12) ) {
+							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // Adding remainderDays days
+							SimpleDateFormat dateFormat = new SimpleDateFormat(emailReminder.getOrgLocationsId().getDateFormat());
+					        String updatedDateStr     = dateFormat.format(calendar.getTime());
+					        Date updatedDate = dateFormat.parse(updatedDateStr);
+							
+					        List<RequirementOffers> reqSubOfferList = requirementOffersService.getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(emailReminder.getOrgLocationsId().getId(), updatedDate);
+							if(reqSubOfferList != null && reqSubOfferList.size() > 0) {
+								StringBuffer applicantsInfoGrid = new StringBuffer();
+								applicantsInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+								applicantsInfoGrid.append("<tbody>");
+								applicantsInfoGrid.append("<tr>");
+								applicantsInfoGrid.append("<th> Applicant Name </th>");
+								applicantsInfoGrid.append("<th> Job Title </th>");
+								applicantsInfoGrid.append("<th> Client </th>");
+								applicantsInfoGrid.append("<th> Rate </th>");
+								applicantsInfoGrid.append("<th> Join Date </th>");
+								applicantsInfoGrid.append("</tr>");
+								for(RequirementOffers reqSubOffer : reqSubOfferList) {
+									String clientName = "--";
+									String rate = "--";
+									String jobId = "";
+									if(reqSubOffer.getSubmissionId().getRequirement().getClientId() != null){
+										if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+											clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
+										}
+										if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+											clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
+										}
+									}
+									if(reqSubOffer.getAmount() != null && reqSubOffer.getPaymentMode() != null){
+										rate = reqSubOffer.getPaymentType() + " " + reqSubOffer.getAmount()+"/"+reqSubOffer.getPaymentMode();
+									}
+									if(reqSubOffer.getSubmissionId().getRequirement().getJobId() != null){
+										jobId = reqSubOffer.getSubmissionId().getRequirement().getJobId() + " - ";
+									}
+									applicantsInfoGrid.append("<tr>");
+									applicantsInfoGrid.append("<td>"+reqSubOffer.getSubmissionId().getCandidate().getFullName()+"</td>");
+									applicantsInfoGrid.append("<td>"+jobId+reqSubOffer.getSubmissionId().getRequirement().getJobTitle()+"</td>");
+									applicantsInfoGrid.append("<td>"+clientName+"</td>");
+									applicantsInfoGrid.append("<td>"+rate+"</td>");
+									applicantsInfoGrid.append("<td>"+updatedDateStr+"</td>");
+									applicantsInfoGrid.append("</tr>");
+								}
+								applicantsInfoGrid.append("</tbody>");
+								applicantsInfoGrid.append("</table>");
+								
+								for(String email : emailReminder.getNotifyTo().split(",")) {
+									EmailMessage emailMessage = new EmailMessage();
+									emailMessage.setFirstName("");
+									emailMessage.setLastName("");
+									emailMessage.setToEmail(email.trim());
+									emailMessage.setFromEmail("info@sourcelead.com");
+									emailMessage.setFromName("Sourcelead Team");
+									emailMessage.setEmailType(Constants.APPLICANT_JOINING);
+									emailMessage.setCreatedBy(emailReminder.getOrgLocationsId().getUser().getUserCode());
+									emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
+									
+									//setting the class filed values
+									Map<String, String> globalVarsMap = new HashMap<String, String>();
+									globalVarsMap.put("noOfApplicants", String.valueOf(reqSubOfferList.size())+" applicants");
+									globalVarsMap.put("joinDate",updatedDateStr);
+									globalVarsMap.put("jobOwner","");
+									globalVarsMap.put("noOfDays",emailReminderHierarchy.getReminderdays()+" days");
+									globalVarsMap.put("applicantsInfo",applicantsInfoGrid.toString());
+									List<EmailAttachment> attachmentList=new ArrayList<EmailAttachment>();
+									commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.APPLICANT_JOINING, attachmentList);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			logger.debug("******************  EmailReminder on org locations Completed **********************");
+		} catch (Exception e) {
+			logger.error("*****************Exception caught while EmailReminder shceduler *************"+e.getMessage());
+			e.printStackTrace();
+		}
+	}
 	
 }

@@ -851,7 +851,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setSsnNumber(ssn);
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			
+			
+			//passing frequency year to calculate ytd
+			Date date = emp.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED,year);
 			dto.setYtdTaxes(ytdTaxes.add(ytdDTO.getYtdTaxes()));
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());

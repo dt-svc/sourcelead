@@ -38,7 +38,8 @@ $(document).ready(function(){
 		  <div class="positionRelative clearfix"> 
             <div class="col-md-4 positionRelative noPad col-md-offset-8">
         <select class="chosen-select" id="payFrequency" name = "payFrequency" onchange="nextPayrollDate();">
-        <c:if test="${not empty payFrequency}">
+
+         <c:if test="${not empty payFrequency}">
          <option selected value="${payFrequency}">${payFrequency}</option>
         </c:if>
         <c:if test="${empty payFrequency}"> 
@@ -46,7 +47,7 @@ $(document).ready(function(){
    			<option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
 			<option value="Annually">Annually</option>
-		 </c:if> 
+		</c:if> 
 			
 			<!-- <option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
