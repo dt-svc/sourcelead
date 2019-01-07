@@ -527,6 +527,7 @@ public class CandidateServiceTest {
 				marketplace.setCandidateId(candidate);
 				candidate = doNothing().when(spyCandidateDao).getCandidateById(candidate.getId());
 				assertNotNull(candidate);
+				verify(spyCandidateDao).getCandidateById(candidate.getId());
 				candidate.setIsSharedInMarketplace(Constants.NO);
 				doNothing().when(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
 				verify(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
