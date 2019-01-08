@@ -50,6 +50,15 @@ public class JobFairDTO extends SearchDTO implements Serializable {
 	private long updatedByUserId;
 	private Date updatedDate;
 	private boolean adminUser;
+	private boolean toExport;
+
+	public boolean isToExport() {
+		return toExport;
+	}
+
+	public void setToExport(boolean toExport) {
+		this.toExport = toExport;
+	}
 
 	public boolean isAdminUser() {
 		return adminUser;
