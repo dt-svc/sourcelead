@@ -983,7 +983,6 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Override
 	public void sendResetPasswordEmail(User user,Long locationsId, String verificationCode) throws Exception {
 		
-		System.out.println("***************************sendResetPasswordEmail ***************8");
 		try {
 			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationsId);
 			 if(userRole == null){
