@@ -91,7 +91,7 @@ getDeductionType();
                <div class="minHeightcol5 mt">
                <div class="col-md-5" id="dedTypeDiv">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount();" onblur="validateDuplicateDeductions();">
+                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount(); resetValues();" onblur="validateDuplicateDeductions();">
                       </select>
                   </div>
                   
@@ -176,8 +176,9 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	 var userCode = '${userCode}';
 	 var userId = '${userId}';
 	 var saveType = '${saveType}';  
+	 var dedType = $("#dedType").val();
 	 var deductionType = $("#deductionType").val();
-	 if(deductionType != null && deductionType != '' && deductionType != "undefined"){
+	 if(deductionType != null && deductionType != '' && deductionType != "undefined" && dedType != null && dedType != '' && dedType != "undefined"){
 		var formData = getFormData("associate_deduction_form");
 		$("#associate_deduction_save_button").attr("disabled", "disabled");
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -276,6 +277,13 @@ function deductionPopup(){
 	 }
  }
  </script>
+ 
+ <script>
+function resetValues(){
+	$("#amt").val('');
+	$("#mthd").val('');
+}
+</script>
  
  <script>
  function validateDuplicateDeductions(){

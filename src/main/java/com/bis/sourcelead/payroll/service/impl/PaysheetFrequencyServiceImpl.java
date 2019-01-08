@@ -2,8 +2,10 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,10 +50,12 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dao.USPaysheetDao;
 import com.bis.sourcelead.payroll.dto.AssociateReportDTO;
+import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.EmployeeHoursDTO;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -584,9 +588,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	}
 
 	@Override
-	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus)
+	public List<EmployeePayroll> employeePayrollYTD(Candidate candidate, OrgLocations orgLocation,String approverStatus,int periodYear)
 	{
-		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus);
+		return paysheetFrequencyDao.employeePayrollYTD(candidate,orgLocation,approverStatus,periodYear);
 	}
 
 	@Override
@@ -623,7 +627,22 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setRegularHours(emp.getRegularHours());
 			dto.setGrossPay(emp.getGrossPay());
 			dto.setTaxes(emp.getTaxes());
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			
+			String dateStr = payPeriodDTO.getFreqStartDate();
+			Date date = null;
+			SimpleDateFormat format = orgLocations.getLocFullFormDateFormatter();
+			try {
+				 date = format.parse(dateStr);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED,year);
 			dto.setYtdTaxes(ytdDTO.getYtdTaxes());
 			dto.setDeductions(emp.getPreTaxDeduction().add(emp.getPostTaxDeduction()));
 			dto.setYtdDeductions(ytdDTO.getYtdDeduction());
@@ -832,7 +851,15 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			dto.setSsnNumber(ssn);
 			dto.setDepartmentName(emp.getEmployee().getDepartmentId().getDepartmentName());
 			dto.setGrossPay(grossPay.add(emp.getGrossPay()));
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED);
+			
+			
+			//passing frequency year to calculate ytd
+			Date date = emp.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(emp.getCandidate(), orgLocations, Constants.APPROVED,year);
 			dto.setYtdTaxes(ytdTaxes.add(ytdDTO.getYtdTaxes()));
 			dto.setType(emp.getType());
 			dto.setEmpPayRate(emp.getEmpPayRate());
@@ -1001,9 +1028,31 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				}
 			}
 			responseList.setData(payrollReportList);
+			responseList.setRecordsTotal(payrollReportList.size());
+			responseList.setRecordsFiltered(payrollReportList.size());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return responseList;
 	}
+
+	@Override
+	public CommonPayrollDataDTO getNextPayrollDate(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId,String orgDateFormat)
+	{
+		return paysheetFrequencyDao.getNextPayrollDate(intiateUSPayrollDTO,orgLocationId,orgDateFormat);
+	}
+
+	@Override
+	public List<PaysheetFrequency> getRecentlyRunPayrollListByFrequency(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId, String dateFormat)
+	{
+		return paysheetFrequencyDao.getRecentlyRunPayrollListByFrequency(intiateUSPayrollDTO, orgLocationId,dateFormat);
+	}
+
+	@Override
+	public List<PaysheetFrequency> getRecentlyRunPayrollData( Long orgLocationId)
+	{
+		return paysheetFrequencyDao.getRecentlyRunPayrollData(orgLocationId);
+	}
+
 }

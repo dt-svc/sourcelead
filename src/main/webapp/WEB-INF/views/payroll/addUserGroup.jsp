@@ -10,8 +10,8 @@
  <form:form id="add_user_group_form"  name="add_user_group_form" method="post">
  <div id="loading"></div>
     <div class="popupHead">Add Batch <i class="closePop pull-right popClose" onclick="closeBatch();"></i></div>
-    <div class="popupMid" id="formDiv">
-                    <div class="minHeightcol5">
+    <div class="popupMid overflow_inherint" id="formDiv">
+                    <div class="minHeightcol5 clearfix">
                         <div class="col-md-6">
                             <label>Batch Id<span class="text-danger">*</span> </label>
                             <div class="clearfix" id="groupIdDiv">

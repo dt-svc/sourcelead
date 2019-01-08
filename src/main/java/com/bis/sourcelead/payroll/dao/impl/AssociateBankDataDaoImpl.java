@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
@@ -88,5 +90,17 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			// TODO: handle exception
 		}
 		return assBankData;
+	}
+
+	@Override
+	public boolean getisActivePaymentAccountExistedByCandidateId(Long candidateId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateBankData> paymentAccount = new ArrayList<AssociateBankData>();
+		boolean  flag = false;
+		paymentAccount = session.createQuery("from AssociateBankData ab left join fetch ab.candidate where ab.candidate.id = :candidateId and ab.defaultAccount = :flag " ).setLong( "candidateId", candidateId ).setBoolean("flag", true).list();
+		if (paymentAccount.size() > 0) {
+			flag = true;
+		} 
+		return flag;
 	}
 }

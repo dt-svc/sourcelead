@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.NewContractCustomFieldData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.NewContractCustomFieldDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
@@ -145,6 +147,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	@Autowired
 	UserRoleService userRoleService;
 	
+	@Autowired
+	LetterHeadService letterHeadService;
+	
 	@Override
 	public ContractsTemplate saveContractTemplate(ContractTemplateDTO contractTemplateDTO, JSONObject jsonObj, User user, OrgLocations orgLocation) throws Exception {
 		
@@ -166,10 +171,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		for(String templateType : contractTemplateDTO.getContractType())
 		contractsTemplate.setTemplateType(templateType);
 		
+		if(StringUtils.isNotBlank(contractTemplateDTO.getLetterHead())) {
+			LetterHead letterHead = letterHeadService.getLetterheadByUUID(contractTemplateDTO.getLetterHead());
+			contractsTemplate.setLetterHead(letterHead);
+		}
+		
+		
 		//This Is Not Using.
-		/*if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
-			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
-		}*/
+//		if(jsonObj.has("letterHead") && !isNullOrEmpty(jsonObj.getString("letterHead"))){
+//			contractsTemplate.setLetterHead(jsonObj.getString("letterHead"));
+//		}
 		
 		if(StringUtils.isNotBlank(contractTemplateDTO.getDescription())){
 			contractsTemplate.setDescription(contractTemplateDTO.getDescription().trim());
@@ -596,7 +607,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if (!Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
 				&& !Constants.WAITING_TO_SEND.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
-				&& !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())) {
+				&& !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
+				&& !Constants.VENDOR_NDA.equalsIgnoreCase(savedContracts.getContractType())
+				&& !Constants.VENDOR_NSA.equalsIgnoreCase(savedContracts.getContractType())) {
 			saveClientOrVendorContract(savedContracts,vendorContracts,user,orgLocation);
 		}
 		
@@ -609,7 +622,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	{
 		if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())){
 		StringBuilder autoGenId = new StringBuilder();
-		autoGenId.append(orgLocation.getGeneratedUserId().substring(0, 3));
+		if(StringUtils.isNotBlank(orgLocation.getGeneratedUserId())) {
+			autoGenId.append(orgLocation.getGeneratedUserId().substring(0, 3));
+		}
 		if("Client MSA".equalsIgnoreCase(contracts.getContractType()) || "Client SOW".equalsIgnoreCase(contracts.getContractType()))
 			autoGenId.append("-CL");
 		if("Vendor MSA".equalsIgnoreCase(contracts.getContractType()) || "Vendor SOW".equalsIgnoreCase(contracts.getContractType()))
@@ -859,7 +874,34 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				User vendorUser = savedContracts.getContactUser();
 				vendorContracts.setOwnerUserId(vendorUser);
 				// vendorContracts.setContactUser(ownerUser);
+			}else if(Constants.VENDOR_MSA.equalsIgnoreCase(savedContracts.getContractType())
+					|| Constants.VENDOR_SOW.equalsIgnoreCase(savedContracts.getContractType())) {
+				if (Constants.VENDOR_MSA.equalsIgnoreCase(savedContracts.getContractType())) {
+					vendorContracts.setContractType(Constants.CLIENT_MSA);
+				}else {
+					vendorContracts.setContractType(Constants.CLIENT_SOW);
+				}
+				
+				vendorContracts.setInitiatorType(Constants.VENDOR);
+				vendorContracts.setParentContractId(savedContracts);
+				vendorContracts.setContractOrgLocationId(orgLocation);
+				OrgRelations orgRelations = savedContracts.getOrgRelations();
+				vendorContracts.setOrgRelations(orgRelations);
+				if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					vendorContracts.setOrgLocationId(orgRelations.getLocationId());
+				}
+				if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
+					vendorContracts.setOrgLocationId(orgRelations.getResponderLocationId());
+				}
+				User vendorUser = savedContracts.getContactUser();
+				vendorContracts.setOwnerUserId(vendorUser);
+				
 			}
+			
+			
+			
+			
+			
 			// vendorContracts.setContractUUID(contracts.getContractUUID());
 			if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())){
 				vendorContracts.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
@@ -1504,8 +1546,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		Integer totalExpiredCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, "EXPIRED", user, userRoleName);
 		Integer totalRejectedCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"", contractsType, Constants.REJECTED, user, userRoleName);
 		
-		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, Constants.DRAFT, user, userRoleName);
-		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, Constants.DRAFT, user, userRoleName);
+//		Integer totalDraftApplicantCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.APPLICANT, contractsType, Constants.APPLICANT, user, userRoleName);
 		
 		Contracts contractsForList = new Contracts();
 		
@@ -1517,8 +1560,9 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		contractsForList.setTotalExpiredCount(totalExpiredCount);
 		contractsForList.setTotalRejectedCount(totalRejectedCount);
 		
-		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
-		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
+//		contractsForList.setTotalDraftVendorCount(totalDraftVendorCount);
+//		contractsForList.setTotalDraftClientCount(totalDraftClientCount);
+//		contractsForList.setTotalDraftApplicantCount(totalDraftApplicantCount);
 		return contractsForList;
 	}
 
@@ -3688,6 +3732,23 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
 	{
 		return contractsTemplateDao.deleteContractOwnerHierarchyListByContractId(id);
+	}
+
+	@Override
+	public Contracts getAllVendorClientAndApplicantCountByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user,String userRoleName) throws Exception {
+		
+		Contracts individualCounts = new Contracts();
+		
+		Integer totalVendorCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Vendor", contractsType, contractStatus, user, userRoleName);
+		Integer totalClientCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Client", contractsType, contractStatus, user, userRoleName);
+		Integer totalApplicantCount = contractsTemplateDao.getAllContractsCountByLocationIdAndStatus(orgLocation,contractSubmissionType,"Full Time", contractsType, contractStatus, user, userRoleName);
+		
+//		if()
+		individualCounts.setTotalDraftVendorCount(totalVendorCount);
+		individualCounts.setTotalDraftClientCount(totalClientCount);
+		individualCounts.setTotalDraftApplicantCount(totalApplicantCount);
+		
+		return individualCounts;
 	}
 	
 }

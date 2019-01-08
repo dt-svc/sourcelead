@@ -7,7 +7,7 @@
 	<div class="pull-left">
 	<h2>My Payroll</h2>
 	</div>
-	   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;My Payroll</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; My Payroll</div>
   </section>
   <div class="project_wrap">
 	   <div id="tabs-menu" class="clearfix project-tabs-menu">
@@ -17,15 +17,20 @@
 				<li id="myLoansAdvancesLi"  class=""><a onclick="getMyLoansAdv('Outstanding');" title="Loans & Advances">Loans & Advances</a></li>
 			</ul>
 	   </div>
-   </div>
+   
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
    <div id="myPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
+   </div>
 </section>
 
 <script>
 	$(document).ready(function() {
-		getMyPays();
+		var redirectionTab = '${redirectionTab}';
+		if(redirectionTab === "forms")
+			getMyForms();
+		else 
+			getMyPays();
 	});
 </script>
  
@@ -89,7 +94,13 @@ function highlight(id) {
     $("#"+id).addClass("active");
 } 
 </script>
+<script>
+function downloadPayslip(payslipUUID){
+	 window.location.href = sourceleadUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
 
+}
+
+</script>
 
 
 

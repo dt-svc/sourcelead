@@ -72,6 +72,8 @@ public interface TaxService {
 	Response<String> changeCentralTaxStatus(long centralTaxId);
 
 	Tds getTDSById(long id);
+	
+	List<Tds> getTDSListByFinancialYear(String financialYear);
 
 	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
 			User loggedInUser, OrgLocations orgLocations);
@@ -114,5 +116,7 @@ public interface TaxService {
 	 public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws IOException, Exception;
 
 	List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat, String financialYear, Paginator paginator);
+	
+	SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(Long userId, Long orgLocationId, String financialYear);
 
 }

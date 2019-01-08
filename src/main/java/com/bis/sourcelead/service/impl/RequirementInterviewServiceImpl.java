@@ -255,7 +255,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					           
 					           if(requirementSubmission.getSourceSubmission() != null){
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());

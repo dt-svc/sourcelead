@@ -65,11 +65,13 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
 import com.bis.sourcelead.payroll.dto.ConfirmPayTotalSumDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.FilteredClientDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.payroll.dto.MyPayrollSummaryDTO;
 import com.bis.sourcelead.payroll.dto.PayAdjustmentDTO;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -80,16 +82,24 @@ import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleCalenderDTO;
 import com.bis.sourcelead.payroll.dto.PayrollScheduleDTO;
 import com.bis.sourcelead.payroll.dto.PaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.RecentPayrollRunDataDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredDetailsDTO;
+import com.bis.sourcelead.payroll.dto.StaffingFilteredReviewsDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollAssociateTaxHistoryDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
+import com.bis.sourcelead.payroll.dto.VendorRecruitersDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.BankDataHistory;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
 import com.bis.sourcelead.payroll.entity.USPayrollAssociateTaxHistory;
 import com.bis.sourcelead.payroll.entity.UsMyPayrollForms;
 import com.bis.sourcelead.payroll.entity.UsPayrollSchedule;
@@ -1041,8 +1051,18 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		AssociatePayItem associatePayItem = associateSalaryService.findPayItemByPayItemId(Long.valueOf(associatePayItemDTO.getId()));
 		associatePayItem.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEffectiveDate()));
-		associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
-		associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
+		if(StringUtils.isNotBlank(associatePayItemDTO.getEndDate())) {
+			associatePayItem.setEndDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),associatePayItemDTO.getEndDate()));
+		}else {
+			associatePayItem.setEndDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(associatePayItemDTO.getPayItemAmount())) {
+			associatePayItem.setPayItemAmount(new BigDecimal(associatePayItemDTO.getPayItemAmount()));
+		}else {
+			associatePayItem.setPayItemAmount(null);
+		}
+		
 		associatePayItem = associateSalaryService.saveUpdatedPayItem(associatePayItem);
 		
 		if(associatePayItem != null) {
@@ -1129,14 +1149,16 @@ public class USPayrollRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/payrollList")
-	public ModelAndView getPayrollList(HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView getPayrollList(@RequestParam(value="redirect",required=false)String redirect,HttpServletRequest request, HttpServletResponse response)
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 		model.addObject("userGroupList",userGroupList);		
-		model.setViewName("payroll/usPayrollDashboard");
+		model.addObject("redirect",redirect);		
+//		model.setViewName("payroll/usPayrollDashboard");
+		model.setViewName("payroll/payrollCalculator");
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (sessionData == null) {
 			sessionData = new SessionMaintainanceData();
@@ -1268,9 +1290,14 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/getPaySheetFrequencyData", "/rest/getPaySheetFrequencyData" })
 	@ResponseBody
-	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO,
+			@RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue,
+			@RequestParam(value = "searchFrequency", required = false) String searchFrequency,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(searchFrequency !=null)
+			paysheetFrequencyDTO.setPayFrequency(searchFrequency);
 		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
 	}
 	
@@ -1345,7 +1372,7 @@ public class USPayrollRestController {
 	/**
 	 * 
 	 * @param paySheetFrequencyUUID
-	 * @param request
+	 * @param request /viewPaySheetFrequencyData?
 	 * @param response
 	 * @return
 	 * @throws Exception
@@ -1994,96 +2021,223 @@ public class USPayrollRestController {
 			return model;
 		}
 		
+		@RequestMapping(value = { "/getVendorRecruiters" }, method = RequestMethod.GET)
+		public ModelAndView getVendorRecruiters(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("payroll/vendorRecruiters");
+			return model;
+		}
+		
 		@RequestMapping(value = {"/getFilteredClientList","/rest/getFilteredClientList"}, method = RequestMethod.GET)
 		@ResponseBody
 		public ResponseList<FilteredClientDTO>getFilteredClientList(HttpServletRequest request,HttpServletResponse response) 
 		{
 			ResponseList<FilteredClientDTO> res = new ResponseList<>();
-			JSONParser jsonParser = new JSONParser();
-			String DEST = "C:\\Users\\BIS122\\Desktop\\clients_filtered.json";
+			String DEST = "/home/rajasekhar/confidential/clients_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
-				List<FilteredClientDTO> list = new ArrayList<>();
-				Object obj = jsonParser.parse(reader);
-				JSONObject json = (JSONObject) obj;
-				Set<String> s = json.keySet();
-				for(String name : s) {
-					JSONArray arr = (JSONArray) json.get(name);
-					for(int i=0;i< arr.size(); i++) {
-						try{
-							JSONObject ob=new JSONObject((Map) arr.get(i));
-							FilteredClientDTO dto = parseFilteredClientObject(ob);
-							list.add(dto);
-						}catch(Exception e) {
-							System.out.println("error with index number :"+i);
-						}
-					}
-				}
-				res.setData(list);
+				res = payrollUtil.getFilteredClientListData(reader);
 			 } catch (FileNotFoundException e) {
 		            e.printStackTrace();
 		        } catch (IOException e) {
-		            e.printStackTrace();
-		        } catch (ParseException e) {
 		            e.printStackTrace();
 		        }
 		
 			return res;
 		}
 		
-		private FilteredClientDTO parseFilteredClientObject(JSONObject ob)
-	    {
-			FilteredClientDTO dto = new FilteredClientDTO();
-			
-			dto.setCompanyName((String) ob.get("company_name"));
-			dto.setCompanyId((String) ob.get("company_id"));
-			dto.setCompanyWebsite((String)ob.get("company_website"));
-			dto.setOfficeCity((String)ob.get("office_city"));
-			dto.setOfficeCountry((String)ob.get("office_country"));
-			dto.setOfficeMetroArea((String)ob.get("office_metro_area"));
-			dto.setOfficePhone((String)ob.get("office_phone"));
-			dto.setOfficeState((String) ob.get("office_state"));
-			dto.setOfficeStreet((String)ob.get("office_street"));
-			dto.setOfficeWebsite((String)ob.get("office_website"));
-			dto.setOfficeStreet((String)ob.get("office_street"));
-	         
-			return dto;
-	    }
-		
 		@RequestMapping(value = {"/getCategoriesForStaffingFiltered","/rest/getCategoriesForStaffingFiltered"}, method = RequestMethod.GET)
 		@ResponseBody
 		public Response<Map<String,String>> getCategoriesForStaffingFiltered(HttpServletRequest request,HttpServletResponse response) 
 		{
 			Response<Map<String,String>> res = new Response<>();
-			JSONParser jsonParser = new JSONParser();
-			String DEST = "C:\\Users\\BIS122\\Desktop\\staffing_filtered.json";
+			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
-				Map<String,String> map = new HashMap<>();
-				Object obj = jsonParser.parse(reader);
-
-				JSONObject json = (JSONObject) obj;
-				Set<String> s = json.keySet();
-				for(String name : s) {
-					if("categories".equalsIgnoreCase(name)) {
-						System.out.println(json.get(name));
-						JSONObject json1 = (JSONObject) json.get(name);
-						Set<String> catSet = json1.keySet();
-						System.out.println(catSet);
-						for(String str : catSet) {
-							JSONObject ob = new JSONObject((Map) json1.get(str));
-							map.put(str, (String) ob.get("category_name"));
-						}
-					}
-				}
-				res.setObject(map);
+				res = payrollUtil.getCategoriesForStaffingFilteredData(reader);
 			 } catch (FileNotFoundException e) {
 		            e.printStackTrace();
 		        } catch (IOException e) {
 		            e.printStackTrace();
-		        } catch (ParseException e) {
+		        }
+			return res;
+		}
+		
+		@RequestMapping(value = {"/getStaffingFilteredListByCategoryId","/rest/getStaffingFilteredListByCategoryId"}, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<StaffingFilteredDTO> getStaffingFilteredListByCategoryId(@RequestParam(value="categoryId",required=false) String categoryId, HttpServletRequest request,HttpServletResponse response) 
+		{
+			ResponseList<StaffingFilteredDTO> res = new ResponseList<>();
+			JSONParser jsonParser = new JSONParser();
+			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
+			try (FileReader reader = new FileReader(DEST))
+			{
+				res = payrollUtil.getStaffingFilteredListByCategoryIdData(reader,categoryId);
+			 } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
 		            e.printStackTrace();
 		        }
 			return res;
+		}
+
+		@RequestMapping(value = {"/getVendorRecruiter","/rest/getVendorRecruiter"}, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<VendorRecruitersDTO>getVendorRecruiter(HttpServletRequest request,HttpServletResponse response) 
+		{
+			ResponseList<VendorRecruitersDTO> res = new ResponseList<>();
+			JSONParser jsonParser = new JSONParser();
+			String DEST = "/home/rajasekhar/confidential/vendor_recruiters.json";
+			try (FileReader reader = new FileReader(DEST))
+			{
+				res = payrollUtil.getVendorRecruiterData(reader);
+			 } catch (FileNotFoundException e) {
+		            e.printStackTrace();
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		
+			return res;
+		}
+		
+	
+	/**
+	 * Return US Payroll Dashboard  JSP
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/uSPayrollDashboard")
+	public ModelAndView uSPayrollDashboardJsp(HttpServletRequest request, HttpServletResponse response)
+	{
+		ModelAndView model = new ModelAndView();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
+			ConfigurePayrollApprover configurePayrollApprover = configurePayrollApproverService.getConfigurePayrollApproverByLocAndStatus(orgLocation);
+			if (sessionData == null) {
+				sessionData = new SessionMaintainanceData();
+			}
+			if(configurePayrollApprover != null && StringUtils.isNotBlank(configurePayrollApprover.getAutoPayrollFrequency())) {
+				model.addObject("payFrequency",configurePayrollApprover.getAutoPayrollFrequency());
+			}
+			
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+			model.addObject("userGroupList",userGroupList);		
+			
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("payroll/payrollCalculator");
+			sessionData.setNav(Constants.PAYROLL);
+			request.getSession().setAttribute("sessionData", sessionData);	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return model;
+	}
+	
+       
+		@RequestMapping(value = "/savePayItemsFromSummary",method = RequestMethod.POST)
+		public AssociatePayItem savePayItemsFromSummary(HttpServletRequest request,AssociateSalaryDTO associateSalaryDTO) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			
+			return payItemService.savePayItemsFromSummary(associateSalaryDTO,orgLocation,user);
+		
+		}
+		
+		
+		/**}
+		 * Get Next Payroll Date by Frequency
+		 * @param request
+		 * @param intiateUSPayrollDTO
+		 * @return CommonPayrollDataDTO
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/getNextPayrollDate",method = RequestMethod.POST)
+		public CommonPayrollDataDTO getNextPayrollDate(HttpServletRequest request,IntiateUSPayrollDTO intiateUSPayrollDTO) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			CommonPayrollDataDTO commonPayrollDataDTO = paysheetFrequencyService.getNextPayrollDate(intiateUSPayrollDTO,orgLocation.getId(),orgLocation.getDateFormat());
+			List<PaysheetFrequency> paySheetFrequencyList = paysheetFrequencyService.getRecentlyRunPayrollListByFrequency(intiateUSPayrollDTO,orgLocation.getId(),orgLocation.getDateFormat());
+			if(paySheetFrequencyList != null) {
+				List<RecentPayrollRunDataDTO> recentDataList = new ArrayList<>();
+				for(PaysheetFrequency paysheetFrequency : paySheetFrequencyList) {
+					Set<EmployeePayroll> payrollList = paysheetFrequency.getEmployeepayroll();
+					if(payrollList != null && payrollList.size() >0) {
+						double netAmount = payrollList.stream().filter(p->"APPROVED".equalsIgnoreCase(p.getSubmitForAproverStatus())).mapToDouble(p->p.getNetPay().doubleValue()).sum(); 
+					  if(netAmount > 0) {
+						  RecentPayrollRunDataDTO recentPayrollRunDataDTO = new RecentPayrollRunDataDTO();
+						  StringBuilder sb = new StringBuilder();
+						  sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyStartDate())).append(" to ")
+						     .append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyEndDate()));
+						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
+						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
+						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
+						  recentDataList.add(recentPayrollRunDataDTO);
+					  }
+					}
+				}
+				commonPayrollDataDTO.setPayrollGraphData(recentDataList);
+			}
+			List<PaysheetFrequency> recentPayrollRunData = paysheetFrequencyService.getRecentlyRunPayrollData(orgLocation.getId());
+			if(recentPayrollRunData != null) {
+				List<RecentPayrollRunDataDTO> gridDataList = new ArrayList<>();
+				for(PaysheetFrequency paysheetFrequency : recentPayrollRunData) {
+					Set<EmployeePayroll> payrollList = paysheetFrequency.getEmployeepayroll();
+					RecentPayrollRunDataDTO recentPayrollRunDataDTO = new RecentPayrollRunDataDTO();
+					recentPayrollRunDataDTO.setPaysheetFreqUUID(paysheetFrequency.getPaySheetFrequencyUUID());
+					StringBuilder sb = new StringBuilder();
+					  sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyStartDate())).append(" to ")
+					     .append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyEndDate()));
+					  List<EmployeePayroll> approvedPayroll = payrollList.stream().filter(p->"APPROVED".equalsIgnoreCase(p.getSubmitForAproverStatus())).collect(Collectors.toList());
+					  int dd = 0;
+					  int cheque = 0;
+					  BigDecimal netPay = BigDecimal.ZERO;
+					  BigDecimal grossPay = BigDecimal.ZERO;
+					  if(approvedPayroll.size() > 0) {
+						  for(EmployeePayroll payroll : approvedPayroll) {
+							  
+//							  if(payroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED))
+								  recentPayrollRunDataDTO.setPayPeriodNum(payroll.getPayPeriodNum());
+							  
+							  if(payroll.getBankDataHistory() != null && payroll.getBankDataHistory().size() > 0) {
+								  BankDataHistory bankData = payroll.getBankDataHistory().iterator().next();
+								  if("Direct Deposit".equalsIgnoreCase(bankData.getAccountType())) {
+									  dd++;
+								  }else if("Cheque".equalsIgnoreCase(bankData.getAccountType())) {
+									  cheque++; 
+								  }  
+							  }
+							  if(payroll.getNetPay() != null) {
+								  netPay = netPay.add(payroll.getNetPay());
+							  }
+							  
+							  if(payroll.getGrossPay() != null) {
+								  grossPay = grossPay.add(payroll.getGrossPay()) ;
+							  }
+						  }	  
+						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
+						  recentPayrollRunDataDTO.setPayGroupName(paysheetFrequency.getUserGroup().getGroupName());
+						  recentPayrollRunDataDTO.setGrossPay(grossPay);
+						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
+						  recentPayrollRunDataDTO.setPayrollRunDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getCreatedDate()));
+						  recentPayrollRunDataDTO.setNoOfEmployees(approvedPayroll.size());
+						  recentPayrollRunDataDTO.setNoOfDirectDeposit(dd);
+						  recentPayrollRunDataDTO.setNoOfCheques(cheque);
+						  recentPayrollRunDataDTO.setNetPay(netPay);
+						  
+						  gridDataList.add(recentPayrollRunDataDTO);
+					  }
+				}	
+				commonPayrollDataDTO.setPayrollGridData(gridDataList);
+			}
+			
+			return commonPayrollDataDTO;
 		}
 }

@@ -54,6 +54,12 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	@Column(name = "CURR_RATE_CUR")
 	private String currentRateCurrency;
 	
+	@Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
+	
+	@Column(name = "EXP_RATE_TYPE")
+	private String expectedRateType;
+	
 	@Column(name = "EXPECTED_RATE")
 	private String expectedRate;
 
@@ -88,6 +94,9 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	@JsonProperty
 	private String createdDatestr;
 
+	@Column(name = "CART_STATUS")
+	private String cartStatus;
+	
 	public Long getId() {
 		return id;
 	}
@@ -184,6 +193,14 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	public void setCurrentRateCurrency(String currentRateCurrency) {
 		this.currentRateCurrency = currentRateCurrency;
 	}
+	
+	public String getCurrentRateType(){
+		return currentRateType;
+	}
+	
+	public void setCurrentRateType(String currentRateType){
+		this.currentRateType = currentRateType;
+	}
 
 	public String getExpectedRate() {
 		return expectedRate;
@@ -199,6 +216,15 @@ public class CandidateMarketPlaceCartView implements Serializable {
 
 	public void setExpectedRateCurrencey(String expectedRateCurrencey) {
 		this.expectedRateCurrencey = expectedRateCurrencey;
+	}
+	
+
+	public String getExpectedRateType(){
+		return expectedRateType;
+	}
+	
+	public void setExpectedRateType(String expectedRateType){
+		this.expectedRateType = expectedRateType;
 	}
 
 	public String getExperienceYears() {
@@ -271,6 +297,14 @@ public class CandidateMarketPlaceCartView implements Serializable {
 
 	public void setCreatedDatestr(String createdDatestr) {
 		this.createdDatestr = createdDatestr;
+	}
+
+	public String getCartStatus() {
+		return cartStatus;
+	}
+
+	public void setCartStatus(String cartStatus) {
+		this.cartStatus = cartStatus;
 	}
 
 	

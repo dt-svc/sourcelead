@@ -202,8 +202,12 @@ public class RequirementDaoImpl implements RequirementDao {
                                 if (!bodyContent.isEmpty()) {
                                     bodyContent = bodyContent.replace("{username}", orgJobBoardAccount.getUsername());
                                     bodyContent = bodyContent.replace("{password}", new PasswordSecurity().decrypt(orgJobBoardAccount.getPassword()));
-                                    bodyContent = bodyContent.replace("{title}", requirement.getJobTitle());
-                                    bodyContent = bodyContent.replace("{jobDetail}", requirement.getDescription() == null ? requirement.getJobTitle() : requirement.getDescription());
+                                    String jobTitle = requirement.getJobTitle();
+                                    while(jobTitle.length() < 25) {
+                                    	jobTitle += " " + jobTitle;
+                                    }
+                                    bodyContent = bodyContent.replace("{title}", jobTitle);
+                                    bodyContent = bodyContent.replace("{jobDetail}", requirement.getDescription() == null ? jobTitle : requirement.getDescription());
                                     String loc[] = requirement.getLocationsList() == null || requirement.getLocationsList().isEmpty() ? "Hyderabad, Telangana, IN".split(", ") : requirement.getLocationsList().get(0).split(", ");
                                     bodyContent = bodyContent.replace("{city}", loc.length > 0 ? loc[0] : "Hyderabad");
                                     bodyContent = bodyContent.replace("{state}", loc.length > 1 ? loc[1] : "Telangana");
@@ -238,6 +242,9 @@ public class RequirementDaoImpl implements RequirementDao {
                                         industryCode = industryData.getJobBoardValue();
                                     }
                                     bodyContent = bodyContent.replace("{industryCode}", industryCode);
+                                    
+                                    bodyContent = bodyContent.replace("{companyName}", orgJobBoardAccount.getOrg().getOrgName());
+                                    bodyContent = bodyContent.replace("{companyAddress}", orgJobBoardAccount.getOrg().getWebSite() != null ? orgJobBoardAccount.getOrg().getWebSite() : orgJobBoardAccount.getOrg().getOrgName());
                                     OkHttpClient client = new OkHttpClient();
                                     RequestBody body = RequestBody.create(XML, bodyContent);
                                     Request req = new Request.Builder().url(jobBoard.getPostUrl())
@@ -245,6 +252,7 @@ public class RequirementDaoImpl implements RequirementDao {
                                                     .post(body)
                                                     .build();
                                     Response res = client.newCall(req).execute();
+                                    System.out.println("Response Body : " + res.body());
                                     if(res.isSuccessful()) {
                                         String resBody = res.body().string();
                                         System.out.println(resBody);
@@ -1750,12 +1758,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			String subQuery1 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  and  requirement.requirementSubmissionStatus <> 'DRAFT'  ";
 			params.put("userId", userId);
 
-			String subQuery2 = "requirement.managerUserId.id = :managerUserId and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
+			String subQuery2 = "(requirement.managerUserId.id = :managerUserId or requirement.primaryRecruiterUserId.id = :managerUserId) and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' )  ";
 			params.put("managerUserId", userId);
-
+			
 			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
 			params.put("userId", userId);
-
+			
 			if (subQuery1 != "" || subQuery2 != "" || subQuery3 != "") {
 				subQuery = "where " + dateBetween + " requirement.orgLocationId.id =:orgLocationId and ( (" + subQuery1
 						+ ") or (" + subQuery2 + ")  or (" + subQuery3 + ") ) ";
@@ -3173,7 +3181,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(!jobFairDTO.isAdminUser()) {
 				queryObj.setLong("userId", jobFairDTO.getUserId());
 			}
-			jobFairList = queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId());
+			if(!jobFairDTO.isToExport()) {
+				queryObj.setFirstResult(jobFairDTO.getStart());
+				queryObj.setMaxResults(jobFairDTO.getLength());
+			}
+			jobFairList = queryObj.list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.orgLocations.id=:orgLocationId";
 			if(!jobFairDTO.isAdminUser()) {
@@ -3772,6 +3785,8 @@ public class RequirementDaoImpl implements RequirementDao {
 						queryList.add("DELETE FROM JobCustomFieldData jcfd WHERE jcfd.requirement.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM RequirementIncentive ri WHERE ri.requirementId.id = "+req.getId()+" ");
+						
+						queryList.add("DELETE FROM JobFairRequirements jfr WHERE jfr.requirement.id = "+req.getId()+" ");
 						
 						queryList.add("DELETE FROM Requirement r  WHERE r.id = "+req.getId()+ " ");
 						
