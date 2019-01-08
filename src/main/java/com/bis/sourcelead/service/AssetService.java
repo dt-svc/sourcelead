@@ -95,5 +95,5 @@ public interface AssetService {
 
 	File getAssetsReportListOfExcel(List<AssetsReportDTO> data, User user, OrgLocations orgLocation,String isGlobalAccess) throws FileNotFoundException;
 
-
+	void deleteAsset(Asset asset)throws Exception;
 }
