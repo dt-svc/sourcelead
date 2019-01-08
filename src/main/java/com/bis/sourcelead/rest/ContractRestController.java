@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -89,6 +90,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.Html2PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.html.simpleparser.HTMLWorker;
@@ -144,6 +146,9 @@ public class ContractRestController {
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
 	@Autowired
 	private NewContractCustomFieldDataService newContractCustomFieldDataService;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 	
 	@RequestMapping(value = "/saveTemplate", method = RequestMethod.POST)
 	public @ResponseBody String saveContractTemplate(ContractTemplateDTO contractTemplateDTO, HttpServletRequest request) throws Exception
@@ -202,6 +207,19 @@ public class ContractRestController {
 		}
 	}
 	
+	@RequestMapping(value = "/previewContractTemplate/{id}/{tempName}", method = RequestMethod.GET)
+	public @ResponseBody  void previewEmpTemplate(@PathVariable("id") String tempUUID,@PathVariable("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ContractsTemplate contractsTemplate = contractsTemplateService.getContractTemplateByTemplateUUID(tempUUID);
+		
+			String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
+			String totalBody =header+ contractsTemplate.getTemplateContent();
+			if(contractsTemplate.getLetterHead() != null)
+				
+			reportsUtil.viewCompleteletterheadData(totalBody, contractsTemplate.getLetterHead(), response);
+    	
+	}
+	
 	@RequestMapping(value = "/viewContractPdf/{uuid}/{templateName}", method = RequestMethod.GET)
 	public @ResponseBody void viewContractPdf(@PathVariable("uuid") String uuid, @PathVariable("templateName") String templateName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
@@ -253,7 +271,7 @@ public class ContractRestController {
 	public ResponseList<ContractsTemplate> getAllTemplates(ContractTemplateDTO contractTemplateDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(Long.parseLong(contractTemplateDTO.getOrgLocationId()));
-		String[] tableColumns = { "templateName", "templateType", "description", "action" };
+		String[] tableColumns = { "templateName", "templateType","letterHead", "description", "action" };
 		int sortColumnIndex = 0; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
 		if (contractTemplateDTO.getOrder() != null && !contractTemplateDTO.getOrder().isEmpty()) {
