@@ -150,6 +150,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
 	{
+		System.out.println("**********************sendEmail*********************");
 		if (emailMessage != null) {
 			String tabDivGroup = "";
 			// the pattern we want to search for
@@ -183,6 +184,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	
 	private void sendEmailCommon(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
 	{
+		System.out.println("**********************sendEmailCommon*********************");
 		Long emailNotificationId = null;
 		// if non prod and send email in non prod is true then call or prod
 		if (environment.equalsIgnoreCase("prod")) {
@@ -221,6 +223,10 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		Properties props = new Properties();
 		final String username = emailMessage.getUserName();
 		final String password = emailMessage.getPassword();
+		
+		System.out.println("***********Final  : sendMessageConfiguredMail ");
+		System.out.println("***********username : "+username);
+		System.out.println("***********password : "+password);
 
 //		props.put("mail.smtp.host", "secure.emailsrvr.com");
 		props.put("mail.smtp.host", "smtp.sendgrid.net");
@@ -245,7 +251,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-
+			session.setDebug(true);
 			String UUID = null;
 			if (null != emailMessage.getEmailType()
 					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
