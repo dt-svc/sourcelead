@@ -341,6 +341,8 @@ public class LeaveManagementRestController {
 				Constants.RECORD_ACTIVE.toString());
 
 		LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		model.addObject("currentYear", currentYear);
 		model.addObject("yearsList", yearsList);
 		model.addObject("departmentList", departmentList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1013,13 +1015,21 @@ public class LeaveManagementRestController {
 					"orgLocations");
 			if (loginOrgLocation != null) {
 
+				
 				if (StringUtils.isNotBlank(reportYear)) {
 					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
 							Long.parseLong(reportYear));
 				} else {
-					holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+					if(StringUtils.isNotBlank(reportYear) ) {
+						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					}else {
+						reportYear = String.valueOf(currentYear);
+						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
+								Long.parseLong(reportYear));
+					}
 				}
-
+				
 				responseList.setData(holiodaysDTOList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());

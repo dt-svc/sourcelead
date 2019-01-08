@@ -54,6 +54,12 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	@Column(name = "CURR_RATE_CUR")
 	private String currentRateCurrency;
 	
+	@Column(name = "CURRENT_RATE_TYPE")
+	private String currentRateType;
+	
+	@Column(name = "EXP_RATE_TYPE")
+	private String expectedRateType;
+	
 	@Column(name = "EXPECTED_RATE")
 	private String expectedRate;
 
@@ -187,6 +193,14 @@ public class CandidateMarketPlaceCartView implements Serializable {
 	public void setCurrentRateCurrency(String currentRateCurrency) {
 		this.currentRateCurrency = currentRateCurrency;
 	}
+	
+	public String getCurrentRateType(){
+		return currentRateType;
+	}
+	
+	public void setCurrentRateType(String currentRateType){
+		this.currentRateType = currentRateType;
+	}
 
 	public String getExpectedRate() {
 		return expectedRate;
@@ -202,6 +216,15 @@ public class CandidateMarketPlaceCartView implements Serializable {
 
 	public void setExpectedRateCurrencey(String expectedRateCurrencey) {
 		this.expectedRateCurrencey = expectedRateCurrencey;
+	}
+	
+
+	public String getExpectedRateType(){
+		return expectedRateType;
+	}
+	
+	public void setExpectedRateType(String expectedRateType){
+		this.expectedRateType = expectedRateType;
 	}
 
 	public String getExperienceYears() {

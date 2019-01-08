@@ -599,4 +599,38 @@ public class OrgSettingsController {
 		model.setViewName("addMailPopUp");
 		return model;
 	}
+	
+	 @RequestMapping(value = "/emailreminderConfigurationDashboard")
+	   	public ModelAndView emailreminderConfigurationDashboard(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
+			model.addObject("referTypeList", referTypeList);
+	   		model.setViewName("project/emailreminderConfigurationDashboard");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    
+	    @RequestMapping(value = "/jobsConfigureEmails")
+	   	public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
+			model.addObject("referTypeList", referTypeList);
+	   		model.setViewName("requirement/jobsConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    
+	    @RequestMapping(value = "/financeConfigureEmails")
+	   	public ModelAndView reminderFinanceConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   	    model.addObject("orgLocationId", orgLocations.getId());
+	   		model.addObject("referTypeList", referTypeList);
+	   		model.setViewName("billing/financeConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
 }

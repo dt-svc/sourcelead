@@ -33,6 +33,7 @@ import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -48,6 +49,7 @@ import com.bis.sourcelead.rest.ContractRestController;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -132,6 +134,10 @@ public class ContractController {
 	
 	@Autowired
 	private SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	private LetterHeadService letterHeadService;
+	
 	/**
 	 * display contract template list page
 	 * @return model
@@ -153,7 +159,11 @@ public class ContractController {
 	@RequestMapping(value = "/addContractTemplate")
 	public ModelAndView addContractTemplate(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
+		
+		model.addObject("letterHeadList", letterHeadList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("contracts/addContractTemplate");
 		return model;

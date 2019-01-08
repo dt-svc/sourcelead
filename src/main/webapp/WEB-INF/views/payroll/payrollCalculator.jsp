@@ -41,14 +41,15 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
-   	    
-	   <li class="current"><a href="javascript:void(0)" class="active" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+   	    <li id="dashId" class="current"><a href="javascript:void(0)" class="active" onclick="dashboardTab();">Dashboard</a></li>
+	   <li id="overId"><a href="javascript:void(0)" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
+
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
 	        <li><a onclick="getPayPeriodData();" id="historyAId">History</a></li>
 <%-- 	   </c:if> --%>
@@ -67,7 +68,7 @@ function approvePayrollDiv(){
     
     <div id="overViewDiv">
 <div class="clearfix"></div>
-<div class="timesheet_out" id="reviewPayrollDiv">
+<div class="timesheet_out" id="reviewPayrollDiv" style = "display : none">
 
 <div class="tablelist-wrap">
 <div class="timesheet_head minHeight">
@@ -155,7 +156,7 @@ function approvePayrollDiv(){
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/uSPayrollDashboard'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -239,7 +240,7 @@ function approvePayrollDiv(){
 <!--   Error Message   --> 
 
 
-
+<jsp:include page="uSPayrollDashboard.jsp" />
 <jsp:include page="usPayrollApprove.jsp" />
 <jsp:include page="payrollAdjustment.jsp" />
 <jsp:include page="usPayrollDashboardEmployees.jsp" />
@@ -258,6 +259,8 @@ $(document).ready(function() {
   <script>
   function getOverviewdata(){
 	  
+	  $("#approveDiv").hide();
+	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
 	  $("#payrollFrequencyDiv").hide();
@@ -309,6 +312,7 @@ $(document).ready(function() {
 		$("#approveDiv").hide();
 		$("#userGroupDiv").hide();
 		$("#searchDivForEmployee").hide();
+		$("#dashboardDiv").hide();
 		$("#historySearchDiv").show();
 		$("#historyDataTableSearch").show();
 		$("#payrollFrequencyDiv").show();
@@ -532,7 +536,7 @@ function runUSPayroll(){
 				        	result += '<th>Emp ID</th>';
 				        	result += '<th>Emp Name</th>';
 				        	result += '<th>Regular<br>Hours</th>';
-				        	result += '<th>Payrate</th>';
+				        	result += '<th>Pay Per Salary</th>';
 				        	result += '<th>Pay Type</th>';
 				        	result += '<th>OT<br>Hours</th>';
 				        	result += '<th>Gross<br>Pay</th>';
@@ -570,7 +574,7 @@ function runUSPayroll(){
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
  						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
-						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
+						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payPerSal+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
 						        	}else{
@@ -807,6 +811,7 @@ function getDraftData(){
 			        	$("#historyDataTableSearch").hide();
 			        	$("#userGroupDiv").hide();
 			        	$("#searchDivForEmployee").hide();
+			        	 $("#dashboardDiv").hide();
 			        	$("#draftFrequencyDiv").show();
 			        	$("#initiateLoading").removeAttr('style');
 			        	draftPagination();
@@ -830,5 +835,20 @@ function draftPagination(){
 
 </script>
 
-  
+<script>
+function dashboardTab(){
+	  $("#overViewDiv").hide();
+	  $("#userGroupDiv").hide();
+	  $("#draftFrequencyDiv").hide();
+	  $("#payrollFrequencyDiv").hide();
+	  $("#historySearchDiv").hide();
+	  $("#searchDivForEmployee").hide();
+	  $("#dashboardDiv").show();
+	  
+	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
+	
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />

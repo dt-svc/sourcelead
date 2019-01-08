@@ -258,7 +258,7 @@ public interface CandidateService {
 
 	public Map<String, Object[]> getAddedMarketplaceCandidates(List<Long> candidateIdsVal);
 
-	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType);
+	public void updateMarketPlacePrice(Long id, String priceVal, String priceValType)throws Exception;
 	
 	public CandidateMarketPlace getCandidateMarketPlaceDetailsByIdAndOrgLocationId(Long id, Long orgLocationId)throws Exception;
 	

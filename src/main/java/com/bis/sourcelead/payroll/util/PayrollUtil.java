@@ -680,9 +680,10 @@ public class PayrollUtil {
 	 * @param payroll
 	 * @param orgLocation
 	 * @param approverStatus
+	 * @param periodYear 
 	 * @return YTDPayrollDTO
 	 */
-	public YTDPayrollDTO getEmployeeYTDPayroll(Candidate candidate, OrgLocations orgLocation, String approverStatus)
+	public YTDPayrollDTO getEmployeeYTDPayroll(Candidate candidate, OrgLocations orgLocation, String approverStatus, int periodYear)
 	{
 		YTDPayrollDTO ytd = new YTDPayrollDTO();
 		BigDecimal ytdFederal = BigDecimal.ZERO;
@@ -707,7 +708,7 @@ public class PayrollUtil {
 		List<DeductionDTO> dedHisList = new ArrayList<>();
 		List<ContributionDTO> contrHisList = new ArrayList<>();
 		try {
-			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(candidate,orgLocation,approverStatus);
+			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(candidate,orgLocation,approverStatus,periodYear);
 			if(ytdList != null && ytdList.size() >0) {
 				 ytdGross = ytdList.stream().mapToDouble(pay->pay.getGrossPay().doubleValue()).sum();
 				 ytdNet = ytdList.stream().mapToDouble(pay->pay.getNetPay().doubleValue()).sum();
@@ -960,12 +961,13 @@ public class PayrollUtil {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
 			     Calendar cal = Calendar.getInstance();
-				int year = cal.get(Calendar.YEAR);
+				int year = Integer.parseInt(mm[1]);
 				SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
 				cal.set(Calendar.YEAR,year);
 				
 				Calendar calEndDate = Calendar.getInstance();
 				calEndDate.set(Calendar.MONTH,month);
+				calEndDate.set(Calendar.YEAR,year);
 				calEndDate.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 				int checkDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getPayCheckDate());
 				int runPayDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getRunPayrollDate());
@@ -1509,5 +1511,43 @@ public class PayrollUtil {
 		dto.setUserLname((String) ob.get("user_lname"));
 		dto.setVendorName((String) ob.get("vendor_name"));
 		return dto;
+	}
+
+	/**
+	 * Get Year to current Dates with Year
+	 * @param orgLocation
+	 * @param periodYear
+	 * @return Date[]
+	 */
+	public Date[] getYTDDatesPerYear(OrgLocations orgLocation, int periodYear)
+	{
+		Date[] ytd = new Date[2];
+		try {
+			
+			Calendar c = Calendar.getInstance(); // this takes current date
+			
+			int currentYear = c.get(Calendar.YEAR);
+			if(periodYear == currentYear) {
+				
+				ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				c.set(Calendar.MONTH, 0);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				
+			}else {
+				c.set(Calendar.YEAR,periodYear);
+				c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_YEAR));
+				ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				c.set(Calendar.MONTH, 0);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ytd;
 	}
 }
