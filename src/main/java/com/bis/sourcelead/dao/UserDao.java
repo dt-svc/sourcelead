@@ -213,5 +213,7 @@ public interface UserDao {
 	List<Object[]> getApplicantsJoinedCountByDates(String createdBy, Date fromDate, Date toDate);
 	
 	public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception;
+	
+	UserProfileDetailsDTO getUserProfileDetailsByUserId(Long userId) throws Exception;
 
 }

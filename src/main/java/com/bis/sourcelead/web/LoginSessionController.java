@@ -471,7 +471,6 @@ public class LoginSessionController {
 					}
 					else{
 						model.setViewName("dashboard");
-//						model.setViewName("masterPage");
 					}
 					
 				}
@@ -665,7 +664,7 @@ public class LoginSessionController {
 		 userProfileDTO.setFirstName(user.getFirstName());
  	     userProfileDTO.setLastName(user.getLastName());
  	     userProfileDTO.setMiddleName(user.getMiddelName());
- 	     userProfileDTO.setUserId(user.getId());
+ 	     userProfileDTO.setUserId(String.valueOf(user.getId()));
  	     userProfileDTO.setEmail(user.getEmail());
  	     userProfileDTO.setGender(user.getGender());
  	     

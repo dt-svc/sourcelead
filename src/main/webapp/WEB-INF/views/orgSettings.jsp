@@ -246,7 +246,7 @@ function cancelOrgImg(){
 							<div class="clearfix mb" id="companyNameDiv">
 							<label class="labText">Company <b class="valStar">*</b></label>
 							<div class="clearfix">
-							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${SourceLeadWeb_orgName}" />
+							<input type="text" id="orgLocationCompanyName" name="companyName" class="form-control"  field-name="Company" data-validation="required validate_Space validate_length length2-250" onblur="validateCompanyName();"  value="${orgLocationCache.orgName}" />
 							</div>
 							</div>
 							
@@ -254,7 +254,7 @@ function cancelOrgImg(){
 							<div class="clearfix mb">
 								<label class="labText">Country <b class="valStar">*</b></label>
 								<div class="clearfix">
-								 <input type="text" class=" form-control" name="country" value="${SourceLeadWeb_country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
+								 <input type="text" class=" form-control" name="country" value="${orgLocationCache.country}" id="orgEditCountry" field-name="Country" data-validation="required" readonly="readonly" >
 								</div>
 							</div>
 								

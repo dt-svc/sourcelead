@@ -21,6 +21,7 @@ public class ConnectionManager {
 	private String couchBucket;
 	private String userProfileCouchBucket;
 	private String userDashboardStatsBucket;
+	private String orgLocationsBucket;
 	private String couchPass;
 	
 ///	private Logger logger = Logger.getLogger(ConnectionManager.class);
@@ -58,8 +59,6 @@ public class ConnectionManager {
 			throw new RuntimeException("Couchbase BUCKET Not Specified");
 		this.userProfileCouchBucket = userProfileCouchBucket;
 	}
-	
-	
 
 	public String getUserDashboardStatsBucket() {
 		return userDashboardStatsBucket;
@@ -69,6 +68,17 @@ public class ConnectionManager {
 		if(couchUrl == null)
 			throw new RuntimeException("Couchbase BUCKET Not Specified");
 		this.userDashboardStatsBucket = userDashboardStatsBucket;
+	}
+	
+	
+	public String getOrgLocationsBucket() {
+		return orgLocationsBucket;
+	}
+
+	public void setOrgLocationsBucket(String orgLocationsBucket) {
+		if(couchUrl == null)
+			throw new RuntimeException("Couchbase BUCKET Not Specified");
+		this.orgLocationsBucket = orgLocationsBucket;
 	}
 
 	public String getCouchPassword() {
@@ -92,6 +102,7 @@ public class ConnectionManager {
 					couchBuckets.add(getCouchBucket());
 					couchBuckets.add(getUserProfileCouchBucket());
 					couchBuckets.add(getUserDashboardStatsBucket());
+					couchBuckets.add(getOrgLocationsBucket());
 					client = new CouchbaseClient(urls, couchBuckets,getCouchPassword());
 				}
 			} catch (URISyntaxException e) {
@@ -129,6 +140,7 @@ public class ConnectionManager {
 				setCouchBucket(rb.getString("bucket"));
 				setUserProfileCouchBucket(rb.getString("userProfileBucket"));
 				setUserDashboardStatsBucket(rb.getString("userDashboardStatsBucket"));
+				setOrgLocationsBucket(rb.getString("orgLocationsBucket"));
 				setCouchPassword(rb.getString("password"));
 			}
 

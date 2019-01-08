@@ -15,10 +15,12 @@
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/css/dashboard_3118.css" type="text/css" media="all"/>
+<link rel="stylesheet" href="/resources/css/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all"/>
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css">
 <link href="/resources/css/sourcelead-main.css" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css">
+
 <script src="/resources/js/jquery-1.11.1.min.js"></script>
 <script src="/resources/js/masterHeaderAction.js"></script>
 <script src="/resources/js/jquery-ui.js"></script>
@@ -28,9 +30,10 @@
 <script src="/resources/js/jquery.dataTables.min.js"></script>
 <script src="/resources/js/sourcelead-app.js"></script>
 <script src="/resources/js/jquery.timepicker.js"></script>
-<script src="/resources/js/masterHeaderAction.js"></script>
+<script src="/resources/js/masterHeaderAction.js"></script> 
 <script src="/resources/js/masterSideNav.js"></script>
 <script src="/resources/js/masterHeader.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
 
 </head>
 
@@ -38,31 +41,29 @@
 <script>
 
 var sourceleadUrl = '${sourceleadUrl}'; // setting common user settings 
-var locationId = '${SourceLeadWeb_orgLocations.id}'; 
-var locationList = '${SourceLeadWeb_orgLocations.dateFormat}';	
-var userId =  '${SourceLeadWeb_user.id}'; 
-var orgLocationCode = '${SourceLeadWeb_locationCode}'; 
-var orgCode = '${SourceLeadWeb_org.orgCode}';
-var candiadteId = '${SourceLeadWeb_candidateId}';// snigitha
-var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
-var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-var orgATS = '${SourceLeadWeb_ats}';
-var orgVMS = '${SourceLeadWeb_vms}';
-var approverUserId = '${SourceLeadWeb_user.id}'; 
-var loginUser = '${SourceLeadWeb_userName}';
+var locationId = ''; 
+var locationList = '';	
+var userId =  ''; 
+var orgLocationCode = ''; 
+var orgCode = '';
+var candiadteId = '';
+var isGlobalAccess = '';
+var loginUserRole = '';
+var approverUserId = ''; 
+var loginUser = '';
+var isSuperAdmin = '';
 var date = $("#eventCalendar").val();
-//its an entity commented now. var timezone ='${SourceLeadWeb_orgLocations.timezone}'; 
-var timezoneId = '${SourceLeadWeb_orgLocations.timezone.id}'; 
-var country = '${SourceLeadWeb_orgLocations.country}';
-var locationDate = '${SourceLeadWeb_orgLocations.dateFormat}';	 // locationList is unique variable using for date format.
-var userType = '${SourceLeadWeb_userType}';
-var loginOrgLocationName = '${SourceLeadWeb_loginOrg}';
+var timezoneId = ''; 
+var country = '';
+var locationDate = '';	 // locationList is unique variable using for date format.
+var userType = '';
+var loginOrgLocationName = '';
 var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
+var fileUrl = '';
+var orgImageUrl = '';
 $(document).ready(function() {
-	   getLoginUserTabsList();
-	   getLoginUserRolesActionsList();
-		$('body').load("/resources/html/dashboardHtml.html");
-	});
+	getUserLoginSessionDetails();
+});
 </script>
 
 <script src="/resources/js/dashboard.js"></script>

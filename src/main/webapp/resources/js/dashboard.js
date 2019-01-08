@@ -33,6 +33,7 @@ var locationDate = locationList; // locationList is unique variable using for da
 var finalDateFormatEDashboardeventCalendar = '';
 var tabAccessArray = '';
 var roleActionsArray = '';
+var ss ="";
 	if (locationDate.match("yyyy-MM-dd")) {
 		finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
 	}
@@ -568,8 +569,9 @@ function requirementList(isWalkIn, walkInDay){
 	                     if(isWalkIn) {
 	                    	 result = result +"    <th>Drive Day(s)</th>";
 	                     }
-	                     if(orgATS == 'Y'){
-	                     result = result +"    <th>Client</th>";
+	                     
+                	     if(tabAccessArray.indexOf("Clients") > -1){
+                	    	 result = result +"    <th>Client</th>";
 	                     }
 	                     result = result +"    <th>Rate</th>"; 
 	                     result = result +"    <th>Priority</th>"; 
@@ -647,7 +649,8 @@ function requirementList(isWalkIn, walkInDay){
 	                    	 if(isWalkIn) {
 	                    		 result = result +"<td><div class=''><span title='"+opt.walkInDays+"'>"+opt.walkInDays+"</span></a></div></td>";
 	                    	 }
-		                     if(orgATS == 'Y'){
+		                     
+	                    	 if(tabAccessArray.indexOf("Clients") > -1){
 			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 			                    	
 			                    	 '';
@@ -4992,7 +4995,63 @@ function predefineProfileImage(imageId){
 }
 
 //contracts starts here
-function getLoginUserTabsList() {
+
+
+function getUserLoginSessionDetails() {
+
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/getUserLoginSessionDetails",
+		success : function(data) {
+			
+			   locationId = data.orgLocationId; 
+			   locationList = data.dateFormat; 	
+			   userId = data.userId; 	
+			   orgLocationCode =  data.locationCode;
+			   orgCode = data.orgCode;
+			   candiadteId = data.candidateId;
+			   isGlobalAccess = data.isGlobalAccess;
+			   loginUserRole = data.roleName;
+			   approverUserId = data.userId;
+			   loginUser = data.userName;
+			   timezoneId = data.timeZoneId; 
+			   country = data.country;
+			   locationDate = data.dateFormat; 		 
+			   userType = data.userType; 
+			   loginOrgLocationName = data.orgLocationName;
+		       tabAccessArray = data.menuList;
+			   roleActionsArray = data.rolesList;
+			   isSuperAdmin = data.isSuperAdmin;
+			   fileUrl = data.imageUrl;
+			   orgImageUrl = data.orgImageUrl;
+			   
+			 /* $.each(data, function( k, v ) {
+				  if(k == 'menuList'){
+					  tabAccessArray = JSON.parse("[" + v + "]")[0];
+					  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+				  }
+				  else if(k == 'rolesList'){
+					  roleActionsArray = JSON.parse("[" + v + "]")[0];
+					  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+				  }
+			  });*/
+		},
+		 complete: function (result) {
+			  $('body').load("/resources/html/dashboardHtml.html");
+			   setTimeout(function () {
+				   $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+				   $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+			  }, 300); 
+         }
+
+	});
+	
+	
+}
+
+
+
+/*function getLoginUserTabsList() {
 
 			$.ajax({
 				type : "GET",
@@ -5017,7 +5076,7 @@ function getLoginUserRolesActionsList(){
 		},
 
 	});
-}
+}*/
 
 
 

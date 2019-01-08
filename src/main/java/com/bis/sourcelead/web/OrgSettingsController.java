@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.cache.util.UserStatsCacheHelper;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -136,13 +138,18 @@ public class OrgSettingsController {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
+	
+	 @Autowired
+	 UserStatsCacheHelper userStatsCacheHelper;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
-	public ModelAndView orgSettings(HttpServletRequest request,@RequestParam(value = "tabType", required = false) String tabType) throws Exception
+	public ModelAndView orgSettings(HttpServletRequest request,
+			@RequestParam(value = "tabType", required = false) String tabType,Authentication authentication) throws Exception
 	{
 		logger.debug("Org settings");
+		org.json.simple.JSONObject loginUserCache = userStatsCacheHelper.getUserProfileLoginCacheDetails(authentication.getName());
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -150,6 +157,9 @@ public class OrgSettingsController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+		
+		org.json.simple.JSONObject orgLocationCache = userStatsCacheHelper.getOrgLocationCacheDetailsByOrgLcoationId(String.valueOf(loginUserCache.get(Constants.ORG_LOCATION_ID_CACHE)));
+		model.addObject("orgLocationCache", orgLocationCache);
 		
 		List<States> states = statesService.getAllStatesByCountry(orgLocations.getCountry());
 		model.addObject("statesList", states);

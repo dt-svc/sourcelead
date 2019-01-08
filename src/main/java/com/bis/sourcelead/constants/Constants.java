@@ -1314,4 +1314,13 @@ public class Constants {
 	public static final String LCA_MANAGER_EXPIRED_EMAIL = "LCAManagerExpiredEmail";
 	public static final String LCA_MANAGER_EXPIRED_NOTIFICATION = "LCAManagerExpiredNotification";
 	public static final String LCA_MANAGER_EXPIRED_EMAIL_IN_DAYS = "LCAManagerExpiredInDaysEmail";
+	
+	public static final String USER_ID_CAHCE = "userId";
+	public static final String FIRST_NAME_CACHE = "firstName";
+	public static final String LAST_NAME_CACHE = "lastName";
+	public static final String USER_ROLE_CAHCE = "roleName";
+	public static final String USER_CODE_CAHCE =  "userCode";
+	public static final String ORG_LOCATION_ID_CACHE = "orgLocationId";
+	
+			
 }

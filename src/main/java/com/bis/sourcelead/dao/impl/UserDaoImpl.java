@@ -2702,6 +2702,7 @@ String sortingQry ="";
 				 +" UR.MIDDLE_NAME AS middleName, "
 				 +" UR.EMAIL AS email, "
 				 +" UR.USER_NAME AS userName, "
+				 +" UR.USER_CODE AS userCode, "
 				 +" UR.GENDER AS gender, "
 				 +" UR.FILE_URL AS imageUrl "
 				 +" FROM "
@@ -2712,6 +2713,31 @@ String sortingQry ="";
 			queryObj.setResultTransformer(Transformers.aliasToBean(UserProfileDetailsDTO.class));
 			userProfileDTOList = queryObj.list();
 			return userProfileDTOList;
+	}
+
+	@Override
+	@Transactional
+	public UserProfileDetailsDTO getUserProfileDetailsByUserId(Long userId) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 String query = "SELECT "
+				 +" UR.ID AS userId, "
+				 +" UR.FIRST_NAME AS firstName, "
+				 +" UR.LAST_NAME AS lastName, "
+				 +" UR.MIDDLE_NAME AS middleName, "
+				 +" UR.EMAIL AS email, "
+				 +" UR.USER_NAME AS userName, "
+				 +" UR.USER_CODE AS userCode, "
+				 +" UR.GENDER AS gender, "
+				 +" UR.FILE_URL AS imageUrl "
+				 +" FROM "
+			     +" USER UR WHERE UR.ID = :userId";
+		 
+		 Query queryObj = session.createSQLQuery(query);
+		 queryObj.setLong("userId", userId);
+		 queryObj.setResultTransformer(Transformers.aliasToBean(UserProfileDetailsDTO.class));
+		 UserProfileDetailsDTO userProfileDetailsDTO = (UserProfileDetailsDTO) queryObj.uniqueResult();
+		 return userProfileDetailsDTO;
 	}
 
 

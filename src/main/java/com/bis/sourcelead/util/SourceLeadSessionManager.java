@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,6 +71,22 @@ public class SourceLeadSessionManager {
 	}
 	
 	
+	public static void setOrgLocationsStatsJsonString(String orgLocationId, String attribute, JsonObject jsonString) {
+		String jsonKey = orgLocationId ;
+		try {
+			if (orgLocationId != null && attribute != null) {
+					if (jsonString != null) {
+						c.setOrgLocationsStats(orgLocationId, jsonKey, jsonString);
+					} else
+						System.out.println("Json String is NuLL : " + attribute);
+			} else
+				System.out.println("OrgLocationId is NuLL : " + orgLocationId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 public static JSONObject getDashboardJobsCountJsonObject(HttpServletRequest request, String userName,String locationId) {
 		
@@ -104,4 +121,5 @@ public static JSONObject getDashboardJobsCountJsonObject(HttpServletRequest requ
 	  }
 		return jsonObjVal;
 	}
+
 }

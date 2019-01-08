@@ -7,13 +7,13 @@ public class UserProfileLocationsDTO implements Serializable{
 
 private static final long serialVersionUID = 1L;
 	
-	private Long orgId;
+	private String orgId;
 	
 	private String orgName;
 	
 	private String orgCode;
 	
-	private Long orgLocationId;
+	private String orgLocationId;
 	
 	private String orgLocationName;
 	
@@ -23,11 +23,13 @@ private static final long serialVersionUID = 1L;
 	
 	private String designation; 
 	
-	private Long roleId;
+	private String roleId;
 	
 	private String roleName;
 	
-	private Long candidateId;
+	private String isGlobalAccess;
+	
+	private String candidateId;
 	
 	private String userState;
 	
@@ -39,18 +41,23 @@ private static final long serialVersionUID = 1L;
 	
 	private String dateFormat;
 	
-	private Long timeZoneId;
+	private String timeZoneId;
 	
 	private String country;
 	
+	private String isSuperUser;
 	
+	private String isSuperAdmin;
 	
+	private String orgImageUrl;
+	
+	private String roleHierarchyId;
 
-	public Long getOrgId() {
+	public String getOrgId() {
 		return orgId;
 	}
 
-	public void setOrgId(Long orgId) {
+	public void setOrgId(String orgId) {
 		this.orgId = orgId;
 	}
 
@@ -70,11 +77,11 @@ private static final long serialVersionUID = 1L;
 		this.orgCode = orgCode;
 	}
 
-	public Long getOrgLocationId() {
+	public String getOrgLocationId() {
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(Long orgLocationId) {
+	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
 
@@ -110,6 +117,14 @@ private static final long serialVersionUID = 1L;
 		this.designation = designation;
 	}
 
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+
 	public String getRoleName() {
 		return roleName;
 	}
@@ -118,28 +133,12 @@ private static final long serialVersionUID = 1L;
 		this.roleName = roleName;
 	}
 
-	public List<String> getMenuList() {
-		return menuList;
+	public String getCandidateId() {
+		return candidateId;
 	}
 
-	public void setMenuList(List<String> menuList) {
-		this.menuList = menuList;
-	}
-
-	public List<String> getRolesList() {
-		return rolesList;
-	}
-
-	public void setRolesList(List<String> rolesList) {
-		this.rolesList = rolesList;
-	}
-
-	public Long getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
 	}
 
 	public String getUserState() {
@@ -158,12 +157,20 @@ private static final long serialVersionUID = 1L;
 		this.userType = userType;
 	}
 
-	public Long getCandidateId() {
-		return candidateId;
+	public List<String> getMenuList() {
+		return menuList;
 	}
 
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
+	public void setMenuList(List<String> menuList) {
+		this.menuList = menuList;
+	}
+
+	public List<String> getRolesList() {
+		return rolesList;
+	}
+
+	public void setRolesList(List<String> rolesList) {
+		this.rolesList = rolesList;
 	}
 
 	public String getDateFormat() {
@@ -174,11 +181,11 @@ private static final long serialVersionUID = 1L;
 		this.dateFormat = dateFormat;
 	}
 
-	public Long getTimeZoneId() {
+	public String getTimeZoneId() {
 		return timeZoneId;
 	}
 
-	public void setTimeZoneId(Long timeZoneId) {
+	public void setTimeZoneId(String timeZoneId) {
 		this.timeZoneId = timeZoneId;
 	}
 
@@ -189,5 +196,45 @@ private static final long serialVersionUID = 1L;
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public String getIsSuperUser() {
+		return isSuperUser;
+	}
+
+	public void setIsSuperUser(String isSuperUser) {
+		this.isSuperUser = isSuperUser;
+	}
+
+	public String getIsSuperAdmin() {
+		return isSuperAdmin;
+	}
+
+	public void setIsSuperAdmin(String isSuperAdmin) {
+		this.isSuperAdmin = isSuperAdmin;
+	}
+
+	public String getOrgImageUrl() {
+		return orgImageUrl;
+	}
+
+	public void setOrgImageUrl(String orgImageUrl) {
+		this.orgImageUrl = orgImageUrl;
+	}
+
+	public String getRoleHierarchyId() {
+		return roleHierarchyId;
+	}
+
+	public void setRoleHierarchyId(String roleHierarchyId) {
+		this.roleHierarchyId = roleHierarchyId;
+	}
+
 }

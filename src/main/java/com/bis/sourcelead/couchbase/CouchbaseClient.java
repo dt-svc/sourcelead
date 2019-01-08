@@ -24,6 +24,7 @@ public class CouchbaseClient {
 	Bucket bucket;
 	Bucket userProfileBucket;
 	Bucket userDashboardStatsBucket;
+	Bucket orgLocationsBucket;
 
 	private static final CouchbaseEnvironment ENV = DefaultCouchbaseEnvironment.builder().socketConnectTimeout(336699)
 			.connectTimeout(36678).keepAliveInterval(3600 * 30000).build();
@@ -34,6 +35,7 @@ public class CouchbaseClient {
 		bucket = cluster.openBucket(couchBucketList.get(0), password);
 		userProfileBucket = cluster.openBucket(couchBucketList.get(1), password);
 		userDashboardStatsBucket = cluster.openBucket(couchBucketList.get(2), password);
+		orgLocationsBucket = cluster.openBucket(couchBucketList.get(3), password);
 
 	}
 
@@ -93,11 +95,39 @@ public class CouchbaseClient {
 		// Store the Document
 		userProfileBucket.upsert(JsonDocument.create(id, arthur));
 	}
+	
+	
+	public Object getUserProfile(String key) {
+
+		if (userProfileBucket.get(key) != null) {
+			return userProfileBucket.get(key).content().toString();
+		} else {
+			return null;
+		}
+
+	}
+	
+	public Object getOrgLocationsDetails(String key) {
+
+		if (orgLocationsBucket.get(key) != null) {
+			return orgLocationsBucket.get(key).content().toString();
+		} else {
+			return null;
+		}
+
+	}
 
 	public void setUserDashboardStats(String id, String key, JsonObject value) throws Exception {
 		JsonObject arthur = JsonObject.create().put(key, value);
 		// Store the Document
 		userDashboardStatsBucket.upsert(JsonDocument.create(id, arthur));
+	}
+	
+	
+	public void setOrgLocationsStats(String id, String key, JsonObject value) throws Exception {
+		JsonObject arthur = JsonObject.create().put(key, value);
+		// Store the OrgLocations Document
+		orgLocationsBucket.upsert(JsonDocument.create(id, arthur));
 	}
 
 	public static org.json.simple.JSONObject toSimple(JsonObject jo) {

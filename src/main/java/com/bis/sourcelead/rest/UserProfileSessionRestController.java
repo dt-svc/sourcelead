@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserDashboardCountsDTO;
 import com.bis.sourcelead.couchbase.UserDashboardJobsCountDTO;
 import com.bis.sourcelead.couchbase.UserLocationStatsCountDTO;
@@ -35,6 +36,8 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
@@ -75,6 +78,12 @@ public class UserProfileSessionRestController {
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	OrgService orgService;
+	
 	 @RequestMapping(value = "/ws/storeUsersProfileInCouch", method = RequestMethod.GET)
 	 public void storeUsersProfileInCouch() {
 		
@@ -96,12 +105,13 @@ public class UserProfileSessionRestController {
 			         userProfileDTO.setFirstName(user.getFirstName());
 			 	     userProfileDTO.setLastName(user.getLastName());
 			 	     userProfileDTO.setMiddleName(user.getMiddleName());
-			 	     userProfileDTO.setUserId(user.getUserId().longValue());
+			 	     userProfileDTO.setUserId(String.valueOf(user.getUserId().longValue()));
 			 	     userProfileDTO.setEmail(user.getEmail());
 			 	     userProfileDTO.setGender(user.getGender());
+			 	     userProfileDTO.setUserCode(user.getUserCode());
 			 	     
 			 	     StringBuilder userName = new StringBuilder();
-			 	     if(StringUtils.isNoneBlank(user.getLastName())) {
+			 	     if(StringUtils.isNotBlank(user.getLastName())) {
 			 	    	userName  = userName.append(user.getFirstName()).append(" ").append(user.getLastName());
 			 	     }else {
 			 	    	userName  = userName.append(user.getFirstName());
@@ -109,7 +119,7 @@ public class UserProfileSessionRestController {
 			 	     
 			 	     userProfileDTO.setUserName(userName.toString());
 			 	  
-			 	     if(StringUtils.isNoneBlank(user.getImageUrl())){
+			 	     if(StringUtils.isNotBlank(user.getImageUrl())){
 			    	    userProfileDTO.setImageUrl(user.getImageUrl());
 						 }else{
 							userProfileDTO.setImageUrl("/resources/images/userprofile-img.png");
@@ -136,13 +146,14 @@ public class UserProfileSessionRestController {
 			        		        	    }
 			        		        	    
 			        		        	    tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+			        		        	    tabNamesList.add("Dashboard");
 			        		        	    
 			        		        	    UserProfileLocationsDTO orgLocationDTO =  getOrgLocationDetails(orgLocations,userRole);
 			        		        	    orgLocationDTO.setMenuList(tabNamesList);
 			        		        	    orgLocationDTO.setRolesList(actionRolesList);
 			        		        	    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getUserId().longValue(), orgLocations.getId());
 				        		        	   if(candidate != null) {
-				        		        		   orgLocationDTO.setCandidateId(candidate.getId());
+				        		        		   orgLocationDTO.setCandidateId(String.valueOf(candidate.getId()));
 				        		        	   }
 			        		        	    orgLocationDTO.setUserType(userRole.getUserType());
 			        		        	    orgLocationsList.put(userRole.getId(),orgLocationDTO);
@@ -179,12 +190,12 @@ public class UserProfileSessionRestController {
 	 }
 	 
 	 
-	 private UserProfileLocationsDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole useRole){
+	 private UserProfileLocationsDTO getOrgLocationDetails(OrgLocations orgLocations,UserRole userRole) throws Exception{
 		 UserProfileLocationsDTO orgLocationDTO = new UserProfileLocationsDTO();
-		 orgLocationDTO.setOrgId(orgLocations.getOrg().getId());
+		 orgLocationDTO.setOrgId(String.valueOf(orgLocations.getOrg().getId()));
 		 orgLocationDTO.setOrgName(orgLocations.getOrgLocationName());
 		 orgLocationDTO.setOrgCode(orgLocations.getOrg().getOrgCode());
-		 orgLocationDTO.setOrgLocationId(orgLocations.getId());
+		 orgLocationDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
 		 orgLocationDTO.setOrgLocationName(orgLocations.getOrgLocationName());
 		 orgLocationDTO.setLocationCode(orgLocations.getLocationCode());
 		 if(StringUtils.isNoneBlank(orgLocations.getOrgLocationAddress())) {
@@ -193,19 +204,39 @@ public class UserProfileSessionRestController {
 			 orgLocationDTO.setLocation(orgLocations.getCountry());
 		 }
 		
-		 orgLocationDTO.setRoleId(useRole.getId());
-		 orgLocationDTO.setRoleName(useRole.getRoles().getDisplayName());
-		 if(StringUtils.isNoneBlank(useRole.getDesignation())) {
-			 orgLocationDTO.setDesignation(useRole.getDesignation()); 
+		 orgLocationDTO.setRoleId(String.valueOf(userRole.getId()));
+		 orgLocationDTO.setRoleName(userRole.getRoles().getRoleName());
+		 if(StringUtils.isNoneBlank(userRole.getDesignation())) {
+			 orgLocationDTO.setDesignation(userRole.getDesignation()); 
 		 }else {
-			 orgLocationDTO.setDesignation(useRole.getRoles().getDisplayName());
+			 orgLocationDTO.setDesignation(userRole.getRoles().getDisplayName());
 		 }
-		
-		 orgLocationDTO.setUserState(useRole.getUserState().toString());
-		 orgLocationDTO.setUserType(useRole.getUserType());
+		 orgLocationDTO.setRoleHierarchyId(String.valueOf(userRole.getRoles().getRoleHierarchy().getId()));
+		 orgLocationDTO.setIsGlobalAccess(userRole.getIsGlobal());
+		 orgLocationDTO.setUserState(userRole.getUserState().toString());
+		 orgLocationDTO.setUserType(userRole.getUserType());
 		 orgLocationDTO.setDateFormat(orgLocations.getDateFormat());
-		 orgLocationDTO.setTimeZoneId(orgLocations.getTimezone().getId());
+		 orgLocationDTO.setTimeZoneId(String.valueOf(orgLocations.getTimezone().getId()));
 		 orgLocationDTO.setCountry(orgLocations.getCountry());
+		 
+		 if(StringUtils.isNotBlank(orgLocations.getOrg().getFileUrl())) {
+			 orgLocationDTO.setOrgImageUrl(orgLocations.getOrg().getFileUrl());
+		 }
+		 
+		 boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),orgLocations.getId());
+			if(isSuperUser == true) {
+				orgLocationDTO.setIsSuperUser(Constants.YES);
+			}else {
+				orgLocationDTO.setIsSuperUser(Constants.NO);
+			}
+			
+			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),orgLocations.getOrg().getId());
+			if(isSuperAdmin == true){
+				orgLocationDTO.setIsSuperAdmin(Constants.YES);
+			}else{
+				orgLocationDTO.setIsSuperAdmin(Constants.NO);
+			}
+			
 		 return orgLocationDTO;
 	 }
 	
@@ -344,5 +375,66 @@ public class UserProfileSessionRestController {
 		
 	 }
 	 
+	 @RequestMapping(value = "/ws/storeOrgLocationsDetailsInCouch", method = RequestMethod.GET)
+	 public void storeOrgLocationsDetailsInCouch() {
+		 	
+		 try {
+			 
+			 List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+			 if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+				 for(OrgLocations orgLocations : orgLocationsList) {
+					 OrgLocationCacheDTO orgLocationCacheDTO = setOrgLocationDetailsIntoCouch(orgLocations);
+					  try {
+						    ObjectMapper sessionObj = new ObjectMapper();
+							String sessionJsonStr = sessionObj.writeValueAsString(orgLocationCacheDTO);
+							JsonObject jsonObject = JsonObject.fromJson(sessionJsonStr);
+							SourceLeadSessionManager.setOrgLocationsStatsJsonString(String.valueOf(orgLocations.getId()), "orgLocations", jsonObject);
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+				 }
+			 }
+			 
+		 }catch (Exception e) {
+			e.printStackTrace();
+		}
+	 }
+	 
+	 
+	 public OrgLocationCacheDTO setOrgLocationDetailsIntoCouch(OrgLocations orgLocations) {
+		 
+		 OrgLocationCacheDTO orgLocationCacheDTO = new OrgLocationCacheDTO();
+		 
+		 orgLocationCacheDTO.setOrgId(String.valueOf(orgLocations.getOrg().getId()));
+		 orgLocationCacheDTO.setOrgName(orgLocations.getOrg().getOrgName());
+		 orgLocationCacheDTO.setImgUrl(orgLocations.getOrg().getFileUrl());
+		 orgLocationCacheDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+		 orgLocationCacheDTO.setOrgLocationName(orgLocations.getOrgLocationName());
+		 orgLocationCacheDTO.setRegisteredLocation(orgLocations.getRegisteredLocation());
+		 orgLocationCacheDTO.setCountry(orgLocations.getCountry());
+		 orgLocationCacheDTO.setState(orgLocations.getState());
+		 orgLocationCacheDTO.setCity(orgLocations.getCity());
+		 orgLocationCacheDTO.setDba(orgLocations.getDba());
+		 orgLocationCacheDTO.setZipcode(orgLocations.getZipCode());
+		 orgLocationCacheDTO.setEmailForPO(orgLocations.getPoEmail());
+		 orgLocationCacheDTO.setEmailforRemittance(orgLocations.getRemittanceEmail());
+		 orgLocationCacheDTO.setAdderss(orgLocations.getOrgLocationAddress());
+		 orgLocationCacheDTO.setTimeZoneId(String.valueOf(orgLocations.getTimezone().getId()));
+		 orgLocationCacheDTO.setDateFormat(orgLocations.getDateFormat());
+		 orgLocationCacheDTO.setOrgShortCode(orgLocations.getGeneratedUserId());
+		 orgLocationCacheDTO.setWebsite(orgLocations.getWebsite());
+		 orgLocationCacheDTO.setWeekOffDays(orgLocations.getWeekOffDays());
+		 orgLocationCacheDTO.setWorkingHours(String.valueOf(orgLocations.getAverageWorkingHours()));
+		 orgLocationCacheDTO.setPhone(orgLocations.getPhone());
+		 orgLocationCacheDTO.setFax(orgLocations.getFax());
+		 orgLocationCacheDTO.setBusinessTypeId(String.valueOf(orgLocations.getBusinessType().getId()));
+		 orgLocationCacheDTO.setBusinessType(orgLocations.getBusinessType().getName());
+		 orgLocationCacheDTO.setOtherBusinessType(orgLocations.getOtherBusinessType());
+		 orgLocationCacheDTO.setAboutOrg(orgLocations.getOrgDescription());
+		 orgLocationCacheDTO.setIsTimesheetAvgHoursRequired(orgLocations.getIsTimesheetAvgHoursRequired());
+		 orgLocationCacheDTO.setPrimaryUserId(String.valueOf(orgLocations.getUser().getId()));
+		 
+		 return orgLocationCacheDTO;
+	 }
 
 }

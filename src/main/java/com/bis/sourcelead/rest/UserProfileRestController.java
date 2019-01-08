@@ -35,6 +35,7 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.cache.util.UserStatsCacheHelper;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -71,6 +72,9 @@ public class UserProfileRestController {
 	
 	@Autowired
 	UserMailUnsubscribeService userMailUnsubscribeService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	@RequestMapping(value = "/saveUserProfileImage", method = RequestMethod.POST)
 	public String saveProfileImage(AddUserProfileDTO addUserProfileDTO,	HttpServletRequest request) throws Exception{
@@ -133,6 +137,7 @@ public class UserProfileRestController {
 					 * Save or update the user in Elk.
 					 */
 					userService.saveOrUpdateUserElkDocument(userRoleElk, null, user.getUserCode());
+					userStatsCacheHelper.updateUserStats(user.getId(), user.getUserName());
 
 					/*
 					 * updating user in the Spock

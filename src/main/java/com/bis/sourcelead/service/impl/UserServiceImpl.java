@@ -2244,6 +2244,11 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 		return userDao.getAllSourceleadUsers();
 	}
 
+	@Override
+	public UserProfileDetailsDTO getUserProfileDetailsByUserId(Long userId) throws Exception {
+		return userDao.getUserProfileDetailsByUserId(userId);
+	}
+
 
 }
 

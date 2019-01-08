@@ -272,6 +272,8 @@ public Map<String, Long> getApplicantsJoinedCountByDates(String createdBy, Date 
 
 public List<UserProfileDetailsDTO> getAllSourceleadUsers() throws Exception;
 
+UserProfileDetailsDTO getUserProfileDetailsByUserId(Long userId) throws Exception;
+
 
 }	
 

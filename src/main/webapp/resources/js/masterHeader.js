@@ -2,17 +2,21 @@ var masterHeader = new MasterHeader();
  function MasterHeader (){
 	
 	 this.masterHeaderPanel = function(){
-		var fileUrl = '/resources/images/userprofile-img.png'	
 	    var masterNavHtml='';	
 	    var searchValue = '';
-	    
-	    if(tabAccessArray.indexOf("ROLE_CROWDSOURCING_PROFESSIONAL") == -1 && tabAccessArray.indexOf("ROLE_CROWDSOURCING_RECRUITER") == -1){
+		masterNavHtml = masterNavHtml+'<span class="logo">'; 
+	    if(orgImageUrl != null){
+	    	masterNavHtml = masterNavHtml+'<img data-id="orgLogoImage" src="'+orgImageUrl+'"  class="img-responsive mt5">';	    
 	    	
-	    	masterNavHtml = masterNavHtml+'<span class="logo">';
+	    }else{
 	    	masterNavHtml = masterNavHtml+'<div class="text-logo">';	
 	    	masterNavHtml = masterNavHtml+'<span class="tbldata-dotdot" data-id="orgLogoImage" title="'+loginOrgLocationName+'">'+loginOrgLocationName+'</span>';	
 	    	masterNavHtml = masterNavHtml+'</div>';	
-	    	masterNavHtml = masterNavHtml+'</span>';
+	    	
+    	}
+	    masterNavHtml = masterNavHtml+'</span>';   
+	    
+	    if(loginUserRole != "ROLE_CROWDSOURCING_PROFESSIONAL"  && loginUserRole != "ROLE_CROWDSOURCING_RECRUITER"){
 	    	
 	    	masterNavHtml = masterNavHtml+'<div class="search-area searchArea_mrgn newHeadSea">';	
 	    	masterNavHtml = masterNavHtml+'<form:form name ="search_form" id="search_form">';	
@@ -78,8 +82,10 @@ var masterHeader = new MasterHeader();
 	    masterNavHtml = masterNavHtml+'<a title="Connections"  href="/app/loadConnectedList?status=connected" id="connections"><i class="connectionIC"></i>Connections <span class="label label-warning pull-right">0</span></a>';
 	    masterNavHtml = masterNavHtml+'</li>';
 	    masterNavHtml = masterNavHtml+'<li><a title="Contacts" href="/app/referRequirementList"><i class="contactsIC"></i>Contacts</a></li>';
-					
-	    masterNavHtml = masterNavHtml+'<li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="invitecompanyIC"></i>Invite Company</a></li>';
+			
+	    if(isSuperAdmin == 'Y'){
+	    	masterNavHtml = masterNavHtml+'<li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="invitecompanyIC"></i>Invite Company</a></li>';
+	    }
 					
 	    if(tabAccessArray.indexOf("ROLE_CROWDSOURCING_PROFESSIONAL") == -1 && tabAccessArray.indexOf("ROLE_CROWDSOURCING_RECRUITER") == -1 ){
 	    	masterNavHtml = masterNavHtml+'<li><a href="javascript:void(0)" class="icon-addTask" title="Add Task"><i class="addtaskIC"></i>Add Task</a></li>';
@@ -131,7 +137,122 @@ var masterHeader = new MasterHeader();
 	    masterNavHtml = masterNavHtml+'<a id="notiPopId" href="#" title="Alerts" onclick="masterHeader.getTopNotificationsByuserId();"><i class="headNavIcon notiIcon"></i></a>';
 	    masterNavHtml = masterNavHtml+'<div class="headPop headPopnoti" id="notificationPopup"></div>';
 	    masterNavHtml = masterNavHtml+'</li>';	
-     
+	    
+	    
+	    if(roleActionsArray.indexOf("ROLE_CROWDSOURCING_REQUIREMENTS") == -1){
+	    	  if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") > -1 || roleActionsArray.indexOf("ROLE_ENROLL_NEW_ROLE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ORG_SETTINGS") > -1 || roleActionsArray.indexOf("ROLE_CREATE_APPLICANT_TEMPLATE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_VIEW_APPLICANT_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_APPLICANT_TEMPLATE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_ADD_CONTRACT_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_CONTRACT_TEMPLATE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_CREATE_ON_BOARD_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_CREATE_OFF_BOARD_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE") > -1 
+	    			  || roleActionsArray.indexOf("ROLE_ADD_EXPENSE_TYPE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EXPENSE_TYPE") >-1 || roleActionsArray.indexOf("ROLE_DELETE_EXPENSE_TYPE") > -1 ){
+	    		  
+	    	  
+	    		  masterNavHtml = masterNavHtml+'<li><a href="javascript:void(0)" title="Settings" id="settingPopId"><i class="headNavIcon setiIcon"></i></a>';
+	    		  masterNavHtml = masterNavHtml+'<div class="headPop" id="settingPopup">';
+	    		  masterNavHtml = masterNavHtml+'<div class="headPopInn">';
+	    		  masterNavHtml = masterNavHtml+'<div class="headPopSear"><input type="text" class="" id="settingSearch" placeholder="Search"></div>';
+	    		  masterNavHtml = masterNavHtml+'<ul>';
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Schedule Maintenance"><a href="/app/loadScheduleMaintenance" id="scheduleMPopup">Schedule Maintenance</a></li>';
+	                     }
+	                    
+	                     if(isSuperAdmin == 'Y'){
+	                    	 masterNavHtml = masterNavHtml+'<li title="License Upgrade"><a href="/app/orgLicenseSubscriptionList">License Upgrade</a></li>';
+	                     }
+	                   
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Bulk Import"><a id="subMenu" href="javascript:void(0)">Bulk Import<i class="fa fa-caret-down arrRight"></i></a>';
+	                    	 masterNavHtml = masterNavHtml+'<div class="subMenuView">';
+	                    	 masterNavHtml = masterNavHtml+'<a href="/app/bulk-resume-import.html" target="_blank">Bulk Import</a>';
+	                    	 masterNavHtml = masterNavHtml+'<a data-toggle="modal" href="javascript:void(0)" id="bulkImport">Process File(s)</a>';
+	                    	 masterNavHtml = masterNavHtml+'</div>';
+	                    	 masterNavHtml = masterNavHtml+'</li> ';
+	                     }
+	                    
+
+	                     masterNavHtml = masterNavHtml+'<li title="Org Chart"><a href="/app/orgChart">Org Chart</a></li>';
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_NEW_ROLE") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Role Configuration"><a href="/app/orgRolesList">Role Configuration</a></li>';
+	                     }
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_VIEW_EDIT_ORG_SETTINGS") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Org Settings"><a href="/app/orgSettings">Org Settings</a></li>';
+	                     }
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_CREATE_APPLICANT_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_APPLICANT_TEMPLATE") > -1 
+	                    		 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_APPLICANT_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_ADD_CONTRACT_TEMPLATE") > -1 
+	                    		 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_CONTRACT_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_CREATE_ON_BOARD_TEMPLATE") > -1 
+	                    		 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE") > -1 || roleActionsArray.indexOf("ROLE_CREATE_OFF_BOARD_TEMPLATE") > -1 
+	                    		 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE") > -1 ){
+	                    	 
+	                    	 masterNavHtml = masterNavHtml+'<li title="Templates"><a href="/app/orgTemplates">Templates</a></li>';
+	                     }
+	                    	 
+	                     if(roleActionsArray.indexOf("ROLE_ADD_EXPENSE_TYPE") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EXPENSE_TYPE") > -1 || 
+	                    		 roleActionsArray.indexOf("ROLE_DELETE_EXPENSE_TYPE") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Expense Category"><a href="/app/expenseCategory">Expense Category</a></li>';
+	                     }
+	                     
+	                     masterNavHtml = masterNavHtml+'<li title="Bank Accounts"><a href="/app/bankAccountDetails">Bank Accounts</a></li>';
+						  
+	                     if(roleActionsArray.indexOf("ROLE_LEAVE_CONFIGURE") > -1){
+	                    	 
+	                    	 masterNavHtml = masterNavHtml+'<li title="Leave Configuration"><a href="/app/leaveConfiguration">Leave Configuration</a></li>';
+	                     }
+	                     
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_NEW_ROLE") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Job Board Configuration"><a href="/app/job-boards">Job Board Configuration</a></li>';
+	                     }
+					  	
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") == -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Custom Fields"><a href="/app/customFields">Custom Fields</a></li>';
+	                     }
+						 
+	                     masterNavHtml = masterNavHtml+'<li><a href="/app/projectAttributes">Project Attributes</a></li>';
+	                     
+	                     if(roleActionsArray.indexOf("ROLE_HOTLIST_CAMPAIGN") > -1 || roleActionsArray.indexOf("ROLE_JOB_CAMPAIGN") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li><a id="campSubMenu" href="javascript:void(0)">Campaigns <i class="fa fa-caret-down arrRight"></i></a>';
+	                    	 masterNavHtml = masterNavHtml+'<div class="campsubMenuView">';
+	                    	 masterNavHtml = masterNavHtml+'<a title="Senders" href="/app/campaignSendersList">Senders</a>';
+	                    	 masterNavHtml = masterNavHtml+'<a title="Recipients" href="/app/recipientsList">Recipients</a>';
+	                    	 masterNavHtml = masterNavHtml+'</div>';
+	                    	 masterNavHtml = masterNavHtml+'</li> ';	
+	                     }
+						 
+						
+	                     if(roleActionsArray.indexOf("ROLE_PAYROLL_CONFIGURATION") > -1){
+	                    	 if(country == 'United States'){
+	                    		 masterNavHtml = masterNavHtml+'<li title="Payroll Configuration"><a href="/app/payrollConfiguration">Payroll Configuration</a></li>';
+	                    	 }
+						  		
+	                    	 if(country == 'India'){
+	                    		 masterNavHtml = masterNavHtml+'<li title="Payroll Configuration"><a href="/app/indPayrollConfiguration" >Payroll Configuration</a></li>';
+	                    	 }
+	                     }
+                    
+	                     masterNavHtml = masterNavHtml+'<li><a href="/app/tagList" title="Tags" data-toggle="modal" id="tagsPop">Tags</a></li>';
+					  
+	                     if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") > -1){
+	                    	 masterNavHtml = masterNavHtml+'<li title="Guest Action Roles"><a href="/app/guestOrgActionRoles" >Guest Action Roles</a></li>';
+	                    	 masterNavHtml = masterNavHtml+'<li title="Email Templates"><a href="/app/emailTemplates" >Email Templates</a></li>';
+	                     }
+	                     
+	                   
+	                     masterNavHtml = masterNavHtml+'</ul>';
+	              
+	                     masterNavHtml = masterNavHtml+'<div class="noDate noDateSm" style="display: none;"></div>';
+	                     masterNavHtml = masterNavHtml+'</div>';
+	                     masterNavHtml = masterNavHtml+'</div>';
+	                     masterNavHtml = masterNavHtml+'</li>';
+	    	  
+	    	  
+	    	  }
+	    }
 	    
 	    masterNavHtml = masterNavHtml+'</ul>';
 	    masterNavHtml = masterNavHtml+'</div>';
@@ -273,14 +394,15 @@ var masterHeader = new MasterHeader();
 				  $("#orgLiksPopup").empty();
 		          $("#orgLiksPopup").append(result); 
 		          //To register Accout search event
-		          masterHeader.searchAccout();
+		          masterHeader.searchAccount();
+		          masterHeader.searchSettings();
 	             
 					
 		 });
 		 
 	 }
 	 
-   this.searchAccout = function(){
+   this.searchAccount = function(){
 	   $("#orgsSearch").keyup(function(){
 		   var filter = $(this).val(), count = 0;
 	        $(".headPopInn ul li").each(function(){
@@ -298,6 +420,26 @@ var masterHeader = new MasterHeader();
 	            $(this).parent().parent().find(".noDate").hide();
 	        } 
 	    
+	    });
+   }
+   
+   this.searchSettings = function(){
+	    $("#settingSearch").keyup(function(){
+	        var filter = $(this).val(), count = 0;
+	        $(".headPopInn ul li").each(function(){
+	            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+	                $(this).hide();
+	            } else {
+	                $(this).show();
+	                count++;
+	            }
+	        });
+	        
+	        if(count == 0) {
+	            $(this).parent().parent().find(".noDate").show();
+	        } else {
+	            $(this).parent().parent().find(".noDate").hide();
+	        }  
 	    });
    }
 	       

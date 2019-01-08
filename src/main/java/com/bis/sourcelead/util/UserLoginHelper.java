@@ -178,7 +178,6 @@ public class UserLoginHelper {
 		Integer paryrollTabCount = 0;
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
 			orgLocations = userRole.getOrgLocations();
-			Org org = orgLocations.getOrg();
 			List<Long> modulesId;
 			try {
 				modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);

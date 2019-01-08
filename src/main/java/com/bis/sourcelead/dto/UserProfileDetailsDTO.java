@@ -22,6 +22,8 @@ public class UserProfileDetailsDTO implements Serializable{
 	private String imageUrl;
 	
 	private String userName;
+	
+	private String userCode;
 
 	public BigInteger getUserId() {
 		return userId;
@@ -85,5 +87,13 @@ public class UserProfileDetailsDTO implements Serializable{
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 }

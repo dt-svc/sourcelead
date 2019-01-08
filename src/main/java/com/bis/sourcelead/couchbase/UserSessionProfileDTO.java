@@ -6,13 +6,11 @@ public class UserSessionProfileDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long userId;
+	private String userId;
 	
 	private String firstName;
 	
 	private String lastName;
-	
-	private String middleName;
 	
 	private String email;
 	
@@ -20,17 +18,21 @@ public class UserSessionProfileDTO implements Serializable{
 	
 	private String imageUrl;
 	
-	Object userProfileLocationsList;
-	
 	private String userName;
 	
+	private String middleName;
+	
+	private String userCode;
+	
+	Object userProfileLocationsList;
 	
 
-	public Long getUserId() {
+
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -97,6 +99,14 @@ public class UserSessionProfileDTO implements Serializable{
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 }

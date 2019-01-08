@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,12 +102,14 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.cache.util.UserStatsCacheHelper;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
 import com.ibm.icu.util.Calendar;
+import org.springframework.security.core.Authentication;
 
 /**
  * This class is used for...
@@ -203,6 +206,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 SourceleadActionsService sourceleadActionsService;
+	 
+	 @Autowired
+	 UserStatsCacheHelper userStatsCacheHelper;
 	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -530,15 +536,21 @@ public class DashboardRestController {
 	 
 	 @PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
-	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(defaultValue="false") boolean isWalkIn, @RequestParam(defaultValue="-1") int walkInDay, HttpServletRequest request) throws Exception {
+	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,
+			 @RequestParam(value="clients", required=false) String clients,
+			 @RequestParam(defaultValue="false") boolean isWalkIn,
+			 @RequestParam(defaultValue="-1") int walkInDay, 
+			 HttpServletRequest request,Authentication authentication) throws Exception {
 		ResponseList<Requirement> response = new ResponseList<>();
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(user != null) {
+		if(authentication != null) {
 			try {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				
-				String userCode = user.getUserCode();
+				HashMap<String,String> loginUserCache = userStatsCacheHelper.getUserStats(authentication.getName());
+				Long orgLocationId = Long.valueOf(loginUserCache.get(Constants.ORG_LOCATION_ID_CACHE));
+				String userCode = loginUserCache.get(Constants.USER_CODE_CAHCE);
+				String userRole = loginUserCache.get(Constants.USER_ROLE_CAHCE);
+				Long userId = Long.valueOf(loginUserCache.get(Constants.USER_ID_CAHCE));
+				
 				String userType = null;
 				List<Requirement>   requirementList = null;
 				String dayString = "";
@@ -556,11 +568,11 @@ public class DashboardRestController {
 					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
 				}
 			
-				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userCode) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userCode)){
 					userType = Constants.ADMIN;
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, userId, userCode, isWalkIn, dayString);
 				}else{
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId, userType, userId, userCode, isWalkIn, dayString);
 				}
 				// your code here...
 				 
@@ -584,11 +596,11 @@ public class DashboardRestController {
 		    		
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
-						List<Long> userId = new ArrayList<Long>();
+						List<Long> loginUserId = new ArrayList<Long>();
 						for (String s : requirement.getReleasedBy().split(",")){
-							userId.add(Long.parseLong(s));
+							loginUserId.add(Long.parseLong(s));
 						 }
-						boolean flag = userId.contains(user.getId());
+						boolean flag = loginUserId.contains(userId);
 			     		if(flag == true){
 			     			requirement.setIsRequirementReleasedByuser("Y");
 			     		}else{
@@ -2138,6 +2150,15 @@ public class DashboardRestController {
 			
 		}
 		return userLoginAccountsDTOList;
+	}
+	
+	
+	
+	@RequestMapping(value = "/getUserLoginSessionDetails")
+	public @ResponseBody org.json.simple.JSONObject getUserLoginSessionDetails(Authentication authentication) throws Exception {
+		
+		org.json.simple.JSONObject loginUserCacheMap = userStatsCacheHelper.getUserProfileLoginCacheDetails(authentication.getName());
+		return loginUserCacheMap;
 	}
 	
 }
