@@ -87,9 +87,9 @@
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 					 <div class="form-group">
-              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;*</span></label>
+              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;</span></label>
               <div class="col-md-8">
-                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead">
                     <c:forEach var="letter" items="${letterHeadList}">
                   <%--   <c:if test = "${letter.id == letter.letterHead.id}">
 				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
