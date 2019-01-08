@@ -159,6 +159,16 @@ public class LoggingAspect {
 			else
 				type = Constants.Candidate;
 		}
+		if("saveMarketPlaceData".equalsIgnoreCase(methodName)){
+			type="saveMarketPlaceData";
+		}
+		if("withdrawCandidateFromMarketplace".equalsIgnoreCase(methodName)){
+			type="withdrawCandidateFromMarketplace";
+		}
+		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
+			type="initMarketplacePayment";
+		}
+		
 
 		if(userLoginSession != null)
 			actionHistoryService.saveActionHistory(methodName,userLoginSession,loginOrgLocation,type);
