@@ -228,11 +228,11 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,	String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<RequirementSubmissionHistory> submissionHistoryList = null;
 		ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 		Query queryObj = null;
 		List<Long> countlist = null;
@@ -270,24 +270,24 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			 
 		}
 		
+		List<RequirementSubmissionHistory> submissionHistoryList = null;
+		List<RequirementSubmissionHistory> submissionHistoryCountList = null;
+		int totalCount = 0;
+		
 		String query = "from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate) and rs.orgLocations.id =:locationId";  
 	    queryObj = session.createQuery(query);
+	    queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameter("locationId", locationId);
 		
-		String countQuery = "from RequirementSubmissionHistory rsh where rsh.masterUserCode =:userCode and "+stageQuery+" "+query1+" and (date(rsh.createdDate) BETWEEN :fromDate AND :toDate)";
-		
+	    submissionHistoryCountList = queryObj.list();
+	    if(submissionHistoryCountList != null && !submissionHistoryCountList.isEmpty()) {
+	    	totalCount = submissionHistoryCountList.size();
+	    }
+	    
 		queryObj.setFirstResult(sumissionHistoryDTO.getStart());
 		queryObj.setMaxResults(sumissionHistoryDTO.getLength());
 
-		submissionHistoryList = queryObj.setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).setParameter("locationId", locationId).list();
+		submissionHistoryList = queryObj.list();
 		
-		countlist = session.createQuery("select count(*) "+ countQuery).setParameter("userCode", userCode).setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
-		
-		int totalCount = 0;
-		if (sumissionHistoryDTO != null) {
-			if (submissionHistoryList != null && !submissionHistoryList.isEmpty()) {
-				totalCount = submissionHistoryList.size();
-			}
-		}
 		submissionHistoryList.forEach(history->{
 			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
 			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());

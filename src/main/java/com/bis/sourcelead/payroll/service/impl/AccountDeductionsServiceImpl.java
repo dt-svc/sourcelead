@@ -424,7 +424,7 @@ public class AccountDeductionsServiceImpl implements AccountDeductionsService{
 					 if("Employee".equalsIgnoreCase(loginUserRole)){
 						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 					 }else if("Admin".equalsIgnoreCase(loginUserRole)){
-						 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();
+						 billRateIncome = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Paid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getRate())*Double.parseDouble(i.getQty())).sum();
 						 payRateIncome = invoiceDataList.stream().filter(i->i.getPayRate() !=null && "Paid".equalsIgnoreCase(i.getArPaid())).mapToDouble(i->Double.parseDouble(i.getPayRate())*Double.parseDouble(i.getQty())).sum();
 					 }
 					 due = invoiceDataList.stream().filter(i->(i.getAmount() !=null && "Unpaid".equalsIgnoreCase(i.getArPaid()))).mapToDouble(i-> Double.parseDouble(i.getAmount())).sum();

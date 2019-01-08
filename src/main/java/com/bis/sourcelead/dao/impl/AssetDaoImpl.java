@@ -718,8 +718,22 @@ public class AssetDaoImpl implements AssetDao{
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional
+	public void deleteAsset(Asset asset) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		try {
+			if(asset != null) {
+				session.delete(asset);
+			}
+		}catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ASSET"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
 	
-	
+	 
 
 	
 }

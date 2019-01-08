@@ -42,7 +42,7 @@
 								<input type="text" id="templateName" name="templateName"
 									value="${contractsTemplate.templateName}"
 									field-name="Template Name"
-									data-validation="required validate_Space validate_length length2-200"
+									data-validation="required validate_Space validate_length length1-250"
 									onblur="validateContractTemplateName();" type="text"
 									class="form-control">
 							</div>
@@ -85,7 +85,23 @@
 
 
 					</div>
-
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+					 <div class="form-group">
+              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
+                    <c:forEach var="letter" items="${letterHeadList}">
+                  <%--   <c:if test = "${letter.id == letter.letterHead.id}">
+				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+				    </c:if> --%>
+<%-- 				    <c:if test = "${letter.id != letter.letterHead.id}"> --%>
+				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+<%-- 				         </c:if> --%>
+                    </c:forEach>
+                  </select>
+            </div>
+            </div>
+            </div>
 
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<label class="col-md-2">Description</label>
@@ -126,8 +142,7 @@
 								<li onclick="copyToClipboard('text_element7')"><i></i>
 									<p class="copyText" id="text_element7">[End date]</li>
 								<li onclick="copyToClipboard('text_element8')"><i></i>
-									<p class="copyText" id="text_element8">[State Of
-										Jurisdiction]</p></li>
+									<p class="copyText" id="text_element8">[State Of Jurisdiction]</p></li>
 								<!--    <li onclick="copyToClipboard('text_element9')"><i></i><p class="copyText" id="text_element9">[Offer Rate]</li> -->
 								<!-- 								<li onclick="copyToClipboard('text_element10')"><i></i> -->
 								<!-- <p class="copyText" id="text_element10">[Billing Rate]</li>
@@ -715,7 +730,7 @@
 								$("#save_template").addClass('button').val(
 										'Save');
 								$("#save_template").removeAttr("disabled");
-							}
+						}
 						}
 					});
 		}

@@ -38,15 +38,16 @@ $(document).ready(function(){
 		  <div class="positionRelative clearfix"> 
             <div class="col-md-4 positionRelative noPad col-md-offset-8">
         <select class="chosen-select" id="payFrequency" name = "payFrequency" onchange="nextPayrollDate();">
-        <%-- <c:if test="${not empty payFrequency}">
+
+         <c:if test="${not empty payFrequency}">
          <option selected value="${payFrequency}">${payFrequency}</option>
         </c:if>
-        <c:if test="${empty payFrequency}"> --%>
+        <c:if test="${empty payFrequency}"> 
             <option selected value="Weekly">Weekly</option>
    			<option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
 			<option value="Annually">Annually</option>
-		<%-- </c:if> --%>
+		</c:if> 
 			
 			<!-- <option value="Bi-Weekly">Bi-Weekly</option>
 			<option value="Monthly">Monthly</option>
@@ -346,10 +347,11 @@ function populateRecentRunPayrollDataGrid(json){
 	{
 		for(var i=0;i<json.length;i++){
 			var opt = json[i];
-			var frequencyArgs = opt.payFrequency;
+			var freqUUIDArgs = opt.paysheetFreqUUID;
+			var periodNumArgs = opt.payPeriodNum;
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</a></div>';
+			result = result + '<div class="tblminwidth-175"> <a href="<c:url value="/app/viewPaySheetFrequencyData?paySheetFrequencyUUID='+freqUUIDArgs+'&approverStatus=APPROVED&payPeriodNum='+periodNumArgs+'"/>">'+opt.payFrequency+'</a></div>';
 			result = result + '</td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
 			result = result + '<td><div class="tblminwidth-75">$  '+opt.grossPay+'</div></td>';
@@ -388,12 +390,6 @@ function overviewRedirection(){
 	$("#overViewDiv").show();
 	$("#reviewPayrollDiv").show();
 	
-}
-</script>
-
-<script>
-function loadFrequencyList(frequency){
-	window.location.href = sourceleadUrl + "/viewPaySheetFrequencyData";
 }
 </script>
 

@@ -41,13 +41,13 @@ function approvePayrollDiv(){
   <div class="pull-left">
     <h2>Payroll</h2>
   </div>
-<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/uSPayrollDashboard'/>">Total Pays</a> &raquo; Payroll</div>
+<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Payroll</div>
 </section>
 
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
-   	    <li id="dashId" class="current"><a href="javascript:void(0)" class="active" onclick="dashboardTab();">Dashboard</a></li>
-	   <li id="overId"><a href="javascript:void(0)" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+   	    <li id="dashId" class="current"><a class="active" onclick="dashboardTab();">Dashboard</a></li>
+	   <li id="overId"><a id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
 
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
@@ -156,7 +156,7 @@ function approvePayrollDiv(){
 		 <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}">
 		<li><a href="#" class="btn btn-default ml mr" id="Confirm" onclick="confirmPayroll();">Confirm</a></li>
 		</c:if>
-		<li><a href="#" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+		<li><a href="#" class="btn btn-default" onclick="window.location='/app/uSPayrollDashboard'">Cancel</a></li>
 	</ul>
 	</div>
 	
@@ -258,6 +258,8 @@ $(document).ready(function() {
   
   <script>
   function getOverviewdata(){
+	  
+	  $("#approveDiv").hide();
 	  $("#dashboardDiv").hide();
 	  $("#userGroupDiv").hide();
 	  $("#draftFrequencyDiv").hide();
@@ -534,7 +536,7 @@ function runUSPayroll(){
 				        	result += '<th>Emp ID</th>';
 				        	result += '<th>Emp Name</th>';
 				        	result += '<th>Regular<br>Hours</th>';
-				        	result += '<th>Payrate</th>';
+				        	result += '<th>Pay Per Salary</th>';
 				        	result += '<th>Pay Type</th>';
 				        	result += '<th>OT<br>Hours</th>';
 				        	result += '<th>Gross<br>Pay</th>';
@@ -572,7 +574,7 @@ function runUSPayroll(){
 						        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
  						        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
 						        	/* result += '<td><div class="tblminwidth-125 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>'; */
-						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payRate+'</div></td>';
+						        	result += '<td><div class="tbldata-dotdot-vsm">$ '+opt.payPerSal+'</div></td>';
 						        	if(opt.payType != null && opt.payType != ''){
 						        		result += '<td><div class="tbldata-dotdot-vsm">'+opt.payType+'</div></td>';
 						        	}else{
@@ -842,6 +844,8 @@ function dashboardTab(){
 	  $("#historySearchDiv").hide();
 	  $("#searchDivForEmployee").hide();
 	  $("#dashboardDiv").show();
+	  
+	  location.replace(sourceleadUrl+ "/uSPayrollDashboard"); 
 	
 }
 </script>
