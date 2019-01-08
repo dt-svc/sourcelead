@@ -1401,7 +1401,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from User user where user.id IN (select distinct approver.approverUserId.id from ProjectApproverHierarchy approver where approver.status = '1' and "
-				+ " approver.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.orgLocationsId = :orgLocationId))";
+				+ " approver.projectClientsId.id IN (select pc.id from ProjectClients pc where pc.orgLocationsId = :orgLocationId)) ORDER BY user.firstName ASC";
 		List<User> userList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return userList;
 	

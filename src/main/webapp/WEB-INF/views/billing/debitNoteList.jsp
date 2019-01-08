@@ -207,7 +207,7 @@ function prepareDebitNoteList(url,locationdateForList){
 	result = result +'         <th>ID</th>                    ';
 	result = result +'         <th>Reference Number</th>           ';
 	result = result +'         <th>Vendor Name</th>               ';
-	result = result +'         <th>Invoice ID</th>   ';
+	result = result +'         <th>Bill ID</th>   ';
 	result = result +'         <th>Total</th>                 ';
 	result = result +'         <th>Balance</th>                   ';
 	result = result +'         <th>Status</th>                ';
