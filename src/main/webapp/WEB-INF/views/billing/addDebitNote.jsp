@@ -720,10 +720,18 @@ function datePickerFunction(id){
 	  var taxAmountVal = parseFloat(taxAmount);
 	  var totlalValue = "0.00";
 	  if(taxType=="Flat"){
-	  totlalValue = (rowTotalVal + taxAmountVal);
+	  if(!isNaN(taxAmountVal)){
+		  totlalValue = (rowTotalVal + taxAmountVal);
+		}else{
+			  totlalValue = rowTotalVal;  
+		 }
 	  }else{
+		  if(!isNaN(taxAmountVal)){
 		  var perCentValue = (rowTotalVal * taxAmountVal)/100;
-			totlalValue = (rowTotalVal + perCentValue);  
+			totlalValue = (rowTotalVal + perCentValue); 
+		  }else{
+			  totlalValue = rowTotalVal;  
+		  }
 	  }
 	   $('#rowTotalAmount'+rowId).empty().val(totlalValue.toFixed(2));
 	   calculateSumSubTotal(rowId);
