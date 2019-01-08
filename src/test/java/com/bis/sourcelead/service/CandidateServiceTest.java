@@ -16,6 +16,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SecurityConfig;
@@ -55,12 +57,16 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.form.OrgSettings;
+import com.bis.sourcelead.service.impl.CandidateServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.web.CandidateController;
 
 import org.mockito.Spy;
+import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.hamcrest.CoreMatchers.*;
 
 /**
@@ -74,6 +80,7 @@ import static org.hamcrest.CoreMatchers.*;
 @ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class CandidateServiceTest {
 	
+	private CandidateServiceImpl service;
 	
 		@Autowired
 		CandidateService candidateService ;
@@ -85,44 +92,30 @@ public class CandidateServiceTest {
 		@Autowired
 		OrgLocationService orgLocationService;
 		
-		@Spy
-		CandidateService spyCandidateService;
+		@Mock
+		CandidateService mockCandidateService;
 		
-		@Spy
-		CandidateDao spyCandidateDao;
+		@Mock
+		CandidateDao mockCandidateDao;
 		
-		@Spy
-		CandidateEmployersDao spyCandidateEmployersDao;
+		@Mock
+		CandidateEmployersDao mockCandidateEmployersDao;
 		
-		@Spy
-	    CandidateEducationDao spyCandidateEducationDao;
+		@Mock
+	    CandidateEducationDao mockCandidateEducationDao;
 		
-		@Spy
-	    CandidateCertificationsDao spyCandidateCertificationsDao;
+		@Mock
+	    CandidateCertificationsDao mockCandidateCertificationsDao;
 		
-		@Spy
-		CandidateMarketPlace spyMarketPlace;
-		
-		@Spy
-		CandidateMarketPlacePaymentTransactionHistory spyTransactionHistory;
-		
-		@Spy
-		OrgLocations spyOrgLocations;
-		
-		@Spy
-		MarketplacePurchaseSalesDTO spyMarketplacePurchaseSalesDTO;
-		
-		@Spy
-		List<CandidateEmployers> spyCandidateEmployers;
-		
-		@Spy
-		List<CandidateEducation> spyEducations;
-		
-		@Spy
-		List<CandidateCertifications> spyCertifications;
-		
-		@Spy
-		List<CandidateMarketPlace> spyGlobalCandidatesMarketplaceData;
+		@Before
+		public void setUp() throws Exception {
+		initMocks(this);
+		service = new CandidateServiceImpl();
+		ReflectionTestUtils.setField(service, "candidateDao", mockCandidateDao);
+		ReflectionTestUtils.setField(service, "candidateEmployersDao", mockCandidateEmployersDao);
+		ReflectionTestUtils.setField(service, "candidateEducationDao", mockCandidateEducationDao);
+		ReflectionTestUtils.setField(service, "candidateCertificationsDao", mockCandidateCertificationsDao);
+		}
 		
 		@Test
 		public void storeCandidate() throws Exception{
@@ -319,8 +312,8 @@ public class CandidateServiceTest {
 		}
 		
 		@Test
-		public void getMarketplaceTransactionDetails(){
-			try{
+		public void getMarketplaceTransactionDetails() throws Exception{
+			
 			CandidateMarketPlacePaymentTransactionHistory cmpth = new CandidateMarketPlacePaymentTransactionHistory();
 			CandidateMarketPlacePaymentTransactionHistory cmpthreturn = new CandidateMarketPlacePaymentTransactionHistory();
 			OrgLocations orgLocationId=new OrgLocations();
@@ -333,14 +326,12 @@ public class CandidateServiceTest {
 			candidateService.saveCandidateMarketplacePaymentTranscationHistory(cmpth);
 			cmpthreturn = candidateService.getMarketplaceTransactionDetails(orgLocationId.getId());
 			assertEquals(cmpth.getOrgLocationId().getId(),cmpthreturn.getOrgLocationId().getId());
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			
 		}
 		
 		@Test
-		public void getCandidateDetailsByCandidateId(){
-			try{
+		public void getCandidateDetailsByCandidateId() throws Exception{
+			
 			CandidateMarketPlace cmp = new CandidateMarketPlace();
 			CandidateMarketPlace cmpreturn = new CandidateMarketPlace();
 			User user = new User();
@@ -353,14 +344,12 @@ public class CandidateServiceTest {
 			candidateService.copyCandidateToMarketplace(String.valueOf(candidate.getId()),user);
 			cmpreturn = candidateService.getCandidateDetailsByCandidateId(candidate.getId());
 			assertEquals(cmp.getStatus(),cmpreturn.getStatus());
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			
 		}
 		
 		@Test
-		public void getUserDetailsBySourceOrgLocationId(){
-			try{
+		public void getUserDetailsBySourceOrgLocationId() throws Exception{
+			
 			OrgLocations sourceOrgLocationId = new OrgLocations();
 			OrgSettings orgSettings = new OrgSettings();
 			orgSettings.setId(12);
@@ -374,14 +363,13 @@ public class CandidateServiceTest {
 			orgLocationService.saveOrgLocations(orgSettings,sourceOrgLocationId);
 			user1 = candidateService.getUserDetailsBySourceOrgLocationId(sourceOrgLocationId.getId());
 			assertEquals(user.getId(),user1.getId());
-			}catch(Exception e){
-				e.printStackTrace();
-			}
+			
 		}
 
-		@Test
+		//-------------------------------------------------------------------------
+		/*@Test
 		public void updateMarketplaceCartCountAndPrice() throws Exception{
-			//try{
+			
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
 				//OrgLocations orglocations = new OrgLocations();
@@ -396,14 +384,12 @@ public class CandidateServiceTest {
 				Object obj1[] = candidateService.updateMarketplaceCartCountAndPrice(orglocations1.getId(), Constants.ROLE_ADMIN, user1);
 				assertNotNull(obj1);
 				assertEquals(obj[0].toString(), obj1[0].toString());
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void updateMarketCartStatus() throws Exception{
-			//try{
+			
 				logger.info("testing updateMarketCartStatus service");
 				List<Long> marketCartIds = new ArrayList<Long>();
 				marketCartIds.add(3l);
@@ -419,28 +405,24 @@ public class CandidateServiceTest {
 				Boolean flag1 = candidateService.updateMarketCartStatus(marketCartIds, orglocations1.getId());
 				assertTrue(flag1);
 				assertEquals(flag, flag1);
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getCandidateMarketPlaceDetailsByUUId() throws Exception{
-			//try{
+			
 				logger.info("testing getCandidateMarketPlaceDetailsByUUId service");
 				CandidateMarketPlace market = new CandidateMarketPlace();
 				market.setMarketplaceUUID("zRA7Z6Rw");
 				CandidateMarketPlace market1 = candidateService.getCandidateMarketPlaceDetailsByUUId(market.getMarketplaceUUID());
 				assertNotNull(market1);
 				assertEquals(market.getMarketplaceUUID(), market1.getMarketplaceUUID());
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getMarketplaceSalesOrderBySalesUuid() throws Exception{
-			//try{
+			
 				logger.info("testing getMarketplaceSalesOrderBySalesUuid service");
 				MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
 				salesOrder.setSalesUuid("bwjswsPO");
@@ -449,14 +431,12 @@ public class CandidateServiceTest {
 				MarketplacePurchaseSalesDTO salesDto = candidateService.getMarketplaceSalesOrderBySalesUuid(spyOrgLocations, salesOrder.getSalesUuid());
 				assertNotNull(salesDto);
 				assertEquals(salesOrder.getSalesUuid(), salesDto.getSalesUuid());
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getPurchaseDetailByPurchaseUuid() throws Exception{
-			//try{
+			
 				logger.info("testing getPurchaseDetailByPurchaseUuid service");
 				MarketplacePurchaseOrder purchaseOrder = new MarketplacePurchaseOrder();
 				purchaseOrder.setPurchaseUuid("PG1doDtM");
@@ -464,15 +444,12 @@ public class CandidateServiceTest {
 				spyOrgLocations.setId(5l);
 				MarketplacePurchaseSalesDTO purchaseDto = candidateService.getPurchaseDetailByPurchaseUuid(purchaseOrder.getPurchaseUuid(), spyOrgLocations);
 				assertNotNull(purchaseDto);
-				assertEquals(purchaseOrder.getPurchaseUuid(), purchaseDto.getPurchaseUuid());
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getBalanceAmountFromWallet() throws Exception{
-			//try{
+			
 				logger.info("testing getBalanceAmountFromWallet service");
 				//OrgLocations orglocations = new OrgLocations();
 				spyOrgLocations.setId(5l);
@@ -483,90 +460,94 @@ public class CandidateServiceTest {
 				Double walletAmount1 = candidateService.getBalanceAmountFromWallet(orglocations1.getId());
 				assertNotNull(walletAmount1);
 				assertEquals(walletAmount, walletAmount1);
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
-		}
+			
+		}*/
+		//-------------------------------------------------------------------------
 		
 		@Test
-		public void deleteCandidateMarketCartByMarketUUID() throws Exception{
-			//try{
-				String candidatgeMarketUUID = "abc";
-				doNothing().when(spyCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
-				verify(spyCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
-				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+		public void getWalletList() throws Exception{
+			
+				MarketplaceWalletDTO marketplaceWalletDTO = new MarketplaceWalletDTO();
+				String searchValue = "abc";
+				String transactionType = "dummy";
+				Map<String, Date> dateValue = new HashMap<>();
+				ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
+				ResponseList<MarketplaceWalletDTO> responseList1 = null;
+				when(mockCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue)).thenReturn(responseList);
+				responseList1 = mockCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue);
+				assertNotNull(responseList1);
 			
 		}
 		
 		@Test
+		public void deleteCandidateMarketCartByMarketUUID() throws Exception{
+			
+				String candidatgeMarketUUID = "abc";
+			    doNothing().when(mockCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+			    mockCandidateDao.deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+				verify(mockCandidateDao).deleteCandidateMarketCartByMarketUUID(candidatgeMarketUUID);
+				
+		}
+		
+		@Test
 		public void saveToMarketplacePurchaseOrder() throws Exception{
-			//try{
+			
 				MarketplacePurchaseOrder newMarketplacePurchaseorder = new MarketplacePurchaseOrder();
-				doNothing().when(spyCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
-				verify(spyCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				doNothing().when(mockCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+				mockCandidateDao.saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+				verify(mockCandidateDao).saveToMarketplacePurchaseOrder(newMarketplacePurchaseorder);
+			
 		}
 		
 		@Test
 		public void saveToMarketplaceSalesOrder() throws Exception{
-			//try{
+			
 				
 				 MarketplaceSalesOrder newMarketplaceSalesorder = new MarketplaceSalesOrder();
-				 doNothing().when(spyCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
-				 verify(spyCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+				 doNothing().when(mockCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+				 mockCandidateDao.saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
+				 verify(mockCandidateDao).saveToMarketplaceSalesOrder(newMarketplaceSalesorder);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
 		}
 		
 		@Test
 		public void deleteAllCandidatesFromMarketcart() throws Exception{
-			//try{
+			
 				Long orgLocationId = 123l;
-				 doNothing().when(spyCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
-				 verify(spyCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				 doNothing().when(mockCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
+				 mockCandidateDao.deleteAllCandidatesFromMarketcart(orgLocationId);
+				 verify(mockCandidateDao).deleteAllCandidatesFromMarketcart(orgLocationId);
+			
 		}
 		
 		@Test
 		public void getPurchaseCandidateListByOrglocation() throws Exception{
-			//try{
+			
 				Long id = 1234l;
 				MarketplacePurchaseOrder mpo = new MarketplacePurchaseOrder();
 				List<MarketplacePurchaseOrder> list = new ArrayList<MarketplacePurchaseOrder>();
 				List<MarketplacePurchaseOrder> list1 = new ArrayList<MarketplacePurchaseOrder>();
 				list.add(mpo);
-				when(spyCandidateDao.getPurchaseCandidateListByOrglocation(id)).thenReturn(list);
-				list1 = spyCandidateDao.getPurchaseCandidateListByOrglocation(id);
+				when(mockCandidateDao.getPurchaseCandidateListByOrglocation(id)).thenReturn(list);
+				list1 = mockCandidateDao.getPurchaseCandidateListByOrglocation(id);
 				assertThat(list1.size(),is(1));
-				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void saveCandidateMarketPlaceWallet() throws Exception{
-			//try{
+			
 				CandidateMarketWallet wallet = new CandidateMarketWallet();
-				doNothing().when(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
-				verify(spyCandidateDao).saveCandidateMarketPlaceWallet(wallet);
-				/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				doNothing().when(mockCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				mockCandidateDao.saveCandidateMarketPlaceWallet(wallet);
+				verify(mockCandidateDao).saveCandidateMarketPlaceWallet(wallet);
+				
 		}
-
+		//-------------------------------------------------------------------------
+/*
 		@Test
 		public void withdrawCandidateFromMarketplace() throws Exception{
-			//try{
+			
 				logger.info("testing withdrawCandidateFromMarketplace service");
 				CandidateMarketPlace marketplace = new CandidateMarketPlace();
 				Candidate candidate = new Candidate();
@@ -578,34 +559,34 @@ public class CandidateServiceTest {
 				candidate.setIsSharedInMarketplace(Constants.NO);
 				doNothing().when(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
 				verify(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
-				/*doNothing().when(spyCandidateDao).storeCandidate(candidate);
-				verify(spyCandidateDao).storeCandidate(candidate);*/
+				doNothing().when(spyCandidateDao).storeCandidate(candidate);
+				verify(spyCandidateDao).storeCandidate(candidate);
 				doNothing().when(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
 				verify(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
 				marketplace.setCandidateUUID("aXbYcZ");
 				doNothing().when(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
 				verify(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
-		}
+			
+		}*/
+		
+		//-------------------------------------------------------------------------
+		
 		
 		@Test
 		public void updateMarketWalletAmount() throws Exception{
-			//try{
+			
 				Double balanceAmountValue = 123.4;
 				Long id = 123l;
-				doNothing().when(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
-				verify(spyCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
-			/*	
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				doNothing().when(mockCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				mockCandidateDao.updateMarketWalletAmount(balanceAmountValue, id);
+				verify(mockCandidateDao).updateMarketWalletAmount(balanceAmountValue, id);
+				
+			
 		}
 		
 		@Test
 		public void getPurchaseCandidateExcelFile() throws Exception{
-			//try{
+			
 				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
 				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
 				Long orgLocationId = 123l;
@@ -614,15 +595,13 @@ public class CandidateServiceTest {
 				System.out.println("marketplace file"+ file.getName());
 				assertEquals(file.getName().contains("Purchased Candidates"),true);
 				file.delete();
-		/*		
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				
+			
 		}
 		
 		@Test
 		public void getPurchaseCandidatePdf() throws Exception{
-			//try{
+			
 				MarketplacePurchaseOrder mpo1 = new MarketplacePurchaseOrder();
 				List<MarketplacePurchaseOrder> purchaseCandidatesList = new ArrayList<MarketplacePurchaseOrder>();
 				Long orgLocationId = 123l;
@@ -632,177 +611,150 @@ public class CandidateServiceTest {
 				assertEquals(file.getName().contains("PurchaseCandidate"),true);
 				file.delete();
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
-		@Test
-		public void getWalletList() throws Exception{
-			//try{
-				MarketplaceWalletDTO marketplaceWalletDTO = new MarketplaceWalletDTO();
-				String searchValue = "abc";
-				String transactionType = "dummy";
-				Map<String, Date> dateValue = new HashMap<>();
-				ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
-				ResponseList<MarketplaceWalletDTO> responseList1 = null;
-				when(spyCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue)).thenReturn(responseList);
-				responseList1 = spyCandidateDao.getWalletList(marketplaceWalletDTO, searchValue,transactionType, dateValue);
-				assertNotNull(responseList1);
-				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
-		}
 		
 		@Test
 		public void getMarketplaceSalesOrderList() throws Exception{
-			//try{
-				//OrgLocations orgLocations = new OrgLocations();
+			
+				OrgLocations orgLocations = new OrgLocations();
+				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO = new MarketplacePurchaseSalesDTO();
 				String searchValue = "dummy";
 				String salesOrderFromDate = ""; 
 				String salesOrderToDate = "";
 				Map<String, Date> dateValue = new HashMap<>();
 				ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 				ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
-				when(spyCandidateDao.getMarketplaceSalesOrderList(spyMarketplacePurchaseSalesDTO, spyOrgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue)).thenReturn(responseList);
-				responseList1 = spyCandidateDao.getMarketplaceSalesOrderList(spyMarketplacePurchaseSalesDTO, spyOrgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
+				when(mockCandidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue)).thenReturn(responseList);
+				responseList1 = mockCandidateDao.getMarketplaceSalesOrderList(marketplacePurchaseSalesDTO, orgLocations, searchValue, salesOrderFromDate, salesOrderToDate, dateValue);
 				assertNotNull(responseList1);
 						
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getMarketplacePurchaseOrder() throws Exception{
-			//try{
+			
 				OrgLocations orgLocations = new OrgLocations();
+				MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO = new MarketplacePurchaseSalesDTO();
 				orgLocations.setId(123l);
 				ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 				ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
-				when(spyCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), spyMarketplacePurchaseSalesDTO)).thenReturn(responseList);
-				responseList1 = spyCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), spyMarketplacePurchaseSalesDTO);
+				when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO)).thenReturn(responseList);
+				responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO);
 				assertNotNull(responseList1);
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getOrderNo() throws Exception{
-			//try{
+			
 				Long id = 123l;
+				CandidateMarketPlacePaymentTransactionHistory transactionHistory = new CandidateMarketPlacePaymentTransactionHistory();
 				CandidateMarketPlacePaymentTransactionHistory transactionHistory1 = null;
-				when(spyCandidateDao.getOrderNo(id)).thenReturn(spyTransactionHistory);
-				transactionHistory1 = spyCandidateDao.getOrderNo(id);
+				when(mockCandidateDao.getOrderNo(id)).thenReturn(transactionHistory);
+				transactionHistory1 = mockCandidateDao.getOrderNo(id);
 				assertNotNull(transactionHistory1);
-			/*	
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getCandidatesListByIds() throws Exception{
-			//try{
+			
 				List<Long> Ids = new ArrayList<Long>();
 				List<CandidateDTO> candidateDTOList = new ArrayList<CandidateDTO>();
 				List<CandidateDTO> candidateDTOList1 = null;
-				when(spyCandidateDao.getCandidatesListByIds(Ids)).thenReturn(candidateDTOList);
-				candidateDTOList1 = spyCandidateDao.getCandidatesListByIds(Ids);
+				when(mockCandidateDao.getCandidatesListByIds(Ids)).thenReturn(candidateDTOList);
+				candidateDTOList1 = mockCandidateDao.getCandidatesListByIds(Ids);
 				assertNotNull(candidateDTOList1);
-			/*	
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				
+			
 		}
 		
 		@Test
 		public void getMarketCartIdsFromMarketcart() throws Exception{
-			//try{
+			
 				Long orgLocationId = 123l;
 				List<CandidateMarketCart> candidateMarketCartList = new ArrayList<>();
 				List<CandidateMarketCart> candidateMarketCartList1 = null;
-				when(spyCandidateDao.getMarketCartIdsFromMarketcart(orgLocationId)).thenReturn(candidateMarketCartList);
-				candidateMarketCartList1 = spyCandidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
+				when(mockCandidateDao.getMarketCartIdsFromMarketcart(orgLocationId)).thenReturn(candidateMarketCartList);
+				candidateMarketCartList1 = mockCandidateDao.getMarketCartIdsFromMarketcart(orgLocationId);
 				assertNotNull(candidateMarketCartList1);
-			/*	
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				
+			
 		}
 		
 		@Test
 		public void getCandidateMarketPlaceDTODetailsByUUId() throws Exception{
-			//try{
+			
 				String marketplaceUUID = "123A";
-				//OrgLocations orgLocations = new OrgLocations();
+				OrgLocations orgLocations = new OrgLocations();
+				CandidateMarketPlace marketPlace = new CandidateMarketPlace();
 				CandidateMarketPlace marketPlace1 = null;
+				List<CandidateEmployers> candidateEmployers = new ArrayList<>();
 				List<CandidateEmployers> candidateEmployers1 = null;
+				List<CandidateEducation> educations = new ArrayList<>();
 				List<CandidateEducation> educations1 = null;
+				List<CandidateCertifications> certifications = new ArrayList<>();
 				List<CandidateCertifications> certifications1 = null;
-				//List<CandidateMarketPlace> globalCandidatesMarketplaceData = new ArrayList<>();
+				List<CandidateMarketPlace> globalCandidatesMarketplaceData = new ArrayList<>();
 				List<CandidateMarketPlace> globalCandidatesMarketplaceData1 = null;
-				when(spyCandidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID)).thenReturn(spyMarketPlace);
-				marketPlace1 = spyCandidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
+				when(mockCandidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID)).thenReturn(marketPlace);
+				marketPlace1 = mockCandidateDao.getCandidateMarketPlaceDetailsByUUId(marketplaceUUID);
 				assertNotNull(marketPlace1);
-				when(spyCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId())).thenReturn(spyCandidateEmployers);
-				candidateEmployers1 = spyCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId());
+				when(mockCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId())).thenReturn(candidateEmployers);
+				candidateEmployers1 = mockCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 				assertNotNull(candidateEmployers1);
-				when(spyCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId())).thenReturn(spyEducations);
-				educations1 = spyCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId());
+				when(mockCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId())).thenReturn(educations);
+				educations1 = mockCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 				assertNotNull(educations1);
-			    when(spyCandidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId())).thenReturn(spyCertifications);
-			    certifications1 = spyCandidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(spyMarketPlace.getCandidateId().getId(), spyMarketPlace.getOrgLocationId().getId());
+			    when(mockCandidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId())).thenReturn(certifications);
+			    certifications1 = mockCandidateCertificationsDao.getCandidateCertificationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 			    assertNotNull(certifications1);
-			    when(spyCandidateDao.getGlobalMarketplaceDataByOrgId(spyOrgLocations.getId(), spyMarketPlace.getId())).thenReturn(spyGlobalCandidatesMarketplaceData);
-			    globalCandidatesMarketplaceData1 = spyCandidateDao.getGlobalMarketplaceDataByOrgId(spyOrgLocations.getId(), spyMarketPlace.getId());
+			    when(mockCandidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId())).thenReturn(globalCandidatesMarketplaceData);
+			    globalCandidatesMarketplaceData1 = mockCandidateDao.getGlobalMarketplaceDataByOrgId(orgLocations.getId(), marketPlace.getId());
 			    assertNotNull(globalCandidatesMarketplaceData1);
-			    when(spyCandidateDao.getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId())).thenReturn(1);
-			    verify(spyCandidateDao).getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId());
+			    when(mockCandidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId())).thenReturn(1);
+			    mockCandidateDao.getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
+			    verify(mockCandidateDao).getMarketCartStatusByMarketIdOrgId(marketPlace.getId(), marketPlace.getOrgLocationId().getId());
 			    
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getGlobalDataRecommendations() throws Exception{
-			//try{
+			
 				CandidateMarketPlaceDTO candidateMarketPlaceDTO = new CandidateMarketPlaceDTO();
-				//OrgLocations orgLocations = new OrgLocations();
+				OrgLocations orgLocations = new OrgLocations();
 				String searchValue = "dummy";
 				ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList = new ResponseList<>();
 				ResponseList<CandidateMarketPlaceDTO> candidateMarketPlaceDTOList1 = null;
-				when(spyCandidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, spyOrgLocations, searchValue)).thenReturn(candidateMarketPlaceDTOList);
-				candidateMarketPlaceDTOList1 = spyCandidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, spyOrgLocations, searchValue);
+				when(mockCandidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue)).thenReturn(candidateMarketPlaceDTOList);
+				candidateMarketPlaceDTOList1 = mockCandidateDao.getGlobalDataRecommendations(candidateMarketPlaceDTO, orgLocations, searchValue);
 				assertNotNull(candidateMarketPlaceDTOList1);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void updateMarketplaceCandidates() throws Exception{
-			//try{
-				//OrgLocations orgLocations = new OrgLocations();
+			
+				OrgLocations orgLocations = new OrgLocations();
 				String companyNameFlag = "abc";
 				int x = 0;
-				when(spyCandidateDao.updateMarketplaceCandidates(spyOrgLocations, companyNameFlag)).thenReturn(1);
-				x = spyCandidateDao.updateMarketplaceCandidates(spyOrgLocations, companyNameFlag);
+				when(mockCandidateDao.updateMarketplaceCandidates(orgLocations, companyNameFlag)).thenReturn(1);
+				x = mockCandidateDao.updateMarketplaceCandidates(orgLocations, companyNameFlag);
 				assertThat(x, is(1));
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getCandidateDetailsFromMarketcart() throws Exception{
-			//try{
+			
 				User user = new User(); 
+				OrgLocations orgLocations = new OrgLocations();
 				String userRole = ""; 
 				String creationStartDate = ""; 
 				String creationEndDate = "";
@@ -810,149 +762,131 @@ public class CandidateServiceTest {
 				Map<String, Date> dateValue = new HashMap<>();
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView = new ArrayList<>();
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView1 = null;
-				when(spyCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, spyOrgLocations, creationStartDate, creationEndDate, dateValue, searchValue)).thenReturn(candidateMarketPlaceCartView);
-				candidateMarketPlaceCartView1 = spyCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, spyOrgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
+				when(mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue)).thenReturn(candidateMarketPlaceCartView);
+				candidateMarketPlaceCartView1 = mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
 				assertNotNull(candidateMarketPlaceCartView1);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
 		}
 		
 		@Test
 		public void getCandidateProfilePercentageByCandidateId() throws Exception{
-			//try{
+			
 				Long id = 123l;
 				Integer profilePercentage = 10;
 				Integer profilePercentage1 = 0;
-				when(spyCandidateDao.getCandidateProfilePercentageByCandidateId(id)).thenReturn(profilePercentage);
-				profilePercentage1 = spyCandidateDao.getCandidateProfilePercentageByCandidateId(id);
+				when(mockCandidateDao.getCandidateProfilePercentageByCandidateId(id)).thenReturn(profilePercentage);
+				profilePercentage1 = mockCandidateDao.getCandidateProfilePercentageByCandidateId(id);
 				assertThat(profilePercentage1,is(10));
-				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getGlobalMarketplaceCandListGridCard() throws Exception{
-			//try{
+			    OrgLocations orgLocations = new OrgLocations();
+			    CandidateMarketPlace marketPlace = new CandidateMarketPlace();
 				String[] searchCandidateIds =  {""};
 				String candidateLocation = ""; 
 				String searchValue = "";
-				int x = 1;
-				int y = 0;
+				
 				List<CandidateMarketPlace> candidateMarketPlaces = new ArrayList<>();
 				List<CandidateMarketPlace> candidateMarketPlaces1 = null;
-				when(spyCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, spyOrgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
-				candidateMarketPlaces1 = spyCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, spyOrgLocations.getId(), candidateLocation, searchValue);
+				when(mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
+				candidateMarketPlaces1 = mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
 				assertNotNull(candidateMarketPlaces1);
-				when(spyCandidateDao.getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId())).thenReturn(x);
-				y = spyCandidateDao.getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId());
-				assertThat(y, is(1));
-				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+				//candidateDao.getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId());
+			
 		}
 		
 		@Test
 		public void addCandidateToMarketCart() throws Exception{
-			//try{
+			
 				CandidateMarketCart newMarketCart = new CandidateMarketCart();
-				doNothing().when(spyCandidateDao).addCandidateToMarketCart(newMarketCart);
-				verify(spyCandidateDao).addCandidateToMarketCart(newMarketCart);
+				doNothing().when(mockCandidateDao).addCandidateToMarketCart(newMarketCart);
+				mockCandidateDao.addCandidateToMarketCart(newMarketCart);
+				verify(mockCandidateDao).addCandidateToMarketCart(newMarketCart);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getCandidateListMarketPlaceDetailsByIdAndOrgLocationId() throws Exception{
-			//try{
+			
 				List<Long> id = new ArrayList<>();
 				Long orgLocationId = 123l;
 				List<CandidateMarketPlace> marketPlaceCandidateList = new ArrayList<>();
 				List<CandidateMarketPlace> marketPlaceCandidateList1 = null;
-				when(spyCandidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId)).thenReturn(marketPlaceCandidateList);
-				marketPlaceCandidateList1 = spyCandidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+				when(mockCandidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId)).thenReturn(marketPlaceCandidateList);
+				marketPlaceCandidateList1 = mockCandidateDao.getCandidateListMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
 				assertNotNull(marketPlaceCandidateList1);
 			
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
 		}
 		
 		@Test
 		public void getCandidateMarketPlaceDetailsByIdAndOrgLocationId() throws Exception{
-			//try{
+			
 				Long id = 123l; 
 				Long orgLocationId = 1234l;
+				CandidateMarketPlace marketPlace = new CandidateMarketPlace();
 				CandidateMarketPlace marketPlaceCandidate = null;
-				when(spyCandidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId)).thenReturn(spyMarketPlace);
-				marketPlaceCandidate = spyCandidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
+				when(mockCandidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId)).thenReturn(marketPlace);
+				marketPlaceCandidate = mockCandidateDao.getCandidateMarketPlaceDetailsByIdAndOrgLocationId(id, orgLocationId);
 				assertNotNull(marketPlaceCandidate);
-			/*	
-			}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void updateMarketPlacePrice() throws Exception{
-			//try{
+			
 				Long id = 123l;
+				CandidateMarketPlace marketPlace = new CandidateMarketPlace();
 				CandidateMarketPlace marketPlaceCandidate = null;
 				CandidateMarketCart newMarketCart = new CandidateMarketCart();
 				CandidateMarketCart newMarketCart1 = null;
-				when(spyCandidateDao.getCandidateMarketPlaceById(id)).thenReturn(spyMarketPlace);
-				marketPlaceCandidate = spyCandidateDao.getCandidateMarketPlaceById(id);
+				when(mockCandidateDao.getCandidateMarketPlaceById(id)).thenReturn(marketPlace);
+				marketPlaceCandidate = mockCandidateDao.getCandidateMarketPlaceById(id);
 				assertNotNull(marketPlaceCandidate);
-				when(spyCandidateDao.getCandidateFromMarketCartByMarketplaceId(id)).thenReturn(newMarketCart);
-				newMarketCart1 = spyCandidateDao.getCandidateFromMarketCartByMarketplaceId(id);
+				when(mockCandidateDao.getCandidateFromMarketCartByMarketplaceId(id)).thenReturn(newMarketCart);
+				newMarketCart1 = mockCandidateDao.getCandidateFromMarketCartByMarketplaceId(id);
 				assertNotNull(newMarketCart1);
-				doNothing().when(spyCandidateDao).updateMarketPlacePrice(spyMarketPlace);
-				verify(spyCandidateDao).updateMarketPlacePrice(spyMarketPlace);
-				doNothing().when(spyCandidateDao).addCandidateToMarketCart(newMarketCart);
-				verify(spyCandidateDao).addCandidateToMarketCart(newMarketCart);
+				doNothing().when(mockCandidateDao).updateMarketPlacePrice(marketPlace);
+			    mockCandidateDao.updateMarketPlacePrice(marketPlace);
+				verify(mockCandidateDao).updateMarketPlacePrice(marketPlace);
+				doNothing().when(mockCandidateDao).addCandidateToMarketCart(newMarketCart);
+				mockCandidateDao.addCandidateToMarketCart(newMarketCart);
+				verify(mockCandidateDao).addCandidateToMarketCart(newMarketCart);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
 		public void getAddedMarketplaceCandidates() throws Exception{
-			//try{
+			
 				List<Long> candidateIdsVal = new ArrayList<>();
 				List<Long> marketplaceCandidates = new ArrayList<>();
 				List<Long> marketplaceCandidates1 = null;
-				when(spyCandidateDao.getAddedMarketplaceCandidates(candidateIdsVal)).thenReturn(marketplaceCandidates);
-				marketplaceCandidates1 = spyCandidateDao.getAddedMarketplaceCandidates(candidateIdsVal);
+				when(mockCandidateDao.getAddedMarketplaceCandidates(candidateIdsVal)).thenReturn(marketplaceCandidates);
+				marketplaceCandidates1 = mockCandidateDao.getAddedMarketplaceCandidates(candidateIdsVal);
 				assertNotNull(marketplaceCandidates1);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		@Test
-		public void saveCandidateMarketPlaceList() throws Exception{
-			//try{
-				CandidateMarketPlaceDTO dto = new CandidateMarketPlaceDTO();
+		public void saveCandidateMarketPlaceList() throws NumberFormatException, Exception{
+			
+				Long dtoCandidateId = 123l;
+				CandidateMarketPlace marketPlaceCandidate = new CandidateMarketPlace();
 				CandidateMarketPlace marketPlace = null;
-				when(spyCandidateDao.getCandidateMarketPlaceByCandidateId(Long.parseLong(dto.getCandidateId()))).thenReturn(spyMarketPlace);
-				marketPlace = spyCandidateDao.getCandidateMarketPlaceByCandidateId(Long.parseLong(dto.getCandidateId()));
+				when(mockCandidateDao.getCandidateMarketPlaceByCandidateId(dtoCandidateId)).thenReturn(marketPlaceCandidate);
+				marketPlace = mockCandidateDao.getCandidateMarketPlaceByCandidateId(dtoCandidateId);
 				assertNotNull(marketPlace);
-				doNothing().when(spyCandidateDao).saveMarketPlace(marketPlace);
-				verify(spyCandidateDao).saveMarketPlace(marketPlace);
+				doNothing().when(mockCandidateDao).saveMarketPlace(marketPlace);
+				mockCandidateDao.saveMarketPlace(marketPlace);
+				verify(mockCandidateDao).saveMarketPlace(marketPlace);
 				//candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()))
 				//candidateDao.storeCandidate(candidate);
 				
-			/*}catch(Exception e){
-				e.printStackTrace();
-			}*/
+			
 		}
 		
 		
