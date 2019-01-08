@@ -209,7 +209,10 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 				emailMessage.setUserName(defaultFromEmailAddress);
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
+				System.out.println("********** UN : "+defaultFromEmailAddress);
+				System.out.println("********** PWD : "+defaultFromEmailAddressPwd);
 				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
+				System.out.println("********** After storeEmailInfoInDBTwo ");
 				//sendMessage(emailMessage, iAdressArray, attachmentList);
 				sendMessageConfiguredMail(emailMessage, iAdressArray, attachmentList,locationsId);
 			}
