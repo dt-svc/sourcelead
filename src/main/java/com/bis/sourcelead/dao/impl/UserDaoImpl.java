@@ -2702,6 +2702,7 @@ String sortingQry ="";
 				 +" UR.MIDDLE_NAME AS middleName, "
 				 +" UR.EMAIL AS email, "
 				 +" UR.USER_NAME AS userName, "
+				 +" UR.PASSWORD AS password, "
 				 +" UR.USER_CODE AS userCode, "
 				 +" UR.GENDER AS gender, "
 				 +" UR.FILE_URL AS imageUrl "

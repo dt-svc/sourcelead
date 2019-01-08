@@ -109,6 +109,7 @@ public class UserProfileSessionRestController {
 			 	     userProfileDTO.setEmail(user.getEmail());
 			 	     userProfileDTO.setGender(user.getGender());
 			 	     userProfileDTO.setUserCode(user.getUserCode());
+			 	     userProfileDTO.setPassword(user.getPassword());
 			 	     
 			 	     StringBuilder userName = new StringBuilder();
 			 	     if(StringUtils.isNotBlank(user.getLastName())) {
@@ -211,7 +212,11 @@ public class UserProfileSessionRestController {
 		 }else {
 			 orgLocationDTO.setDesignation(userRole.getRoles().getDisplayName());
 		 }
-		 orgLocationDTO.setRoleHierarchyId(String.valueOf(userRole.getRoles().getRoleHierarchy().getId()));
+		 
+		 if(userRole.getRoles().getRoleHierarchy() != null) {
+			 orgLocationDTO.setRoleHierarchyId(String.valueOf(userRole.getRoles().getRoleHierarchy().getId()));
+		 }
+		
 		 orgLocationDTO.setIsGlobalAccess(userRole.getIsGlobal());
 		 orgLocationDTO.setUserState(userRole.getUserState().toString());
 		 orgLocationDTO.setUserType(userRole.getUserType());

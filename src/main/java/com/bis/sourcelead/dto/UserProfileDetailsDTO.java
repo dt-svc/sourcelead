@@ -24,6 +24,8 @@ public class UserProfileDetailsDTO implements Serializable{
 	private String userName;
 	
 	private String userCode;
+	
+	private String password;
 
 	public BigInteger getUserId() {
 		return userId;
@@ -95,5 +97,13 @@ public class UserProfileDetailsDTO implements Serializable{
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }

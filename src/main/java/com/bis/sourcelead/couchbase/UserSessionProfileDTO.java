@@ -24,6 +24,8 @@ public class UserSessionProfileDTO implements Serializable{
 	
 	private String userCode;
 	
+	private String password;
+	
 	Object userProfileLocationsList;
 	
 
@@ -107,6 +109,14 @@ public class UserSessionProfileDTO implements Serializable{
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
