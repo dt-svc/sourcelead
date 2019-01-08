@@ -24,13 +24,13 @@
 				</div>
 				<h4 class="pull-left text-muted" id="SettingsHeader" style="display: none">Settings</h4>
 				<div class="repSearch">
-					<input class="innSeaFld" id="repSearchaa" onKeyUp="myManagersFunction();" type="text" placeholder="Search"></div>
+					<input class="innSeaFld" id="settingSearch" type="text" placeholder="Search"></div>
 			</div>
 			
 			
 			
 	<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
-       <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
+     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
 	            
 	<!-- 	List view jsp code -->
          
@@ -223,6 +223,9 @@
 				</ul>
 			</div>
 			</sec:authorize>
+			
+		
+			
 		</div>
          
          
@@ -248,6 +251,7 @@
 					     <div class="clearfix text-center">
 						 <h4>Schedule Maintenance</h4>
 					</div>
+					</a>
 				    </div>	
 				</sec:authorize>
 						  
@@ -290,6 +294,7 @@
 			                  <div class="clearfix text-center">
 			                      <h4>Bulk Import</h4>
 			                  </div>
+			                  </a>
 			              </div>
 			              </sec:authorize>
 			              
@@ -308,6 +313,7 @@
 						  <div class="clearfix text-center">
 							  <h4>Org Chart</h4>
 						  </div>
+						  </a>
 						 </div>
 			              
 			            <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
@@ -317,6 +323,7 @@
 				                  <div class="clearfix text-center">
 									  <h4>Role Configuration</h4>
 				                  </div>
+				                  </a>
 				              </div>
 			             </sec:authorize>         
 			                      
@@ -335,6 +342,7 @@
 					                  <div class="clearfix text-center">
 										  <h4>Org Settings</h4>
 					                  </div>
+					                  </a>
 				            </div>
 			             </sec:authorize>
 			               
@@ -365,6 +373,7 @@
 							<div class="clearfix text-center">
 								<h4>Templates</h4>
 							</div>
+							</a>
 						</div>
 			       </sec:authorize>  
 			        
@@ -381,10 +390,11 @@
 							</div>
 							Dropdown -->
 							<a href="/app/expenseCategory">
-							  <div class="clearfix text-center mb10"><i class="expensesSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="expensesSVG"></i></div>
 							<div class="clearfix text-center">
 								<h4>Expense Category</h4>
 							</div>
+							</a>
 						  </div>                        
 			      	 </sec:authorize>
 			      	  
@@ -404,6 +414,7 @@
 								<div class="clearfix text-center">
 									<h4>Bank Accounts</h4>
 								</div>
+								</a>
 							
 							</div>
 				
@@ -424,6 +435,7 @@
 								<div class="clearfix text-center">
 									<h4>Leave Configuration</h4>
 								</div>
+								</a>
 							</div>
 				  </sec:authorize>
 				
@@ -444,6 +456,7 @@
 							<div class="clearfix text-center">
 								<h4>Job Board Configuration</h4>
 							</div>
+							</a>
 						</div>
 				</sec:authorize>
 				
@@ -464,6 +477,7 @@
 							<div class="clearfix text-center">
 								<h4>Custom Fields</h4>
 							</div>
+							</a>
 						</div>
 				</sec:authorize>
 			
@@ -471,20 +485,23 @@
 						<div class="col-md-2 reportNewCta">
 								<!-- DropDown -->
 								<div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu12" data-toggle="dropdown">
+								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" id="menu12" data-toggle="dropdown">
 									<span class="caret cursorPointer"></span>
 								</span>
-									<ul class="dropdown-menu minHeight50 maxHeight250">
+								
+									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
 									<li><a href="${appPath}/campaignSendersList">Senders</a></li>
 									<li><a href="${appPath}/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
 								<a href="#">
-										<div class="clearfix text-center mb10"><i class="campaingingSVG"></i></div>
+								<div class="clearfix text-center mb10"><i class="campaingingSVG"></i></div>
 								<div class="clearfix text-center">
 									<h4>Campaigns</h4>
 								</div>
+								</a>
+								
 							</div>
 				</sec:authorize>
 					
@@ -505,6 +522,7 @@
 									<div class="clearfix text-center">
 										<h4>Tags</h4>
 									</div>
+									</a>
 								</div>
 				
 				
@@ -528,15 +546,35 @@
 								<!-- Dropdown -->
 								
 								
-										<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+										<%-- <div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 								<div class="clearfix text-center">
 								<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-									<h4><a href="/app/payrollConfiguration"">Us Payroll Configuration</a></h4>
+									<h4> <a href="/app/payrollConfiguration">Us Payroll Configuration</a></h4>
 								</c:if>
 								<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 									 <h4><a href="${appPath}/indPayrollConfiguration">Ind Payroll Configuration</a></h4>
 								</c:if>
-								</div>
+								</div> --%>
+								
+								<a href="/app/payrollConfiguration">
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+										<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+										<div class="clearfix text-center">
+											<h4> Us Payroll Configuration</h4>
+										</div>
+									</c:if>
+								</a>
+								
+								<a href="${appPath}/indPayrollConfiguration">
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+										<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+										<div class="clearfix text-center">
+											<h4>Ind Payroll Configuration</h4>
+										</div>
+									</c:if>
+								</a>
+								
+								
 							</div>			  
 				  </sec:authorize>
 				 
@@ -638,6 +676,41 @@
          
         <!-- for recruiters -->
         
+        
+        
+        <!-- 	for recruiter login -->
+        
+        
+		<div class="newRepList clearfix settingsRepList">
+			 <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
+			     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
+				   <div class="col-md-2">
+					   <h5>Bulk Import</h5>
+					   <ul class="repSearchList list-unstyled">
+					   <li><a href="/app/bulk-resume-import.html" title="Tags">Bulk Import</a></li>
+					   </ul>
+			       </div>
+			     </c:if>		
+						
+				    <div class="col-md-2">
+				       <h5>Bank Account</h5>
+				        <ul class="repSearchList list-unstyled">
+					    <li><a href="/app/bankAccountDetails" title="Tags">Bank Account</a></li>
+				        </ul>
+			        </div>
+										
+				    <div class="col-md-2">
+				       <h5>Alerts</h5>
+				       <ul class="repSearchList list-unstyled">
+					   <li><a href="/app/jobAlertList" title="Tags">Alerts</a></li>
+				       </ul>
+			        </div>
+			</sec:authorize>
+			</div>
+             
+        
+            <div class="settingConfigure newRepGrid clerfix">
+        
            <sec:authorize access="hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')">
            
             <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
@@ -695,6 +768,7 @@
 				</div>			   
            
            </sec:authorize>
+           </div>
       	  
     </div>
     
@@ -789,6 +863,25 @@ $(".LView").click(function(){
     $(".repSearch").show();
 });        
     </script>
-  
+    
+    
+
+<script>
+$("#settingSearch").keyup(function(){
+	var filter = $(this).val(), count = 0;
+	$(".settingsRepList ul li").each(function(){
+	if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+	$(this).hide();
+	} else {
+	$(this).show();
+	count++;
+	}
+	});
+	
+});
+
+</script>
+
+ 
   <jsp:include page="masterFooter.jsp" />	
 <!-- Content Area Ends-->   
