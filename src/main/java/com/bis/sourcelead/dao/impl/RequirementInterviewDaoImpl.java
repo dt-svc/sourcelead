@@ -258,7 +258,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview getLatestInterviewBySubmissionId(Long submissionId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.dateOfInterview=(SELECT MAX(ri.dateOfInterview) FROM RequirementInterview ri where ri.submissionId.id = :submissionId)" ;
+		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.startTime=(SELECT MAX(ri.startTime) FROM RequirementInterview ri where ri.submissionId.id = :submissionId)" ;
 		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("submissionId", submissionId).list(); 
 		RequirementInterview interview = null;
 		if(interviewsList != null && !interviewsList.isEmpty()){

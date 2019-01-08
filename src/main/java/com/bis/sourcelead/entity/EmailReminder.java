@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -36,6 +37,10 @@ public class EmailReminder {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATIONS_ID")
 	private OrgLocations orgLocationsId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TABS_ID")
+	private Tabs tabsId;
 
 	@Column(name = "STATUS")
 	private Integer status;
@@ -55,7 +60,7 @@ public class EmailReminder {
 	private User updatedBy;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "emailReminder")
-	private Set<EmailReminderHierarchy> emailReminderHierarchyList;
+	private List<EmailReminderHierarchy> emailReminderHierarchyList;
 
 	public Long getId() {
 		return id;
@@ -129,11 +134,11 @@ public class EmailReminder {
 		this.updatedBy = updatedBy;
 	}
 
-	public Set<EmailReminderHierarchy> getEmailReminderHierarchyList() {
+	public List<EmailReminderHierarchy> getEmailReminderHierarchyList() {
 		return emailReminderHierarchyList;
 	}
 
-	public void setEmailReminderHierarchyList(Set<EmailReminderHierarchy> emailReminderHierarchyList) {
+	public void setEmailReminderHierarchyList(List<EmailReminderHierarchy> emailReminderHierarchyList) {
 		this.emailReminderHierarchyList = emailReminderHierarchyList;
 	}
 
@@ -143,6 +148,14 @@ public class EmailReminder {
 
 	public void setOrgLocationsId(OrgLocations orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public Tabs getTabsId() {
+		return tabsId;
+	}
+
+	public void setTabsId(Tabs tabsId) {
+		this.tabsId = tabsId;
 	}
 
 }

@@ -313,6 +313,7 @@ public class ProjectsRestController {
 			   @RequestParam(value="saveType", required=true) String saveType,HttpServletRequest request) throws Exception {
 		       User user = userService.getUserById(userId);
 		       Response<String> response = new Response<>();
+		       
 				try {
 					if(user != null) {
 						if(Validator.validate(projectAdditionalDetailsDTO)) {
