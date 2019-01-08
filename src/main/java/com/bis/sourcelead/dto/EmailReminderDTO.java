@@ -1,12 +1,16 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.entity.EmailReminderHierarchy;
 import com.bis.sourcelead.entity.User;
 
-public class EmailReminderDTO {
+public class EmailReminderDTO implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String scenarioName;
 	private Long scenarioId;
@@ -17,7 +21,8 @@ public class EmailReminderDTO {
 	private User updatedby;
 	private String updatedDate;
 	private Long orgLocationId;
-	private Set<EmailReminderHierarchyDTO> emailReminderHierarchyList;
+	private Long tabsId;
+	private List<EmailReminderHierarchyDTO> emailReminderHierarchyList;
 	
 	
 	public Long getOrgLocationId() {
@@ -25,6 +30,12 @@ public class EmailReminderDTO {
 	}
 	public void setOrgLocationId(Long orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	public Long getTabsId() {
+		return tabsId;
+	}
+	public void setTabsId(Long tabsId) {
+		this.tabsId = tabsId;
 	}
 	public User getUpdatedby() {
 		return updatedby;
@@ -80,10 +91,10 @@ public class EmailReminderDTO {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public Set<EmailReminderHierarchyDTO> getEmailReminderHierarchyList() {
+	public List<EmailReminderHierarchyDTO> getEmailReminderHierarchyList() {
 		return emailReminderHierarchyList;
 	}
-	public void setEmailReminderHierarchyList(Set<EmailReminderHierarchyDTO> emailReminderHierarchyList) {
+	public void setEmailReminderHierarchyList(List<EmailReminderHierarchyDTO> emailReminderHierarchyList) {
 		this.emailReminderHierarchyList = emailReminderHierarchyList;
 	}
 

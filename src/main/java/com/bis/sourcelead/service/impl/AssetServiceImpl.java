@@ -622,6 +622,11 @@ public class AssetServiceImpl implements AssetService{
 	public List<Asset> getAllAssetByOrgId(Long orgLocationsId)throws Exception{
 		return assetDao.getAllAssetByOrgId(orgLocationsId);
 	}
+	
+	@Override
+	public void deleteAsset(Asset asset) throws Exception {
+		assetDao.deleteAsset(asset);;
+	}
 
 
 	@Override
@@ -791,7 +796,5 @@ public class AssetServiceImpl implements AssetService{
 		
 		return createExcelsheet;
 	}
-
-	
 
 }
