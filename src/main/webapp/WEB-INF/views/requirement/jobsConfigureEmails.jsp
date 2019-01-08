@@ -86,8 +86,36 @@ function hideandshowjobclosing(){
 											</div>
 
 											<div class="clockpicker col-md-4">
-												<input type="text" class="form-control timeicon" name="emailReminderHierarchyList[0].remindertime"
-													value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">
+												<!-- <input type="text" class="form-control timeicon" name="emailReminderHierarchyList[0].remindertime" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space"> -->
+													
+													<select class="sel"  name="emailReminderHierarchyList[0].remindertime" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">
+														<option seleted>Select Time</option>
+														<option>00:00AM</option>
+														<option>01:00AM</option>
+														<option>02:00AM</option>
+														<option>03:00AM</option>
+														<option>04:00AM</option>
+														<option>05:00AM</option>
+														<option>06:00AM</option>
+														<option>07:00AM</option>
+														<option>08:00AM</option>
+														<option>09:00AM</option>
+														<option>10:00AM</option>
+														<option>11:00AM</option>
+														<option>01:00PM</option>
+														<option>02:00PM</option>
+														<option>03:00PM</option>
+														<option>04:00PM</option>
+														<option>05:00PM</option>
+														<option>06:00PM</option>
+														<option>07:00PM</option>
+														<option>08:00PM</option>
+														<option>09:00PM</option>
+														<option>10:00PM</option>
+														<option>11:00PM</option>
+														<option>12:00PM</option>
+													</select>
+													
 											</div>
 												<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[0].reminderhierarchy" value="0">
 											<div title="Add Reminder" onClick="cloneRow(this);"
@@ -110,6 +138,7 @@ function hideandshowjobclosing(){
 										<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
 									</div>
 									<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="ApplicantJoining">
+									<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="8">
 								</div>
 							</div>
 						</div>
@@ -285,7 +314,34 @@ function cloneRow(eve) {
 	clone += '<input type="text" class="form-control" name="emailReminderHierarchyList['+m+'].reminderdays" value="" placeholder="Enter in days" field-name="Remainder Days" data-validation="required validate_Space validate_int validate_between between0-365">';
 	clone += '</div>';
 	clone += '<div class="clockpicker col-md-4">';
-	clone += '<input type="text" class="form-control timeicon" name="emailReminderHierarchyList['+m+'].remindertime" value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">';
+	/* clone += '<input type="text" class="form-control timeicon" name="emailReminderHierarchyList['+m+'].remindertime" value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">'; */
+	clone += '<select class="sel"  name="emailReminderHierarchyList['+m+'].remindertime" value="" readonly placeholder="Time" field-name="Remainder Time" data-validation="required validate_Space">';
+	clone += '<option seleted>Select Time</option>';
+	clone += '	<option>00:00AM</option>';
+	clone += '<option>01:00AM</option>';
+	clone += '<option>02:00AM</option>';
+	clone += '<option>03:00AM</option>';
+	clone += '<option>04:00AM</option>';
+	clone += '<option>05:00AM</option>';
+	clone += '<option>06:00AM</option>';
+	clone += '<option>07:00AM</option>';
+	clone += '<option>08:00AM</option>';
+	clone += '<option>09:00AM</option>';
+	clone += '<option>10:00AM</option>';
+	clone += '<option>11:00AM</option>';
+	clone += '<option>01:00PM</option>';
+	clone += '<option>02:00PM</option>';
+	clone += '<option>03:00PM</option>';
+	clone += '<option>04:00PM</option>';
+	clone += '<option>05:00PM</option>';
+	clone += '<option>06:00PM</option>';
+	clone += '<option>07:00PM</option>';
+	clone += '<option>08:00PM</option>';
+	clone += '<option>09:00PM</option>';
+	clone += '<option>10:00PM</option>';
+	clone += '<option>11:00PM</option>';
+	clone += '<option>12:00PM</option>';
+	clone += '</select>';
 	clone += '</div>';
 	clone += '<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList['+m+'].reminderhierarchy" value="'+m+'">';
 	clone += '<div title="Add Reminder" class="col-md-2">';
