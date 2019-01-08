@@ -710,6 +710,9 @@
 		var templateName = $('#templateName').val();
 		var contractType = $('#contractType').val();
 		var sourceleadUrl = '${sourceleadUrl}';
+		
+		var templateUUID = '${contractsTemplate.templateUUID}';
+		
 		if (templateName != null && templateName != "" && contractType != null
 				&& contractType != "") {
 			$
@@ -718,7 +721,8 @@
 						url : sourceleadUrl
 								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
 								+ templateName + "&contractType="
-								+ contractType,
+								+ contractType + "&templateUUID="
+								+templateUUID,
 						success : function(data) {
 							if (data == 'true') {
 
