@@ -46,8 +46,8 @@ function approvePayrollDiv(){
 
    <div class="project_side_wrap_inn_tabs">
    	<ul class="project-tabs-menu">
-   	    <li id="dashId" class="current"><a href="javascript:void(0)" class="active" onclick="dashboardTab();">Dashboard</a></li>
-	   <li id="overId"><a href="javascript:void(0)" id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
+   	    <li id="dashId" class="current"><a class="active" onclick="dashboardTab();">Dashboard</a></li>
+	   <li id="overId"><a id="overViewAId" onclick="getOverviewdata();">Overview</a></li>
 	   <li><a onclick="getDraftData();" id="draftAId">Draft</a></li>
 
 <%-- 	   <c:if test="${SourceLeadWeb_isPayRollApprover == 'Y'}"> --%>
