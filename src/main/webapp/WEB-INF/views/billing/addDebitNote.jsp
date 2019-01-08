@@ -73,9 +73,9 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3 paddingRight">Credit Note Date</label>
+		<label class="col-md-3 paddingRight">Debit Note Date</label>
 		<div class="col-md-9" id= "creditDebitNotedateDiv">
-    	<input class="form-control calendar" placeholder="Credit Note Date" type="text" value = "${creditDebitNote.creditDebitNotedate}" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
+    	<input class="form-control calendar" placeholder="Debit Note Date" type="text" value = "${creditDebitNote.creditDebitNotedate}" id="creditDebitNotedate" name="creditDebitNotedate" field-name="Credit Note Date" readonly>
     	</div>
 		</div>
 		</div>
