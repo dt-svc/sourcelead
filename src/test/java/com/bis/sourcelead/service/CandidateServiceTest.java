@@ -889,6 +889,49 @@ public class CandidateServiceTest {
 			
 		}
 		
+		@Test
+		public void getCandidateEmailsByOrgLocationId() throws Exception{
+			Long orgLocationId = 123l;
+			List<String> emailsList = new ArrayList<>();
+			List<String> emailsList1 = null;
+			when(mockCandidateDao.getCandidateEmailsByOrgLocationId(orgLocationId)).thenReturn(emailsList);
+			emailsList1 = mockCandidateDao.getCandidateEmailsByOrgLocationId(orgLocationId);
+			assertNotNull(emailsList1);
+			
+		}
+		
+		@Test
+		public void getCandidateIdByEmailAndOrgLocationId() throws Exception{
+			String email = "";
+			Long orgLocationId = 123l;
+			Long candidateId = 1234l;
+			Long candidateId1 = 12l;
+			when(mockCandidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId)).thenReturn(candidateId);
+			candidateId1 = mockCandidateDao.getCandidateIdByEmailAndOrgLocationId(email, orgLocationId);
+			assertEquals(candidateId, candidateId1);
+			
+		}
+		
+		@Test
+		public void saveBulkCandidates() throws Exception{
+			List<Candidate> candidatesList = new ArrayList<>();
+			Long orgLocationId = 123l;
+			doNothing().when(mockCandidateDao).saveBulkCandidates(candidatesList, orgLocationId);
+			mockCandidateDao.saveBulkCandidates(candidatesList, orgLocationId);
+			verify(mockCandidateDao).saveBulkCandidates(candidatesList, orgLocationId);
+		}
+		
+		@Test
+		public void getGlobalMarketCandidateList() throws Exception{
+			CandidateMarketPlaceDTO candidateMarketPlaceDTO = new  CandidateMarketPlaceDTO();
+			String searchValue = "";
+			ResponseList<CandidateMarketPlaceDTO> responseList = new ResponseList<>();
+			ResponseList<CandidateMarketPlaceDTO> responseList1 = null;
+			when(mockCandidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue)).thenReturn(responseList);
+			responseList1 = mockCandidateDao.getGlobalMarketCandidateList(candidateMarketPlaceDTO, searchValue);
+			assertNotNull(responseList1);
+			
+		}
 		
 }
 
