@@ -17,7 +17,7 @@
          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart List</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             <li id="" class="current"><a href="javascript:void(0)">Sales Orderlist</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       

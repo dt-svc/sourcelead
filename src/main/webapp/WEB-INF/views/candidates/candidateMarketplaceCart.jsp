@@ -12,10 +12,10 @@
     <section class="content-wraper">
     <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 id="headerLbl">Cart List</h2>
+      <h2 id="headerLbl">Cart</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart List</label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
@@ -25,7 +25,7 @@
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-		         <li id="" class="current"><a href="javascript:void(0)">Cart List</a></li>
+		         <li id="" class="current"><a href="javascript:void(0)">Cart</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             	 <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
                  <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
@@ -367,6 +367,7 @@ function getCandidateDetailsFromMarketcart(){
 			candidateLength =  object.length;
 			}
 			else{
+				$(".ulliBorder > li").first().hide();
 				result = result + "<div class='dataTables_empty'></div>";	
 				$("#checkOutButton1").attr("disabled", true);
 				$("#checkOutButton2").attr("disabled", true);
@@ -384,9 +385,6 @@ function updateInvoiceDetails(){
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
-	        		if(object[0] === 0){
-	        			$(".ulliBorder > li").first().hide();
-	        		}
 	        		$("#checkOutButton1").attr("disabled", false);
 	        		$("#checkOutButton2").attr("disabled", false);
 		        	$("#invoiceCartCount").html(object[0]);
@@ -424,10 +422,7 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	cLength = getCandidateDetailsFromMarketcart();
-            	if(cLength === 0){
-    				$(".ulliBorder > li").first().hide();
-            	}
+            	getCandidateDetailsFromMarketcart();
             	updateInvoiceDetails();
 				updateMarketplaceCartCountAndPrice();
             	$("#remove_marketCart_pop").fadeOut(200);
