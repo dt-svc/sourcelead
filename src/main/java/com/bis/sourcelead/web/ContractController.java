@@ -488,10 +488,14 @@ public class ContractController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')")
 	@RequestMapping(value = "/editTemplate")
-    public ModelAndView editTemplate(@RequestParam(value="templateId", required=false) String templateId ,HttpServletResponse response) throws Exception {
+    public ModelAndView editTemplate(HttpServletRequest request,@RequestParam(value="templateId", required=false) String templateId ,HttpServletResponse response) throws Exception {
 		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ContractsTemplate contractsTemplate =	contractsTemplateService.getContractTemplateById(Long.parseLong(templateId));
 		ModelAndView model = new ModelAndView();
+		List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
+		model.addObject("letterHeadList", letterHeadList);
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("contractsTemplate", contractsTemplate);
 		model.addObject("templateContent", contractsTemplate.getTemplateContent());
