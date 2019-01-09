@@ -245,7 +245,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-
+//			session.setDebug(true);
 			String UUID = null;
 			if (null != emailMessage.getEmailType()
 					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
