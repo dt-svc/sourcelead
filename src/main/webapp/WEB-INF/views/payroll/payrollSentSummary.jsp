@@ -213,6 +213,7 @@ function confirmPayroll(){
 	
 	$("#approveLiID").attr("onClick","approvePayrollTab();");
 	$("#reviewLiID").removeClass('current'); 
+	$("#approveDivID").removeClass('disabled');
 	$("#approveLiID").addClass('current'); 
 	
 	var payPeriodNum = $("#payPeriodNum").val();

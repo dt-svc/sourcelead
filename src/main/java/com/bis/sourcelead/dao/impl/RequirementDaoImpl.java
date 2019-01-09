@@ -3181,7 +3181,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			if(!jobFairDTO.isAdminUser()) {
 				queryObj.setLong("userId", jobFairDTO.getUserId());
 			}
-			jobFairList = queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId()).setFirstResult(jobFairDTO.getStart()).setMaxResults(jobFairDTO.getLength()).list();
+			queryObj.setLong("orgLocationId", jobFairDTO.getOrgLocationId());
+			if(!jobFairDTO.isToExport()) {
+				queryObj.setFirstResult(jobFairDTO.getStart());
+				queryObj.setMaxResults(jobFairDTO.getLength());
+			}
+			jobFairList = queryObj.list();
 			
 			String  countQuery = "select count(*) from JobFair jobFair where jobFair.orgLocations.id=:orgLocationId";
 			if(!jobFairDTO.isAdminUser()) {
