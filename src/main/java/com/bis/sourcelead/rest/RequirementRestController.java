@@ -1689,6 +1689,11 @@ public class RequirementRestController {
 			@RequestParam(defaultValue = "false") boolean includeInactive) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (user != null) {
+			String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+			if("Admin".equalsIgnoreCase(roleName)) {
+				jobFairDTO.setAdminUser(true);
+			}
+			
 			File file = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String[] tableColumns = { "generatedId", "name", "startDate", "endDate", "noOfJobs", "", "", "", "status", "id" };
@@ -1699,6 +1704,8 @@ public class RequirementRestController {
 			jobFairDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
 			jobFairDTO.setUserId(user.getId());
 			jobFairDTO.setOrgLocationId(orgLocations.getId());
+			jobFairDTO.setToExport(true);
+			
 			ResponseList<JobFairDTO> responseList = requirementService.getJobFairsList(jobFairDTO, includeInactive);
 			if (responseList != null && responseList.getData() != null && !responseList.getData().isEmpty()) {
 				if (request.getRequestURI().contains("excelExportForJobfair"))

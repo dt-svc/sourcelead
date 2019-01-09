@@ -32,6 +32,7 @@
           <div class="pull-left">
             <h2>Job Alert List</h2>
           </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Job Alerts</div>
     </section>
     
     <div class="timesheet_out">

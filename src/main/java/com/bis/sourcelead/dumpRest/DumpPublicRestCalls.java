@@ -18,8 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Holiday;
@@ -64,6 +67,7 @@ import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -155,6 +159,10 @@ public class DumpPublicRestCalls {
 	@Autowired
 	PayrollPaySlipIndDao payrollPaySlipIndDao;
 	
+	
+	@Autowired
+	AssetService assetService;
+	
 	@RequestMapping(value = "/ws/dumpAllAppliedLeaveDatesData", method = RequestMethod.GET)
 	@ResponseBody
 	public List<AppliedLeaveDate> dumpAllAppliedLeaveDatesData() {
@@ -187,6 +195,10 @@ public class DumpPublicRestCalls {
 					count++;
 				}else if(expenseStatus.contains(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL.getValue())){
 					expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.REOPENED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REOPENED);
 					addExpensesDao.storeAddExpensesData(expenses);
 					count++;
 				}
@@ -637,6 +649,19 @@ public class DumpPublicRestCalls {
     		
     		payrollPaySlipIndDao.savePayrollPaySlipInd(pps);
         }
+		System.out.println("End the method");
+
+    }
+	
+	
+	@RequestMapping(value = "/ws/deleteAssetManagement/{orgLocationId}", method = RequestMethod.GET)
+    public void deleteAssetManagement(@PathVariable Long orgLocationId,
+    		HttpServletRequest request, HttpServletResponse response) throws Exception {
+		    System.out.println("Start the method");
+        	List<Asset> assetList = assetService.getAssetListByLocationId(orgLocationId);
+        	for(Asset asset:assetList) {
+        		assetService.deleteAsset(asset);
+        	}
 		System.out.println("End the method");
 
     }

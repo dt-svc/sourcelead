@@ -1021,13 +1021,15 @@ public class LeaveManagementRestController {
 							Long.parseLong(reportYear));
 				} else {
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-					reportYear = String.valueOf(currentYear);
-					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-							Long.parseLong(reportYear));
-					// commented by pavan jampana - to do
-//					holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					if(StringUtils.isNotBlank(reportYear) ) {
+						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					}else {
+						reportYear = String.valueOf(currentYear);
+						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
+								Long.parseLong(reportYear));
+					}
 				}
-
+				
 				responseList.setData(holiodaysDTOList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
