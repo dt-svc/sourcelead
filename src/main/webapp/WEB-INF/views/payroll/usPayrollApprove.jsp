@@ -312,7 +312,7 @@ function cancelRedirect(){
 	var status = getUrlParameter("approverStatus");
 	if(status != null && status != "" && status != 'undefined'){
 		if(status == "SENT"){
-			window.location.href = sourceleadUrl + "/payrollList?&redirect=hitory";
+			window.location.href = sourceleadUrl + "/payrollList?&redirect=history";
 		}else if(status == "DRAFT"){
 			window.location.href = sourceleadUrl + "/payrollList?&redirect=draft";
 		}
@@ -347,7 +347,7 @@ function approvePayroll(){
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
-		   location.replace(sourceleadUrl+ "/payrollList"); 
+		   location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
  		} else {

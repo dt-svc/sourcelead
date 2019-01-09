@@ -223,7 +223,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		final String password = emailMessage.getPassword();
 
 //		props.put("mail.smtp.host", "secure.emailsrvr.com");
-		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.host", "smtp.sendgrid.net");
 		props.put("mail.smtp.localhost", "localhost");
 		props.put("mail.stmp.user", username);
 		props.put("mail.smtp.auth", "true");
@@ -245,7 +245,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		try {
 
 			MimeMessage message = new MimeMessage(session);
-
+//			session.setDebug(true);
 			String UUID = null;
 			if (null != emailMessage.getEmailType()
 					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
