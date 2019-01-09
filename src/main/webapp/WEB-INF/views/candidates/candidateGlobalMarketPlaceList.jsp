@@ -592,7 +592,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
-								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
+								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'ListModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>';
 								'</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
@@ -681,7 +681,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								'<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
-								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
+								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'CardModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>';
 								 '</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
@@ -776,12 +776,12 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, viewModel
             	if(viewModel == "ListModel"){
 					$("#deleteIconListModel"+candidateMarketUUID).empty();
 					$("#addCartListModel"+candidateMarketUUID).empty()
-					$("#addCartListModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartListModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>');
+					$("#addCartListModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartListModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'ListModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>');
 				}
 				if(viewModel == "CardModel"){
 					$("#deleteIconCardModel"+candidateMarketUUID).empty();
 					$("#addCartCardModel"+candidateMarketUUID).empty()
-					$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>');
+					$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'CardModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>');
 				}
 				updateMarketplaceCartCountAndPrice();
 				$("#remove_marketCart_pop").fadeOut(200);
@@ -1141,5 +1141,11 @@ function resetCandidateFilter(){
 function refreshPage(){
   location.reload(); // refresh the page.
 }
-
+</script>
+<script> 
+function disableOnClick(link) {
+  link.onclick = function(event) {
+     event.preventDefault();
+  }
+}   
 </script>
