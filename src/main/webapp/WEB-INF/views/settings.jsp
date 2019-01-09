@@ -24,7 +24,7 @@
 				</div>
 				<h4 class="pull-left text-muted" id="SettingsHeader" style="display: none">Settings</h4>
 				<div class="repSearch">
-					<input class="innSeaFld" id="settingSearch" type="text" placeholder="Search"></div>
+					<input class="innSeaFld" id="repSearchaa" onKeyUp="myManagersFunction();" type="text" placeholder="Search"></div>
 			</div>
 			
 			
@@ -34,16 +34,15 @@
 	            
 	<!-- 	List view jsp code -->
          
-		<div class="newRepList clearfix settingsRepList">
-			
-			<div class="clearfix"></div>
-			
+		<div class="newRepList clearfix settingsRepList">		
+			<div class="clearfix">	</div>	
 			<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 			<div class="col-md-2">
-				<h5>License Upgrade</h5>
+				<h5>Schedule Maintenance</h5>
 				<ul class="repSearchList list-unstyled">				  
 				 <li><a href="${sourceleadUrl}/loadScheduleMaintenance" title="License Upgrade">Schedule Maintenance</a></li>
 				</ul>
+			 <div class="noDate noDateSm" style="display:none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -53,6 +52,7 @@
 				<ul class="repSearchList list-unstyled">				  
 				 <li><a href="/app/orgLicenseSubscriptionList" title="License Upgrade">License Upgrade</a></li>
 				</ul>
+				 <div class="noDate noDateSm" style="display:none;"></div>
 			</div>
 			</c:if>
 			
@@ -61,8 +61,9 @@
 				<h5>Bulk Import</h5>
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/bulk-resume-import.html" title="License Upgrade">Bulk Import</a></li>
-					 <li><a data-toggle="modal" href="javascript:void(0)" id='bulkImportList'>Process File(s)</a></li>
+					 <li><a data-toggle="modal" href="javascript:void(0)" id='bulkImportList'>Process File</a></li>
 				</ul>
+				 <div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -72,6 +73,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/orgChart" title="License Upgrade">Org Chart</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			
 			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
@@ -80,6 +82,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/orgRolesList" title="License Upgrade">Role Configuration</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -100,6 +103,7 @@
 					<li><a href="javascript:void(0)">Employment Verification</a></li>
 					<li><a href="javascript:void(0)">Email</a></li> -->
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -109,6 +113,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/orgSettings" title="License Upgrade">Org Settings</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -120,6 +125,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/expenseCategory" title="License Upgrade">Expense Category</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -128,6 +134,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/bankAccountDetails" title="License Upgrade">Bank Accounts</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			
 			 <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
@@ -136,6 +143,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/leaveConfiguration" title="License Upgrade">Leave Configuration</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -146,6 +154,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/job-boards" title="Job Board Configuration">Job Board Configuration</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -156,6 +165,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/customFields" title="Custom Fields">Custom Fields</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>			
 			
@@ -166,6 +176,7 @@
 					<li><a href="${appPath}/campaignSendersList" title="Campaigns">Senders</a></li>
 					<li><a href="${appPath}/recipientsList" title="Campaigns">Recipients</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -181,6 +192,7 @@
 					<li><a href="${appPath}/indPayrollConfiguration" title="Campaigns">Payroll Configuration</a></li>
 					</c:if>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -190,6 +202,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="${sourceleadUrl}/tagList" title="Tags">Tags</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			
 			<div class="col-md-2">
@@ -197,6 +210,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/projectAttributes" title="Tags">Project Attributes</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			
 				<div class="col-md-2">
@@ -204,6 +218,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="/app/emailreminderConfigurationDashboard" title="Tags">Reminder Configuration</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			
 			 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
@@ -212,6 +227,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="${sourceleadUrl}/guestOrgActionRoles" title="Tags">Guest Action Roles</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -221,6 +237,7 @@
 				<ul class="repSearchList list-unstyled">
 					<li><a href="${sourceleadUrl}/emailTemplates" title="Tags">Email Templates</a></li>
 				</ul>
+				<div class="noDate noDateSm" style="display: none;"></div>
 			</div>
 			</sec:authorize>
 			
@@ -247,7 +264,7 @@
 						</ul>
 					</div> -->
 					     <a href="${sourceleadUrl}/loadScheduleMaintenance">
-						 <div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+						 <div class="clearfix text-center mb10"><i class="leaveConfiguration	"></i></div>
 					     <div class="clearfix text-center">
 						 <h4>Schedule Maintenance</h4>
 					</div>
@@ -529,21 +546,6 @@
 				   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
 				   
 								<div class="col-md-2 reportNewCta">
-								<!-- DropDown -->
-								<%-- <div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-									<span class="caret cursorPointer"></span>
-								</span>
-									<ul class="dropdown-menu minHeight50 maxHeight250">
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-									<li><a href="/app/payrollConfiguration">Us Payroll</a></li>
-									</c:if>
-									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-									<li><a href="${appPath}/indPayrollConfiguration">Ind Payroll</a></li>
-									</c:if>								
-									</ul>
-								</div> --%>
-								<!-- Dropdown -->
 								
 								
 										<%-- <div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
@@ -558,7 +560,7 @@
 								
 								<a href="/app/payrollConfiguration">
 									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-										<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4> Us Payroll Configuration</h4>
 										</div>
@@ -567,7 +569,7 @@
 								
 								<a href="${appPath}/indPayrollConfiguration">
 									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-										<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
 											<h4>Ind Payroll Configuration</h4>
 										</div>
@@ -578,25 +580,6 @@
 							</div>			  
 				  </sec:authorize>
 				 
-				 
-				
-		<!-- 	<div class="col-md-2 reportNewCta">
-					DropDown
-					<div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div>
-					Dropdown
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4><a href="payrollindia-dashboard.html">Invite Company</a></h4>
-					</div>
-				</div>			  
-			      	   -->
 			      	   
 			     <div class="col-md-2 reportNewCta">			
 					<!-- <div class="dropdown pull-right report-dropdown">
@@ -608,7 +591,7 @@
 						</ul>
 					</div> -->
 				            <a href="/app/projectAttributes">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Project Attributes</h4>
 					</div>
@@ -625,7 +608,7 @@
 						</ul>
 					</div> -->
 				          <a href="/app/emailreminderConfigurationDashboard">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
 					</div>
@@ -643,7 +626,7 @@
 						</ul>
 					</div> -->
 					<a href="${sourceleadUrl}/guestOrgActionRoles">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Guest Action Roles</h4>
 					</div>
@@ -689,6 +672,7 @@
 					   <ul class="repSearchList list-unstyled">
 					   <li><a href="/app/bulk-resume-import.html" title="Tags">Bulk Import</a></li>
 					   </ul>
+					   <div class="noDate noDateSm" style="display: none;"></div>
 			       </div>
 			     </c:if>		
 						
@@ -697,6 +681,7 @@
 				        <ul class="repSearchList list-unstyled">
 					    <li><a href="/app/bankAccountDetails" title="Tags">Bank Account</a></li>
 				        </ul>
+				        <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
 										
 				    <div class="col-md-2">
@@ -704,6 +689,7 @@
 				       <ul class="repSearchList list-unstyled">
 					   <li><a href="/app/jobAlertList" title="Tags">Alerts</a></li>
 				       </ul>
+				       <div class="noDate noDateSm" style="display: none;"></div>
 			        </div>
 			</sec:authorize>
 			</div>
@@ -725,10 +711,11 @@
 						</ul>
 					</div> -->
 				<a href="/app/bulk-resume-import.html">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="bulkImport"></i></div>
 					<div class="clearfix text-center">
 						<h4>Bulk Import</h4>
 					</div>
+						</a>
 				</div>		
 				</c:if>	  
 			      	
@@ -743,10 +730,11 @@
 						</ul>
 					</div> -->	
 					<a href="/app/bankAccountDetails">		
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Bank Account</h4>
 					</div>
+						</a>
 				</div>			  
 			      	  
 			      	  
@@ -761,10 +749,11 @@
 						</ul>
 					</div> -->
 					<a href="/app/jobAlertList">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4> Alerts</h4>
 					</div>
+					</a>
 				</div>			   
            
            </sec:authorize>
@@ -865,21 +854,62 @@ $(".LView").click(function(){
     </script>
     
     
-
 <script>
-$("#settingSearch").keyup(function(){
-	var filter = $(this).val(), count = 0;
-	$(".settingsRepList ul li").each(function(){
-	if ($(this).text().search(new RegExp(filter, "i")) < 0) {
-	$(this).hide();
-	} else {
-	$(this).show();
-	count++;
-	}
-	});
+    
+function myManagersFunction() {
+	 var search = $("#repSearchaa").val().toUpperCase();
+	 $(".repSearchList").each(function(){
+		var count = 0;
+		$(this).find("li").each(function() {
+			if($(this).find("a").html().toUpperCase().indexOf(search) !== -1) {
+				$(this).show();
+				count++;
+			} else {
+				$(this).hide();
+			}
+		});
+		if(count === 0) {
+			$(this).hide();
+			$(this).parent().find(".noDate").show();
+		} else {
+			$(this).show();
+			$(this).parent().find(".noDate").hide();
+		}
+	 });
 	
-});
-
+	
+	
+    
+   /*  var input, filter, ul, li, a, i;
+    input = document.getElementById("repSearchaa");
+    filter = input.value.toUpperCase();
+    $(".repSearchList").each(function(){
+        var length = 0;
+        var liList = $(this).find("li");
+        for(var i=0; i < liList.length; i++){
+            var li = liList[i];
+            a = $(li).find('a').html().toUpperCase();
+            if (a.indexOf(filter) > -1) {
+                li.style.display = "";
+                length++;
+            } else {
+                li.style.display = "none";
+                //$("ul.repSearchList").hide();
+            }    
+        }
+        if(length == 0) {
+        	$(this).hide();
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+        	$(this).show();
+            $(this).parent().parent().find(".noDate").hide();
+        }
+    }); */
+    
+    
+    
+}
+    
 </script>
 
  
