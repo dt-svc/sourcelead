@@ -27,6 +27,7 @@ import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Candidate;
@@ -2859,5 +2860,151 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		return arrayList;
 		
 		
+	}
+	
+	
+	
+	public File recruiterReprtsListPdfTable(ResponseList<UserDTO> userDTOList, OrgLocations loginOrgLocations,Date[] searchDates) throws Exception{
+
+		String[] headers = Constants.RECRUITER_REPORTS_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("Recruiter_Reports_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("Recruiter_Reports_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(loginOrgLocations.getOrgLocationName()).append(" ").append("Recruiter_Report");
+	      
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String fromDate = sdf.format(searchDates[0]);
+			String toDate = sdf.format(searchDates[1]);
+
+	        StringBuilder orgNameSB = new StringBuilder();
+	        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(loginOrgLocations.getOrgLocationName()).toString());
+	        para.setAlignment(Element.ALIGN_CENTER);
+	        document.add(para);
+	        
+	        StringBuilder dateSB = new StringBuilder();
+	        Paragraph paraDate = new Paragraph(dateSB.append("Date : ").append(fromDate).append(" To ").append(toDate).toString());
+	        paraDate.setAlignment(Element.ALIGN_LEFT);
+	        document.add(paraDate);
+	        
+	        StringBuilder roleSB = new StringBuilder();
+	        Paragraph paraRole = new Paragraph(roleSB.append("Role : ").toString());
+	        paraRole.setAlignment(Element.ALIGN_LEFT);
+	        document.add(paraRole);
+	        
+	        StringBuilder teamSB = new StringBuilder();
+	        Paragraph paraTeam = new Paragraph(teamSB.append("Team : ").toString());
+	        paraTeam.setAlignment(Element.ALIGN_LEFT);
+	        document.add(paraTeam);
+	      
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(14);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+	        table.setWidths(new int[]{4,3,4,4,4,4,4,3,4,3,4,3,4});
+	        table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> dataList = new ArrayList<>();
+	        java.util.List<UserDTO> list = userDTOList.getData();
+	        for(UserDTO data : list){
+	        	dataList.add(prepareRecruiterReportsListStringArray(data,headers,loginOrgLocations));
+	        }
+	        for (String[] userArray: dataList) {
+	            for (int i = 0; i < userArray.length; i++) {
+	                String datum = userArray[i];
+	                PdfPCell cell = new PdfPCell();
+	                cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                table.addCell(cell);
+	            }
+	            table.completeRow();
+	        }
+	        document.addTitle("Recruiter Reports Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+		
+	}
+	
+	
+	private String[] prepareRecruiterReportsListStringArray(UserDTO userDto, String[] headers, OrgLocations loginOrgLocations) throws Exception {
+		String userArray[] = new String[headers.length];
+			
+		StringBuilder associateName = new StringBuilder();
+		
+		//Associate Name
+			userArray[0] = associateName.append(userDto.getFullName()).toString();
+		
+		//Requirement Count
+		 userArray[1] = userDto.getUserRequirementsCount().toString();
+		 
+		 //Candidate Count
+		 userArray[2] = userDto.getUserCandidatesCount().toString();
+		 
+		 //Total Applicant Count
+		 userArray[3] = userDto.getUserApplicantsCount().toString();
+		 
+		 //Shortlist count
+		 userArray[4] = userDto.getUserShortlistedApplicantsCount().toString();
+		 
+		 //Submit to client Count
+		 userArray[5] = userDto.getUserSubmittedApplicantsCount().toString();
+		 
+		 //Interview  Count
+		 userArray[6] = userDto.getUserInterviewedApplicantsCount().toString();
+		 
+		 //Offer count
+		 userArray[7] = userDto.getUserOfferedApplicantsCount().toString();
+		 
+		//Rejected Count
+		 userArray[8] = userDto.getUserRejectedApplicantsCount().toString();
+		 
+		 //Joined count
+		 userArray[9] = userDto.getUserApplicantsJoinedCount().toString();
+		 
+		 //Backout Count
+		 userArray[10] = userDto.getUserApplicantsBackOutCount().toString();
+		 
+		 //Onhold  Count
+		 userArray[11] = userDto.getUserOnHoldApplicantsCount().toString();
+		 
+		 //No response count
+		 userArray[12] = userDto.getUserNoResponseApplicantsCount().toString();
+		   
+		return userArray;
+		
+
 	}
 }

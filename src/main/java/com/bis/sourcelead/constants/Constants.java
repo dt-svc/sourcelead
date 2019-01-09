@@ -709,6 +709,9 @@ public class Constants {
 	
 	public static final String[] PURCHASE_CANDIDATE_HEADERS = {"Order No", "Order Date", "Company Name", "Total Resumes", "Total Price", "Service Fee", "Discount", "Grand Total", "Payment Status"};
 
+	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
+
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
