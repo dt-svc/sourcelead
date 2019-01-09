@@ -460,9 +460,13 @@ public class EMailJobScheduler {
 			logger.error("ERROR in " + e.getMessage());
 		}
     }
-	// @Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour 
-    @Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
-	//@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	
+	/**
+	 * @CommentedBy Mahaveer Manoj
+	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
+	 *  	   So, commented for now. If needed will open later
+	 **/
+    /*@Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																// Jobs(attachments)in inbox folder.
@@ -510,7 +514,7 @@ public class EMailJobScheduler {
 			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
