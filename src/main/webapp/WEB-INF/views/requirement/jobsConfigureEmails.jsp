@@ -116,6 +116,7 @@ function hideandshowjobclosing(){
 																	</select>
 															</div>
 																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].reminderhierarchy" value="${hierarchy.reminderhierarchy}">
+																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].id" value="${hierarchy.id}">
 															<c:if test="${loop.index == 0}">
 																<div title="Add Reminder" onClick="cloneRow('job_ApplicantJoining_form');"
 																	class="col-md-2">
