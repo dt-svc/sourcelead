@@ -28,14 +28,13 @@ import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
+import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -47,6 +46,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
@@ -67,8 +67,6 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-
-import opennlp.tools.parser.Cons;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -136,6 +134,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	EmailReminderService emailReminderService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -614,8 +615,19 @@ public class OrgSettingsController {
 	    @RequestMapping(value = "/jobsConfigureEmails")
 	   	public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
 	   	    ModelAndView model = new ModelAndView();
-	   	    List<LookUpData> referTypeList = lookUpDataService.getReferLookUpDataByCategory(Constants.TASKSEVERITY);
-			model.addObject("referTypeList", referTypeList);
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
+			model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+					model.addObject("applicantJoining", emailReminder);
+				}
+				
+			}
+			
 	   		model.setViewName("requirement/jobsConfigureEmails");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
 	   		return model;
