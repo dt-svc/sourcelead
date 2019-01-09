@@ -347,10 +347,11 @@ function populateRecentRunPayrollDataGrid(json){
 	{
 		for(var i=0;i<json.length;i++){
 			var opt = json[i];
-			var frequencyArgs = opt.payFrequency;
+			var freqUUIDArgs = opt.paysheetFreqUUID;
+			var periodNumArgs = opt.payPeriodNum;
 			result = result + '<tr>';
 			result = result + '<td>';
-			result = result + '<div class="tblminwidth-175">'+opt.payFrequency+'</a></div>';
+			result = result + '<div class="tblminwidth-175"> <a href="<c:url value="/app/viewPaySheetFrequencyData?paySheetFrequencyUUID='+freqUUIDArgs+'&approverStatus=APPROVED&payPeriodNum='+periodNumArgs+'"/>">'+opt.payFrequency+'</a></div>';
 			result = result + '</td>';
 			result = result + '<td><div class="tblminwidth-75">'+opt.payGroupName+'</div></td>';
 			result = result + '<td><div class="tblminwidth-75">$  '+opt.grossPay+'</div></td>';
@@ -389,12 +390,6 @@ function overviewRedirection(){
 	$("#overViewDiv").show();
 	$("#reviewPayrollDiv").show();
 	
-}
-</script>
-
-<script>
-function loadFrequencyList(frequency){
-	window.location.href = sourceleadUrl + "/viewPaySheetFrequencyData";
 }
 </script>
 

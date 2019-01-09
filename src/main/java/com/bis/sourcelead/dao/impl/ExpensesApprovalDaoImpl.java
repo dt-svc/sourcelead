@@ -170,9 +170,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		String globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR "
 				                      + " (sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) "
 				                      + "    and ("
-				                      + "        sah.hierarchyId.projectClientsId.orgLocationsId.id  IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.orgLocationId.id = :orgLocationId and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') "
-				                      + "       OR :orgLocationId NOT IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.hierarchyId.projectClientsId.projectId.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id)))"
+				                      + "        sah.hierarchyId.projectClientsId.orgLocationsId.id  IN(select subpm.projectClientsId.orgLocationsId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id  and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') "
+				                      + "       OR :orgLocationId NOT IN(select subpm.projectClientsId.orgLocationsId.id from ProjectMembers subpm where subpm.projects.id = sah.hierarchyId.projectClientsId.projectId.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id)))"
 				                      + " )";
+		
+		
 		 String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch pc.orgRelationId orgRelation left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projects projects"
 					+ " left join fetch pm.masterCandidateId mc left join fetch pm.employee emp left join fetch emp.user user where "
 				 + globalUserQuery
@@ -192,11 +194,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 				 */
 				+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' ) and (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select subsah.hierarchyId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.expenseId.id = sah.expenseId.id)))) "
 				+"   OR (:userId NOT IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.expenseId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType='"+Constants.SEQUENTIAL+"' and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')) OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and (sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from ExpensesApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.expenseId.projectMembers.masterCandidateId.id = sah.expenseId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.expenseId.id = sah.expenseId.id ))))))"
-				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString();
+				+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString() + "GROUP BY sah.expenseId.id" ;
 		
-			String countFrom = "";
+			/*String countFrom = "";
 			if(length>0) {
-				     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where "
+				     countFrom = "Select count(*) from  ExpensesApproverHierarchy sah where ("
 						+ globalUserQuery
 						  + "  and   ("
 					      	 + "  (      sah.hierarchyId.approverUserId.id = :userId  " 
@@ -209,13 +211,13 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 							 + "                     )          "
 							 + "             ))"
 				           
-						     /*
+						     
 							 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
-							 */
+							 
 							+ "  OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and  sah.hierarchyId.level IN(select MAX(pah.level) from ExpenseProjectApproverHierarchy pah where pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id and pah.status != '0' ) and (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and '1' IN (select subsah.hierarchyId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.expenseId.id = sah.expenseId.id)))) "
 							+"   OR (:userId NOT IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = sah.hierarchyId.projectClientsId.orgLocationsId.id ) and (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.expenseId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.expenseId.projectMembers.projectMemberCandidteId.consultantUser.id)) and (sah.hierarchyId.projectId.projectApprovalType= '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType='"+Constants.SEQUENTIAL+"' and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.expenseId.projects.id and subpm.masterCandidateId.id = sah.expenseId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"')) OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and (sah.hierarchyId.projectClientsId.level IN(select Max(subsah.hierarchyId.projectClientsId.level) from ExpensesApproverHierarchy subsah where subsah.hierarchyId.projectId.id = sah.hierarchyId.projectId.id and subsah.expenseId.projectMembers.masterCandidateId.id = sah.expenseId.projectMembers.masterCandidateId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.org.orgType <> 'GUEST') OR ((sah.hierarchyId.projectClientsId.level+1) IN ( select subsah.hierarchyId.projectClientsId.level from ExpensesApproverHierarchy subsah where subsah.expenseApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.expenseId.id = sah.expenseId.id ))))))"
-							+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString();
-			}
+							+ "   ) and ( " + subQuery2 +" )"+startDateSubQuery+" "+endDateSubQuery+" "+query1.toString()+ ") GROUP BY sah.expenseId" ;
+			}*/
 			 
 		 
 		params.put("userId",userId);
@@ -225,44 +227,45 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		
 		Query query = session.createQuery(from);
 		
-		Query countQuery =null;
-		if(length>0) {
+		
+		/*if(length>0) {
 			countQuery =session.createQuery(countFrom);
-		}
+		}*/
 		for (String str : query.getNamedParameters())
         {
 			if(str.equalsIgnoreCase("userId")){
 				query.setParameter(str, (long) params.get(str));
-				if(countQuery != null)
-				countQuery.setParameter(str, (long) params.get(str));
+				/*if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));*/
 			}if(str.equalsIgnoreCase("startDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
-				if(countQuery != null)
-				countQuery.setParameter( str, (Date) params.get(str) );
+				/*if(countQuery != null)
+				countQuery.setParameter( str, (Date) params.get(str) );*/
 			}
 			if(str.equalsIgnoreCase("endDateUTC")){
 				query.setParameter( str, (Date) params.get(str) );
-				if(countQuery != null)
-				countQuery.setParameter( str, (Date) params.get(str) );
+				/*if(countQuery != null)
+				countQuery.setParameter( str, (Date) params.get(str) );*/
 			}
 			if(str.equalsIgnoreCase("orgLocationId")){
 				query.setParameter(str, (long) params.get(str));
-				if(countQuery != null)
-				countQuery.setParameter(str, (long) params.get(str));
+				/*if(countQuery != null)
+				countQuery.setParameter(str, (long) params.get(str));*/
 			}
 			
         }
-		
+		Query countQuery =query;
+		List<ExpensesApproverHierarchy> tsCountlist = countQuery.list();
 		List<ExpensesApproverHierarchy> tslist = query.setFirstResult(start).setMaxResults(length).list();
 		response.setData(tslist); 
 		
-		List<Long> countList  = null;
-		if(countQuery != null) {
+		/*List<Long> countList  = null;
+		if(tslist != null) {
 			countList  = countQuery.list();
-		}
+		}*/
 		int recordsTotal=0;
-		if(countList != null && !countList.isEmpty()) {
-			recordsTotal = countList.iterator().next().intValue();
+		if(tsCountlist != null && !tsCountlist.isEmpty()) {
+			recordsTotal = tsCountlist.size();
 		}
 		response.setRecordsTotal(recordsTotal);
 		

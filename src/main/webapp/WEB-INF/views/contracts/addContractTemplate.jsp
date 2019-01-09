@@ -89,11 +89,21 @@
               <div class="col-md-8">
                   <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
                     <c:forEach var="letter" items="${letterHeadList}">
-                  <%--   <c:if test = "${letter.id == letter.letterHead.id}">
+                  <%--  <c:if test = "${letter.id == letter.letterHead.id}">
 				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
 				    </c:if> --%>
-<%-- 				    <c:if test = "${letter.id != letter.letterHead.id}"> --%>
+				    
+				    
+				    <c:if test = "${letter.id == contractsTemplate.letterHead.id}">
+				         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+				    </c:if>
+				    <c:if test = "${letter.id != contractsTemplate.letterHead.id}">
 				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
+				    </c:if>
+				    
+				    
+<%-- 				    <c:if test = "${letter.id != letter.letterHead.id}"> --%>
+<%-- 				         <option value="${letter.letterHeadUUID}">${letter.letterHeadName}</option> --%>
 <%-- 				         </c:if> --%>
                     </c:forEach>
                   </select>
@@ -700,6 +710,9 @@
 		var templateName = $('#templateName').val();
 		var contractType = $('#contractType').val();
 		var sourceleadUrl = '${sourceleadUrl}';
+		
+		var templateUUID = '${contractsTemplate.templateUUID}';
+		
 		if (templateName != null && templateName != "" && contractType != null
 				&& contractType != "") {
 			$
@@ -708,7 +721,8 @@
 						url : sourceleadUrl
 								+ "/validateContractTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="
 								+ templateName + "&contractType="
-								+ contractType,
+								+ contractType + "&templateUUID="
+								+templateUUID,
 						success : function(data) {
 							if (data == 'true') {
 
