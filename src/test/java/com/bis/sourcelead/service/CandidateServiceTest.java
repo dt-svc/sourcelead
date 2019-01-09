@@ -354,16 +354,15 @@ public class CandidateServiceTest {
 			assertNotNull(user1);
 		}
 
-		//-------------------------------------------------------------------------
-		/*@Test
+		@Test
 		public void updateMarketplaceCartCountAndPrice() throws Exception{
 			
 				logger.info("testing updateMarketplaceCartCountAndPrice service");
 				User user = new User();
-				//OrgLocations orglocations = new OrgLocations();
+				OrgLocations orglocations = new OrgLocations();
 				user.setId(4l);
-				spyOrgLocations.setId(5l);
-				Object obj[] = candidateService.updateMarketplaceCartCountAndPrice(spyOrgLocations.getId(), Constants.ROLE_ADMIN, user);
+				orglocations.setId(5l);
+				Object obj[] = candidateService.updateMarketplaceCartCountAndPrice(orglocations.getId(), Constants.ROLE_ADMIN, user);
 				assertNotNull(obj);
 				User user1 = new User();
 				OrgLocations orglocations1 = new OrgLocations();
@@ -382,9 +381,9 @@ public class CandidateServiceTest {
 				List<Long> marketCartIds = new ArrayList<Long>();
 				marketCartIds.add(3l);
 				marketCartIds.add(5l);
-				//OrgLocations orglocations = new OrgLocations();
-				spyOrgLocations.setId(5l);
-				Boolean flag = candidateService.updateMarketCartStatus(marketCartIds, spyOrgLocations.getId());
+				OrgLocations orglocations = new OrgLocations();
+				orglocations.setId(5l);
+				Boolean flag = candidateService.updateMarketCartStatus(marketCartIds, orglocations.getId());
 				assertTrue(flag);
 				marketCartIds.add(8l);
 				marketCartIds.add(10l);
@@ -399,58 +398,49 @@ public class CandidateServiceTest {
 		@Test
 		public void getCandidateMarketPlaceDetailsByUUId() throws Exception{
 			
-				logger.info("testing getCandidateMarketPlaceDetailsByUUId service");
-				CandidateMarketPlace market = new CandidateMarketPlace();
-				market.setMarketplaceUUID("zRA7Z6Rw");
-				CandidateMarketPlace market1 = candidateService.getCandidateMarketPlaceDetailsByUUId(market.getMarketplaceUUID());
-				assertNotNull(market1);
-				assertEquals(market.getMarketplaceUUID(), market1.getMarketplaceUUID());
-			
+			String uuid = "";
+			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
+			CandidateMarketPlace marketPlace1 = null;
+			when(mockCandidateDao.getCandidateMarketPlaceDetailsByUUId(uuid)).thenReturn(marketPlace);
+			marketPlace1 = mockCandidateDao.getCandidateMarketPlaceDetailsByUUId(uuid);
+			assertNotNull(marketPlace1);
 		}
 		
 		@Test
 		public void getMarketplaceSalesOrderBySalesUuid() throws Exception{
-			
-				logger.info("testing getMarketplaceSalesOrderBySalesUuid service");
-				MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
-				salesOrder.setSalesUuid("bwjswsPO");
-				//OrgLocations orglocations = new OrgLocations();
-				spyOrgLocations.setId(5l);
-				MarketplacePurchaseSalesDTO salesDto = candidateService.getMarketplaceSalesOrderBySalesUuid(spyOrgLocations, salesOrder.getSalesUuid());
-				assertNotNull(salesDto);
-				assertEquals(salesOrder.getSalesUuid(), salesDto.getSalesUuid());
-			
+		
+			OrgLocations orgLocations = new OrgLocations(); 
+			String salesUuid = "";
+			MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
+			MarketplaceSalesOrder salesOrder1 = null;
+			when(mockCandidateDao.getMarketplaceSalesOrderBySalesUuid(orgLocations.getId(), salesUuid)).thenReturn(salesOrder);
+			salesOrder1 = mockCandidateDao.getMarketplaceSalesOrderBySalesUuid(orgLocations.getId(), salesUuid);
+			assertNotNull(salesOrder1);
 		}
 		
 		@Test
 		public void getPurchaseDetailByPurchaseUuid() throws Exception{
 			
-				logger.info("testing getPurchaseDetailByPurchaseUuid service");
-				MarketplacePurchaseOrder purchaseOrder = new MarketplacePurchaseOrder();
-				purchaseOrder.setPurchaseUuid("PG1doDtM");
-				//OrgLocations orglocations = new OrgLocations();
-				spyOrgLocations.setId(5l);
-				MarketplacePurchaseSalesDTO purchaseDto = candidateService.getPurchaseDetailByPurchaseUuid(purchaseOrder.getPurchaseUuid(), spyOrgLocations);
-				assertNotNull(purchaseDto);
-			
+			String purchaseUuid = ""; 
+			OrgLocations orgLocations = new OrgLocations();
+			MarketplacePurchaseOrder mps = new MarketplacePurchaseOrder();
+			MarketplacePurchaseOrder mps1 = null;
+			when(mockCandidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId())).thenReturn(mps);
+			mps1 = mockCandidateDao.getPurchaseDetailByPurchaseUuid(purchaseUuid,orgLocations.getId());
+			assertNotNull(mps1);
 		}
 		
 		@Test
 		public void getBalanceAmountFromWallet() throws Exception{
 			
-				logger.info("testing getBalanceAmountFromWallet service");
-				//OrgLocations orglocations = new OrgLocations();
-				spyOrgLocations.setId(5l);
-				Double walletAmount = candidateService.getBalanceAmountFromWallet(spyOrgLocations.getId());
-				assertNotNull(walletAmount);
-				OrgLocations orglocations1 = new OrgLocations();
-				orglocations1.setId(5l);
-				Double walletAmount1 = candidateService.getBalanceAmountFromWallet(orglocations1.getId());
-				assertNotNull(walletAmount1);
-				assertEquals(walletAmount, walletAmount1);
+			Long id = 123l;
+			Double totalAmount = 20.0;
+			Double totalAmount1 = 0.0;
+			when(mockCandidateDao.getBalanceAmountFromWallet(id)).thenReturn(totalAmount);
+			totalAmount1 = mockCandidateDao.getBalanceAmountFromWallet(id);
+			assertThat(totalAmount1, is(20.0));
 			
-		}*/
-		//-------------------------------------------------------------------------
+		}
 		
 		@Test
 		public void getWalletList() throws Exception{
@@ -531,34 +521,24 @@ public class CandidateServiceTest {
 				verify(mockCandidateDao).saveCandidateMarketPlaceWallet(wallet);
 				
 		}
-		//-------------------------------------------------------------------------
-/*
+
 		@Test
 		public void withdrawCandidateFromMarketplace() throws Exception{
 			
-				logger.info("testing withdrawCandidateFromMarketplace service");
-				CandidateMarketPlace marketplace = new CandidateMarketPlace();
-				Candidate candidate = new Candidate();
-				candidate.setId(007l);
-				marketplace.setCandidateId(candidate);
-				candidate = doNothing().when(spyCandidateDao).getCandidateById(candidate.getId());
-				assertNotNull(candidate);
-				verify(spyCandidateDao).getCandidateById(candidate.getId());
-				candidate.setIsSharedInMarketplace(Constants.NO);
-				doNothing().when(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
-				verify(spyCandidateService).saveOrUpdateCandidateElkDocument(candidate);
-				doNothing().when(spyCandidateDao).storeCandidate(candidate);
-				verify(spyCandidateDao).storeCandidate(candidate);
-				doNothing().when(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
-				verify(spyCandidateDao).withdrawCandidateFromMarketplace(marketplace);
-				marketplace.setCandidateUUID("aXbYcZ");
-				doNothing().when(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
-				verify(spyCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
-			
-		}*/
-		
-		//-------------------------------------------------------------------------
-		
+			Long candidateId = 123l;
+			Candidate candidate = new Candidate();
+			Candidate candidate1 = null;
+			CandidateMarketPlace marketplace = new CandidateMarketPlace();
+			when(mockCandidateDao.getCandidateById(candidateId)).thenReturn(candidate);
+			candidate1 = mockCandidateDao.getCandidateById(candidateId);
+			assertNotNull(candidate1);
+			doNothing().when(mockCandidateDao).withdrawCandidateFromMarketplace(marketplace);
+			mockCandidateDao.withdrawCandidateFromMarketplace(marketplace);
+			verify(mockCandidateDao).withdrawCandidateFromMarketplace(marketplace);
+			doNothing().when(mockCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
+			mockCandidateDao.deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
+			verify(mockCandidateDao).deleteCandidateFromMarketcartByCandidateUuid(marketplace.getCandidateUUID());
+		}
 		
 		@Test
 		public void updateMarketWalletAmount() throws Exception{
