@@ -562,7 +562,7 @@ function preventTabkey(e){
           
          <!--  Setting page 	 -->
          
-           <li><a href="<c:url value='${sourceleadUrl}/goToSettings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
+           <li><a href="<c:url value='${sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
 		
 	</ul>
 </div>    
