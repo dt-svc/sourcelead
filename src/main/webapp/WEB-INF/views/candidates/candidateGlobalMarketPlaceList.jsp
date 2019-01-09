@@ -22,6 +22,7 @@
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
                  <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
                  <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
@@ -841,7 +842,9 @@ function cardModel() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-
+function goToCartList(){
+	location.href = "${appPath}/candidateMarketplaceCart";
+}
 function goToPurchaseOrderList(){
 	location.href ="${appPath}/PurchaseOrderList";
 	}
