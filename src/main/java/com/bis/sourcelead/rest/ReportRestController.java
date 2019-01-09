@@ -79,6 +79,8 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -351,9 +353,10 @@ public class ReportRestController {
 		    	    searchDates[0] = startDateUTC;
 		    	    searchDates[1] = endDateUTC;
 				}
+				String[] orgTeams = null;
 				List<Long> teamsList = new ArrayList<>();
 				if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
-					String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+				   orgTeams = userRoleDto.getOrgTeams().split(",");
 					for(int i=0; i < orgTeams.length; i++) {
 						teamsList.add(Long.parseLong(orgTeams[i]));
 					}
@@ -382,8 +385,29 @@ public class ReportRestController {
 			userDTO.setSortOrder(sortColumnOrder);
 			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
 		
+			
+			StringBuilder sbRoles = new StringBuilder();
+			String roleName = null;
+			if(roleNames !=null){
+			List<Roles> roles = rolesService.getRolesListUsingMultipleIds(roleNames);
+			for(Roles r: roles){
+				sbRoles.append(r.getDisplayName()).append(",").toString();
+			}
+			roleName = sbRoles.deleteCharAt(sbRoles.length()-1).toString();
+			}
+			
+			StringBuilder sbTeams = new StringBuilder();
+			String teamName = null;
+			if(orgTeams !=null){
+			List<Team> teams = teamService.getTeamListByMultipleIds(orgTeams,orgLocations.getId());
+			for(Team t: teams){
+				sbTeams.append(t.getName()).append(",").toString();
+			}
+			teamName = sbTeams.deleteCharAt(sbTeams.length()-1).toString();
+			}
+			
 			File file = null;
-				file = pdfUtil.recruiterReprtsListPdfTable(userDTOList, orgLocations,searchDates);
+				file = pdfUtil.recruiterReprtsListPdfTable(userDTOList, orgLocations,searchDates,roleName,teamName);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";

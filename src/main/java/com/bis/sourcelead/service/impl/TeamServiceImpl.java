@@ -174,4 +174,9 @@ public class TeamServiceImpl implements TeamService {
 	{
 		return teamDao.getTeamListByTeamOwnerAndStatus(userId,orgLocationId);
 	}
+
+	@Override
+	public List<Team> getTeamListByMultipleIds(String[] teamsids, Long locationId) throws Exception {
+		return teamDao.getTeamListByMultipleIds(teamsids,locationId);
+	}
 }

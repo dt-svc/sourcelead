@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -2864,7 +2866,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 	
 	
 	
-	public File recruiterReprtsListPdfTable(ResponseList<UserDTO> userDTOList, OrgLocations loginOrgLocations,Date[] searchDates) throws Exception{
+	public File recruiterReprtsListPdfTable(ResponseList<UserDTO> userDTOList, OrgLocations loginOrgLocations,Date[] searchDates,String roleNames,String teamNames) throws Exception{
 
 		String[] headers = Constants.RECRUITER_REPORTS_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
@@ -2900,16 +2902,28 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 	        paraDate.setAlignment(Element.ALIGN_LEFT);
 	        document.add(paraDate);
 	        
+	        
 	        StringBuilder roleSB = new StringBuilder();
-	        Paragraph paraRole = new Paragraph(roleSB.append("Role : ").toString());
+	        if(StringUtils.isNotBlank(roleNames)){
+	        Paragraph paraRole = new Paragraph(roleSB.append("Roles : ").append(roleNames).toString());
 	        paraRole.setAlignment(Element.ALIGN_LEFT);
 	        document.add(paraRole);
+	        }else{
+	        	Paragraph paraRole = new Paragraph(roleSB.append("Roles : ").append("--").toString());
+		        paraRole.setAlignment(Element.ALIGN_LEFT);
+		        document.add(paraRole);	
+	        }
 	        
 	        StringBuilder teamSB = new StringBuilder();
-	        Paragraph paraTeam = new Paragraph(teamSB.append("Team : ").toString());
+	        if(StringUtils.isNotBlank(teamNames)){
+	        Paragraph paraTeam = new Paragraph(teamSB.append("Team : ").append(teamNames).toString());
 	        paraTeam.setAlignment(Element.ALIGN_LEFT);
 	        document.add(paraTeam);
-	      
+	        }else{
+	        	Paragraph paraTeam = new Paragraph(teamSB.append("Team : ").append("--").toString());
+		        paraTeam.setAlignment(Element.ALIGN_LEFT);
+		        document.add(paraTeam);	
+	        }
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        PdfPTable table = new PdfPTable(headers.length);
 	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
