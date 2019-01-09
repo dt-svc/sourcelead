@@ -165,6 +165,9 @@ public class LoggingAspect {
 		if("withdrawCandidateFromMarketplace".equalsIgnoreCase(methodName)){
 			type="withdrawCandidateFromMarketplace";
 		}
+		if("withdrawCandidatesFromMarketPlace".equalsIgnoreCase(methodName)){
+			type="withdrawCandidatesFromMarketPlace";
+		}
 		if("initMarketplacePayment".equalsIgnoreCase(methodName)){
 			type="initMarketplacePayment";
 		}
