@@ -1,6 +1,11 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +27,7 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -78,6 +84,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.INDPayrollCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -135,6 +142,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	IndPaySlipPdf indPaySlipPdf;
 	
     @RequestMapping(value = "/app/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -698,11 +708,29 @@ public class IndianPayrollRestController {
 				for(IndEmployeePayroll iepdt :payResponseList.getData()) {
 					IndEmployeePayrollDTO dto = new IndEmployeePayrollDTO();
 					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
-					if(iepdt.getCandidate().getLastName() != null) {
-						dto.setEmployeeName(iepdt.getCandidate().getFirstName() +" "+iepdt.getCandidate().getLastName());
-					}else {
-						dto.setEmployeeName(iepdt.getCandidate().getFirstName());
+					dto.setEmployeeName(iepdt.getCandidate().getFullName());
+					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
+					BigDecimal currentHours = new BigDecimal("0");
+					if(iepdt.getRegularHours() != null) {
+						currentHours.add(new BigDecimal(iepdt.getRegularHours()));
 					}
+					if(iepdt.getOverTimeHours() != null) {
+						currentHours.add(new BigDecimal(iepdt.getOverTimeHours()));
+					}
+					dto.setCurrentHours(currentHours);
+					dto.setGrossPay(iepdt.getGrossPay());
+					dto.setDeducationAmount(iepdt.getGrossPay().subtract(iepdt.getNetPay()));
+					dto.setNetPay(iepdt.getNetPay());
+					
+					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getIndEmpPayrollUUID());
+					
+					double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
+					double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
+					double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+							
+							
+					dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
+					dto.setYtdNetPay(new BigDecimal(ytdNetPay));
 					indEmployeePayrollList.add(dto);
 				}
 				responseList.setData(indEmployeePayrollList);
@@ -718,5 +746,36 @@ public class IndianPayrollRestController {
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return responseList;
+	}
+    
+    
+    
+    
+    @RequestMapping(value = { "app/exportIndPayrollRegisterReportPdf"})
+	public void exportIndPayrollRegisterReportPdf(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) { 
+				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollRegisterReports(indEmployeePayrollDTO,orgLocations);
+				if(payResponseList.getData().size() > 0) {
+					File file = indPaySlipPdf.getIndPayrollRegisterReportsPdf(payResponseList,orgLocations);
+					String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+					if (mimeType == null) {
+						mimeType = "application/octet-stream";
+					}
+					response.setContentType(mimeType);
+					StringBuilder fileName = new StringBuilder();
+					response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+					response.setContentLength((int) file.length());
+					InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+					FileCopyUtils.copy(inputStream, response.getOutputStream());
+					inputStream.close();
+					response.getOutputStream().close();
+					response.getOutputStream().flush();
+					if (file != null) {
+						file.delete();
+					}
+				}
+			}
 	}
 }
