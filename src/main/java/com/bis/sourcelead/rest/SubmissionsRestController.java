@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -309,7 +310,7 @@ public class SubmissionsRestController {
 	   }
 
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_SUBMISSION_TEMPLATE','ROLE_ADD_APPLICANT','ROLE_CROWDSOURCING_REQUIREMENTS')")
-	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate", "/rest/getRequirmentOrgSubmissionTemplate" }, method = RequestMethod.GET)
+	@RequestMapping(value = {"/app/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.GET)
 	public String getRequirmentOrgSubmissionTemplate(
 			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
 
@@ -317,6 +318,16 @@ public class SubmissionsRestController {
 
 		return requirement.getSubmissionTemplateJsonString();
 
+	}
+	
+	@RequestMapping(value = {"/app/rest/getRequirmentOrgSubmissionTemplate"}, method = RequestMethod.POST)
+	@ResponseBody
+	public org.json.simple.JSONArray getRequirmentOrgSubmissionTemplateForMobile(
+			@RequestParam(value = "requirementId", required = false) Long requirementId) throws Exception {
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		JSONParser par = new JSONParser();
+		org.json.simple.JSONArray template = (org.json.simple.JSONArray)par.parse(requirement.getSubmissionTemplateJsonString());
+		return template;
 	}
 	
 	@RequestMapping(value = "/getGuestUserRequirmentOrgSubmissionTemplate", method = RequestMethod.GET)
@@ -360,7 +371,7 @@ public class SubmissionsRestController {
 				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 				requirementSubmissionHistory.setFromStage("NEW");
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				Requirement requirement = requirementSubmission.getRequirement();
 				
 				if(null != requirement){
@@ -420,7 +431,7 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		Requirement requirement = requirementSubmission.getRequirement();
 		
 		if(null != requirement){
@@ -717,12 +728,17 @@ public class SubmissionsRestController {
 					}
 					submission.setUpdatedDate(new Date());
 					RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
-					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				}
 				int shotListCount = submissionId.length;
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
+				// for URL redirections from mail
+				String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+				Long redirectOrgLocationId = orgLocations.getId();
+				
 				if (requirement.getManagerUserId().getEmail() != null && requirement.getManagerUserId().getId().longValue() != user.getId().longValue()) {
-					sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg);
+					sendEmailToManages(requirement, orgLocations, user, shotListCount, loginOrg,redirectURL,redirectOrgLocationId);
 				}
 				if(count>0){
 					requirementSubmissionService.shortListedMailToVendorFromClient(requirement,submissionsList,orgLocations,user);
@@ -856,7 +872,7 @@ public class SubmissionsRestController {
 				if(!orgLocations.getId().equals(requirementSubmission.getCandidate().getOrgLocationId().getId()) && requirementSubmission.getSourceSubmission() != null &&  !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
 				}
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -875,7 +891,7 @@ public class SubmissionsRestController {
 	// vendors mail sending the private method
 
 	public void sendEmailToManages(Requirement requirement, OrgLocations loginOrgLocations, User user,
-			Integer shotListCount, Org loginOrg) throws Exception {
+			Integer shotListCount, Org loginOrg,String redirectURL, Long redirectOrgLocationId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(requirement.getManagerUserId().getFirstName());
 		emailMessage.setLastName(requirement.getManagerUserId().getLastName());
@@ -951,7 +967,7 @@ public class SubmissionsRestController {
 		}
 
 		StringBuilder loginURLBuilder = new StringBuilder();
-		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicants</div></a>").toString());
 		
 
 		// getting the current EmailScenario by EmailScenario unique name and
@@ -1193,8 +1209,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
-				requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		
 		return "success";
 	}
@@ -1241,7 +1256,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 
 		return "success";
 	}
@@ -1295,7 +1310,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1334,7 +1349,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1439,7 +1454,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

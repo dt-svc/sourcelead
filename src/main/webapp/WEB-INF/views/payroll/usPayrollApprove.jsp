@@ -80,7 +80,7 @@ function calculateTotalPay(formData,confirmType,payPerionNum,payType){
     
     
     <div class="clearfix"></div>
-    <div class="timesheet_out" id="approveDiv">
+    <div class="timesheet_out" id="approveDiv" style="display:none">
     <div id="approvePayrollDivLoding"></div>
       <div class="clearfix mt">
       <form:form id="approve_payroll_form" name="approve_payroll_form" method="post">
@@ -297,7 +297,7 @@ function calculateTotalPay(formData,confirmType,payPerionNum,payType){
         <nav class="clearfix">
           <ul class="pull-right mr10 list-unstyled list-inline">
             <li><a href="javascript:void(0)" class="btn btn-primary btnSuccess" onClick="approvePayroll();">Approve</a></li>
-            <li><a href="javascript:void(0)" class="btn btn-default" onclick="window.location='/app/payrollList'">Cancel</a></li>
+            <li><a class="btn btn-default" onclick="cancelRedirect();">Cancel</a></li>
           </ul>
           <div class="clearfix"></div>
         </nav>
@@ -307,7 +307,34 @@ function calculateTotalPay(formData,confirmType,payPerionNum,payType){
   <!-- </section> -->
   <!-- Content Area Ends--> 
 
+<script>
+function cancelRedirect(){
+	var status = getUrlParameter("approverStatus");
+	if(status != null && status != "" && status != 'undefined'){
+		if(status == "SENT"){
+			window.location.href = sourceleadUrl + "/payrollList?&redirect=history";
+		}else if(status == "DRAFT"){
+			window.location.href = sourceleadUrl + "/payrollList?&redirect=draft";
+		}
+	}else{
+		window.location.href = sourceleadUrl + "/payrollList";
+	}
+}
 
+function getUrlParameter(paramName){
+	var url = window.location.search.substring(1);
+	var urlVars = url.split('&');
+	var paramval = "";
+	for (var i = 0; i < urlVars.length; i++){
+		var values = urlVars[i].split('=');
+		var param = values[0];
+		if(param === paramName){
+			paramval = values[1];
+		}
+	}
+	return paramval;
+}
+</script>
 
 <script type="text/javascript">
 function approvePayroll(){
@@ -320,7 +347,7 @@ function approvePayroll(){
  		} else if (result.response === "AWKWARD") {
  		    location.href = "/errorPage";
  		} else if (result.response === "SUCCESS") {
-		   location.replace(sourceleadUrl+ "/payrollList"); 
+		   location.replace(sourceleadUrl+ "/payrollList?&redirect=history"); 
  		} else if (result.indexOf('Sign In') !== -1) {
  			location.replace(sourceleadUrl);
  		} else {

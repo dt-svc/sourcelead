@@ -129,8 +129,8 @@ overflow-x: auto;
 								<label><strong>Project Type</strong></label>
 								 <div class="clearfix">
 									<ul class="list-unstyled" id="typeFilter">
-			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value="Internal"><label for="c7">Internal Project(s)</label></li>
 										<li class="checkBox positionRelative" ><input id="c12" type="checkbox" name="projectType" value="Client" ><label for="c9">Client Project(s)</label></li>
+			                    	    <li class="checkBox positionRelative" ><input id="c11" name="projectType" type="checkbox" value="Internal"><label for="c7">Internal Project(s)</label></li>
 			                        </ul>
 								 </div>
 								 </div> 
@@ -140,11 +140,11 @@ overflow-x: auto;
 							<label><strong>Project Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="statusFilter">
+									<li class="checkBox positionRelative" ><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed" ><label for="c8">Completed</label></li>
+		               				<li class="checkBox positionRelative" ><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped" ><label for="c10">Dropped</label></li>
 		                    	    <li class="checkBox positionRelative" ><input id="c7" name="projectStatus" type="checkbox" value ="In-Progress"  checked ><label for="c7">In-Progress</label></li>
 									<li class="checkBox positionRelative" ><input id="c9" type="checkbox" name="projectStatus" value ="Not Started" ><label for="c9">Not Started</label></li>
-									<li class="checkBox positionRelative" ><input id="c8" type="checkbox"  name="projectStatus"   value ="Completed" ><label for="c8">Completed</label></li>
 		               				<li class="checkBox positionRelative" ><input id="c6" type="checkbox"  name="projectStatus"  value ="On-Hold"  checked ><label for="c6">On-Hold</label></li>
-		               				<li class="checkBox positionRelative" ><input id="c10" type="checkbox"  name="projectStatus"   value ="Dropped" ><label for="c10">Dropped</label></li>
 		               				
 		                        </ul>
 							 </div>
@@ -155,10 +155,10 @@ overflow-x: auto;
 							<label><strong>Timesheet Frequency</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="frequencyFilter">
-		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
 									<li class="checkBox positionRelative" ><input  type="checkbox" name="invoiceFrequency" value ="Bi-Weekly" ><label for="c9">Bi-Weekly</label></li>
-									<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"   value ="Semi-Monthly" ><label for="c8">Semi-Monthly</label></li>
 		               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"  value ="Monthly"><label for="c6">Monthly</label></li>
+									<li class="checkBox positionRelative" ><input  type="checkbox"  name="invoiceFrequency"   value ="Semi-Monthly" ><label for="c8">Semi-Monthly</label></li>
+		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
 		               				
 		                        </ul>
 							 </div>
@@ -251,7 +251,6 @@ overflow-x: auto;
 	   
 	   
 <!--   Popup's   -->
-
 
 <script>
 function getClientProjectPop(){
@@ -427,6 +426,7 @@ function filter(){
 	 	result = result + '<table id="projectsListTable" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
+		result = result +'	<th>Id</th>';
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
@@ -513,6 +513,7 @@ function projectsPagination(url,sourceleadUrl){
           pages: 1
         }),
         "columns": [
+        	 { "data": "Id" },
             { "data": "projectSequeneNumber" },
             { "data": "projectName"},
             { "data": "projectManagers"},
@@ -523,6 +524,14 @@ function projectsPagination(url,sourceleadUrl){
             { "data": "projectStatus"}
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "projectSequeneNumber",
+    	  	"render": function(data, type, opt, meta) {
+    	  		  var result = "";
+		         result = result + '<td data-title="Id"><div class="tblminwidth-75">'+opt.id+'</div></td>';
+	             return result;
+    	  	   }
+           }, {
 	    	  	"targets": colIndex++,
 	    	  	"data": "projectSequeneNumber",
 	    	  	"render": function(data, type, opt, meta) {
@@ -684,7 +693,7 @@ function projectsPagination(url,sourceleadUrl){
 		     
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[5,'desc']],
+	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
@@ -696,6 +705,7 @@ function projectsPagination(url,sourceleadUrl){
     } );
     $("#projectsListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+    $('#projectsListTable').DataTable().column(0).visible(false);
     $("#projectsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   

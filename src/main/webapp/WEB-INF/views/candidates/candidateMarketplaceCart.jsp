@@ -12,10 +12,10 @@
     <section class="content-wraper">
     <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 id="headerLbl">Marketplace List</h2>
+      <h2 id="headerLbl">Cart</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart View</label> </div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
@@ -24,14 +24,18 @@
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
-		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+		         <li id="" class="current"><a href="javascript:void(0)">Cart</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+            	 <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+                 <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
 		     </ul>
      
   <div class="clerfix row">
     <div class="col-md-12">
       <div class="profileDetails">
         <div class="row reportHead">
-          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a><h4 style="display:inline-block">Cart View</h4></span>
+          <div class="col-md-12"> <span class="pull-left refreIcon noPad mt5"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a><!-- <h4 style="display:inline-block">Cart View</h4> --></span>
             <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
               <li>
 				  <i class="inlineBlock pull-left mr10 trashIcon" title="Cart"></i>
@@ -39,7 +43,7 @@
                       <input id="trashHdr" class="checkbox-custom" name="paidComponent" type="checkbox">
                       <label for="trashHdr" class="checkbox-custom-label"></label>
                     </div>
-				  <a class="pull-left mt2 mr10" onclick="deleteAllCandidatesFromMarketcart()" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete</small></a>
+				  <a class="pull-left mt2 mr10" onclick="deleteAllCandidatesFromMarketcart()" title="Delete All" id="deleteAll" style="display: none;"><small class="ml10 colorRed">Delete All</small></a>
 				</li>
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
@@ -54,7 +58,7 @@
                 <span class="repSearchIcon" onclick="getCandidateDetailsFromMarketcart()"></span></li>
                  <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
-                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary"><i class="fa fa-send paddingRight"></i>Check Out</button>
+                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary" id="checkOutButton1"><i class="fa fa-send paddingRight"></i>Check Out</button>
                 </li>
                 </sec:authorize>
             </ul>
@@ -119,7 +123,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -144,38 +148,38 @@
     <div class="addInner">
       <div class="row">
         <div class="col-md-6 mb positionRelative">
-          <div class="clearfix dynamic_search filterDynamicsearch">
+          <!-- <div class="clearfix dynamic_search filterDynamicsearch">
             <input id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Added On" title="Added On" type="text">
-            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div>
+            <span class="cursorPointer" title="Add on"><i class="fa fa-search"></i></span> </div> -->
           <div class="clearfix filterSearch-ul">
-            <ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+            <ul class="list-unstyled positionRelative filterSearch mt5" id="MarketCartCheckBox">
               <li class=" positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="today" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="today" type="radio" >
                 <label>Today</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_week" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_week" type="radio">
                 <label>This Week</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="Last_Week" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="Last_Week" type="radio" >
                 <label>last Week</label>
               </li>
              <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="1_month" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_month" type="radio">
                 <label>One Month</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value=1_Month_Ago type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="1_Month_Ago" type="radio">
                 <label>One Month Ago</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="YTD" type="checkbox">
+                <input class="dateCheckBox" name="MarketCartDate" value="YTD" type="radio">
                 <label>This Year</label>
               </li>
               <li class="positionRelative">
-                <input class="dateCheckBox" name="orgManagers" value="closed" type="checkbox">
-                <label>Closed</label>
+                <input class="dateCheckBox" name="MarketCartDate" value="custom" type="radio" id = "customDateCheckBox">
+                <label>Custom</label>
               </li>
             </ul>
           </div>
@@ -206,15 +210,12 @@
           </div>
         </div>
         <div class="clearfix"></div>
-      </div>
-    </div>
+   
 	
-	<div class="clearfix">
+	<div class="clearfix" id = "customDates" style="display: none;"> 
 		<div class="col-md-12 positionRelative">
           <div class="clearfix dynamic_search filterDynamicsearch">
-          <h5>Filter by Date <span class="text-danger paddingLeft">*</span></h5>
-		  </div>
-          <div class="clearfix">
+          <h5>Custom Dates<span class="text-danger paddingLeft">*</span></h5>
             <ul class="list-unstyled positionRelative filterSearch" id="">
               <li class="positionRelative mb">
                 <div class="row">
@@ -227,15 +228,17 @@
              </div>
               </li>
             </ul>
-          </div>
+			</div>          
         </div>
-	</div>
+           </div>
+    </div>
+	</div> 
 	
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getCandidateDetailsFromMarketcart();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn btn-sm btn-success" type="button">
+        <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn btn-sm btn-primary" type="button">
       </div>
     </div>
   </div>
@@ -281,25 +284,35 @@ function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
 
+function goToGlobalMarketPlaceList(){
+	location.href = "${appPath}/globalMarketplacePage";
+}
+
+function goToPurchaseOrderList(){
+	location.href ="${appPath}/PurchaseOrderList";
+	}
+function goToSalesOrderList(){
+	location.href = "${appPath}/SalesOrderList";
+}
+
+function goToWalletList(){
+    location.href = "${appPath}/walletList";
+}
 
 function getCandidateDetailsFromMarketcart(){
-	var checkedDate = $('.dateCheckBox:checked').val();
+	var candidateLength = 0;
+	var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	if(checkedDate != null){
-		creationStartDate = "";
-		creationEndDate = "";
-	}else{
-		checkedDate = "";
-	}
-	var candidateLength = $.ajax({
+	$.ajax({
 		type : "POST",
 		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		async : false,
 		success : function(object) {
-			if(object != null){
 			var result ="";
+			if(object != null && object.length != 0){
 				for(var i=0;i<object.length;i++){
 				result = result + "<div class='mt'></div>";
 				result = result + "<div class='media profileDetails-Widget positionRelative'><a class='removeSelected mt' title='Remove Selected' onclick = 'deleteCandidateFromMarketcart(\""+(object[i].fullName == null ? '---' : object[i].fullName)+"\" , \""+object[i].candidateUuid+"\");'><i class='fa fa-trash-o mt5'></i></a>";
@@ -316,9 +329,9 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "<h6 class='text-muted mb5 fontSmall mt5'>"+(object[i].designation == null ? "---" : object[i].designation)+"</h6>";
 				result = result + "<div class='clearfix'></div>";
 				result = result + "<ul class='list-unstyled list-inline mt5 mb0 skillCart'>";
-				result = result + "<li class='mb5' title='Current Rate'><i class='fa fa-location-arrow mr text-info'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].currentRate == null ? "---" : object[i].currentRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<li class='mb5' title='Current Rate'><i class='fa fa-location-arrow mr text-info'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].currentRate == null ? "---" : object[i].currentRate)+"<small class='paddingLeft'>/ "+(object[i].currentRateType == null ? "---" : object[i].currentRateType)+"</small></li>";
 				result = result + "<li class='mb5' title='Expected Rate'>";
-				result = result + "<i class='fa fa-check mr textDanger'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+"<small class='paddingLeft'>/ hr</small></li>";
+				result = result + "<i class='fa fa-check mr textDanger'></i> : <span class='paddingRight'><i class='fa fa-usd'></i></span>"+(object[i].expectedRate == null ? "---" : object[i].expectedRate)+"<small class='paddingLeft'>/ "+(object[i].expectedRateType == null ? "---" : object[i].expectedRateType)+"</small></li>";
 				result = result + "<li class='mb5' title='Total Experience'><i class='fa fa-object-group mr text-warning'></i> : <span class='paddingRight'><i class='fa fa-briefcase text-muted' aria-hidden='true'></i></span>"+(object[i].experienceYears == null ? "---" : object[i].experienceYears )+'.'+(object[i].experienceMonths == null ? "---" : object[i].experienceMonths )+"<small class='text-muted paddingLeft'>(Yrs)</small></li>";
 				result = result + "<li class='mb5' title='Location'><span class='paddingRight'><i class='fa fa-map-marker text-muted'></i></span> : "+(object[i].location == null ? "---" : object[i].location)+"</li>";
 				result = result + "</ul> <div class='clearfix'></div>";
@@ -351,12 +364,18 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "<label class='mr text-muted'>Added on :</label><span>"+object[i].createdDatestr+"</span>";
 				result = result + "</div></div></div></div></div>";
          		}
-			$("#gridView").empty().append(result);
-			}if(object.length == 0){
-				window.location.replace("${appPath}/globalMarketplacePage");
+			candidateLength =  object.length;
 			}
+			else{
+				$(".ulliBorder > li").first().hide();
+				result = result + "<div class='dataTables_empty'></div>";	
+				$("#checkOutButton1").attr("disabled", true);
+				$("#checkOutButton2").attr("disabled", true);
+			}
+			$("#gridView").empty().append(result);
 		}
 		});
+	return candidateLength;
 	}
 
 function updateInvoiceDetails(){
@@ -366,6 +385,8 @@ function updateInvoiceDetails(){
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
+	        		$("#checkOutButton1").attr("disabled", false);
+	        		$("#checkOutButton2").attr("disabled", false);
 		        	$("#invoiceCartCount").html(object[0]);
 		        	totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
 	        		$("#invoiceCartTotal").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
@@ -393,6 +414,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	}
 
 function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
+	var cLength;
 	$.ajax({
 	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
@@ -407,7 +429,9 @@ function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
     			$(".project_inn_mask").fadeOut(200);
             }else{
            	 	showError("Operation failed, please try again");
-            }}
+            }
+			
+		}
 	});
 	}
 
@@ -449,6 +473,8 @@ function deleteAllCandidatesForCheckout(){
 
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
+
+	function createMarketCartStartDate(){
 	$("#creationStartDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -459,7 +485,9 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationEndDate").datepicker("option", "minDate", dt);
    	}
 		})
-
+	}
+	
+	function createMarketCartEndDate(){
 	$("#creationEndDate").datepicker({
  	dateFormat: finalDateFormatPetitionSave,
  	changeMonth: true,
@@ -470,7 +498,60 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
        $("#creationStartDate").datepicker("option", "maxDate", dt);
    	}
 		})
-
+	}
+	
+	$(function(){
+		createMarketCartStartDate();
+		createMarketCartEndDate();
+ 	 });
+	
+	$("#customDateCheckBox").click(function() {
+		if($(this).is(":checked")){
+			$("#customDates").show();
+		}else {
+			$("#customDates").hide();
+		}
+	});	
+	
+	function validateMarketCartFilter(){
+  		var customDate = $("#customDateCheckBox").val();
+  		var otherDate = $('input[name=MarketCartDate]:checked').val();
+  		var fromDate = $("#creationStartDate").val();
+  		var toDate = $("#creationEndDate").val();
+  		if(customDate === "custom"){
+  			if(fromDate === ''){
+  				$("#creationStartDate").focus();
+  			}
+  			if(toDate === '' && fromDate !== ''){
+				$("#creationEndDate").focus();  				
+	  		}
+  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+  	        	closePop();
+  	        	getCandidateDetailsFromMarketcart();
+        	}
+  			}
+  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
+  				closePop();
+	        	getCandidateDetailsFromMarketcart();
+  		}
+  		if(otherDate === '' && customDate != 'custom'){
+  			alert('Kindly Select a Check Box.');
+  		}
+  	}
+	
+	function resetMarketCartFilter(){
+		emptyMarketCartSearchValues();
+		$("#customDates").hide();
+		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+	}
+	
+	function emptyMarketCartSearchValues(){
+		$("#customDateCheckBox").val('');
+		checkedDate = '';
+		$("#creationStartDate").datepicker('setDate', null);
+		$("#creationEndDate").datepicker('setDate', null);
+	}
+	
 </script> 
 <script>
 //Window scroll fixed header
@@ -493,11 +574,6 @@ $(window).scroll(function(){
 	$(".advancedsearch-mask").show();
 	$("div.cand-advsrch-popup").toggle();
 	}
-//Date Picker
-$( function(){
-	$("#creationStartDate").datepicker();
-	$("#creationEndDate").datepicker();
-});
 $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })

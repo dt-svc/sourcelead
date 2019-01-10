@@ -16,6 +16,11 @@
 	font-weight:bold !important;
 	font-size: 12pt; border: 1px solid #fff !important;
 }
+.PayRunDateHighlighted {
+	background-color : #80ff00 !important;
+	font-weight:bold !important;
+	font-size: 12pt; border: 1px solid #fff !important;
+}
 .RunDateHighlighted {
 	background-color : #0000FF !important;
 	font-weight:bold !important;
@@ -62,15 +67,18 @@ $(document).ready(function(){
         <h2>Upcoming pay period and paydays</h2>
       </div>
      <!--  <div class="pull-right brud-crum">Home &raquo; Payhead List &raquo; Upcomming pay period and paydays</div> -->
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> <a href="<c:url value='${appPath}/payrollScheduleList'/>">Pay Schedule List &raquo;</a> </div>
-      
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo;
+          <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;
+          <a href="<c:url value='${appPath}/payrollScheduleList'/>"> Pay Schedule List</a>&raquo;View Pay Schedule
+        </div>
     </section>
     
 	<div class="timesheet_out clearfix">
 		<div class="positionRelative reportHead clearfix">
 			<div class="clearfix mb10 mt10">
 				<div class="pull-left reqListBtn ml10">
-					 <!-- <span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span> -->					 <!-- <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> -->
+					  <span class="listviewPaydays rAct" title="Graphical View"><i class="fa fa-list"></i></span>			
+					  <span class="calendarviewPaydays" title="List View"><i class="fa fa-calendar"></i></span> 
 				</div>
 				</div>
 			</div>
@@ -83,7 +91,7 @@ $(document).ready(function(){
 		</div>
 		
 		
-		<div class="clearfix">
+		<div class="clearfix calenderView_col-md-3">
 		<div id="calenderViewDIV" class="mb mt"></div>
         </div>
 		
@@ -192,53 +200,67 @@ function callDates(data){
         }
 		$("#calenderViewDIV").empty();
 		$("#calenderViewDIV").append(result);
-		
+		/* var dd = new Date('03/15/2018'); */
          for(var i=0;i<data.length;i++){
         	 var opt = data[i];
         	 var eventDates = {};
-        	 
-        	 var dates = getDates(new Date(''+opt.startDate+'')to new Date(''+opt.endDate+''));
+        	 var checkDate = new Date(''+opt.payCheckDateFormat+'');
+        	 var runDate = new Date(''+opt.payRunDateFormat+'');
+        	 var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
         	 
         	 // Preparing eventDates Array
-        	 for (var k = 0; k < dates.length; k++) {
+        	 /* for (var k = 0; k < dates.length; k++) {
         		  eventDates[ new Date(''+dates[k]+'')] = new Date(''+dates[k]+'');
-        		} 
-             var dateToday = new Date(''+opt.startDate+'');  // current date calender dates
+        		}  */
+        	 eventDates[ new Date(''+opt.payCheckDateFormat+'')] = new Date(''+opt.payCheckDateFormat+'');
+        	 eventDates[ new Date(''+opt.payRunDateFormat+'')] = new Date(''+opt.payRunDateFormat+'');
+             var dateToday = new Date(''+opt.payRunDateFormat+'');  // current date calender dates 
         	  $("#eventCalendar"+i).datepicker({
         		  changeMonth: true,
         	      changeYear: true,
+        	      showOtherMonths: true,
         	      defaultDate: dateToday,
         		    beforeShowDay: function(date) {
         		  	  var hlText = eventDates[date];
-        		  	return (hlText)?[true, "Highlighted", '']: [true, '', ''];    
+        		  	  if(hlText-checkDate === 0){
+        		  		return (hlText)?[true, "CheckDateHighlighted", '']: [true, '', ''];   
+        		  	  }else if(hlText-runDate === 0){
+        		  		return (hlText)?[true, "PayRunDateHighlighted", '']: [true, '', ''];   
+        		  	  }
+        		  	  else{
+        		  		return (hlText)?[true, "", '']: [true, '', ''];    
+        		  	  }
+        		  	
         		  	}
         	    })
         	  $("#eventCalendar"+i).removeClass('ui-state-active');
         	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
+        	  $("#eventCalendar"+i).find("td.Highlighted").removeClass('ui-state-disabled'); 
+        	  
          }
          
-         for(var j=0;j<data.length;j++){
-        	 var opt = data[j];
-        	 var checkEventDates = {};
-        	/*  var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
+//          for(var j=0;j<data.length;j++){
+//         	 var opt = data[j];
+//         	 var checkEventDates = {};
+//         	/*  var dates = getDates(new Date(''+opt.startDate+''), new Date(''+opt.endDate+''));
         	 
-        	 // Preparing eventDates Array
-        	 for (var k = 0; k < dates.length; k++) { */
-        		 checkEventDates[ new Date('10/15/2018')] = new Date('10/15/2018');
-        		/* }  */
-             var todayDate = new Date('10/15/2018');  // current date calender dates
-        	  $("#eventCalendar"+j).datepicker({
-        		  changeMonth: true,
-        	      changeYear: true,
-        	      defaultDate: todayDate,
-        		    beforeShowDay: function(date) {
-        		  	  var hlText = checkEventDates[date];
-        		  	return (hlText)?[true, "CheckDateHighlighted", '']:[true, '', ''];    
-        		  	}
-        	    })
-        	  $("#eventCalendar"+j).removeClass('ui-state-active');
-        	  $("#eventCalendar"+j).find("a.ui-state-active").removeClass('ui-state-active'); 
-         }
+//         	 // Preparing eventDates Array
+//         	 for (var k = 0; k < dates.length; k++) { */
+//         		 checkEventDates[ new Date('03/15/2018')] = new Date('03/15/2018');
+//         		/* }  */
+//              var todayDate = new Date('03/15/2018');  // current date calender dates
+//         	  $("#eventCalendar"+j).datepicker({
+//         		  changeMonth: true,
+//         	      changeYear: true,
+//         	      defaultDate: todayDate,
+//         		    beforeShowDay: function(date) {
+//         		  	  var hlText = checkEventDates[date];
+//         		  	return (hlText)?[true, "CheckDateHighlighted", '']:[true, '', ''];    
+//         		  	}
+//         	    })
+//         	  $("#eventCalendar"+j).removeClass('ui-state-active');
+//         	  $("#eventCalendar"+j).find("a.ui-state-active").removeClass('ui-state-active'); 
+//          }
    
     
 }

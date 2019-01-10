@@ -2,9 +2,11 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -369,7 +371,14 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 									 }
 							    }
 								BigDecimal grossAmount = (amount.subtract(preTax)).add(preContriSum);
-								YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(assoSal.getCandidate(),orgLocation,"APPROVED");
+								
+								//passing frequency year to calculate ytd
+								Date date = paySheetFreq.getFrequencyStartDate();
+								Calendar c = Calendar.getInstance();
+								c.setTime(date);
+								int year = c.get(Calendar.YEAR);
+								
+								YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(assoSal.getCandidate(),orgLocation,"APPROVED",year);
 								PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(assoSal.getCandidate(),totalHours,grossAmount,invoiceFrequency,associateTaxView,paySheetFreq.getPayCheckDate(),ytdTaxes);
 								if(payrollCalculator != null) {
 									STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
@@ -467,7 +476,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		   if(PayrollConstant.N.equalsIgnoreCase(candidate.getIsAssociate())) {
 				if(salaryDto != null) {
 					if(salaryDto.getTerminatedDate() !=null) {
-						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate);
+						boolean terminated = isEmployeeTerminated(salaryDto.getTerminatedDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 						if(terminated) {
 							if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 								if(joiningMonth.equals(payrollRunningMonth)) {
@@ -495,7 +504,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				}
 			} else {
 					if(salaryDto.getJoiningDate() != null) {
-					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate);
+					    	boolean terminated = isEmployeeTerminated(salaryDto.getJoiningDate(),freqStartDate,freqEndDate,candidate.getIsAssociate());
 					    	if(terminated) {
 					    		if(PayrollConstant.PAY_MONTHLY.equalsIgnoreCase(salaryDto.getPayFrequency())){
 					    		if(joiningMonth.equals(payrollRunningMonth)) {
@@ -537,15 +546,23 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
     * @param slaryDto
     * @param freqStartDate
     * @param freqEndDate
+ * @param isAssociate 
     * @return boolean
     */
-   private boolean isEmployeeTerminated(Date date, Date freqStartDate, Date freqEndDate)
+   private boolean isEmployeeTerminated(Date jdate, Date freqStartDate, Date freqEndDate, String isAssociate)
 	{
 	   boolean isTerminated = false;
 //	   if((date.equals(freqStartDate) ||date.after(freqStartDate)) && (date.equals(freqEndDate) || date.before(freqEndDate))) {
-	   if(date.after(freqStartDate) || date.before(freqEndDate)) {
-		   isTerminated = true;
-		}
+	   if(PayrollConstant.N.equalsIgnoreCase(isAssociate)) {
+		   if(jdate.after(freqStartDate) || jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }else {
+		   if(jdate.after(freqStartDate) && jdate.before(freqEndDate)) {
+			   isTerminated = true;
+			}   
+	   }
+	   
 		return isTerminated;
 	}
 
@@ -1193,7 +1210,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 					payrollDTO.setGrossPay(pay.getGrossPay());
 					payrollDTO.setNetPay(pay.getNetPay());
 					payrollDTO.setRegularHrsTotalAmt(pay.getRegularHoursAmount());
-					payrollDTO.setPayRate(pay.getEmpPayRate());
+//					payrollDTO.setPayRate(pay.getEmpPayRate());
+					payrollDTO.setPayPerSal(pay.getPayPerSalary());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
 					float regHrs = 0;
@@ -1294,12 +1312,12 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			Map<String, BigDecimal> map = new HashMap<>();
 			for(EmployeePayrollTax tax : payroll.getUsPayrollTax()) {
 				map.put("Federal Withholding", tax.getFederalWithholding());
-				map.put("FICA",tax.getFicaWithholding());
+				map.put("SOC SEC",tax.getFicaWithholding());
 				map.put("Medicare",tax.getMedicareWithholding());
 				map.put("Advanced Earned Income Credit",tax.getEarnedIncCredit());
 				map.put("State Withholding",tax.getStateWithholding());
 				map.put("LocalTax",tax.getLocalTax());
-				map.put("SUI",tax.getSDI());
+				map.put("SDI",tax.getSDI());
 				map.put("SUI", tax.getSUI());
 				map.put("FLI", tax.getFLI());
 				map.put("HCSF", tax.getHCSF());
@@ -1362,8 +1380,18 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			lATotal = BigDecimal.valueOf(loanAmountTotal);
 			payrollDTO.setLoanAmountTotal(lATotal);
 			
+			
+			
 			// Calculating YTD
-			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus);
+			
+			//passing frequency year to calculate ytd
+			Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			
+			YTDPayrollDTO ytdDTO = payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,approverStatus,year);
 			payrollDTO.setYtdDTO(ytdDTO);
 			
 			List<PayrollLopHisDTO> lopHisList = new ArrayList<>();
@@ -1473,7 +1501,14 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payroll.setPreTaxDeduction(BigDecimal.valueOf(preTaxDed));
 			
 			AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(payroll.getCandidate().getId(), orgLocation);
-			YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED");
+			
+			//passing frequency year to calculate ytd
+			Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+			YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED",year);
 			PayrollCalculatorDTO payrollCalculator = symmetryPayrollCalculator.runUSPayroll(payroll.getCandidate(), totalHours, grossAmount, payroll.getFrequency(), associateTaxDTO,payroll.getPayCheckDate(),ytdTaxes);
 			STEPayrollCalculator STE = payrollCalculator.getsTEPayrollCalculator();
 			String  locationCode = payrollCalculator.getWebServiceLocationCodeV2().getLocationCode();

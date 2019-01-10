@@ -1436,7 +1436,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 submission.setUpdatedDate(new Date());
     		 requirementSubmissionDao.storeRequirementSubmission(submission);
     		 
-    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+    		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
     		 String data = clientSubmission.getSubmissionTemplateJsonStringValue();
     		 try {
     		     // create the json array from String rules
@@ -2116,7 +2116,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		if(StringUtils.equalsIgnoreCase(decision, "accept")){
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 	           requirementSubmissionHistory.setFromStage("request_sent");
-	           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
+	           requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		}
 		
 		return requirementSubmission;
@@ -2418,28 +2418,33 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
    		
-   		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory);
+   		 requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
    		 
-   		 // for store candidate submit to client with child record in submission history. 
-   		RequirementSubmissionHistory clientSubmissionHistory = new RequirementSubmissionHistory();
-   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
-		requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory);
+   		 String userEmail = jsonData.getString("toMailId");
+   		 User clientUser = userDao.getUserByEmail(userEmail);
    		 
-   		 
-   		 if(requirementSubmissionHistoryForCoolingOff != null){
-			 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-				 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
-				 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
-				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistoryNewToSubmission);
-				 
-				 RequirementSubmissionHistory requirementSubmissionHistorySubmissionToRejected = new RequirementSubmissionHistory();
-				 requirementSubmissionHistorySubmissionToRejected.setFromStage(ApplicantSubmissionStatus.SUBMISSION.getValue());
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-				 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected);
-				 
-			 }
-   		}
+   		 if(clientUser != null) {
+	   		 // for store candidate submit to client with child record in submission history. 
+	   		RequirementSubmissionHistory clientSubmissionHistory = new RequirementSubmissionHistory();
+	   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
+			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
+	   		 
+	   		 
+	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
+					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
+					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
+					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistoryNewToSubmission, clientUser.getUserCode());
+					 
+					 RequirementSubmissionHistory requirementSubmissionHistorySubmissionToRejected = new RequirementSubmissionHistory();
+					 requirementSubmissionHistorySubmissionToRejected.setFromStage(ApplicantSubmissionStatus.SUBMISSION.getValue());
+					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
+					 
+				 }
+	   		}
+   		 }
    		 
    		 
    		 
@@ -5295,7 +5300,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				writeRow.createCell(7).setCellValue(rsh.getToStage());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5333,7 +5338,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(9).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(9).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5362,7 +5367,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5396,7 +5401,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				 writeRow.createCell(8).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+				 writeRow.createCell(8).setCellValue(rsh.getToStage());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5431,7 +5436,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5455,7 +5460,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(6).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5491,7 +5496,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(7).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5515,7 +5520,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 writeRow.createCell(5).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 			//Aplicant Status
-			 writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
+			 writeRow.createCell(6).setCellValue(rsh.getToStage());
 			
 			//Job Rating
 			 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
@@ -5795,6 +5800,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					int result = Integer.parseInt(term);
 				Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(requirementSubmission.getJoinedDate(), result);
 				DateTime dtOrg = new DateTime(generatedInvoiceDate);
+				Date locationDate = commonUtil.orgLocationCommonDate(new Date(),orgLocations);
+				Boolean finaldate = dtOrg.toDate().before(locationDate);
+				if(finaldate){
+					applicantsDto.setGenerateDate(true);	
+				}
 				applicantsDto.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), dtOrg.toDate()));
 				}
 				applicantsDto.setJoinedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),requirementSubmission.getJoinedDate()));
@@ -5956,6 +5966,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		});
 		
 		return listOfApplicants;
+	}
+
+	@Override
+	public List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(
+			Long orgLocationId, String submissionStatus, Date joiningDate) throws Exception {
+		return requirementSubmissionDao.getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(orgLocationId, submissionStatus, joiningDate);
 	}
 
 } 

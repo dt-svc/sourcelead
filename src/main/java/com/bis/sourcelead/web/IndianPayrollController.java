@@ -48,11 +48,12 @@ public class IndianPayrollController {
 	private CommonUtil commonUtil;
 
 	@RequestMapping(value = "/myPayrollInd")
-	public ModelAndView paySlips(HttpServletRequest request) {
+	public ModelAndView paySlips(HttpServletRequest request, @RequestParam(defaultValue = "") String redirectionTab) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			commonUtil.highLightMenu(Constants.MYPAYROLL, request);
 			modelAndView.addObject("activeTaxTab", "myPayrollInd");
+			modelAndView.addObject("redirectionTab", redirectionTab);
 			modelAndView.setViewName("payroll_india/payroll/myPayrollInd");
 		} catch (Exception e) {
 			e.printStackTrace();

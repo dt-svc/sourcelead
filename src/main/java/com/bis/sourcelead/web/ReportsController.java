@@ -624,5 +624,41 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		 model.setViewName("reports/employeeTasksReportSummary");
 		 return model;
 	 }
+		@RequestMapping(value = "/marginSheetReports")
+		public ModelAndView marginSheetReports(HttpServletRequest request) throws Exception
+		{
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 Long loginUserRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
+			 boolean billingTabAccess = tabsService.getTabAccessByRoleIdAndTabId(loginUserRoleId, orgLocations.getId(), Long.valueOf(Constants.TAB_BILLING));
+			Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+
+			 
+			ModelAndView model = new ModelAndView();
+			List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+			model.addObject("add_clientList", orgClientList);
+			 model.addObject("userList", userList);
+			 model.addObject("billingTabAccess", billingTabAccess);
+			 model.setViewName("reports/marginSheetReports");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 	 
+		
+		 @RequestMapping(value = "/indPayrollReportList")
+			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollReportList");
+			 return model;
+		 }
+		 
+		 
+		 @RequestMapping(value = "/indPayrollRegisterReport")
+			public ModelAndView indPayrollRegisterReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			 ModelAndView model = new ModelAndView();
+			 model.addObject("sourceleadUrl", sourceleadUrl);
+			 model.setViewName("reports/indPayrollRegisterReport");
+			 return model;
+		 }
 }

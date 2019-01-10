@@ -131,32 +131,45 @@ function validatePayslipName(uuid){
 				</li>
 				<li>
 				<div class="checkbox-new">
-				<input id="empProject" class="checkbox-custom" name="empProject" value="Y" <c:if test="${payslipInd.employeeProject == 'Y'}">checked='checked'</c:if> type="checkbox">
-				<label for="empProject" class="checkbox-custom-label"><span class="ml10">Project</span></label>
-				<div class="clearfix"></div>
-				</div>
-				</li>
-				<li>
-				<div class="checkbox-new">
 				<input id="empJoiningdate" class="checkbox-custom" name="empJoiningdate" value="Y" <c:if test="${payslipInd.employeeJoinDate == 'Y'}">checked='checked'</c:if> type="checkbox">
 				<label for="empJoiningdate" class="checkbox-custom-label"><span class="ml10">Joining Date</span></label>
 				<div class="clearfix"></div>
 				</div>
 				</li>
+				
+				<li>
+				<div class="checkbox-new">
+				<input id="empUan" class="checkbox-custom" name="employeeUanNumber" value="Y" <c:if test="${payslipInd.employeeUanNumber == 'Y'}">checked='checked'</c:if> type="checkbox">
+				<label for="empUan" class="checkbox-custom-label"><span class="ml10">UAN Number</span></label>
+				<div class="clearfix"></div>
+				</div>
+				</li>
+				
+				
 				<li>
 				<div class="checkbox-new">
 				<input id="employeePfNumber" class="checkbox-custom" name="employeePfNumber" value="Y" <c:if test="${payslipInd.employeePfNumber == 'Y'}">checked='checked'</c:if> type="checkbox">
-				<label for="employeePfNumber" class="checkbox-custom-label"><span class="ml10">PF No</span></label>
+				<label for="employeePfNumber" class="checkbox-custom-label"><span class="ml10">PF Number</span></label>
 				<div class="clearfix"></div>
 				</div>
 				</li>
 				<li>
 				<div class="checkbox-new">
 				<input id="employeeEsiNumber" class="checkbox-custom" name="employeeEsiNumber" value="Y" <c:if test="${payslipInd.employeeEsiNumber == 'Y'}">checked='checked'</c:if> type="checkbox">
-				<label for="employeeEsiNumber" class="checkbox-custom-label"><span class="ml10">ESI No</span></label>
+				<label for="employeeEsiNumber" class="checkbox-custom-label"><span class="ml10">ESI Number</span></label>
 				<div class="clearfix"></div>
 				</div>
 				</li>
+				
+				<li>
+				<div class="checkbox-new">
+				<input id="employeePanNumber" class="checkbox-custom" name="employeePanNumber" value="Y" <c:if test="${payslipInd.employeePanNumber == 'Y'}">checked='checked'</c:if> type="checkbox">
+				<label for="employeePanNumber" class="checkbox-custom-label"><span class="ml10">PAN Number</span></label>
+				<div class="clearfix"></div>
+				</div>
+				</li>
+				
+				
 				<li>
 				<div class="checkbox-new">
 				<input id="employeeBankDetails" class="checkbox-custom" name="employeeBankDetails" value="Y" <c:if test="${payslipInd.employeeBankDetails == 'Y'}">checked='checked'</c:if> type="checkbox">

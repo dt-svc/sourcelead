@@ -1109,8 +1109,10 @@ function imageCancel(){
          <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
          <div class="clearfix"></div>
          </sec:authorize>
      </ul>
@@ -1774,6 +1776,7 @@ function exportToPdf(){
 	  }
 }
 
+/* Dont remove ... value */
 function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...candidatesNotInMarketplace){
 	$(".project_inn_mask").remove();
 	var result = "";
@@ -1789,6 +1792,7 @@ function popupDisplay(candidatesInMarketplace, noCandidateNotInMarketplace, ...c
 	$(".project_inn_mask").fadeIn(200);
 }
 
+/* Dont remove ... value */
 function cancelMarketplacePopup(...candidatesNotInMarketplace){
 	$("#remove_immigration_pop").fadeOut(200);
 	$(".project_inn_mask").fadeOut(200);
@@ -3170,5 +3174,12 @@ function goToPurchaseOrderList(){
 function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
+function goToCartList(){
+	location.href = "${appPath}/candidateMarketplaceCart";
+}
+function goToWalletList(){
+	location.href = "${appPath}/walletList";
+}
+
 </script> 
 <jsp:include page="../masterFooter.jsp" /> 

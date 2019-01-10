@@ -56,6 +56,8 @@ window.onload = function() {
     <div class="content-area content-new clearfix">
      <div id="leaveLoading"></div> 
     <form:form id="apply_leave_form" name="apply_leave_form" method="post">
+    <input type="hidden" id ="overDrawLeaveType" value=""/>
+    <input type="hidden" id ="leaveTypeName" value=""/>
       <div class="clearfix form-horizontal inner-content">
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
@@ -350,7 +352,7 @@ window.onload = function() {
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 
-		 if(fromDate.length !=0 && toDate.length!=0)
+		 if(fromDate.length !=0 && toDate.length !=0)
 		    {
 		 if(fromDate == toDate)
 		 {
@@ -540,6 +542,7 @@ function calculateDuration(){
 			if(result.object != null){
 				$("#durationDiv").show();
 				$("#durationId").html("Duration : "+result.object+" day(s)");
+				validateOverDrawLeaves(result.object);
 			}
 		}); 
 	}else{
@@ -593,13 +596,25 @@ function calculateDuration(){
         	  var output = "";
         	  output = output +'<select class="form-control" id="leaveType" name="leaveType" field-name="Leave Type" data-validation="required" onchange="getLeaveDetails();validateMaxLeave(this);">';
         	  output = output +' <option value="">--Select Leave Type--</option>';
-        	  for (var i = 0; i < json.length; i++) { 
+        	  for (var i = 0; i < json.length; i++) {
         		  var leave = json[i];
-        		  if(leave.id == leaveId){
-        			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  if(leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'N'){
+        			 
         		  }else{
-        			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        			  if(leave.id == leaveId){
+            			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+            		  }else{
+            			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+            		  }
         		  }
+        		  
+        	/* 	  if((leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'N') || (leave.leaveTypeBalanceLeaveCount <= 0 && leave.overdrawLeaves == 'Y') || (leave.leaveTypeBalanceLeaveCount > 0 && leave.overdrawLeaves == 'Y')){
+     			         if(leave.id == leaveId){
+     			            	output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+     			         }else{
+     			            	output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+     			         }
+        	  	  } */
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -1008,10 +1023,12 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
     		    		validateMinMaxDays(report.minDays, report.maxDays);
     		    	}
-    		    	
-    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
-    		    		validateOverDrawLeaves(report.name);
-    		    	}
+    		    	$("#overDrawLeaveType").val(report.overdrawLeaves);
+    		    	$("#leaveTypeName").val(report.name);
+//     		    	alert(report.overdrawLeaves)
+//     		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+//     		    		validateOverDrawLeaves(report.name);
+//     		    	}
     		    	
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
@@ -1043,7 +1060,9 @@ function getLeaveDetails(finalDateFormatEndDate){
 </script>
 
 <script>
-function validateOverDrawLeaves(leaveTypeName){
+function validateOverDrawLeaves(totalNumberOfDays){
+	var leaveTypeName = $("#leaveTypeName").val();
+	var overDrawLeaveType = $("#overDrawLeaveType").val();
 	var from = $("#fromDate").val();
 	var to = $("#toDate").val();
   	var one_day=1000*60*60*24;
@@ -1067,6 +1086,16 @@ function validateOverDrawLeaves(leaveTypeName){
 	// Convert back to days and return
 	var days = Math.round(difference_ms/one_day);
 	
+	var typeName = leaveTypeName.replace(/ /g,"_");
+	var typeIdBalCount = parseFloat($("#"+typeName+"Span").text());
+	if(totalNumberOfDays > typeIdBalCount){
+		errorMessage += "You Have Not Enough Leaves To Apply.";
+		$("#ApplyLeave").attr('disabled','disabled');
+	}
+	
+	
+	
+/* 	
 	if(to != ""){
 // 		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
 // 		var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
@@ -1075,7 +1104,7 @@ function validateOverDrawLeaves(leaveTypeName){
 		if(((days+1) >= typeIdBalCount) || typeIdBalCount ==  0){
 			errorMessage += "You Have Not Enough Leaves To Apply.";
 		}
-	}
+	} */
 }
 </script>
 <script>
@@ -1263,10 +1292,18 @@ function getApproversList(){
 
 <script>
 function clearFromDate(){
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#fromDate").val("");
 	};
 	
 function clearToDate(){
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#toDate").val("");
 	};
 </script>

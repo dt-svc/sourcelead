@@ -142,7 +142,7 @@
                 </div>
                 <div class="form-group">
                       <label class="col-md-3">Date of Joining  <span class="text-danger">*</span></label>
-                         <div class="col-md-9">
+                         <div class="col-md-9" id=DateofJoinDiv>
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly" field-name="Date of join" data-validation="required">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -637,6 +637,7 @@ function validateSSNNumber(){
 	}else{
 		calculateSSNLength(length,ssnNumber);
 	}
+	
 }
 function calculateSSNLength(length,ssnNumber){
 	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
@@ -663,8 +664,39 @@ function calculateSSNLength(length,ssnNumber){
 		}else{
 			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
 		}
+		
 	}
+	validateSSNDuplicate($("#ssnNumber").val());
 }
+ </script>
+ 
+ <script>
+ function validateSSNDuplicate(ssnNumber){
+	 var associateId = $("#associateId").val();
+	 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	 if(ssnNumber != null && ssnNumber != ""){
+		 $("#create_user").attr("disabled", "disabled");
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+						  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  document.getElementById("ssnNumber").setAttribute('record-exist','yes');
+						  document.getElementById("ssnNumber").setAttribute('record-exist-errorMsg',ssnNumber+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#ssnNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#create_user" ).addClass('us-btn').val('Save');
+                         $("#create_user").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }	 
+ }
  </script>
 
 <script>
@@ -807,9 +839,8 @@ function getEmployeementType(designationType){
 })(jQuery);
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
  function createUser() {
-	 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}'; 
 	 var loginLocationCountry = '${SourceLeadWeb_orgLocations.country}';
 	 var country = '${SourceLeadWeb_loginCountryName}'; 
@@ -838,7 +869,6 @@ function getEmployeementType(designationType){
 // 			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 //             $( "#create_user" ).addClass('button').val('Processing..');	
-            
             $.ajax({
 				type : "POST",
         	    data: formData,
@@ -850,7 +880,6 @@ function getEmployeementType(designationType){
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
-
 					else if(loginLocationCountry == 'India'){
 						    $("#associateId").val(result.object.userId);
 						    $("#associateCandidateId").val(result.object.candidateId); 
@@ -860,9 +889,7 @@ function getEmployeementType(designationType){
 							 indBankingDetails.href="#tab-2";
 							 $("#indBankingDetails").click();
 					}
-					
 					else if(loginLocationCountry == 'United States') {
-
 						$("#associateId").val(result.object.userId);
 						$("#empType").val(result.object.designationType);
 						var associateSalary = document.getElementById("associateSalary");
@@ -871,8 +898,8 @@ function getEmployeementType(designationType){
 						$("#associateSalary").click();
 						 getPayItemList();
 					}
-				
-			});
+				}
+            });
 	        return true;
 		
 	  }else{
@@ -886,7 +913,7 @@ function getEmployeementType(designationType){
    });
   
  
-</script>  
+</script>   -->
 
 
 
@@ -1354,6 +1381,7 @@ function getAssociateUserDetails(){
 	  	  maxDate:0,
 	  	  onSelect : function(selected) {
 	  		calculateConfirmationDate();
+	  		removeDateofJoinValid();
 	 	  }
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
@@ -1369,6 +1397,11 @@ function getAssociateUserDetails(){
   } );
 </script>
 <!-- end script for datepicker -->
+<script>
+function removeDateofJoinValid(){
+	$('#DateofJoinDiv').find('p.jquery_form_error_message').remove();
+	}
+</script>
 
  
 <script type="text/javascript">

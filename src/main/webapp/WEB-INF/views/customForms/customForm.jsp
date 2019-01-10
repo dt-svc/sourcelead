@@ -20,7 +20,7 @@
 			  </c:forEach>
 		  </select>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Custom Fields</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Custom Fields</div>
 	<div class="clearfix"></div> 
 </section>
    
@@ -60,12 +60,12 @@ $(document).ready(function() {
   <script>
   function addFieldPopUp(sectionId){
 			$(".mask").fadeIn(200);
-			$(".popupWrap").fadeIn(100);
+			$(".newCustomFieldPopup").fadeIn(100);
 			$('#minDate').datepicker({changeMonth : true,changeYear : true}); 
 			$('#maxDate').datepicker({changeMonth : true,changeYear : true}); 
 		$(".popClose").click(function(){
 			$(".mask").fadeOut(200);
-			$(".popupWrap").fadeOut(100);
+			$(".newCustomFieldPopup").fadeOut(100);
 			flushPopupData();
 		});
   }

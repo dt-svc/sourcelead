@@ -29,7 +29,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -231,14 +233,6 @@ public class UserGroupServiceImpl implements UserGroupService{
 			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
 		}
 		dates.addAll(set);
-		
-//		Map<BigInteger, List<PayPeriodDTO>> uniqueData = datesList.stream().collect(Collectors.groupingBy(PayPeriodDTO::getPaySheetFreqId));
-		
-//		List<Date> dates = new ArrayList<>();
-//		for (PayPeriodDTO payPeriodDTO : datesList) {
-//			payPeriodDTO.setConvertedFreqStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqStartDate()));
-//			payPeriodDTO.setConvertedFreqEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), payPeriodDTO.getFreqEndDate()));
-//		}
 		return dates;
 	}
 
@@ -247,7 +241,20 @@ public class UserGroupServiceImpl implements UserGroupService{
 	{
 		return userGroupDao.getAllUserGroupsByLocationIdAndDepartmentId(orgLocation,userId);
 	}
-	
-	
-	
+
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationIdAndPayrollFrequency(OrgLocations orgLocation, String autoPayrollFrequency)
+	{
+		return userGroupDao.getAllUserGroupsByLocationIdAndPayrollFrequency(orgLocation,autoPayrollFrequency);
+	}
+
+	@Override
+	public List<IndPaysheetFrequency> getIndPayPeriodsByGroupId(Long groupId, OrgLocations orgLocation) throws Exception {
+		List<IndPaysheetFrequency> datesList =  userGroupDao.getIndPayPeriodsByGroupId(groupId,orgLocation);
+		for(IndPaysheetFrequency ipsfd : datesList) {
+			ipsfd.setFrequencyStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ipsfd.getFrequencyStartDate()));
+			ipsfd.setFrequencyEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ipsfd.getFrequencyEndDate()));
+		}
+		return datesList;
+	}
 }

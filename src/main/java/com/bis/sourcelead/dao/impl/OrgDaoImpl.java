@@ -28,12 +28,14 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.PaymentAccountType;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Objects;
 import org.hibernate.Query;
 import org.jgroups.util.UUID;
@@ -835,6 +837,21 @@ public class OrgDaoImpl implements OrgDao {
         }
         return resultList;
 	
+	}
+	
+	
+	
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public PaymentAccount getCandidateAcitivatePaymentAccount(long candidateId) {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from PaymentAccount pa where pa.candidateId.id = :candidateId and pa.disabled ='0' and  pa.defaultAccount = '1'";
+            List<PaymentAccount> accountList = session.createQuery(query.toString()).setLong("candidateId", candidateId).list();
+            PaymentAccount paymentAcoount = null;
+    		if (accountList != null && accountList.size() > 0) {
+    			paymentAcoount = (PaymentAccount) accountList.iterator().next();
+    		}
+    		return paymentAcoount;
 	}
 	 
 }

@@ -670,6 +670,7 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
 			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
          	commonUtil.saveDefaultGenaeralShift(clientOrgLocations, spocUser, Constants.GENERAL_SHIFT);
+         	commonUtil.saveDefaultPayslipTemplate(clientOrgLocations, spocUser);
 
 		}
 		
@@ -1201,6 +1202,8 @@ public class ClientServiceImpl implements ClientService {
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}else{
+				orgRelation.setPaymentTerm(null);
 			}
 
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
@@ -1368,6 +1371,8 @@ public class ClientServiceImpl implements ClientService {
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}else{
+				orgRelation.setPaymentTerm(null);
 			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);

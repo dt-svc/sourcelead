@@ -27,7 +27,7 @@ public interface ContractsTemplateDao {
 
 	Contracts saveNewContract(Contracts contracts)throws Exception;
 
-	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
+	List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, User user, ContractsDTO contractsDTO)throws Exception;
 
 	Integer getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 	

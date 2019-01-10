@@ -3945,7 +3945,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				+ orgLocationId + "' and reqSub.CREATED_BY='" + usercode
 				+"' and DATE_FORMAT(reqSub.UPDATED_DATE,'%Y-%m-%d') BETWEEN  '" + fromDate
 				+ "' and '" + toDate + ""
-				+ "' group by reqSub.REQUIREMENT_ID ";
+				+ "' group by reqInst.JOINERS ";
 				     queryString =  session.createSQLQuery(query.toString());
 					ApplicantsJoinedReportDTO applicantsJoinedReportDTO = null;
 //					if (applicantsJoinedReportDTOList != null && applicantsJoinedReportDTOList.size() > 0) {
@@ -4495,6 +4495,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				e.printStackTrace();
 			}
 			return count;
+	}
+	
+	
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 
+		 java.sql.Date sqlJoiningDate = new java.sql.Date(joiningDate.getTime());
+		 
+	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = 'SUBMISSION' and date(rs.joinedDate) =:joiningDate and rs.status = '1' ";
+	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
+	     return shortListCandidatesList;
 	}
 
 }

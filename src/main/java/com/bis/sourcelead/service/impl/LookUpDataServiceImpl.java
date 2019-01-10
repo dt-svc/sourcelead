@@ -123,5 +123,10 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public List<String> getListOfStringLookUpdataByCategoryAndOrgLocationId(String category, Long orgLocation) throws Exception {
 		return lookUpDataDao.getListOfStringLookUpdataByCategoryAndOrgLocationId(category, orgLocation);
 	}
+
+	@Override
+	public List<String> getCategoriesListByCategoryType(String category) throws Exception {
+		return lookUpDataDao.getCategoriesListByCategoryType(category);
+	}
 	
 }

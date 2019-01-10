@@ -24,12 +24,29 @@
 
 <div class="timesheet_out">
   <div class="clearfix">
+  
+  <div class="clearfix"></div>
+<div class="col-md-10 col-md-offset-1 listof-holidays datatable_filter">
+                        <div class="row">
+                            </div>
+                        
+                    </div>
     <div class="timesheet_head">
+    				<div class="col-md-3 noPad mt2">
+                             <label class="col-md-6"><strong class="leaves-heading">List of Holidays</strong></label>
+                                 <div class="col-md-6 mt5">
+                                 <select class="sel mt2" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                    <option value="">--Select Year--</option>
+                    			<c:forEach var="year" items="${yearsList}">
+	                    			<option value="${year}">${year}</option>
+                     			</c:forEach> 
+                                </select>
+                                </div> 
+                            </div>
       <ul>
           <li>
               <a href="<c:url value='${appPath}/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
-          
 	      <li id="filterShiftTypePop"><i class="fa fa-filter"></i><span>Shift</span><i class="glyphicon glyphicon-play"></i>
 		           	<div class="statusFiler-1 approved_pop">
 						<ul class="list-unstyled">
@@ -39,12 +56,13 @@
 						</ul>
 					</div>	                	
 				</li>
-				
+
           
         <div class="clearfix"></div>
       </ul>
     </div>
         <div id="loading"></div> 
+        
     <div class="clients_wrap_table datatable_filter">
     <div id="viewHolidaysDiv"></div>
     </div>
@@ -65,8 +83,12 @@ function getHolidaysList(){
 		shiftIds.push($(this).val());
      });
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var reportYear = "";
+	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
+		reportYear = $("#reportYear").val();
+	}
 // 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftIds="+shiftIds, function(response) {
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&reportYear="+reportYear+"&shiftIds="+shiftIds, function(response) {
 		 if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
@@ -125,7 +147,10 @@ function getHolidaysList(){
 				result = result + ' </table>';
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
+				$("#holidayListDiv").empty();
+				$("#holidayListDiv").append(result);
 				viewHolidaysTablePagination();
+				viewHolidaysTable();
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
@@ -168,5 +193,4 @@ function viewHolidaysTablePagination(){
     });	
 
 </script>
-	
 <jsp:include page="../masterFooter.jsp" />

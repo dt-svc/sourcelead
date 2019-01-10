@@ -47,6 +47,7 @@ function getIndPayslipList(){
    		    	result = result +'	<tr>';
    		    	result = result +'	<th>Payslip Name</th>';
    		    	result = result +'  <th>Description</th>'; 
+   		    	result = result +'  <th>Default</th>';
    		    	result = result +'  <th>Action</th>';
    		    	result = result +'  </tr>';
    		    	result = result +'</thead>	';
@@ -64,9 +65,30 @@ function getIndPayslipList(){
    		    		result = result +'</td>';
    		    		
    		    		result = result +'<td>'
+   		    		result = result +'<div class="tbldata-dotdot-100">';
+			   		result = result +'	<div class="toggle-button">';
+				   	result = result +'		<label class="switch" style="top: 5px;">';
+				   	if(report.isActive == "Y"){
+					   	result = result +'		<input onclick="changeDefaultPayslip(\''+report.uuid+'\')" value="'+report.isActive+'"  id="'+report.id+'defaultPayslip"  type="checkbox" checked> ';
+				   	}else{
+					   	result = result +'		<input onclick="changeDefaultPayslip(\''+report.uuid+'\')" value="'+report.isActive+'" id="'+report.id+'defaultPayslip" type="checkbox" > ';
+				   	}
+				   	result = result +'		<div class="slider round" style="position:absolute !important;">';
+				   	result = result +'		</div> ';
+				   	result = result +'		</label> ';
+				   	result = result +'		</div>';
+			   		result = result +'	</div>';
+   		    		result = result +'</td>';
+   		    		
+   		    		result = result +'<td>'
    		    		result = result +'  <div class="tbldata-dotdot-100 text-center">';
 		    			result = result +'<a href="<c:url value="${appPath}/payrollPaySlip?paySlipUUID='+report.uuid+'"/>"  class="glyphicon glyphicon-edit" title="Edit"></a>';	
-   		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deletePayslipInd(\''+report.uuid+'\');"></a>';	
+		    			if(report.deletePermission != "N"){
+	   		    			result = result +'<a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deletePayslipInd(\''+report.uuid+'\','+report.id+');"></a>';	
+		    			}else{
+	   		    			result = result +'<a class="fa fa-ban text-muted ml colorRed" title="Defalut payslip cant be deleted"></a>';	
+ 
+		    			}
    		    		result = result +'</div>';
    		    		result = result +'</td>';
    		    		result = result +'</tr>';
@@ -93,16 +115,26 @@ function payslipPagination(){
     } );
 }
 
-function deletePayslipInd(uuid){
+function deletePayslipInd(uuid,id){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var defaultStatus = $("#"+id+"defaultPayslip").val();
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+ "/deletePayrollPaySlip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&defaultStatus="+defaultStatus,
+		success : function(json) {
+			getIndPayslipList();
+		}
+	});
+}
+function changeDefaultPayslip(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/deletePayrollPaySlip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
+		url : sourceleadUrl+ "/changeDefaultPayslip?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
 		success : function(json) {
-			location.reload();
+			getIndPayslipList();
 		}
 	});
-	
 	
 }
 </script>

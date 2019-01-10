@@ -268,8 +268,8 @@
 						}
 						result = result + '	</div>';
 						
-						
-						result = result + '<div class="project_details_cta">';
+				 		
+						 result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Timesheet Approval Mechanism:</strong><span>';
 						   if (json.projectApprovalType != null && json.projectApprovalType != "" && json.projectApprovalType != "undefined") {
 								result = result + '	<span>'+json.projectApprovalType+'</span><div class="clearfix"></div>';
@@ -286,8 +286,8 @@
 							}else{
 								result = result + '	<span>----</span><div class="clearfix"></div>';
 							}
-						result = result + '	</div>';
-
+						result = result + '	</div>';  
+ 
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Client:</strong>';
 						
@@ -647,23 +647,7 @@ function editClientProjectDetails(projectId){
 				result = result + '<input type="hidden"  id="projectForValue" name="projectForValue"  field-name="Project For"/>';
 				result = result + '</div>';
 				
-				/* result = result + '<div class="clearfix"></div>';
-			    result = result+' <div class="col-md-4">';
-				result = result + '<label>Timesheet Approval Mechanism</label>';
-				result = result + '<div class="clearfix"></div>';
-				result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
-				result = result + '<label class="paddingRight"><input type="radio" id="sequentialTimesheetsApproval"  value="Sequential" '+(json.projectApprovalType == "Sequential" ? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
-				result = result + '<input type="hidden"  id="projectApprovalTypeValue" name="projectApprovalTypeValue" value="'+projectApprovalType+'" data-validation="required" field-name="Timesheet Approval"/>';
-				result = result + '</div>';
 				
-				result = result + '<div class="clearfix"></div>';
-				result = result+' <div class="col-md-4">';
-				result = result + '<label>Expense Approval Mechanism</label>';
-				result = result + '<div class="clearfix"></div>';
-				result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallerExpenseApproval" value="Parallel" '+(json.expenseApprovalType == "Parallel"? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
-				result = result + '<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" '+(json.expenseApprovalType == "Sequential" ? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
-				result = result + '<input type="hidden"  id="expenseApprovalTypeValue" name="expenseApprovalTypeValue" value="'+expenseApprovalType+'" data-validation="required"  field-name="Expense Approval"/>';
-				result = result + '</div>'; */
 		  }		
 				
 		    result = result + '<div class="clearfix"></div>';
@@ -957,7 +941,7 @@ function editClientProjectDetails(projectId){
 							result = result+ '<div class="user_summary_edit_cta projectdetails_edit_cta" style="display:none;" id="demo">';
 						}
 							result = result + '<label> Manager 2 </label>';
-							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager">';
+							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager" onChange="manager2()">';
 							result = result    +'<option value="">-Select Manager-</option>';
 							if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
@@ -1187,7 +1171,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
 						
-					    result = result+' <div class="col-md-4">';
+					     result = result+' <div class="col-md-4">';
 						result = result + '<label>Timesheet Approval Mechanism</label>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallelTimesheetsApproval" value="Parallel" '+(json.projectApprovalType == "Parallel"? "checked=checked" : '')+' name="projectApprovalType" onclick="projectApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
@@ -1202,7 +1186,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<label class="paddingLeft paddingRight"><input type="radio" id="parallerExpenseApproval" value="Parallel" '+(json.expenseApprovalType == "Parallel"? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Parallel</label>';
 						result = result + '<label class="paddingRight"><input type="radio" id="sequentialExpenseApproval"  value="Sequential" '+(json.expenseApprovalType == "Sequential" ? "checked=checked" : '')+' name="expenseApprovalType" onclick="expenseApprovalForCheckValidation(this)"><span class="mr5"></span>Sequential</label>';
 						result = result + '<input type="hidden"  id="expenseApprovalTypeValue" name="expenseApprovalTypeValue" value="'+expenseApprovalType+'" data-validation="required"  field-name="Expense Approval"/>';
-						result = result + '</div>';
+						result = result + '</div>';  
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
@@ -1292,6 +1276,14 @@ function editClientProjectDetails(projectId){
 					
 				});
 
+	}
+	
+	function manager2(){
+		var manager2 = $("#level2Manager").val();
+		if(manager2 == ""){
+			$('#level2ExpenseApprover').val('').trigger("chosen:updated");
+		} 
+		
 	}
 </script>
 

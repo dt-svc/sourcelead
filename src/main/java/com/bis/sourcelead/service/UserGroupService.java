@@ -8,7 +8,9 @@ import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 
 public interface UserGroupService {
 
@@ -29,4 +31,8 @@ public interface UserGroupService {
 	List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId, OrgLocations orgLocation) throws Exception;
 
 	List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId);
+
+	List<UserGroup> getAllUserGroupsByLocationIdAndPayrollFrequency(OrgLocations orgLocation, String autoPayrollFrequency);
+	
+	List<IndPaysheetFrequency> getIndPayPeriodsByGroupId(Long groupId, OrgLocations orgLocation) throws Exception;
 }

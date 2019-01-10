@@ -377,8 +377,8 @@ public class RequirementListRestController {
 						}
 					}
 				requirementAssignToDtoResponse.setData(requirementAssignToList);
-				requirementAssignToDtoResponse.setRecordsFiltered(requirementAssignToList.size());
-				requirementAssignToDtoResponse.setRecordsTotal(requirementAssignToList.size());
+				requirementAssignToDtoResponse.setRecordsFiltered(list.getRecordsFiltered());
+				requirementAssignToDtoResponse.setRecordsTotal(list.getRecordsTotal());
 				requirementAssignToDtoResponse.setError(list.getError());
 				requirementAssignToDtoResponse.setResponse(Result.SUCCESS.name());
 				requirementAssignToDtoResponse.setResponseMessage(Result.SUCCESS.getValue());
@@ -681,7 +681,7 @@ public class RequirementListRestController {
 		if(user != null) {
 			List<RequirementSubmission> submissionList = new ArrayList<RequirementSubmission>();
 				try {
-					if(requirementSubmissionsDTO.getSubmissionType() != null) {
+					if(requirementSubmissionsDTO.getSubmissionType() != null && requirementSubmissionsDTO.getSearchValue() != null && !requirementSubmissionsDTO.getSearchValue().equalsIgnoreCase("'")) {
 						String[] tableColumns = null;
 						if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("SHORTLIST")){
 							String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "rate", "source", "shortlistedBy", "score", "exp", "status"};

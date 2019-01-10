@@ -31,7 +31,11 @@ public class PayrollPaySlipIndDTO {
 	
 	private String empJoiningdate;
 	
+	private String employeeUanNumber;
+	
 	private String employeePfNumber;
+	
+	private String employeePanNumber;
 	
 	private String employeeEsiNumber;
 	
@@ -315,5 +319,21 @@ public class PayrollPaySlipIndDTO {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getEmployeeUanNumber() {
+		return employeeUanNumber;
+	}
+
+	public void setEmployeeUanNumber(String employeeUanNumber) {
+		this.employeeUanNumber = employeeUanNumber;
+	}
+
+	public String getEmployeePanNumber() {
+		return employeePanNumber;
+	}
+
+	public void setEmployeePanNumber(String employeePanNumber) {
+		this.employeePanNumber = employeePanNumber;
 	}
 }

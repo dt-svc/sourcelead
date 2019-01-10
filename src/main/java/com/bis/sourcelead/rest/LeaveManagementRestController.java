@@ -341,6 +341,8 @@ public class LeaveManagementRestController {
 				Constants.RECORD_ACTIVE.toString());
 
 		LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		model.addObject("currentYear", currentYear);
 		model.addObject("yearsList", yearsList);
 		model.addObject("departmentList", departmentList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -580,9 +582,11 @@ public class LeaveManagementRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
 		model.addObject("shiftList", shiftList);
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("yearsList", yearsList);
 		model.setViewName("leavemanagement/viewHoliday");
 		return model;
 	}
@@ -1013,13 +1017,21 @@ public class LeaveManagementRestController {
 					"orgLocations");
 			if (loginOrgLocation != null) {
 
+				
 				if (StringUtils.isNotBlank(reportYear)) {
 					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
 							Long.parseLong(reportYear));
 				} else {
-					holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+					if(StringUtils.isNotBlank(reportYear) ) {
+						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
+					}else {
+						reportYear = String.valueOf(currentYear);
+						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
+								Long.parseLong(reportYear));
+					}
 				}
-
+				
 				responseList.setData(holiodaysDTOList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -2170,9 +2182,11 @@ public class LeaveManagementRestController {
 	@ResponseBody
 	public Response<String> storeCancelReason(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "reason", required = false) String reason,@RequestParam(value = "userId", required = false) Long userId,  HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		boolean isCancelled = false;
 		Response<String> response = new Response<>();
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
+		
 		User user = userService.getUserById(userId);
 	  try {
 			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -2226,7 +2240,12 @@ public class LeaveManagementRestController {
 			leaveManagementHistory.setUpdatedDate(new Date());
 			leaveManagementHistory.setToStage(Constants.LEAVE_CANCELLED);
 			leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
-			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason);
+			
+			
+			// for URL redirections from mail
+			Long redirectOrgLocationId = orgLocations.getId();
+			String  redirectURL = "/cancelLeaves-params-notifyLink=notifyLink-and-leaveUUID="+leaveManagementHistory.getLeaveid().getLeaveUUID()+"-and-orgLocationId="+orgLocations.getId();
+			leaveService.LeaveCancelEmailToUser(user,leaveManagementHistory,reason,redirectOrgLocationId,redirectURL);
 			/*if(leave != null && leave.getLeaveType() != null && leave.getOrgLocations() != null) {
 				timesheetRestController.linkLeaveTypeWithTimeSheet(user, leave.getOrgLocations(), leave.getLeaveType().getId(), leave, Constants.LEAVE_CANCELLED);
 			}*/

@@ -45,5 +45,10 @@ public interface ExpensesService {
 	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate,Date endDate)throws Exception;
+
+	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus);
+
+	public List<Expenses> getAllExpenses();
+	
 	
 }
