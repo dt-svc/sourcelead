@@ -1839,4 +1839,3 @@ function updateMarketplaceCartCountAndPrice(){
 	        });
 	}
 </script>
-
