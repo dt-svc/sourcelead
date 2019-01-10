@@ -1292,10 +1292,18 @@ function getApproversList(){
 
 <script>
 function clearFromDate(){
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#fromDate").val("");
 	};
 	
 function clearToDate(){
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$("#toDate").val("");
 	};
 </script>

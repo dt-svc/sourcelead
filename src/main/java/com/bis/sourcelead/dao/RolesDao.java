@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.UserRole;
@@ -50,4 +51,5 @@ public interface RolesDao {
 	
 	List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception;
 
+	List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception;
 }

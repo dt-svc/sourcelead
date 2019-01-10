@@ -12,5 +12,5 @@ public interface EmailReminderDao {
 
 	List<EmailReminder> getEmailReminderList(String scenarioName);
 
-
+	List<EmailReminder> getEmailReminderListByTabsIdAndOrgLocationId(Long tabsId, Long orgLocationsId);
 }
