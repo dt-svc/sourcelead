@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -51,7 +50,6 @@ import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -64,6 +62,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -141,7 +140,11 @@ public class PdfUtil {
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
-	OrgRelationsService orgRelationsService;
+	private OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	private OrgSpocService orgSpocService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -2865,7 +2868,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 	}
 	
 	
-	
+	// Recruiter reports main list export
 	public File recruiterReprtsListPdfTable(ResponseList<UserDTO> userDTOList, OrgLocations loginOrgLocations,Date[] searchDates,String roleNames,String teamNames) throws Exception{
 
 		String[] headers = Constants.RECRUITER_REPORTS_HEADERS;
@@ -3016,6 +3019,155 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		 
 		 //No response count
 		 userArray[12] = userDto.getUserNoResponseApplicantsCount().toString();
+		   
+		return userArray;
+		
+
+	}
+	
+	// Recruiter reports candidate list export 
+	public File recruiterReprtsCandidateListPdfTable(ResponseList<Candidate> candidateList, OrgLocations loginOrgLocations,Date[] searchDates) throws Exception{
+
+		String[] headers = Constants.RECRUITER_REPORTS_CANDIDATE_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("Recruiter_Report_Candidate_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("Recruiter_Report_Candidate_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(loginOrgLocations.getOrgLocationName()).append(" ").append("Recruiter_Report_Candidate");
+	      
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String fromDate = sdf.format(searchDates[0]);
+			String toDate = sdf.format(searchDates[1]);
+
+	        StringBuilder orgNameSB = new StringBuilder();
+	        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(loginOrgLocations.getOrgLocationName()).toString());
+	        para.setAlignment(Element.ALIGN_CENTER);
+	        document.add(para);
+	        
+	        StringBuilder dateSB = new StringBuilder();
+	        Paragraph paraDate = new Paragraph(dateSB.append("Date : ").append(fromDate).append(" To ").append(toDate).toString());
+	        paraDate.setAlignment(Element.ALIGN_LEFT);
+	        document.add(paraDate);
+	        
+	        
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(14);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+	        table.setWidths(new int[]{4,4,4,4,4,4,4,4,4,4,4,4,4});
+	        table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> dataList = new ArrayList<>();
+	        java.util.List<Candidate> list = candidateList.getData();
+	        for(Candidate data : list){
+	        	dataList.add(prepareRecruiterReportsCandidateListStringArray(data,headers,loginOrgLocations));
+	        }
+	        for (String[] userArray: dataList) {
+	            for (int i = 0; i < userArray.length; i++) {
+	                String datum = userArray[i];
+	                PdfPCell cell = new PdfPCell();
+	                cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                table.addCell(cell);
+	            }
+	            table.completeRow();
+	        }
+	        document.addTitle("Recruiter Reports Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+		
+	}
+	
+	
+	private String[] prepareRecruiterReportsCandidateListStringArray(Candidate candidate, String[] headers, OrgLocations loginOrgLocations) throws Exception {
+		String userArray[] = new String[headers.length];
+			
+		 userArray[0] = candidate.getFullName();
+		
+		 userArray[1] = candidate.getEmail();
+		 
+		 if(StringUtils.isNotBlank(candidate.getMobilePhone())){
+		 userArray[2] = candidate.getMobilePhone();
+		 }else{
+		 userArray[2] = "---"; 
+		 }
+		 userArray[3] = candidate.getDesignationType();
+		 if(candidate.getOrgRelationId() !=null){
+		 OrgRelations orgRelations =orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId()); 
+		 userArray[4] = orgRelations.getResponderLocationId().getOrg().getOrgName();
+		 }else{
+		 userArray[4] = "---";	 
+		 }
+		 if(candidate.getSpocId() !=null){
+		 OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(candidate.getSpocId().getId());
+		 userArray[5] = orgSpoc.getVendorUser().getFullName();
+		 }else{
+		 userArray[5] = "---"; 
+		 }
+		 if(StringUtils.isNotBlank(candidate.getLocation())){
+		 userArray[6] = candidate.getLocation();
+		 }else{
+		 userArray[6] = "---"; 
+		 }
+		 if(StringUtils.isNotBlank(candidate.getDesignation())){
+		 userArray[7] = candidate.getDesignation();
+		 }else{
+		 userArray[7] = "---"; 
+			}
+		 if(StringUtils.isNotBlank(candidate.getCurrentRate())){
+		 userArray[8] = candidate.getCurrentRate();
+		 }else{
+		 userArray[8] = "---"; 
+		 }
+		 if(StringUtils.isNotBlank(candidate.getExpectedRate())){
+		 userArray[9] = candidate.getExpectedRate();
+		 }else{
+		 userArray[9] = "---"; 
+		 }
+		 if(StringUtils.isNotBlank(candidate.getExperienceYears())){
+		 userArray[10] = candidate.getExperienceYears();
+		 }else{
+		 userArray[10] = "---";	 
+		 }
+		 if(StringUtils.isNotBlank(candidate.getPrimarySkill())){
+		 userArray[11] = candidate.getPrimarySkill();
+		 }else{
+		 userArray[11] = "---";	 
+		 }
+		 userArray[12] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), candidate.getUpdatedDate());
 		   
 		return userArray;
 		

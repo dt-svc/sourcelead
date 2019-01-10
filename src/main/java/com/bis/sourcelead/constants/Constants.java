@@ -711,7 +711,8 @@ public class Constants {
 
 	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
 
-	
+	public static final String[] RECRUITER_REPORTS_CANDIDATE_HEADERS = { "Candidate Name", "Email","Phone Number","Emp Type", "Vendor","Vendor Contact","Location", "Designation", "Current Rate","Expected Rate","Experience","Primary Skill", "Updated On"};
+
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";

@@ -374,17 +374,7 @@ public class ReportRestController {
 			if(userRoleDto.getType() != null && !userRoleDto.getType().isEmpty()){
 				type=userRoleDto.getType();
 			}
-			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
-			int sortColumnIndex = 1; // by default sorting using updated date
-			String sortColumnOrder = "desc"; // by default descending order
-			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
-				sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
-				sortColumnOrder = userDTO.getOrder().get(0).get("dir");
-			}
-			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			userDTO.setSortOrder(sortColumnOrder);
 			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList,type,rolesList);
-		
 			
 			StringBuilder sbRoles = new StringBuilder();
 			String roleName = null;
@@ -559,6 +549,66 @@ public class ReportRestController {
 			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 			
 			return list;
+		}
+	
+	@RequestMapping(value = "/getAllCandidateListForRecruiterReportsExport")
+	public File getAllCandidateListForRecruiterReportsExport(CandidateDTO candidateDTO, 
+			@RequestParam(value="userCode", required=false) String userCode, 
+			@RequestParam(value="timePeriod", required=false) String timePeriod,
+			@RequestParam(value="customStartDate", required=false) String customStartDate,
+			@RequestParam(value="customEndDate", required=false) String customEndDate,
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			Date[] searchDates = null;
+			
+				if(!"custom".equalsIgnoreCase(timePeriod)){
+					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
+					if(timePeriod.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+						Date newDate = DateUtils.addHours(searchDates[0], 24);
+						searchDates[1] = newDate;
+					}
+				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
+		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
+				}
+			
+			ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+			File file = null;
+			file = pdfUtil.recruiterReprtsCandidateListPdfTable(list, orgLocations,searchDates);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+
+		StringBuilder filename = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
 		}
 	
 	@RequestMapping(value = "/getAllSubmissionApplicantsForRecruiterReports")
