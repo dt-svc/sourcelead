@@ -142,7 +142,7 @@ var config = {
 $(document).ready(function(){
 	$(".cliHead").click(function(){
 /*		$(this).next().find("tableStyles").slideToggle(100);*/
-		$(".tableStyles").toggle();``
+		$(".tableStyles").toggle();
 	});
 });
 

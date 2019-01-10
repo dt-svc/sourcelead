@@ -2,6 +2,8 @@ package com.bis.sourcelead.payroll.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,7 +53,14 @@ public class PayrollPdfUtil {
 		  File file = new File(sb.toString());
 		try {
 			// YTD 
-	 	    YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED");
+			
+			//passing frequency year to calculate ytd
+			Date date = payroll.getPaysheetFrequency().getFrequencyStartDate();
+			Calendar c = Calendar.getInstance();
+			c.setTime(date);
+			int year = c.get(Calendar.YEAR);
+			
+	 	    YTDPayrollDTO ytdTaxes= payrollUtil.getEmployeeYTDPayroll(payroll.getCandidate(),orgLocation,"APPROVED",year);
 			   Document document = new Document();
 //		        file.getParentFile().mkdirs();
 			        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));

@@ -335,6 +335,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	function cancelRejectExpense(expenseId){
 			 $(".mask_time").fadeOut(200);
 			 $("#reject"+expenseId+"panel").slideUp(200);
+			 window.location.reload();
 	}
 	function rejectExpenseByExpenseId(expenseId,tdSpanSize,from){ 
 	    $("#rejectReasonDiv").empty();

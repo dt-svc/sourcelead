@@ -197,6 +197,10 @@ public class DumpPublicRestCalls {
 					expenses.setExpenseStatus(Submission_Status.SUBMITTED);
 					addExpensesDao.storeAddExpensesData(expenses);
 					count++;
+				}else if(expenseStatus.contains(Submission_ApprovalStatus.REOPENED.getValue())){
+					expenses.setExpenseStatus(Submission_Status.REOPENED);
+					addExpensesDao.storeAddExpensesData(expenses);
+					count++;
 				}
 			}
 		}
