@@ -37,6 +37,10 @@ public class EmailReminder {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATIONS_ID")
 	private OrgLocations orgLocationsId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TABS_ID")
+	private Tabs tabsId;
 
 	@Column(name = "STATUS")
 	private Integer status;
@@ -144,6 +148,14 @@ public class EmailReminder {
 
 	public void setOrgLocationsId(OrgLocations orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public Tabs getTabsId() {
+		return tabsId;
+	}
+
+	public void setTabsId(Tabs tabsId) {
+		this.tabsId = tabsId;
 	}
 
 }
