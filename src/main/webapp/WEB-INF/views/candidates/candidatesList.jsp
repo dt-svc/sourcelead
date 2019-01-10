@@ -1109,6 +1109,7 @@ function imageCancel(){
          <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
          <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
            <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
@@ -3173,7 +3174,9 @@ function goToPurchaseOrderList(){
 function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
-
+function goToCartList(){
+	location.href = "${appPath}/candidateMarketplaceCart";
+}
 function goToWalletList(){
 	location.href = "${appPath}/walletList";
 }

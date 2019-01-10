@@ -73,7 +73,10 @@ $(document).ready(function() {
               <div class="col-md-9">
                       <div class="clearfix row">
                       <div class="col-sm-5 paddingRight" id="errFromDate">
+                       <div class="input-group errorInptgroup">
                       <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
+                      <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+      				 </div>
                       </div>
                       
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
@@ -110,7 +113,10 @@ $(document).ready(function() {
                       
                       <div class="clearfix row mt25 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
+                      <div class="input-group errorInptgroup">
                       <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
+                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+       					</div>
                       </div>
                       <div class="col-sm-4 paddingLeft paddingRight checkBox">
                       <c:if test="${!empty holidayDTO.toHalfDayCheckBox}">
@@ -387,5 +393,23 @@ function clearToDate(){
 	};
 	
 </script> -->
+
+<script>
+function clearFromDate(){
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#fromDate").val("");
+	};
+	
+function clearToDate(){
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#toDate").val("");
+	};
+</script>
 
 <jsp:include page="../masterFooter.jsp" />
