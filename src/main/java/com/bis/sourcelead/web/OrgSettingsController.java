@@ -633,4 +633,13 @@ public class OrgSettingsController {
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
 	   		return model;
 	       }
+	    
+	    //for setting page redirection
+	    @RequestMapping(value = "/settings")
+		 public ModelAndView goToSettings(HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();		
+			model.setViewName("settings");
+			model.addObject("sourceleadUrl", sourceleadUrl);			
+			return model;
+		}
 }
