@@ -22,8 +22,10 @@
 		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Global Marketplace</a></li>
-		          <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
+		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
                  <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+                 <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
 		         <div class="clearfix"></div>
 		     </ul>
       </div>
@@ -64,7 +66,7 @@
                 <div class="col-md-9">
 				 <ul class="pull-right mb0 list-unstyled list-inline ulliBorder">
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
-				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCheckout" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
+				  <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i><a id = "cartCount" href="${appPath}/candidateMarketplaceCart" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0</a></li>
 				  <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i><a id = "totalPrice" class="inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
 				  </sec:authorize>
                   <li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
@@ -517,7 +519,7 @@
 		</div>
 		<div class="clearfix advancedsearch-footer">
 			<div class="pull-right mr">
-				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();candidateList('gMarketPlace');" class="btn btn-sm btn-success" />
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();getGloblaMarketPlaceCandidates('listModel');<!-- candidateList('gMarketPlace'); -->" class="btn btn-sm btn-success" />
 				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
 			</div>
 		</div>
@@ -590,7 +592,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
-								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>';
+								marketAddStatus = '<a type="button" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'ListModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>';
 								'</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
@@ -679,7 +681,7 @@ function getGloblaMarketPlaceCandidates(divType, globalCandidateIds){
 							if(object[i].marketCartStatus == null){
 								marketDelelIcon = "";
 								'<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
-								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>';
+								marketAddStatus = '<a type="button" id="addCartCardModel'+object[i].marketplaceUUID+'" onclick="addCandidateToMarketCart(\''+(object[i].fullName == null ? "---" : object[i].fullName)+'\',\''+object[i].marketplaceUUID+'\', \'CardModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>';
 								 '</sec:authorize>';
 							}else if(object[i].marketCartStatus == "In_Cart"){
 								 '<sec:authorize access="hasRole(\'ROLE_ADD_PROFILE\')">'; 
@@ -774,12 +776,12 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, viewModel
             	if(viewModel == "ListModel"){
 					$("#deleteIconListModel"+candidateMarketUUID).empty();
 					$("#addCartListModel"+candidateMarketUUID).empty()
-					$("#addCartListModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartListModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'ListModel\')" class="anchorHighlight">Add</a>');
+					$("#addCartListModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartListModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'ListModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>');
 				}
 				if(viewModel == "CardModel"){
 					$("#deleteIconCardModel"+candidateMarketUUID).empty();
 					$("#addCartCardModel"+candidateMarketUUID).empty()
-					$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'CardModel\')" class="anchorHighlight">Add</a>');
+					$("#addCartCardModelDiv"+candidateMarketUUID).empty().append('<a type="button" id="addCartCardModel'+candidateMarketUUID+'" onclick="addCandidateToMarketCart(\''+candidateName+'\', \''+candidateMarketUUID+'\', \'CardModel\'); disableOnClick(this);" class="anchorHighlight">Add</a>');
 				}
 				updateMarketplaceCartCountAndPrice();
 				$("#remove_marketCart_pop").fadeOut(200);
@@ -840,13 +842,19 @@ function cardModel() {
 function goToOrgMarketPlaceList(){
 	location.href = "${appPath}/OrgMarketplace";
 }
-
+function goToCartList(){
+	location.href = "${appPath}/candidateMarketplaceCart";
+}
 function goToPurchaseOrderList(){
 	location.href ="${appPath}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
 	location.href = "${appPath}/SalesOrderList";
 }
+function goToWalletList(){
+    location.href = "${appPath}/walletList";
+}
+
 </script>
 <script>
 //Window scroll fixed header
@@ -1127,10 +1135,17 @@ function resetCandidateFilter(){
 	document.getElementById("myCandidatesRadio").checked = true;
 	$("#globalMarketSearh").val("");
 	$("#candidateLocation").val("");
-	candidateList('gMarketPlace');
+	//candidateList('gMarketPlace');
+	getGloblaMarketPlaceCandidates('listModel');
 }
 function refreshPage(){
   location.reload(); // refresh the page.
 }
-
+</script>
+<script> 
+function disableOnClick(link) {
+  link.onclick = function(event) {
+     event.preventDefault();
+  }
+}   
 </script>

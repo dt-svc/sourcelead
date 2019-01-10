@@ -336,17 +336,21 @@ $(".overIcon, .newActPop").click(function(e){
 function resetData(){
 	 $("#contractEmployeeReportDiv").hide();
 	 $("#fromDate").val('');
+	 $('#toDate').attr('value', '');
+		$('#toDate').datepicker( "option" , {
+	        minDate: null,
+	        maxDate: null} );
 	 $("#toDate").val('');
+	 $("#payrollRegisterSearch").val('');
 }
 </script>
 
-<!-- <script> -->
-<!--  function resetFilter(){ -->
-<!--  	 $("#conEmpReportTable").val(''); -->
-<!--  	 $("#fromDate").val(''); -->
-<!--  	 $("#toDate").val(''); -->
-<!--  } -->
-<!-- </script> -->
-
+<script>
+ function resetFilter(){
+ 	 $("#payrollRegisterSearch").val('');
+ 	getContractEmployeeReport();
+ }
+</script>
+ -->
 
 <jsp:include page="../masterFooter.jsp" />

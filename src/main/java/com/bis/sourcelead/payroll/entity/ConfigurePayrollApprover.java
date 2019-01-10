@@ -35,6 +35,9 @@ public class ConfigurePayrollApprover {
 	@Column(name = "AUTOMATIC_PAYROLL", nullable = false)
 	private String automaticPayroll;
 	
+	@Column(name = "AUTO_PAYROLL_FREQUENCY", nullable = false)
+	private String autoPayrollFrequency;
+	
 	@Column(name = "PAYROLL_TYPE", nullable = false)
 	private String payrollType;
 	
@@ -159,6 +162,16 @@ public class ConfigurePayrollApprover {
 	public void setPayrollApprover(Set<PayrollApprover> payrollApprover)
 	{
 		this.payrollApprover = payrollApprover;
+	}
+
+	public String getAutoPayrollFrequency()
+	{
+		return autoPayrollFrequency;
+	}
+
+	public void setAutoPayrollFrequency(String autoPayrollFrequency)
+	{
+		this.autoPayrollFrequency = autoPayrollFrequency;
 	}
 
 	

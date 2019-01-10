@@ -6,8 +6,11 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.dto.ContractsDTO;
+import com.bis.sourcelead.dto.FullTimeContractsDTO;
+import com.bis.sourcelead.dto.ClientContractsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractEditHistory;
 import com.bis.sourcelead.entity.Contracts;
@@ -31,7 +34,11 @@ public interface ContractsTemplateService {
 
 	Contracts saveNewContract(ContractsDTO contractsDTO, OrgLocations orgLocation, String saveType, User user, Org org, String contractType)throws Exception;
 
-	ContractsDTO getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName)throws Exception;
+	ResponseList<VendorContractsDTO> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName, String searchValue)throws Exception;
+	
+	ResponseList<ClientContractsDTO> getAllClientContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName, String searchValue)throws Exception;
+	
+	ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus,User user,String userRoleName, String searchValue)throws Exception;
 	
 	Contracts getAllContractsCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName)throws Exception;
 
@@ -96,4 +103,6 @@ public interface ContractsTemplateService {
 	Contracts updateContractSigner(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws NumberFormatException, Exception;
 	
 	Integer deleteContractOwnerHierarchyListByContractId(Long Id);
+
+	Contracts getAllVendorClientAndApplicantCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception;
 }

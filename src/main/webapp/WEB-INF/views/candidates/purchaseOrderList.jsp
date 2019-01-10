@@ -10,6 +10,7 @@ $(document).ready(function(){
 });
 </script>
 
+
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
@@ -21,34 +22,44 @@ $(document).ready(function(){
     
           <div class="clearfix">
 	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+          <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
           <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-            <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
-             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>        
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
+          <li id="" class="current"><a href="javascript:void(0)">Purchase Orderlist</a></li>
+          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li> 
+          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>       
          <div class="clearfix"></div>         
      </ul>
 </div>
-    
-    <div class="contentareaInner-styles clearfix">
+    <div id="emptyPopup"></div>
+    <div class="clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix">
-			  <span class="pull-left refreIcon noPad mb10">
-				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+			  <span class="pull-left refreIcon mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
 			  </span>
-            <ul class="pull-right list-unstyled list-inline noPad">
+            <ul class="pull-right list-unstyled list-inline mr">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+              
               <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                <div class="newActPop" style=""> 
+                <span>
+                <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
+                <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
+                 </span> 
+                 </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+                <input class="repSearchBar" placeholder="Search" id="purchaseOrderDataTableSearch" type="text">
+                <span class="repSearchIcon" onclick="getPurchaseOrderList();"></span>
 			</li>
             </ul>
           </div>
         <div class="candidate_wrap_table datatable_filter">
+        <input type="hidden" id="noCandidates" name="noCandidates" />
+        
         <div id="purchaseList"></div>
         </div>
         </div>
@@ -70,20 +81,34 @@ $(document).ready(function(){
 	function goToOrgMarketPlaceList(){
 		location.href = "${appPath}/OrgMarketplace";
 	}
+	function goToCartList(){
+		location.href = "${appPath}/candidateMarketplaceCart";
+	}
 	function goToPurchaseOrderList(){
 		location.href ="${appPath}/PurchaseOrderList";
 		}
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
-  
+	function refreshPage(){
+		$("#purchaseOrderDataTableSearch").val('');
+		getPurchaseOrderList();
+	}
+	function goToWalletList(){
+	    location.href = "${appPath}/walletList";
+	}
+	function refreshPage(){
+		location.reload();
+	}
+
   </script>
   
   <script>
   
    function getPurchaseOrderList(){
-	  
-	   	var url = sourceleadUrl+"/getPurchasedOrderList";
+	    var searchValue = $("#purchaseOrderDataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+	   	var url = sourceleadUrl+"/getPurchasedOrderList?searchValue="+searchValue;
 	   	getPurchaseOrderListPagin(url);	  
   }
   </script>
@@ -147,8 +172,9 @@ function purchasePagination(url){
             "sortable": false,
             "render": function ( data, type, report, meta ) {
             	var result = "";
+            	$("#noCandidates").val(1);
             	 if(report.orderNo != null && report.orderNo != '' && report.orderNo !='undefined'){
-             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?orderNo='+report.orderNo+'" title="'+report.orderNo+'">'+report.orderNo+'</a></div>';	 
+             result = result +'<div class="tbldata-dotdot-vsm" title="'+report.orderNo+'"><a href="'+sourceleadUrl+'/PurchaseOrder?purchaseUuid='+report.purchaseUuid+'" title="'+report.purchaseUuid+'">'+report.orderNo+'</a></div>';	 
             		         		 
          		}else{
          		  result = result +'<div class="tblminwidth-100">--</div>';
@@ -162,8 +188,8 @@ function purchasePagination(url){
 	    	  	"render": function(data, type, report, meta) {
 	    	  		var result = "";
 	    	  		var result = "";
-	            	 if(report.orderDateStr != null && report.orderDateStr != '' && report.orderDateStr !='undefined'){
-	           		  result = result +'<div class="tblminwidth-100">'+report.orderDateStr+'</div>';
+	            	 if(report.orderDate != null && report.orderDate != '' && report.orderDate !='undefined'){
+	           		  result = result +'<div class="tblminwidth-100">'+report.orderDate+'</div>';
 	         		}else{
 	         		  result = result +'<div class="tblminwidth-100">--</div>';
 	         		} 
@@ -282,7 +308,7 @@ function purchasePagination(url){
     } );
     $("#purchaseTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#purchaseTableSearch").keyup(function(e) {
+    $("#purchaseOrderDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getPurchaseOrderList();
     	   }
@@ -290,8 +316,70 @@ function purchasePagination(url){
 }
 
 </script>
-  
-  
- 
+<script>
+function candidateCancel(){
+	$("#emptyPopup").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<script>
+function exportToPdf(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	if(isCandidatesAvailable >0)
+		{
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=pdf";	
+	   }
+	  else{
+		
+		    var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<div class='modal-body text-center'>";
+			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		</div>";
+			result = result +"		<b href='javascript:void(0)'><input class='width100percnt' type='button' value='Ok' onclick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	  }
+}
+</script>
+<script>
+function exportToExcel(){
+	var isCandidatesAvailable= $("#noCandidates").val();
+	if(isCandidatesAvailable >0)
+		{	
+	  window.location.href = sourceleadUrl+"/getPurchaseCandidatesExportList?&exportType=xls";	
+	  }
+	else{
+		
+	  		var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<div class='modal-body text-center'>";
+			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		</div>";
+			result = result +"		<b href='javascript:void(0)'><input class='width100percnt'  type='button' value='Ok' onclick='candidateCancel();'></b>";
+			result = result +"	</div>";
+			$("#emptyPopup").append(result);
+			$("#candidate_user_pop").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	     } 
+}
+</script>
+
   
   <jsp:include page="../masterFooter.jsp" /> 

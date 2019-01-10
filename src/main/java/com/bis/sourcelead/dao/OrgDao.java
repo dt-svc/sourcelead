@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.PaymentAccount;
 
 /**
  * 
@@ -78,5 +79,7 @@ public interface OrgDao {
     public List<PaymentAccountDTO> getPaymentAccountListByUserId(long userId,boolean onlyEnabledAccounts);
     
     public List<PaymentAccountDTO> getPaymentAccountListByCandidateId(long candidateId,boolean onlyEnabledAccounts);
+    
+    public PaymentAccount getCandidateAcitivatePaymentAccount(long candidateId);
 
 }

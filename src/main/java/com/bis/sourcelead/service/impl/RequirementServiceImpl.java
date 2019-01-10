@@ -1120,17 +1120,29 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 			}
 		}
+		// for URL redirections from mail
+		String redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
+		Long redirectOrgLocationId = orgLocations.getId();
+		
 		// store recommended customizeScore
 		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService
 				.saveCustomizeScore(requirement);
 		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {
+			
+			
+	
+			 String redirectURL1 = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
+			
+			
+			
 			// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 			// send mail to sequential approver1
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
 				String approverNames = requirementDTO.getSequentialApprover1();
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				if (!approverUser.getId().equals(user.getId())) {
-					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
+					
+					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
 				}
 			}
 			// send mail to parallel approver
@@ -1139,7 +1151,7 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String approver : approvers) {
 					User approverUser = userService.getUserById(Long.parseLong(approver));
 					if (!approverUser.getId().equals(user.getId())) {
-						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
+						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
 					}
 				}
 			}
@@ -1168,7 +1180,7 @@ public class RequirementServiceImpl implements RequirementService {
 							if (updatedRequirementAssignToList != null
 									&& !user.getId().equals(newlyAddedUser.getId())) {
 								AssignToTeamMembersEmail(user, newlyAddedUser, savedRequirement, location,
-										orgLocations);
+										orgLocations,redirectURL,redirectOrgLocationId);
 							}
 						}
 					}
@@ -1190,7 +1202,7 @@ public class RequirementServiceImpl implements RequirementService {
 							if (requirementAssignTo.getAssignUserId() != null
 									&& !user.getId().equals(requirementAssignTo.getAssignUserId().getId())) {
 								AssignToTeamMembersEmail(user, requirementAssignTo.getAssignUserId(), savedRequirement,
-										location, orgLocations);
+										location, orgLocations,redirectURL,redirectOrgLocationId);
 							}
 						}
 					}
@@ -1207,7 +1219,7 @@ public class RequirementServiceImpl implements RequirementService {
 							if (requirementAssignTo.getAssignUserId() != null
 									&& !user.getId().equals(requirementAssignTo.getAssignUserId().getId())) {
 								updatedRequirementMailToAssignedMembers(user, requirementAssignTo.getAssignUserId(),
-										savedRequirement, location, orgLocations);
+										savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 							}
 						}
 					}
@@ -1215,13 +1227,15 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 			// send mail to manger
 			// condition : login user as manager then mail shoul not forwared
+			 
+				
 			if (savedRequirement.getManagerUserId() != null
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())
 					&& savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
-				mailRequirementtoManager(user, user, savedRequirement, location, orgLocations);
+				mailRequirementtoManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			} else if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())) {
-				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations);
+				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
@@ -1306,7 +1320,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	private void updatedRequirementMailToAssignedMembers(User loginUser, User assUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		assUser = userService.getUserById(assUser.getId());
 		UserRole loginUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(),
 				loginOrgLocation.getId());
@@ -1380,8 +1394,8 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -1416,7 +1430,7 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	private void updatedRequirementMailToManager(User loginUser, User managerUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		if (requirement.getManagerUserId() != null) {
 			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
 		}
@@ -1507,8 +1521,8 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("status", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -1781,7 +1795,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -1874,6 +1888,7 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			globalVarsMap.put("userEmailId", "--");
 		}
+		
 		StringBuilder linkBuild = new StringBuilder();
 		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
@@ -2321,7 +2336,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@SuppressWarnings("unused")
 	@Override
 	public void mailRequirementtoManager(User loginUser, User managerUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
 
 		if (requirement.getManagerUserId() != null) {
 			managerUser = userService.getUserById(requirement.getManagerUserId().getId());
@@ -2429,8 +2444,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		StringBuilder linkBuild = new StringBuilder();
 		StringBuilder attachBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl + "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		globalVarsMap.put("attachment", attachBuild.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>")
@@ -2466,7 +2481,7 @@ public class RequirementServiceImpl implements RequirementService {
 	@SuppressWarnings("unused")
 	@Override
 	public void AssignToTeamMembersEmail(User loginUser, User assUser, Requirement requirement, StringBuilder location,
-			OrgLocations orgLocations) throws Exception {
+			OrgLocations orgLocations,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		assUser = userService.getUserById(assUser.getId());
 		User manager = userService.getUserById(requirement.getManagerUserId().getId());
 		UserRole loginUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(),
@@ -2592,8 +2607,8 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		StringBuilder linkBuild = new StringBuilder();
 		StringBuilder attachBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		globalVarsMap.put("attachment", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Attachment</div></a>")
@@ -2837,7 +2852,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void releaseMailScenario(User loginUser, Requirement requirement, OrgSpoc orgSpoc,
-			OrgLocations loginOrgLocation, String releasetype) throws Exception {
+			OrgLocations loginOrgLocation, String releasetype,String redirectURL,Long redirectOrgLocationId) throws Exception {
 		User vendorContactUser = null;
 		if (releasetype.equalsIgnoreCase("VENDORS")) {
 			vendorContactUser = userService.getUserById(orgSpoc.getVendorUser().getId());
@@ -2914,8 +2929,8 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("Experience", "--");
 		}
 		StringBuilder linkBuild = new StringBuilder();
-		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>")
 				.toString());
 		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
 				&& !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())) {
@@ -4214,6 +4229,19 @@ public class RequirementServiceImpl implements RequirementService {
 							Long id = jsonObject.getLong("id");
 							Long requirementId = jsonObject.getLong("requirementId");
 							String fairDates = jsonObject.getString("fairDates");
+							String finalFairDates = "";
+							SimpleDateFormat sdf = new SimpleDateFormat(orgLocations.getDateFormat());
+							if(fairDates != null && !fairDates.isEmpty()) {
+								for(String fairDate : fairDates.split(",")) {
+									try {
+										sdf.parse(fairDate);
+										finalFairDates += (finalFairDates.isEmpty() ? "" : ",") + fairDate;
+									} catch (Exception e) {
+//										System.out.println("JobFair Date exception for : " + fairDate);
+									}
+								}
+							}
+							
 							JobFairRequirements jobFairRequirements = null;
 							if (id > 0) {
 								jobFairRequirements = requirementDao.getJobFairRequirementsById(id);
@@ -4223,7 +4251,7 @@ public class RequirementServiceImpl implements RequirementService {
 							jobFairRequirements.setJobFair(jobFair);
 							Requirement requirement = getRequirementByRequirementId(requirementId);
 							jobFairRequirements.setRequirement(requirement);
-							jobFairRequirements.setFairDates(fairDates);
+							jobFairRequirements.setFairDates(finalFairDates);
 							jobFairRequirementList.add(jobFairRequirements);
 							
 							deleteIdsList.remove(jobFairRequirements.getId());
@@ -4409,6 +4437,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<String> getJobFairDatesForCalendar(long userId, long orgLocationId, String dateFormat, boolean adminFlag) {
 		List<String> jobFairDatesList = new LinkedList<>();
 		try {
+			int i = 1;
 			SimpleDateFormat dateFormatSDF = new SimpleDateFormat(dateFormat);
 			SimpleDateFormat convertToFormatSDF = new SimpleDateFormat("yyyy/MM/dd");
 			Set<String> jobFairDatesSet = new SortedArraySet<>();

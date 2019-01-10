@@ -34,4 +34,6 @@ public interface UserGroupDao {
 	List<PayPeriodDTO> getPayPeriodsByGroupId(Long groupId);
 
 	List<UserGroup> getAllUserGroupsByLocationIdAndDepartmentId(OrgLocations orgLocation, String userId);
+
+	List<UserGroup> getAllUserGroupsByLocationIdAndPayrollFrequency(OrgLocations orgLocation, String autoPayrollFrequency);
 }

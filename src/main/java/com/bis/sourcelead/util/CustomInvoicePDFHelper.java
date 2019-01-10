@@ -256,7 +256,7 @@ public class CustomInvoicePDFHelper {
 
 	public File createCustomInvoicePDF(Invoice invoice, OrgLocations orgLocation, User user, Org org,
 			String vendorCurrencyCode, String loginOrgCurrencyCode, CustomInvoiceTemplate customInvoiceTemplate,
-			String pdfType, String defaultFont) {
+			String pdfType, String defaultFont, String sourceleadURL) {
 		try {
 			File invoiceFile = new File(
 					orgLocation.getOrgLocationName() + "_" + invoice.getInvoiceId() + new Date().getTime() + ".pdf");
@@ -293,7 +293,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject1.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder1 = getLogoDataFromJSON(jsonObject1);
+										cellBuilder1 = getLogoDataFromJSON(jsonObject1, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -329,7 +329,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject2.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder2 = getLogoDataFromJSON(jsonObject2);
+										cellBuilder2 = getLogoDataFromJSON(jsonObject2, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -439,7 +439,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject1.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder1 = getLogoDataFromJSON(jsonObject1);
+										cellBuilder1 = getLogoDataFromJSON(jsonObject1, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -475,7 +475,7 @@ public class CustomInvoicePDFHelper {
 									String type = jsonObject2.getString("type");
 									switch (type) {
 									case "image":
-										cellBuilder2 = getLogoDataFromJSON(jsonObject2);
+										cellBuilder2 = getLogoDataFromJSON(jsonObject2, sourceleadURL);
 										break;
 									case "table":
 										if (pdfType.equalsIgnoreCase("other")) {
@@ -604,7 +604,7 @@ public class CustomInvoicePDFHelper {
 		return grandTotal.toString();
 	}
 
-	private HorizontalListCellBuilder getLogoDataFromJSON(JSONObject jsonObject) throws JSONException {
+	private HorizontalListCellBuilder getLogoDataFromJSON(JSONObject jsonObject, String sourceleadURL) throws JSONException {
 		HorizontalListCellBuilder cellBuilder = null;
 		JSONArray subItemsArrayJSON = jsonObject.getJSONArray("subItems");
 		if (subItemsArrayJSON != null && subItemsArrayJSON.length() > 0) {
@@ -654,7 +654,7 @@ public class CustomInvoicePDFHelper {
 						}
 					}
 					StyleBuilder columnStyle = stl.style(Templates.columnStyle);
-					cellBuilder = cmp.hListCell(cmp.image("http://localhost:8080" + subItemObject.getString("value"))
+					cellBuilder = cmp.hListCell(cmp.image(sourceleadURL.replace("/app", "") + subItemObject.getString("value"))
 							.setStyle(columnStyle).setHorizontalAlignment(horizontalAlignment)
 							.setFixedDimension(width, width / 2).setFixedWidth(245)).heightFixedOnTop();
 				}
@@ -924,7 +924,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -972,7 +972,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1037,7 +1037,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1085,7 +1085,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1154,7 +1154,7 @@ public class CustomInvoicePDFHelper {
 						}
 						break;
 					case "font-size":
-						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableHeadStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1202,7 +1202,7 @@ public class CustomInvoicePDFHelper {
 						// tableRowStyle.setBorder(stl.pen1Point());
 						break;
 					case "font-size":
-						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0]));
+						tableRowStyle.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()));
 						break;
 
 					case "background-color":
@@ -1574,7 +1574,7 @@ public class CustomInvoicePDFHelper {
 								break;
 
 							case "font-size":
-								styleBuilder.setFontSize(Integer.parseInt(style[1].split("px")[0]) - 2);
+								styleBuilder.setFontSize(Integer.parseInt(style[1].split("px")[0].trim()) - 2);
 								break;
 
 							case "text-align":
@@ -1609,19 +1609,19 @@ public class CustomInvoicePDFHelper {
 								break;
 
 							case "padding-top":
-								styleBuilder.setTopPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setTopPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-right":
-								styleBuilder.setRightPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setRightPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-bottom":
-								styleBuilder.setBottomPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setBottomPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 
 							case "padding-left":
-								styleBuilder.setLeftPadding(Integer.parseInt(style[1].split("px")[0]));
+								styleBuilder.setLeftPadding(Integer.parseInt(style[1].split("px")[0].trim()));
 								break;
 							}
 						}
