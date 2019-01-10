@@ -4275,61 +4275,61 @@ public class EMailJobScheduler {
 								TreeSet<RequirementOffers> list = reqSubOfferList.stream().collect(Collectors.toCollection(
 								          () -> new TreeSet<RequirementOffers>((p1, p2) -> p1.getSubmissionId().getRequirement().getId().compareTo(p2.getSubmissionId().getRequirement().getId())) ));
 										
-										for (RequirementOffers r : list) {
-											StringBuffer applicantsInfoGrid = new StringBuffer();
-											applicantsInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
-											applicantsInfoGrid.append("<tbody>");
-											applicantsInfoGrid.append("<tr>");
-											applicantsInfoGrid.append("<th> Applicant Name </th>");
-											applicantsInfoGrid.append("<th> Job Title </th>");
-											applicantsInfoGrid.append("<th> Client </th>");
-											applicantsInfoGrid.append("<th> Rate </th>");
-											applicantsInfoGrid.append("<th> Join Date </th>");
-											applicantsInfoGrid.append("</tr>");
-											
-											for(RequirementOffers reqSubOffer : reqSubOfferList) {
-												if(reqSubOffer.getSubmissionId().getRequirement().getId() == r.getSubmissionId().getRequirement().getId()) {
-													String clientName = "--";
-													String rate = "--";
-													String jobId = "";
-													if(reqSubOffer.getSubmissionId().getRequirement().getClientId() != null){
-														if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
-															clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
-														}
-														if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-															clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
-														}
+									for (RequirementOffers r : list) {
+										StringBuffer applicantsInfoGrid = new StringBuffer();
+										applicantsInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+										applicantsInfoGrid.append("<tbody>");
+										applicantsInfoGrid.append("<tr>");
+										applicantsInfoGrid.append("<th> Applicant Name </th>");
+										applicantsInfoGrid.append("<th> Job Title </th>");
+										applicantsInfoGrid.append("<th> Client </th>");
+										applicantsInfoGrid.append("<th> Rate </th>");
+										applicantsInfoGrid.append("<th> Join Date </th>");
+										applicantsInfoGrid.append("</tr>");
+										
+										for(RequirementOffers reqSubOffer : reqSubOfferList) {
+											if(reqSubOffer.getSubmissionId().getRequirement().getId() == r.getSubmissionId().getRequirement().getId()) {
+												String clientName = "--";
+												String rate = "--";
+												String jobId = "";
+												if(reqSubOffer.getSubmissionId().getRequirement().getClientId() != null){
+													if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")){
+														clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderLocationId().getOrgLocationName();
 													}
-													if(reqSubOffer.getAmount() != null && reqSubOffer.getPaymentMode() != null){
-														rate = reqSubOffer.getPaymentType() + " " + reqSubOffer.getAmount()+"/"+reqSubOffer.getPaymentMode();
+													if(reqSubOffer.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+														clientName = reqSubOffer.getSubmissionId().getRequirement().getClientId().getLocationId().getOrgLocationName();
 													}
-													if(reqSubOffer.getSubmissionId().getRequirement().getJobId() != null){
-														jobId = reqSubOffer.getSubmissionId().getRequirement().getJobId() + " - ";
-													}
-													applicantsInfoGrid.append("<tr>");
-													applicantsInfoGrid.append("<td>"+reqSubOffer.getSubmissionId().getCandidate().getFullName()+"</td>");
-													applicantsInfoGrid.append("<td>"+jobId+reqSubOffer.getSubmissionId().getRequirement().getJobTitle()+"</td>");
-													applicantsInfoGrid.append("<td>"+clientName+"</td>");
-													applicantsInfoGrid.append("<td>"+rate+"</td>");
-													applicantsInfoGrid.append("<td>"+updatedDateStr+"</td>");
-													applicantsInfoGrid.append("</tr>");
 												}
+												if(reqSubOffer.getAmount() != null && reqSubOffer.getPaymentMode() != null){
+													rate = reqSubOffer.getPaymentType() + " " + reqSubOffer.getAmount()+"/"+reqSubOffer.getPaymentMode();
+												}
+												if(reqSubOffer.getSubmissionId().getRequirement().getJobId() != null){
+													jobId = reqSubOffer.getSubmissionId().getRequirement().getJobId() + " - ";
+												}
+												applicantsInfoGrid.append("<tr>");
+												applicantsInfoGrid.append("<td>"+reqSubOffer.getSubmissionId().getCandidate().getFullName()+"</td>");
+												applicantsInfoGrid.append("<td>"+jobId+reqSubOffer.getSubmissionId().getRequirement().getJobTitle()+"</td>");
+												applicantsInfoGrid.append("<td>"+clientName+"</td>");
+												applicantsInfoGrid.append("<td>"+rate+"</td>");
+												applicantsInfoGrid.append("<td>"+updatedDateStr+"</td>");
+												applicantsInfoGrid.append("</tr>");
 											}
-											applicantsInfoGrid.append("</tbody>");
-											applicantsInfoGrid.append("</table>");
-											
-											//loop for notify to emails
-											for(String email : emailReminder.getNotifyTo().split(",")) {
-												User toUser = new User();
-												toUser.setEmail(email.trim());
-												toUser.setFirstName("");
-												toUser.setLastName("");
-												applicationReminderEmailPreparationAndSend(toUser, emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);;
-											}
-											
-											//mail to job manager
-											applicationReminderEmailPreparationAndSend(r.getSubmissionId().getRequirement().getManagerUserId(), emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);
 										}
+										applicantsInfoGrid.append("</tbody>");
+										applicantsInfoGrid.append("</table>");
+										
+										//loop for notify to emails
+										for(String email : emailReminder.getNotifyTo().split(",")) {
+											User toUser = new User();
+											toUser.setEmail(email.trim());
+											toUser.setFirstName("");
+											toUser.setLastName("");
+											applicationReminderEmailPreparationAndSend(toUser, emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);;
+										}
+										
+										//mail to job manager
+										applicationReminderEmailPreparationAndSend(r.getSubmissionId().getRequirement().getManagerUserId(), emailReminder, emailReminderHierarchy, applicantsInfoGrid, reqSubOfferList, updatedDateStr);
+									}
 							}
 						}
 					}

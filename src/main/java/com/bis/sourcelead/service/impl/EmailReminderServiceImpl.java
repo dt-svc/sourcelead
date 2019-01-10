@@ -60,8 +60,10 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 		
 		if(emailReminderDTO.getEmailReminderHierarchyList().size() > 0) {
 			List<EmailReminderHierarchy> emailReminderHierarchyList = new ArrayList<>();
+			int level = 0;
 			for(EmailReminderHierarchyDTO emailReminderHierarchyDTO : emailReminderDTO.getEmailReminderHierarchyList()) {
 				if(emailReminderHierarchyDTO != null && emailReminderHierarchyDTO.getReminderdays() != null && !StringUtils.isBlank(emailReminderHierarchyDTO.getRemindertime())) {
+					level = level+1;
 					EmailReminderHierarchy emailReminderHierarchy = new EmailReminderHierarchy();
 					if(emailReminderHierarchyDTO.getId() != null) {
 						emailReminderHierarchy.setId(emailReminderHierarchyDTO.getId());
@@ -74,7 +76,7 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 					emailReminderHierarchy.setEmailReminder(emailReminder);
 					emailReminderHierarchy.setReminderdays(emailReminderHierarchyDTO.getReminderdays());
 					emailReminderHierarchy.setRemindertime(emailReminderHierarchyDTO.getRemindertime());
-					emailReminderHierarchy.setReminderhierarchy(emailReminderHierarchyDTO.getReminderhierarchy());
+					emailReminderHierarchy.setReminderhierarchy(String.valueOf(level));
 					emailReminderHierarchy.setStatus(Constants.RECORD_ACTIVE);
 					emailReminderHierarchyList.add(emailReminderHierarchy);
 				}

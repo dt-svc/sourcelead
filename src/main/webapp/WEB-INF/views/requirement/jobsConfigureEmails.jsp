@@ -65,21 +65,21 @@ function hideandshowjobclosing(){
 					<div class="col-md-9">
 						<div class="checkbox-new">
 							<input id="employeeonLeave" class="checkbox-custom"
-								name="paidComponent" type="checkbox" ${!empty applicantJoining ? 'checked' : ''} onclick="hideandshow();">
+								name="paidComponent" type="checkbox" ${!empty emailReminder ? 'checked' : ''} onclick="hideandshow();">
 							<label for="employeeonLeave" class="checkbox-custom-label"></label>
 						</div>
 					</div>
 					<div class="clearfix"></div>
 					<c:set var="fIndex" value="0" scope="page" />
-					<div class="clearfix mt" id="employeeonLeaveDiv" ${!empty applicantJoining ? '' : 'style="display: none;"'}>
+					<div class="clearfix mt" id="employeeonLeaveDiv" ${!empty emailReminder ? '' : 'style="display: none;"'}>
 						<form:form id="job_ApplicantJoining_form" name="job_ApplicantJoining_form">
 							<div class="clearfix form-horizontal">
 								<div class="row">
 									<div class="clerfix"></div>
-									<c:if test="${!empty applicantJoining}">
-										<c:forEach var="hierarchy" items="${applicantJoining.emailReminderHierarchyList}" varStatus="loop">
+									<c:if test="${!empty emailReminder}">
+										<c:forEach var="hierarchy" items="${emailReminder.emailReminderHierarchyList}" varStatus="loop">
 												<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb job_ApplicantJoining_form_rem" id="job_ApplicantJoining_form_rem${hierarchy.reminderhierarchy}">
-													<label class="col-md-3 paddingRight">Reminder <span class="remIndex">${hierarchy.reminderhierarchy+1}</span><span class="text-danger paddingLeft">*</span></label>
+													<label class="col-md-3 paddingRight">Reminder <span class="remIndex">${hierarchy.reminderhierarchy}</span><span class="text-danger paddingLeft">*</span></label>
 													<div class="col-md-9">
 														<div class="row">
 															<div class="col-md-6">
@@ -115,7 +115,7 @@ function hideandshowjobclosing(){
 																		<option ${hierarchy.remindertime == '12:00PM' ? 'selected' : ''}>12:00PM</option>
 																	</select>
 															</div>
-																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].reminderhierarchy" value="${hierarchy.reminderhierarchy}">
+																<%-- <input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].reminderhierarchy" value="${hierarchy.reminderhierarchy}"> --%>
 																<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[${hierarchy.reminderhierarchy}].id" value="${hierarchy.id}">
 															<c:if test="${loop.index == 0}">
 																<div title="Add Reminder" onClick="cloneRow('job_ApplicantJoining_form');"
@@ -138,7 +138,7 @@ function hideandshowjobclosing(){
 												</div>
 										</c:forEach>
 									</c:if>
-									<c:if test="${empty applicantJoining}">
+									<c:if test="${empty emailReminder}">
 											<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb job_ApplicantJoining_form_rem" id="job_ApplicantJoining_form_rem0">
 											<label class="col-md-3 paddingRight">Reminder <span class="remIndex">1</span><span class="text-danger paddingLeft">*</span></label>
 											<div class="col-md-9">
@@ -181,7 +181,7 @@ function hideandshowjobclosing(){
 															</select>
 															
 													</div>
-														<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[0].reminderhierarchy" value="0">
+														<!-- <input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList[0].reminderhierarchy" value="0"> -->
 													<div title="Add Reminder" onClick="cloneRow('job_ApplicantJoining_form');"
 														class="col-md-2">
 														<div class="mt5">
@@ -206,10 +206,11 @@ function hideandshowjobclosing(){
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9" id="notifyToDiv">
-											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${applicantJoining.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
+											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${emailReminder.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
 										</div>
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="ApplicantJoining">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="8">
+										<input type="text" style="display: none;" class="form-control" name="id" value="${emailReminder.id}">
 									</div>
 								</div>
 							</div>
@@ -436,7 +437,7 @@ function cloneRow(form) {
 	clone += '<option>12:00PM</option>';
 	clone += '</select>';
 	clone += '</div>';
-	clone += '<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList['+m+'].reminderhierarchy" value="'+m+'">';
+	//clone += '<input type="text" style="display: none;" class="form-control" name="emailReminderHierarchyList['+m+'].reminderhierarchy" value="'+m+'">';
 	clone += '<div title="Remove Reminder" class="col-md-2">';
 	clone += '<div class="mt5" onclick="removeCloneDiv(\''+form+'_rem'+m+'\')">';
 	clone += '<i class="fa fa-times cursorPointer colorRed btn btn-default" title="Remove"></i>';

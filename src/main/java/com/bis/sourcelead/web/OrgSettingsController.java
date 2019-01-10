@@ -619,11 +619,11 @@ public class OrgSettingsController {
 			
 			//get job related reminders
 			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
-			model.addObject("emailReminderList", emailReminderList);
+			//model.addObject("emailReminderList", emailReminderList);
 			
 			for(EmailReminder emailReminder : emailReminderList) {
 				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-					model.addObject("applicantJoining", emailReminder);
+					model.addObject("emailReminder", emailReminder);
 				}
 				
 			}
