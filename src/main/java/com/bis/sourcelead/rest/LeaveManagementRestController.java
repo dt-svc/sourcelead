@@ -582,9 +582,11 @@ public class LeaveManagementRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		LinkedHashSet<String> yearsList = CalendarUtil.getYearsListFromCurrentDate(1, 10);
 		model.addObject("shiftList", shiftList);
 
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("yearsList", yearsList);
 		model.setViewName("leavemanagement/viewHoliday");
 		return model;
 	}
