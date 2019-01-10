@@ -74,7 +74,23 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private List<String> indEmpPayrollUUIDList;
 	 
 	private String allEmployees;
+	
+	private Long payGroup;
 
+	private String department;
+	
+	private String payRollType;
+	
+    private String freqStartDate;
+	
+	private String freqEndDate;
+	
+	private String searchValue;
+
+	private String employeeName;
+	
+	private String employeeid;
+	
 	public Long getId() {
 		return id;
 	}
@@ -331,5 +347,69 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setAllEmployees(String allEmployees) {
 		this.allEmployees = allEmployees;
+	}
+
+	public Long getPayGroup() {
+		return payGroup;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public String getPayRollType() {
+		return payRollType;
+	}
+
+	public String getFreqStartDate() {
+		return freqStartDate;
+	}
+
+	public String getFreqEndDate() {
+		return freqEndDate;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setPayGroup(Long payGroup) {
+		this.payGroup = payGroup;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public void setPayRollType(String payRollType) {
+		this.payRollType = payRollType;
+	}
+
+	public void setFreqStartDate(String freqStartDate) {
+		this.freqStartDate = freqStartDate;
+	}
+
+	public void setFreqEndDate(String freqEndDate) {
+		this.freqEndDate = freqEndDate;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getEmployeeName() {
+		return employeeName;
+	}
+
+	public String getEmployeeid() {
+		return employeeid;
+	}
+
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
+	}
+
+	public void setEmployeeid(String employeeid) {
+		this.employeeid = employeeid;
 	}
 }
