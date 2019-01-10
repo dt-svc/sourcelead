@@ -20,7 +20,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Task Type</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; Project Task Type</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Project Task Type</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
