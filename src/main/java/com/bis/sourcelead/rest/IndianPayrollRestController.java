@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,11 @@ import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndApprovePayrollDTO;
+import com.bis.sourcelead.payroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.payroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.payroll.dto.PayPeriodDTO;
+import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.payroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.payroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
@@ -659,4 +664,59 @@ public class IndianPayrollRestController {
 	}
 
     
+    
+    @RequestMapping(value = { "app/getIndPayPeriodByGroupId","app/rest/getIndPayPeriodByGroupId" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<IndPaysheetFrequency> getIndPayPeriodByGroupId(@RequestParam(value = "groupId",required = false) Long groupId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+	    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<IndPaysheetFrequency> PayPeriodDTOList = userGroupService.getIndPayPeriodsByGroupId(groupId,orgLocation);
+		return PayPeriodDTOList;
+	}
+    
+    
+    @RequestMapping(value = { "app/runIndPayrollregister","app/rest/runIndPayrollregister" }, method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<IndEmployeePayrollDTO> runPayrollregister(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if (orgLocations != null) {
+				String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", ""};
+			    int sortColumnIndex = 1;		 //by default sorting using updated date
+				String sortColumnOrder = "asc";  //by default descending order
+				if(indEmployeePayrollDTO.getOrder() != null && !indEmployeePayrollDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(indEmployeePayrollDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = indEmployeePayrollDTO.getOrder().get(0).get("dir");
+				}
+				indEmployeePayrollDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				indEmployeePayrollDTO.setSortOrder(sortColumnOrder);
+				
+				ResponseList<IndEmployeePayroll> payResponseList = indPaysheetFrequencyService.getPayrollRegisterReports(indEmployeePayrollDTO,orgLocations);
+				List<IndEmployeePayrollDTO> indEmployeePayrollList = new ArrayList<>();
+				for(IndEmployeePayroll iepdt :payResponseList.getData()) {
+					IndEmployeePayrollDTO dto = new IndEmployeePayrollDTO();
+					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
+					if(iepdt.getCandidate().getLastName() != null) {
+						dto.setEmployeeName(iepdt.getCandidate().getFirstName() +" "+iepdt.getCandidate().getLastName());
+					}else {
+						dto.setEmployeeName(iepdt.getCandidate().getFirstName());
+					}
+					indEmployeePayrollList.add(dto);
+				}
+				responseList.setData(indEmployeePayrollList);
+				responseList.setResponse(Result.SUCCESS.name());
+				responseList.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
 }
