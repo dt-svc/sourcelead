@@ -292,6 +292,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			history.setEmail(history.getSubmissionId().getCandidate().getEmail());
 			history.setCandidateName(history.getSubmissionId().getCandidate().getFirstName());
 			history.setJobTitle(history.getSubmissionId().getRequirement().getJobTitle());
+			history.setMobilePhone(history.getSubmissionId().getCandidate().getPanNumber());
 			
 			if(history.getSubmissionId().getRequirement().getClientId() != null) {
 				if (history.getSubmissionId().getRequirement().getClientId().getResponderType().equalsIgnoreCase("Client")) {

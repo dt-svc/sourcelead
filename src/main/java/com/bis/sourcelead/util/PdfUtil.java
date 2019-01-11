@@ -3173,4 +3173,248 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		
 
 	}
+	
+	// Recruiter reports Applicants list export 
+		public File recruiterReprtsApplicantsListPdfTable(ResponseList<RequirementSubmissionHistory> historyList, OrgLocations loginOrgLocations,Date[] searchDates,String toStage) throws Exception{
+			
+			String[] headers = null;
+			if(toStage.equals("SUBMISSION")){
+			 headers = Constants.RECRUITER_REPORTS_ALL_APPLICANTS_HEADERS;
+			}else if(toStage.equals("SHORTLIST")){
+			headers = Constants.RECRUITER_REPORTS_SHORTLIST_HEADERS;
+			}else if(toStage.equals("SUBMIT_TO_CLIENT")){
+			headers = Constants.RECRUITER_REPORTS_SUBMIT_TO_CLIENT_HEADERS;	
+			}else if(toStage.equals("INTERVIEW")){
+			headers = Constants.RECRUITER_REPORTS_INTERVIEW_HEADERS;	
+			}else if(toStage.equals("OFFERMADE")){
+			headers = Constants.RECRUITER_REPORTS_OFFERMADE_HEADERS;	
+			}else if(toStage.equals("REJECTED")){
+			headers = Constants.RECRUITER_REPORTS_REJECTED_HEADERS;	
+			}else if(toStage.equals("JOINED")){
+			headers = Constants.RECRUITER_REPORTS_JOINED_HEADERS;	
+			}else if(toStage.equals("BACKOUT")){
+			headers = Constants.RECRUITER_REPORTS_BACKOUT_HEADERS;	
+			}
+			
+		    Document document = new Document(PageSize.LETTER.rotate());
+		    StringBuilder sbUser =  new StringBuilder();
+		    sbUser.append("Recruiter_Report_Applicants_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date()));
+
+		    StringBuilder fileSB = new StringBuilder();
+		    File file = File.createTempFile(fileSB.append("Recruiter_Report_Applicants_List_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),new Date())).toString(),".pdf");
+		    file.setReadable(true);
+		    
+		    try {
+		        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+		        PdfWriter.getInstance(document, new FileOutputStream(file));
+		        document.open();
+
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        BaseColor myColor = WebColors.getRGBColor("#000000");
+		        boldFont.setColor(myColor);
+		        StringBuilder userStyle = new StringBuilder();
+		        userStyle.append(loginOrgLocations.getOrgLocationName()).append(" ").append("Recruiter_Report_Applicants");
+		      
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String fromDate = sdf.format(searchDates[0]);
+				String toDate = sdf.format(searchDates[1]);
+
+		        StringBuilder orgNameSB = new StringBuilder();
+		        Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(loginOrgLocations.getOrgLocationName()).toString());
+		        para.setAlignment(Element.ALIGN_CENTER);
+		        document.add(para);
+		        
+		        StringBuilder dateSB = new StringBuilder();
+		        Paragraph paraDate = new Paragraph(dateSB.append("Date : ").append(fromDate).append(" To ").append(toDate).toString());
+		        paraDate.setAlignment(Element.ALIGN_LEFT);
+		        document.add(paraDate);
+		        
+		        
+		        // Create an instance of PdfPTable. After that we transform the header and
+		        PdfPTable table = new PdfPTable(headers.length);
+		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+		        cell1.setColspan(14);
+		        headerCellStyle(cell1);
+		        table.setWidthPercentage(100);
+		        if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST")){
+		        table.setWidths(new int[]{4,4,4,4,4,4,4,4,4});
+		        }else if(toStage.equals("SUBMIT_TO_CLIENT") || toStage.equals("JOINED") || toStage.equals("OFFERMADE")){
+		         table.setWidths(new int[]{4,4,4,4,4,4,4,4,4,4});	
+		        }else if(toStage.equals("REJECTED") || toStage.equals("BACKOUT")){
+		         table.setWidths(new int[]{4,4,4,4,4,4,4,4,4,4,4});	
+		        }
+		        table.addCell(cell1);
+		        for (int i = 0; i < headers.length; i++) {
+		            String header = headers[i];
+		            PdfPCell cell = new PdfPCell();
+		            cell.setGrayFill(0.9f);
+		            cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+		            cell.setBackgroundColor(myBorderColor);
+		            table.addCell(cell);
+		        }
+		        table.completeRow();
+		        java.util.List<String[]> dataList = new ArrayList<>();
+		        java.util.List<RequirementSubmissionHistory> list = historyList.getData();
+		        for(RequirementSubmissionHistory data : list){
+		        	if(toStage.equals("SUBMISSION") || toStage.equals("SHORTLIST")){
+		        	dataList.add(prepareRecruiterReportsApplicantsListStringArray(data,headers,loginOrgLocations,toStage));
+		        	}else if(toStage.equals("SUBMIT_TO_CLIENT") || toStage.equals("JOINED") || toStage.equals("OFFERMADE")){
+			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayOne(data,headers,loginOrgLocations,toStage));	
+			        }else if(toStage.equals("INTERVIEW")){
+			        dataList.add(prepareRecruiterReportsApplicantsListStringArrayTwo(data,headers,loginOrgLocations,toStage));	
+			        }else if(toStage.equals("REJECTED") || toStage.equals("BACKOUT")){
+			        dataList.add(prepareRecruiterReportsApplicantsListStringArray(data,headers,loginOrgLocations,toStage));	
+			        }
+		        }
+		        for (String[] userArray: dataList) {
+		            for (int i = 0; i < userArray.length; i++) {
+		                String datum = userArray[i];
+		                PdfPCell cell = new PdfPCell();
+		                cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+		                table.addCell(cell);
+		            }
+		            table.completeRow();
+		        }
+		        document.addTitle("Recruiter Reports Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } catch (FileNotFoundException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		    }
+			return file;
+			
+		}
+	
+		// Recruiter reports for all applicants export
+		private String[] prepareRecruiterReportsApplicantsListStringArray(RequirementSubmissionHistory submissionHistory, String[] headers, OrgLocations loginOrgLocations,String toStage) throws Exception {
+			String userArray[] = new String[headers.length];
+				
+			 userArray[0] = submissionHistory.getCandidateName();
+			
+			 userArray[1] = submissionHistory.getEmail();
+			 
+			 if(submissionHistory.getMobilePhone() !=null){
+			 userArray[2] = submissionHistory.getMobilePhone();
+			 }else{
+			 userArray[2] = "---";	 
+			 }
+			 
+			 userArray[3] = submissionHistory.getJobTitle();
+			 
+			 if(submissionHistory.getOrgLocationName() !=null){
+				 userArray[4] = submissionHistory.getOrgLocationName();
+				 }else{
+				 userArray[4] = "---";	 
+				 }
+			 
+			 userArray[5] = "---";
+			 
+			 userArray[6] = "---"; 
+			 
+			 if(toStage.equals("SUBMISSION")){
+			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+			 }else if(toStage.equals("SHORTLIST")){
+			 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+			 }
+			 
+			 userArray[8] = submissionHistory.getSubmissionId().getSubmissionStatus().toString();
+			   
+			return userArray;
+			
+		}
+		
+		// Recruiter reports for all applicants export
+				private String[] prepareRecruiterReportsApplicantsListStringArrayOne(RequirementSubmissionHistory submissionHistory, String[] headers, OrgLocations loginOrgLocations,String toStage) throws Exception {
+					String userArray[] = new String[headers.length];
+						
+					 userArray[0] = submissionHistory.getCandidateName();
+					
+					 userArray[1] = submissionHistory.getEmail();
+					 
+					 if(submissionHistory.getMobilePhone() !=null){
+					 userArray[2] = submissionHistory.getMobilePhone();
+					 }else{
+					 userArray[2] = "---";	 
+					 }
+					 
+					 userArray[3] = submissionHistory.getJobTitle();
+					 
+					 if(submissionHistory.getOrgLocationName() !=null){
+					 userArray[4] = submissionHistory.getOrgLocationName();
+					 }else{
+					 userArray[4] = "---";	 
+					 }
+					 
+					 userArray[5] = "---";
+					 
+					 userArray[6] = "---"; 
+					 
+					 if(toStage.equals("SUBMIT_TO_CLIENT")){
+					 if(submissionHistory.getSubmissionId().getFinalizedRate() !=null){
+						 userArray[7] = submissionHistory.getSubmissionId().getFinalizedRate();		 
+					 }else{
+						 userArray[7] = "---";		 	 
+					 }
+					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 }else if(toStage.equals("OFFERMADE")){
+					 userArray[7] = submissionHistory.getSubmissionId().getOfferRate();
+					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 }else{
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[8] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getJoinedDate());
+					 }
+					 userArray[9] = submissionHistory.getSubmissionId().getSubmissionStatus().toString(); 
+					return userArray;
+					
+
+				}
+				
+				
+				// Recruiter reports for all applicants export
+				private String[] prepareRecruiterReportsApplicantsListStringArrayTwo(RequirementSubmissionHistory submissionHistory, String[] headers, OrgLocations loginOrgLocations,String toStage) throws Exception {
+					String userArray[] = new String[headers.length];
+						
+					 userArray[0] = submissionHistory.getCandidateName();
+					
+					 userArray[1] = submissionHistory.getEmail();
+					 
+					 if(submissionHistory.getMobilePhone() !=null){
+					 userArray[2] = submissionHistory.getMobilePhone();
+					 }else{
+					 userArray[2] = "---";	 
+					 }
+					 
+					 userArray[3] = submissionHistory.getJobTitle();
+					 
+					 if(submissionHistory.getOrgLocationName() !=null){
+					 userArray[4] = submissionHistory.getOrgLocationName();
+					 }else{
+					 userArray[4] = "---";	 
+					 }
+					 
+					 userArray[5] = "---";
+					 
+					 userArray[6] = "---"; 
+					 
+					 if(toStage.equals("REJECTED")){
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[8] = submissionHistory.getSubmissionId().getRejectedCategoryType();
+					 userArray[9] = submissionHistory.getSubmissionId().getRejectedReason();
+					 }else{
+					 userArray[7] = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(), submissionHistory.getSubmissionId().getCreatedDate());
+					 userArray[8] = submissionHistory.getSubmissionId().getBackOutCategoryType();
+					 userArray[9] = submissionHistory.getSubmissionId().getBackOutReason(); 
+					 }
+					 userArray[10] = submissionHistory.getSubmissionId().getSubmissionStatus().toString(); 
+					
+					 return userArray;
+				}
+	
 }
