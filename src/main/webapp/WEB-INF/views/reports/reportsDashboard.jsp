@@ -621,8 +621,27 @@
                   <a href="/app/projectReportList" class="block">
                   <div class="clearfix text-center mb10"><i class="proReport"></i></div>
                   <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
-                      </div>
-        
+           </div>
+           
+           
+           <c:if test="${SourceLeadWeb_loginCountryName == 'India'}">
+           <div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="/app/projectReport">Project Report</a></li>
+				<li><a href="/app/employeeTasksReport">Employee Tasks</a></li>
+				<li><a href="/app/overdueTaskReport">Over Due Report</a></li>
+					
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="/app/indPayrollReportList" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>India Payroll Reports</h4></div> </a>
+           </div>
+        </c:if>
         </div>
         <!--  List View End  --> 
     
