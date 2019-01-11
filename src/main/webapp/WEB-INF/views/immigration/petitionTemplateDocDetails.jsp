@@ -38,9 +38,9 @@
 				      <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				      
 				      <div class="col-md-2">
-						<select class="form-control" 
+						<select class="form-control selectpicker" 
 										name="immigrationDocList[0].documentCategory" id="documentCategory0" onchange="getDocumentType(this,'0');"  title='Document Category' field-name="Select Document Category" data-validation="required">
-									<option value="" selected>--Select Document Type--</option>
+									<option value="" selected>--Select Document Category--</option>
 									<option value="PetitionerCategory" >Petitioner</option>
 									<option value="Document Type" >Beneficiary</option>
 									<option value="AttorneyCategory" >Attorney</option>
@@ -106,9 +106,9 @@
 					  
 					  <div class="col-md-2">
 					  
-						<select class="form-control" 
+						<select class="form-control selectpicker" 
 									name="immigrationDocList[${rows.count-1}].documentCategory" id="documentCategory${rows.count-1}" title='Document Category' field-name="Select Document Category" data-validation="required" onchange="getDocumentType(this,${rows.count-1});" >
-							            <option value="" >--Select Document Type--</option>
+							            <option value="" >--Select Document Category--</option>
 							        	<option ${items.documentCategory == "PetitionerCategory" ? 'selected': ''} value="PetitionerCategory">Petitioner</option>
 							        	<option ${items.documentCategory == "Document Type" ? 'selected': ''} value="Document Type">Beneficiary</option>
 							        	<option ${items.documentCategory == "AttorneyCategory" ? 'selected': ''} value="AttorneyCategory">Attorney</option>
@@ -242,7 +242,7 @@
 		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2'>";
 		
-		templateDocDetails = templateDocDetails+ "<select class='form-control' title='Document Type'  field-name='Select Document Category' data-validation='required' name='immigrationDocList["+rowId+"].documentCategory' id='documentCategory"+rowId+"' onchange='getDocumentType(this,"+rowId+");'  data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Type'  field-name='Select Document Category' data-validation='required' name='immigrationDocList["+rowId+"].documentCategory' id='documentCategory"+rowId+"' onchange='getDocumentType(this,"+rowId+");'  data-validation='validate_Space'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document Category--</option>";
 		templateDocDetails = templateDocDetails+ "<option value='PetitionerCategory'>Petitioner</option>";
 		templateDocDetails = templateDocDetails+ "<option value='Document Type'>Beneficiary</option>";
@@ -350,7 +350,7 @@
 	function getDocumentType(id,rowId){
 		var docType = id.value;
 		$('#candidateEducation'+rowId).empty();
-		 
+		
 		 $.ajax({
 	            type: "POST",
 	            url:sourceleadUrl+immiModulePath +"/getDcoumentType?"+tokenParamName +"="+tokenValue+"&docType="+docType,
