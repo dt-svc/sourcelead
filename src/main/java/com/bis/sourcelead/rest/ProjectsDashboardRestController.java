@@ -132,7 +132,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @RestController
-@RequestMapping("/app")
 public class ProjectsDashboardRestController {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardRestController.class);
 	

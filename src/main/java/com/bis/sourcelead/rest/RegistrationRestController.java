@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.SourceleadAuthenticationProvider;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -46,7 +45,6 @@ import com.bis.sourcelead.dto.OrgDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgPrimaryUserDTO;
-import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.RegistrationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -98,8 +96,6 @@ public class RegistrationRestController {
 	 @Autowired
 	 RegistrationService registrationService;
 	
-	 @Autowired
-	 SourceleadAuthenticationProvider surceleadAuthenticationProvider;
 	 
 	 @Autowired
 	 UserService userService;
@@ -154,7 +150,7 @@ public class RegistrationRestController {
      ConversionUtil conversionUtil;
 	 
 	 
-	 @RequestMapping(value = "/app/getOrgsList")
+	 @RequestMapping(value = "/getOrgsList")
 	 		public @ResponseBody String getUsersList(HttpServletRequest request,
 				@RequestParam(value="searchByName", required=false) String searchByName,
 				@RequestParam(value = "offset", required = false) Integer offset,
@@ -200,7 +196,7 @@ public class RegistrationRestController {
 	}
 	 
 	 
-	 @RequestMapping(value = "/app/getDynamicOrgsList" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/getDynamicOrgsList" , method = RequestMethod.POST)
 		public @ResponseBody ResponseList<OrgDTO> getDynamicOrgsList(OrgDTO orgDTO,HttpServletRequest request) throws Exception {
 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 ResponseList<OrgDTO> responseList = new ResponseList<>();
@@ -261,7 +257,7 @@ public class RegistrationRestController {
 	 
 	 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/companyRegistration" , method = RequestMethod.POST)
+	@RequestMapping(value = "/companyRegistration" , method = RequestMethod.POST)
 	   public OrgLocationDTO addCompanyRegistration(
 			   CompanyRegistrationDTO companyRegistrationDTO,CandidateDTO candidateDTO,
 	   			HttpServletRequest request) {
@@ -292,7 +288,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/getOrgSubscribedList" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getOrgSubscribedList" , method = RequestMethod.POST)
 	   public List<OrgLicenseSubscriptionDTO> getOrgSubscribedList(@RequestParam(value="orgId", required=true) Long orgId,
 			   HttpServletRequest request) throws Exception {
 		
@@ -347,7 +343,7 @@ public class RegistrationRestController {
 	
 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/getLocationSubscriptionDetails" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getLocationSubscriptionDetails" , method = RequestMethod.POST)
 	   public OrgLicenseSubscriptionDTO getLocationSubscriptionDetails(@RequestParam(value="licenseUUID", required=true) String licenseUUID,
 			   HttpServletRequest request) throws Exception {
 		
@@ -413,7 +409,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/app/companyLocationRegistration" , method = RequestMethod.POST)
+	@RequestMapping(value = "/companyLocationRegistration" , method = RequestMethod.POST)
 	   public Response<String> companyLocationRegistration(
 			   LocationEnrollmentDTO locationEnrollmentDTO,CandidateDTO candidateDTO,
 	   			HttpServletRequest request) {
@@ -457,7 +453,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/app/getRegistrationTabs" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getRegistrationTabs" , method = RequestMethod.POST)
 	   public List<TabsDTO> getRegistrationTabs(
 	   			HttpServletRequest request) throws Exception {
 		
@@ -487,7 +483,7 @@ public class RegistrationRestController {
 	   }
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/getOrgSubscribeCountries" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getOrgSubscribeCountries" , method = RequestMethod.POST)
 	   public List<String> getOrgSubscribeCountries( @RequestParam(value="orgId", required=true) Long orgId,
 	   			HttpServletRequest request) throws Exception {
 		
@@ -515,7 +511,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/updateOrgLicenseSubscription" , method = RequestMethod.POST)
+	@RequestMapping(value = "/updateOrgLicenseSubscription" , method = RequestMethod.POST)
 	   public String updateOrgLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,HttpServletRequest request) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		orgLicenseSubscriptionService.registerOrgLicenseSubscription(orgLicenseSubscriptionDTO,loginUser);
@@ -524,7 +520,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/getInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
 	   public Double getInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
 			   @RequestParam(value="userSubscription", required=true) Long userSubscription,HttpServletRequest request) throws Exception {
 		OrgLicenseSubscriptionPrice subscriptionPrice = orgLicenseSubscriptionPriceService.getOrgLicenseSubscriptionPriceBySubscriptionTypeAndUserType(subscriptionType, userSubscription);
@@ -537,7 +533,7 @@ public class RegistrationRestController {
      }
 	
 	
-	@RequestMapping(value = "/app/getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription" , method = RequestMethod.POST)
 	   public Double getUpgradeInvoiceRateBySubscriptionRateAndUserSubscription(@RequestParam(value="subscriptionType", required=true) Long subscriptionType,
 			   @RequestParam(value="userSubscription", required=true) Long userSubscription,@RequestParam(value="subscriptionUUID", required=true) String subscriptionUUID,
 			   HttpServletRequest request) throws Exception {
@@ -558,7 +554,7 @@ public class RegistrationRestController {
   }
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	@RequestMapping(value = "/app/saveOrgLocationSubscription" , method = RequestMethod.POST)
+	@RequestMapping(value = "/saveOrgLocationSubscription" , method = RequestMethod.POST)
 	   public String saveOrgLocationSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
 			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
 		
@@ -577,7 +573,7 @@ public class RegistrationRestController {
 		
      }
 	
-	@RequestMapping(value = "/app/upgradeOrgLocationLicenseSubscription" , method = RequestMethod.POST)
+	@RequestMapping(value = "/upgradeOrgLocationLicenseSubscription" , method = RequestMethod.POST)
 	   public String upgradeOrgLocationLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,
 			   @RequestParam(value="orgId", required=true) Long orgId,HttpServletRequest request) {
 		
@@ -599,7 +595,7 @@ public class RegistrationRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	@RequestMapping(value = "/app/getcompanyRegisteredDetails" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getcompanyRegisteredDetails" , method = RequestMethod.POST)
 	   public OrgLocationDTO getcompanyRegisteredDetails(
 			   @RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 	   			HttpServletRequest request) {
@@ -615,7 +611,7 @@ public class RegistrationRestController {
 	
 	
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/app/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/createUesrBySourceleadAdmin" , method = RequestMethod.POST)
 	 public  String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
 		 	
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -626,7 +622,7 @@ public class RegistrationRestController {
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/app/changePrimaryAdmin" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/changePrimaryAdmin" , method = RequestMethod.POST)
 	 public  String changePrimaryAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
@@ -640,7 +636,7 @@ public class RegistrationRestController {
 	 
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
-	 @RequestMapping(value = "/app/changeSuperAdmin" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/changeSuperAdmin" , method = RequestMethod.POST)
 	 public  String changeSuperAdmin(@RequestParam(value="userId", required=false) Long userId,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
 		 	
@@ -654,7 +650,7 @@ public class RegistrationRestController {
 	   }
 	 
 	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	 @RequestMapping(value = "/app/editOrgPrimaryUser" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/editOrgPrimaryUser" , method = RequestMethod.POST)
 	 public  Response<String> editOrgPrimaryUser(OrgPrimaryUserDTO OrgPrimaryUserDTO, 
 			 @RequestParam(value="userId", required=false) Long userId ,
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId ,HttpServletRequest request) throws Exception {
@@ -718,7 +714,7 @@ public class RegistrationRestController {
 	   }
 	
 	
-	 @RequestMapping(value = "/app/ws/registerAsProfessional" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsProfessional" , method = RequestMethod.POST)
 	 public  String registerAsProfessional(CrowdSourcingUserRegistrationDTO csuRegistrationDTOO,
 			 @RequestParam(value="contactUUID", required=false) String contactUUID,
 			 HttpServletRequest request) throws Exception {
@@ -737,7 +733,7 @@ public class RegistrationRestController {
 		 return result;
 	   }
 	 
-	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsIndividualRecruiter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiter(CrowdSourcingUserRegistrationDTO csUserRegistrationDTO, HttpServletRequest request) throws Exception {
 		
 		 String result = registrationService.saveIndividualRecruiter(csUserRegistrationDTO);
@@ -756,19 +752,19 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/registerAsIndividualEmployer" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsIndividualEmployer" , method = RequestMethod.POST)
 	 public  String registerAsIndividualEmployer(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
 		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
 		 return "success";
 	   }
 	 
-	 @RequestMapping(value = "/app/ws/demoRequest" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/demoRequest" , method = RequestMethod.POST)
 	 public  String demoRequest(EmployerRegistrationDTO employerRegistrationDTO, HttpServletRequest request) throws Exception {
 		  registrationService.saveIndividualEmployer(employerRegistrationDTO);
 		 return "success";
 	   }
 	 
-	 @RequestMapping(value = "/app/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/validateOrgRequestCompanyNameByName" , method = RequestMethod.POST)
 	 public  String validateOrgRequestCompanyNameByName(@RequestParam(value="companyNames", required=false) String companyNames) throws Exception {
 		 
 		 String result = "New Org";
@@ -786,7 +782,7 @@ public class RegistrationRestController {
 	   }
 	 
 	 
-	 @RequestMapping(value = "/app/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsProfessionalFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsProfessionalFromSocialInviter(@RequestParam(value="json", required=false) String json,
 			 HttpServletRequest request) throws Exception {
 		 
@@ -802,7 +798,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/registerAsIndividualRecruiterFromSocialInviter" , method = RequestMethod.POST)
 	 public  String registerAsIndividualRecruiterFromSocialInviter(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 
 		 json = "{"+json+"}";
@@ -815,7 +811,7 @@ public class RegistrationRestController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/ws/resetCredentials" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/resetCredentials" , method = RequestMethod.POST)
 	 public  String resetCredentials(@RequestParam(value="json", required=false) String json, HttpServletRequest request) throws Exception {
 		 	
 		 json = "{"+json+"}";
@@ -847,7 +843,7 @@ public class RegistrationRestController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/app/ws/getOptionalValueList" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/ws/getOptionalValueList" , method = RequestMethod.POST)
 	 public  String getOptionalValueList(HttpServletRequest request) throws Exception {
 	 			String registerTypeTwo = "Would like to";
 				List<RegistrationOptionalService> WouldLikeToList = registrationOptionalServicesService.getRegistraionOptionalServiceListByRegisterType(registerTypeTwo);
@@ -857,7 +853,7 @@ public class RegistrationRestController {
 	 
 	
 	   @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
-	   @RequestMapping(value = "/app/updateOrgModules" , method = RequestMethod.POST)
+	   @RequestMapping(value = "/updateOrgModules" , method = RequestMethod.POST)
 	   public String updateOrgModules(@RequestParam(value="orgLocationId", required=false) Long orgLocationId,
 				@RequestParam(value="modulesList", required=false) String modulesList ,
 				@RequestParam(value="submodulesList", required=false) String submodulesList ,
@@ -1058,7 +1054,7 @@ public class RegistrationRestController {
 	
 	
 	
-	@RequestMapping(value = "/app/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/resetPasswordWithUserName" , method = RequestMethod.POST)
 	public RestResponsetUtil resetPasswordWithUserName(RegistrationDTO registrationDTO,HttpServletRequest request) throws Exception {
 		 RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 //		String json1 = IOUtils.toString(request.getInputStream());
@@ -1102,7 +1098,7 @@ public class RegistrationRestController {
 	}
 	
 
-	@RequestMapping(value = "/app/ws/verifyResetPassword" , method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/verifyResetPassword" , method = RequestMethod.POST)
 	   public RestResponsetUtil verifyResetPassword(HttpServletRequest request) throws Exception {
 		RestResponsetUtil resResponsetUtil = new RestResponsetUtil();
 		String json1 = IOUtils.toString(request.getInputStream());
@@ -1142,7 +1138,7 @@ public class RegistrationRestController {
 		return resResponsetUtil;
 	 }
 	
-	   @RequestMapping(value = "/app/validateOrgWebsite", method = RequestMethod.GET)
+	   @RequestMapping(value = "/validateOrgWebsite", method = RequestMethod.GET)
 	   public @ResponseBody String validateOrgWebsite(
 	   		@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites) {
@@ -1165,7 +1161,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	   @RequestMapping(value = "/app/validateCompanyName", method = RequestMethod.GET)
+	   @RequestMapping(value = "/validateCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateCompanyName(
 	   		@RequestParam(value="companyName", required=true) String companyName,@RequestParam(value="orgLocationId", required=false) String orgLocationId,HttpServletRequest request) {
 			String status = null;
@@ -1206,7 +1202,7 @@ public class RegistrationRestController {
 	   
 	   
 	   
-	   @RequestMapping(value = "/app/validateRegiseredCompanyName", method = RequestMethod.GET)
+	   @RequestMapping(value = "/validateRegiseredCompanyName", method = RequestMethod.GET)
 	   public @ResponseBody String validateRegiseredCompanyName(
 	   		@RequestParam(value="companyName", required=false) String companyName,HttpServletRequest request) {
 			String status = null;
@@ -1241,7 +1237,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	   @RequestMapping(value = "/app/getUserDetails",  method = RequestMethod.POST)
+	   @RequestMapping(value = "/getUserDetails",  method = RequestMethod.POST)
 	    public @ResponseBody String getUserDetails(@RequestParam(value="email", required=false) String email,
 	    		@RequestParam(value="json", required=false) String json) {
 			
@@ -1267,16 +1263,16 @@ public class RegistrationRestController {
 		}
 	   
 	   @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")	   
-	   @RequestMapping(value = "/app/orgSummary/{orgCode}" , method = RequestMethod.GET)
+	   @RequestMapping(value = "/orgSummary/{orgCode}" , method = RequestMethod.GET)
 		 public @ResponseBody void orgSummary(@PathVariable String orgCode,HttpServletRequest request,HttpServletResponse response) throws Exception {
 				StringBuilder redirectUrl = new StringBuilder();
-				response.sendRedirect(redirectUrl.append("/app/enrolledOrgSummary?orgCode=").append(orgCode).toString());
+				response.sendRedirect(redirectUrl.append("/enrolledOrgSummary?orgCode=").append(orgCode).toString());
 				
 		   }
 	   
 	   
 	   
-	   @RequestMapping(value = "/app/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
+	   @RequestMapping(value = "/emailAndWebsiteRegistrationValidation",  method = RequestMethod.GET)
 	   public @ResponseBody String emailAndWebsiteRegistrationValidation(@RequestParam(value="website", required=false) String website,
 	   		@RequestParam(value="sourceleadBLockedwebsites", required=false) String sourceleadBLockedwebsites,
 	   		@RequestParam(value="email", required=false) String email) throws Exception {
@@ -1284,7 +1280,7 @@ public class RegistrationRestController {
 	   }
 	   
 	   
-	    @RequestMapping(value = "/app/getRegisteredOrgsLocationsList")
+	    @RequestMapping(value = "/getRegisteredOrgsLocationsList")
 		public @ResponseBody String getRegisteredOrgsLocationsList(HttpServletRequest request) {
 
 		String resultJson;
@@ -1329,7 +1325,7 @@ public class RegistrationRestController {
 	}
 	    
 	    
-	@RequestMapping(value = "/app/ws/activateEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/activateEmail", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView activateEmail(@RequestParam(value="token", required=false) String token, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -1375,7 +1371,7 @@ public class RegistrationRestController {
 	}
 	
 	
-	@RequestMapping(value = "/app/ws/resendVerificationEmail", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/resendVerificationEmail", method = RequestMethod.GET)
 	public @ResponseBody String resendVerificationEmail(@RequestParam(value = "userId", required = false) Long userId,@RequestParam(value = "userName", required = false) String userName, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		User user = null;
@@ -1397,8 +1393,8 @@ public class RegistrationRestController {
 		}
 	}
 	   
-	@RequestMapping(value = "/app/ws/verificationDone", method = RequestMethod.POST)
-	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId,@RequestParam(value = "verfDone", required = false) String verfDone,HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/ws/verificationDone", method = RequestMethod.POST)
+	public String verificationDone(@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "verfDone", required = false) String verfDone, HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;
 		if (userRoleId > 0)
@@ -1407,20 +1403,21 @@ public class RegistrationRestController {
 			User user = userService.findByUserName(userName);
 			userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 		}
-		if("".equalsIgnoreCase(userName) || userName == null){
+		if ("".equalsIgnoreCase(userName) || userName == null) {
 			UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
-			if(userLoginSession != null){
-				if(Constants.YES.equalsIgnoreCase(verfDone))
+			if (userLoginSession != null) {
+				if (Constants.YES.equalsIgnoreCase(verfDone))
 					userLoginSession.setAuthenticated(Constants.YES);
 				request.getSession().setAttribute("userLoginSession", userLoginSession);
 			}
 		}
 		SecurityContextHolder.clearContext();
-		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(userRole, userName, password,verfDone));
+		SecurityContextHolder.getContext().setAuthentication(userLoginHelper.redirectToDashboard(request, userName
+				+ "##" + userRole.getId(), password, verfDone));
 		return "true";
 	}
 	
-	@RequestMapping(value = "/app/ws/getUserDetailsByRoleId", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/getUserDetailsByRoleId", method = RequestMethod.POST)
 	public ModelAndView getUserDetailsByRoleId(@RequestParam(value = "id", required = false) Long roleId,@RequestParam(value = "userName", required = false) String userName, @RequestParam(value = "password", required = false) String password) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -1448,7 +1445,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/ws/sendOtpToUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/sendOtpToUser", method = RequestMethod.GET)
 	public ModelAndView sendOtpToUser(@RequestParam(value = "id", required = false) Long userId,@RequestParam(value = "type", required = false) String type,HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -1466,7 +1463,7 @@ public class RegistrationRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/app/ws/validateWhitelistIp", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/validateWhitelistIp", method = RequestMethod.GET)
 	public boolean validateWhitelistIp(@RequestParam(value = "userRoleId", required = false) long userRoleId,
 			@RequestParam(value = "name", required = false) String userName,
 			@RequestParam(value = "ipAddress", required = false) String ipAddress,
@@ -1487,7 +1484,7 @@ public class RegistrationRestController {
 		return whiteListIpAddressService.validateIPAddress(ipAddress, userRole,whiteListId,accessingType);
 	}
 	
-	@RequestMapping(value = "/app/ws/validateUserAlreadyAuthenticated", method = RequestMethod.GET)
+	@RequestMapping(value = "/ws/validateUserAlreadyAuthenticated", method = RequestMethod.GET)
 	public boolean validateUserAlreadyAuthenticated(@RequestParam(value = "userRoleId", required = false) long userRoleId, @RequestParam(value = "name", required = false) String userName, HttpServletRequest request) throws Exception
 	{
 		UserRole userRole = null;

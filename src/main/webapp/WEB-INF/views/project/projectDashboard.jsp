@@ -349,10 +349,10 @@ window.onload = function () {
 <script type="text/javascript">
 function projectsList(searchValue,searchresult,projectId,projectName,startDate,endDate,status,projectKeyword){ 
 	if(searchresult=="universalProjectsList")	 {
-		var sourceleadUrl ='${sourceleadUrl}';
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 $.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
+	          url: pmsUrl+"/getUniversalProjectsListByOrgLocationID?${_csrf.parameterName}=${_csrf.token}&searchValue="+searchValue,       
 	          success :function(data) {
 	        	  prepareProjectsList(data);
 	         },
@@ -442,7 +442,6 @@ function filter(){
 	    $("#projectFilterList").append(result);
 	    
 	    projectDataTableList();
-		projectsPagination(url);
 	  
 }
 
@@ -490,18 +489,18 @@ function projectDataTableList(){
 	
 	
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
-	 projectsPagination(url,sourceleadUrl);
+	 var url = pmsUrl+"/getProjectsByStatusAndClient?searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
+	 projectsPagination(url,pmsUrl);
 }
 </script>
 
 
 
 <script>
-function projectsPagination(url,sourceleadUrl){
+function projectsPagination(url,pmsUrl){
 	var colIndex = 0;
     $('#projectsListTable').DataTable( { 
 	  "processing": true,
@@ -556,14 +555,14 @@ function projectsPagination(url,sourceleadUrl){
  		    				if(locationId == opt.sharedClientOrgLocationId){
  		    					result = result +'<td data-title="Name"><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span></div></td>';
  		    				}else{
- 		    					result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    					result = result +'<td data-title="Name"><a href="'+pmsUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    				}
  		    			}else{
- 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    				result = result +'<td data-title="Name"><a href="'+pmsUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    			}
  		    			
  		    		}else{
- 		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			result = result +'<td data-title="Name"><a href="'+pmsUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}
 	    		  '</sec:authorize>';
             	  
@@ -643,7 +642,7 @@ function projectsPagination(url,sourceleadUrl){
 	            	  
 	            	    if(opt.client != null && opt.client != '' && opt.client != 'undefined'){
 	            	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
-	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'"><a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.client+'">'+opt.client+'</a></span></div></td>';
+	            	    	result = result + '<td><div class="tblminwidth-75"><span title="'+opt.client+'"><a href="'+pmsUrl+'/clientDashboard?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.client+'">'+opt.client+'</a></span></div></td>';
 	            	    	'</sec:authorize>';
 	            	    	
 	            	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
@@ -1101,7 +1100,7 @@ $(document).ready(function() {
 		
 		 if ($('#projectlist_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
+			var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 			var frm = $('#projectlist_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -1114,7 +1113,7 @@ $(document).ready(function() {
 
 			$.ajax({
 						type : "GET",
-						url : sourceleadUrl+"/searchProject?json="+jsonData,
+						url : pmsUrl+"/searchProject?json="+jsonData,
 						success : function(data) {
 							$("#search_project").addClass('button').val('Search');
 							$("#search_project").removeAttr("disabled");
@@ -1303,10 +1302,10 @@ function projectExport(type){
 		tags.push($(this).val());
      });
 	
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var searchValue = $("#projectsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 window.location.href = sourceleadUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
+	 window.location.href = pmsUrl + "/getExportProjects?&searchValue="+searchValue+"&values="+values+"&clients="+clients+"&projectType="+projectType+"&exportType="+exportType+"&projectManagers="+projectManagers+"&invoiceFrequency="+invoiceFrequency+"&tags="+tags;
 	
 }
 </script>
