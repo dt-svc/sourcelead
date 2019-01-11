@@ -1290,9 +1290,14 @@ public class USPayrollRestController {
 	 */
 	@RequestMapping(value = { "/getPaySheetFrequencyData", "/rest/getPaySheetFrequencyData" })
 	@ResponseBody
-	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<PaysheetFrequencyDTO> getPaySheetFrequencyList(PaysheetFrequencyDTO paysheetFrequencyDTO,
+			@RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue,
+			@RequestParam(value = "searchFrequency", required = false) String searchFrequency,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(searchFrequency !=null)
+			paysheetFrequencyDTO.setPayFrequency(searchFrequency);
 		return usPayPeriodService.getPayPeriodListByOrgLocationId(orgLocation, paysheetFrequencyDTO);
 	}
 	
@@ -1367,7 +1372,7 @@ public class USPayrollRestController {
 	/**
 	 * 
 	 * @param paySheetFrequencyUUID
-	 * @param request
+	 * @param request /viewPaySheetFrequencyData?
 	 * @param response
 	 * @return
 	 * @throws Exception
@@ -1933,11 +1938,13 @@ public class USPayrollRestController {
 			Calendar cal = Calendar.getInstance();
 			int year = cal.get(Calendar.YEAR);
 			SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
-			cal.set(Calendar.YEAR,year);
-			for(int i=0;i<12;i++) {
-				cal.set(Calendar.MONTH, i);
-				cal.set(Calendar.DATE,1);
-				month.add(sds.format(cal.getTime()).toUpperCase());
+			for(int h=0;h<2;h++) {
+				cal.set(Calendar.YEAR,year-h);
+				for(int i=0;i<12;i++) {
+					cal.set(Calendar.MONTH, i);
+					cal.set(Calendar.DATE,1);
+					month.add(sds.format(cal.getTime()).toUpperCase());
+				}
 			}
 			payrollScheduleDTO.setMonth(month);
 			return payrollScheduleDTO;
@@ -2170,7 +2177,7 @@ public class USPayrollRestController {
 						  sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyStartDate())).append(" to ")
 						     .append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyEndDate()));
 						  recentPayrollRunDataDTO.setPayFrequency(sb.toString());
-						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount));
+						  recentPayrollRunDataDTO.setNetPay(new BigDecimal(netAmount).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						  recentPayrollRunDataDTO.setStartDate(paysheetFrequency.getFrequencyStartDate());
 						  recentPayrollRunDataDTO.setPayrollCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getPayCheckDate()));
 						  recentPayrollRunDataDTO.setEndDate(paysheetFrequency.getFrequencyEndDate());
@@ -2186,6 +2193,7 @@ public class USPayrollRestController {
 				for(PaysheetFrequency paysheetFrequency : recentPayrollRunData) {
 					Set<EmployeePayroll> payrollList = paysheetFrequency.getEmployeepayroll();
 					RecentPayrollRunDataDTO recentPayrollRunDataDTO = new RecentPayrollRunDataDTO();
+					recentPayrollRunDataDTO.setPaysheetFreqUUID(paysheetFrequency.getPaySheetFrequencyUUID());
 					StringBuilder sb = new StringBuilder();
 					  sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyStartDate())).append(" to ")
 					     .append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paysheetFrequency.getFrequencyEndDate()));
@@ -2195,7 +2203,11 @@ public class USPayrollRestController {
 					  BigDecimal netPay = BigDecimal.ZERO;
 					  BigDecimal grossPay = BigDecimal.ZERO;
 					  if(approvedPayroll.size() > 0) {
-						  for(EmployeePayroll payroll : payrollList) {
+						  for(EmployeePayroll payroll : approvedPayroll) {
+							  
+//							  if(payroll.getSubmitForAproverStatus().equalsIgnoreCase(Constants.APPROVED))
+								  recentPayrollRunDataDTO.setPayPeriodNum(payroll.getPayPeriodNum());
+							  
 							  if(payroll.getBankDataHistory() != null && payroll.getBankDataHistory().size() > 0) {
 								  BankDataHistory bankData = payroll.getBankDataHistory().iterator().next();
 								  if("Direct Deposit".equalsIgnoreCase(bankData.getAccountType())) {
@@ -2221,6 +2233,7 @@ public class USPayrollRestController {
 						  recentPayrollRunDataDTO.setNoOfDirectDeposit(dd);
 						  recentPayrollRunDataDTO.setNoOfCheques(cheque);
 						  recentPayrollRunDataDTO.setNetPay(netPay);
+						  
 						  gridDataList.add(recentPayrollRunDataDTO);
 					  }
 				}	

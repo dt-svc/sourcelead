@@ -73,5 +73,6 @@ public interface AssetDao {
 
 	List<AssetAssign> getAssetsReportList(AssetsReportDTO assetsReportDTO, Long orgLocationId);
 
+	void deleteAsset(Asset asset) throws Exception;
 
 }

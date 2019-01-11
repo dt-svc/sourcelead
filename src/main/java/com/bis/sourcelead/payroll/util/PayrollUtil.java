@@ -680,9 +680,10 @@ public class PayrollUtil {
 	 * @param payroll
 	 * @param orgLocation
 	 * @param approverStatus
+	 * @param periodYear 
 	 * @return YTDPayrollDTO
 	 */
-	public YTDPayrollDTO getEmployeeYTDPayroll(Candidate candidate, OrgLocations orgLocation, String approverStatus)
+	public YTDPayrollDTO getEmployeeYTDPayroll(Candidate candidate, OrgLocations orgLocation, String approverStatus, int periodYear)
 	{
 		YTDPayrollDTO ytd = new YTDPayrollDTO();
 		BigDecimal ytdFederal = BigDecimal.ZERO;
@@ -707,7 +708,7 @@ public class PayrollUtil {
 		List<DeductionDTO> dedHisList = new ArrayList<>();
 		List<ContributionDTO> contrHisList = new ArrayList<>();
 		try {
-			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(candidate,orgLocation,approverStatus);
+			List<EmployeePayroll> ytdList = paysheetFrequencyService.employeePayrollYTD(candidate,orgLocation,approverStatus,periodYear);
 			if(ytdList != null && ytdList.size() >0) {
 				 ytdGross = ytdList.stream().mapToDouble(pay->pay.getGrossPay().doubleValue()).sum();
 				 ytdNet = ytdList.stream().mapToDouble(pay->pay.getNetPay().doubleValue()).sum();
@@ -959,49 +960,53 @@ public class PayrollUtil {
 			if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
 			  String[] mm = paySchedule.getNextPayMonth().split("-");
 			  int month = getMonth(mm[0]);
-			     Calendar cal = Calendar.getInstance();
+			    Calendar cal = Calendar.getInstance();
 				int year = Integer.parseInt(mm[1]);
 				SimpleDateFormat sds = new SimpleDateFormat("MMM-YYYY");
-				cal.set(Calendar.YEAR,year);
-				
 				Calendar calEndDate = Calendar.getInstance();
 				calEndDate.set(Calendar.MONTH,month);
 				calEndDate.set(Calendar.YEAR,year);
 				calEndDate.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
 				int checkDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getPayCheckDate());
 				int runPayDateDiff = commonUtil.diffBtwTowDates(calEndDate.getTime(),paySchedule.getRunPayrollDate());
-				for(int i=month;i<12;i++) {
-					PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
-					cal.set(Calendar.MONTH, i);
-//					cal.set(Calendar.DATE,1);
-					cal.set(Calendar.DATE, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
-					Date monthStartDate = cal.getTime();
-					calenderDTO.setPayPeriodStartDate(monthStartDate);
-					cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
-					Date monthEndDate = cal.getTime();
-					calenderDTO.setPayPeriodEndDate(monthEndDate);
-					// System.out.println(nextMonthLastDay);
-					Calendar ncal = Calendar.getInstance();
-					ncal.setTime(monthEndDate); // Now use today date.
-					ncal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
-					String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ncal.getTime());
-					calenderDTO.setCheckDate(ncal.getTime());
-					Calendar runPalCal = Calendar.getInstance();
-					runPalCal.setTime(monthEndDate); // Now use today date.
-					runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
-					String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
-					calenderDTO.setRunDate(runPalCal.getTime());
-					calenderDTO.setPayPeriod(sds.format(monthStartDate).toUpperCase());
-					calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
-					calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
-					calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
-					calenderDTO.setPayCheckDate(nextPayCheckDate);
-					calenderDTO.setPayRunDate(nextPayRunDate);
-					calenderDTO.setDateFormat(sds.format(monthStartDate).toUpperCase());
-					calenderDTO.setPayRunDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(runPalCal.getTime()));
-					calenderDTO.setPayCheckDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(ncal.getTime()));
-					calenderDTO.setMonth(i);
-					payFrequency.add(calenderDTO);
+				for(int h=0;h<2;h++) {
+					cal.set(Calendar.YEAR,year+h);
+					if(cal.get(Calendar.YEAR) <= Calendar.getInstance().get(Calendar.YEAR)){
+						for(int i=month;i<12;i++) {
+							PayrollScheduleCalenderDTO calenderDTO = new PayrollScheduleCalenderDTO();
+							cal.set(Calendar.MONTH, i);
+		//					cal.set(Calendar.DATE,1);
+							cal.set(Calendar.DATE, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+							Date monthStartDate = cal.getTime();
+							calenderDTO.setPayPeriodStartDate(monthStartDate);
+							cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+							Date monthEndDate = cal.getTime();
+							calenderDTO.setPayPeriodEndDate(monthEndDate);
+							// System.out.println(nextMonthLastDay);
+							Calendar ncal = Calendar.getInstance();
+							ncal.setTime(monthEndDate); // Now use today date.
+							ncal.add(Calendar.DATE, checkDateDiff); // Adding 5 days
+							String nextPayCheckDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), ncal.getTime());
+							calenderDTO.setCheckDate(ncal.getTime());
+							Calendar runPalCal = Calendar.getInstance();
+							runPalCal.setTime(monthEndDate); // Now use today date.
+							runPalCal.add(Calendar.DATE, runPayDateDiff); // Adding 5 days
+							String nextPayRunDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), runPalCal.getTime());
+							calenderDTO.setRunDate(runPalCal.getTime());
+							calenderDTO.setPayPeriod(sds.format(monthStartDate).toUpperCase());
+							calenderDTO.setPayFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthStartDate)+","+commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), monthEndDate));
+							calenderDTO.setStartDate(new SimpleDateFormat("MM/dd/yyyy").format(monthStartDate));
+							calenderDTO.setEndDate(new SimpleDateFormat("MM/dd/yyyy").format(monthEndDate));
+							calenderDTO.setPayCheckDate(nextPayCheckDate);
+							calenderDTO.setPayRunDate(nextPayRunDate);
+							calenderDTO.setDateFormat(sds.format(monthStartDate).toUpperCase());
+							calenderDTO.setPayRunDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(runPalCal.getTime()));
+							calenderDTO.setPayCheckDateFormat(new SimpleDateFormat("MM/dd/yyyy").format(ncal.getTime()));
+							calenderDTO.setMonth(i);
+							payFrequency.add(calenderDTO);
+						}
+						month=0;
+					}
 				}
 			}
 //			Weekly Bi-Weekly
@@ -1017,19 +1022,24 @@ public class PayrollUtil {
 				int year = now.get(Calendar.YEAR);
 				int month = now.get(Calendar.MONTH);
 				int dateInt = now.get(Calendar.DATE);
-				Calendar c = Calendar.getInstance();
-				c.set(Calendar.YEAR, year);
-				for (int i =month; i <=11; i++) {
-					c.set(Calendar.MONTH, i);
-					c.set(Calendar.DAY_OF_MONTH, dateInt);
-					while (c.get(Calendar.MONTH) == i) {
-						dates = new ArrayList<String>();
-						dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-						c.add(Calendar.DAY_OF_MONTH, numberOfDays);
-						dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
-						weekdates.add(dates);
-						c.add(Calendar.DAY_OF_MONTH, 1);
-						dateInt = c.get(Calendar.DATE);
+				for(int h=0;h<2;h++){
+					Calendar c = Calendar.getInstance();
+					c.set(Calendar.YEAR, year+h);
+					if(c.get(Calendar.YEAR) <= Calendar.getInstance().get(Calendar.YEAR)){
+						for (int i =month; i <=11; i++) {
+							c.set(Calendar.MONTH, i);
+							c.set(Calendar.DAY_OF_MONTH, dateInt);
+							while (c.get(Calendar.MONTH) == i) {
+								dates = new ArrayList<String>();
+								dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+								c.add(Calendar.DAY_OF_MONTH, numberOfDays);
+								dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+								weekdates.add(dates);
+								c.add(Calendar.DAY_OF_MONTH, 1);
+								dateInt = c.get(Calendar.DATE);
+							}
+						}
+						month=0;
 					}
 				}	
 				int checkDateDiff = commonUtil.diffBtwTowDates(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), weekdates.get(0).get(1)),paySchedule.getPayCheckDate());
@@ -1072,10 +1082,10 @@ public class PayrollUtil {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
-			Collections.sort(payFrequency, (p1, p2) -> p1.getMonth() - p2.getMonth());
-			return payFrequency;
-		}
+//		if("Monthly".equalsIgnoreCase(paySchedule.getPayFrequency().trim())) {
+//			Collections.sort(payFrequency, (p1, p2) -> p1.getMonth() - p2.getMonth());
+//			return payFrequency;
+//		}
 		return payFrequency;
 	}
 	
@@ -1510,5 +1520,43 @@ public class PayrollUtil {
 		dto.setUserLname((String) ob.get("user_lname"));
 		dto.setVendorName((String) ob.get("vendor_name"));
 		return dto;
+	}
+
+	/**
+	 * Get Year to current Dates with Year
+	 * @param orgLocation
+	 * @param periodYear
+	 * @return Date[]
+	 */
+	public Date[] getYTDDatesPerYear(OrgLocations orgLocation, int periodYear)
+	{
+		Date[] ytd = new Date[2];
+		try {
+			
+			Calendar c = Calendar.getInstance(); // this takes current date
+			
+			int currentYear = c.get(Calendar.YEAR);
+			if(periodYear == currentYear) {
+				
+				ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				c.set(Calendar.MONTH, 0);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				
+			}else {
+				c.set(Calendar.YEAR,periodYear);
+				c.set(Calendar.DATE, c.getActualMaximum(Calendar.DAY_OF_YEAR));
+				ytd[1] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				c.set(Calendar.MONTH, 0);
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				ytd[0] = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), c.getTime());
+				
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ytd;
 	}
 }

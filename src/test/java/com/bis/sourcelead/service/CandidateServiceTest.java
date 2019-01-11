@@ -664,6 +664,9 @@ public class CandidateServiceTest {
 				Long orgLocationId = 1234l;
 				List<CandidateEmployers> candidateEmployers = new ArrayList<>();
 				List<CandidateEmployers> spyList = Mockito.spy(candidateEmployers);
+				CandidateEmployers dummyEmployer= new CandidateEmployers();
+				dummyEmployer.setId(12345L);
+				spyList.add(dummyEmployer);
 				List<CandidateEmployers> candidateEmployers1 = null;
 				List<CandidateEducation> educations = new ArrayList<>();
 				List<CandidateEducation> educations1 = null;
@@ -676,7 +679,8 @@ public class CandidateServiceTest {
 				assertNotNull(marketPlace1);
 				when(mockCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId)).thenReturn(spyList);
 				candidateEmployers1 = mockCandidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
-				assertNotNull(candidateEmployers1);
+				assertThat(candidateEmployers1.get(0).getId(), is(12345L));
+				verify(spyList).add(dummyEmployer);
 				when(mockCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,orgLocationId)).thenReturn(educations);
 				educations1 = mockCandidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
 				assertNotNull(educations1);
