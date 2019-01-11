@@ -1626,6 +1626,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder nameStringBuilder = new StringBuilder();
 		emailMessage.setFromName(nameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		String time = "";
 		String startTime = "";
@@ -1668,6 +1669,15 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		if (requirementInterview.getInterviewType() != null) {
 			interviewTypeValue = requirementInterview.getInterviewType();
 		}
+		
+		//Url for page redirection
+		Long redirectOrgLocationId = candidate.getOrgLocationId().getId();
+		String redirectURL = "/requirementSummary-params-requirementUUID="
+				+ requirementSubmission.getSourceSubmission().getRequirement().getRequirementUUID()
+				+ "-and-submissionId=" + requirementSubmission.getSourceSubmission().getId()
+				+ "-and-candidateUUID=" + requirementSubmission.getCandidate().getCandidateUUID()
+				+ "-and-candidateKeyword=rescheduleInterviewNotification";
+		
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("VendorFirstName", emailMessage.getFirstName());
@@ -1703,13 +1713,30 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		// entity type
 		// emailScenario =
 		// emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW,Constants.ENTITY_TYPE_EMAIL);
+		
+		StringBuilder linkBuild = new StringBuilder();
+		if (requirementInterview.getScheduleType() != null
+				&& requirementInterview.getScheduleType().equalsIgnoreCase("reschedule")) {
+		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+				.toString());
+		}
+		else {
+			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Interview</div></a>")
+					.toString());
+		}
+		
+		
 		if (requirementInterview.getScheduleType() != null
 				&& requirementInterview.getScheduleType().equalsIgnoreCase("reschedule")) {
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW_RESCHEDULE,new ArrayList<EmailAttachment>());
 		}
 		else {
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocations.getOrg(), loginOrgLocations, Constants.VENDOR_INTERVIEW,new ArrayList<EmailAttachment>());
-		}
+					}
+		
+		
 		EmailScenario noificationEmailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_INTERVIEW, Constants.ENTITY_TYPE_NOTIFICATION);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
@@ -1956,6 +1983,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		Requirement requirement = requirementService.getRequirementByRequirementId(reqSubmission.getRequirement().getId());
 		
+		
+		
+		//URL for page redirection
 		String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
@@ -2038,7 +2068,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		
 		
 		StringBuilder linkBuild = new StringBuilder();
-		if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
+	/*	if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
 		globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Interview</div></a>").toString());
 				
@@ -2046,8 +2076,38 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		else {
 			globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
-			
-		}
+					}*/
+		
+		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Attending") && null != reqSubmission.getVendorLocationId()){
+			 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accepted Interview</div></a>").toString());
+						
+		 }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Attending")){
+			 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accepted Interview</div></a>").toString());
+        		 }
+		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending") && null != reqSubmission.getVendorLocationId()){
+			 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Interview</div></a>").toString());
+			 
+	     }else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Not_Attending")){
+	        	 
+	        	 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+							"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Rejected Interview</div></a>").toString());
+		         }
+		 if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe") && null != reqSubmission.getVendorLocationId()){
+			 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+	         
+			 
+		 } else if(reqnterview.getInterviewStatus().equalsIgnoreCase("Maybe")){
+		
+			 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+						"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
+	         
+		 }
+					 		
+		
 		
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
