@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.util.dynamicReport.Templates;
 
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;

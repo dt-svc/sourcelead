@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.dto.LcaReportViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.LookUpData;
@@ -35,7 +36,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
-import com.bis.sourcelead.payroll.dto.ImmigrationReportViewDTO;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsPdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;

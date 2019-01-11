@@ -1,4 +1,4 @@
-package com.bis.sourcelead.payroll.dto;
+package com.bis.sourcelead.dto;
 
 import java.util.Date;
 import java.util.List;
